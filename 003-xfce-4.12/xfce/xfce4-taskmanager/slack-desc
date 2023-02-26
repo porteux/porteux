@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':'.
+
+                 |-----handy-ruler------------------------------------------------------|
+xfce4-taskmanager: xfce4-taskmanager (running apps / task manager application)
+xfce4-taskmanager:
+xfce4-taskmanager: xfce4-taskmanager shows a list of running apps (similar to the
+xfce4-taskmanager: task manager included with some other operating systems)  :)
+xfce4-taskmanager:
+xfce4-taskmanager: The taskmanager is started by running the command 'xfce4-taskmanager'
+xfce4-taskmanager:
+xfce4-taskmanager:
+xfce4-taskmanager:
+xfce4-taskmanager:
+xfce4-taskmanager:

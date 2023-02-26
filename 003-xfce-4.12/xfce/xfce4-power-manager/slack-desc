@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':'.
+
+                   |-----handy-ruler------------------------------------------------|
+xfce4-power-manager: xfce4-power-manager (Power Management Daemon for Xfce)
+xfce4-power-manager:
+xfce4-power-manager: xfce4-power-manager makes power management functions (such as
+xfce4-power-manager: suspend and hibernate) easy inside the Xfce Desktop Environment.
+xfce4-power-manager:
+xfce4-power-manager:
+xfce4-power-manager:
+xfce4-power-manager:
+xfce4-power-manager:
+xfce4-power-manager:
+xfce4-power-manager:
