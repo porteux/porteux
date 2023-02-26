@@ -1,0 +1,78 @@
+--- plugins/monitors/monitors.c	2022-12-02 20:07:10.826604009 +1300
++++ plugins/monitors/monitors-patched.c	2022-12-02 20:42:15.782390216 +1300
+@@ -108,6 +108,7 @@
+     gint         pixmap_height;     /* Does not include border size           */
+     stats_set    *stats;            /* Circular buffer of values              */
+     stats_set    total;             /* Maximum possible value, as in mem_total*/
++    int          *maxfree;          /* Count buffers & cache as free memory   */
+     gint         ring_cursor;       /* Cursor for ring/circular buffer        */
+     gchar        *color;            /* Color of the graph                     */
+     gboolean     (*update) (struct Monitor *); /* Update function             */
+@@ -133,6 +134,7 @@
+     config_setting_t *settings;
+     Monitor  *monitors[N_MONITORS];          /* Monitors                      */
+     int      displayed_monitors[N_MONITORS]; /* Booleans                      */
++    int      show_cached_as_free;            /* What memory is shown as used  */
+     char     *action;                        /* What to do on click           */
+     guint    timer;                          /* Timer for regular updates     */
+ } MonitorsPlugin;
+@@ -190,6 +192,8 @@
+         G_CALLBACK(draw), (gpointer) m);
+ #endif
+ 
++    m->maxfree = &mp->show_cached_as_free;
++
+     return m;
+ }
+ 
+@@ -363,8 +367,10 @@
+      * 'man free' doesn't specify this)
+      * 'mem_cached' definitely counts as 'free' because it is immediately
+      * released should any application need it. */
+-    m->stats[m->ring_cursor] = (mem_total - mem_buffers - mem_free -
+-            mem_cached - mem_sreclaimable) / (float)mem_total;
++    m->stats[m->ring_cursor] = mem_total - mem_free;
++    if (*m->maxfree)
++        m->stats[m->ring_cursor] -= mem_buffers + mem_cached + mem_sreclaimable;
++    m->stats[m->ring_cursor] /= (float)mem_total;
+ 
+     m->ring_cursor++;
+     if (m->ring_cursor >= m->pixmap_width)
+@@ -659,11 +665,16 @@
+     /* First time we use this plugin : only display CPU usage */
+     mp->displayed_monitors[CPU_POSITION] = 1;
+ 
++    /* Default is: memory used by cache is free */
++    mp->show_cached_as_free = 1;
++
+     /* Apply options */
+     config_setting_lookup_int(settings, "DisplayCPU",
+                               &mp->displayed_monitors[CPU_POSITION]);
+     config_setting_lookup_int(settings, "DisplayRAM",
+                               &mp->displayed_monitors[MEM_POSITION]);
++    config_setting_lookup_int(settings, "ShowCachedAsFree",
++                              &mp->show_cached_as_free);
+     if (config_setting_lookup_string(settings, "Action", &tmp))
+         mp->action = g_strdup(tmp);
+     if (config_setting_lookup_string(settings, "CPUColor", &tmp))
+@@ -735,6 +746,7 @@
+         _("CPU color"), &colors[CPU_POSITION], CONF_TYPE_STR,
+         _("Display RAM usage"), &mp->displayed_monitors[1], CONF_TYPE_BOOL,
+         _("RAM color"), &colors[MEM_POSITION], CONF_TYPE_STR,
++        _("Show memory used by cache as free"), &mp->show_cached_as_free, CONF_TYPE_BOOL,
+         _("Action when clicked (default: lxtask)"), &mp->action, CONF_TYPE_STR,
+         NULL);
+ 
+@@ -805,6 +817,7 @@
+     }
+     config_group_set_int(mp->settings, "DisplayCPU", mp->displayed_monitors[CPU_POSITION]);
+     config_group_set_int(mp->settings, "DisplayRAM", mp->displayed_monitors[MEM_POSITION]);
++    config_group_set_int(mp->settings, "ShowCachedAsFree", mp->show_cached_as_free);
+     config_group_set_string(mp->settings, "Action", mp->action);
+     config_group_set_string(mp->settings, "CPUColor",
+                             mp->monitors[CPU_POSITION] ? colors[CPU_POSITION] : NULL);
+@@ -826,3 +839,4 @@
+ };
+ 
+ /* vim: set sw=4 sts=4 et : */
++
