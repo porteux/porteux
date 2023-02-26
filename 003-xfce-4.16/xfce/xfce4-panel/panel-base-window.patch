@@ -1,0 +1,22 @@
+--- panel/panel-base-window.c	2022-04-16 23:39:02.000000000 +1200
++++ panel/panel-base-window-patched.c	2022-04-27 22:39:57.000000000 +1200
+@@ -607,7 +607,8 @@
+ panel_base_window_set_background_color_css (PanelBaseWindow *window) {
+   gchar                  *css_string;
+   panel_return_if_fail (window->background_rgba != NULL);
+-  css_string = g_strdup_printf (".xfce4-panel.background { background-color: %s; border-color: transparent; } %s",
++  css_string = g_strdup_printf (".xfce4-panel.background { background: %s; "
++                                                          "border-color: transparent; } %s",
+                                 gdk_rgba_to_string (window->background_rgba),
+                                 PANEL_BASE_CSS);
+   panel_base_window_set_background_css (window, css_string);
+@@ -619,8 +620,7 @@
+ panel_base_window_set_background_image_css (PanelBaseWindow *window) {
+   gchar                  *css_string;
+   panel_return_if_fail (window->background_image != NULL);
+-  css_string = g_strdup_printf (".xfce4-panel.background { background-color: transparent;"
+-                                                          "background-image: url('%s');"
++  css_string = g_strdup_printf (".xfce4-panel.background { background: url('%s');"
+                                                           "border-color: transparent; } %s",
+                                 window->background_image, PANEL_BASE_CSS);
+   panel_base_window_set_background_css (window, css_string);
