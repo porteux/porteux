@@ -1,0 +1,69 @@
+#!/bin/sh
+
+PKGNAM=qpdfview-qt
+VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+TMP=${TMP:-/tmp}
+PKG=$TMP/package-${PKGNAM}
+
+if [ "$ARCH" = "i586" ]; then
+  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  SLCKCFLAGS="-O2"
+  LIBDIRSUFFIX=""
+fi
+
+set -e
+
+tar xvf ${PKGNAM}-$VERSION.tar.?z || exit 1
+cd ${PKGNAM}-$VERSION || exit 1
+
+chown -R root:root .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+sed -i "s|/usr/lib/qpdfview|/usr/lib${LIBDIRSUFFIX}/qpdfview|" qpdfview.pri
+
+# From Arch pkgbuild. Fix build with texlive in Slackware current.
+sed -e 's|2.0.0|1.21.0|' -i application.pro
+
+# Add localizations
+lrelease-qt5 qpdfview.pro
+
+patch -p1 < ../compile.patch
+
+#Configure qpdfview. Installation paths are correctly set in qpdfview.pri
+qmake-qt5 QMAKE_CFLAGS="$SLKCFLAGS" QMAKE_CXXFLAGS="$SLKCFLAGS" qpdfview.pro
+
+make -j8
+make INSTALL_ROOT=$PKG install
+
+mv -v $PKG/usr/share/man $PKG/usr/man
+find $PKG/usr/man -type f -exec gzip -9 {} \;
+for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
+
+mkdir -p $PKG/install
+cat ../slack-desc > $PKG/install/slack-desc
+cat ../doinst.sh > $PKG/install/doinst.sh
+
+cd $PKG
+/sbin/makepkg -l y -c n $TMP/$PKGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}

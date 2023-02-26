@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+            |-----handy-ruler------------------------------------------------------|
+qpdfview-qt: qpdfview-qt (tabbed document viewer)
+qpdfview-qt:
+qpdfview-qt: qpdfview-qt is a tabbed document viewer supporting djvu, pdf, and ps.
+qpdfview-qt:
+qpdfview-qt: Current features include:
+qpdfview-qt: Outline, properties, and thumbnail panes, scale, rotate, and fit,
+qpdfview-qt: continuous and multiple-page layouts, fullscreen and presentation
+qpdfview-qt: views, search for text and support for links and forms in pdf files,
+qpdfview-qt: configurable toolbars and keyboard shortcuts, persistent per-file
+qpdfview-qt: settings, rudimentary annotation and form support and more.
+qpdfview-qt:

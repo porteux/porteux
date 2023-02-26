@@ -1,0 +1,30 @@
+--- plugins/volumealsa/volumealsa.c	2022-12-02 20:07:10.829604009 +1300
++++ plugins/volumealsa/volumealsa-patched.c	2022-12-02 20:31:50.361453738 +1300
+@@ -796,6 +796,17 @@
+     /* Dispatch on scroll direction to update the value. */
+     if ((evt->direction == GDK_SCROLL_UP) || (evt->direction == GDK_SCROLL_LEFT))
+         val += 2;
++#if GTK_CHECK_VERSION(3, 0, 0)
++    else if (evt->direction == GDK_SCROLL_SMOOTH)
++    {
++        gdouble delta_x, delta_y;
++        gdk_event_get_scroll_deltas(evt, &delta_x, &delta_y);
++        if ((delta_x < 0) || (delta_y < 0))
++            val += 2;
++        else
++            val -= 2;
++    }
++#endif
+     else
+         val -= 2;
+ 
+@@ -972,6 +983,9 @@
+     /* Allocate top level widget and set into Plugin widget pointer. */
+     vol->panel = panel;
+     vol->plugin = p = gtk_event_box_new();
++#if GTK_CHECK_VERSION(3, 0, 0)
++    gtk_widget_add_events(p, GDK_SCROLL_MASK);
++#endif
+     vol->settings = settings;
+     lxpanel_plugin_set_data(p, vol, volumealsa_destructor);
+     gtk_widget_set_tooltip_text(p, _("Volume control"));
