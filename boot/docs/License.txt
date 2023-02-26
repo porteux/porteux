@@ -1,0 +1,6 @@
+PorteuX comes with no guarantees or warranties of any sorts, either written or implied.
+
+PorteuX is released under GPL. Check GNU_GPL file for more details.
+Individual packages in the distribution may come with their own licences.
+
+https://github.com/porteux/porteux

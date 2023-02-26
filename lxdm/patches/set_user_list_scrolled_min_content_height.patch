@@ -1,0 +1,10 @@
+--- data/themes/Industrial/greeter-gtk3.ui.orig	2017-08-16 18:07:41.274011389 +0200
++++ data/themes/Industrial/greeter-gtk3.ui	2017-08-16 18:08:40.999009868 +0200
+@@ -67,6 +67,7 @@
+                             <property name="can_focus">False</property>
+                             <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
+                             <property name="vscrollbar_policy">GTK_POLICY_NEVER</property>
++                            <property name="min-content-height">100</property>
+                             <child>
+                               <object class="GtkIconView" id="user_list">
+                                 <property name="visible">True</property>
