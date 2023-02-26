@@ -1,0 +1,39 @@
+--- src/appfinder-window.c	2022-12-08 10:20:57.000000000 +1300
++++ src/appfinder-window.c.patched	2023-01-07 21:13:07.827591104 +1300
+@@ -55,7 +55,7 @@
+ 
+ #define XFCE_APPFINDER_LOCAL_PREFIX "file://"
+ 
+-
++gboolean force_execute;
+ static void       xfce_appfinder_window_finalize                      (GObject                     *object);
+ static void       xfce_appfinder_window_unmap                         (GtkWidget                   *widget);
+ static gboolean   xfce_appfinder_window_key_press_event               (GtkWidget                   *widget,
+@@ -1416,9 +1416,16 @@
+       return TRUE;
+     }
+ 
++  if (force_execute == TRUE && (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter))
++  {
++    xfce_appfinder_window_execute (window, TRUE);
++    return FALSE;
++  }
++
+   if (event->keyval == GDK_KEY_Up ||
+       event->keyval == GDK_KEY_Down)
+     {
++      force_execute = FALSE;
+       expand = (event->keyval == GDK_KEY_Down);
+       is_expanded = gtk_widget_get_visible (window->paned);
+ 
+@@ -1447,6 +1454,10 @@
+           gtk_tree_path_free (path);
+         }
+     }
++    else
++     {
++       force_execute = TRUE;
++     }
+ 
+   return FALSE;
+ }
