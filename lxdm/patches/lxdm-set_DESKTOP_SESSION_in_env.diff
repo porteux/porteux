@@ -1,0 +1,14 @@
+diff -Naur lxdm-20131220_68eacbd.orig/src/lxdm.c lxdm-20131220_68eacbd/src/lxdm.c
+--- lxdm-20131220_68eacbd.orig/src/lxdm.c	2013-12-20 02:30:50.000000000 +0100
++++ lxdm-20131220_68eacbd/src/lxdm.c	2013-12-30 17:59:04.445723000 +0100
+@@ -1296,6 +1296,10 @@
+ 							  NULL))
+ 		{
+ 			setenv("XDG_SESSION_COOKIE", ck_connector_get_cookie(s->ckc), 1);
++			/* I really don't like doing this, but since both kdm and gdm
++			   set this in the environment, and our xinitrc scripts depend
++			   on it, here we go with a minor patch... */
++			setenv("DESKTOP_SESSION", session_name, 1);
+ 		}
+ 		else
+ 		{

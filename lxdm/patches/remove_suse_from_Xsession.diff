@@ -1,0 +1,14 @@
+diff -Naur lxdm-20131220_68eacbd.orig/data/Xsession lxdm-20131220_68eacbd/data/Xsession
+--- lxdm-20131220_68eacbd.orig/data/Xsession	2013-12-20 02:30:50.000000000 +0100
++++ lxdm-20131220_68eacbd/data/Xsession	2013-12-30 17:51:29.545723000 +0100
+@@ -22,10 +22,6 @@
+ elif [ -x /etc/X11/Xsession ]; then
+ # mandriva, debian, ubuntu
+ 	exec /etc/X11/Xsession "$LXSESSION"
+-elif [ -x /etc/X11/xinit/xinitrc ]; then
+-#suse
+-	export WINDOWMANAGER=$LXSESSION
+-	exec -l bash -c /etc/X11/xinit/xinitrc
+ else
+ # unknown, user should custom /etc/lxdm/xinitrc self
+ 	if [ -x /etc/lxdm/xinitrc ]; then

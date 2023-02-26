@@ -1,0 +1,12 @@
+diff -Naur lxdm-20131220_68eacbd.orig/data/Xsession lxdm-20131220_68eacbd/data/Xsession
+--- lxdm-20131220_68eacbd.orig/data/Xsession	2013-12-20 02:30:50.000000000 +0100
++++ lxdm-20131220_68eacbd/data/Xsession	2013-12-30 17:48:52.110723000 +0100
+@@ -9,6 +9,8 @@
+ 	LXSESSION=/usr/bin/startlxde
+ fi
+ 
++[ -f /etc/profile ] && . /etc/profile
++[ -f ~/.profile ] && . ~/.profile
+ [ -f /etc/xprofile ] && . /etc/xprofile
+ [ -f ~/.xprofile ] && . ~/.xprofile
+ 
