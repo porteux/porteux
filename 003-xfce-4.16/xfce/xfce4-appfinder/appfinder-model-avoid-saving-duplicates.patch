@@ -1,0 +1,27 @@
+--- src/appfinder-model.c	2021-01-18 12:29:48.000000000 +1300
++++ src/appfinder-model-patch.c	2022-03-06 20:06:08.000000000 +1300
+@@ -879,6 +879,15 @@
+ }
+ 
+ 
++static gint
++xfce_appfinder_model_item_compare_command (gconstpointer a,
++                                           gconstpointer b)
++{
++  const ModelItem *item_a = a, *item_b = b;
++
++  return g_utf8_collate (item_a->command, item_b->command);
++}
++
+ 
+ static gchar *
+ xfce_appfinder_model_item_key (GarconMenuItem *item)
+@@ -1123,7 +1132,7 @@
+   /* add new command */
+   item = g_slice_new0 (ModelItem);
+   item->command = g_strdup (command);
+-  if (g_slist_find_custom (model->items, item, xfce_appfinder_model_item_compare) != NULL)
++  if (g_slist_find_custom (model->items, item, xfce_appfinder_model_item_compare_command) != NULL)
+     {
+        APPFINDER_DEBUG ("Skip adding %s to the model as it's already contained.", command);
+        g_slice_free (ModelItem, item);

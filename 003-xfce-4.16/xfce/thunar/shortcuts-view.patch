@@ -1,0 +1,98 @@
+--- thunar/thunar-shortcuts-view.c	2021-09-18 07:30:41.000000000 +1200
++++ thunar/thunar-shortcuts-view-new.c	2022-01-08 09:46:17.000000000 +1300
+@@ -42,6 +42,7 @@
+ #include <thunar/thunar-gtk-extensions.h>
+ #include <thunar/thunar-preferences.h>
+ #include <thunar/thunar-private.h>
++#include <thunar/thunar-properties-dialog.h>
+ #include <thunar/thunar-shortcuts-icon-renderer.h>
+ #include <thunar/thunar-shortcuts-model.h>
+ #include <thunar/thunar-shortcuts-view.h>
+@@ -152,6 +153,7 @@
+ static void           thunar_shortcuts_view_eject                        (ThunarShortcutsView      *view);
+ static void           thunar_shortcuts_view_mount                        (ThunarShortcutsView      *view);
+ static void           thunar_shortcuts_view_unmount                      (ThunarShortcutsView      *view);
++static void           thunar_shortcuts_view_action_properties            (ThunarShortcutsView      *view);
+ 
+ 
+ 
+@@ -1228,6 +1230,16 @@
+         g_signal_connect_swapped (G_OBJECT (item), "activate", G_CALLBACK (thunar_shortcuts_view_empty_trash), view);
+         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+         gtk_widget_show (item);
++        
++        /* append the "Properties" menu action */
++        item = gtk_image_menu_item_new_with_mnemonic (_("P_roperties..."));
++        gtk_widget_set_visible (item, TRUE);
++        g_signal_connect_swapped (G_OBJECT (item), "activate", G_CALLBACK (thunar_shortcuts_view_action_properties), view);
++        gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
++        
++	    /* set the stock icon */
++	    image = gtk_image_new_from_stock (GTK_STOCK_PROPERTIES, GTK_ICON_SIZE_MENU);
++	    gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+         break;
+ 
+       default:
+@@ -1268,6 +1280,16 @@
+               gtk_widget_show (item);
+             }
+ 
++          /* append the "Properties" menu action */
++          item = gtk_image_menu_item_new_with_mnemonic (_("P_roperties..."));
++          gtk_widget_set_visible (item, TRUE);
++          g_signal_connect_swapped (G_OBJECT (item), "activate", G_CALLBACK (thunar_shortcuts_view_action_properties), view);
++          gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
++		
++          /* set the stock icon */
++          image = gtk_image_new_from_stock (GTK_STOCK_PROPERTIES, GTK_ICON_SIZE_MENU);
++          gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
++			
+           /* cleanup */
+           g_list_free (items);
+         }
+@@ -2091,6 +2113,45 @@
+ }
+ 
+ 
++
++static void
++thunar_shortcuts_view_action_properties (ThunarShortcutsView *view)
++{
++  ThunarFile *file;
++  GtkWidget  *dialog;
++  GtkWidget  *toplevel;
++  GtkTreeSelection *selection;
++  GtkTreeModel     *model;
++  GtkTreeIter       iter;
++
++  _thunar_return_if_fail (THUNAR_IS_SHORTCUTS_VIEW (view));  
++  
++  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
++
++  if (!GTK_IS_TREE_SELECTION (selection))
++    return NULL;
++    
++  if (gtk_tree_selection_get_selected (selection, &model, &iter))
++    gtk_tree_model_get (model, &iter, THUNAR_SHORTCUTS_MODEL_COLUMN_FILE, &file, -1);
++  
++  if (G_LIKELY (file != NULL))
++    {
++      /* determine the toplevel window */
++      toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
++      if (G_LIKELY (toplevel != NULL && gtk_widget_is_toplevel (toplevel)))
++        {
++          /* popup the properties dialog */
++          dialog = thunar_properties_dialog_new (GTK_WINDOW (toplevel));
++          thunar_properties_dialog_set_file (THUNAR_PROPERTIES_DIALOG (dialog), file);
++          gtk_widget_show (dialog);
++        }
++
++      /* release the file */
++      g_object_unref (G_OBJECT (file));
++    }
++}
++
++
+ 
+ static void
+ thunar_shortcuts_view_unmount (ThunarShortcutsView *view)

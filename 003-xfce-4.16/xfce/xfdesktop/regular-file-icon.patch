@@ -1,0 +1,11 @@
+--- src/xfdesktop-regular-file-icon.c	2020-04-20 03:34:36.000000000 +1200
++++ src/xfdesktop-regular-file-icon-patched.c	2022-01-04 05:50:36.897672179 +1300
+@@ -807,7 +807,7 @@
+         size = g_file_info_get_attribute_uint64(info,
+                                                 G_FILE_ATTRIBUTE_STANDARD_SIZE);
+ 
+-        size_string = g_format_size(size);
++        size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS);
+ 
+         mtime = g_file_info_get_attribute_uint64(info,
+                                                  G_FILE_ATTRIBUTE_TIME_MODIFIED);

@@ -1,0 +1,13 @@
+--- src/xfdesktop-file-utils.c	2022-08-21 03:59:42.000000000 +1200
++++ src/xfdesktop-file-utils-patched.c	2022-12-03 15:08:26.566233466 +1300
+@@ -1529,8 +1529,8 @@
+ 
+         g_free(startup_id);
+         g_free(display_name);
+-        g_free(target_uris[0]);
+-        g_free(source_uris[0]);
++        g_strfreev(target_uris);
++        g_strfreev(source_uris);
+     } else {
+         xfce_message_dialog(NULL,
+                             _("Transfer Error"), "dialog-error",

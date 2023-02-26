@@ -1,0 +1,12 @@
+--- src/xfdesktop-volume-icon.c	2022-01-08 10:29:24.445881934 +1300
++++ src/xfdesktop-volume-icon-new.c	2022-01-08 10:27:55.000000000 +1300
+@@ -473,7 +473,7 @@
+             free_space = g_file_info_get_attribute_uint64(fs_info,
+                                                           G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+ 
+-            size_string = g_format_size(size);
++            size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS);
+-            free_space_string = g_format_size(free_space);
++            free_space_string = g_format_size_full(free_space, G_FORMAT_SIZE_IEC_UNITS);
+ 
+             volume_icon->priv->tooltip =

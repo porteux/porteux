@@ -1,0 +1,69 @@
+--- usr/share/themes/Adwaita-dark/gtk-2.0/main.rc	2021-02-13 19:38:07.000000000 +1300
++++ usr/share/themes/Adwaita-dark/gtk-2.0/main.rc.patched	2021-11-12 15:55:36.000000000 +1300
+@@ -15,7 +15,7 @@
+   ####################
+ 
+   GtkWidget::focus-line-width = 1
+-  GtkWidget::focus-line-pattern = "\2\1"
++  GtkWidget::focus-padding = 3
+ 
+   GtkToolbar::internal-padding = 4
+   GtkToolButton::icon-spacing  = 4
+@@ -136,7 +136,9 @@
+ 
+   # Draw frame around menu in a non-compositied environment
+   # This needs to go before pixmap because we need to override some stuff
+-  engine "adwaita" {}
++  engine "adwaita" {
++  	focusstyle = 1
++  }
+ 
+   engine "pixmap" {
+ 
+@@ -674,17 +676,6 @@
+       border   = {0, 0, 1, 0}
+     }
+ 
+-    #########
+-    # Focus #
+-    #########
+-
+-    image {
+-      function = FOCUS
+-      file     = "assets/focus.png"
+-      border   = {1, 1, 1, 1}
+-      stretch  = TRUE
+-    }
+-
+     ###########
+     # Handles #
+     ###########
+@@ -1495,6 +1486,11 @@
+ 
+ }
+ 
++style "applications-menu"
++{
++   xthickness = 2
++}
++
+ style "menubar" {
+ 
+   # Needed to fix Firefox's menubar text
+@@ -1773,8 +1769,8 @@
+ 
+ style "button" {
+ 
+-  xthickness = 2
+-  ythickness = 2
++  xthickness = 0
++  ythickness = 0
+ 
+   # For the sake of sanity style buttons this way
+   engine "pixmap" {
+@@ -2552,3 +2548,5 @@
+ 
+ # GTK tooltips
+ widget "gtk-tooltip*"                                              style "tooltip"
++
++widget "*applicationsmenu-1*" 									   style "applications-menu"
