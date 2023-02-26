@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                |-----handy-ruler------------------------------------------------------|
+xfce4-xkb-plugin: xfce4-xkb-plugin (xkb plugin for the Xfce panel)
+xfce4-xkb-plugin:
+xfce4-xkb-plugin: The xkb plugin can be used to show the current keyboard layout and/or
+xfce4-xkb-plugin: to select a layout from those defined in the /etc/X11/xorg.conf file.
+xfce4-xkb-plugin:
+xfce4-xkb-plugin:
+xfce4-xkb-plugin:
+xfce4-xkb-plugin:
+xfce4-xkb-plugin:
+xfce4-xkb-plugin:
+xfce4-xkb-plugin:
