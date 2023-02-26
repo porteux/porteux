@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                        |-----handy-ruler------------------------------------------------------|
+xfce4-whiskermenu-plugin: xfce4-whiskermenu-plugin (alternate application launcher for Xfce)
+xfce4-whiskermenu-plugin:
+xfce4-whiskermenu-plugin: Whisker Menu is an alternate application launcher for Xfce. When you
+xfce4-whiskermenu-plugin: open it you are shown a list of applications you have marked as
+xfce4-whiskermenu-plugin: favorites. You can browse through all of your installed applications
+xfce4-whiskermenu-plugin: by clicking on the category buttons on the side. Top level categories
+xfce4-whiskermenu-plugin: make browsing fast, and simple to switch between. Additionally,
+xfce4-whiskermenu-plugin: Whisker Menu keeps a list of the last ten applications
+xfce4-whiskermenu-plugin: that you've launched from it.
+xfce4-whiskermenu-plugin:
+xfce4-whiskermenu-plugin: Homepage: http://gottcode.org/xfce4-whiskermenu-plugin
