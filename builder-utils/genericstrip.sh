@@ -47,6 +47,7 @@ GenericStrip() {
 	rm -R "$CURRENTDIR"/usr/lib64/python2.7
 	rm -R "$CURRENTDIR"/var/log/pkgtools
 	rm -R "$CURRENTDIR"/var/log/setup
+	rm -R "$CURRENTDIR"/var/lib/pkgtools/douninst.sh
 	rm -R "$CURRENTDIR"/var/lib/pkgtools/setup
 	
 	rm "$CURRENTDIR"/usr/bin/gtk-demo
@@ -57,7 +58,6 @@ GenericStrip() {
 	rm "$CURRENTDIR"/usr/share/applications/gtk3-icon-browser.desktop
 	rm "$CURRENTDIR"/usr/share/applications/gtk3-widget-factory.desktop
 	rm "$CURRENTDIR"/usr/share/pixmaps/*.xpm
-	rm "$CURRENTDIR"/var/lib/pkgtools/douninst.sh
 	rm "$CURRENTDIR"/var/log/removed_packages
 	rm "$CURRENTDIR"/var/log/removed_scripts
 	rm "$CURRENTDIR"/var/log/removed_uninstall_scripts
