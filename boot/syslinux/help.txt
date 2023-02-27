@@ -16,7 +16,7 @@
 
 
  -Copy To RAM-
- Same as Graphics Mode, but copying all module to RAM.
+ Same as Graphics Mode, but copying all modules to RAM.
 
 
  -Text Mode-

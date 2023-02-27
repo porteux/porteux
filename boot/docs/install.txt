@@ -4,7 +4,7 @@
 
 PorteuX can be installed to any media storage (including USB sticks)
 without requiring your personal data to be erased. Partitions supported:
-EXT, XFS, FAT or NTFS.
+btrfs, EXT, FAT, NTFS and XFS.
 
 The simplest way to do that is copying the ISO content to your media
 storage and running the installer, which will just make the media
