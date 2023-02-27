@@ -10,13 +10,17 @@ browser-builder.sh
 cemu-builder.sh
 etcher-builder.sh
 module-builder.sh
+multilib-builder.sh
 notepadnext-builder.sh
+nvidia-builder.sh
 pcsx2-builder.sh
+porteux-app-store-list
 porteux-app-store-live.sh
 porteux-app-store.py
 steam-builder.sh
 teams-builder.sh
 telegram-builder.sh
+update-list.sh
 virtualbox-builder.sh
 vscode-builder.sh
 whatsapp-builder.sh
