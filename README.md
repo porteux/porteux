@@ -30,7 +30,7 @@ If you want to run Windows applications inside PorteuX, in the app store you can
 
 PorteuX can be built in a live session of Slackware 64-bit, Porteus 64-bit or PorteuX 64-bit. At the moment the main scripts are not generating ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-xorg, 002-xtra, 003-desktop-environment, 05-devel, 06-crippled_sources).
 
-To build PorteuX, run the commands below in the exact order as described (000-kernel can be skipped if you already have it):
+To build PorteuX, run the commands below in the exact order as described (000-kernel can be skipped if you already have it): <br />
 1- in 000-kernel folder call `createModule.sh`<br />
 2- in 001-core folder call `createModule.sh`<br />
 3- in 002-xorg folder call `createModule.sh`<br />
