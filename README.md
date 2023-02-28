@@ -22,9 +22,9 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 Xfce 4.12 is the recommended version for the best balance between performance and flexibility. Many patches have been applied to this Xfce version to improve the user experience.
 
-If you want to build anything, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, headers, etc. If you need to build a driver (e.g. VirtualBox or any physical device), you should also download and activate 06-crippled_sources xzm module. It's not recommended to have these 2 modules activated during boot time, instead put them inside /porteux/optional folder and activate them only when needed.
+If you want to build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, headers, etc. If you need to build a driver (e.g. VirtualBox or any physical device), you should also download and activate 06-crippled_sources xzm module. It's not recommended to have these 2 modules activated during boot time, instead put them inside /porteux/optional folder and activate them only when needed.
 
-If you want to run Windows applications, in the app store you can find both Wine and Multilib Lite xzm modules. Just like 05-devel and 06-crippled_sources, it's not recommended to have these 2 modules activated during boot time.
+If you want to run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. Just like 05-devel and 06-crippled_sources, it's not recommended to have these 2 modules activated during boot time.
 
 ## Building
 
