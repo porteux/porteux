@@ -18,6 +18,8 @@ PorteuX is provided in 2 main versions based on Slackware 64-bit packages: 15.0 
 . Xfce 4.16<br />
 . Xfce 4.18<br />
 
+PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's simple like that. For more details, please read `install.txt` file in the root folder of the ISO.
+
 Xfce 4.12 is the recommended version for the best balance between performance and flexibility. Many patches have been applied to this Xfce version to improve the user experience.
 
 If you want to build anything, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, headers, etc. If you need to build a driver (e.g. VirtualBox or any physical device), you should also download and activate 06-crippled_sources xzm module. It's not recommended to have these 2 modules activated during boot time, instead put them inside /porteux/optional folder and activate them only when needed.
