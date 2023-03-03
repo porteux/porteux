@@ -1,0 +1,12 @@
+                  |-----handy-ruler------------------------------------------------------|
+mate-power-manager: mate-power-manager (power session daemon for the MATE desktop)
+mate-power-manager:
+mate-power-manager: MATE Power Manager is a MATE session daemon that acts as a policy
+mate-power-manager: agent on top of UPower, which requires fairly new versions of the
+mate-power-manager: kernel and udev.
+mate-power-manager:
+mate-power-manager:
+mate-power-manager:
+mate-power-manager:
+mate-power-manager: Homepage: https://www.mate-desktop.org
+mate-power-manager:

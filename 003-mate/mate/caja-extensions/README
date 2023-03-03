@@ -1,0 +1,5 @@
+caja-extensions is a set of extensions for Caja, MATE file manager.
+Included in this package are: image-converter, open-terminal, gksu, 
+sendto, and share.
+
+This requires gupnp in deps/
