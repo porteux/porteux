@@ -44,10 +44,12 @@ fi
 
 ### temporary packages for further building
 
+DownloadPackage "enchant" & # to build pluma
+DownloadPackage "glade" & # to build gtksourceview4
+DownloadPackage "gst-plugins-base" & # to build caja-extensions
+DownloadPackage "gstreamer" & # to build caja-extensions
 DownloadPackage "libgtop" & # to build mate-utils
 DownloadPackage "python-pip" & # to install lxml
-DownloadPackage "gstreamer" & # to build caja-extensions
-DownloadPackage "gst-plugins-base" & # to build caja-extensions
 wait
 
 ### script clean up

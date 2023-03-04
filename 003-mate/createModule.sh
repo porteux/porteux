@@ -103,10 +103,9 @@ meson --prefix /usr ..
 ninja -j8 install || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
- required from now on
+# required from now on
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
-rm $MODULEPATH/packages/libgtop*.txz
 
 currentPackage=mate-utils
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
@@ -125,10 +124,14 @@ wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schem
 rm -fr $MODULEPATH/$currentPackage
 
 # required from now on
-installpkg $MODULEPATH/packages/gstreamer*.txz || exit 1
-rm $MODULEPATH/packages/gstreamer*.txz
+installpkg $MODULEPATH/packages/enchant*.txz || exit 1
+rm $MODULEPATH/packages/enchant*.txz
+installpkg $MODULEPATH/packages/glade*.txz || exit 1
+rm $MODULEPATH/packages/glade*.txz
 installpkg $MODULEPATH/packages/gst-plugins-base*.txz || exit 1
 rm $MODULEPATH/packages/gst-plugins-base*.txz
+installpkg $MODULEPATH/packages/gstreamer*.txz || exit 1
+rm $MODULEPATH/packages/gstreamer*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
@@ -181,10 +184,6 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### fix some .desktop files
-
-#sed -i "s|Categories=System;|Categories=|g" $MODULEPATH/packages/usr/share/applications/Thunar.desktop
-
 ### add mate session
 
 sed -i "s|SESSIONTEMPLATE|/usr/bin/mate-session|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
@@ -210,12 +209,14 @@ rm -R usr/lib64/peas-demo
 rm -R usr/lib64/python3.9/site-packages/pip
 rm -R usr/lib64/python3.9/site-packages/pip-21.3.1-py3.9.egg-info
 rm -R run
+rm -R usr/share/accountsservice
 rm -R usr/share/engrampa
 rm -R usr/share/gnome
 rm -R usr/share/gdm
 rm -R usr/share/icons/ContrastHigh
 rm -R usr/share/icons/mate
 rm -R usr/share/icons/mate-black
+rm -R usr/share/libmateweather
 rm -R usr/share/mate-media/icons
 rm -R usr/share/svgalib-demos
 rm -R usr/share/Thunar
@@ -225,7 +226,7 @@ rm -R var/lib/AccountsService
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
 
-# remove everything inside usr/share/themes, except Adwaita, Adwaita-dark and DustBlue
+find usr/share/themes -mindepth 1 -maxdepth 1 ! \( -name "Adwaita" -o -name "Adwaita-dark" -o -name "DustBlue" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
 
