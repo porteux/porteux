@@ -13,6 +13,7 @@ module-builder.sh
 multilib-builder.sh
 notepadnext-builder.sh
 nvidia-builder.sh
+onlyoffice-builder.sh
 pcsx2-builder.sh
 porteux-app-store-list
 porteux-app-store-live.sh
