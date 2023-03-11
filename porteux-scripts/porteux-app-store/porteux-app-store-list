@@ -4,11 +4,13 @@ apps-locale-info/google-chrome-locales.txt
 apps-locale-info/opera-locales.txt
 apps-locale-info/palemoon-locales.txt
 apps-locale-info/vivaldi-locales.txt
+icons/onlyoffice.png
 appimage-builder.sh
 apps-locale-info
 browser-builder.sh
 cemu-builder.sh
 etcher-builder.sh
+icons
 module-builder.sh
 multilib-builder.sh
 notepadnext-builder.sh
