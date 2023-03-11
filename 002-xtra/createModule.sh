@@ -204,7 +204,6 @@ installpkg $MODULEPATH/packages/$currentPackage*.t?z
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=dav1d
-version=1.0.0
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 wget https://code.videolan.org/videolan/$currentPackage/-/archive/master/$currentPackage-master.tar.gz || exit 1
 tar xvf $currentPackage-master.tar.gz && rm $currentPackage-master.tar.gz || exit 1

@@ -222,8 +222,7 @@ for package in \
 ; do
 cd $SCRIPTPATH/xfce/$package || exit 1
 sh ${package}.SlackBuild || exit 1
-rm -fr $MODULEPATH/package-$package
-rm -fr $MODULEPATH/$package
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
 ### fake root

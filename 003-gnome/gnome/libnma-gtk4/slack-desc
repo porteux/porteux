@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+           |-----handy-ruler------------------------------------------------------|
+libnma-gtk4: libnma-gtk4 (NetworkManager GUI client library)
+libnma-gtk4:
+libnma-gtk4: The libnma-gtk4 library provides an API used to create dialogs for
+libnma-gtk4: NetworkManager clients such as network-manager-applet.
+libnma-gtk4:
+libnma-gtk4: Homepage: https://wiki.gnome.org/Projects/NetworkManager/
+libnma-gtk4:
+libnma-gtk4:
+libnma-gtk4:
+libnma-gtk4:
+libnma-gtk4:

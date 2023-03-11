@@ -1,0 +1,89 @@
+#!/bin/sh
+
+PRGNAM=$(basename $0 | cut -f1 -d.)
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i486 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+CWD=$(pwd)
+TMP=${TMP:-$MODULEPATH}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-$TMP/packages}
+JOBS=${JOBS:-" -j$(expr $(getconf _NPROCESSORS_ONLN) \* 2 ) "}
+
+if [ "$ARCH" = "i486" ]; then
+  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  SLKCFLAGS="-O2"
+  LIBDIRSUFFIX=""
+fi
+
+set -e
+
+UMASKBKP=$(umask)
+umask 0022
+
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT
+cd $TMP
+rm -rf $PRGNAM-$VERSION
+tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+chown -R root:root .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+mkdir -p build
+cd build
+meson .. \
+ --prefix=/usr \
+ --libdir=/usr/lib${LIBDIRSUFFIX} \
+ --libexecdir=/usr/libexec \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ -Dgobject_introspection=true \
+ -Dgtk_doc=false
+
+ninja $JOBS || ninja
+DESTDIR=$PKG ninja install
+
+find $PKG -name '*.la' -delete
+
+mkdir -p $PKG/install
+#      |-----handy-ruler------------------------------------------------------|
+cat <<EOT >$PKG/install/slack-desc
+$PRGNAM:
+$PRGNAM: Amtk - Actions, Menus and Toolbars Kit for GTK applications
+$PRGNAM:
+$PRGNAM: Amtk is the acronym for “Actions, Menus and Toolbars Kit”. It is a
+$PRGNAM: basic GtkUIManager replacement based on GAction. It is suitable for
+$PRGNAM: both a traditional UI or a modern UI with a GtkHeaderBar.
+$PRGNAM:
+$PRGNAM:
+$PRGNAM:
+$PRGNAM: https://wiki.gnome.org/Projects/Amtk
+$PRGNAM:
+EOT
+
+cd $PKG
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+
+umask ${UMASKBKP}

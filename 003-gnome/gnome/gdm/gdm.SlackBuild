@@ -1,0 +1,134 @@
+#!/bin/sh
+
+PRGNAM=$(basename $0 | cut -f1 -d.)
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i486 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+CWD=$(pwd)
+TMP=${TMP:-$MODULEPATH}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-$TMP/packages}
+JOBS=${JOBS:-" -j$(expr $(getconf _NPROCESSORS_ONLN) \* 2 ) "}
+
+if [ "$ARCH" = "i486" ]; then
+  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  SLKCFLAGS="-O2"
+  LIBDIRSUFFIX=""
+fi
+
+set -e
+
+UMASKBKP=$(umask)
+umask 0022
+
+DEPCHK=""
+OPTDEP=""
+
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT
+cd $TMP
+rm -rf $PRGNAM-$VERSION
+tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+chown -R root:root .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+patch -Np1 -i $CWD/patches/gdm-40.0-meson-allow-building-with-elogind.patch
+
+sed -i 's/logind_dep/libelogind_dep/' common/meson.build
+sed -i 's/logind_dep/libelogind_dep/' libgdm/meson.build
+sed -i 's/logind_dep/libelogind_dep/' meson.build
+
+sed -i -r 's/systemd_dep/libelogind_dep/' meson.build
+sed -i -r 's/systemd_dep/libelogind_dep/' data/meson.build
+sed -i "s#'libsystemd'#'libelogind'#" meson.build
+sed -i "s#'systemd'#'libelogind'#" meson.build
+sed 's@systemd@elogind@' -i data/pam-lfs/gdm-launch-environment.pam
+sed 's@systemd@elogind@' -i data/pam-exherbo/gdm-launch-environment.pam
+sed -i "s@= elogind_dep@= libelogind_dep@" meson.build
+
+mkdir -p build
+cd build
+
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+meson .. \
+ --prefix=/usr \
+ --buildtype=release \
+ --libdir=lib${LIBDIRSUFFIX} \
+ --libexecdir=/usr/libexec \
+ --sysconfdir=/etc \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ -Dsysconfsubdir=/etc/X11/gdm \
+ -Ddefault_library=shared \
+ -Ddefault-pam-config=lfs \
+ -Dgdm-xsession=false \
+ -Dsystemd-journal=false \
+ -Dinitial-vt=7 \
+ -Duser=gdm \
+ -Dgroup=gdm \
+ -Dlibaudit=disabled \
+ -Dplymouth=disabled \
+ -Dlogind-provider=elogind \
+ -Dpam-mod-dir=/lib${LIBDIRSUFFIX}/security \
+ -Dsystemdsystemunitdir=no \
+ -Dsystemduserunitdir=no \
+ -Dwayland-support=true
+
+ninja $JOBS || ninja
+DESTDIR=$PKG ninja install
+
+# Here or doinst.sh?
+mkdir -p $PKG/var/lib/gdm $PKG/var/cache/gdm $PKG/var/log/gdm $PKG/run/gdm
+chown -R -v gdm:gdm $PKG/var/lib/gdm $PKG/var/cache/gdm $PKG/var/log/gdm $PKG/run/gdm
+
+cat $CWD/files/custom.conf > $PKG/etc/X11/gdm/custom.conf.new
+
+# Dont config for .new
+mkdir -p $PKG/etc/pam.d
+cp $CWD/pamd/gdm-password $PKG/etc/pam.d/gdm-password
+cp $CWD/pamd/gdm-autologin $PKG/etc/pam.d/gdm-autologin
+
+mkdir -p $PKG/etc/X11/xinit
+cat $CWD/files/xinitrc.gnome > $PKG/etc/X11/xinit/xinitrc.gnome
+ln -sf /etc/X11/xinit/xinitrc.gnome $PKG/etc/X11/xinit/xinitrc
+
+# pulse is default file or a dir? :(
+mkdir -p $PKG/var/lib/gdm/.config/pulse
+cat $CWD/files/default.pa > $PKG/var/lib/gdm/.config/pulse/default.pa
+
+mkdir -p $PKG/usr/share/xsessions
+cp $CWD/sessions/*.desktop $PKG/usr/share/xsessions
+
+cd ..
+
+mkdir -p $PKG/install
+cp $CWD/slack-desc $PKG/install
+cp $CWD/doinst.sh $PKG/install
+
+cd $PKG
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+
+umask ${UMASKBKP}

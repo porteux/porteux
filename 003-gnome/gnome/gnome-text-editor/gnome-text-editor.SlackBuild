@@ -1,0 +1,118 @@
+#!/bin/sh
+
+PRGNAM=$(basename $0 | cut -f1 -d.)
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i486 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+TMP=${TMP:-$MODULEPATH}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-$TMP/packages}
+CWD=$(pwd)
+JOBS=${JOBS:-" -j$(expr $(getconf _NPROCESSORS_ONLN) \* 2 ) "}
+
+if [ "$ARCH" = "i486" ]; then
+  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  SLKCFLAGS="-O2"
+  LIBDIRSUFFIX=""
+fi
+
+set -e
+
+UMASKBKP=$(umask)
+umask 0022
+
+DEPCHK="tepl"
+
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT
+cd $TMP
+rm -rf $PRGNAM-$VERSION
+tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+chown -R root:root .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+mkdir -p build
+cd build
+
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+meson .. \
+ --prefix=/usr \
+ --buildtype=release \
+ --libdir=lib${LIBDIRSUFFIX} \
+ --libexecdir=/usr/libexec \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ -Denchant=enabled 
+
+ninja $JOBS || ninja
+DESTDIR=$PKG ninja install
+
+cd ..
+
+mkdir -p $PKG/install
+#      |-----handy-ruler------------------------------------------------------|
+cat <<EOT >$PKG/install/slack-desc
+$PRGNAM:
+$PRGNAM: gedit
+$PRGNAM:
+$PRGNAM: gedit is the GNOME text editor. While aiming at simplicity and ease
+$PRGNAM: of use, gedit is a powerful general purpose text editor.
+$PRGNAM: More advanced features are available by enabling plugins.
+$PRGNAM:
+$PRGNAM:
+$PRGNAM:
+$PRGNAM: https://wiki.gnome.org/Apps/Gedit
+$PRGNAM:
+EOT
+
+cat <<EOT >$PKG/install/doinst.sh
+if [ -x /usr/bin/update-mime-database ]; then
+  /usr/bin/update-mime-database /usr/share/mime &> /dev/null
+fi
+
+if [ -x /usr/bin/update-desktop-database ]; then
+  /usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+  if [ -x /usr/bin/gtk-update-icon-cache ]; then
+    /usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+  fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+  if [ -x /usr/bin/glib-compile-schemas ]; then
+    /usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+  fi
+fi
+EOT
+
+cd $PKG
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+
+umask ${UMASKBKP}

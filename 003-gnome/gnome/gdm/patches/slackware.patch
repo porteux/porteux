@@ -1,0 +1,42 @@
+diff -ur gdm-40.0/data/meson.build gdm-40.0.new/data/meson.build
+--- gdm-40.0/data/meson.build	2021-03-30 10:27:29.795586000 -0300
++++ gdm-40.0.new/data/meson.build	2021-07-03 19:04:58.546980518 -0300
+@@ -136,6 +136,14 @@
+     'gdm-password',
+     'gdm-pin',
+   ],
++  'slackware': [
++    'gdm-autologin',
++    'gdm-launch-environment',
++    'gdm-fingerprint',
++    'gdm-smartcard',
++    'gdm-password',
++    'gdm-pin',
++  ],
+   'none': [],
+   # We should no longer have 'autodetect' at this point
+ }
+Only in gdm-40.0.new/data: pam-slackware
+diff -ur gdm-40.0/meson.build gdm-40.0.new/meson.build
+--- gdm-40.0/meson.build	2021-03-30 10:27:30.404579600 -0300
++++ gdm-40.0.new/meson.build	2021-07-03 18:53:57.495986543 -0300
+@@ -171,6 +171,7 @@
+     '/etc/exherbo-release': 'exherbo',
+     '/etc/arch-release': 'arch',
+     '/etc/lfs-release': 'lfs',
++    '/etc/slackware-version': 'slackware',
+   }
+ 
+   foreach _file, _pam_conf : pam_autodetect_map
+diff -ur gdm-40.0/meson_options.txt gdm-40.0.new/meson_options.txt
+--- gdm-40.0/meson_options.txt	2021-03-30 10:27:30.411579600 -0300
++++ gdm-40.0.new/meson_options.txt	2021-07-03 18:57:02.029984861 -0300
+@@ -1,7 +1,7 @@
+ option('at-spi-registryd-dir', type: 'string', value: '', description: 'Specify the directory of at-spi-registryd.')
+ option('custom-conf', type: 'string', value: '', description: 'Filename to give to custom configuration file.')
+ option('dbus-sys', type: 'string', value: '', description: 'Where D-Bus systemd directory is.')
+-option('default-pam-config', type: 'combo', choices: [ 'autodetect', 'redhat', 'openembedded', 'exherbo', 'lfs', 'arch', 'none'], value: 'autodetect', description: '')
++option('default-pam-config', type: 'combo', choices: [ 'autodetect', 'redhat', 'openembedded', 'exherbo', 'lfs', 'arch', 'slackware', 'none'], value: 'autodetect', description: '')
+ option('default-path', type: 'string', value: '/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin', description: 'Path GDM will use as the user\'s default PATH.')
+ option('defaults-conf', type: 'string', value: '', description: 'Filename to give to defaults file.')
+ option('dmconfdir', type: 'string', value: '', description: 'Directory where sessions are stored.')

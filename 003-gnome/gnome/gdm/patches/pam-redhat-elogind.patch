@@ -1,0 +1,10 @@
+--- gdm-40.0/data/pam-redhat/gdm-launch-environment.pam	2021-03-30 10:27:29.975584300 -0300
++++ gdm-40.0.new/data/pam-redhat/gdm-launch-environment.pam	2021-07-03 16:52:21.981011612 -0300
+@@ -4,6 +4,7 @@
+ auth       include     postlogin
+ account    required    pam_permit.so
+ password   required    pam_permit.so
++-session   optional    pam_elogind.so
+ session    optional    pam_keyinit.so force revoke
+ session    include     system-auth
+ session    include     postlogin
