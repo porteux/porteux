@@ -26,6 +26,14 @@ If you want to build anything inside PorteuX, it's recommended to download and a
 
 If you want to run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. Just like 05-devel and 06-crippled_sources, it's not recommended to have these 2 modules activated during boot time.
 
+## Default Username and Password
+
+username: guest<br />
+password: guest<br />
+
+username: root<br />
+password: toor<br />
+
 ## Building
 
 PorteuX can be built in a live session of Slackware 64-bit, Porteus 64-bit or PorteuX 64-bit. At the moment the main scripts are not generating ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-xorg, 002-xtra, 003-desktop-environment, 05-devel, 06-crippled_sources).
