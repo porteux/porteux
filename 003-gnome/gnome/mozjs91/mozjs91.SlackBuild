@@ -46,8 +46,8 @@ rm -rf $SRCNAME-$VERSION ; rm -rf $SRCNAME-$(echo $VERSION | cut -f 1 -d e)
 rm -rf firefox-unpack
 mkdir firefox-unpack
 cd firefox-unpack
-wget https://ftp.mozilla.org/pub/$SRCNAME/releases/$VERSIONesr/source/$SRCNAME-$VERSIONesr.source.tar.xz
-tar xvf $CWD/$SRCNAME-${VERSION}esr.source.tar.?z || exit 1
+wget https://ftp.mozilla.org/pub/${SRCNAME}/releases/${VERSION}esr/source/${SRCNAME}-${VERSION}esr.source.tar.xz
+tar xvf $SRCNAME-${VERSION}esr.source.tar.?z || exit 1
 mv * ..
 cd ..
 rm -rf firefox-unpack

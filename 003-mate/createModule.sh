@@ -129,6 +129,7 @@ rm $MODULEPATH/packages/gst-plugins-base*.txz
 installpkg $MODULEPATH/packages/gstreamer*.txz || exit 1
 rm $MODULEPATH/packages/gstreamer*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
+rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 
@@ -212,7 +213,6 @@ rm -R usr/share/gdm
 rm -R usr/share/icons/ContrastHigh
 rm -R usr/share/icons/mate
 rm -R usr/share/icons/mate-black
-rm -R usr/share/libmateweather
 rm -R usr/share/mate-media/icons
 rm -R usr/share/svgalib-demos
 rm -R usr/share/Thunar
@@ -221,6 +221,8 @@ rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
+
+find usr/share/libmateweather -mindepth 1 -maxdepth 1 ! \( -name "Locations.xml" -o -name "locations.dtd" \) -exec rm -rf '{}' \; 2>/dev/null
 
 find usr/share/themes -mindepth 1 -maxdepth 1 ! \( -name "Adwaita" -o -name "Adwaita-dark" -o -name "DustBlue" \) -exec rm -rf '{}' \; 2>/dev/null
 
