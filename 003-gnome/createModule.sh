@@ -241,10 +241,9 @@ rm -R usr/share/libgweather-4
 rm -R usr/share/pixmaps
 rm -R usr/share/vala
 rm -R usr/share/zsh
-
 rm -R var/lib/AccountsService
 
-find usr/share/themes -mindepth 1 -maxdepth 1 ! \( -name "Adwaita" -o -name "Adwaita-dark" -o -name "DustBlue" \) -exec rm -rf '{}' \; 2>/dev/null
+find usr/lib64/gstreamer-1.0 -mindepth 1 -maxdepth 1 ! \( -name "libcluttergst3.so" -o -name "libgstcogl.so" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
 
