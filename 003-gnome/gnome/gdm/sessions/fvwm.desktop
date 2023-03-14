@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Fvwm
-Comment=The Fvwm window manager
-Exec=/etc/X11/xdm/Xsession fvwm2
-# no icon yet, only the top three are currently used
-Icon=
-Type=Application

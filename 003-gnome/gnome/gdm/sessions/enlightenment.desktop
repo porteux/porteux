@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Enlightenment
-Comment=The Enlightenment Desktop
-Exec=/etc/X11/xdm/Xsession enlightenment
-# no icon yet, only the top three are currently used
-Icon=
-Type=Application

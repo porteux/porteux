@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=AfterStep
-Comment=The AfterStep Window Manager
-Exec=/etc/X11/xdm/Xsession afterstep
-# no icon yet, only the top three are currently used
-Icon=
-Type=Application

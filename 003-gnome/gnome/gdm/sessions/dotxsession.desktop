@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=User Dot xsession
-Comment=This session starts the user's .xsession file
-Exec=/etc/X11/gdm/Xsession custom
-# no icon yet, only the top three are currently used
-Icon=
-Type=Application

@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Blackbox
-Comment=The blackbox window manager
-Exec=/etc/X11/xdm/Xsession blackbox
-# no icon yet, only the top three are currently used
-Icon=
-Type=Application

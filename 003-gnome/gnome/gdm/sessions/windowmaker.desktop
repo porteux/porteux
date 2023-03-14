@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=Windowmaker
-Comment=The Windowmaker window manager
-Exec=/etc/X11/xinit/xinitrc.wmaker
-# no icon yet, only the top three are currently used
-Icon=
-Type=Application
