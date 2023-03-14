@@ -34,12 +34,6 @@ rm -fr $MODULEPATH/$currentPackage
 
 ### packages outside Slackware repository
 
-currentPackage=lxdm
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp -R $SCRIPTPATH/../lxdm/* .
-GTK3=no sh $currentPackage.SlackBuild || exit 1
-rm -fr $MODULEPATH/$currentPackage
-
 currentPackage=audacious
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
@@ -68,6 +62,7 @@ rm $MODULEPATH/packages/meson-*.txz
 # required from now on
 installpkg $MODULEPATH/packages/*.txz || exit 1
 
+# only required for building not for run-time
 rm $MODULEPATH/packages/boost*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
@@ -77,13 +72,16 @@ rm $MODULEPATH/packages/gst-plugins-bad-free*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libglvnd*
-rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/oniguruma*
 rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/xorg-server-xwayland*
 rm $MODULEPATH/packages/xtrans*
+
+# some packages like nautilus and vte look for this folder
+mkdir /usr/local/include > /dev/null 2>&1
+cp -r -s /usr/include/ /usr/local/include > /dev/null 2>&1
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	rm $MODULEPATH/packages/openssl*
@@ -117,6 +115,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	sh ${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/$currentPackage-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+	rm $MODULEPATH/packages/libsoup3*
 
 	currentPackage=vte
 	cd $SCRIPTPATH/gnome/$currentPackage || exit 1
@@ -132,7 +131,6 @@ for package in \
 	libstemmer \
 	exempi \
 	tracker3 \
-	gtksourceview4 \
 	gtksourceview5 \
 	rest \
 	libwpe \
@@ -149,7 +147,6 @@ for package in \
 	libpeas \
 	gsound \
 	amtk \
-	tepl \
 	libmanette \
 	gnome-autoar \
 	gnome-desktop \
@@ -170,7 +167,6 @@ for package in \
 	gspell \
 	gnome-text-editor \
 	eog \
-	adwaita-icon-theme \
 	evince \
 	gnome-system-monitor \
 	gnome-console \
@@ -199,10 +195,6 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### add gnome session
-
-sed -i "s|SESSIONTEMPLATE|/usr/bin/gnome-session|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
-
 ### copy build files to 05-devel
 
 CopyToDevel
@@ -227,7 +219,9 @@ rm -R usr/lib
 rm -R usr/lib64/aspell
 rm -R usr/lib64/python2.7
 rm -R usr/lib64/peas-demo
+rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gnome-settings-daemon-3.0
+rm -R usr/lib64/tracker-3.0
 rm -R usr/lib64/python3.9/site-packages/pip*
 rm -R usr/share/gdb
 rm -R usr/share/glade/pixmaps
@@ -244,6 +238,8 @@ rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
 find usr/lib64/gstreamer-1.0 -mindepth 1 -maxdepth 1 ! \( -name "libcluttergst3.so" -o -name "libgstcogl.so" \) -exec rm -rf '{}' \; 2>/dev/null
+
+find usr/share/xsessions -mindepth 1 -maxdepth 1 ! \( -name "gnome.desktop" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
 
