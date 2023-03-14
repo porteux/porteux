@@ -81,7 +81,7 @@ rm $MODULEPATH/packages/xtrans*
 
 # some packages like nautilus and vte look for this folder
 mkdir /usr/local/include > /dev/null 2>&1
-cp -r -s /usr/include/ /usr/local/include > /dev/null 2>&1
+ln -s /usr/include /usr/local/include > /dev/null 2>&1
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	rm $MODULEPATH/packages/openssl*
