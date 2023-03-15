@@ -26,6 +26,8 @@ If you want to build anything inside PorteuX, it's recommended to download and a
 
 If you want to run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. Just like 05-devel and 06-crippled_sources, it's not recommended to have these 2 modules activated during boot time.
 
+To be able to read Asian characters, please download and activate the module [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/extras/notoserifcjk-regular.xzm).
+
 ## Default Username and Password
 
 username: guest<br />
@@ -33,6 +35,10 @@ password: guest<br />
 
 username: root<br />
 password: toor<br />
+
+## Compatibility with Porteus 5
+
+Apart from 001-core, 002-xorg and 002-xtra modules, all Porteus 5 modules are compatible with PorteuX. If you want to use a Porteus 5 desktop environment (003-xx) you need to download and activate (during boot time) the compatibility module [009-porteus5-compatibility-15.0.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-15.0.xzm) (or [009-porteus5-compatibility-current.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-current.xzm) if you're using PorteuX current/unstable)
 
 ## Building
 
