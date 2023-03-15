@@ -49,7 +49,7 @@ To build PorteuX, run the commands below in the exact order as described (000-ke
 2- in 001-core folder call `createModule.sh`<br />
 3- in 002-xorg folder call `createModule.sh`<br />
 4- in 002-xtra folder call `createModule.sh`<br />
-5- in 003-desktopenvironment folder (where 'desktopenvironment' is the one of your preference) call `createModule.sh`<br />
+5- in 003-desktopenvironment folder call `createModule.sh` (where 'desktopenvironment' is the one of your preference)<br />
 6- in 05-devel folder call `createModule.sh`<br />
 
 In the end all modules will be in their respective subfolders inside /tmp/porteux-builder-[version].
