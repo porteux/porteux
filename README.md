@@ -38,7 +38,7 @@ password: toor<br />
 
 ## Compatibility with Porteus 5
 
-Apart from 001-core, 002-xorg and 002-xtra modules, all Porteus 5 modules are compatible with PorteuX. If you want to use a Porteus 5 desktop environment (003-xx) you need to download and activate (during boot time) the compatibility module [009-porteus5-compatibility-15.0.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-15.0.xzm) (or [009-porteus5-compatibility-current.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-current.xzm) if you're using PorteuX current/unstable)
+Apart from 001-core, 002-xorg and 002-xtra modules, all Porteus 5 modules are compatible with PorteuX. In order to use a given Porteus 5 desktop environment (003-xx) you need to download and activate (during boot time) the compatibility module [009-porteus5-compatibility-15.0.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-15.0.xzm) (or [009-porteus5-compatibility-current.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-current.xzm) if you're using PorteuX current/unstable)
 
 ## Building
 
