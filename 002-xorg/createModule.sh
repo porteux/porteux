@@ -58,20 +58,6 @@ rm -fr $MODULEPATH/$currentPackage
 
 ### packages outside slackware repository ###
 
-currentPackage=arandr
-version=0.1.10
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/desktop/$currentPackage/ -A * || exit 1
-wget http://christian.amsuess.com/tools/arandr/files/arandr-$version.tar.gz || exit 1
-mv $MODULEPATH/packages/python-docutils*.txz .
-installpkg python-docutils*.txz || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
-
 currentPackage=archivemount
 version=0.9.1
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
