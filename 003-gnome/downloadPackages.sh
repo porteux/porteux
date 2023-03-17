@@ -49,6 +49,11 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	wait
 fi
 
+### packages that require specific striping
+
+DownloadPackage "gtk+3" &
+wait
+
 ### temporary packages for further building
 
 DownloadPackage "boost" &
@@ -56,14 +61,13 @@ DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
 DownloadPackage "gst-plugins-bad-free" &
-DownloadPackage "gtk+3" & # it will be stripped to include only libgtk file, since gtk+3-classic breaks Gnome's UI
 DownloadPackage "iso-codes" &
 DownloadPackage "krb5" &
 wait
 DownloadPackage "libglvnd" &
 DownloadPackage "libwnck3" &
 DownloadPackage "llvm" &
-DownloadPackage "oniguruma" &
+DownloadPackage "oniguruma" & # required by jq
 DownloadPackage "rust" &
 DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "xtrans" &

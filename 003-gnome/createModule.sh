@@ -21,6 +21,7 @@ DownloadFromSlackware
 
 ### packages that require specific stripping
 
+# only include libgtk file, since gtk+3-classic breaks Gnome's UI
 currentPackage=gtk+3
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 mv $MODULEPATH/packages/$currentPackage-[0-9]* .
@@ -79,8 +80,8 @@ rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/xorg-server-xwayland*
 rm $MODULEPATH/packages/xtrans*
 
-# some packages like nautilus and vte look for this folder
-mkdir /usr/local/include > /dev/null 2>&1
+# some packages (e.g nautilus and vte) require this folder
+mkdir -p /usr/local > /dev/null 2>&1
 ln -s /usr/include /usr/local/include > /dev/null 2>&1
 
 if [ $SLACKWAREVERSION != "current" ]; then

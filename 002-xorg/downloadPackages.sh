@@ -256,7 +256,6 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "fuse" & # to build archivemount
-DownloadPackage "python-docutils" & # to build arandr
 wait
 
 ### script clean up
