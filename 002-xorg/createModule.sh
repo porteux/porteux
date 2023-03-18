@@ -158,6 +158,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
+sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" $currentPackage.SlackBuild
 sh $currentPackage.SlackBuild || exit 1
 mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/$currentPackage

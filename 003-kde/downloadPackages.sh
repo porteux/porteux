@@ -24,7 +24,6 @@ DownloadPackage "egl-wayland" &
 DownloadPackage "ffmpegthumbs" &
 DownloadPackage "frameworkintegration" &
 wait
-DownloadPackage "gnome-themes-extra" &
 DownloadPackage "graphene" &
 DownloadPackage "gst-plugins-base" &
 DownloadPackage "gst-plugins-good" &

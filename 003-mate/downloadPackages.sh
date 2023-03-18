@@ -13,7 +13,6 @@ DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
-DownloadPackage "gnome-themes-extra" &
 DownloadPackage "hunspell" &
 wait
 DownloadPackage "iso-codes" &
@@ -23,10 +22,10 @@ DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgpod" &
 DownloadPackage "libgtop" &
+wait
 DownloadPackage "libnma" &
 DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
-wait
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "svgalib" &
@@ -48,6 +47,7 @@ DownloadPackage "enchant" & # to build pluma
 DownloadPackage "glade" & # to build gtksourceview4
 DownloadPackage "gst-plugins-base" & # to build caja-extensions
 DownloadPackage "gstreamer" & # to build caja-extensions
+DownloadPackage "gtk+2" & # to build mate-themes
 DownloadPackage "libgtop" & # to build mate-utils
 DownloadPackage "python-pip" & # to install lxml
 wait

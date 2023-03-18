@@ -66,6 +66,7 @@ meson .. \
  --mandir=/usr/man \
  --localstatedir=/var \
  -Dtests=false \
+ -Dsassc=disabled \
  -Ddevel=false 
 
 ninja $JOBS || ninja
