@@ -61,8 +61,6 @@ rm -R usr/share/sgml/docbook
 rm -R usr/share/valadoc-*
 rm -R usr/share/applications
 
-rm usr/lib64/libmozjs-*.so
-
 ### add symlink from /usr/include to /usr/local/include required by some packages
 
 mkdir -p $MODULEPATH/packages/usr/local > /dev/null 2>&1

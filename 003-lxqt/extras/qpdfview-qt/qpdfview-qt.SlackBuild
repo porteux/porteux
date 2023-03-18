@@ -12,8 +12,9 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-TMP=${TMP:-/tmp}
+TMP=${TMP:-$MODULEPATH}
 PKG=$TMP/package-${PKGNAM}
+OUTPUT=${OUTPUT:-$TMP/packages}
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -66,4 +67,4 @@ cat ../slack-desc > $PKG/install/slack-desc
 cat ../doinst.sh > $PKG/install/doinst.sh
 
 cd $PKG
-/sbin/makepkg -l y -c n $TMP/$PKGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}

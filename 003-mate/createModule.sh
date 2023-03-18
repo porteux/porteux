@@ -37,21 +37,27 @@ rm -fr $MODULEPATH/$currentPackage
 currentPackage=lxdm
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 cp -R $SCRIPTPATH/../lxdm/* .
-GTK3=no sh $currentPackage.SlackBuild || exit 1
+GTK3=yes sh $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-version=${info#* }
+#info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+#version=${info#* }
+version=4.3
+wget https://github.com/audacious-media-player/$currentPackage/archive/refs/tags/$currentPackage-$version.tar.gz
+mv $currentPackage-$version.tar.gz $currentPackage-$currentPackage-$version.tar.gz
 cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious-plugins
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-version=${info#* }
+#info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+#version=${info#* }
+version=4.3
+wget https://github.com/audacious-media-player/$currentPackage/archive/refs/tags/$currentPackage-$version.tar.gz
+mv $currentPackage-$version.tar.gz $currentPackage-$currentPackage-$version.tar.gz
 cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
@@ -120,6 +126,7 @@ wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schem
 rm -fr $MODULEPATH/$currentPackage
 
 # required from now on
+installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 rm $MODULEPATH/packages/enchant*.txz
 installpkg $MODULEPATH/packages/glade*.txz || exit 1
@@ -128,8 +135,11 @@ installpkg $MODULEPATH/packages/gst-plugins-base*.txz || exit 1
 rm $MODULEPATH/packages/gst-plugins-base*.txz
 installpkg $MODULEPATH/packages/gstreamer*.txz || exit 1
 rm $MODULEPATH/packages/gstreamer*.txz
+installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
+rm $MODULEPATH/packages/gtk+2*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 

@@ -93,16 +93,22 @@ rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-version=${info#* }
+#info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+#version=${info#* }
+version=4.3
+wget https://github.com/audacious-media-player/$currentPackage/archive/refs/tags/$currentPackage-$version.tar.gz
+mv $currentPackage-$version.tar.gz $currentPackage-$currentPackage-$version.tar.gz
 cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious-plugins
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-version=${info#* }
+#info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+#version=${info#* }
+version=4.3
+wget https://github.com/audacious-media-player/$currentPackage/archive/refs/tags/$currentPackage-$version.tar.gz
+mv $currentPackage-$version.tar.gz $currentPackage-$currentPackage-$version.tar.gz
 cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
