@@ -88,6 +88,8 @@ rm -fr $MODULEPATH/$currentPackage
 # todo: get gtk version from slackware and use it to download the matched gtk classic version
 currentPackage=gtk+3
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
+#version=`ls *.tar.?z -a | cut -d'-' -f2- | cut -d'-' -f1`
+#wget https://github.com/lah7/gtk3-classic/releases/download/$version/gtk3-classic-$version-1-x86_64.pkg.tar.zst
 info=$(DownloadLatestSourceFromGithub "lah7" "gtk3-classic")
 filename=${info% *}
 tar xvf "$filename" && rm "$filename" || exit 1
@@ -206,11 +208,6 @@ InstallAdditionalPackages
 
 cd $MODULEPATH/packages/etc/X11/xinit/
 cp -fs xinitrc.openbox-session xinitrc
-
-### fix permissions
-
-cd $MODULEPATH/packages
-chmod 644 etc/rc.d/rc.bluetooth
 
 ### add xzm to freedesktop.org.xml
 

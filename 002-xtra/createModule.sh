@@ -15,11 +15,11 @@ source "$PWD/../builder-utils/latestfromgithub.sh"
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
-#### download packages from slackware repositories
+### download packages from slackware repositories
 
 DownloadFromSlackware
 
-#### packages outside Slackware repository ###
+### packages outside Slackware repository ###
 
 currentPackage=transmission
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage

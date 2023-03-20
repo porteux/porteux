@@ -37,34 +37,30 @@ rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-#info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-#version=${info#* }
-version=4.3
-wget https://github.com/audacious-media-player/$currentPackage/archive/refs/tags/$currentPackage-$version.tar.gz
-mv $currentPackage-$version.tar.gz $currentPackage-$currentPackage-$version.tar.gz
+info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+version=${info#* }
 cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious-plugins
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-#info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-#version=${info#* }
-version=4.3
-wget https://github.com/audacious-media-player/$currentPackage/archive/refs/tags/$currentPackage-$version.tar.gz
-mv $currentPackage-$version.tar.gz $currentPackage-$currentPackage-$version.tar.gz
+info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+version=${info#* }
 cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
-currentPackage=meson
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp $SCRIPTPATH/extras/meson/* .
-sh $currentPackage.SlackBuild || exit 1
-rm -fr $MODULEPATH/package-$currentPackage
-rm -fr $MODULEPATH/$currentPackage*
-/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
-rm $MODULEPATH/packages/meson-*.txz
+if [ $SLACKWAREVERSION != "current" ]; then
+	currentPackage=meson
+	mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
+	cp $SCRIPTPATH/extras/meson/* .
+	sh $currentPackage.SlackBuild || exit 1
+	rm -fr $MODULEPATH/package-$currentPackage
+	rm -fr $MODULEPATH/$currentPackage*
+	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
+	rm $MODULEPATH/packages/meson-*.txz
+fi
 
 # required from now on
 installpkg $MODULEPATH/packages/*.txz || exit 1
@@ -79,12 +75,22 @@ rm $MODULEPATH/packages/gst-plugins-bad-free*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libglvnd*
+rm $MODULEPATH/packages/libsass*
+rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/oniguruma*
 rm $MODULEPATH/packages/rust*
+rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/xorg-server-xwayland*
 rm $MODULEPATH/packages/xtrans*
+
+# slackware current only removal -- these are already in base
+if [ $SLACKWAREVERSION == "current" ]; then
+	rm $MODULEPATH/packages/libnma*
+	rm $MODULEPATH/packages/openssl*
+	rm $MODULEPATH/packages/vte*
+fi
 
 # some packages (e.g nautilus and vte) require this folder
 mkdir -p /usr/local > /dev/null 2>&1
