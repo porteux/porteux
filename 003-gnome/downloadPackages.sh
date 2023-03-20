@@ -62,12 +62,14 @@ DownloadPackage "egl-wayland" &
 DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "iso-codes" &
 DownloadPackage "krb5" &
-wait
 DownloadPackage "libglvnd" &
+wait
+DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
-DownloadPackage "llvm" &
+DownloadPackage "llvm" & # required by mozjs
 DownloadPackage "oniguruma" & # required by jq
 DownloadPackage "rust" &
+DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "xtrans" &
 wait

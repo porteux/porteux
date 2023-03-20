@@ -177,6 +177,7 @@ cp -s python3 python
 
 cd $MODULEPATH/packages
 
+chmod 644 etc/rc.d/rc.bluetooth
 chmod 755 etc/rc.d/rc.networkmanager
 chmod 644 etc/rc.d/rc.fuse3
 chmod 644 etc/rc.d/rc.loop

@@ -193,8 +193,6 @@ fi
 DownloadPackage "qt5" &
 wait
 
-### temporary packages for further building
-
 ### script clean up
 
 rm FILE_LIST

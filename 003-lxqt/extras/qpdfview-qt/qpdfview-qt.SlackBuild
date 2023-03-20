@@ -12,9 +12,9 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/${PKGNAM}}
 PKG=$TMP/package-${PKGNAM}
-OUTPUT=${OUTPUT:-$TMP/packages}
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"
