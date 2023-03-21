@@ -64,11 +64,7 @@ fi
 echo "Downloading AUFS..."
 git clone -b aufs$KERNELMAJORVERSION.$KERNELMINORVERSION https://github.com/sfjro/aufs-standalone $MODULEPATH/aufs > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
 
-if [ $(version $KERNELVERSION) -ge $(version "5.15.5") ] && [ $(version $1) -lt $(version "5.16.0") ]; then
-	git -C $MODULEPATH/aufs checkout origin/aufs5.15.5 > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }	
-else
-	git -C $MODULEPATH/aufs checkout origin/aufs$KERNELMAJORVERSION.$KERNELMINORVERSION > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
-fi
+git -C $MODULEPATH/aufs checkout origin/aufs$KERNELMAJORVERSION.$KERNELMINORVERSION > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
 
 echo "Patching AUFS..."
 mkdir $MODULEPATH/a $MODULEPATH/b && cp -r {$MODULEPATH/aufs/Documentation,$MODULEPATH/aufs/fs,$MODULEPATH/aufs/include} $MODULEPATH/b
