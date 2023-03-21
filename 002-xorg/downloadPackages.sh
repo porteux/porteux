@@ -24,6 +24,7 @@ DownloadPackage "desktop-file-utils" &
 DownloadPackage "djvulibre" &
 DownloadPackage "esound" &
 DownloadPackage "exiv2" &
+DownloadPackage "flac" &
 DownloadPackage "fontconfig" &
 DownloadPackage "freeglut" &
 DownloadPackage "freetype" &

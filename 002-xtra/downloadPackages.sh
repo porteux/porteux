@@ -5,7 +5,6 @@ REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
-DownloadPackage "flac" &
 DownloadPackage "libcue" &
 DownloadPackage "neon" &
 DownloadPackage "vid.stab" &

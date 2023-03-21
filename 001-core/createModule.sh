@@ -122,19 +122,6 @@ cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
 
-# fix me: they have a current filename convention: http://wgetpaste.zlin.dk/wgetpaste-current.tar.bz2
-currentPackage=wgetpaste
-version=2.30
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/accessibility/$currentPackage/ -A * || exit 1
-wget http://wgetpaste.zlin.dk/$currentPackage-$version.tar.bz2
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
-
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
