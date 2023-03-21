@@ -191,13 +191,6 @@ find ${CRIPPLEDSOURCEPATH}/linux-$KERNELVERSION -type f -name 'MAINTAINERS*' -de
 # create crippled xzm module
 dir2xzm $MODULEPATH/$CRIPPLEDMODULENAME -q > /dev/null 2>&1
 
-# generate AMD microcode file
-#mkdir -p $MODULEPATH/../amdmicrocode/kernel/x86/microcode/ > /dev/null 2>&1
-#cat lib/firmware/amd-ucode/microcode_amd*.bin > $MODULEPATH/../amdmicrocode/kernel/x86/microcode/AuthenticAMD.bin  > /dev/null 2>&1
-#cd $MODULEPATH/../amdmicrocode
-#mkdir - p $MODULEPATH/../boot > /dev/null 2>&1
-#find -printf '%P\n' -mindepth 1 -type f | cpio -o -H newc -O $MODULEPATH/amd-ucode.cpio -v -a  > /dev/null 2>&1
-
 echo "Cleaning up..."
 rm -r $MODULEPATH/$MODULENAME
 rm -r $MODULEPATH/$CRIPPLEDMODULENAME
