@@ -61,6 +61,12 @@ else
 	cp $SCRIPTPATH/32bit.config $MODULEPATH/linux-$KERNELVERSION/.config || exit 1
 fi
 
+echo "Building kernel headers..."
+mkdir -p $MODULEPATH/../05-devel/packages
+wget -P $MODULEPATH http://ftp.slackware.com/pub/slackware/slackware-current/source/k/kernel-headers.SlackBuild
+KERNEL_SOURCE=$MODULEPATH/linux-$KERNELVERSION sh $MODULEPATH/kernel-headers.SlackBuild
+mv /tmp/kernel-headers-*.txz $MODULEPATH/../05-devel/packages
+
 echo "Downloading AUFS..."
 git clone -b aufs$KERNELMAJORVERSION.$KERNELMINORVERSION https://github.com/sfjro/aufs-standalone $MODULEPATH/aufs > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
 
