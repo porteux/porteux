@@ -11,16 +11,6 @@ if [ `whoami` != root ]; then
     exit
 fi
 
-if [ $(uname -m) = x86_64 ]; then
-	if [ ! -f 64bit.config ]; then
-		echo "File 64bit.config is required in this folder." && exit 1
-	fi
-else
-	if [ ! -f 32bit.config ]; then
-		echo "File 32bit.config is required in this folder." && exit 1
-	fi
-fi
-
 function version { echo "$@" | awk -F. '{ printf("%d%03d%03d\n", $1,$2,$3); }'; }
 
 source "$PWD/../builder-utils/setflags.sh"
@@ -30,6 +20,10 @@ MODULENAME=000-kernel
 SetFlags "$MODULENAME"
 
 source "$PWD/../builder-utils/latestfromgithub.sh"
+
+if [ ! -f ${SYSTEMBITS}bit.config ]; then
+	echo "File ${SYSTEMBITS}bit.config is required in this folder." && exit 1
+fi
 
 if [ "$1" ]; then
 	export KERNELVERSION="$1"
@@ -55,11 +49,7 @@ echo "Extracting kernel source code..."
 tar xf $MODULEPATH/linux-$KERNELVERSION.tar.xz -C $MODULEPATH
 
 echo "Copying .config file..."
-if [ $(uname -m) = x86_64 ]; then
-	cp $SCRIPTPATH/64bit.config $MODULEPATH/linux-$KERNELVERSION/.config || exit 1
-else
-	cp $SCRIPTPATH/32bit.config $MODULEPATH/linux-$KERNELVERSION/.config || exit 1
-fi
+cp $SCRIPTPATH/${SYSTEMBITS}bit.config $MODULEPATH/linux-$KERNELVERSION/.config || exit 1
 
 echo "Building kernel headers..."
 mkdir -p $MODULEPATH/../05-devel/packages
