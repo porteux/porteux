@@ -299,13 +299,33 @@ version=`git describe | cut -d- -f1`
 	--localstatedir=/var \
 	--enable-gtk3 \
 	--enable-static=no
-	
+
 make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
 
+currentPackage=lxrandr
+mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
+git clone https://github.com/lxde/$currentPackage
+cd $currentPackage
+version=`git describe | cut -d- -f1`
+./autogen.sh && CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib$SYSTEMBITS \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--enable-man \
+	--enable-gtk3
+
+make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+cd $MODULEPATH/$currentPackage/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
+installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
+rm -fr $MODULEPATH/$currentPackage
+exit
 currentPackage=lxsession
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 git clone https://github.com/lxde/$currentPackage
