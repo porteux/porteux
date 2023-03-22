@@ -53,6 +53,7 @@ rm -R usr/local
 rm -R usr/man
 rm -R usr/lib64/bash
 rm -R usr/lib64/python2.*
+rm -R usr/share/applications
 rm -R usr/share/devhelp
 rm -R usr/share/cmake-*/Help
 rm -R usr/share/gnome
@@ -61,7 +62,6 @@ rm -R usr/share/icons
 rm -R usr/share/locale
 rm -R usr/share/sgml/docbook
 rm -R usr/share/valadoc-*
-rm -R usr/share/applications
 
 ### add symlink from /usr/include to /usr/local/include required by some packages
 

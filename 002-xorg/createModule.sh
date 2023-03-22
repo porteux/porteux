@@ -72,19 +72,6 @@ sh $currentPackage.SlackBuild || exit 1
 mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/$currentPackage
 
-currentPackage=galculator
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/academic/$currentPackage/ -A * || exit 1
-info=$(DownloadLatestFromGithub "galculator" "galculator")
-version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sed -i "s|--prefix=/usr |--prefix=/usr --disable-quadmath |g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
-
 # todo: get gtk version from slackware and use it to download the matched gtk classic version
 currentPackage=gtk+3
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
@@ -100,6 +87,19 @@ sed -i "s|# Configure, build, and install:|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-
 sed -i "s|Ddemos=true|Ddemos=false|g" $currentPackage.SlackBuild
 sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" $currentPackage.SlackBuild
 sed -i "s|-\${VERSION}-\$ARCH-\${BUILD}|-classic-\${VERSION}-\$ARCH-\${BUILD}|g" $currentPackage.SlackBuild
+sh $currentPackage.SlackBuild || exit 1
+mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/$currentPackage
+
+currentPackage=galculator
+mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/academic/$currentPackage/ -A * || exit 1
+info=$(DownloadLatestFromGithub "galculator" "galculator")
+version=${info#* }
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
+sed -i "s|--prefix=/usr |--prefix=/usr --disable-quadmath |g" $currentPackage.SlackBuild
 sh $currentPackage.SlackBuild || exit 1
 mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/$currentPackage
