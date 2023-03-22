@@ -8,7 +8,6 @@ GenerateRepositoryUrls "$REPOSITORY"
 DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "hunspell" &
-DownloadPackage "gnome-themes-extra" &
 DownloadPackage "json-glib" &
 DownloadPackage "kidletime" &
 wait

@@ -16,8 +16,10 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 DownloadFromSlackware
 
-curentPackage=kernel-headers
-wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNELVERSION-x86-1.txz -P $MODULEPATH/packages || exit 1
+if [ ! -f $MODULEPATH/packages/kernel-headers*.txz ]; then
+	curentPackage=kernel-headers
+	wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNELVERSION-x86-1.txz -P $MODULEPATH/packages || exit 1
+fi
 
 ### packages outside Slackware repository
 
@@ -51,6 +53,7 @@ rm -R usr/local
 rm -R usr/man
 rm -R usr/lib64/bash
 rm -R usr/lib64/python2.*
+rm -R usr/share/applications
 rm -R usr/share/devhelp
 rm -R usr/share/cmake-*/Help
 rm -R usr/share/gnome
@@ -59,9 +62,11 @@ rm -R usr/share/icons
 rm -R usr/share/locale
 rm -R usr/share/sgml/docbook
 rm -R usr/share/valadoc-*
-rm -R usr/share/applications
 
-rm usr/lib64/libmozjs-*.so
+### add symlink from /usr/include to /usr/local/include required by some packages
+
+mkdir -p $MODULEPATH/packages/usr/local > /dev/null 2>&1
+ln -s /usr/include $MODULEPATH/packages/usr/local/include > /dev/null 2>&1
 
 ### finalize
 

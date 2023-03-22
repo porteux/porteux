@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# GDM Wrapper Script
+#
+# Slackware starts GDM with "/usr/sbin/gdm -nodaemon", which is invalid and 
+# crashes GDM and runlevel 4. Since its not being fixed, lets sanitize that
+# ourselves with a wrapper script.
+
+sanitized_opts="$(echo $@ | sed 's/-nodaemon//g')"
+exec /usr/sbin/gdm-bin "$sanitized_opts"
+

@@ -1,0 +1,12 @@
+            |-----handy-ruler------------------------------------------------------|
+libmatemixer: libmatemixer (mixer library)
+libmatemixer:
+libmatemixer: libmatemixer is a mixer library for MATE desktop.
+libmatemixer: It provides an abstract API allowing access to mixer functionality
+libmatemixer: available in the PulseAudio, ALSA and OSS sound systems.
+libmatemixer:
+libmatemixer:
+libmatemixer:
+libmatemixer:
+libmatemixer:
+libmatemixer:

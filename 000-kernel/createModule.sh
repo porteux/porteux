@@ -11,16 +11,6 @@ if [ `whoami` != root ]; then
     exit
 fi
 
-if [ $(uname -m) = x86_64 ]; then
-	if [ ! -f 64bit.config ]; then
-		echo "File 64bit.config is required in this folder." && exit 1
-	fi
-else
-	if [ ! -f 32bit.config ]; then
-		echo "File 32bit.config is required in this folder." && exit 1
-	fi
-fi
-
 function version { echo "$@" | awk -F. '{ printf("%d%03d%03d\n", $1,$2,$3); }'; }
 
 source "$PWD/../builder-utils/setflags.sh"
@@ -30,6 +20,10 @@ MODULENAME=000-kernel
 SetFlags "$MODULENAME"
 
 source "$PWD/../builder-utils/latestfromgithub.sh"
+
+if [ ! -f ${SYSTEMBITS}bit.config ]; then
+	echo "File ${SYSTEMBITS}bit.config is required in this folder." && exit 1
+fi
 
 if [ "$1" ]; then
 	export KERNELVERSION="$1"
@@ -55,20 +49,18 @@ echo "Extracting kernel source code..."
 tar xf $MODULEPATH/linux-$KERNELVERSION.tar.xz -C $MODULEPATH
 
 echo "Copying .config file..."
-if [ $(uname -m) = x86_64 ]; then
-	cp $SCRIPTPATH/64bit.config $MODULEPATH/linux-$KERNELVERSION/.config || exit 1
-else
-	cp $SCRIPTPATH/32bit.config $MODULEPATH/linux-$KERNELVERSION/.config || exit 1
-fi
+cp $SCRIPTPATH/${SYSTEMBITS}bit.config $MODULEPATH/linux-$KERNELVERSION/.config || exit 1
+
+echo "Building kernel headers..."
+mkdir -p $MODULEPATH/../05-devel/packages
+wget -P $MODULEPATH http://ftp.slackware.com/pub/slackware/slackware-current/source/k/kernel-headers.SlackBuild
+KERNEL_SOURCE=$MODULEPATH/linux-$KERNELVERSION sh $MODULEPATH/kernel-headers.SlackBuild
+mv /tmp/kernel-headers-*.txz $MODULEPATH/../05-devel/packages
 
 echo "Downloading AUFS..."
 git clone -b aufs$KERNELMAJORVERSION.$KERNELMINORVERSION https://github.com/sfjro/aufs-standalone $MODULEPATH/aufs > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
 
-if [ $(version $KERNELVERSION) -ge $(version "5.15.5") ] && [ $(version $1) -lt $(version "5.16.0") ]; then
-	git -C $MODULEPATH/aufs checkout origin/aufs5.15.5 > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }	
-else
-	git -C $MODULEPATH/aufs checkout origin/aufs$KERNELMAJORVERSION.$KERNELMINORVERSION > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
-fi
+git -C $MODULEPATH/aufs checkout origin/aufs$KERNELMAJORVERSION.$KERNELMINORVERSION > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
 
 echo "Patching AUFS..."
 mkdir $MODULEPATH/a $MODULEPATH/b && cp -r {$MODULEPATH/aufs/Documentation,$MODULEPATH/aufs/fs,$MODULEPATH/aufs/include} $MODULEPATH/b
@@ -198,13 +190,6 @@ find ${CRIPPLEDSOURCEPATH}/linux-$KERNELVERSION -type f -name 'MAINTAINERS*' -de
 
 # create crippled xzm module
 dir2xzm $MODULEPATH/$CRIPPLEDMODULENAME -q > /dev/null 2>&1
-
-# generate AMD microcode file
-#mkdir -p $MODULEPATH/../amdmicrocode/kernel/x86/microcode/ > /dev/null 2>&1
-#cat lib/firmware/amd-ucode/microcode_amd*.bin > $MODULEPATH/../amdmicrocode/kernel/x86/microcode/AuthenticAMD.bin  > /dev/null 2>&1
-#cd $MODULEPATH/../amdmicrocode
-#mkdir - p $MODULEPATH/../boot > /dev/null 2>&1
-#find -printf '%P\n' -mindepth 1 -type f | cpio -o -H newc -O $MODULEPATH/amd-ucode.cpio -v -a  > /dev/null 2>&1
 
 echo "Cleaning up..."
 rm -r $MODULEPATH/$MODULENAME

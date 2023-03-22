@@ -8,7 +8,6 @@ GenerateRepositoryUrls "$REPOSITORY"
 DownloadPackage "blueman" &
 DownloadPackage "dconf" &
 DownloadPackage "ffmpegthumbnailer" &
-DownloadPackage "gnome-themes-extra" &
 DownloadPackage "json-glib" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
