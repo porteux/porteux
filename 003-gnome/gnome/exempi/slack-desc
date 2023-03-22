@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+      |-----handy-ruler------------------------------------------------------|
+exempi: exempi (an implementation of Adobe's XMP)
+exempi:
+exempi: Exempi is an implementation of XMP. It is based on the Adobe
+exempi: XMP SDK and released under a BSD-style license like Adobe's.
+exempi:
+exempi: The Adobe Extensible Metadata Platform (XMP) is a standard for
+exempi: processing and storing standardized and proprietary metadata,
+exempi: created by Adobe Systems, Inc.
+exempi:
+exempi: Homepage: https://libopenraw.freedesktop.org/exempi/
+exempi:

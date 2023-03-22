@@ -82,20 +82,16 @@ rm -fr $MODULEPATH/$currentPackage
 currentPackage=audacious
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-#version=${info#* }
-version="4.3-beta1"
+version=${info#* }
 cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage-gtk.SlackBuild
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious-plugins
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-#version=${info#* }
-version="4.3-beta1"
+version=${info#* }
 cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage-gtk.SlackBuild
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
@@ -195,39 +191,38 @@ export SOURCEREPOSITORY="ftp://ftp.slackware.com/pub/slackware/slackware$SYSTEMB
 
 # xfce packages
 for package in \
-xfce4-dev-tools \
-libxfce4util \
-xfconf \
-libxfce4ui \
-exo \
-garcon \
-xfce4-panel \
-thunar \
-thunar-volman \
-tumbler \
-xfce4-appfinder \
-xfce4-power-manager \
-xfce4-settings \
-xfdesktop \
-xfwm4 \
-xfce4-session \
-xfce4-taskmanager \
-xfce4-terminal \
-xfce4-screenshooter \
-xfce4-notifyd \
-mousepad \
-xfce4-clipman-plugin \
-xfce4-cpugraph-plugin \
-xfce4-pulseaudio-plugin \
-xfce4-sensors-plugin \
-xfce4-systemload-plugin \
-xfce4-whiskermenu-plugin \
-xfce4-xkb-plugin \
+	xfce4-dev-tools \
+	libxfce4util \
+	xfconf \
+	libxfce4ui \
+	exo \
+	garcon \
+	xfce4-panel \
+	thunar \
+	thunar-volman \
+	tumbler \
+	xfce4-appfinder \
+	xfce4-power-manager \
+	xfce4-settings \
+	xfdesktop \
+	xfwm4 \
+	xfce4-session \
+	xfce4-taskmanager \
+	xfce4-terminal \
+	xfce4-screenshooter \
+	xfce4-notifyd \
+	mousepad \
+	xfce4-clipman-plugin \
+	xfce4-cpugraph-plugin \
+	xfce4-pulseaudio-plugin \
+	xfce4-sensors-plugin \
+	xfce4-systemload-plugin \
+	xfce4-whiskermenu-plugin \
+	xfce4-xkb-plugin \
 ; do
 cd $SCRIPTPATH/xfce/$package || exit 1
 sh ${package}.SlackBuild || exit 1
-rm -fr $MODULEPATH/package-$package
-rm -fr $MODULEPATH/$package
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
 ### fake root

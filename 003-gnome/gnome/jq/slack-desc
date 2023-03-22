@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+  |-----handy-ruler------------------------------------------------------|
+jq: jq (command-line JSON processor)
+jq:
+jq: jq is a lightweight and flexible command-line JSON processor.
+jq:
+jq: jq is like sed for JSON data - you can use it to slice and filter
+jq: and map and transform structured data with the same ease that
+jq: sed, awk, grep and friends let you play with text.
+jq:
+jq: Homepage: https://stedolan.github.io/jq/
+jq:
+jq:
