@@ -70,20 +70,16 @@ rm -fr $MODULEPATH/$currentPackage
 currentPackage=audacious
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-#version=${info#* }
-version="4.3-beta1"
+version=${info#* }
 cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage-gtk.SlackBuild
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious-plugins
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-#version=${info#* }
-version="4.3-beta1"
+version=${info#* }
 cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage-gtk.SlackBuild
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
@@ -190,43 +186,39 @@ installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
 # xfce packages
 for package in \
-xfce4-dev-tools \
-libxfce4util \
-xfconf \
-libxfce4ui \
-exo \
-garcon \
-xfce4-panel \
-thunar \
-thunar-volman \
-tumbler \
-xfce4-appfinder \
-xfce4-power-manager \
-xfce4-settings \
-xfdesktop \
-xfwm4 \
-xfce4-session \
-xfce4-taskmanager \
-xfce4-terminal \
-xfce4-screenshooter \
-xfce4-notifyd \
-mousepad \
-xfce4-clipman-plugin \
-xfce4-cpugraph-plugin \
-xfce4-pulseaudio-plugin \
-xfce4-sensors-plugin \
-xfce4-systemload-plugin \
-xfce4-whiskermenu-plugin \
-xfce4-xkb-plugin \
+	xfce4-dev-tools \
+	libxfce4util \
+	xfconf \
+	libxfce4ui \
+	exo \
+	garcon \
+	xfce4-panel \
+	thunar \
+	thunar-volman \
+	tumbler \
+	xfce4-appfinder \
+	xfce4-power-manager \
+	xfce4-settings \
+	xfdesktop \
+	xfwm4 \
+	xfce4-session \
+	xfce4-taskmanager \
+	xfce4-terminal \
+	xfce4-screenshooter \
+	xfce4-notifyd \
+	mousepad \
+	xfce4-clipman-plugin \
+	xfce4-cpugraph-plugin \
+	xfce4-pulseaudio-plugin \
+	xfce4-sensors-plugin \
+	xfce4-systemload-plugin \
+	xfce4-whiskermenu-plugin \
+	xfce4-xkb-plugin \
 ; do
 cd $SCRIPTPATH/xfce/$package || exit 1
 sh ${package}.SlackBuild || exit 1
-rm -fr $MODULEPATH/package-${package}
-rm -fr $MODULEPATH/${package}-*
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-rm $MODULEPATH/package-Thunar
-rm $MODULEPATH/Thunar-*
 
 ### fake root
 
@@ -240,14 +232,6 @@ InstallAdditionalPackages
 ### make main menu more beautiful
 
 patch --no-backup-if-mismatch -d $MODULEPATH/packages/ -p0 < $SCRIPTPATH/extras/xfce/xfce-applications.menu.patch
-
-### make panel more beautiful
-
-patch --no-backup-if-mismatch -d $MODULEPATH/packages/ -p0 < $SCRIPTPATH/extras/adwaita/main.rc.patch
-cp $SCRIPTPATH/extras/adwaita/focus-line.png $MODULEPATH/packages/usr/share/themes/Adwaita-dark/gtk-2.0/assets/
-sed -i "s|gtk-color-scheme = \"fg_color.*|gtk-color-scheme = \"fg_color:#2e3436\\\\nbg_color:#F8F8F7\"|g" $MODULEPATH/packages/usr/share/themes/Adwaita/gtk-2.0/gtkrc
-echo ".xfce4-panel.background { background-color:  #33393b; }" >> $MODULEPATH/packages/usr/share/themes/Adwaita-dark/gtk-3.0/gtk.css
-echo "#pulseaudio-button { background-color:  #33393b; }" >> $MODULEPATH/packages/usr/share/themes/Adwaita-dark/gtk-3.0/gtk.css
 
 ### fix some .desktop files
 

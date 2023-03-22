@@ -100,7 +100,7 @@ mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=unrar
-version=6.1.7
+version=6.2.6
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/$currentPackage/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
@@ -120,19 +120,6 @@ tar xvf $currentPackage*.tar.gz && cd $currentPackage-$version || exit 1
 make -j8 install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/$currentPackage
-
-# fix me: they have a current filename convention: http://wgetpaste.zlin.dk/wgetpaste-current.tar.bz2
-currentPackage=wgetpaste
-version=2.30
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/accessibility/$currentPackage/ -A * || exit 1
-wget http://wgetpaste.zlin.dk/$currentPackage-$version.tar.bz2
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/$currentPackage
 
 ### fake root
@@ -177,6 +164,7 @@ cp -s python3 python
 
 cd $MODULEPATH/packages
 
+chmod 644 etc/rc.d/rc.bluetooth
 chmod 755 etc/rc.d/rc.networkmanager
 chmod 644 etc/rc.d/rc.fuse3
 chmod 644 etc/rc.d/rc.loop

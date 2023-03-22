@@ -140,20 +140,16 @@ rm -fr $MODULEPATH/${currentPackage,,}
 currentPackage=audacious
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-#version=${info#* }
-version="4.3-beta1"
+version=${info#* }
 cp $SCRIPTPATH/extras/audacious-qt/$currentPackage-qt.SlackBuild .
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage-qt.SlackBuild
 sh $currentPackage-qt.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious-plugins
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
-#version=${info#* }
-version="4.3-beta1"
+version=${info#* }
 cp $SCRIPTPATH/extras/audacious-qt/$currentPackage-qt.SlackBuild .
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage-qt.SlackBuild
 sh $currentPackage-qt.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 

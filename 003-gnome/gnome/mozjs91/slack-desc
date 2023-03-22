@@ -1,0 +1,20 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':'.
+
+       |-----handy-ruler------------------------------------------------------|
+mozjs91: mozjs91 (Mozilla's JavaScript Engine)
+mozjs91:
+mozjs91: SpiderMonkey is Mozilla's JavaScript engine written in C/C++. It is
+mozjs91: used in various Mozilla products (including Firefox) and is available
+mozjs91: under MPL/GPL/LGPL tri-license.
+mozjs91:
+mozjs91: Homepage:
+mozjs91: https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey
+mozjs91:
+mozjs91:
+mozjs91:
+mozjs91:
