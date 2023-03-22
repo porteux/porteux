@@ -80,10 +80,11 @@ KERNELVERSION=$(uname -r | awk -F- '{print$1}')
 MODULEFILENAME="$CURRENTPACKAGE-$CURRENTVERSION-porteux-k.$KERNELVERSION-$ARCH-1.xzm"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
-
 # remove virtualbox from the machine
 /opt/VirtualBox/uninstall.sh &>/dev/null
 
+/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
+
 # cleanup
 rm -fr $BUILDDIR
+
