@@ -67,6 +67,7 @@ Feel free to report any issues or request changes. Any feedback is welcome.
 arleson (core team)<br />
 blaze (@porteus)<br />
 brokenman (@porteus)<br />
+frank honolka (@snuk)<br />
 ncmprhnsbl (@porteus)<br />
 patrick volkerding (@slackware)<br />
 phantom (@porteus)<br />
