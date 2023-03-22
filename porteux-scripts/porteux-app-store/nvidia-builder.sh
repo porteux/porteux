@@ -9,6 +9,8 @@ SLACKWAREVERSION=${systemFullVersion//* }
 
 if [[ "$SLACKWAREVERSION" == *"+" ]]; then
 	SLACKWAREVERSION=current
+else
+	SLACKWAREVERSION=stable
 fi
 
 APPLICATIONURL="https://github.com/porteux/porteux/releases/download/$PORTEUXVERSION/$CURRENTPACKAGE-$SLACKWAREVERSION.zip"
@@ -39,3 +41,4 @@ fi
 
 # cleanup
 rm -fr "$BUILDDIR" 2> /dev/null
+

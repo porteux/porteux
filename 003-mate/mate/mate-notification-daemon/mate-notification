@@ -1,0 +1,2 @@
+#!/bin/bash
+/usr/lib%LIBDIR%/mate-notification-daemon/mate-notification-daemon -r

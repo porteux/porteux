@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+mate-common: mate-common (common files for the MATE desktop)
+mate-common:
+mate-common: Common scripts and macros to develop with the MATE desktop.
+mate-common: mate-common is an extension to autoconf, automake, and libtool for
+mate-common: the MATE desktop and MATE using applications.  Included are mate-
+mate-common: autogen.sh and several macros to help in MATE source trees.
+mate-common:
+mate-common:
+mate-common:
+mate-common: Homepage: https://www.mate-desktop.org
+mate-common:

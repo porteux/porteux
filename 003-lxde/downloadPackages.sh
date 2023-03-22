@@ -7,11 +7,10 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
-DownloadPackage "gnome-themes-extra" &
 DownloadPackage "json-glib" &
 DownloadPackage "keybinder3" &
-wait
 DownloadPackage "libcanberra" &
+wait
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "network-manager-applet" &

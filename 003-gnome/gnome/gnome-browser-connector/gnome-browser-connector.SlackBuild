@@ -1,0 +1,77 @@
+#!/bin/sh
+
+PRGNAM=gnome-browser-connector
+VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i486 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+CWD=$(pwd)
+TMP=${TMP:-$MODULEPATH}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-$TMP/packages}
+JOBS=${JOBS:-$(echo -j"$(getconf _NPROCESSORS_ONLN)")}
+
+if [ "$ARCH" = "i486" ]; then
+  SLKCFLAGS="-O2 -march=i486 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+  LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"
+  LIBDIRSUFFIX="64"
+else
+  SLKCFLAGS="-O2"
+  LIBDIRSUFFIX=""
+fi
+
+set -e
+
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT
+cd $TMP
+rm -rf $PRGNAM-$VERSION
+tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+chown -R root:root .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+sed -i "s|'python3'|'/usr/bin/python3'|" meson.build
+
+mkdir -p build
+cd build
+
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+meson .. \
+ --prefix=/usr \
+ --buildtype=release \
+ --libdir=lib${LIBDIRSUFFIX} \
+ --libexecdir=/usr/libexec \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --localstatedir=/var
+
+ninja $JOBS || ninja
+DESTDIR=$PKG ninja install
+
+#cp -r $PKG/etc/chromium/ $PKG/etc/chrome
+
+mkdir -p $PKG/install
+cp $CWD/slack-desc $PKG/install
+
+cd $PKG
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}

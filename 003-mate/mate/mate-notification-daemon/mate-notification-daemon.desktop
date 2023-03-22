@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=MATE Notification Daemon
+Exec=/usr/lib%LIBDIR%/mate-notification-daemon/mate-notification-daemon -r
+OnlyShowIn=MATE;

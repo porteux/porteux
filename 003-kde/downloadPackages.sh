@@ -24,7 +24,6 @@ DownloadPackage "egl-wayland" &
 DownloadPackage "ffmpegthumbs" &
 DownloadPackage "frameworkintegration" &
 wait
-DownloadPackage "gnome-themes-extra" &
 DownloadPackage "graphene" &
 DownloadPackage "gst-plugins-base" &
 DownloadPackage "gst-plugins-good" &
@@ -193,8 +192,6 @@ fi
 
 DownloadPackage "qt5" &
 wait
-
-### temporary packages for further building
 
 ### script clean up
 

@@ -1,0 +1,367 @@
+Only in libpeas-1.30.0: change-to-lua53.patch
+diff -ur libpeas-1.30.0/libpeas/peas-utils.c libpeas-1.30.0.new/libpeas/peas-utils.c
+--- libpeas-1.30.0/libpeas/peas-utils.c	2021-03-19 21:24:38.792421600 -0300
++++ libpeas-1.30.0.new/libpeas/peas-utils.c	2021-06-30 15:15:43.698337701 -0300
+@@ -35,7 +35,7 @@
+ };
+ 
+ static const gchar *all_plugin_loader_modules[] = {
+-  "cloader", "lua51loader", "pythonloader", "python3loader"
++  "cloader", "lua53loader", "pythonloader", "python3loader"
+ };
+ 
+ static const gint conflicting_plugin_loaders[PEAS_UTILS_N_LOADERS][2] = {
+diff -ur libpeas-1.30.0/loaders/lua5.3/meson.build libpeas-1.30.0.new/loaders/lua5.3/meson.build
+--- libpeas-1.30.0/loaders/lua5.3/meson.build	2021-03-19 21:24:38.792421600 -0300
++++ libpeas-1.30.0.new/loaders/lua5.3/meson.build	2021-06-30 15:12:48.122339674 -0300
+@@ -1,39 +1,39 @@
+-lua51_loader_name = 'lua51loader'
++lua53_loader_name = 'lua53loader'
+ 
+-lua51_lgi_version = lua51_lgi_dep.version()
+-lua51_lgi_version_arr = lua51_lgi_version.split('.')
+-lua51_lgi_version_major = lua51_lgi_version_arr[0].to_int()
+-lua51_lgi_version_minor = lua51_lgi_version_arr[1].to_int()
+-lua51_lgi_version_micro = lua51_lgi_version_arr[2].to_int()
++lua53_lgi_version = lua53_lgi_dep.version()
++lua53_lgi_version_arr = lua53_lgi_version.split('.')
++lua53_lgi_version_major = lua53_lgi_version_arr[0].to_int()
++lua53_lgi_version_minor = lua53_lgi_version_arr[1].to_int()
++lua53_lgi_version_micro = lua53_lgi_version_arr[2].to_int()
+ 
+-lua51_loader_c = files(
++lua53_loader_c = files(
+   'peas-lua-internal.c',
+   'peas-lua-utils.c',
+   'peas-plugin-loader-lua.c',
+ )
+ 
+-subdir('resources') # Declares 'lua51_loader_res'
++subdir('resources') # Declares 'lua53_loader_res'
+ 
+-lua51_loader_deps = [
++lua53_loader_deps = [
+   libpeas_dep,
+-  lua51_dep,
+-  lua51_lgi_dep,
++  lua53_dep,
++  lua53_lgi_dep,
+   luajit_dep,
+ ]
+ 
+-lua51_loader_c_args = [
++lua53_loader_c_args = [
+   '-DHAVE_CONFIG_H',
+-  '-DLGI_MAJOR_VERSION=@0@'.format(lua51_lgi_version_major),
+-  '-DLGI_MINOR_VERSION=@0@'.format(lua51_lgi_version_minor),
+-  '-DLGI_MICRO_VERSION=@0@'.format(lua51_lgi_version_micro),
++  '-DLGI_MAJOR_VERSION=@0@'.format(lua53_lgi_version_major),
++  '-DLGI_MINOR_VERSION=@0@'.format(lua53_lgi_version_minor),
++  '-DLGI_MICRO_VERSION=@0@'.format(lua53_lgi_version_micro),
+ ]
+ 
+-lua51_loader_sha = shared_module(
+-  lua51_loader_name,
+-  lua51_loader_c + lua51_loader_res,
++lua53_loader_sha = shared_module(
++  lua53_loader_name,
++  lua53_loader_c + lua53_loader_res,
+   include_directories: rootdir,
+-  dependencies: lua51_loader_deps,
+-  c_args: lua51_loader_c_args,
++  dependencies: lua53_loader_deps,
++  c_args: lua53_loader_c_args,
+   install: true,
+   install_dir: join_paths(
+     pkglibdir,
+diff -ur libpeas-1.30.0/loaders/lua5.3/peas-lua-utils.c libpeas-1.30.0.new/loaders/lua5.3/peas-lua-utils.c
+--- libpeas-1.30.0/loaders/lua5.3/peas-lua-utils.c	2021-03-19 21:24:38.792421600 -0300
++++ libpeas-1.30.0.new/loaders/lua5.3/peas-lua-utils.c	2021-06-30 15:13:49.362338986 -0300
+@@ -196,7 +196,7 @@
+    *
+    * https://bugzilla.gnome.org/show_bug.cgi?id=673101
+    */
+-  resource_path = g_strconcat ("/org/gnome/libpeas/loaders/lua5.1/",
++  resource_path = g_strconcat ("/org/gnome/libpeas/loaders/lua5.3/",
+                                name, NULL);
+   lua_resource = g_resources_lookup_data (resource_path,
+                                           G_RESOURCE_LOOKUP_FLAGS_NONE,
+diff -ur libpeas-1.30.0/loaders/lua5.3/resources/meson.build libpeas-1.30.0.new/loaders/lua5.3/resources/meson.build
+--- libpeas-1.30.0/loaders/lua5.3/resources/meson.build	2021-03-19 21:24:38.793421700 -0300
++++ libpeas-1.30.0.new/loaders/lua5.3/resources/meson.build	2021-06-30 15:17:58.952336181 -0300
+@@ -1,4 +1,4 @@
+-lua51_loader_res = gnome.compile_resources(
++lua53_loader_res = gnome.compile_resources(
+   'peas-lua-resources',
+   'peas-lua.gresource.xml',
+   export: true,
+diff -ur libpeas-1.30.0/loaders/lua5.3/resources/peas-lua.gresource.xml libpeas-1.30.0.new/loaders/lua5.3/resources/peas-lua.gresource.xml
+--- libpeas-1.30.0/loaders/lua5.3/resources/peas-lua.gresource.xml	2021-03-19 21:24:38.793421700 -0300
++++ libpeas-1.30.0.new/loaders/lua5.3/resources/peas-lua.gresource.xml	2021-06-30 15:14:37.225338448 -0300
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <gresources>
+-  <gresource prefix="/org/gnome/libpeas/loaders/lua5.1">
++  <gresource prefix="/org/gnome/libpeas/loaders/lua5.3">
+     <file alias="internal.lua">peas-lua-internal.lua</file>
+     <file alias="strict.lua">peas-lua-strict.lua</file>
+   </gresource>
+diff -ur libpeas-1.30.0/loaders/meson.build libpeas-1.30.0.new/loaders/meson.build
+--- libpeas-1.30.0/loaders/meson.build	2021-03-19 21:24:38.793421700 -0300
++++ libpeas-1.30.0.new/loaders/meson.build	2021-06-30 15:08:33.044342541 -0300
+@@ -1,5 +1,5 @@
+-if build_lua51_loader == true
+-  subdir('lua5.1')
++if build_lua53_loader == true
++  subdir('lua5.3')
+ endif
+ 
+ if build_python2_loader == true
+diff -ur libpeas-1.30.0/meson.build libpeas-1.30.0.new/meson.build
+--- libpeas-1.30.0/meson.build	2021-03-19 21:24:38.795421600 -0300
++++ libpeas-1.30.0.new/meson.build	2021-06-30 15:04:59.718344939 -0300
+@@ -135,24 +135,24 @@
+ endif
+ 
+ pygobject_dep = dependency('pygobject-3.0', version: pygobject_req, required: false)
+-lua51_dep = dependency('lua51', version: lua_req, required: false)
+-if not lua51_dep.found()
+-  lua51_dep = dependency('lua-5.1', version: lua_req, required: false)
++lua53_dep = dependency('lua53', version: lua_req, required: false)
++if not lua53_dep.found()
++  lua53_dep = dependency('lua-5.3', version: lua_req, required: false)
+ endif
+ luajit_dep = dependency('luajit', version: luajit_req, required: false)
+ lua_lgi_found = false
+ lua_lgi_ver = 'not found'
+-lua51_prg = find_program('lua5.1', required: false)
+-if not lua51_prg.found()
+-  lua51_prg = find_program('lua51', required: false)
++lua53_prg = find_program('lua5.3', required: false)
++if not lua53_prg.found()
++  lua53_prg = find_program('lua53', required: false)
+ endif
+ luajit_prg = find_program('luajit', required: false)
+ xmllint_prg = find_program('xmllint', required: false)
+ 
+ if cc.get_id() == 'msvc'
+   if luajit_prg.found()
+-    # luajit has lua51.lib as its import library
+-    lua_names = ['lua51']
++    # luajit has lua53.lib as its import library
++    lua_names = ['lua53']
+   else
+     lua_names = ['lua53', 'lua52', 'lua51']
+   endif
+@@ -160,17 +160,17 @@
+   lua_headers = ['lua.h', 'lualib.h', 'lauxlib.h']
+   # On Windows, the lua program may be named as lua.exe
+   foreach lua: lua_names + ['lua']
+-    if not lua51_prg.found() and not luajit_prg.found()
+-      lua51_prg = find_program(lua, required: false)
++    if not lua53_prg.found() and not luajit_prg.found()
++      lua53_prg = find_program(lua, required: false)
+     endif
+-    if lua51_prg.found()
++    if lua53_prg.found()
+       if lua != 'lua'
+-        lua51_dep = cc.find_library(lua, has_headers: lua_headers, required: false)
++        lua53_dep = cc.find_library(lua, has_headers: lua_headers, required: false)
+       endif
+     endif
+   endforeach
+ 
+-  if not lua51_dep.found() and not luajit_dep.found()
++  if not lua53_dep.found() and not luajit_dep.found()
+     foreach lualib: lua_names
+       if luajit_prg.found()
+         if not luajit_dep.found()
+@@ -178,9 +178,9 @@
+         endif
+       endif
+ 
+-      if lua51_prg.found()
+-        if not lua51_dep.found()
+-          lua51_dep = cc.find_library(lualib, has_headers: lua_headers, required: false)
++      if lua53_prg.found()
++        if not lua53_dep.found()
++          lua53_dep = cc.find_library(lualib, has_headers: lua_headers, required: false)
+         endif
+       endif
+     endforeach
+@@ -189,7 +189,7 @@
+ 
+ lua_found = false
+ 
+-if (luajit_dep.found() and luajit_prg.found()) or (lua51_dep.found() and lua51_prg.found())
++if (luajit_dep.found() and luajit_prg.found()) or (lua53_dep.found() and lua53_prg.found())
+   lua_found = true
+ endif
+ 
+@@ -197,13 +197,13 @@
+     if luajit_prg.found()
+         lua_prg = luajit_prg
+     else
+-        lua_prg = lua51_prg
++        lua_prg = lua53_prg
+     endif
+     lua_lgi_check = run_command(lua_prg, ['-e', 'print(require("lgi")._VERSION)'])
+     if lua_lgi_check.returncode() == 0
+         lua_lgi_ver = lua_lgi_check.stdout().strip()
+         if lua_lgi_ver.version_compare(lua_lgi_req)
+-            lua51_lgi_dep = declare_dependency(version: lua_lgi_ver)
++            lua53_lgi_dep = declare_dependency(version: lua_lgi_ver)
+             lua_lgi_found = true
+         endif
+     endif
+@@ -284,10 +284,10 @@
+   generate_gir = false
+ endif
+ 
+-build_lua51_loader = get_option('lua51')
+-lua51_found = (luajit_dep.found() or lua51_dep.found()) and lua_lgi_found
+-if build_lua51_loader and not lua51_found
+-  build_lua51_loader = false
++build_lua53_loader = get_option('lua53')
++lua53_found = (luajit_dep.found() or lua53_dep.found()) and lua_lgi_found
++if build_lua53_loader and not lua53_found
++  build_lua53_loader = false
+ endif
+ 
+ build_python2_loader = get_option('python2')
+@@ -333,7 +333,7 @@
+   '     Glade catalog: @0@'.format(install_glade_catalog),
+   '     GTK+ widgetry: @0@'.format(build_gtk_widgetry),
+   '     Introspection: @0@'.format(generate_gir),
+-  '   Lua 5.1 support: @0@'.format(build_lua51_loader),
++  '   Lua 5.3 support: @0@'.format(build_lua53_loader),
+   '  Python 2 support: @0@'.format(build_python2_loader),
+   '  Python 3 support: @0@'.format(build_python3_loader),
+   '',
+diff -ur libpeas-1.30.0/meson_options.txt libpeas-1.30.0.new/meson_options.txt
+--- libpeas-1.30.0/meson_options.txt	2021-03-19 21:24:38.795421600 -0300
++++ libpeas-1.30.0.new/meson_options.txt	2021-06-30 15:05:36.437344526 -0300
+@@ -1,6 +1,6 @@
+-option('lua51',
++option('lua53',
+        type: 'boolean', value: true,
+-       description: 'Enable Lua 5.1 support (requires lua-lgi)')
++       description: 'Enable Lua 5.3 support (requires lua-lgi)')
+ 
+ option('python2',
+        type: 'boolean', value: false,
+diff -ur libpeas-1.30.0/peas-demo/plugins/meson.build libpeas-1.30.0.new/peas-demo/plugins/meson.build
+--- libpeas-1.30.0/peas-demo/plugins/meson.build	2021-03-19 21:24:38.796421800 -0300
++++ libpeas-1.30.0.new/peas-demo/plugins/meson.build	2021-06-30 15:23:02.830332766 -0300
+@@ -1,6 +1,6 @@
+ subdir('helloworld')
+ 
+-if build_lua51_loader == true
++if build_lua53_loader == true
+   subdir('luahello')
+ endif
+ 
+diff -ur libpeas-1.30.0/tests/libpeas/extension-lua.c libpeas-1.30.0.new/tests/libpeas/extension-lua.c
+--- libpeas-1.30.0/tests/libpeas/extension-lua.c	2021-03-19 21:24:38.804421700 -0300
++++ libpeas-1.30.0.new/tests/libpeas/extension-lua.c	2021-06-30 15:17:06.569336770 -0300
+@@ -154,9 +154,9 @@
+   PeasPluginInfo *info;
+ 
+   testing_util_push_log_hook ("Error loading plugin "
+-                              "'extension-lua51-nonexistent'*");
++                              "'extension-lua53-nonexistent'*");
+ 
+-  info = peas_engine_get_plugin_info (engine, "extension-lua51-nonexistent");
++  info = peas_engine_get_plugin_info (engine, "extension-lua53-nonexistent");
+ 
+   g_assert (!peas_engine_load_plugin (engine, info));
+ }
+diff -ur libpeas-1.30.0/tests/libpeas/meson.build libpeas-1.30.0.new/tests/libpeas/meson.build
+--- libpeas-1.30.0/tests/libpeas/meson.build	2021-03-19 21:24:38.805421600 -0300
++++ libpeas-1.30.0.new/tests/libpeas/meson.build	2021-06-30 15:17:31.160336493 -0300
+@@ -8,8 +8,8 @@
+ 
+ libpeas_tests_c_args = ['-UG_DISABLE_ASSERT', '-UG_DISABLE_CAST_CHECKS']
+ 
+-if build_lua51_loader == true
+-  libpeas_tests_sources += [['extension-lua', [lua51_dep, luajit_dep]]]
++if build_lua53_loader == true
++  libpeas_tests_sources += [['extension-lua', [lua53_dep, luajit_dep]]]
+ endif
+ 
+ if build_python3_loader == true
+diff -ur libpeas-1.30.0/tests/libpeas/plugins/extension-lua/extension-lua53.gschema.xml libpeas-1.30.0.new/tests/libpeas/plugins/extension-lua/extension-lua53.gschema.xml
+--- libpeas-1.30.0/tests/libpeas/plugins/extension-lua/extension-lua53.gschema.xml	2021-03-19 21:24:38.806421800 -0300
++++ libpeas-1.30.0.new/tests/libpeas/plugins/extension-lua/extension-lua53.gschema.xml	2021-06-30 15:21:12.575334005 -0300
+@@ -1,5 +1,5 @@
+ <schemalist>
+-  <schema id="extension-lua51" path="/org/gnome/libpeas/tests/extension-lua51/">
++  <schema id="extension-lua53" path="/org/gnome/libpeas/tests/extension-lua53/">
+     <key name="a-setting" type="s">
+       <default>'Blah'</default>
+       <summary>Just a setting.</summary>
+diff -ur libpeas-1.30.0/tests/libpeas/plugins/extension-lua/extension-lua53.plugin libpeas-1.30.0.new/tests/libpeas/plugins/extension-lua/extension-lua53.plugin
+--- libpeas-1.30.0/tests/libpeas/plugins/extension-lua/extension-lua53.plugin	2021-03-19 21:24:38.806421800 -0300
++++ libpeas-1.30.0.new/tests/libpeas/plugins/extension-lua/extension-lua53.plugin	2021-06-30 15:21:35.198333750 -0300
+@@ -1,7 +1,7 @@
+ [Plugin]
+-Module=extension-lua51
+-Loader=lua5.1
+-Name=Extension lua5.1
+-Description=This plugin is for the lua5.1 PeasExtension tests.
++Module=extension-lua53
++Loader=lua5.3
++Name=Extension lua5.3
++Description=This plugin is for the lua5.3 PeasExtension tests.
+ Authors=Garrett Regier
+ Copyright=Copyright © 2014 Garrett Regier
+diff -ur libpeas-1.30.0/tests/libpeas/plugins/extension-lua/meson.build libpeas-1.30.0.new/tests/libpeas/plugins/extension-lua/meson.build
+--- libpeas-1.30.0/tests/libpeas/plugins/extension-lua/meson.build	2021-03-19 21:24:38.806421800 -0300
++++ libpeas-1.30.0.new/tests/libpeas/plugins/extension-lua/meson.build	2021-06-30 15:22:18.678333262 -0300
+@@ -1,9 +1,9 @@
+ extension_lua_name = 'extension-lua'
+ 
+ extension_lua_plugin_data = [
+-  'extension-lua51.gschema.xml',
+-  'extension-lua51.lua',
+-  'extension-lua51.plugin',
++  'extension-lua53.gschema.xml',
++  'extension-lua53.lua',
++  'extension-lua53.plugin',
+ ]
+ 
+ custom_target(
+diff -ur libpeas-1.30.0/tests/libpeas/plugins/extension-lua53-nonexistent.plugin libpeas-1.30.0.new/tests/libpeas/plugins/extension-lua53-nonexistent.plugin
+--- libpeas-1.30.0/tests/libpeas/plugins/extension-lua53-nonexistent.plugin	2021-03-19 21:24:38.806421800 -0300
++++ libpeas-1.30.0.new/tests/libpeas/plugins/extension-lua53-nonexistent.plugin	2021-06-30 15:18:23.696335903 -0300
+@@ -1,7 +1,7 @@
+ [Plugin]
+-Module=extension-lua51-nonexistent
+-Loader=lua5.1
+-Name=Extension lua5.1 Nonexistent
++Module=extension-lua53-nonexistent
++Loader=lua5.3
++Name=Extension lua5.3 Nonexistent
+ Description=This plugin is nonexistent.
+ Authors=Garrett Regier
+ Copyright=Copyright © 2014 Garrett Regier
+diff -ur libpeas-1.30.0/tests/libpeas/plugins/meson.build libpeas-1.30.0.new/tests/libpeas/plugins/meson.build
+--- libpeas-1.30.0/tests/libpeas/plugins/meson.build	2021-03-19 21:24:38.806421800 -0300
++++ libpeas-1.30.0.new/tests/libpeas/plugins/meson.build	2021-06-30 15:18:45.968335652 -0300
+@@ -1,6 +1,6 @@
+ libpeas_plugins_data = [
+   'extension-c-nonexistent.plugin',
+-  'extension-lua51-nonexistent.plugin',
++  'extension-lua53-nonexistent.plugin',
+   'extension-python-nonexistent.plugin',
+   'extension-python3-nonexistent.plugin',
+   'info-missing-module.plugin',
+@@ -24,7 +24,7 @@
+ subdir('embedded')
+ subdir('extension-c')
+ 
+-if build_lua51_loader == true
++if build_lua53_loader == true
+   subdir('extension-lua')
+ endif
+ 
