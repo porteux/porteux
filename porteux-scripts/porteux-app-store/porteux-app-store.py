@@ -37,6 +37,7 @@ class AppWindow(Gtk.ApplicationWindow):
         self.section_virtual_machines = self.create_section_applications("Virtual Machines", ["VirtualBox"])
         self.section_drivers = self.create_section_applications("Drivers", ["Nvidia 5xx"])
         self.section_development = self.create_section_applications("Development", ["Notepad++ (Next)", "VSCode (Codium)"])
+        self.section_office = self.create_section_applications("Office", ["OnlyOffice"])
         self.section_games = self.create_section_applications("Games", ["Cemu (Wii U)", "PCSX2 (PS2)", "Steam"])
         self.section_messengers = self.create_section_applications("Messengers", ["Teams", "Telegram", "WhatsApp (WALC)"])
         self.section_utils = self.create_section_applications("Utils", ["Etcher", "Multilib Lite", "Wine", "yt-dlp"])
@@ -45,6 +46,7 @@ class AppWindow(Gtk.ApplicationWindow):
         self.box_applications.pack_start(self.section_virtual_machines, False, False, 5)
         self.box_applications.pack_start(self.section_drivers, False, False, 5)
         self.box_applications.pack_start(self.section_development, False, False, 5)
+        self.box_applications.pack_start(self.section_office, False, False, 5)
         self.box_applications.pack_start(self.section_games, False, False, 5)
         self.box_applications.pack_start(self.section_messengers, False, False, 5)
         self.box_applications.pack_start(self.section_utils, False, False, 5)
@@ -247,6 +249,8 @@ class AppWindow(Gtk.ApplicationWindow):
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/notepadnext-builder.sh")
         elif button_name == "VSCode (Codium)":
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/vscode-builder.sh")
+        elif button_name == "OnlyOffice":
+            self.execute_external_script("/opt/porteux-scripts/porteux-app-store/onlyoffice-builder.sh")
         elif button_name == "Cemu (Wii U)":
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/cemu-builder.sh")
         elif button_name == "PCSX2 (PS2)":
