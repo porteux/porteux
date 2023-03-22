@@ -1,0 +1,17 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+        |-----handy-ruler------------------------------------------------------|
+nautilus: Nautilus
+nautilus:
+nautilus: Nautilus is a highly-polished content manager for GNOME.  Nautilus
+nautilus: integrates access to files, applications, media, Internet-based
+nautilus: resources and the Web, delivering a dynamic and rich user experience.
+nautilus: Nautilus, developed by Eazel, Inc., is a free software project
+nautilus: developed under the GNU General Public License and is a core
+nautilus: component of the GNOME desktop project.
+nautilus:

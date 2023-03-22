@@ -58,20 +58,6 @@ rm -fr $MODULEPATH/$currentPackage
 
 ### packages outside slackware repository ###
 
-currentPackage=arandr
-version=0.1.10
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/desktop/$currentPackage/ -A * || exit 1
-wget http://christian.amsuess.com/tools/arandr/files/arandr-$version.tar.gz || exit 1
-mv $MODULEPATH/packages/python-docutils*.txz .
-installpkg python-docutils*.txz || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
-
 currentPackage=archivemount
 version=0.9.1
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
@@ -86,22 +72,11 @@ sh $currentPackage.SlackBuild || exit 1
 mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/$currentPackage
 
-currentPackage=galculator
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/academic/$currentPackage/ -A * || exit 1
-info=$(DownloadLatestFromGithub "galculator" "galculator")
-version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sed -i "s|--prefix=/usr |--prefix=/usr --disable-quadmath |g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
-
 # todo: get gtk version from slackware and use it to download the matched gtk classic version
 currentPackage=gtk+3
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
+#version=`ls *.tar.?z -a | cut -d'-' -f2- | cut -d'-' -f1`
+#wget https://github.com/lah7/gtk3-classic/releases/download/$version/gtk3-classic-$version-1-x86_64.pkg.tar.zst
 info=$(DownloadLatestSourceFromGithub "lah7" "gtk3-classic")
 filename=${info% *}
 tar xvf "$filename" && rm "$filename" || exit 1
@@ -112,6 +87,19 @@ sed -i "s|# Configure, build, and install:|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-
 sed -i "s|Ddemos=true|Ddemos=false|g" $currentPackage.SlackBuild
 sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" $currentPackage.SlackBuild
 sed -i "s|-\${VERSION}-\$ARCH-\${BUILD}|-classic-\${VERSION}-\$ARCH-\${BUILD}|g" $currentPackage.SlackBuild
+sh $currentPackage.SlackBuild || exit 1
+mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/$currentPackage
+
+currentPackage=galculator
+mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/academic/$currentPackage/ -A * || exit 1
+info=$(DownloadLatestFromGithub "galculator" "galculator")
+version=${info#* }
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
+sed -i "s|--prefix=/usr |--prefix=/usr --disable-quadmath |g" $currentPackage.SlackBuild
 sh $currentPackage.SlackBuild || exit 1
 mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/$currentPackage
@@ -172,6 +160,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
+sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" $currentPackage.SlackBuild
 sh $currentPackage.SlackBuild || exit 1
 mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/$currentPackage
@@ -219,11 +208,6 @@ InstallAdditionalPackages
 
 cd $MODULEPATH/packages/etc/X11/xinit/
 cp -fs xinitrc.openbox-session xinitrc
-
-### fix permissions
-
-cd $MODULEPATH/packages
-chmod 644 etc/rc.d/rc.bluetooth
 
 ### add xzm to freedesktop.org.xml
 

@@ -26,9 +26,9 @@ DownloadPackage "esound" &
 DownloadPackage "exiv2" &
 DownloadPackage "flac" &
 DownloadPackage "fontconfig" &
-wait
 DownloadPackage "freeglut" &
 DownloadPackage "freetype" &
+wait
 DownloadPackage "fribidi" &
 DownloadPackage "gcr" &
 DownloadPackage "gdk-pixbuf2" &
@@ -36,10 +36,11 @@ DownloadPackage "giflib" &
 DownloadPackage "glew" &
 DownloadPackage "glibmm" &
 DownloadPackage "glu" &
+DownloadPackage "gnome-themes-extra" &
 DownloadPackage "gobject-introspection" &
-wait
 DownloadPackage "gparted" &
 DownloadPackage "graphite2" &
+wait
 DownloadPackage "gsettings-desktop-schemas" &
 DownloadPackage "gsl" &
 DownloadPackage "gtkmm3" &
@@ -63,7 +64,6 @@ DownloadPackage "libcaca" &
 DownloadPackage "libcddb" &
 DownloadPackage "libcdio" &
 DownloadPackage "libcdio-paranoia" &
-DownloadPackage "libcue" &
 DownloadPackage "libdmx" &
 wait
 DownloadPackage "libdrm" &
@@ -156,10 +156,9 @@ DownloadPackage "mesa" &
 DownloadPackage "mkfontscale" &
 DownloadPackage "mobile-broadband-provider-info" &
 DownloadPackage "mpg123" &
-wait
 DownloadPackage "mtdev" &
+wait
 DownloadPackage "ndctl" &
-DownloadPackage "neon" &
 DownloadPackage "ocl-icd" &
 DownloadPackage "openjpeg" &
 DownloadPackage "opus" &
@@ -256,7 +255,6 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "fuse" & # to build archivemount
-DownloadPackage "python-docutils" & # to build arandr
 wait
 
 ### script clean up
