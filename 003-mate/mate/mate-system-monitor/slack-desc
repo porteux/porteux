@@ -1,0 +1,12 @@
+                   |-----handy-ruler------------------------------------------------------|
+mate-system-monitor: mate-system-monitor (system monitor for the MATE desktop)
+mate-system-monitor:
+mate-system-monitor: Process viewer and system resource monitor for MATE
+mate-system-monitor: This package allows you to graphically view and manipulate the 
+mate-system-monitor: running processes on your system.  It also provides an overview of 
+mate-system-monitor: available resources such as CPU and memory.
+mate-system-monitor:
+mate-system-monitor:
+mate-system-monitor:
+mate-system-monitor: Homepage: https://www.mate-desktop.org
+mate-system-monitor:

@@ -2,6 +2,7 @@
 
 CopyToDevel() {
 	mkdir -p $PORTEUXBUILDERPATH/05-devel/packages  > /dev/null 2>&1
+	cd $MODULEPATH/packages
 	find . -regex '.*\.\(h\|c\|m4\|cmake\|a\|o\|pc\|gir\|deps\|vapi\)$' -exec cp --parents {} $PORTEUXBUILDERPATH/05-devel/packages \;
 }
 

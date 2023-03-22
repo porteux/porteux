@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=XDG User Directories
+TryExec=xdg-user-dirs-update
+Exec=xdg-user-dirs-update
+Icon=folder
+Terminal=false
+Comment=Create XDG user directories
+Type=Application
+OnlyShowIn=MATE;
+

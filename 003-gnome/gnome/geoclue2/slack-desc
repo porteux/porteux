@@ -1,0 +1,16 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+        |-----handy-ruler------------------------------------------------------|
+geoclue2: GeoClue
+geoclue2:
+geoclue2: Geoclue is a D-Bus service that provides location information. The
+geoclue2: primary goal of the Geoclue project is to make creating
+geoclue2: location-aware applications as simple as possible, while the
+geoclue2: secondary goal is to ensure that no application can access location
+geoclue2: information without explicit permission from user.
+geoclue2:

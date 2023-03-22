@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+      |-----handy-ruler------------------------------------------------------|
+upower: UPower (power management abstraction daemon)
+upower:
+upower: UPower is an abstraction for enumerating power devices, listening to 
+upower: device events and querying history and statistics. Any application or 
+upower: service on the system can access the org.freedesktop.UPower service 
+upower: via the system message bus. Some operations (such as suspending the 
+upower: system) are restricted using PolicyKit. 
+upower:
+upower: Homepage: http://upower.freedesktop.org/
+upower:
+upower:
