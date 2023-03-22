@@ -10,10 +10,12 @@ Out of the box PorteuX can open basically any multimedia file. Hardware accelera
 
 If you're new to PorteuX and have never used Porteus or Slax, it's recommended to read this [in-depth review of Porteus](https://medium.com/@fulalas/porteus-5-review-a-different-and-powerful-linux-distro-33df8789a758).
 
-PorteuX is provided in 2 main versions based on Slackware 64-bit packages: 15.0 and current/unstable. Version 15.0 is the stable one, while current/unstable is the bleeding edge one. After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases): <br />
-. KDE 5.23.5 (or 5.27.0 in current)<br />
+PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable and current/unstable. Current/unstable is the bleeding edge one and it's recommended for testing. After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases): <br />
+. GNOME 42.9<br />
+. KDE 5.23.5 (or 5.27.3 in current)<br />
 . LXDE 0.10.1<br />
 . LXQt 1.2.0<br />
+. MATE 1.27<br />
 . Xfce 4.12<br />
 . Xfce 4.16<br />
 . Xfce 4.18<br />
@@ -44,7 +46,7 @@ Apart from 001-core, 002-xorg and 002-xtra modules, all Porteus 5 modules are co
 
 PorteuX can be built in a live session of Slackware 64-bit, Porteus 64-bit or PorteuX 64-bit. At the moment the main scripts are not generating ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-xorg, 002-xtra, 003-desktop-environment, 05-devel, 06-crippled_sources).
 
-To build PorteuX, run the commands below in the exact order as described (000-kernel can be skipped if you already have it): <br />
+To build PorteuX, run the commands below in the exact order as described: <br />
 1- in 000-kernel folder call `createModule.sh`<br />
 2- in 001-core folder call `createModule.sh`<br />
 3- in 002-xorg folder call `createModule.sh`<br />
@@ -54,7 +56,7 @@ To build PorteuX, run the commands below in the exact order as described (000-ke
 
 In the end all modules will be in their respective subfolders inside /tmp/porteux-builder-[version].
 
-It's recommended to have at least 8 GB of RAM.
+It's recommended to have at least 8 GB of RAM (if building GNOME, 16 GB is required).
 
 ## Contributing
 
