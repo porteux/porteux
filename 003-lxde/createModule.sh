@@ -53,7 +53,7 @@ cd $currentPackage
 patch -p0 < $SCRIPTPATH/extras/gpicview/image-view.c.patch || exit 1
 ./autogen.sh
 CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
-make -j8 install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
@@ -72,7 +72,7 @@ tar xvf $currentPackage-$version.tar.?z || exit 1
 cd $currentPackage-$version
 mkdir build && cd build
 meson -Dcpp_args="-O2 -m64 -pipe -fPIC -DNDEBUG" --prefix /usr ..
-ninja -j8 || exit 1
+ninja -j$(nproc --all) || exit 1
 DESTDIR=$MODULEPATH/$currentPackage/package ninja install
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -86,7 +86,7 @@ cd $currentPackage
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sh autogen.sh
 CFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug || exit 1
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
@@ -116,7 +116,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-make -j8 install || exit 1
+make -j$(nproc --all) install || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 # temporary to build yelp-tools
@@ -134,7 +134,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-make -j8 install || exit 1
+make -j$(nproc --all) install || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 # temporary to build engrampa and mate-search-tool
@@ -147,7 +147,7 @@ tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 mkdir build && cd build
 meson --prefix /usr ..
-ninja -j8 install || exit 1
+ninja -j$(nproc --all) install || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 # required from now on
@@ -161,7 +161,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 CFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
@@ -176,7 +176,7 @@ mkdir build && cd build
 sed -i "s|i18n.merge_file('desktop',|i18n.merge_file(|g" ../src/meson.build
 sed -i "s|i18n.merge_file('appdata',|i18n.merge_file(|g" ../src/meson.build
 meson -Dcpp_args="-O2 -pipe -fPIC -DNDEBUG" --prefix /usr ..
-ninja -j8 || exit 1
+ninja -j$(nproc --all) || exit 1
 DESTDIR=$MODULEPATH/$currentPackage/package ninja install
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -198,7 +198,7 @@ version=`git describe | cut -d- -f1`
 	--with-gtk=3 \
 	--with-extra-only 
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -221,7 +221,7 @@ sh ./autogen.sh && CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp
   --program-prefix= \
   --program-suffix= 
 
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -240,7 +240,7 @@ version=`git describe | cut -d- -f1`
 	--with-gtk=3 \
 	--enable-static=no
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -260,7 +260,7 @@ version=`git describe | cut -d- -f1`
 	--with-gtk=3 \
 	--enable-static=no
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -280,7 +280,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-man
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -300,7 +300,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-static=no
 
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -320,7 +320,7 @@ version=`git describe | cut -d- -f1`
 	--enable-man \
 	--enable-gtk3
 
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -340,7 +340,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-static=no
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -360,7 +360,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-static=no
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -380,7 +380,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-static=no
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -400,7 +400,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-man
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -420,7 +420,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-static=no
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -440,7 +440,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-static=no
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -462,7 +462,7 @@ version=`git describe | cut -d- -f1`
 	--enable-man \
 	--enable-static=no
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -482,7 +482,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-static=no
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -512,7 +512,7 @@ version=`git describe | cut -d- -f1`
 cp $SCRIPTPATH/extras/lxde/lxpanel*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
