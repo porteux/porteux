@@ -5,7 +5,7 @@ if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ]; then
 fi
 
 # switch to root
-if [ `whoami` != root ]; then
+if [ $(whoami) != root ]; then
 	echo "Please enter root's password below:"
 	su -c "$0 $1"
     exit
@@ -101,22 +101,26 @@ cd lib
 modulesDependencies=$(ls ../../lib/modules/*/modules.dep)
 modulesPath=${modulesDependencies%/modules.dep}
 
-for i in `cat $modulesDependencies | cut -d':' -f1`; do
-	firmwares=$(modinfo -F firmware $modulesPath/$i)
-	for j in $firmwares; do
-		cp -Pu --parents firmware/$j ../../lib > /dev/null 2>&1
-		# If this fails it's OK as the only downside is the final xzm module being a bit bigger
-		if [ -L firmware/$j ]; then
-			originPath=firmware/$j
-			cp -u --parents ${originPath%/*}/$(readlink firmware/$j) ../../lib > /dev/null 2>&1
-		fi
+for dependency in $(cat $modulesDependencies | cut -d':' -f1); do
+	firmwares=$(modinfo -F firmware $modulesPath/$dependency)
+	for firmware in $firmwares; do
+		# expand all target files just in case some of them has wildcard
+		targetFiles=$(ls firmware/$firmware 2>/dev/null)
+		while IFS= read -r targetFile; do
+			cp -Pu --parents "$targetFile" firmware-test > /dev/null 2>&1
+			# If it's a symlink also copy the real files it's pointing to
+			if [ -L "$targetFile" ]; then
+				originPath="$targetFile"
+				cp -u --parents ${originPath%/*}/$(readlink "$targetFile") firmware-test > /dev/null 2>&1
+			fi			
+		done <<< "$targetFiles"
 	done
 done
 cd ../..
 
 echo "Downloading and installing sof for Intel..."
 currentPackage=sof-bin
-info=`DownloadLatestFromGithub "thesofproject" "sof-bin"`
+info=$(DownloadLatestFromGithub "thesofproject" "sof-bin")
 version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename
