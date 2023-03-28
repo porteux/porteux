@@ -60,7 +60,7 @@ cd build
     --mandir=/usr/man \
     --prefix=/usr \
     --sysconfdir=/etc
-  ninja -j8
+  ninja -j$(nproc --all)
   DESTDIR=$PKG ninja install
 cd ..
 

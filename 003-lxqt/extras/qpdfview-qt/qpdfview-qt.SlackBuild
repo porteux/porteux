@@ -55,7 +55,7 @@ patch -p1 < ../compile.patch
 #Configure qpdfview. Installation paths are correctly set in qpdfview.pri
 qmake-qt5 QMAKE_CFLAGS="$SLKCFLAGS" QMAKE_CXXFLAGS="$SLKCFLAGS" qpdfview.pro
 
-make -j8
+make -j$(nproc --all)
 make INSTALL_ROOT=$PKG install
 
 mv -v $PKG/usr/share/man $PKG/usr/man

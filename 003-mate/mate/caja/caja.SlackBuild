@@ -69,7 +69,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --enable-introspection \
   --build=$ARCH-slackware-linux
 
-make -j8
+make -j$(nproc --all)
 make install DESTDIR=$PKG
 
 # Don't ship .la files:

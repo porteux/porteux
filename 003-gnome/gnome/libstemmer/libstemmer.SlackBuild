@@ -10,7 +10,7 @@ TMP=${TMP:-$MODULEPATH}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$TMP/packages}
 CWD=$(pwd)
-JOBS=${JOBS:-$(echo -j"$(getconf _NPROCESSORS_ONLN)")}
+JOBS="j$(nproc --all)"
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in

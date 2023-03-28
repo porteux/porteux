@@ -65,7 +65,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --docdir=/usr/doc/$PRGNAM-$VERSION \
   --build=$ARCH-slackware-linux
 
-make -j8
+make -j$(nproc --all)
 make install DESTDIR=$PKG
 
 mkdir -p $PKG/install

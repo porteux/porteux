@@ -59,7 +59,7 @@ meson --prefix=/usr \
       --libdir=lib${LIBDIRSUFFIX} \
       --mandir=/usr/man \
       ../
-ninja -j8
+ninja -j$(nproc --all)
 DESTDIR=$PKG ninja install
 cd ..
 

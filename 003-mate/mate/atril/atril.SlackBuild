@@ -73,7 +73,7 @@ CPPFLAGS="-I/usr/share/texmf/include" \
   --disable-epub \
   --build=$ARCH-slackware-linux
 
-make -j8
+make -j$(nproc --all)
 make install DESTDIR=$PKG
 
 # Don't ship .la files:
