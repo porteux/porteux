@@ -70,7 +70,7 @@ tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 -DENABLE_SAMPLES=off ..
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage*.t?z
@@ -104,7 +104,7 @@ cp $SCRIPTPATH/extras/adwaita-qt/adwaitastyle.cpp.patch .
 patch -p0 < adwaitastyle.cpp.patch || exit 1
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
@@ -132,7 +132,7 @@ tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
-make -j8 && make install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
@@ -165,7 +165,7 @@ tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib64 ..
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
@@ -178,7 +178,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 CFLAGS="-O2 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O2 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package  || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package  || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/$currentPackage*.t?z
@@ -193,7 +193,7 @@ tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 sh autogen.sh
 CFLAGS="-O2 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O2 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/$currentPackage*.t?z
@@ -213,7 +213,7 @@ version=`git describe | cut -d- -f1`
 	--enable-udisks \
 	--with-extra-only 
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -236,7 +236,7 @@ sh ./autogen.sh && CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp
   --program-prefix= \
   --program-suffix= 
 
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
