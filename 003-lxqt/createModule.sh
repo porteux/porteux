@@ -177,7 +177,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
-CFLAGS="-O2 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O2 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="-O3 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O3 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
 make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package  || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -192,7 +192,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 sh autogen.sh
-CFLAGS="-O2 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O2 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="-O3 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O3 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
 make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz > /dev/null 2>&1

@@ -83,7 +83,7 @@ currentPackage=l-smash
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 git clone https://github.com/$currentPackage/$currentPackage/ || exit 1
 cd $currentPackage
-CFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --disable-static
+CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --disable-static
 make -j$(nproc --all) install || exit 1
 rm -fr $MODULEPATH/$currentPackage
 

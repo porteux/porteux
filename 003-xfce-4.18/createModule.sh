@@ -71,7 +71,7 @@ cp $SCRIPTPATH/extras/epdfview/$currentPackage-$version.tar.?z .
 tar xvf $currentPackage-$version.tar.?z || exit 1
 cd $currentPackage-$version
 mkdir build && cd build
-meson -Dcpp_args="-O2 -m64 -pipe -fPIC -DNDEBUG" --prefix /usr ..
+meson -Dcpp_args="-O3 -m64 -pipe -fPIC -DNDEBUG" --prefix /usr ..
 ninja -j$(nproc --all) || exit 1
 DESTDIR=$MODULEPATH/$currentPackage/package ninja install
 cd $MODULEPATH/$currentPackage/package
@@ -153,7 +153,7 @@ sed -i "s|baobab||g" ./Makefile.am
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|mate-screenshot||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
-CFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
+CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
 make -j$(nproc --all) install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
@@ -167,7 +167,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
-CFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
+CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
 make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
