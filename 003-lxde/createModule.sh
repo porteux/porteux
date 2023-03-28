@@ -71,7 +71,7 @@ cp $SCRIPTPATH/extras/epdfview/$currentPackage-$version.tar.?z .
 tar xvf $currentPackage-$version.tar.?z || exit 1
 cd $currentPackage-$version
 mkdir build && cd build
-meson -Dcpp_args="-O2 -m64 -pipe -fPIC -DNDEBUG" --prefix /usr ..
+meson -Dcpp_args="-O3 -m64 -pipe -fPIC -DNDEBUG" --prefix /usr ..
 ninja -j$(nproc --all) || exit 1
 DESTDIR=$MODULEPATH/$currentPackage/package ninja install
 cd $MODULEPATH/$currentPackage/package
@@ -85,7 +85,7 @@ git clone https://github.com/stevenhoneyman/$currentPackage
 cd $currentPackage
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sh autogen.sh
-CFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug || exit 1
+CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug || exit 1
 make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -160,7 +160,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
-CFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
+CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
 make -j$(nproc --all) && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -175,7 +175,7 @@ cd $currentPackage-$version
 mkdir build && cd build
 sed -i "s|i18n.merge_file('desktop',|i18n.merge_file(|g" ../src/meson.build
 sed -i "s|i18n.merge_file('appdata',|i18n.merge_file(|g" ../src/meson.build
-meson -Dcpp_args="-O2 -pipe -fPIC -DNDEBUG" --prefix /usr ..
+meson -Dcpp_args="-O3 -pipe -fPIC -DNDEBUG" --prefix /usr ..
 ninja -j$(nproc --all) || exit 1
 DESTDIR=$MODULEPATH/$currentPackage/package ninja install
 cd $MODULEPATH/$currentPackage/package
