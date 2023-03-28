@@ -16,7 +16,7 @@ CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$TMP/packages}
-JOBS=${JOBS:-$(echo -j"$(getconf _NPROCESSORS_ONLN)")}
+JOBS="j$(nproc --all)"
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"

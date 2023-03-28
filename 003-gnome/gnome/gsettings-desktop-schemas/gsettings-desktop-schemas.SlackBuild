@@ -20,7 +20,7 @@ fi
 TMP=${TMP:-$MODULEPATH}
 PKG=$TMP/package-$PKGNAM
 OUTPUT=${OUTPUT:-$TMP/packages}
-NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O2 -march=i586 -mtune=i686"

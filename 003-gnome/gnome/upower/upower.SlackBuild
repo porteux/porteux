@@ -5,7 +5,7 @@ cd $(dirname $0) ; CWD=$(pwd)
 PKGNAM=upower
 VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d- | rev)}
 BUILD=${BUILD:-1}
-NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+NUMJOBS="-j$(nproc --all)"
 
 # Automatically determine the architecture we're building on:
 MARCH=$( uname -m )

@@ -6,7 +6,7 @@ PKGNAM=libnma-gtk4
 SRCNAM=libnma
 VERSION=${VERSION:-$(echo $SRCNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d- | rev)}
 BUILD=${BUILD:-1}
-NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+NUMJOBS="-j$(nproc --all)"
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in

@@ -17,7 +17,7 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+NUMJOBS="-j$(nproc --all)"
 
 TMP=${TMP:-$MODULEPATH}
 PKG=$TMP/package-$PKGNAM

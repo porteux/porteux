@@ -72,7 +72,7 @@ cd build
     --prefix=/usr \
     --sysconfdir=/etc \
     -Dglade_catalog=true
-  "${NINJA:=ninja}" -j8
+  "${NINJA:=ninja}" -j$(nproc --all)
   DESTDIR=$PKG $NINJA install
 cd ..
 

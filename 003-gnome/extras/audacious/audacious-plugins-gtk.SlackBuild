@@ -4,7 +4,7 @@ PKGNAM=audacious-plugins
 VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 BUILD=${BUILD:-1}
 
-NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+NUMJOBS="-j$(nproc --all)"
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then

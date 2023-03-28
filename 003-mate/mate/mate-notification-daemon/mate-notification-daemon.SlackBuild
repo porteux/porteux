@@ -67,7 +67,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --libexecdir=/usr/lib${LIBDIRSUFFIX}/mate-notification-daemon \
   --build=$ARCH-slackware-linux
 
-make -j8
+make -j$(nproc --all)
 make install DESTDIR=$PKG
 
 mkdir -p $PKG/etc/xdg/autostart

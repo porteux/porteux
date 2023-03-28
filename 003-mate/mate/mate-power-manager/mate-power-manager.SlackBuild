@@ -68,7 +68,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --without-keyring \
   --build=$ARCH-slackware-linux
 
-make -j8
+make -j$(nproc --all)
 make install DESTDIR=$PKG
 
 # Remove old GNOME unnecessary stuff from /usr/share/omf.  Confirmed w/

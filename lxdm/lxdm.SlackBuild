@@ -92,8 +92,8 @@ CXXFLAGS="$SLKCFLAGS" \
   $with_gtk3 \
   --build=$ARCH-slackware-linux
 
-make -j8
-make -j8 install DESTDIR=$PKG
+make -j$(nproc --all)
+make -j$(nproc --all) install DESTDIR=$PKG
 
 # use a gtk theme that exists in porteux
 sed -i -e "s|^gtk_theme=.*|gtk_theme=Adwaita-dark|" \
