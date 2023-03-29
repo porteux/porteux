@@ -38,6 +38,16 @@ password: guest<br />
 username: root<br />
 password: toor<br />
 
+## Performance
+
+PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. Its ISOs have the average size of 410 MB and after boot the whole system takes no more than 1 GB of RAM, even considering that everything is loaded in RAM.
+
+Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
+
+[https://youtu.be/DJd38Nch6rQ](https://youtu.be/DJd38Nch6rQ)
+
+All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and all applications are usually as new as possible.
+
 ## Compatibility with Porteus 5
 
 Apart from 001-core, 002-xorg and 002-xtra modules, all Porteus 5 modules are compatible with PorteuX. In order to use a given Porteus 5 desktop environment (003-xx) you need to download and activate (during boot time) the compatibility module [009-porteus5-compatibility-stable.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-stable.xzm) (or [009-porteus5-compatibility-current.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-current.xzm) if you're using PorteuX current/unstable)
