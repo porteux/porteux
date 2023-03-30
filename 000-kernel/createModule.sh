@@ -57,6 +57,7 @@ mkdir -p $MODULEPATH/../05-devel/packages
 wget -P $MODULEPATH http://ftp.slackware.com/pub/slackware/slackware-current/source/k/kernel-headers.SlackBuild
 KERNEL_SOURCE=$MODULEPATH/linux-$KERNELVERSION sh $MODULEPATH/kernel-headers.SlackBuild > /dev/null 2>&1
 mv /tmp/kernel-headers-*.txz $MODULEPATH/../05-devel/packages
+rm $MODULEPATH/kernel-headers.SlackBuild
 
 echo "Downloading AUFS..."
 git clone -b aufs$KERNELMAJORVERSION.$KERNELMINORVERSION https://github.com/sfjro/aufs-standalone $MODULEPATH/aufs > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
@@ -76,12 +77,12 @@ rm -r $MODULEPATH/a && rm -r $MODULEPATH/b && rm -r $MODULEPATH/aufs
 
 echo "Building vmlinuz (this may take a while)..."
 CPUTHREADS=$(nproc --all)
-make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 make clean
 
 echo "Installing modules (this may take a while)..."
-make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3 -mtune=skylake" || { echo "Fail to build kernel."; exit 1; }
 make -j$CPUTHREADS modules_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
 make -j$CPUTHREADS firmware_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
 
@@ -114,11 +115,11 @@ for dependency in $(cat $modulesDependencies | cut -d':' -f1); do
 		# expand all target files just in case some of them has wildcard
 		targetFiles=$(ls firmware/$firmware 2>/dev/null)
 		while IFS= read -r targetFile; do
-			cp -Pu --parents "$targetFile" firmware > /dev/null 2>&1
+			cp -Pu --parents "$targetFile" ../../lib > /dev/null 2>&1
 			# If it's a symlink also copy the real files it's pointing to
 			if [ -L "$targetFile" ]; then
 				originPath="$targetFile"
-				cp -u --parents ${originPath%/*}/$(readlink "$targetFile") firmware > /dev/null 2>&1
+				cp -u --parents ${originPath%/*}/$(readlink "$targetFile") ../../lib > /dev/null 2>&1
 			fi			
 		done <<< "$targetFiles"
 	done
@@ -207,7 +208,5 @@ rm -r $MODULEPATH/$MODULENAME
 rm -r $MODULEPATH/$CRIPPLEDMODULENAME
 rm -r $MODULEPATH/firmware
 rm -r $MODULEPATH/sof*
-rm $MODULEPATH/kernel-firmware*
-rm $MODULEPATH/linux-*
 
 echo "Finished successfully."
