@@ -9,8 +9,7 @@ import subprocess
 from subprocess import run, Popen
 import signal
 
-user = getuid()
-if user != 0:
+if os.geteuid() != 0:
     this_script = path.abspath(__file__)
     run(['psu', this_script])
     quit()
@@ -34,7 +33,7 @@ class AppWindow(Gtk.ApplicationWindow):
         self.box_main.pack_start(Gtk.Separator(), False, False, 5)
 
         self.section_browsers = self.create_section_applications("Web Browsers", ["Chrome", "Chromium", "Firefox", "Opera", "Palemoon", "Vivaldi"])
-        self.section_virtual_machines = self.create_section_applications("Virtual Machines", ["VirtualBox"])
+        self.section_virtual_machines = self.create_section_applications("Virtual Machines", ["VirtualBox", "VirtualBox Guest Additions"])
         self.section_drivers = self.create_section_applications("Drivers", ["Nvidia 5xx"])
         self.section_development = self.create_section_applications("Development", ["Notepad++ (Next)", "VSCode (Codium)"])
         self.section_office = self.create_section_applications("Office", ["OnlyOffice"])
@@ -242,6 +241,9 @@ class AppWindow(Gtk.ApplicationWindow):
             self.show_dialog_options("vivaldi")
         elif button_name == "VirtualBox":
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/virtualbox-builder.sh")
+        elif button_name == "VirtualBox Guest Additions":    
+            subprocess.call(["/opt/porteux-scripts/gtkdialog.py", "-p", "This module is meant to be built and loaded inside VirtualBox."])
+            self.execute_external_script("/opt/porteux-scripts/porteux-app-store/virtualbox-guestadditions-builder.sh")
         elif button_name == "Nvidia 5xx":
             subprocess.call(["/opt/porteux-scripts/gtkdialog.py", "-p", "Nvidia driver will be loaded after the system is restarted."])
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/nvidia-builder.sh")
