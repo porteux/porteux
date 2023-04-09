@@ -25,6 +25,7 @@ teams-builder.sh
 telegram-builder.sh
 update-list.sh
 virtualbox-builder.sh
+virtualbox-guestadditions-builder.sh
 vscode-builder.sh
 whatsapp-builder.sh
 wine-builder.sh
