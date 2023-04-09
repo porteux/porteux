@@ -45,6 +45,18 @@ rm -rf $INSTALLERFOLDER/usr/share/{glib-2.0,mime,pixmaps}
 rm -f $INSTALLERFOLDER/usr/{,local/}share/applications/mimeinfo.cache
 rm -rf $INSTALLERFOLDER/usr/share/doc/NVIDIA_GLX-1.0/{html,sample,LICENSE,NVIDIA_Changelog,README.txt}
 
+# optional stripping
+if [[ "$@" == *"--strip"* ]]; then
+	rm $INSTALLERFOLDER/usr/lib/libnvidia-compiler.so*
+	rm $INSTALLERFOLDER/usr/lib64/libcudadebugger.so*
+	rm $INSTALLERFOLDER/usr/lib64/libcudadebugger.so*
+	rm $INSTALLERFOLDER/usr/lib64/libnvidia-compiler.so*
+	rm $INSTALLERFOLDER/usr/lib64/libnvidia-rtcore.so*
+	rm $INSTALLERFOLDER/usr/lib64/libnvoptix.so*
+	rm $INSTALLERFOLDER/usr/lib64/libnvoptix.so*
+	rm $INSTALLERFOLDER/usr/lib64/libnvidia-gtk2*
+fi
+
 # copy blacklist
 cp --parents /etc/modprobe.d/nvidia-installer-disable-nouveau.conf $INSTALLERFOLDER
 
@@ -56,7 +68,11 @@ DRIVERVERSION=$(echo $DRIVERFILE | cut -d'.' -f3-)
 
 # build xzm module
 echo "Creating driver module..."
-MODULEFILENAME=08-nvidia-$DRIVERVERSION-k.$(uname -r)-$(arch).xzm
+if [[ "$@" == *"--strip"* ]]; then
+	MODULEFILENAME=08-nvidia-$DRIVERVERSION-k.$(uname -r)-stripped-$(arch).xzm
+else
+	MODULEFILENAME=08-nvidia-$DRIVERVERSION-k.$(uname -r)-$(arch).xzm
+fi
 dir2xzm $INSTALLERFOLDER/ -o=/tmp/$MODULEFILENAME || exit 1
 mv /tmp/$MODULEFILENAME $MODULESFOLDER || exit 1
 
