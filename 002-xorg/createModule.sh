@@ -40,7 +40,7 @@ version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 ROOT=./ installpkg $currentPackage-*.txz
 mkdir $currentPackage-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/LLVMgold.so $currentPackage-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so.* $currentPackage-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* $currentPackage-stripped-$version
 cd $currentPackage-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/$currentPackage
@@ -226,7 +226,6 @@ rm -R etc/X11/xorg.conf.d
 rm -R etc/pam.d
 rm -R etc/rc_keymaps
 rm -R etc/xdg/Xwayland-session.d
-rm -R etc/xdg/openbox
 rm -R usr/lib
 rm -R usr/lib64/atkmm-*
 rm -R usr/lib64/cairomm-*

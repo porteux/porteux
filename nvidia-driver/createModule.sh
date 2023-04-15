@@ -81,5 +81,4 @@ rm -f /tmp/nvidia.tar.gz
 rm -f /tmp/nvidia.xzm
 rm -rf $INSTALLERFOLDER
 
-echo "Nvidia driver has been placed in $MODULESFOLDER"
-echo "You can now reboot via 'reboot' command"
+echo "Nvidia driver module has been placed in $MODULESFOLDER"

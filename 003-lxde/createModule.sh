@@ -325,7 +325,7 @@ cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
-exit
+
 currentPackage=lxsession
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 git clone https://github.com/lxde/$currentPackage

@@ -126,9 +126,6 @@ mv $PKG/usr/lib${LIBDIRSUFFIX}/libmozjs-91.so $PKG/usr/lib${LIBDIRSUFFIX}/libmoz
   ln -sf libmozjs-91.so.0 libmozjs-91.so
 )
 
-mkdir -p $PKG/usr/doc/$PKGNAM-$VERSION
-cp ../../README.txt README.html $PKG/usr/doc/$PKGNAM-$VERSION
-
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
