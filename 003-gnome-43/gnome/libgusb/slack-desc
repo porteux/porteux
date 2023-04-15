@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+       |-----handy-ruler------------------------------------------------------|
+libgusb: libgusb (Glib Wrapper)
+libgusb:
+libgusb: GUsb is a GObject wrapper for libusb1 that makes it easy to do
+libgusb: asynchronous control, bulk and interrupt transfers with proper
+libgusb: cancellation and integration into a mainloop.
+libgusb:
+libgusb: This makes it easy to integrate low level USB transfers with your
+libgusb: high-level application or system daemon.
+libgusb:
+libgusb: Project URL: https://github.com/hughsie/libgusb
+libgusb:

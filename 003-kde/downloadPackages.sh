@@ -136,7 +136,6 @@ DownloadPackage "libkipi" &
 DownloadPackage "libkscreen" &
 DownloadPackage "LibRaw" &
 DownloadPackage "libksysguard" &
-DownloadPackage "libwacom" &
 DownloadPackage "milou" &
 DownloadPackage "modemmanager-qt" &
 DownloadPackage "networkmanager-qt" &

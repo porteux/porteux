@@ -73,8 +73,12 @@ meson .. \
  --sysconfdir=/etc \
  --localstatedir=/var \
  --buildtype=release \
+ -Dinstalled_tests=false \
+ -Ddtrace=false \
+ -Dsystemtap=false \
+ -Dskip_dbus_tests=true \
  -Dskip_gtk_tests=true \
- -Dinstalled_tests=false
+ -Dprofiler=disabled
 
 ninja $JOBS || ninja || exit 1
 DESTDIR=$PKG ninja install || exit 1

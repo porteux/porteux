@@ -1,0 +1,9 @@
+polkit.addRule(
+  function(action, subject) {
+    if ( (action.id == "org.freedesktop.upower.suspend" ||
+          action.id == "org.freedesktop.upower.hibernate")
+          && subject.isInGroup("power") ) {
+      return polkit.Result.YES;
+    }
+  }
+);

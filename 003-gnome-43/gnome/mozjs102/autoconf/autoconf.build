@@ -1,0 +1,81 @@
+#!/bin/sh
+
+# Copyright 2005-2016  Patrick J. Volkerding, Sebeka, Minnesota, USA
+# All rights reserved.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+PKGNAM=autoconf
+VERSION=2.13
+BUILD=${BUILD:-1}
+
+NUMJOBS=${NUMJOBS:-" -j7 "}
+
+# Automatically determine the architecture we're building on:
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) export ARCH=i486 ;;
+    arm*) export ARCH=arm ;;
+    # Unless $ARCH is already set, use uname -m for all other archs:
+       *) export ARCH=$( uname -m ) ;;
+  esac
+fi
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp}
+PKG=$TMP/package-autoconf
+
+rm -rf $PKG
+mkdir -p $TMP $PKG
+
+cd $TMP
+rm -rf autoconf-$VERSION
+tar xvf $CWD/autoconf-$VERSION.tar.xz || exit 1
+cd autoconf-$VERSION
+
+zcat $CWD/autoconf-2.13-consolidated_fixes-1.patch.gz | patch -p1 --verbose || exit 1
+
+chown -R root:root .
+find . \
+  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
+  -exec chmod 755 {} \; -o \
+  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
+  -exec chmod 644 {} \;
+
+# Build a temporary copy of autoconf-2.13 only to be used to compile
+# js52, since it somewhat inexplicably requires this ancient version:
+
+rm -rf $TMP/autoconf-tmp
+mkdir -p $TMP/autoconf-tmp
+# This will be at the beginning of the $PATH, so protect against nonsense
+# happening in /tmp:
+chmod 700 $TMP/autoconf-tmp
+rm -rf $TMP/autoconf-tmp/*
+mkdir -p $TMP/autoconf-tmp/usr
+
+./configure \
+  --prefix=$TMP/autoconf-tmp/usr \
+  --program-suffix=-2.13 \
+  --infodir=$TMP/autoconf-tmp/usr/info \
+  --mandir=$TMP/autoconf-tmp/usr/man \
+  --build=$ARCH-slackware-linux || exit 1
+
+make $NUMJOBS || make || exit 1
+make install || exit 1
+
