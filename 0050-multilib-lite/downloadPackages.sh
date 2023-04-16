@@ -79,3 +79,9 @@ DownloadPackage "xz" &
 DownloadPackage "zlib" &
 DownloadPackage "zstd" &
 wait
+
+### slackware current only packages
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "libedit" &
+fi
