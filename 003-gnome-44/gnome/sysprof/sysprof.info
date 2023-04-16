@@ -1,8 +1,0 @@
-PRGNAM="sysprof"
-VERSION="3.44.0"
-HOMEPAGE="https://wiki.gnome.org/Apps/Sysprof"
-DOWNLOAD="https://download.gnome.org/sources/sysprof/3.44/sysprof-3.44.0.tar.xz"
-MD5SUM="e96168b2fa18462f40871513fe4228b5"
-REQUIRES=""
-MAINTAINER="Frank Honolka"
-EMAIL="slackernetuk@gmail.com"

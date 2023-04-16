@@ -80,6 +80,7 @@ rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/oniguruma*
+rm $MODULEPATH/packages/openssl*
 rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/xorg-server-xwayland*
@@ -88,7 +89,6 @@ rm $MODULEPATH/packages/xtrans*
 # slackware current only removal -- these are already in base
 if [ $SLACKWAREVERSION == "current" ]; then
 	rm $MODULEPATH/packages/libnma*
-	rm $MODULEPATH/packages/openssl*
 	rm $MODULEPATH/packages/vte*
 fi
 
@@ -97,8 +97,6 @@ mkdir -p /usr/local > /dev/null 2>&1
 ln -s /usr/include /usr/local/include > /dev/null 2>&1
 
 if [ $SLACKWAREVERSION != "current" ]; then
-	rm $MODULEPATH/packages/openssl*
-
 	currentPackage=gsettings-desktop-schemas
 	cd $SCRIPTPATH/gnome/$currentPackage || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
