@@ -158,9 +158,6 @@ CopyToDevel
 
 cd $MODULEPATH/packages/
 
-rm bluedevil-mime.xml
-rm kde5.xml
-rm org.kde.kio.smb.xml
 rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
 
@@ -212,11 +209,8 @@ GenerateCaches
 
 ### kde specific mime cache
 
-cp -r $MODULEPATH/packages/usr/share/mime/packages $MODULEPATH 
-update-mime-database $PORTEUXBUILDERPATH/caches/mime/
+rm -fr $PORTEUXBUILDERPATH/caches/mime/packages
 cp -r $PORTEUXBUILDERPATH/caches/mime $MODULEPATH/packages/usr/share/
-rm -r $MODULEPATH/packages/usr/share/mime/packages
-mv $MODULEPATH/packages $MODULEPATH/packages/usr/share/mime
 
 ### finalize
 
