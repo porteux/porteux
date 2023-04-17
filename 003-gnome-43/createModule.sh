@@ -172,6 +172,7 @@ rm -R usr/lib64/gnome-settings-daemon-3.0
 rm -R usr/lib64/tracker-3.0
 rm -R usr/lib64/python3.9/site-packages/pip*
 rm -R usr/share/gdb
+rm -R usr/share/gjs-1.0
 rm -R usr/share/glade/pixmaps
 rm -R usr/share/gst-plugins-base
 rm -R usr/share/gtk-4.0

@@ -60,13 +60,11 @@ rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
 rm $MODULEPATH/packages/glade*
-rm $MODULEPATH/packages/gst-plugins-bad-free*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libglvnd*
 rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libwnck3*
-rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/oniguruma*
 rm $MODULEPATH/packages/openssl*
 rm $MODULEPATH/packages/sassc*
@@ -174,6 +172,7 @@ rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gnome-settings-daemon-3.0
 rm -R usr/lib64/python3.9/site-packages/pip*
 rm -R usr/share/gdb
+rm -R usr/share/gjs-1.0
 rm -R usr/share/glade/pixmaps
 rm -R usr/share/gst-plugins-base
 rm -R usr/share/gtk-4.0

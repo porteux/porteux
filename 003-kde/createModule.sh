@@ -166,6 +166,7 @@ rm -R usr/share/chromium
 rm -R usr/share/emoticons/EmojiOne
 rm -R usr/share/featherpad
 rm -R usr/share/gdb
+rm -R usr/share/gdm
 rm -R usr/share/gnome
 rm -R usr/share/google-chrome
 rm -R usr/share/icons/breeze_cursors

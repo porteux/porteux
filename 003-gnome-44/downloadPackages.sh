@@ -13,11 +13,14 @@ DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gexiv2" &
 DownloadPackage "glade" &
 DownloadPackage "gjs" &
-wait
 DownloadPackage "glib-networking" &
+wait
 DownloadPackage "graphene" &
 DownloadPackage "gsettings-desktop-schemas" &
+DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "gst-plugins-base" &
+DownloadPackage "gst-plugins-good" &
+DownloadPackage "gst-plugins-libav" &
 DownloadPackage "gstreamer" &
 DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
@@ -62,9 +65,7 @@ DownloadPackage "libglvnd" &
 wait
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
-#DownloadPackage "llvm" & # required by mozjs
 DownloadPackage "oniguruma" & # required by jq
-#DownloadPackage "rust" &
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "xtrans" &
