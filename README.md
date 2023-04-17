@@ -83,6 +83,7 @@ arleson (core team)<br />
 blaze (@porteus)<br />
 brokenman (@porteus)<br />
 frank honolka (@snuk)<br />
+neko (@porteus)<br />
 ncmprhnsbl (@porteus)<br />
 patrick volkerding (@slackware)<br />
 phantom (@porteus)<br />
