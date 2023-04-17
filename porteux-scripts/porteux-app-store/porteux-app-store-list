@@ -9,6 +9,8 @@ appimage-builder.sh
 apps-locale-info
 browser-builder.sh
 cemu-builder.sh
+crippled-sources-builder.sh
+devel-builder.sh
 etcher-builder.sh
 icons
 module-builder.sh

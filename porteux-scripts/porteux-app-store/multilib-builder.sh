@@ -41,4 +41,3 @@ fi
 
 # cleanup
 rm -fr "$BUILDDIR" 2> /dev/null
-
