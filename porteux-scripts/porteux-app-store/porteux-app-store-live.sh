@@ -1,10 +1,8 @@
 #!/bin/bash
 
-LOCAL_PATH='/opt/porteux-scripts/porteux-app-store'
-
 if [ `whoami` != root ]; then
 	echo "Please enter root's password below:"
-	/opt/porteux-scripts/xorg/psu "$LOCAL_PATH/porteux-app-store-live.sh"
+	/opt/porteux-scripts/xorg/psu $(realpath "$0")
 	exit 0
 fi
 
@@ -15,6 +13,7 @@ FOLDER="porteux-scripts/porteux-app-store"
 LIST_FILE="porteux-app-store-list"
 MAX_AGE_HOURS=6
 FILE_DOWNLOADED=0
+LOCAL_PATH=$(dirname "$0")
 
 update_files(){
     /opt/porteux-scripts/gtkprogress.py -w "PorteuX App Store" -m "Updating files..." -t " " &
@@ -48,13 +47,13 @@ download_files(){
         mkdir -p "$destination_directory" > /dev/null 2>&1
         file_directory=$(dirname "$file_name")
         wget -N "$BASE_GITHUB_URL/$USER/$REPO/main/$FOLDER/$file_name" -P "$LOCAL_PATH/$file_directory"
-        chmod -R 755 ${LOCAL_PATH}/${file_name} > /dev/null 2>&1
+        chmod -R 755 "$LOCAL_PATH/$file_name" > /dev/null 2>&1
     done < "$1"
 }
 
 copy_icons(){
-    chmod 644 ${LOCAL_PATH}/icons/* > /dev/null 2>&1
-    cp ${LOCAL_PATH}/icons/* /usr/share/pixmaps > /dev/null 2>&1
+    chmod 644 "$LOCAL_PATH"/icons/* > /dev/null 2>&1
+    cp "$LOCAL_PATH"/icons/* /usr/share/pixmaps > /dev/null 2>&1
 }
 
 if [ ! -f "$LOCAL_PATH/$LIST_FILE" ]; then

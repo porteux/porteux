@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CURRENTPACKAGE=nvidia-driver
+CURRENTPACKAGE=devel
 PORTEUXFULLVERSION=$(cat /etc/porteux-version)
 PORTEUXVERSION=${PORTEUXFULLVERSION//*-}
 
@@ -14,7 +14,7 @@ else
 fi
 
 APPLICATIONURL="https://github.com/porteux/porteux/releases/download/$PORTEUXVERSION/$CURRENTPACKAGE-$SLACKWAREVERSION.zip"
-OUTPUTDIR="$PORTDIR/modules/"
+OUTPUTDIR="$PORTDIR/optional/"
 BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
 MODULEDIR="$BUILDDIR/$CURRENTPACKAGE-module"
 
