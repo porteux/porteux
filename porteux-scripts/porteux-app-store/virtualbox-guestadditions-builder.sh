@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ] || [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*06-crippled_sources*")" ]; then
-    echo "Both 05-devel and 06-crippled_sources modules need to be activated"
+    echo "Both 'devel' and 'crippled-sources' modules need to be activated."
     exit 1
 fi
 
