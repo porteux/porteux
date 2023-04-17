@@ -9,8 +9,7 @@ import subprocess
 from subprocess import run, Popen
 import signal
 
-user = getuid()
-if user != 0:
+if os.geteuid() != 0:
     this_script = path.abspath(__file__)
     run(['psu', this_script])
     quit()
@@ -34,13 +33,13 @@ class AppWindow(Gtk.ApplicationWindow):
         self.box_main.pack_start(Gtk.Separator(), False, False, 5)
 
         self.section_browsers = self.create_section_applications("Web Browsers", ["Chrome", "Chromium", "Firefox", "Opera", "Palemoon", "Vivaldi"])
-        self.section_virtual_machines = self.create_section_applications("Virtual Machines", ["VirtualBox"])
+        self.section_virtual_machines = self.create_section_applications("Virtual Machines", ["VirtualBox", "VirtualBox Guest Additions"])
         self.section_drivers = self.create_section_applications("Drivers", ["Nvidia 5xx"])
-        self.section_development = self.create_section_applications("Development", ["Notepad++ (Next)", "VSCode (Codium)"])
+        self.section_development = self.create_section_applications("Development", ["Devel Kit", "Notepad++ (Next)", "VSCode (Codium)"])
         self.section_office = self.create_section_applications("Office", ["OnlyOffice"])
         self.section_games = self.create_section_applications("Games", ["Cemu (Wii U)", "PCSX2 (PS2)", "Steam"])
         self.section_messengers = self.create_section_applications("Messengers", ["Teams", "Telegram", "WhatsApp (WALC)"])
-        self.section_utils = self.create_section_applications("Utils", ["Etcher", "Multilib Lite", "Wine", "yt-dlp"])
+        self.section_utils = self.create_section_applications("Utils", ["Crippled Sources", "Etcher", "Multilib Lite", "Wine", "yt-dlp"])
 
         self.box_applications.pack_start(self.section_browsers, False, False, 5)
         self.box_applications.pack_start(self.section_virtual_machines, False, False, 5)
@@ -242,9 +241,14 @@ class AppWindow(Gtk.ApplicationWindow):
             self.show_dialog_options("vivaldi")
         elif button_name == "VirtualBox":
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/virtualbox-builder.sh")
+        elif button_name == "VirtualBox Guest Additions":    
+            subprocess.call(["/opt/porteux-scripts/gtkdialog.py", "-p", "This module is meant to be built and loaded inside VirtualBox."])
+            self.execute_external_script("/opt/porteux-scripts/porteux-app-store/virtualbox-guestadditions-builder.sh")
         elif button_name == "Nvidia 5xx":
             subprocess.call(["/opt/porteux-scripts/gtkdialog.py", "-p", "Nvidia driver will be loaded after the system is restarted."])
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/nvidia-builder.sh")
+        elif button_name == "Devel Kit":
+            self.execute_external_script("/opt/porteux-scripts/porteux-app-store/devel-builder.sh")
         elif button_name == "Notepad++ (Next)":
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/notepadnext-builder.sh")
         elif button_name == "VSCode (Codium)":
@@ -264,6 +268,8 @@ class AppWindow(Gtk.ApplicationWindow):
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/telegram-builder.sh")
         elif button_name == "WhatsApp (WALC)":
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/whatsapp-builder.sh")
+        elif button_name == "Crippled Sources":
+            self.execute_external_script("/opt/porteux-scripts/porteux-app-store/crippled-sources-builder.sh")
         elif button_name == "Etcher":
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/etcher-builder.sh")
         elif button_name == "Multilib Lite":
