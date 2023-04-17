@@ -13,7 +13,6 @@ SetFlags() {
 	export KERNELVERSION="6.2.11"
 
     export SCRIPTPATH="$PWD"
-    #export PORTEUXBUILDERPATH="/mnt/sda2/tmp/porteux-builder-$SLACKWAREVERSION"
     export PORTEUXBUILDERPATH="/tmp/porteux-builder-$SLACKWAREVERSION"
     export MODULEPATH="$PORTEUXBUILDERPATH/$MODULENAME"
     export BUILDERUTILSPATH="$SCRIPTPATH/../builderutils"
