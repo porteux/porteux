@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ] || [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*06-crippled_sources*")" ]; then
-    echo "Both 05-devel and 06-crippled_sources modules need to be activated"
+    echo "Both 'devel' and 'crippled-sources' modules need to be activated."
     exit 1
 fi
 
@@ -17,7 +17,7 @@ mkdir "$MODULEDIR"
 ARCH=$(uname -m)
 
 if [[ ! "$1" || "$1" == "--activate-module" ]]; then
-    # download latest virtualbox
+    # download the latest version
     REPOSITORY="http://download.virtualbox.org/virtualbox"
     wget -T 5 -P "$BUILDDIR" "$REPOSITORY/LATEST.TXT"
     CURRENTVERSION=$(cat $BUILDDIR/LATEST.TXT)
@@ -25,12 +25,12 @@ if [[ ! "$1" || "$1" == "--activate-module" ]]; then
     wget -T 5 -P "$BUILDDIR" "$REPOSITORY/$CURRENTVERSION/$LATESTFILE"
     INSTALLERPATH="$BUILDDIR/$LATESTFILE"
 else
-    # use vbox provided by the user
+    # use file provided by the user
     INSTALLERPATH="$1"
     CURRENTVERSION=$(find "$INSTALLERPATH" -name "*.[0-9]*" | sort -V | tail -n 1)
 fi
 
-# install virtualbox
+# install
 sh "$INSTALLERPATH" --nox11 || exit 1
 
 # set configuration
@@ -71,6 +71,9 @@ rm -fr $MODULEDIR/usr/include
 rm -fr $MODULEDIR/usr/src
 find $MODULEDIR/opt/VirtualBox/nls -mindepth 1 -maxdepth 1 -type f ! \( -name "qt_en.qm" -o -name "VirtualBox_en.qm" \) -delete
 
+# remove virtualbox from the machine
+/opt/VirtualBox/uninstall.sh &>/dev/null
+
 # Build the xzm module
 find $MODULEDIR -type d -exec chmod 755 {} +
 chown root:root $MODULEDIR/opt/VirtualBox/VirtualBox
@@ -79,14 +82,7 @@ chmod +s $MODULEDIR/opt/VirtualBox/VirtualBoxVM
 KERNELVERSION=$(uname -r | awk -F- '{print$1}')
 MODULEFILENAME="$CURRENTPACKAGE-$CURRENTVERSION-porteux-k.$KERNELVERSION-$ARCH-1.xzm"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
-
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
 
-if [ ! "$ACTIVATEMODULE" ]; then
-    # remove virtualbox from the machine
-    /opt/VirtualBox/uninstall.sh &>/dev/null
-fi
-
 # cleanup
-rm -fr $BUILDDIR
-
+rm -fr "$BUILDDIR"
