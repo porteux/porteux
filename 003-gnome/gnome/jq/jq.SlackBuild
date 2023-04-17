@@ -18,7 +18,7 @@ fi
 TMP=${TMP:-$MODULEPATH}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$TMP/packages}
-JOBS="j$(nproc --all)"
+JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O3 -march=i586 -mtune=i686"
