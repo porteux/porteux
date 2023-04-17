@@ -4,6 +4,8 @@ apps-locale-info/google-chrome-locales.txt
 apps-locale-info/opera-locales.txt
 apps-locale-info/palemoon-locales.txt
 apps-locale-info/vivaldi-locales.txt
+icons/crippled.png
+icons/devel.png
 icons/onlyoffice.png
 appimage-builder.sh
 apps-locale-info
