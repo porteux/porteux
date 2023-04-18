@@ -27,6 +27,8 @@ SetFlags() {
         export SYSTEMBITS=
     fi
 
+	NUMBERTHREADS=$(nproc --all)
+
     export REPOSITORY="ftp://ftp.slackware.com/pub/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
     export PATCHREPOSITORY="ftp://ftp.slackware.com/pub/slackware/slackware$SYSTEMBITS/patches"
     export SOURCEREPOSITORY="ftp://ftp.slackware.com/pub/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/source"
