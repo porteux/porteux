@@ -67,7 +67,6 @@ DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
 DownloadPackage "oniguruma" & # required by jq
 DownloadPackage "sassc" & # required by gnome-console
-DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "xtrans" &
 wait
 

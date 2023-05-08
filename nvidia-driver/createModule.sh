@@ -31,6 +31,9 @@ find $INSTALLERFOLDER -type f -maxdepth 1 -delete
 find $INSTALLERFOLDER -type l -maxdepth 1 -delete
 find $INSTALLERFOLDER/etc/ -type f -maxdepth 1 -delete
 find $INSTALLERFOLDER/etc/ -type d ! -iname 'modprobe.d' ! -iname 'OpenCL' ! -iname 'vulkan' ! -iname 'X11' ! -iname 'etc' -maxdepth 1 -exec rm -rf '{}' '+'
+rm -f $INSTALLERFOLDER/usr/bin/nvidia-debugdump
+rm -f $INSTALLERFOLDER/usr/bin/nvidia-installer
+rm -f $INSTALLERFOLDER/usr/bin/nvidia-uninstall
 rm -f $INSTALLERFOLDER/etc/X11/xorg.conf.nvidia-xconfig-original
 rm -rf $INSTALLERFOLDER/lib/firmware
 rm -f $INSTALLERFOLDER/lib/modules/*porteux/modules.*
@@ -41,20 +44,20 @@ rm -f $INSTALLERFOLDER/usr/lib/{libXvMCgallium.so.1,libbrscandec2.so.1,libgsm.so
 rm -rf $INSTALLERFOLDER/usr/lib64/{gio,gtk-2.0,gtk-3.0}
 rm -f $INSTALLERFOLDER/usr/lib64/{libXvMCgallium.so.1,libbrscandec2.so.1,libgsm.so.1,libudev.so.1,libunrar.so.5}
 rm -rf $INSTALLERFOLDER/usr/local
-rm -rf $INSTALLERFOLDER/usr/share/{glib-2.0,mime,pixmaps}
+rm -rf $INSTALLERFOLDER/usr/share/{glib-2.0,man,mime,pixmaps}
 rm -f $INSTALLERFOLDER/usr/{,local/}share/applications/mimeinfo.cache
-rm -rf $INSTALLERFOLDER/usr/share/doc/NVIDIA_GLX-1.0/{html,sample,LICENSE,NVIDIA_Changelog,README.txt}
+rm -rf $INSTALLERFOLDER/usr/share/doc/NVIDIA_GLX-1.0/{html,samples,LICENSE,NVIDIA_Changelog,README.txt}
 
 # optional stripping
 if [[ "$@" == *"--strip"* ]]; then
-	rm $INSTALLERFOLDER/usr/lib/libnvidia-compiler.so*
-	rm $INSTALLERFOLDER/usr/lib64/libcudadebugger.so*
-	rm $INSTALLERFOLDER/usr/lib64/libcudadebugger.so*
-	rm $INSTALLERFOLDER/usr/lib64/libnvidia-compiler.so*
-	rm $INSTALLERFOLDER/usr/lib64/libnvidia-rtcore.so*
-	rm $INSTALLERFOLDER/usr/lib64/libnvoptix.so*
-	rm $INSTALLERFOLDER/usr/lib64/libnvoptix.so*
-	rm $INSTALLERFOLDER/usr/lib64/libnvidia-gtk2*
+	rm -f $INSTALLERFOLDER/usr/lib/libnvidia-compiler.so*
+	rm -f $INSTALLERFOLDER/usr/lib64/libcudadebugger.so*
+	rm -f $INSTALLERFOLDER/usr/lib64/libcudadebugger.so*
+	rm -f $INSTALLERFOLDER/usr/lib64/libnvidia-compiler.so*
+	rm -f $INSTALLERFOLDER/usr/lib64/libnvidia-rtcore.so*
+	rm -f $INSTALLERFOLDER/usr/lib64/libnvoptix.so*
+	rm -f $INSTALLERFOLDER/usr/lib64/libnvoptix.so*
+	rm -f $INSTALLERFOLDER/usr/lib64/libnvidia-gtk2*
 fi
 
 # copy blacklist
