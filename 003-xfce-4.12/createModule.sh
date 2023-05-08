@@ -51,20 +51,14 @@ rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=lxdm
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp -R $SCRIPTPATH/../lxdm/* .
+cp -R $SCRIPTPATH/../$currentPackage/* .
 GTK3=no sh $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
-currentPackage=epdfview
-version=0.1.8
+currentPackage=atril
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp $SCRIPTPATH/extras/$currentPackage/$currentPackage-$version.tar.?z .
-tar xvf $currentPackage-$version.tar.?z || exit 1
-cd $currentPackage-$version
-CXXFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
-make -j$NUMBERTHREADS install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
-cd $MODULEPATH/$currentPackage/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
+cp -R $SCRIPTPATH/extras/$currentPackage/* .
+bash -x $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious

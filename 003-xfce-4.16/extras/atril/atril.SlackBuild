@@ -1,5 +1,5 @@
 #!/bin/sh
-source "$PWD/../../../builder-utils/latestfromgithub.sh"
+source "$PWD/../builder-utils/latestfromgithub.sh"
 
 PRGNAM=atril
 BUILD=${BUILD:-1}
@@ -14,6 +14,8 @@ if [ -z "$ARCH" ]; then
        *) ARCH=$( uname -m ) ;;
   esac
 fi
+
+#wget -c https://pub.mate-desktop.org/releases/1.27/$PRGNAM-$VERSION.tar.xz
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O3 -march=i586 -mtune=i686"
@@ -70,6 +72,8 @@ CXXFLAGS="$SLKCFLAGS" \
   --enable-comics \
   --enable-epub \
   --enable-xps \
+  --disable-gtk-doc \
+  --disable-tests \
   --build=$ARCH-slackware-linux
 
 make -j$(nproc --all)
