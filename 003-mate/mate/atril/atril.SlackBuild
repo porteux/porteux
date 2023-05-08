@@ -15,8 +15,6 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-#wget -c https://pub.mate-desktop.org/releases/1.27/$PRGNAM-$VERSION.tar.xz
-
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O3 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
@@ -54,12 +52,8 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-autoreconf -fiv
-
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-LDFLAGS="-L/usr/share/texmf/lib" \
-CPPFLAGS="-I/usr/share/texmf/include" \
 ./configure \
   --prefix=/usr \
   --libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -67,10 +61,15 @@ CPPFLAGS="-I/usr/share/texmf/include" \
   --localstatedir=/var \
   --mandir=/usr/man \
   --docdir=/usr/doc/$PRGNAM-$VERSION \
-  --disable-synctex \
   --disable-static \
+  --disable-synctex \
+  --enable-shared \
   --enable-introspection \
-  --disable-epub \
+  --enable-t1lib \
+  --enable-pixbuf \
+  --enable-comics \
+  --enable-epub \
+  --enable-xps \
   --build=$ARCH-slackware-linux
 
 make -j$(nproc --all)
@@ -78,10 +77,6 @@ make install DESTDIR=$PKG
 
 # Don't ship .la files:
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
-
-# Stuff still dumped into /usr/share/omf even though we use
-# --disable-scrollkeeper so let's rm it.  Confirmed w/ upstream.
-rm -rf $PKG/usr/share/omf/atril
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

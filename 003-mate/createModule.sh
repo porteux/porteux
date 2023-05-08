@@ -36,7 +36,7 @@ rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=lxdm
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp -R $SCRIPTPATH/../lxdm/* .
+cp -R $SCRIPTPATH/../$currentPackage/* .
 GTK3=yes sh $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 

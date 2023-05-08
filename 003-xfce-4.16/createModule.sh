@@ -60,23 +60,14 @@ rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=lxdm
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp -R $SCRIPTPATH/../lxdm/* .
+cp -R $SCRIPTPATH/../$currentPackage/* .
 GTK3=yes sh $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
-currentPackage=epdfview
-version=0.2.0
+currentPackage=atril
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp $SCRIPTPATH/extras/epdfview/$currentPackage-$version.tar.?z .
-tar xvf $currentPackage-$version.tar.?z || exit 1
-cd $currentPackage-$version
-mkdir build && cd build
-meson -Dcpp_args="-O3 -m64 -pipe -fPIC -DNDEBUG" --prefix /usr ..
-ninja -j$NUMBERTHREADS || exit 1
-DESTDIR=$MODULEPATH/$currentPackage/package ninja install
-cd $MODULEPATH/$currentPackage/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/$currentPackage*.t?z
+cp -R $SCRIPTPATH/extras/$currentPackage/* .
+bash -x $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious
