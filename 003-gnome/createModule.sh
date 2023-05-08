@@ -83,7 +83,6 @@ rm $MODULEPATH/packages/oniguruma*
 rm $MODULEPATH/packages/openssl*
 rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
-rm $MODULEPATH/packages/xorg-server-xwayland*
 rm $MODULEPATH/packages/xtrans*
 
 # slackware current only removal -- these are already in base
@@ -214,6 +213,7 @@ CopyToDevel
 cd $MODULEPATH/packages/
 
 rm etc/xdg/autostart/blueman.desktop
+rm etc/xdg/autostart/ibus*.desktop
 rm usr/bin/canberra*
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo

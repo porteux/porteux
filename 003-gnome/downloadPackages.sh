@@ -32,6 +32,7 @@ DownloadPackage "python-charset-normalizer" &
 DownloadPackage "python-idna" &
 DownloadPackage "python-requests" &
 DownloadPackage "python-urllib3" &
+DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "woff2" &
 wait
 
@@ -70,7 +71,6 @@ DownloadPackage "llvm" & # required by mozjs
 DownloadPackage "oniguruma" & # required by jq
 DownloadPackage "rust" &
 DownloadPackage "sassc" & # required by gnome-console
-DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "xtrans" &
 wait
 
