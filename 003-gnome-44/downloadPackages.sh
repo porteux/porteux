@@ -24,24 +24,17 @@ DownloadPackage "gst-plugins-libav" &
 DownloadPackage "gstreamer" &
 DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
-DownloadPackage "json-glib" &
 wait
+DownloadPackage "json-glib" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libhandy" &
 DownloadPackage "libnma" &
 DownloadPackage "libsoup3" &
 DownloadPackage "libxklavier" &
+wait
 DownloadPackage "mozjs102" &
 DownloadPackage "openssl" &
-DownloadPackage "python-certifi" &
-wait
-DownloadPackage "python-cffi" &
-DownloadPackage "python-chardet" &
-DownloadPackage "python-charset-normalizer" &
-DownloadPackage "python-idna" &
-DownloadPackage "python-requests" &
-DownloadPackage "python-urllib3" &
 DownloadPackage "vte" &
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
@@ -58,7 +51,6 @@ DownloadPackage "boost" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
-DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "iso-codes" &
 DownloadPackage "krb5" &
 DownloadPackage "libglvnd" &
