@@ -24,14 +24,6 @@ DownloadPackage "json-glib" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libxklavier" &
-DownloadPackage "python-certifi" &
-wait
-DownloadPackage "python-cffi" &
-DownloadPackage "python-chardet" &
-DownloadPackage "python-charset-normalizer" &
-DownloadPackage "python-idna" &
-DownloadPackage "python-requests" &
-DownloadPackage "python-urllib3" &
 DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "woff2" &
 wait
