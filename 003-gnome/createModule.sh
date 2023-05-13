@@ -225,6 +225,10 @@ rm usr/bin/gtk4-widget-factory
 rm usr/bin/js91
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
+rm -R etc/dbus-1
+rm -R etc/dconf
+rm -R etc/geoclue
+rm -R etc/opt
 rm -R usr/lib
 rm -R usr/lib64/aspell
 rm -R usr/lib64/python2.7
