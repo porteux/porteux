@@ -62,7 +62,7 @@ cd build
     --mandir=/usr/man \
     --prefix=/usr \
     --sysconfdir=/etc \
-    -Dbackends=gtk4 \
+    -Dbackends=gtk4,gtk3 \
     -Ddocs=false \
     -Dtests=false
   "${NINJA:=ninja}"

@@ -12,6 +12,7 @@ DownloadPackage "json-glib" &
 DownloadPackage "kidletime" &
 wait
 DownloadPackage "kwindowsystem" &
+DownloadPackage "libcanberra" &
 DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libkscreen" &
 DownloadPackage "networkmanager-qt" &

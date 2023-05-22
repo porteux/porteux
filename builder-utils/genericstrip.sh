@@ -17,6 +17,7 @@ GenericStrip() {
 	rm -R "$CURRENTDIR"/usr/share/cmake
 	rm -R "$CURRENTDIR"/usr/share/devhelp
 	rm -R "$CURRENTDIR"/usr/share/doc
+	rm -R "$CURRENTDIR"/usr/share/gdb
 	rm -R "$CURRENTDIR"/usr/share/gir-1.0
 	rm -R "$CURRENTDIR"/usr/share/gnome-control-center
 	rm -R "$CURRENTDIR"/usr/share/gtk-doc

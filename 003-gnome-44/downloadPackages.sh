@@ -33,7 +33,6 @@ DownloadPackage "libnma" &
 DownloadPackage "libsoup3" &
 DownloadPackage "libxklavier" &
 wait
-DownloadPackage "mozjs102" &
 DownloadPackage "openssl" &
 DownloadPackage "vte" &
 DownloadPackage "woff2" &

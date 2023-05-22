@@ -52,10 +52,8 @@ rm -rf $INSTALLERFOLDER/usr/share/doc/NVIDIA_GLX-1.0/{html,samples,LICENSE,NVIDI
 if [[ "$@" == *"--strip"* ]]; then
 	rm -f $INSTALLERFOLDER/usr/lib/libnvidia-compiler.so*
 	rm -f $INSTALLERFOLDER/usr/lib64/libcudadebugger.so*
-	rm -f $INSTALLERFOLDER/usr/lib64/libcudadebugger.so*
 	rm -f $INSTALLERFOLDER/usr/lib64/libnvidia-compiler.so*
 	rm -f $INSTALLERFOLDER/usr/lib64/libnvidia-rtcore.so*
-	rm -f $INSTALLERFOLDER/usr/lib64/libnvoptix.so*
 	rm -f $INSTALLERFOLDER/usr/lib64/libnvoptix.so*
 	rm -f $INSTALLERFOLDER/usr/lib64/libnvidia-gtk2*
 fi

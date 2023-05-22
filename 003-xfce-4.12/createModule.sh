@@ -57,8 +57,10 @@ rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=atril
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp -R $SCRIPTPATH/extras/$currentPackage/* .
-bash -x $currentPackage.SlackBuild || exit 1
+info=$(DownloadLatestFromGithub "mate-desktop" $currentPackage)
+version=${info#* }
+cp $SCRIPTPATH/extras/$currentPackage/$currentPackage.SlackBuild .
+sh $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious
