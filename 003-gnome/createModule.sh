@@ -225,7 +225,6 @@ rm usr/bin/gtk4-widget-factory
 rm usr/bin/js91
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
-rm -R etc/dbus-1
 rm -R etc/dconf
 rm -R etc/geoclue
 rm -R etc/opt
@@ -237,10 +236,21 @@ rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gnome-settings-daemon-3.0
 rm -R usr/lib64/tracker-3.0
 rm -R usr/lib64/python3.9/site-packages/pip*
-rm -R usr/share/gdb
+rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
+rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
+rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
+rm -R usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
+rm -R usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
+rm -R usr/share/dbus-1/services/org.gnome.evince.Daemon.service
+rm -R usr/share/dbus-1/services/org.gnome.FileRoller.service
+rm -R usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Extract.service
+rm -R usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Files.service
+rm -R usr/share/dbus-1/services/org.gnome.ScreenSaver.service
+rm -R usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 rm -R usr/share/gjs-1.0
 rm -R usr/share/glade/pixmaps
 rm -R usr/share/gst-plugins-base
+rm -R usr/share/gstreamer-1.0/gdb
 rm -R usr/share/gtk-4.0
 rm -R usr/share/ibus
 rm -R usr/share/installed-tests
@@ -252,9 +262,9 @@ rm -R usr/share/vala
 rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
-find usr/lib64/gstreamer-1.0 -mindepth 1 -maxdepth 1 ! \( -name "libcluttergst3.so" -o -name "libgstcogl.so" \) -exec rm -rf '{}' \; 2>/dev/null
-
-find usr/share/xsessions -mindepth 1 -maxdepth 1 ! \( -name "gnome.desktop" \) -exec rm -rf '{}' \; 2>/dev/null
+find etc/dbus-1/system.d/ -mindepth 1 -maxdepth 1 ! \( -name "net.hadess.PowerProfiles.conf" \) -exec rm -rf '{}' \; 2>/dev/null
+find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
+find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
 

@@ -66,15 +66,17 @@ rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=atril
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp -R $SCRIPTPATH/extras/$currentPackage/* .
-bash -x $currentPackage.SlackBuild || exit 1
+info=$(DownloadLatestFromGithub "mate-desktop" $currentPackage)
+version=${info#* }
+cp $SCRIPTPATH/extras/$currentPackage/$currentPackage.SlackBuild .
+sh $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
 version=${info#* }
-cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
+cp $SCRIPTPATH/extras/$currentPackage/$currentPackage-gtk.SlackBuild .
 sh $currentPackage-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 

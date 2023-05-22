@@ -1,11 +1,10 @@
 #!/bin/sh
-source "$PWD/../builder-utils/latestfromgithub.sh"
 
-PRGNAM=atril
+PKGNAM=atril
+VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 BUILD=${BUILD:-1}
-CWD=$(pwd)
-PKG=$MODULEPATH/$PRGNAM/package-$PRGNAM
-OUTPUT=${OUTPUT:-$MODULEPATH/packages}
+
+NUMJOBS="-j$(nproc --all)"
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -15,7 +14,9 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-#wget -c https://pub.mate-desktop.org/releases/1.27/$PRGNAM-$VERSION.tar.xz
+TMP=${TMP:-$MODULEPATH/$PKGNAM}
+PKG=$TMP/package-${PKGNAM}
+OUTPUT=$MODULEPATH/packages
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O3 -march=i586 -mtune=i686"
@@ -37,15 +38,8 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
-
-rm -fr $MODULEPATH/$PRGNAM
-mkdir -p $MODULEPATH/$PRGNAM && cd $MODULEPATH/$PRGNAM
-info=$(DownloadLatestFromGithub "mate-desktop" $currentPackage)
-VERSION=${info#* }
-filename=${info% *}
-tar xvf $filename || exit 1
-cd $PRGNAM-$VERSION
+tar xvf ${PKGNAM}-$VERSION.tar.?z || exit 1
+cd ${PKGNAM}-$VERSION || exit 1
 
 chown -R root:root .
 find -L . \
@@ -62,7 +56,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --sysconfdir=/etc \
   --localstatedir=/var \
   --mandir=/usr/man \
-  --docdir=/usr/doc/$PRGNAM-$VERSION \
+  --docdir=/usr/doc/$PKGNAM-$VERSION \
   --disable-static \
   --disable-synctex \
   --enable-shared \
@@ -74,17 +68,14 @@ CXXFLAGS="$SLKCFLAGS" \
   --enable-xps \
   --disable-gtk-doc \
   --disable-tests \
+  --disable-caja \
   --build=$ARCH-slackware-linux
 
-make -j$(nproc --all)
+make $NUMJOBS || make || exit 1
 make install DESTDIR=$PKG
 
 # Don't ship .la files:
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
 
-mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-cat $CWD/doinst.sh > $PKG/install/doinst.sh
-
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}

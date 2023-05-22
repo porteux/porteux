@@ -308,6 +308,7 @@ CopyToDevel
 cd $MODULEPATH/packages/
 
 rm etc/xdg/autostart/blueman.desktop
+rm usr/bin/canberra*
 rm usr/share/lxqt/wallpapers/after-the-rain.jpg
 rm usr/share/lxqt/wallpapers/appleflower.png
 rm usr/share/lxqt/wallpapers/beam.png
@@ -329,6 +330,8 @@ rm usr/share/lxqt/wallpapers/waves-purple-logo.jpg
 rm usr/share/nm-tray/nm-tray*.qm
 
 rm -R usr/lib
+rm -R usr/lib64/gnome-settings-daemon-3.0/
+rm -R usr/lib64/gtk-2.0/
 rm -R usr/lib64/qt5/mkspecs
 rm -R usr/share/featherpad
 rm -R usr/share/lxqt/graphics

@@ -251,6 +251,7 @@ rm -R usr/share/terminfo/u
 rm -R usr/share/terminfo/w
 rm -R usr/share/terminfo/z
 rm -R usr/x86_64-slackware-linux
+
 rm etc/init.d
 rm etc/ld.so.cache
 rm etc/motd
@@ -258,8 +259,10 @@ rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
 rm usr/bin/js[0-9]*
 rm usr/bin/smbtorture
+rm usr/lib64/liblibboost_*
 rm usr/libexec/samba/rpcd_*
 rm usr/local/bin/webfsd
+
 find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
