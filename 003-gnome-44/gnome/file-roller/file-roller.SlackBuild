@@ -67,7 +67,7 @@ meson .. \
  --localstatedir=/var \
  -Ddefault_library=shared \
  -Drun-in-place=false \
- -Dnautilus-actions=disabled \
+ -Dnautilus-actions=enabled \
  -Dnotification=enabled \
  -Dpackagekit=false \
  -Dlibarchive=enabled

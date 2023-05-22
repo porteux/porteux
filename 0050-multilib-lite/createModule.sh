@@ -119,7 +119,8 @@ rm $MODULEPATH/packages/usr/lib/libldap*
 rm $MODULEPATH/packages/usr/lib/liblldb*
 rm $MODULEPATH/packages/usr/lib/libltdl*
 rm $MODULEPATH/packages/usr/lib/libmm*
-rm $MODULEPATH/packages/usr/lib/libmp*
+rm $MODULEPATH/packages/usr/lib/libmpc*
+rm $MODULEPATH/packages/usr/lib/libmpfr*
 rm $MODULEPATH/packages/usr/lib/libpsl*
 rm $MODULEPATH/packages/usr/lib/libreadline*
 rm $MODULEPATH/packages/usr/lib/libslang*
