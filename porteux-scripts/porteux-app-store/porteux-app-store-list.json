@@ -1,0 +1,461 @@
+{
+	"Web Browsers": {
+		"Chromium": {
+			"script": "chromium",
+			"channels": [
+				"stable",
+				"developer"
+			],
+			"locales": [
+				"af",
+				"am",
+				"ar",
+				"bg",
+				"bn",
+				"ca",
+				"cs",
+				"da",
+				"de",
+				"el",
+				"en-GB",
+				"en-US",
+				"es-419",
+				"es",
+				"et",
+				"fa",
+				"fi",
+				"fil",
+				"fr",
+				"gu",
+				"he",
+				"hi",
+				"hr",
+				"hu",
+				"id",
+				"it",
+				"ja",
+				"kn",
+				"ko",
+				"lt",
+				"lv",
+				"ml",
+				"mr",
+				"ms",
+				"nb",
+				"nl",
+				"pl",
+				"pt-BR",
+				"pt-PT",
+				"ro",
+				"ru",
+				"sk",
+				"sl",
+				"sr",
+				"sv",
+				"sw",
+				"ta",
+				"te",
+				"th",
+				"tr",
+				"uk",
+				"ur",
+				"vi",
+				"zh-CN",
+				"zh-TW"
+			]
+		},
+		"Firefox": {
+			"script": "firefox",
+			"channels": [
+				"latest",
+				"beta-latest",
+				"esr-latest"
+			],
+			"locales": [
+				"ach",
+				"af",
+				"an",
+				"ar",
+				"ast",
+				"az",
+				"be",
+				"bg",
+				"bn",
+				"br",
+				"bs",
+				"ca",
+				"ca-valencia",
+				"cak",
+				"cs",
+				"cy",
+				"da",
+				"de",
+				"dsb",
+				"el",
+				"en-CA",
+				"en-GB",
+				"en-US",
+				"eo",
+				"es-AR",
+				"es-CL",
+				"es-ES",
+				"es-MX",
+				"et",
+				"eu",
+				"fa",
+				"ff",
+				"fi",
+				"fr",
+				"fy-NL",
+				"ga-IE",
+				"gd",
+				"gl",
+				"gn",
+				"gu-IN",
+				"he",
+				"hi-IN",
+				"hr",
+				"hsb",
+				"hu",
+				"hy-AM",
+				"ia",
+				"id",
+				"is",
+				"it",
+				"ja",
+				"ka",
+				"kab",
+				"kk",
+				"km",
+				"kn",
+				"ko",
+				"lij",
+				"lt",
+				"lv",
+				"mk",
+				"mr",
+				"ms",
+				"my",
+				"nb-NO",
+				"ne-NP",
+				"nl",
+				"nn-NO",
+				"oc",
+				"pa-IN",
+				"pl",
+				"pt-BR",
+				"pt-PT",
+				"rm",
+				"ro",
+				"ru",
+				"sco",
+				"si",
+				"sk",
+				"sl",
+				"son",
+				"sq",
+				"sr",
+				"sv-SE",
+				"szl",
+				"ta",
+				"te",
+				"th",
+				"tl",
+				"tr",
+				"trs",
+				"uk",
+				"ur",
+				"uz",
+				"vi",
+				"xh",
+				"zh-CN",
+				"zh-TW"
+			]
+		},
+		"Chrome": {
+			"script": "google-chrome",
+			"channels": [
+				"stable",
+				"unstable",
+				"beta"
+			],
+			"locales": [
+				"af",
+				"am",
+				"ar",
+				"bg",
+				"bn",
+				"ca",
+				"cs",
+				"da",
+				"de",
+				"el",
+				"en-GB",
+				"en-US",
+				"es-419",
+				"es",
+				"et",
+				"fa",
+				"fi",
+				"fil",
+				"fr",
+				"gu",
+				"he",
+				"hi",
+				"hr",
+				"hu",
+				"id",
+				"it",
+				"ja",
+				"kn",
+				"ko",
+				"lt",
+				"lv",
+				"ml",
+				"mr",
+				"ms",
+				"nb",
+				"nl",
+				"pl",
+				"pt-BR",
+				"pt-PT",
+				"ro",
+				"ru",
+				"sk",
+				"sl",
+				"sr",
+				"sv",
+				"sw",
+				"ta",
+				"te",
+				"th",
+				"tr",
+				"uk",
+				"ur",
+				"vi",
+				"zh-CN",
+				"zh-TW"
+			]
+		},
+		"Opera": {
+			"script": "browser",
+			"channels": [
+				"stable",
+				"developer",
+				"beta"
+			],
+			"locales": [
+				"bg",
+				"bn",
+				"ca",
+				"cs",
+				"da",
+				"de",
+				"el",
+				"en-GB",
+				"en-US",
+				"es-419",
+				"es",
+				"fi",
+				"fil",
+				"fr",
+				"hi",
+				"hr",
+				"hu",
+				"id",
+				"it",
+				"ja",
+				"ko",
+				"lt",
+				"lv",
+				"ms",
+				"nb",
+				"nl",
+				"pl",
+				"pt-BR",
+				"pt-PT",
+				"ro",
+				"ru",
+				"sk",
+				"sr",
+				"sv",
+				"sw",
+				"ta",
+				"te",
+				"th",
+				"tr",
+				"uk",
+				"vi",
+				"zh-CN",
+				"zh-TW"
+			]
+		},
+		"Palemoon": {
+			"script": "browser",
+			"channels": [
+				"stable"
+			],
+			"locales": [
+				"en-US"
+			]
+		},
+		"Vivaldi": {
+			"script": "browser",
+			"channels": [
+				"stable",
+				"snapshot"
+			],
+			"locales": [
+				"af",
+				"am",
+				"ar",
+				"az",
+				"be",
+				"bg",
+				"bn",
+				"ca",
+				"cs",
+				"da",
+				"de-CH",
+				"de",
+				"el",
+				"en-GB",
+				"en-US",
+				"eo",
+				"es-419",
+				"es-PE",
+				"es",
+				"et",
+				"eu",
+				"fa",
+				"fi",
+				"fil",
+				"fr",
+				"fy",
+				"gd",
+				"gl",
+				"gu",
+				"he",
+				"hi",
+				"hr",
+				"hu",
+				"hy",
+				"id",
+				"io",
+				"is",
+				"it",
+				"ja-KS",
+				"ja",
+				"jbo",
+				"ka",
+				"kab",
+				"kn",
+				"ko",
+				"ku",
+				"lt",
+				"lv",
+				"mk",
+				"ml",
+				"mr",
+				"ms",
+				"nb",
+				"nl",
+				"nn",
+				"pa",
+				"pl",
+				"pt-BR",
+				"pt-PT",
+				"ro",
+				"ru",
+				"sc",
+				"sk",
+				"sl",
+				"sq",
+				"sr-Latn",
+				"sr",
+				"sv",
+				"sw",
+				"ta",
+				"te",
+				"th",
+				"tr",
+				"uk",
+				"ur",
+				"vi",
+				"zh-CN",
+				"zh-TW"
+			]
+		}
+	},
+	"Virtual Machines": {
+		"VirtualBox": {
+			"script": "virtualbox"
+		},
+		"VirtualBox Guest Additions": {
+			"script": "virtualbox-guestadditions",
+			"dialog": "This module is meant to be built and loaded inside VirtualBox."
+		}
+	},
+	"Drivers": {
+		"Nvidia 5xx": {
+			"script": "nvidia",
+			"dialog": "Nvidia driver will be loaded after the system is restarted."
+		}
+	},
+	"Development": {
+		"Devel Kit": {
+			"script": "devel"
+		},
+		"Notepad++ (Next)": {
+			"script": "notepadnext"
+		},
+		"VSCode (Codium)":{
+			"script": "vscode"
+		}
+	},
+	"Office": {
+		"OnlyOffice":{
+			"script": "onlyoffice"
+		}
+	},
+	"Games": {
+		"Cemu (Wii U)":{
+			"script": "cemu"
+		},
+		"PCSX2 (PS2)":{
+			"script": "pcsx2"
+		},
+		"Steam":{
+			"script": "steam",
+			"dialog": "Steam requires multilib, also available in the app store."
+		}
+	},
+	"Messengers": {
+		"Teams":{
+			"script": "teams"
+		},
+		"Telegram":{
+			"script": "telegram"
+		},
+		"WhatsApp (WALC)":{
+			"script": "whatsapp"
+		}
+	},
+	"Utils": {
+		"Crippled Sources":{
+			"script": "crippled-sources"
+		},
+		"Etcher": {
+			"script": "etcher"
+		},
+		"Multilib Lite":{
+			"script": "multilib"
+		},
+		"Wine":{
+			"script": "wine"
+		},
+		"yt-dlp":{
+			"script": "yt-dlp"
+		}
+	}
+}
