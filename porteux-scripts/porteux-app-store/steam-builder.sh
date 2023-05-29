@@ -4,27 +4,39 @@ CURRENTPACKAGE=steam
 APPLICATIONURL=https://repo.steampowered.com/steam/archive/precise/steam_latest.deb
 ARCH=i586
 OUTPUTDIR="$PORTDIR/modules/"
-BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
-MODULEDIR="$BUILDDIR/$CURRENTPACKAGE-module"
+TEMPDIR="/tmp/$CURRENTPACKAGE-builder"
+MODULEDIR="$TEMPDIR/$CURRENTPACKAGE-module"
+INSTALLDIR="$1"
+CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
+[ ! $CURRENTUSER ] && CURRENTUSER=guest
+[[ $INSTALLDIR = --* ]] && echo "Installation path can't be empty." && exit 1
 
-rm -fr "$BUILDDIR"
-mkdir "$BUILDDIR" && cd "$BUILDDIR"
-mkdir -p "$MODULEDIR/home/guest/.local/share/Steam/"
+mkdir -p "$INSTALLDIR" || exit 1
+rm -fr "$TEMPDIR"	
+mkdir "$TEMPDIR" && cd "$TEMPDIR"
 
-wget -T 5 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
-ar p "$BUILDDIR"/*.deb data.tar.xz | tar xJv -C "$MODULEDIR"
+wget -T 5 "$APPLICATIONURL" -P "$TEMPDIR" || exit 1
+ar p "$TEMPDIR"/*.deb data.tar.xz | tar xJv
+tar -xvf "$TEMPDIR/usr/lib/steam/bootstraplinux_ubuntu12_32.tar.xz" -C "$INSTALLDIR"
 
 # the process below is not required but it will speedup the first steam run significantly
-tar -xvf "$MODULEDIR/usr/lib/steam/bootstraplinux_ubuntu12_32.tar.xz" -C "$MODULEDIR/home/guest/.local/share/Steam/"
-mkdir -p "$MODULEDIR/home/guest/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_32"
-touch "$MODULEDIR/home/guest/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_32/done"
-mkdir -p "$MODULEDIR/home/guest/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_64"
-touch "$MODULEDIR/home/guest/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_64/done"
-echo guest | sudo -S chown -R guest:users "$MODULEDIR/home/guest"
+mkdir -p "$INSTALLDIR/ubuntu12_32/steam-runtime/pinned_libs_32"
+touch "$INSTALLDIR/ubuntu12_32/steam-runtime/pinned_libs_32/done"
+mkdir -p "$INSTALLDIR/ubuntu12_32/steam-runtime/pinned_libs_64"
+touch "$INSTALLDIR/ubuntu12_32/steam-runtime/pinned_libs_64/done"
 
-FULLVERSION=$(cat $MODULEDIR/home/guest/.local/share/Steam/ubuntu12_32/steam-runtime/version.txt)
+echo "$CURRENTUSER" | sudo -S chown -R "$CURRENTUSER":users "$INSTALLDIR"
+
+# handle xzm module
+FULLVERSION=$(cat $INSTALLDIR/ubuntu12_32/steam-runtime/version.txt)
 VERSION=${FULLVERSION#*.}
 VERSION=${VERSION%%.*}
+
+mkdir -p "$MODULEDIR/usr/share/applications"
+cp "$TEMPDIR"/usr/share/applications/steam.desktop "$MODULEDIR"/usr/share/applications
+sed -i "s|Exec=/usr/bin/steam.*|Exec=$INSTALLDIR/steam.sh %U|g" "$MODULEDIR"/usr/share/applications/steam.desktop
+mkdir -p "$MODULEDIR/usr/share/pixmaps"
+cp "$TEMPDIR"/usr/share/pixmaps/* "$MODULEDIR/usr/share/pixmaps"
 
 MODULEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH.xzm"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
@@ -32,4 +44,4 @@ ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module"
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
 
 # cleanup
-rm -fr "$BUILDDIR" 2> /dev/null
+rm -fr "$TEMPDIR" 2> /dev/null
