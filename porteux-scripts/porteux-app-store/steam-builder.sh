@@ -17,7 +17,9 @@ ar p "$BUILDDIR"/*.deb data.tar.xz | tar xJv -C "$MODULEDIR"
 # the process below is not required but it will speedup the first steam run significantly
 tar -xvf "$MODULEDIR/usr/lib/steam/bootstraplinux_ubuntu12_32.tar.xz" -C "$MODULEDIR/home/guest/.local/share/Steam/"
 mkdir -p "$MODULEDIR/home/guest/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_32"
+touch "$MODULEDIR/home/guest/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_32/done"
 mkdir -p "$MODULEDIR/home/guest/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_64"
+touch "$MODULEDIR/home/guest/.local/share/Steam/ubuntu12_32/steam-runtime/pinned_libs_64/done"
 echo guest | sudo -S chown -R guest:users "$MODULEDIR/home/guest"
 
 FULLVERSION=$(cat $MODULEDIR/home/guest/.local/share/Steam/ubuntu12_32/steam-runtime/version.txt)
