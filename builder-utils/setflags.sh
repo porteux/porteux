@@ -10,7 +10,7 @@ SetFlags() {
 	    export SLACKWAREVERSION=current
 	fi
     export SLACKBUILDVERSION=$SLACKWAREVERSION
-	export KERNELVERSION="6.2.7"
+	export KERNELVERSION="6.2.11"
 
     export SCRIPTPATH="$PWD"
     export PORTEUXBUILDERPATH="/tmp/porteux-builder-$SLACKWAREVERSION"
@@ -26,6 +26,8 @@ SetFlags() {
     elif [ $SYSTEMBITS == "32" ]; then
         export SYSTEMBITS=
     fi
+
+	NUMBERTHREADS=$(nproc --all)
 
     export REPOSITORY="ftp://ftp.slackware.com/pub/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
     export PATCHREPOSITORY="ftp://ftp.slackware.com/pub/slackware/slackware$SYSTEMBITS/patches"

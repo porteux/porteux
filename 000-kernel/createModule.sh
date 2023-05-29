@@ -5,7 +5,7 @@ if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ]; then
 fi
 
 # switch to root
-if [ `whoami` != root ]; then
+if [ $(whoami) != root ]; then
 	echo "Please enter root's password below:"
 	su -c "$0 $1"
     exit
@@ -47,6 +47,7 @@ fi
 
 echo "Extracting kernel source code..."
 tar xf $MODULEPATH/linux-$KERNELVERSION.tar.xz -C $MODULEPATH
+rm $MODULEPATH/linux-$KERNELVERSION.tar.xz
 
 echo "Copying .config file..."
 cp $SCRIPTPATH/${SYSTEMBITS}bit.config $MODULEPATH/linux-$KERNELVERSION/.config || exit 1
@@ -54,8 +55,9 @@ cp $SCRIPTPATH/${SYSTEMBITS}bit.config $MODULEPATH/linux-$KERNELVERSION/.config 
 echo "Building kernel headers..."
 mkdir -p $MODULEPATH/../05-devel/packages
 wget -P $MODULEPATH http://ftp.slackware.com/pub/slackware/slackware-current/source/k/kernel-headers.SlackBuild
-KERNEL_SOURCE=$MODULEPATH/linux-$KERNELVERSION sh $MODULEPATH/kernel-headers.SlackBuild
+KERNEL_SOURCE=$MODULEPATH/linux-$KERNELVERSION sh $MODULEPATH/kernel-headers.SlackBuild > /dev/null 2>&1
 mv /tmp/kernel-headers-*.txz $MODULEPATH/../05-devel/packages
+rm $MODULEPATH/kernel-headers.SlackBuild
 
 echo "Downloading AUFS..."
 git clone -b aufs$KERNELMAJORVERSION.$KERNELMINORVERSION https://github.com/sfjro/aufs-standalone $MODULEPATH/aufs > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
@@ -73,12 +75,21 @@ cd linux-$KERNELVERSION
 patch -p1 < $MODULEPATH/linux-$KERNELVERSION/aufs.patch > /dev/null 2>&1
 rm -r $MODULEPATH/a && rm -r $MODULEPATH/b && rm -r $MODULEPATH/aufs
 
-echo "Building kernel (this may take a while)..."
+echo "Patching for LTO..."
+wget https://raw.githubusercontent.com/CachyOS/kernel-patches/master/$KERNELMAJORVERSION.$KERNELMINORVERSION/misc/gcc-lto/0001-gcc-LTO-support-for-the-kernel.patch > /dev/null 2>&1
+git apply 0001-gcc-LTO-support-for-the-kernel.patch > /dev/null 2>&1
+
+echo "Building vmlinuz (this may take a while)..."
 CPUTHREADS=$(nproc --all)
-make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
+cp -f arch/x86/boot/bzImage ../vmlinuz
+make clean
+
+echo "Installing modules (this may take a while)..."
+make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3 -mtune=skylake" || { echo "Fail to build kernel."; exit 1; }
 make -j$CPUTHREADS modules_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
 make -j$CPUTHREADS firmware_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
-cp -f arch/x86/boot/bzImage ../vmlinuz
+
 cd ..
 
 echo "Creating symlinks..."
@@ -94,6 +105,7 @@ fi
 
 echo "Extracting firmware..."
 mkdir firmware && tar xf kernel-firmware-*.txz -C firmware > /dev/null 2>&1
+rm kernel-firmware-*.txz
 cd firmware && mv install/doinst.sh . && sh ./doinst.sh
 
 echo "Adding firmware..."
@@ -101,22 +113,26 @@ cd lib
 modulesDependencies=$(ls ../../lib/modules/*/modules.dep)
 modulesPath=${modulesDependencies%/modules.dep}
 
-for i in `cat $modulesDependencies | cut -d':' -f1`; do
-	firmwares=$(modinfo -F firmware $modulesPath/$i)
-	for j in $firmwares; do
-		cp -Pu --parents firmware/$j ../../lib > /dev/null 2>&1
-		# If this fails it's OK as the only downside is the final xzm module being a bit bigger
-		if [ -L firmware/$j ]; then
-			originPath=firmware/$j
-			cp -u --parents ${originPath%/*}/$(readlink firmware/$j) ../../lib > /dev/null 2>&1
-		fi
+for dependency in $(cat $modulesDependencies | cut -d':' -f1); do
+	firmwares=$(modinfo -F firmware $modulesPath/$dependency)
+	for firmware in $firmwares; do
+		# expand all target files just in case some of them have wildcard
+		targetFiles=$(ls firmware/$firmware 2>/dev/null)
+		while IFS= read -r targetFile; do
+			cp -Pu --parents "$targetFile" ../../lib > /dev/null 2>&1
+			# If it's a symlink also copy the real files it's pointing to
+			if [ -L "$targetFile" ]; then
+				originPath="$targetFile"
+				cp -u --parents ${originPath%/*}/$(readlink "$targetFile") ../../lib > /dev/null 2>&1
+			fi			
+		done <<< "$targetFiles"
 	done
 done
 cd ../..
 
 echo "Downloading and installing sof for Intel..."
 currentPackage=sof-bin
-info=`DownloadLatestFromGithub "thesofproject" "sof-bin"`
+info=$(DownloadLatestFromGithub "thesofproject" "sof-bin")
 version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename
@@ -196,7 +212,5 @@ rm -r $MODULEPATH/$MODULENAME
 rm -r $MODULEPATH/$CRIPPLEDMODULENAME
 rm -r $MODULEPATH/firmware
 rm -r $MODULEPATH/sof*
-rm $MODULEPATH/kernel-firmware*
-rm $MODULEPATH/linux-*
 
 echo "Finished successfully."

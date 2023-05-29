@@ -31,7 +31,7 @@ version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 tar xvf $currentPackage-*.txz
 mkdir -p $currentPackage-stripped-$version/usr/lib
 cp usr/lib/LLVMgold.so $currentPackage-stripped-$version/usr/lib
-cp usr/lib/libLLVM*.so.* $currentPackage-stripped-$version/usr/lib
+cp usr/lib/libLLVM*.so* $currentPackage-stripped-$version/usr/lib
 cd $currentPackage-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/$currentPackage
@@ -119,7 +119,8 @@ rm $MODULEPATH/packages/usr/lib/libldap*
 rm $MODULEPATH/packages/usr/lib/liblldb*
 rm $MODULEPATH/packages/usr/lib/libltdl*
 rm $MODULEPATH/packages/usr/lib/libmm*
-rm $MODULEPATH/packages/usr/lib/libmp*
+rm $MODULEPATH/packages/usr/lib/libmpc*
+rm $MODULEPATH/packages/usr/lib/libmpfr*
 rm $MODULEPATH/packages/usr/lib/libpsl*
 rm $MODULEPATH/packages/usr/lib/libreadline*
 rm $MODULEPATH/packages/usr/lib/libslang*

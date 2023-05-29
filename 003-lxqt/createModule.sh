@@ -70,7 +70,7 @@ tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 -DENABLE_SAMPLES=off ..
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage*.t?z
@@ -91,7 +91,7 @@ rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=lxdm
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp -R $SCRIPTPATH/../lxdm/* .
+cp -R $SCRIPTPATH/../$currentPackage/* .
 GTK3=yes sh $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
@@ -104,7 +104,7 @@ cp $SCRIPTPATH/extras/adwaita-qt/adwaitastyle.cpp.patch .
 patch -p0 < adwaitastyle.cpp.patch || exit 1
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
@@ -132,7 +132,7 @@ tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
-make -j8 && make install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
+make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
@@ -163,9 +163,10 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
+sed -i "s|set(NM_TRAY_VERSION \".*|set(NM_TRAY_VERSION \"${version}\")|g" CMakeLists.txt
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib64 ..
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
@@ -177,8 +178,8 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
-CFLAGS="-O2 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O2 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package  || exit 1
+CFLAGS="-O3 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O3 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/$currentPackage/package  || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/$currentPackage*.t?z
@@ -192,8 +193,8 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 sh autogen.sh
-CFLAGS="-O2 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O2 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+CFLAGS="-O3 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O3 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/$currentPackage*.t?z
@@ -204,7 +205,7 @@ mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 git clone https://github.com/lxde/libfm $currentPackage
 cd $currentPackage
 version=`git describe | cut -d- -f1`
-./autogen.sh --prefix=/usr --without-gtk --disable-demo && CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" \
+./autogen.sh --prefix=/usr --without-gtk --disable-demo && CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \
@@ -213,7 +214,7 @@ version=`git describe | cut -d- -f1`
 	--enable-udisks \
 	--with-extra-only 
 	
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -236,7 +237,7 @@ sh ./autogen.sh && CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp
   --program-prefix= \
   --program-suffix= 
 
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
@@ -307,6 +308,7 @@ CopyToDevel
 cd $MODULEPATH/packages/
 
 rm etc/xdg/autostart/blueman.desktop
+rm usr/bin/canberra*
 rm usr/share/lxqt/wallpapers/after-the-rain.jpg
 rm usr/share/lxqt/wallpapers/appleflower.png
 rm usr/share/lxqt/wallpapers/beam.png
@@ -328,6 +330,8 @@ rm usr/share/lxqt/wallpapers/waves-purple-logo.jpg
 rm usr/share/nm-tray/nm-tray*.qm
 
 rm -R usr/lib
+rm -R usr/lib64/gnome-settings-daemon-3.0/
+rm -R usr/lib64/gtk-2.0/
 rm -R usr/lib64/qt5/mkspecs
 rm -R usr/share/featherpad
 rm -R usr/share/lxqt/graphics

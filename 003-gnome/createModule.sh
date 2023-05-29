@@ -80,15 +80,14 @@ rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/oniguruma*
+rm $MODULEPATH/packages/openssl*
 rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
-rm $MODULEPATH/packages/xorg-server-xwayland*
 rm $MODULEPATH/packages/xtrans*
 
 # slackware current only removal -- these are already in base
 if [ $SLACKWAREVERSION == "current" ]; then
 	rm $MODULEPATH/packages/libnma*
-	rm $MODULEPATH/packages/openssl*
 	rm $MODULEPATH/packages/vte*
 fi
 
@@ -97,8 +96,6 @@ mkdir -p /usr/local > /dev/null 2>&1
 ln -s /usr/include /usr/local/include > /dev/null 2>&1
 
 if [ $SLACKWAREVERSION != "current" ]; then
-	rm $MODULEPATH/packages/openssl*
-
 	currentPackage=gsettings-desktop-schemas
 	cd $SCRIPTPATH/gnome/$currentPackage || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
@@ -196,7 +193,6 @@ cd $SCRIPTPATH/gnome/$package || exit 1
 sh ${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/$package-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-cd ..
 done
 
 ### fake root
@@ -217,6 +213,7 @@ CopyToDevel
 cd $MODULEPATH/packages/
 
 rm etc/xdg/autostart/blueman.desktop
+rm etc/xdg/autostart/ibus*.desktop
 rm usr/bin/canberra*
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
@@ -228,6 +225,9 @@ rm usr/bin/gtk4-widget-factory
 rm usr/bin/js91
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
+rm -R etc/dconf
+rm -R etc/geoclue
+rm -R etc/opt
 rm -R usr/lib
 rm -R usr/lib64/aspell
 rm -R usr/lib64/python2.7
@@ -236,9 +236,21 @@ rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gnome-settings-daemon-3.0
 rm -R usr/lib64/tracker-3.0
 rm -R usr/lib64/python3.9/site-packages/pip*
-rm -R usr/share/gdb
+rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
+rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
+rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
+rm -R usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
+rm -R usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
+rm -R usr/share/dbus-1/services/org.gnome.evince.Daemon.service
+rm -R usr/share/dbus-1/services/org.gnome.FileRoller.service
+rm -R usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Extract.service
+rm -R usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Files.service
+rm -R usr/share/dbus-1/services/org.gnome.ScreenSaver.service
+rm -R usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
+rm -R usr/share/gjs-1.0
 rm -R usr/share/glade/pixmaps
 rm -R usr/share/gst-plugins-base
+rm -R usr/share/gstreamer-1.0/gdb
 rm -R usr/share/gtk-4.0
 rm -R usr/share/ibus
 rm -R usr/share/installed-tests
@@ -250,9 +262,9 @@ rm -R usr/share/vala
 rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
-find usr/lib64/gstreamer-1.0 -mindepth 1 -maxdepth 1 ! \( -name "libcluttergst3.so" -o -name "libgstcogl.so" \) -exec rm -rf '{}' \; 2>/dev/null
-
-find usr/share/xsessions -mindepth 1 -maxdepth 1 ! \( -name "gnome.desktop" \) -exec rm -rf '{}' \; 2>/dev/null
+find etc/dbus-1/system.d/ -mindepth 1 -maxdepth 1 ! \( -name "net.hadess.PowerProfiles.conf" \) -exec rm -rf '{}' \; 2>/dev/null
+find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
+find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
 

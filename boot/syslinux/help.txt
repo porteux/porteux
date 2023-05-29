@@ -1,5 +1,5 @@
 
- PorteuX v0.1
+ PorteuX v0.4
 
  If you need to edit the boot command line, hit [Tab].
  When finished, press [Enter].
