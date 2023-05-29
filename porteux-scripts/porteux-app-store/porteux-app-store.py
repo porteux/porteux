@@ -108,7 +108,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         return box
 
-    def show_dialog_options(self, app_name, app):
+    def show_dialog_options(self, applicationName, app):
         dialog = Gtk.Dialog(title="Select Options", parent=self, modal=True)
         dialog.set_default_size(250, 220)
         dialog.set_resizable(False)
@@ -132,7 +132,7 @@ class AppWindow(Gtk.ApplicationWindow):
         
         combobox_channel.set_active(0)
 
-        label_application=Gtk.Label(label=app_name)
+        label_application=Gtk.Label(label=applicationName)
         dialog.vbox.pack_start(label_application, False, False, 5)
         
         dialog.vbox.pack_start(Gtk.Separator(), False, False, 5)
@@ -203,16 +203,16 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_main_close_clicked(self, button):
         self.destroy()
 
-    def on_section_button_clicked(self, section_name, app_name):
-        app = APPS_DICT[section_name][app_name]
+    def on_section_button_clicked(self, section_name, applicationName):
+        app = APPS_DICT[section_name][applicationName]
 
         if "dialog" in app:
             subprocess.call([ GTK_DIALOG_SCRIPT, "-p", app["dialog"]])
 
         if "channels" in app:
-            self.show_dialog_options(app_name, app)
+            self.show_dialog_options(applicationName, app)
         else:
-            appFolderDialog = GtkFolder(self, app_name)
+            appFolderDialog = GtkFolder(self, applicationName)
             response = appFolderDialog.run()
             if response == Gtk.ResponseType.OK:
                 self.execute_external_script(APP_STORE_PATH + "applications/" + app["script"] + ".sh " + appFolderDialog.get_result())
@@ -255,19 +255,19 @@ class GtkFolder(Gtk.Dialog):
         self.entry = Gtk.Entry()
         self.grid.attach(self.entry, 11, 0, 19, 1)
         self.add_folder_button = Gtk.Button.new_from_icon_name("folder-open-symbolic", Gtk.IconSize.BUTTON)
-        self.add_folder_button.connect("clicked", self.on_add_folder_button_clicked)
+        self.add_folder_button.connect("clicked", self.on_add_folder_button_clicked, applicationName)
         self.grid.attach(self.add_folder_button, 30, 0, 1, 1)
         self.vb.add(self.grid)
         self.show_all()
 
-    def on_add_folder_button_clicked(self, button):
+    def on_add_folder_button_clicked(self, button, applicationName):
         dir_dialog = Gtk.FileChooserDialog(title = "Choose Folder", parent = self, action = Gtk.FileChooserAction.SELECT_FOLDER)
         dir_dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK)
         dir_dialog.set_default_size(400, 280)
         response = dir_dialog.run()
 
         if Gtk.ResponseType.OK == response:
-            self.src_dir = dir_dialog.get_filename() + '/steam'
+            self.src_dir = dir_dialog.get_filename() + "/" + applicationName.replace(" ", "-").lower()
             self.entry.set_text(self.src_dir)
 
         dir_dialog.destroy()
