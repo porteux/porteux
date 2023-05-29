@@ -14,6 +14,9 @@ mkdir "$BUILDDIR"
 MODULEDIR="$BUILDDIR/$CURRENTPACKAGE-module"
 mkdir "$MODULEDIR"
 
+CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
+[ ! $CURRENTUSER ] && CURRENTUSER=guest
+
 ARCH=$(uname -m)
 
 CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
