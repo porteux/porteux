@@ -123,7 +123,6 @@ for package in \
 	gnome-user-share \
 	libwnck4 \
 	gnome-panel \
-	jq \
 	gnome-browser-connector \
 	file-roller \
 	power-profiles-daemon \
