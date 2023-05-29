@@ -76,7 +76,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         icon = Gio.ThemedIcon(name=icon_name)
         image = Gtk.Image.new_from_gicon(icon, Gtk.IconSize.DIALOG)
-        label = Gtk.Label(label_name)
+        label = Gtk.Label(label=label_name)
         
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         box.pack_start(image, True, True, 0)
@@ -154,17 +154,17 @@ class AppWindow(Gtk.ApplicationWindow):
             combobox_channel.append_text("stable")
             combobox_channel.set_active(1)
 
-        label_application=Gtk.Label(application.title())
+        label_application=Gtk.Label(label=application.title())
         dialog.vbox.pack_start(label_application, False, False, 5)
         
         dialog.vbox.pack_start(Gtk.Separator(), False, False, 5)
         
-        label_channel=Gtk.Label("Channel:")
+        label_channel=Gtk.Label(label="Channel:")
         label_channel.set_halign(Gtk.Align.START)
         dialog.vbox.pack_start(label_channel, False, False, 5)
         dialog.vbox.add(combobox_channel)
 
-        language_label=Gtk.Label("Language:")
+        language_label=Gtk.Label(label="Language:")
         language_label.set_halign(Gtk.Align.START)
         dialog.vbox.pack_start(language_label, False, False, 5)
         dialog.vbox.add(combobox_language)
@@ -207,7 +207,6 @@ class AppWindow(Gtk.ApplicationWindow):
 
         if output:
             self.show_dialog_porteux(output.splitlines()[-1])
-
         else:
             self.show_dialog_porteux("Error creating module.")
 
@@ -261,7 +260,11 @@ class AppWindow(Gtk.ApplicationWindow):
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/pcsx2-builder.sh")
         elif button_name == "Steam":
             subprocess.call(["/opt/porteux-scripts/gtkdialog.py", "-p", "Steam requires multilib, also available in the app store."])
-            self.execute_external_script("/opt/porteux-scripts/porteux-app-store/steam-builder.sh")
+            steamFolderDialog = GtkFolder(self, "Steam")
+            response = steamFolderDialog.run()
+            if response == Gtk.ResponseType.OK:
+                self.execute_external_script("/opt/porteux-scripts/porteux-app-store/steam-builder.sh " + steamFolderDialog.get_result())
+            steamFolderDialog.destroy()
         elif button_name == "Teams":
             self.execute_external_script("/opt/porteux-scripts/porteux-app-store/teams-builder.sh")
         elif button_name == "Telegram":
@@ -293,6 +296,51 @@ class AppWindow(Gtk.ApplicationWindow):
 
     def on_dialog_button_close_clicked(self, button, dialog):
         dialog.destroy()
+
+class GtkFolder(Gtk.Dialog):
+    def __init__(self, parent, applicationName):
+        Gtk.Dialog.__init__(self, applicationName + " Installation Path", parent, 0, border_width = 10, height_request = 200, width_request = 460)
+        self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK)
+        
+        self.result = ""
+        self.connect("response", self.on_response)
+        self.vb = self.get_content_area()
+        
+        self.text = Gtk.Label()
+        self.text.set_markup("Choose a folder to install " + applicationName)
+        self.vb.add(self.text)
+
+        self.vb.pack_start(Gtk.Separator(), False, False, 10)
+
+        self.grid = Gtk.Grid(column_spacing = 20)
+        self.label = Gtk.Label(xalign = 0.0)
+        self.label.set_markup("Folder:")
+        self.grid.attach(self.label, 10, 0, 1, 1)
+        self.entry = Gtk.Entry()
+        self.grid.attach(self.entry, 11, 0, 19, 1)
+        self.add_folder_button = Gtk.Button.new_from_icon_name("folder-open-symbolic", Gtk.IconSize.BUTTON)
+        self.add_folder_button.connect("clicked", self.on_add_folder_button_clicked)
+        self.grid.attach(self.add_folder_button, 30, 0, 1, 1)
+        self.vb.add(self.grid)
+        self.show_all()
+
+    def on_add_folder_button_clicked(self, button):
+        dir_dialog = Gtk.FileChooserDialog(title = "Choose Folder", parent = self, action = Gtk.FileChooserAction.SELECT_FOLDER)
+        dir_dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK)
+        dir_dialog.set_default_size(400, 280)
+        response = dir_dialog.run()
+        
+        if Gtk.ResponseType.OK == response:
+            self.src_dir = dir_dialog.get_filename() + '/steam'
+            self.entry.set_text(self.src_dir)
+
+        dir_dialog.destroy()
+        
+    def on_response(self, widget, response_id):
+        self.result = self.entry.get_text()
+
+    def get_result(self):
+        return self.result
 
 class Application(Gtk.Application):
     def __init__(self, *args, **kwargs):
