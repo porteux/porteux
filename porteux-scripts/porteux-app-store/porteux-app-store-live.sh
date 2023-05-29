@@ -10,10 +10,11 @@ BASE_GITHUB_URL="https://raw.githubusercontent.com"
 USER="porteux"
 REPO="porteux"
 FOLDER="porteux-scripts/porteux-app-store"
-LIST_FILE="porteux-app-store-list"
+LIST_FILE="porteux-app-store-list.json"
 MAX_AGE_HOURS=6
 FILE_DOWNLOADED=0
 LOCAL_PATH=$(dirname "$0")
+APPS_PATH="$LOCAL_PATH/applications"
 
 update_files(){
     /opt/porteux-scripts/gtkprogress.py -w "PorteuX App Store" -m "Updating files..." -t " " &
@@ -39,16 +40,13 @@ download_list(){
 }
 
 download_files(){
-    while read -r file_name; do
-        if [ $file_name = porteux-app-store-live.sh ]; then
-            continue
-        fi
-        destination_directory=$(dirname "$LOCAL_PATH/$file_name")
+    # Get all values from "script" keys from JSON file
+    grep -o '"script": "[^"]*' $1 | grep -o '[^"]*$' | while read -r file_name; do
+        destination_directory=$(dirname "$APPS_PATH")
         mkdir -p "$destination_directory" > /dev/null 2>&1
-        file_directory=$(dirname "$file_name")
-        wget -N "$BASE_GITHUB_URL/$USER/$REPO/main/$FOLDER/$file_name" -P "$LOCAL_PATH/$file_directory"
-        chmod -R 755 "$LOCAL_PATH/$file_name" > /dev/null 2>&1
-    done < "$1"
+        wget -N "$BASE_GITHUB_URL/$USER/$REPO/main/$FOLDER/applications/$file_name.sh" -P "$APPS_PATH/"
+        chmod -R 755 "$APPS_PATH/$file_name.sh" > /dev/null 2>&1
+    done
 }
 
 copy_icons(){
@@ -68,7 +66,7 @@ else
     if [ $time_diff -gt $max_age_seconds ]; then
         update_files
     fi
-fi
+fi 
 
 # run app store
 "$LOCAL_PATH/porteux-app-store.py"
