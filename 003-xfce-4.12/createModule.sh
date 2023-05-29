@@ -43,28 +43,24 @@ mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 git clone https://github.com/lxde/gpicview || exit 1
 cd $currentPackage
 ./autogen.sh
-CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
-make -j8 install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
+make -j$NUMBERTHREADS install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=lxdm
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp -R $SCRIPTPATH/../lxdm/* .
+cp -R $SCRIPTPATH/../$currentPackage/* .
 GTK3=no sh $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
-currentPackage=epdfview
-version=0.1.8
+currentPackage=atril
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-cp $SCRIPTPATH/extras/$currentPackage/$currentPackage-$version.tar.?z .
-tar xvf $currentPackage-$version.tar.?z || exit 1
-cd $currentPackage-$version
-CXXFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
-make -j8 install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
-cd $MODULEPATH/$currentPackage/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
+info=$(DownloadLatestFromGithub "mate-desktop" $currentPackage)
+version=${info#* }
+cp $SCRIPTPATH/extras/$currentPackage/$currentPackage.SlackBuild .
+sh $currentPackage.SlackBuild || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=audacious
@@ -92,7 +88,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-make -j8 install || exit 1
+make -j$NUMBERTHREADS install || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 # temporary to build yelp-tools
@@ -110,7 +106,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-make -j8 install || exit 1
+make -j$NUMBERTHREADS install || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 # temporary to build engrampa and mate-search-tool
@@ -123,7 +119,7 @@ tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 mkdir build && cd build
 meson --prefix /usr ..
-ninja -j8 install || exit 1
+ninja -j$NUMBERTHREADS install || exit 1
 rm -fr $MODULEPATH/$currentPackage
 
 # required from now on
@@ -142,8 +138,8 @@ sed -i "s|baobab||g" ./Makefile.am
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|mate-screenshot||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
-CFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
-make -j8 install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
+make -j$NUMBERTHREADS install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
 /sbin/makepkg -l y -c n $MODULEPATH/packages/mate-search-tool-$version-$ARCH-1.txz
@@ -156,8 +152,8 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
-CFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
-make -j8 && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
+make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
@@ -168,8 +164,8 @@ mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 wget https://download.gnome.org/sources/gtksourceview/2.10/gtksourceview-$version.tar.gz || exit 1
 tar xvf $currentPackage-$version.tar.?z || exit 1
 cd $currentPackage-$version
-CFLAGS="-O2 -m64 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
-make -j8 install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
+make -j$NUMBERTHREADS install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz

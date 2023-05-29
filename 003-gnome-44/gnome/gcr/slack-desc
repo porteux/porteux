@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+   |-----handy-ruler------------------------------------------------------|
+gcr: gcr (crypto library and ui for gnome-keyring)
+gcr:
+gcr: GCR is a library for displaying certificates and crypto UI accessing
+gcr: key stores. It also provides the viewer for crypto files on the GNOME
+gcr: desktop.
+gcr:
+gcr: GCK is a library for accessing PKCS#11 modules like smart cards, in a
+gcr: (G)object oriented way.
+gcr:
+gcr:
+gcr:

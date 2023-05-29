@@ -116,7 +116,7 @@ tar xvf $filename && rm $filename || exit 1
 cd $currentPackage*
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
-make -j8 && make install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
+make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
@@ -158,9 +158,6 @@ CopyToDevel
 
 cd $MODULEPATH/packages/
 
-rm bluedevil-mime.xml
-rm kde5.xml
-rm org.kde.kio.smb.xml
 rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
 
@@ -169,6 +166,7 @@ rm -R usr/share/chromium
 rm -R usr/share/emoticons/EmojiOne
 rm -R usr/share/featherpad
 rm -R usr/share/gdb
+rm -R usr/share/gdm
 rm -R usr/share/gnome
 rm -R usr/share/google-chrome
 rm -R usr/share/icons/breeze_cursors
@@ -212,11 +210,8 @@ GenerateCaches
 
 ### kde specific mime cache
 
-cp -r $MODULEPATH/packages/usr/share/mime/packages $MODULEPATH 
-update-mime-database $PORTEUXBUILDERPATH/caches/mime/
+rm -fr $PORTEUXBUILDERPATH/caches/mime/packages
 cp -r $PORTEUXBUILDERPATH/caches/mime $MODULEPATH/packages/usr/share/
-rm -r $MODULEPATH/packages/usr/share/mime/packages
-mv $MODULEPATH/packages $MODULEPATH/packages/usr/share/mime
 
 ### finalize
 

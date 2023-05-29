@@ -1,0 +1,62 @@
+#!/bin/sh
+
+# Get the AccountsService value for LANG over the system dbus. This is the user setting in GNOME:
+gnome_lang_usr="$(busctl get-property org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u) org.freedesktop.Accounts.User Language | cut -d\" -f2)"
+
+# The rest of this code is based on KDE's wayland-session script, 
+# with some modifications to suit GDM.
+# Copyright (C) 2022 Bob Funk <bobfunk11@gmail.com>
+# This code was copied from KDE's "wayland-session" script.
+# Copyright (C) 2015-2016 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+# This file is extracted from kde-workspace (kdm/kfrontend/genkdmconf.c)
+# Copyright (C) 2001-2005 Oswald Buddenhagen <ossi@kde.org>
+
+case $SHELL in
+  */bash)
+    [ -z "$BASH" ] && exec $SHELL $0 "$@"
+    set +o posix
+    [ -f /etc/profile ] && . /etc/profile
+    if [ -f $HOME/.bash_profile ]; then
+      . $HOME/.bash_profile
+    elif [ -f $HOME/.bash_login ]; then
+      . $HOME/.bash_login
+    elif [ -f $HOME/.profile ]; then
+      . $HOME/.profile
+    fi
+    [ "$DESKTOP_SESSION" = "gnome" ] && [ -n "$gnome_lang_usr" ] && export LANG=$gnome_lang_usr
+  ;;
+  */zsh)
+    [ -z "$ZSH_NAME" ] && exec $SHELL $0 "$@"
+    [ -d /etc/zsh ] && zdir=/etc/zsh || zdir=/etc
+    zhome=${ZDOTDIR:-$HOME}
+    # zshenv is always sourced automatically.
+    [ -f $zdir/zprofile ] && . $zdir/zprofile
+    [ -f $zhome/.zprofile ] && . $zhome/.zprofile
+    [ -f $zdir/zlogin ] && . $zdir/zlogin
+    [ -f $zhome/.zlogin ] && . $zhome/.zlogin
+    [ "$DESKTOP_SESSION" = "gnome" ] && [ -n "$gnome_lang_usr" ] && export LANG=$gnome_lang_usr
+    emulate -R sh
+  ;;
+  */csh|*/tcsh)
+    # [t]cshrc is always sourced automatically.
+    # Note that sourcing csh.login after .cshrc is non-standard.
+    wlsess_tmp=`mktemp /tmp/wlsess-env-XXXXXX`
+    $SHELL -c "if (-f /etc/csh.login) source /etc/csh.login; if (-f ~/.login) source ~/.login; /bin/sh -c 'export -p' >! $wlsess_tmp"
+    . $wlsess_tmp
+    rm -f $wlsess_tmp
+  ;;
+  */fish)
+    xsess_tmp=`mktemp /tmp/xsess-env-XXXXXX`
+    $SHELL --login -c "/bin/sh -c 'export -p' > $xsess_tmp"
+    . $xsess_tmp
+    rm -f $xsess_tmp
+  ;;
+  *) # Plain sh, ksh, and anything we do not know.
+    [ -f /etc/profile ] && . /etc/profile
+    [ -f $HOME/.profile ] && . $HOME/.profile
+    [ "$DESKTOP_SESSION" = "gnome" ] && [ -n "$gnome_lang_usr" ] && export LANG=$gnome_lang_usr
+  ;;
+esac
+
+# We have to use eval here:
+eval exec "$@"

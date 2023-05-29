@@ -4,7 +4,7 @@ PKGNAM=audacious
 VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 BUILD=${BUILD:-1}
 
-NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+NUMJOBS="-j$(nproc --all)"
 
 # Automatically determine the architecture we're building on:
 if [ -z "$ARCH" ]; then
@@ -29,22 +29,22 @@ PKG=$TMP/package-${PKGNAM}
 OUTPUT=$MODULEPATH/packages
 
 if [ "$ARCH" = "i586" ]; then
-  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+  SLKCFLAGS="-O3 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "s390" ]; then
-  SLKCFLAGS="-O2"
+  SLKCFLAGS="-O3"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O2"
+  SLKCFLAGS="-O3"
   LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "arm" ]; then
-  SLKCFLAGS="-O2 -march=armv4 -mtune=xscale"
+  SLKCFLAGS="-O3 -march=armv4 -mtune=xscale"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "armel" ]; then
-  SLKCFLAGS="-O2 -march=armv4t"
+  SLKCFLAGS="-O3 -march=armv4t"
   LIBDIRSUFFIX=""
 else
-  SLKCFLAGS="-O2"
+  SLKCFLAGS="-O3"
   LIBDIRSUFFIX=""
 fi
 

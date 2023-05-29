@@ -15,25 +15,23 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-#wget -c https://pub.mate-desktop.org/releases/1.27/$PRGNAM-$VERSION.tar.xz
-
 if [ "$ARCH" = "i586" ]; then
-  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+  SLKCFLAGS="-O3 -march=i586 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+  SLKCFLAGS="-O3 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "aarch64" ]; then
-  SLKCFLAGS="-O2 -fPIC"
+  SLKCFLAGS="-O3 -fPIC"
   LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O2 -fPIC"
+  SLKCFLAGS="-O3 -fPIC"
   LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "arm" ]; then
-  SLKCFLAGS="-O2 -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard"
+  SLKCFLAGS="-O3 -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard"
   LIBDIRSUFFIX=""
 else
-  SLKCFLAGS="-O2"
+  SLKCFLAGS="-O3"
   LIBDIRSUFFIX=""
 fi
 
@@ -54,12 +52,8 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-autoreconf -fiv
-
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-LDFLAGS="-L/usr/share/texmf/lib" \
-CPPFLAGS="-I/usr/share/texmf/include" \
 ./configure \
   --prefix=/usr \
   --libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -67,25 +61,22 @@ CPPFLAGS="-I/usr/share/texmf/include" \
   --localstatedir=/var \
   --mandir=/usr/man \
   --docdir=/usr/doc/$PRGNAM-$VERSION \
-  --disable-synctex \
   --disable-static \
+  --disable-synctex \
+  --enable-shared \
   --enable-introspection \
-  --disable-epub \
+  --enable-t1lib \
+  --enable-pixbuf \
+  --enable-comics \
+  --enable-epub \
+  --enable-xps \
   --build=$ARCH-slackware-linux
 
-make -j8
+make -j$(nproc --all)
 make install DESTDIR=$PKG
 
 # Don't ship .la files:
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
-
-# Stuff still dumped into /usr/share/omf even though we use
-# --disable-scrollkeeper so let's rm it.  Confirmed w/ upstream.
-rm -rf $PKG/usr/share/omf/atril
-
-mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-cat $CWD/doinst.sh > $PKG/install/doinst.sh
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}

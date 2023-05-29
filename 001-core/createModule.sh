@@ -67,7 +67,7 @@ version=17.04
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/$currentPackage/ -A * || exit 1
 wget https://github.com/flyfishzy/p7zip/archive/refs/tags/v$version.tar.gz -O $currentPackage-$version.tar.gz || exit 1
-sed -i "s|make |make -j8 |g" ./$currentPackage.SlackBuild
+sed -i "s|make |make -j$NUMBERTHREADS |g" ./$currentPackage.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
@@ -104,7 +104,7 @@ version=6.2.6
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/$currentPackage/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
-sed -i "s|make |make -j8 |g" ./$currentPackage.SlackBuild
+sed -i "s|make |make -j$NUMBERTHREADS |g" ./$currentPackage.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
@@ -117,7 +117,7 @@ version=1.21
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
 wget https://www.kraxel.org/releases/webfs/webfs-$version.tar.gz || exit 1
 tar xvf $currentPackage*.tar.gz && cd $currentPackage-$version || exit 1
-make -j8 install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
+make -j$NUMBERTHREADS install DESTDIR=$MODULEPATH/$currentPackage/package || exit 1
 cd $MODULEPATH/$currentPackage/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/$currentPackage
@@ -251,6 +251,7 @@ rm -R usr/share/terminfo/u
 rm -R usr/share/terminfo/w
 rm -R usr/share/terminfo/z
 rm -R usr/x86_64-slackware-linux
+
 rm etc/init.d
 rm etc/ld.so.cache
 rm etc/motd
@@ -258,8 +259,10 @@ rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
 rm usr/bin/js[0-9]*
 rm usr/bin/smbtorture
+rm usr/lib64/liblibboost_*
 rm usr/libexec/samba/rpcd_*
 rm usr/local/bin/webfsd
+
 find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
