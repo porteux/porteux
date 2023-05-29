@@ -5,29 +5,30 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, Gio
 import os
 from os import getenv, getuid, path
+from os.path import exists
 import subprocess
-from subprocess import run, Popen
 import signal
 import json
+from urllib.request import urlopen
 
 if os.geteuid() != 0:
     this_script = path.abspath(__file__)
-    run(['psu', this_script])
+    subprocess.run(['psu', this_script])
     quit()
 
 GTK_DIALOG_SCRIPT = "/opt/porteux-scripts/gtkdialog.py"
 GTK_PROGRESS_SCRIPT = "/opt/porteux-scripts/gtkprogress.py"
-APP_STORE_PATH = "/mnt/sdd3/Fun/porteux/porteux-scripts/porteux-app-store/"
+APP_STORE_PATH = "/opt/porteux-scripts/porteux-app-store/"
+REPO_FOLDER_PATH = "https://raw.githubusercontent.com/porteux/porteux/main/porteux-scripts/porteux-app-store/"
 
-_ = open(APP_STORE_PATH + 'porteux-app-store-list.json')
-
-APPS_DICT = json.load(_)
-
-_.close()
+CHANGED_FILE_LIST = "porteux-app-store-changed"
 
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        with open(APP_STORE_PATH + 'porteux-app-store-db.json') as db:
+            self.applications = json.load(db)
         
         self.set_has_tooltip(True)
         
@@ -43,7 +44,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         self.box_main.pack_start(Gtk.Separator(), False, False, 5)
 
-        for section, apps in APPS_DICT.items(): 
+        for section, apps in self.applications.items(): 
             section = self.create_section_applications(section, apps)
             self.box_applications.pack_start(section, False, False, 5)
 
@@ -108,7 +109,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         return box
 
-    def show_dialog_options(self, app_name, app):
+    def show_dialog_options(self, applicationName, app):
         dialog = Gtk.Dialog(title="Select Options", parent=self, modal=True)
         dialog.set_default_size(250, 220)
         dialog.set_resizable(False)
@@ -132,7 +133,7 @@ class AppWindow(Gtk.ApplicationWindow):
         
         combobox_channel.set_active(0)
 
-        label_application=Gtk.Label(label=app_name)
+        label_application=Gtk.Label(label=applicationName)
         dialog.vbox.pack_start(label_application, False, False, 5)
         
         dialog.vbox.pack_start(Gtk.Separator(), False, False, 5)
@@ -203,20 +204,22 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_main_close_clicked(self, button):
         self.destroy()
 
-    def on_section_button_clicked(self, section_name, app_name):
-        app = APPS_DICT[section_name][app_name]
+    def on_section_button_clicked(self, section_name, applicationName):
+        app = self.applications[section_name][applicationName]
 
-        if "dialog" in app:
-            subprocess.call([ GTK_DIALOG_SCRIPT, "-p", app["dialog"]])
+        if "tooltip" in app:
+            subprocess.call([ GTK_DIALOG_SCRIPT, "-p", app["tooltip"]])
 
         if "channels" in app:
-            self.show_dialog_options(app_name, app)
-        else:
-            appFolderDialog = GtkFolder(self, app_name)
+            self.show_dialog_options(applicationName, app)
+        elif "askInstallationPath" in app:
+            appFolderDialog = GtkFolder(self, applicationName)
             response = appFolderDialog.run()
             if response == Gtk.ResponseType.OK:
                 self.execute_external_script(APP_STORE_PATH + "applications/" + app["script"] + ".sh " + appFolderDialog.get_result())
             appFolderDialog.destroy() 
+        else:
+            self.execute_external_script(APP_STORE_PATH + "applications/" + app["script"] + ".sh")
 
     def on_dialog_combobox_channel_changed(self, combobox, combobox_language):
         combobox_language.set_sensitive(True)
@@ -255,19 +258,19 @@ class GtkFolder(Gtk.Dialog):
         self.entry = Gtk.Entry()
         self.grid.attach(self.entry, 11, 0, 19, 1)
         self.add_folder_button = Gtk.Button.new_from_icon_name("folder-open-symbolic", Gtk.IconSize.BUTTON)
-        self.add_folder_button.connect("clicked", self.on_add_folder_button_clicked)
+        self.add_folder_button.connect("clicked", self.on_add_folder_button_clicked, applicationName)
         self.grid.attach(self.add_folder_button, 30, 0, 1, 1)
         self.vb.add(self.grid)
         self.show_all()
 
-    def on_add_folder_button_clicked(self, button):
+    def on_add_folder_button_clicked(self, button, applicationName):
         dir_dialog = Gtk.FileChooserDialog(title = "Choose Folder", parent = self, action = Gtk.FileChooserAction.SELECT_FOLDER)
         dir_dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK)
         dir_dialog.set_default_size(400, 280)
         response = dir_dialog.run()
 
         if Gtk.ResponseType.OK == response:
-            self.src_dir = dir_dialog.get_filename() + '/steam'
+            self.src_dir = dir_dialog.get_filename() + "/" + applicationName.replace(" ", "-").lower()
             self.entry.set_text(self.src_dir)
 
         dir_dialog.destroy()
@@ -280,6 +283,16 @@ class GtkFolder(Gtk.Dialog):
 
 class Application(Gtk.Application):
     def __init__(self, *args, **kwargs):
+        with open('/dev/null', 'w') as devnull:
+            progress_dialog = subprocess.Popen(
+                [GTK_PROGRESS_SCRIPT, "-w", "PorteuX App Store", "-m", "Updating application list...", "-t", " "],
+                stderr=devnull
+            )
+
+        self.update_changed_files()
+
+        progress_dialog.send_signal(signal.SIGINT)
+
         super().__init__(*args, application_id="org.porteux_app_store", **kwargs)
         self.window = None
 
@@ -294,6 +307,37 @@ class Application(Gtk.Application):
 
         self.window.show_all()
         self.window.present()
+    
+    def update_changed_files(self):
+
+        with urlopen(REPO_FOLDER_PATH + CHANGED_FILE_LIST) as res:
+            current_data = res.read().decode('utf-8')
+            if res.status == 200:
+                is_changed = True
+                if exists(APP_STORE_PATH + CHANGED_FILE_LIST):
+                    with open(APP_STORE_PATH + CHANGED_FILE_LIST) as local_file:
+                        local_data = local_file.read()
+                        is_changed = local_data != current_data
+
+                if is_changed:
+                    changed_files = current_data.split()
+                    for filename in changed_files:
+                        os.makedirs(os.path.dirname(APP_STORE_PATH + filename), exist_ok=True)
+                        with open(APP_STORE_PATH + filename, 'w') as file, urlopen(REPO_FOLDER_PATH + filename) as nfile:
+                            file.write(nfile.read().decode('utf-8'))
+                        if (filename.endswith('.sh')):
+                            os.chmod(APP_STORE_PATH + filename, 0o755)
+
+                    with open(APP_STORE_PATH + CHANGED_FILE_LIST, 'w') as local_file:
+                        local_file.write(current_data)
+
+        self.copy_icons()
+    
+    def copy_icons(self):
+        subprocess.run(["chmod", "644", APP_STORE_PATH + "icons/* > /dev/null 2>&1"])
+        subprocess.run(["cp", APP_STORE_PATH + "icons/* /usr/share/pixmaps > /dev/null 2>&1"])
+
+
 
 if __name__ == "__main__":
     app = Application()
