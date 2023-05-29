@@ -365,7 +365,7 @@ vga_detect
        proprietary driver at startup.  You must have a module
        containing the appropriate graphics driver stored in your
        /porteux/optional/ directory. The driver module is available in
-       the PorteuX App Store. If you want compile your own driver,
+       the PorteuX App Store. If you want to compile your own driver,
        please note that the module's name must contain nvidia-[number],
        where [number] is the number of the driver version.
 
