@@ -17,7 +17,7 @@ VERSION=$(curl -s $REPOSITORY/ | grep "<tr title=" | grep -oP 'title="\K[^"]+(?=
 
 CURRENTTXZ="wine-$VERSION-x86_64-1sg.txz"
 CURRENTTXZPATH="$BUILDDIR/$CURRENTTXZ"
-wget -T 5 -P "$BUILDDIR" "$REPOSITORY/$VERSION/x86_64/$CURRENTTXZ" || exit 1
+wget -T 15 -P "$BUILDDIR" "$REPOSITORY/$VERSION/x86_64/$CURRENTTXZ" || exit 1
 
 # strip
 txz2dir "$CURRENTTXZPATH" -o="$MODULEDIR" -q || exit 1
