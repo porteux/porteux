@@ -15,7 +15,7 @@ APPIMAGEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH.AppImage"
 rm -fr "$BUILDDIR"
 mkdir "$BUILDDIR" && cd "$BUILDDIR"
 
-wget -T 5 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
+wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
 
 mkdir -p "$MODULEDIR/opt/$CURRENTPACKAGE"
 mkdir -p "$MODULEDIR/usr/share/applications"

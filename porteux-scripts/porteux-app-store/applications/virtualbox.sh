@@ -16,13 +16,16 @@ mkdir "$MODULEDIR"
 
 ARCH=$(uname -m)
 
+CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
+[ ! $CURRENTUSER ] && CURRENTUSER=guest
+
 if [[ ! "$1" || "$1" == "--activate-module" ]]; then
     # download the latest version
     REPOSITORY="http://download.virtualbox.org/virtualbox"
-    wget -T 5 -P "$BUILDDIR" "$REPOSITORY/LATEST.TXT"
+    wget -T 15 -P "$BUILDDIR" "$REPOSITORY/LATEST.TXT"
     CURRENTVERSION=$(cat $BUILDDIR/LATEST.TXT)
     LATESTFILE=$(curl -s $REPOSITORY/"$CURRENTVERSION"/ | grep .run | cut -d "\"" -f2)
-    wget -T 5 -P "$BUILDDIR" "$REPOSITORY/$CURRENTVERSION/$LATESTFILE"
+    wget -T 15 -P "$BUILDDIR" "$REPOSITORY/$CURRENTVERSION/$LATESTFILE"
     INSTALLERPATH="$BUILDDIR/$LATESTFILE"
 else
     # use file provided by the user
@@ -51,8 +54,8 @@ cp -r --parents /opt/VirtualBox $MODULEDIR/
 for a in \`seq 0 6\`; do
     cp -r --parents /etc/rc.d/rc${a}.d/{K[0-9][0-9]vbox*,S[0-9][0-9]vbox*} $MODULEDIR/ 2>/dev/null
 done
-mkdir -p $MODULEDIR/home/guest/.config/VirtualBox/
-cat > $MODULEDIR/home/guest/.config/VirtualBox/VirtualBox.xml << EOF
+mkdir -p $MODULEDIR/home/"$CURRENTUSER"/.config/VirtualBox/
+cat > $MODULEDIR/home/"$CURRENTUSER"/.config/VirtualBox/VirtualBox.xml << EOF
 <?xml version="1.0"?>
 <VirtualBox xmlns="http://www.virtualbox.org/" version="1.12-linux">
   <Global>
@@ -62,7 +65,7 @@ cat > $MODULEDIR/home/guest/.config/VirtualBox/VirtualBox.xml << EOF
   </Global>
 </VirtualBox>
 EOF
-echo guest | sudo -S chown -R guest:users $MODULEDIR/home/guest
+echo "$CURRENTUSER" | sudo -S chown -R "$CURRENTUSER":users $MODULEDIR/home/"$CURRENTUSER"
 
 # strip
 rm -fr $MODULEDIR/opt/VirtualBox/additions
