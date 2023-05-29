@@ -238,7 +238,7 @@
 			]
 		},
 		"Opera": {
-			"script": "browser",
+			"script": "opera",
 			"channels": [
 				"stable",
 				"developer",
@@ -291,7 +291,7 @@
 			]
 		},
 		"Palemoon": {
-			"script": "browser",
+			"script": "palemoon",
 			"channels": [
 				"stable"
 			],
@@ -300,7 +300,7 @@
 			]
 		},
 		"Vivaldi": {
-			"script": "browser",
+			"script": "vivaldi",
 			"channels": [
 				"stable",
 				"snapshot"
