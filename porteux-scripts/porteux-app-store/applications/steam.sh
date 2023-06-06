@@ -4,6 +4,7 @@ CURRENTPACKAGE=steam
 APPLICATIONURL=https://repo.steampowered.com/steam/archive/precise/steam_latest.deb
 ARCH=i586
 OUTPUTDIR="$PORTDIR/modules/"
+
 TEMPDIR="/tmp/$CURRENTPACKAGE-builder"
 MODULEDIR="$TEMPDIR/$CURRENTPACKAGE-module"
 INSTALLDIR="$1"

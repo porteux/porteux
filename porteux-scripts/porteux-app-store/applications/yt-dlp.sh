@@ -11,7 +11,7 @@ MODULEDIR="$BUILDDIR"
 rm -rf "$BUILDDIR"
 mkdir -p "$BUILDDIR/usr/bin" || exit 1
 
-eval wget -T 5 "$APPLICATIONURL" -P "$BUILDDIR/usr/bin" || exit 1
+eval wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR/usr/bin" || exit 1
 chmod 755 ${BUILDDIR}/usr/bin/* 2> /dev/null || exit 1
 
 MODULEFILENAME="$CURRENTPACKAGE-$VERSION-noarch.xzm"

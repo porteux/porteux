@@ -19,13 +19,16 @@ CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
 
 ARCH=$(uname -m)
 
+CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
+[ ! $CURRENTUSER ] && CURRENTUSER=guest
+
 if [[ ! "$1" || "$1" == "--activate-module" ]]; then
     # download the latest version
     REPOSITORY="http://download.virtualbox.org/virtualbox"
-    wget -T 5 -P "$BUILDDIR" "$REPOSITORY/LATEST.TXT"
+    wget -T 15 -P "$BUILDDIR" "$REPOSITORY/LATEST.TXT"
     CURRENTVERSION=$(cat $BUILDDIR/LATEST.TXT)
     LATESTFILE=$(curl -s $REPOSITORY/"$CURRENTVERSION"/ | grep .run | cut -d "\"" -f2)
-    wget -T 5 -P "$BUILDDIR" "$REPOSITORY/$CURRENTVERSION/$LATESTFILE"
+    wget -T 15 -P "$BUILDDIR" "$REPOSITORY/$CURRENTVERSION/$LATESTFILE"
     INSTALLERPATH="$BUILDDIR/$LATESTFILE"
 else
     # use file provided by the user
