@@ -393,13 +393,15 @@
 		},
 		"VirtualBox Guest Additions": {
 			"script": "virtualbox-guestadditions",
-			"tooltip": "This module is meant to be built and loaded inside VirtualBox."
+			"tooltip": "This module is meant to be built and loaded inside VirtualBox.",
+			"infoDialog": "This module is meant to be built and loaded inside VirtualBox."
 		}
 	},
 	"Drivers": {
 		"Nvidia 5xx": {
 			"script": "nvidia",
-			"tooltip": "Nvidia driver will be loaded after the system is restarted."
+			"tooltip": "Nvidia driver will be loaded after the system is restarted.",
+			"infoDialog": "Nvidia driver will be loaded after the system is restarted."
 		}
 	},
 	"Development": {
@@ -428,6 +430,7 @@
 		"Steam":{
 			"script": "steam",
 			"tooltip": "Steam requires multilib, also available in the app store.",
+			"infoDialog": "Steam requires multilib, also available in the app store.",
 			"askInstallationPath": true
 		}
 	},
