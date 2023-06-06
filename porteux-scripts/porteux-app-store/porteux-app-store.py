@@ -69,7 +69,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         self.add(self.box_main)
 
-    def create_button_application(self, label_name):
+    def create_button_application(self, label_name, tooltip):
         icon_name = label_name.lower().split(" ")[0]
 
         icon = Gio.ThemedIcon(name=icon_name)
@@ -82,7 +82,7 @@ class AppWindow(Gtk.ApplicationWindow):
         
         button = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
         button.set_can_focus(False)
-        button.set_tooltip_text(label_name)
+        button.set_tooltip_text(tooltip)
         
         button.add(box)
         
@@ -94,7 +94,12 @@ class AppWindow(Gtk.ApplicationWindow):
         flowbox = Gtk.FlowBox(max_children_per_line = 5, row_spacing = 25, homogeneous = True)
 
         for button_name in apps:
-            button = self.create_button_application(button_name)
+            if "tooltip" in apps[button_name]:
+                tt = apps[button_name]["tooltip"]
+            else:
+                tt = button_name
+
+            button = self.create_button_application(button_name, tt)
             button.connect("clicked", lambda _, name=button_name: self.on_section_button_clicked(section_name, name))
             flowbox.add(button)
 
@@ -207,8 +212,8 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_section_button_clicked(self, section_name, applicationName):
         app = self.applications[section_name][applicationName]
 
-        if "tooltip" in app:
-            subprocess.call([ GTK_DIALOG_SCRIPT, "-p", app["tooltip"]])
+        if "infoDialog" in app:
+            subprocess.call([ GTK_DIALOG_SCRIPT, "-p", app["infoDialog"]])
 
         if "channels" in app:
             self.show_dialog_options(applicationName, app)
