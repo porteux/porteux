@@ -72,7 +72,6 @@ rm $MODULEPATH/packages/xtrans*
 
 # gnome packages
 for package in \
-	gtk4 \
 	libstemmer \
 	exempi \
 	tracker3 \
