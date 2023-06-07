@@ -65,7 +65,6 @@ rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libglvnd*
 rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libwnck3*
-rm $MODULEPATH/packages/oniguruma*
 rm $MODULEPATH/packages/openssl*
 rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/xtrans*

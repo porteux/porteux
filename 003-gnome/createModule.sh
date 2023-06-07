@@ -79,7 +79,6 @@ rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
-rm $MODULEPATH/packages/oniguruma*
 rm $MODULEPATH/packages/openssl*
 rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*

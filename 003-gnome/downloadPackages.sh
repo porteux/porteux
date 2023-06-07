@@ -60,7 +60,6 @@ wait
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
 DownloadPackage "llvm" & # required by mozjs
-DownloadPackage "oniguruma" & # required by jq
 DownloadPackage "rust" &
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "xtrans" &
