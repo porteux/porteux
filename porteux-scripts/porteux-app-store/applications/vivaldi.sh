@@ -7,7 +7,7 @@ fi
 
 if [ `whoami` != root ]; then
 	echo "Please enter root's password below:"
-	su -c "/opt/porteux-scripts/porteux-app-store/builders/vivaldi.sh $1 $2 $3"
+	su -c "/opt/porteux-scripts/porteux-app-store/applications/vivaldi.sh $1 $2 $3"
 	exit 0
 fi
 
