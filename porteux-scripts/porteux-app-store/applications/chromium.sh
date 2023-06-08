@@ -7,7 +7,7 @@ fi
 
 if [ `whoami` != root ]; then
 	echo "Please enter root's password below:"
-	su -c "/opt/porteux-scripts/porteux-app-store/builders/chromium.sh $1 $2 $3"
+	su -c "/opt/porteux-scripts/porteux-app-store/applications/chromium.sh $1 $2 $3"
 	exit 0
 fi
 
@@ -73,7 +73,7 @@ get_module_name(){
 finisher(){
     striptease "$APP" "$1"
 
-    /opt/porteux-scripts/porteux-app-store/builders/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+    /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
     remove_application_temp_dir "$APP" "$2"
 }
 

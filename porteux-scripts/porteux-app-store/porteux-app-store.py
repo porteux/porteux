@@ -4,6 +4,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, Gio
 import os
+import shutil
 from os import getenv, getuid, path
 from os.path import exists
 import subprocess
@@ -339,10 +340,11 @@ class Application(Gtk.Application):
         self.copy_icons()
     
     def copy_icons(self):
-        subprocess.run(["chmod", "644", APP_STORE_PATH + "icons/* > /dev/null 2>&1"])
-        subprocess.run(["cp", APP_STORE_PATH + "icons/* /usr/share/pixmaps > /dev/null 2>&1"])
-
-
+        src = APP_STORE_PATH + "icons/"
+        files = os.listdir(src)
+        for f in files:
+            os.chmod(src + f, 0o644)
+            shutil.copy2(src + f, "/usr/share/pixmaps")
 
 if __name__ == "__main__":
     app = Application()
