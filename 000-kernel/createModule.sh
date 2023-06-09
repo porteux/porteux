@@ -1,14 +1,14 @@
 #!/bin/sh
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ]; then
-    echo "05-devel module needs to be activated"
-    exit 1
+	echo "05-devel module needs to be activated"
+	exit 1
 fi
 
 # switch to root
 if [ $(whoami) != root ]; then
 	echo "Please enter root's password below:"
 	su -c "$0 $1"
-    exit
+	exit
 fi
 
 function version { echo "$@" | awk -F. '{ printf("%d%03d%03d\n", $1,$2,$3); }'; }
