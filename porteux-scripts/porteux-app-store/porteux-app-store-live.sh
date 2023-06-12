@@ -49,4 +49,4 @@ else
 fi 
 
 # run app store
-"$LOCAL_PATH/porteux-app-store.py"
+dbus-run-session -- "$LOCAL_PATH/porteux-app-store.py"
