@@ -5,29 +5,34 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, Gio
 import os
 from os import getenv, getuid, path
+from os.path import exists
 import subprocess
-from subprocess import run, Popen
 import signal
 import json
+from urllib.request import urlopen
 
 if os.geteuid() != 0:
     this_script = path.abspath(__file__)
-    run(['psu', this_script])
+    subprocess.run(['psu', this_script])
     quit()
 
 GTK_DIALOG_SCRIPT = "/opt/porteux-scripts/gtkdialog.py"
 GTK_PROGRESS_SCRIPT = "/opt/porteux-scripts/gtkprogress.py"
-APP_STORE_PATH = "/mnt/sdd3/Fun/porteux/porteux-scripts/porteux-app-store/"
+APP_STORE_PATH = "/opt/porteux-scripts/porteux-app-store/"
+REPO_FOLDER_PATH = "https://raw.githubusercontent.com/porteux/porteux/main/porteux-scripts/porteux-app-store/"
 
-_ = open(APP_STORE_PATH + 'porteux-app-store-list.json')
+APPS_FOLDER = APP_STORE_PATH + 'applications/'
+REPO_APPS_FOLDER = REPO_FOLDER_PATH + 'applications/'
 
-APPS_DICT = json.load(_)
-
-_.close()
+ICONS_FOLDER = '/usr/share/pixmaps/'
+REPO_ICONS_FOLDER = REPO_FOLDER_PATH + 'icons/'
 
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        with open(APP_STORE_PATH + 'porteux-app-store-db.json') as db:
+            self.applications = json.load(db)
         
         self.set_has_tooltip(True)
         
@@ -43,7 +48,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         self.box_main.pack_start(Gtk.Separator(), False, False, 5)
 
-        for section, apps in APPS_DICT.items(): 
+        for section, apps in self.applications.items(): 
             section = self.create_section_applications(section, apps)
             self.box_applications.pack_start(section, False, False, 5)
 
@@ -68,7 +73,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         self.add(self.box_main)
 
-    def create_button_application(self, label_name):
+    def create_button_application(self, label_name, tooltip):
         icon_name = label_name.lower().split(" ")[0]
 
         icon = Gio.ThemedIcon(name=icon_name)
@@ -81,7 +86,7 @@ class AppWindow(Gtk.ApplicationWindow):
         
         button = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
         button.set_can_focus(False)
-        button.set_tooltip_text(label_name)
+        button.set_tooltip_text(tooltip)
         
         button.add(box)
         
@@ -93,7 +98,12 @@ class AppWindow(Gtk.ApplicationWindow):
         flowbox = Gtk.FlowBox(max_children_per_line = 5, row_spacing = 25, homogeneous = True)
 
         for button_name in apps:
-            button = self.create_button_application(button_name)
+            if "tooltip" in apps[button_name]:
+                tt = apps[button_name]["tooltip"]
+            else:
+                tt = button_name
+
+            button = self.create_button_application(button_name, tt)
             button.connect("clicked", lambda _, name=button_name: self.on_section_button_clicked(section_name, name))
             flowbox.add(button)
 
@@ -204,19 +214,21 @@ class AppWindow(Gtk.ApplicationWindow):
         self.destroy()
 
     def on_section_button_clicked(self, section_name, applicationName):
-        app = APPS_DICT[section_name][applicationName]
+        app = self.applications[section_name][applicationName]
 
-        if "dialog" in app:
-            subprocess.call([ GTK_DIALOG_SCRIPT, "-p", app["dialog"]])
+        if "infoDialog" in app:
+            subprocess.call([ GTK_DIALOG_SCRIPT, "-p", app["infoDialog"]])
 
         if "channels" in app:
             self.show_dialog_options(applicationName, app)
-        else:
+        elif "askInstallationPath" in app:
             appFolderDialog = GtkFolder(self, applicationName)
             response = appFolderDialog.run()
             if response == Gtk.ResponseType.OK:
                 self.execute_external_script(APP_STORE_PATH + "applications/" + app["script"] + ".sh " + appFolderDialog.get_result())
             appFolderDialog.destroy() 
+        else:
+            self.execute_external_script(APP_STORE_PATH + "applications/" + app["script"] + ".sh")
 
     def on_dialog_combobox_channel_changed(self, combobox, combobox_language):
         combobox_language.set_sensitive(True)
@@ -280,6 +292,16 @@ class GtkFolder(Gtk.Dialog):
 
 class Application(Gtk.Application):
     def __init__(self, *args, **kwargs):
+        with open('/dev/null', 'w') as devnull:
+            progress_dialog = subprocess.Popen(
+                [GTK_PROGRESS_SCRIPT, "-w", "PorteuX App Store", "-m", "Updating application list...", "-t", " "],
+                stderr=devnull
+            )
+
+        self.update_changed_files()
+
+        progress_dialog.send_signal(signal.SIGINT)
+
         super().__init__(*args, application_id="org.porteux_app_store", **kwargs)
         self.window = None
 
@@ -294,6 +316,45 @@ class Application(Gtk.Application):
 
         self.window.show_all()
         self.window.present()
+    
+    def update_changed_files(self):
+        is_changed = False
+        with urlopen(REPO_FOLDER_PATH + 'porteux-app-store-db.json') as ndb:
+            if ndb.status == 200:
+                db_decoded = ndb.read().decode('utf-8')
+                DB = json.loads(db_decoded)
+                if exists(APP_STORE_PATH + 'porteux-app-store-db.json'):
+                    with open(APP_STORE_PATH + 'porteux-app-store-db.json') as db_file:
+                        is_changed = db_file.read() != db_decoded
+                else:
+                    is_changed = True
+
+                if is_changed:
+                    with open(APP_STORE_PATH + 'porteux-app-store-db.json', 'w') as db_file:
+                        db_file.write(db_decoded)
+                
+        files = [ 'porteux-app-store-live.sh', 'appimage-builder.sh', 'module-builder.sh' ]
+
+        for filename in files:
+            with open(APP_STORE_PATH + filename, 'wb') as file, urlopen(REPO_FOLDER_PATH + filename) as nfile:
+                file.write(nfile.read())
+            os.chmod(APP_STORE_PATH + filename, 0o755)
+        
+        os.makedirs(APPS_FOLDER, exist_ok=True)
+        os.makedirs(ICONS_FOLDER, exist_ok=True)
+        
+        if is_changed:
+            for _, apps in DB.items():
+                for _, app in apps.items():
+                    if "script" in app:
+                        with open(APPS_FOLDER + app['script'] + '.sh', 'w') as script, urlopen(REPO_APPS_FOLDER + app['script'] + '.sh') as nscript:
+                            script.write(nscript.read().decode('utf-8'))
+                        os.chmod(APPS_FOLDER + app['script'] + '.sh', 0o755)
+                    if "icon" in app:
+                        if not exists(ICONS_FOLDER + app['icon']):
+                            with open(ICONS_FOLDER + app['icon'], 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
+                                icon.write(nicon.read())
+                            os.chmod(ICONS_FOLDER + app['icon'], 0o644)
 
 if __name__ == "__main__":
     app = Application()

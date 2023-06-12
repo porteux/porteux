@@ -393,18 +393,21 @@
 		},
 		"VirtualBox Guest Additions": {
 			"script": "virtualbox-guestadditions",
-			"dialog": "This module is meant to be built and loaded inside VirtualBox."
+			"tooltip": "This module is meant to be built and loaded inside VirtualBox.",
+			"infoDialog": "This module is meant to be built and loaded inside VirtualBox."
 		}
 	},
 	"Drivers": {
 		"Nvidia 5xx": {
 			"script": "nvidia",
-			"dialog": "Nvidia driver will be loaded after the system is restarted."
+			"tooltip": "Nvidia driver will be loaded after the system is restarted.",
+			"infoDialog": "Nvidia driver will be loaded after the system is restarted."
 		}
 	},
 	"Development": {
 		"Devel Kit": {
-			"script": "devel"
+			"script": "devel",
+			"icon": "devel.png"
 		},
 		"Notepad++ (Next)": {
 			"script": "notepadnext"
@@ -415,7 +418,8 @@
 	},
 	"Office": {
 		"OnlyOffice":{
-			"script": "onlyoffice"
+			"script": "onlyoffice",
+			"icon": "onlyoffice.png"
 		}
 	},
 	"Games": {
@@ -427,7 +431,9 @@
 		},
 		"Steam":{
 			"script": "steam",
-			"dialog": "Steam requires multilib, also available in the app store."
+			"tooltip": "Steam requires multilib, also available in the app store.",
+			"infoDialog": "Steam requires multilib, also available in the app store.",
+			"askInstallationPath": true
 		}
 	},
 	"Messengers": {
@@ -443,7 +449,8 @@
 	},
 	"Utils": {
 		"Crippled Sources":{
-			"script": "crippled-sources"
+			"script": "crippled-sources",
+			"icon": "crippled.png"
 		},
 		"Etcher": {
 			"script": "etcher"
