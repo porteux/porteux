@@ -18,7 +18,7 @@ if os.geteuid() != 0:
 
 GTK_DIALOG_SCRIPT = "/opt/porteux-scripts/gtkdialog.py"
 GTK_PROGRESS_SCRIPT = "/opt/porteux-scripts/gtkprogress.py"
-APP_STORE_PATH = "/opt/porteux-scripts/porteux-app-store"
+APP_STORE_PATH = "/opt/porteux-scripts/porteux-app-store/"
 REPO_FOLDER_PATH = "https://raw.githubusercontent.com/porteux/porteux/main/porteux-scripts/porteux-app-store/"
 
 APPS_FOLDER = APP_STORE_PATH + 'applications/'
