@@ -406,7 +406,8 @@
 	},
 	"Development": {
 		"Devel Kit": {
-			"script": "devel"
+			"script": "devel",
+			"icon": "devel.png"
 		},
 		"Notepad++ (Next)": {
 			"script": "notepadnext"
@@ -417,7 +418,8 @@
 	},
 	"Office": {
 		"OnlyOffice":{
-			"script": "onlyoffice"
+			"script": "onlyoffice",
+			"icon": "onlyoffice.png"
 		}
 	},
 	"Games": {
@@ -447,7 +449,8 @@
 	},
 	"Utils": {
 		"Crippled Sources":{
-			"script": "crippled-sources"
+			"script": "crippled-sources",
+			"icon": "crippled.png"
 		},
 		"Etcher": {
 			"script": "etcher"
