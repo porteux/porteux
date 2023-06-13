@@ -79,6 +79,7 @@ Feel free to report any issues or request changes. Any feedback is welcome.
 ## Thanks
 
 arleson (core team)<br />
+theUtopian (contributor)<br />
 blaze (@porteus)<br />
 brokenman (@porteus)<br />
 frank honolka (@snuk)<br />
