@@ -25,7 +25,7 @@ update_app(){
         chmod -R 755 "$LOCAL_PATH/$APP_STORE_FILE" > /dev/null 2>&1
     else
         echo "Error updating App Store"
-        fi
+    fi
 
     kill ${prog} > /dev/null 2>&1
 }
