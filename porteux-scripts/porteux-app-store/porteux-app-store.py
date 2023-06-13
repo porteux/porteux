@@ -4,7 +4,6 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, Gio
 import os
-import shutil
 from os import getenv, getuid, path
 from os.path import exists
 import subprocess
@@ -19,10 +18,14 @@ if os.geteuid() != 0:
 
 GTK_DIALOG_SCRIPT = "/opt/porteux-scripts/gtkdialog.py"
 GTK_PROGRESS_SCRIPT = "/opt/porteux-scripts/gtkprogress.py"
-APP_STORE_PATH = "/opt/porteux-scripts/porteux-app-store/"
+APP_STORE_PATH = "/opt/porteux-scripts/porteux-app-store"
 REPO_FOLDER_PATH = "https://raw.githubusercontent.com/porteux/porteux/main/porteux-scripts/porteux-app-store/"
 
-CHANGED_FILE_LIST = "porteux-app-store-changed"
+APPS_FOLDER = APP_STORE_PATH + 'applications/'
+REPO_APPS_FOLDER = REPO_FOLDER_PATH + 'applications/'
+
+ICONS_FOLDER = '/usr/share/pixmaps/'
+REPO_ICONS_FOLDER = REPO_FOLDER_PATH + 'icons/'
 
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
@@ -315,36 +318,43 @@ class Application(Gtk.Application):
         self.window.present()
     
     def update_changed_files(self):
-
-        with urlopen(REPO_FOLDER_PATH + CHANGED_FILE_LIST) as res:
-            current_data = res.read().decode('utf-8')
-            if res.status == 200:
-                is_changed = True
-                if exists(APP_STORE_PATH + CHANGED_FILE_LIST):
-                    with open(APP_STORE_PATH + CHANGED_FILE_LIST) as local_file:
-                        local_data = local_file.read()
-                        is_changed = local_data != current_data
+        is_changed = False
+        with urlopen(REPO_FOLDER_PATH + 'porteux-app-store-db.json') as ndb:
+            if ndb.status == 200:
+                db_decoded = ndb.read().decode('utf-8')
+                DB = json.loads(db_decoded)
+                if exists(APP_STORE_PATH + 'porteux-app-store-db.json'):
+                    with open(APP_STORE_PATH + 'porteux-app-store-db.json') as db_file:
+                        is_changed = db_file.read() != db_decoded
+                else:
+                    is_changed = True
 
                 if is_changed:
-                    changed_files = current_data.split()
-                    for filename in changed_files:
-                        os.makedirs(os.path.dirname(APP_STORE_PATH + filename), exist_ok=True)
-                        with open(APP_STORE_PATH + filename, 'w') as file, urlopen(REPO_FOLDER_PATH + filename) as nfile:
-                            file.write(nfile.read().decode('utf-8'))
-                        if (filename.endswith('.sh')):
-                            os.chmod(APP_STORE_PATH + filename, 0o755)
+                    with open(APP_STORE_PATH + 'porteux-app-store-db.json', 'w') as db_file:
+                        db_file.write(db_decoded)
+                
+        files = [ 'porteux-app-store-live.sh', 'appimage-builder.sh', 'module-builder.sh' ]
 
-                    with open(APP_STORE_PATH + CHANGED_FILE_LIST, 'w') as local_file:
-                        local_file.write(current_data)
-
-        self.copy_icons()
-    
-    def copy_icons(self):
-        src = APP_STORE_PATH + "icons/"
-        files = os.listdir(src)
-        for f in files:
-            os.chmod(src + f, 0o644)
-            shutil.copy2(src + f, "/usr/share/pixmaps")
+        for filename in files:
+            with open(APP_STORE_PATH + filename, 'wb') as file, urlopen(REPO_FOLDER_PATH + filename) as nfile:
+                file.write(nfile.read())
+            os.chmod(APP_STORE_PATH + filename, 0o755)
+        
+        os.makedirs(APPS_FOLDER, exist_ok=True)
+        os.makedirs(ICONS_FOLDER, exist_ok=True)
+        
+        if is_changed:
+            for _, apps in DB.items():
+                for _, app in apps.items():
+                    if "script" in app:
+                        with open(APPS_FOLDER + app['script'] + '.sh', 'w') as script, urlopen(REPO_APPS_FOLDER + app['script'] + '.sh') as nscript:
+                            script.write(nscript.read().decode('utf-8'))
+                        os.chmod(APPS_FOLDER + app['script'] + '.sh', 0o755)
+                    if "icon" in app:
+                        if not exists(ICONS_FOLDER + app['icon']):
+                            with open(ICONS_FOLDER + app['icon'], 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
+                                icon.write(nicon.read())
+                            os.chmod(ICONS_FOLDER + app['icon'], 0o644)
 
 if __name__ == "__main__":
     app = Application()
