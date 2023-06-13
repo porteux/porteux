@@ -322,16 +322,19 @@ class Application(Gtk.Application):
                 stderr=devnull
             )
         
-        with urlopen(REPO_FOLDER_PATH + 'porteux-app-store-db.json') as ndb:
-            if ndb.status != 200:
-                progress_dialog.send_signal(signal.SIGINT)
-                return
+        try:
+            with urlopen(REPO_FOLDER_PATH + 'porteux-app-store-db.json') as ndb:
+                if ndb.status != 200:
+                    return
 
-            db_decoded = ndb.read().decode('utf-8')
-            DB = json.loads(db_decoded)
+                db_decoded = ndb.read().decode('utf-8')
+                DB = json.loads(db_decoded)
 
-            with open(APP_STORE_PATH + 'porteux-app-store-db.json', 'w') as db_file:
-                db_file.write(db_decoded)
+                with open(APP_STORE_PATH + 'porteux-app-store-db.json', 'w') as db_file:
+                    db_file.write(db_decoded)
+        except:
+            progress_dialog.send_signal(signal.SIGINT)
+            return
                 
         files = [ 'porteux-app-store-live.sh', 'appimage-builder.sh', 'module-builder.sh' ]
 
