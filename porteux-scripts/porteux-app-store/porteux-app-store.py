@@ -324,7 +324,6 @@ class Application(Gtk.Application):
         
         with urlopen(REPO_FOLDER_PATH + 'porteux-app-store-db.json') as ndb:
             if ndb.status != 200:
-                progress_dialog.send_signal(signal.SIGINT)
                 return
 
             db_decoded = ndb.read().decode('utf-8')

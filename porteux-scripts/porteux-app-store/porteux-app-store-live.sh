@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if [ `whoami` != root ]; then
-	echo "Please enter root's password below:"
-	/opt/porteux-scripts/xorg/psu $(realpath "$0")
-	exit 0
+    echo "Please enter root's password below:"
+    /opt/porteux-scripts/xorg/psu $(realpath "$0")
+    exit 0
 fi
 
 BASE_GITHUB_URL="https://raw.githubusercontent.com"
@@ -46,3 +46,4 @@ fi
 
 # run app store
 "$LOCAL_PATH/porteux-app-store.py"
+
