@@ -10,22 +10,23 @@ import subprocess
 import signal
 import json
 from urllib.request import urlopen
+from datetime import datetime, timezone
+from pathlib import Path
 
 if os.geteuid() != 0:
     this_script = path.abspath(__file__)
     subprocess.run(['psu', this_script])
     quit()
 
+REPO_FOLDER_PATH = "https://raw.githubusercontent.com/porteux/porteux/main/porteux-scripts/porteux-app-store/"
 GTK_DIALOG_SCRIPT = "/opt/porteux-scripts/gtkdialog.py"
 GTK_PROGRESS_SCRIPT = "/opt/porteux-scripts/gtkprogress.py"
 APP_STORE_PATH = "/opt/porteux-scripts/porteux-app-store/"
-REPO_FOLDER_PATH = "https://raw.githubusercontent.com/porteux/porteux/main/porteux-scripts/porteux-app-store/"
-
 APPS_FOLDER = APP_STORE_PATH + 'applications/'
 REPO_APPS_FOLDER = REPO_FOLDER_PATH + 'applications/'
-
 ICONS_FOLDER = '/usr/share/pixmaps/'
 REPO_ICONS_FOLDER = REPO_FOLDER_PATH + 'icons/'
+MAX_AGE_HOURS=6
 
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
@@ -292,16 +293,7 @@ class GtkFolder(Gtk.Dialog):
 
 class Application(Gtk.Application):
     def __init__(self, *args, **kwargs):
-        with open('/dev/null', 'w') as devnull:
-            progress_dialog = subprocess.Popen(
-                [GTK_PROGRESS_SCRIPT, "-w", "PorteuX App Store", "-m", "Updating application list...", "-t", " "],
-                stderr=devnull
-            )
-
         self.update_changed_files()
-
-        progress_dialog.send_signal(signal.SIGINT)
-
         super().__init__(*args, application_id="org.porteux_app_store", **kwargs)
         self.window = None
 
@@ -318,43 +310,54 @@ class Application(Gtk.Application):
         self.window.present()
     
     def update_changed_files(self):
-        is_changed = False
-        with urlopen(REPO_FOLDER_PATH + 'porteux-app-store-db.json') as ndb:
-            if ndb.status == 200:
+        if exists(APP_STORE_PATH + 'porteux-app-store-db.json'):
+            fileStat = Path(APP_STORE_PATH + 'porteux-app-store-db.json').stat()
+            fileDateTime = datetime.fromtimestamp(fileStat.st_mtime, tz=None)
+            if (datetime.today() - fileDateTime).seconds <= 3600 * MAX_AGE_HOURS:
+                return
+        
+        with open('/dev/null', 'w') as devnull:
+            progress_dialog = subprocess.Popen(
+                [GTK_PROGRESS_SCRIPT, "-w", "PorteuX App Store", "-m", "Updating application list...", "-t", " "],
+                stderr=devnull
+            )
+        
+        try:
+            with urlopen(REPO_FOLDER_PATH + 'porteux-app-store-db.json') as ndb:
+                if ndb.status != 200:
+                    return
+
                 db_decoded = ndb.read().decode('utf-8')
                 DB = json.loads(db_decoded)
-                if exists(APP_STORE_PATH + 'porteux-app-store-db.json'):
-                    with open(APP_STORE_PATH + 'porteux-app-store-db.json') as db_file:
-                        is_changed = db_file.read() != db_decoded
-                else:
-                    is_changed = True
 
-                if is_changed:
-                    with open(APP_STORE_PATH + 'porteux-app-store-db.json', 'w') as db_file:
-                        db_file.write(db_decoded)
+                with open(APP_STORE_PATH + 'porteux-app-store-db.json', 'w') as db_file:
+                    db_file.write(db_decoded)
+        except:
+            progress_dialog.send_signal(signal.SIGINT)
+            return
                 
         files = [ 'porteux-app-store-live.sh', 'appimage-builder.sh', 'module-builder.sh' ]
 
         for filename in files:
             with open(APP_STORE_PATH + filename, 'wb') as file, urlopen(REPO_FOLDER_PATH + filename) as nfile:
                 file.write(nfile.read())
-            os.chmod(APP_STORE_PATH + filename, 0o755)
-        
+                os.chmod(APP_STORE_PATH + filename, 0o755)
+
         os.makedirs(APPS_FOLDER, exist_ok=True)
-        os.makedirs(ICONS_FOLDER, exist_ok=True)
         
-        if is_changed:
-            for _, apps in DB.items():
-                for _, app in apps.items():
-                    if "script" in app:
-                        with open(APPS_FOLDER + app['script'] + '.sh', 'w') as script, urlopen(REPO_APPS_FOLDER + app['script'] + '.sh') as nscript:
-                            script.write(nscript.read().decode('utf-8'))
-                        os.chmod(APPS_FOLDER + app['script'] + '.sh', 0o755)
-                    if "icon" in app:
-                        if not exists(ICONS_FOLDER + app['icon']):
-                            with open(ICONS_FOLDER + app['icon'], 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
-                                icon.write(nicon.read())
-                            os.chmod(ICONS_FOLDER + app['icon'], 0o644)
+        for _, apps in DB.items():
+            for _, app in apps.items():
+                if "script" in app:
+                    with open(APPS_FOLDER + app['script'] + '.sh', 'w') as script, urlopen(REPO_APPS_FOLDER + app['script'] + '.sh') as nscript:
+                        script.write(nscript.read().decode('utf-8'))
+                    os.chmod(APPS_FOLDER + app['script'] + '.sh', 0o755)
+                if "icon" in app:
+                    if not exists(ICONS_FOLDER + app['icon']):
+                        with open(ICONS_FOLDER + app['icon'], 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
+                            icon.write(nicon.read())
+                        os.chmod(ICONS_FOLDER + app['icon'], 0o644)
+        
+        progress_dialog.send_signal(signal.SIGINT)
 
 if __name__ == "__main__":
     app = Application()
