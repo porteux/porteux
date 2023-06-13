@@ -344,7 +344,6 @@ class Application(Gtk.Application):
                 os.chmod(APP_STORE_PATH + filename, 0o755)
 
         os.makedirs(APPS_FOLDER, exist_ok=True)
-        os.makedirs(ICONS_FOLDER, exist_ok=True)
         
         for _, apps in DB.items():
             for _, app in apps.items():
