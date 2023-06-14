@@ -110,12 +110,10 @@ for package in \
 	nautilus-python \
 	gdm \
 	gspell \
-	editorconfig-core-c \
 	gnome-text-editor \
 	eog \
 	evince \
 	gnome-system-monitor \
-	vte \
 	gnome-console \
 	gnome-tweaks \
 	gnome-user-share \
@@ -123,6 +121,7 @@ for package in \
 	gnome-panel \
 	gnome-browser-connector \
 	file-roller \
+	gnome-backgrounds \
 	power-profiles-daemon \
 ; do
 cd $SCRIPTPATH/gnome/$package || exit 1

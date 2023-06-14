@@ -8,6 +8,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
 DownloadPackage "dconf" &
+DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gexiv2" &

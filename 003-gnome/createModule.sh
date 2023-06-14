@@ -166,7 +166,6 @@ for package in \
 	libnma-gtk4 \
 	gnome-control-center \
 	mutter \
-	gjs \
 	gnome-shell \
 	gnome-session \
 	gnome-menus \
@@ -185,6 +184,7 @@ for package in \
 	gnome-panel \
 	gnome-browser-connector \
 	file-roller \
+	gnome-backgrounds \
 	power-profiles-daemon \
 ; do
 cd $SCRIPTPATH/gnome/$package || exit 1
