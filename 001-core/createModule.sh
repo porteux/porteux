@@ -231,6 +231,12 @@ rm -R usr/local/sbin
 rm -R usr/local/share
 rm -R usr/local/src
 rm -R usr/share/applications
+rm -R usr/share/common-lisp
+rm -R usr/share/glib-2.0/gdb
+rm -R usr/share/glib-2.0/gettext
+rm -R usr/share/glib-2.0/valgrind
+rm -R usr/share/guile
+rm -R usr/share/icu
 rm -R usr/share/info
 rm -R usr/share/kbd/keymaps/amiga
 rm -R usr/share/kbd/keymaps/atari
