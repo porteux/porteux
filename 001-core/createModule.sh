@@ -290,6 +290,7 @@ rm usr/bin/smbtorture
 rm usr/lib64/liblibboost_*
 rm usr/libexec/samba/rpcd_*
 rm usr/local/bin/webfsd
+rm var/db/Makefile
 
 find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
