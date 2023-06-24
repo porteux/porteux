@@ -89,6 +89,14 @@ rm -fr $MODULEPATH/$currentPackage
 
 ### packages outside slackware repository
 
+currentPackage=sysvinit
+version=3.07
+mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
+cp $SCRIPTPATH/extras/$currentPackage/* .
+wget https://github.com/slicer69/sysvinit/releases/download/$version/sysvinit-$version.tar.xz -O $currentPackage-$version.tar.gz || exit 1
+sh $currentPackage.SlackBuild || exit 1
+rm -fr $MODULEPATH/$currentPackage
+
 currentPackage=p7zip
 version=17.04
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage

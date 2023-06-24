@@ -208,7 +208,6 @@ DownloadPackage "sshfs" &
 DownloadPackage "sudo" &
 DownloadPackage "sysfsutils" &
 DownloadPackage "sysklogd" &
-DownloadPackage "sysvinit" &
 DownloadPackage "sysvinit-functions" &
 wait
 DownloadPackage "sysvinit-scripts" &
