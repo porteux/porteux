@@ -61,7 +61,7 @@ echo 'blacklist nouveau
 options nouveau modeset=0' > $INSTALLERFOLDER/etc/modprobe.d/nvidia-installer-disable-nouveau.conf
 
 # get driver version
-DRIVERFILE=$(find lib$SYSTEMBITS/libEGL_nvidia.so* \! -type l)
+DRIVERFILE=$(find /usr/lib$SYSTEMBITS/libEGL_nvidia.so* \! -type l)
 DRIVERVERSION=$(echo $DRIVERFILE | cut -d'.' -f3-)
 
 # build xzm module
