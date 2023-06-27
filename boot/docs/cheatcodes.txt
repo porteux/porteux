@@ -137,11 +137,11 @@ from=/path/porteux.iso
 
 fsck
 
-   ... Enables a filesystem check for ext(2,3,4) partitions during
-       boot time before anything is mounted by PorteuX. XFS does
-       not need fsck as a check is performed automatically during
-       the mount operation.
-       NOTE:  On some systems, you will need to use the 'delay='
+   ... Enables a filesystem check for ext(2,3,4), fat and ntfs
+       partitions during boot time before anything is mounted.
+       XFS does not need fsck as a check is performed automatically
+       during the mount operation.
+       NOTE: On some systems, you will need to use the 'delay='
        cheatcode in order to allow your devices to settle up.
 
 guiexec=my_script
