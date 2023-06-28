@@ -30,8 +30,7 @@ echo  "Cleaning up driver directory..."
 find $INSTALLERFOLDER -name '*.la' -delete
 find $INSTALLERFOLDER -type f -maxdepth 1 -delete
 find $INSTALLERFOLDER -type l -maxdepth 1 -delete
-find $INSTALLERFOLDER/etc/ -type f -maxdepth 1 -delete
-find $INSTALLERFOLDER/etc/ -type d ! -iname 'modprobe.d' ! -iname 'OpenCL' ! -iname 'vulkan' ! -iname 'X11' -maxdepth 1 -exec rm -rf '{}' '+'
+find $INSTALLERFOLDER/etc/ -maxdepth 1 \( -type f -o -type d \) ! \( -name "modprobe.d" -o -name "OpenCL" -o -name "vulkan" -o -name "X11" \) -delete
 rm -f $INSTALLERFOLDER/usr/bin/nvidia-debugdump
 rm -f $INSTALLERFOLDER/usr/bin/nvidia-installer
 rm -f $INSTALLERFOLDER/usr/bin/nvidia-uninstall
