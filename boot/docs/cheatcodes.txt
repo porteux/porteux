@@ -140,9 +140,13 @@ fsck
    ... Enables a filesystem check for ext(2,3,4), fat and ntfs
        partitions during boot time before anything is mounted.
        XFS does not need fsck as a check is performed automatically
-       during the mount operation.
+       when it's mounted. A log file will be shown after boot.
        NOTE: On some systems, you will need to use the 'delay='
        cheatcode in order to allow your devices to settle up.
+
+fscknolog
+
+   ... Same as above but the log file won't be shown after boot.
 
 guiexec=my_script
 guiexec=firefox;pidgin
