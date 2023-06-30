@@ -102,7 +102,7 @@ rm -fr $MODULEPATH/$currentPackage
 
 currentPackage=x265
 mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/multimedia/$currentPackage/ -A * || exit 1
+cp $SCRIPTPATH/extras/$currentPackage/* .
 wget https://bitbucket.org/multicoreware/${currentPackage}_git/get/HEAD.tar.gz || exit 1
 tar xvf HEAD.tar.gz && rm HEAD.tar.gz || exit 1
 cd multicoreware-$currentPackage*
