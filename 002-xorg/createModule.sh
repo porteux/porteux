@@ -230,6 +230,7 @@ rm -R usr/lib
 rm -R usr/lib64/atkmm-*
 rm -R usr/lib64/cairomm-*
 rm -R usr/lib64/clang
+rm -R usr/lib64/dri/*.la
 rm -R usr/lib64/gdkmm-*
 rm -R usr/lib64/giomm-*
 rm -R usr/lib64/glibmm-*
@@ -325,9 +326,21 @@ rm usr/share/xsessions/openbox-kde.desktop
 
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
-mv $MODULEPATH/packages/usr/lib64/dri $MODULEPATH/ # move out usr/lib64/dri so we can strip safely
+# move out things that don't support stripping
+mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/dri $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libglibmm-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libgtkmm-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libgdkmm-* $MODULEPATH/
+
 GenericStrip
+AggressiveStrip
+
+mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec/
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/libglibmm-* $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/libgtkmm-* $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/libgdkmm-* $MODULEPATH/packages/usr/lib64/
 
 ### copy cache files
 

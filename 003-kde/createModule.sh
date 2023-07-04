@@ -199,6 +199,7 @@ rm -R usr/share/phonon4qt5
 rm -R usr/share/wallpapers/Next
 
 GenericStrip
+AggressiveStrip
 
 ### copy cache files
 

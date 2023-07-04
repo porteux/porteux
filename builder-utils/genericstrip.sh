@@ -82,7 +82,9 @@ GenericStrip() {
 	
 	find "$CURRENTDIR"/usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
 
-	find "$CURRENTDIR" | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
+	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
+}
 
-	find "$CURRENTDIR" | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
+AggressiveStrip() {
+	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag --remove-section=.eh_frame --remove-section=.eh_frame_ptr -R .note -R .comment -R .note.GNU-stack --remove-section=.jcr 2> /dev/null
 }

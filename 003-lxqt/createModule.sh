@@ -357,6 +357,7 @@ rm -R usr/share/screengrab/translations
 rm -R usr/share/Thunar
 
 GenericStrip
+AggressiveStrip
 
 ### copy cache files
 
