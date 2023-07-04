@@ -571,6 +571,7 @@ rm -R usr/share/gdm
 rm -R usr/share/gnome
 
 GenericStrip
+AggressiveStrip
 
 ### copy cache files
 

@@ -52,6 +52,19 @@ if [[ "$@" == *"--strip"* ]]; then
 	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libnvidia-rtcore.so*
 	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libnvoptix.so*
 	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libnvidia-gtk2*
+	
+	source "$PWD/../builder-utils/genericstrip.sh"
+	
+	mkdir $INSTALLERFOLDER/nostrip
+	mkdir $INSTALLERFOLDER/nostrip64
+	
+	mv $INSTALLERFOLDER/usr/lib/libnvidia-glvkspirv.* $INSTALLERFOLDER/nostrip
+	mv $INSTALLERFOLDER/usr/lib64/libnvidia-glvkspirv.* $INSTALLERFOLDER/nostrip64
+	
+	AggressiveStrip
+	
+	mv $INSTALLERFOLDER/nostrip/libnvidia-glvkspirv.* $INSTALLERFOLDER/usr/lib
+	mv $INSTALLERFOLDER/nostrip64/libnvidia-glvkspirv.* $INSTALLERFOLDER/usr/lib64
 fi
 
 # disable nouveau

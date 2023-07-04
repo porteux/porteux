@@ -230,7 +230,13 @@ find usr/share/libmateweather -mindepth 1 -maxdepth 1 ! \( -name "Locations.xml"
 
 find usr/share/themes -mindepth 1 -maxdepth 1 ! \( -name "Adwaita" -o -name "Adwaita-dark" -o -name "DustBlue" \) -exec rm -rf '{}' \; 2>/dev/null
 
+# move out things that don't support stripping
+mv $MODULEPATH/packages/usr/bin/mate-system-monitor $MODULEPATH/
+
 GenericStrip
+AggressiveStrip
+
+mv $MODULEPATH/usr/bin/mate-system-monitor $MODULEPATH/packages/usr/bin
 
 ### copy cache files
 

@@ -304,7 +304,13 @@ rm -R usr/share/lua
 
 rm usr/share/applications/mimeinfo.cache
 
+# move out things that don't support stripping
+mv $MODULEPATH/packages/usr/bin/transmission-gtk $MODULEPATH/
+
 GenericStrip
+AggressiveStrip
+
+mv $MODULEPATH/transmission-gtk $MODULEPATH/packages/usr/bin/
 
 ### copy cache files
 
