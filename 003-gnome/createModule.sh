@@ -23,41 +23,41 @@ DownloadFromSlackware
 
 # only include libgtk file, since gtk+3-classic breaks Gnome's UI
 currentPackage=gtk+3
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-mv $MODULEPATH/packages/$currentPackage-[0-9]* .
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg $currentPackage-*.txz || exit 1
-mkdir $currentPackage-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libgtk-3* $currentPackage-stripped-$version || exit 1
-cd $currentPackage-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/$currentPackage
+ROOT=./ installpkg ${currentPackage}-*.txz || exit 1
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libgtk-3* ${currentPackage}-stripped-$version || exit 1
+cd ${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside Slackware repository
 
 currentPackage=audacious
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
 version=${info#* }
-cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
-sh $currentPackage-gtk.SlackBuild || exit 1
-rm -fr $MODULEPATH/$currentPackage
+cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
+sh ${currentPackage}-gtk.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
 version=${info#* }
-cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
-sh $currentPackage-gtk.SlackBuild || exit 1
-rm -fr $MODULEPATH/$currentPackage
+cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
+sh ${currentPackage}-gtk.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=meson
-	mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 	cp $SCRIPTPATH/extras/meson/* .
-	sh $currentPackage.SlackBuild || exit 1
-	rm -fr $MODULEPATH/package-$currentPackage
-	rm -fr $MODULEPATH/$currentPackage*
+	sh ${currentPackage}.SlackBuild || exit 1
+	rm -fr $MODULEPATH/package-${currentPackage}
+	rm -fr $MODULEPATH/${currentPackage}*
 	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
 	rm $MODULEPATH/packages/meson-*.txz
 fi
@@ -96,40 +96,40 @@ ln -s /usr/include /usr/local/include > /dev/null 2>&1
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=gsettings-desktop-schemas
-	cd $SCRIPTPATH/gnome/$currentPackage || exit 1
+	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/$currentPackage-*.txz || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 	
 	currentPackage=gtk4
-	cd $SCRIPTPATH/gnome/$currentPackage || exit 1
+	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/$currentPackage-*.txz || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
 	currentPackage=libhandy
-	cd $SCRIPTPATH/gnome/$currentPackage || exit 1
+	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/$currentPackage-*.txz || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
 	currentPackage=libnma
-	cd $SCRIPTPATH/gnome/$currentPackage || exit 1
+	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/$currentPackage-*.txz || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
 	currentPackage=libsoup3
-	cd $SCRIPTPATH/gnome/$currentPackage || exit 1
+	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/$currentPackage-*.txz || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 	rm $MODULEPATH/packages/libsoup3*
 
 	currentPackage=vte
-	cd $SCRIPTPATH/gnome/$currentPackage || exit 1
+	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/$currentPackage-*.txz || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 fi
 
