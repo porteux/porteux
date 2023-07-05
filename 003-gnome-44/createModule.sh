@@ -23,33 +23,33 @@ DownloadFromSlackware
 
 # only include libgtk file, since gtk+3-classic breaks gnome UI
 currentPackage=gtk+3
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-mv $MODULEPATH/packages/$currentPackage-[0-9]* .
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg $currentPackage-*.txz || exit 1
-mkdir $currentPackage-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libgtk-3* $currentPackage-stripped-$version || exit 1
-cd $currentPackage-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/$currentPackage
+ROOT=./ installpkg ${currentPackage}-*.txz || exit 1
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libgtk-3* ${currentPackage}-stripped-$version || exit 1
+cd ${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside Slackware repository
 
 currentPackage=audacious
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
 version=${info#* }
-cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
-sh $currentPackage-gtk.SlackBuild || exit 1
-rm -fr $MODULEPATH/$currentPackage
+cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
+sh ${currentPackage}-gtk.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
 version=${info#* }
-cp $SCRIPTPATH/extras/audacious/$currentPackage-gtk.SlackBuild .
-sh $currentPackage-gtk.SlackBuild || exit 1
-rm -fr $MODULEPATH/$currentPackage
+cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
+sh ${currentPackage}-gtk.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
 installpkg $MODULEPATH/packages/*.txz || exit 1

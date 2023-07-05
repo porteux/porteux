@@ -133,7 +133,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename
 mkdir -p $MODULEPATH/lib/firmware/intel
-cd $currentPackage*
+cd ${currentPackage}*
 ln -s sof-tplg-v$version sof-tplg
 mv sof-tplg $MODULEPATH/lib/firmware/intel
 mv sof-tplg* $MODULEPATH/lib/firmware/intel

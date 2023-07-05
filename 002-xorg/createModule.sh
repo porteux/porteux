@@ -22,59 +22,59 @@ DownloadFromSlackware
 ### packages that require specific stripping
 
 currentPackage=boost
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-mv ../packages/$currentPackage-[0-9]* .
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg $currentPackage-*.txz
-mkdir $currentPackage-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libboost_atomic.so.* $currentPackage-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libboost_program_options.so.* $currentPackage-stripped-$version
-cd $MODULEPATH/$currentPackage/$currentPackage-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/$currentPackage
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libboost_atomic.so.* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libboost_program_options.so.* ${currentPackage}-stripped-$version
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=llvm
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-mv ../packages/$currentPackage-[0-9]* .
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg $currentPackage-*.txz
-mkdir $currentPackage-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/LLVMgold.so $currentPackage-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* $currentPackage-stripped-$version
-cd $currentPackage-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/$currentPackage
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/LLVMgold.so ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped-$version
+cd ${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=vulkan-sdk
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-mv ../packages/$currentPackage-[0-9]* .
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
-ROOT=./ installpkg $currentPackage-*.txz
-mkdir $currentPackage-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* $currentPackage-stripped-$version
-cd $currentPackage-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/$currentPackage
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped-$version
+cd ${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside slackware repository ###
 
 currentPackage=archivemount
 version=0.9.1
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/$currentPackage/ -A * || exit 1
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget --no-check-certificate https://www.cybernoia.de/software/archivemount/archivemount-$version.tar.gz || exit 1
 mv $MODULEPATH/packages/fuse-*.txz .
 installpkg fuse-*.txz || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
 
 # todo: get gtk version from slackware and use it to download the matched gtk classic version
 currentPackage=gtk+3
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 #version=`ls *.tar.?z -a | cut -d'-' -f2- | cut -d'-' -f1`
 #wget https://github.com/lah7/gtk3-classic/releases/download/$version/gtk3-classic-$version-1-x86_64.pkg.tar.zst
 info=$(DownloadLatestSourceFromGithub "lah7" "gtk3-classic")
@@ -82,114 +82,114 @@ filename=${info% *}
 tar xvf "$filename" && rm "$filename" || exit 1
 sed -i "s|+++ .*/gtk/|+++ gtk/|g" gtk3-classic*/*.patch
 sed -i "s|+++ .*/gdk/|+++ gdk/|g" gtk3-classic*/*.patch
-wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/$currentPackage/ || exit 1
-sed -i "s|# Configure, build, and install:|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\n# Configure, build, and install:|g" $currentPackage.SlackBuild
-sed -i "s|Ddemos=true|Ddemos=false|g" $currentPackage.SlackBuild
-sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" $currentPackage.SlackBuild
-sed -i "s|-\${VERSION}-\$ARCH-\${BUILD}|-classic-\${VERSION}-\$ARCH-\${BUILD}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
+wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
+sed -i "s|# Configure, build, and install:|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\n# Configure, build, and install:|g" ${currentPackage}.SlackBuild
+sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
+sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" ${currentPackage}.SlackBuild
+sed -i "s|-\${VERSION}-\$ARCH-\${BUILD}|-classic-\${VERSION}-\$ARCH-\${BUILD}|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=galculator
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/academic/$currentPackage/ -A * || exit 1
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/academic/${currentPackage}/ -A * || exit 1
 info=$(DownloadLatestFromGithub "galculator" "galculator")
 version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sed -i "s|--prefix=/usr |--prefix=/usr --disable-quadmath |g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -i "s|--prefix=/usr |--prefix=/usr --disable-quadmath |g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=imlib2
 version=1.7.4
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/$currentPackage/ -A * || exit 1
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
 wget https://netactuate.dl.sourceforge.net/project/enlightenment/imlib2-src/$version/imlib2-$version.tar.bz2 || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libdaemon
 version=0.14
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/$currentPackage/ -A * || exit 1
-wget http://0pointer.de/lennart/projects/libdaemon/$currentPackage-$version.tar.gz || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
+wget http://0pointer.de/lennart/projects/libdaemon/${currentPackage}-$version.tar.gz || exit 1
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=nss-mdns
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/network/$currentPackage/ -A * || exit 1
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/network/${currentPackage}/ -A * || exit 1
 info=$(DownloadLatestFromGithub "lathiat" "nss-mdns")
 version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=openbox
 version=3.6.1
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/desktop/$currentPackage/ -A * || exit 1
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/desktop/${currentPackage}/ -A * || exit 1
 wget http://openbox.org/dist/openbox/openbox-$version.tar.xz || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=webp-pixbuf-loader
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/graphics/$currentPackage/ -A * || exit 1
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/graphics/${currentPackage}/ -A * || exit 1
 info=$(DownloadLatestFromGithub "aruiz" "webp-pixbuf-loader")
 version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=xclip
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/misc/$currentPackage/ -A * || exit 1
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/misc/${currentPackage}/ -A * || exit 1
 info=$(DownloadLatestFromGithub "astrand" "xclip")
 version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" $currentPackage.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" $currentPackage.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" $currentPackage.SlackBuild
-sh $currentPackage.SlackBuild || exit 1
-mv /tmp/$currentPackage*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/$currentPackage
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=paper-icon-theme
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-wget https://github.com/snwh/$currentPackage/archive/refs/heads/master.tar.gz || exit 1
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget https://github.com/snwh/${currentPackage}/archive/refs/heads/master.tar.gz || exit 1
 tar xvf master.tar.gz && rm master.tar.gz || exit 1
-cd $currentPackage-master
+cd ${currentPackage}-master
 version=$(date -r . +%Y%m%d)
-iconRootFolder=../$currentPackage-$version-noarch/usr/share/icons/Paper
+iconRootFolder=../${currentPackage}-$version-noarch/usr/share/icons/Paper
 mkdir -p $iconRootFolder
 cp -r Paper/cursors $iconRootFolder
 cp -r Paper/cursor.theme $iconRootFolder
-cd ../$currentPackage-$version-noarch
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-$version-noarch.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/$currentPackage
+cd ../${currentPackage}-$version-noarch
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-noarch.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### install poppler so it can be used by the further modules
 
@@ -327,17 +327,19 @@ rm usr/share/xsessions/openbox-kde.desktop
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
 # move out things that don't support stripping
-mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib64/dri $MODULEPATH/
+
+GenericStrip
+
+mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib64/libglibmm-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib64/libgtkmm-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib64/libgdkmm-* $MODULEPATH/
 
-GenericStrip
 AggressiveStrip
 
-mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec/
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec/
 mv $MODULEPATH/libglibmm-* $MODULEPATH/packages/usr/lib64/
 mv $MODULEPATH/libgtkmm-* $MODULEPATH/packages/usr/lib64/
 mv $MODULEPATH/libgdkmm-* $MODULEPATH/packages/usr/lib64/
