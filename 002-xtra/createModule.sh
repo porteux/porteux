@@ -19,7 +19,7 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 DownloadFromSlackware
 
-### packages outside Slackware repository ###
+### packages outside Slackware repository
 
 currentPackage=transmission
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -29,7 +29,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CFLAGS:STRING="-O3 -fPIC -DNDEBUG -ffat-lto-objects" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib$SYSTEMBITS -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF ..
+cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CFLAGS:STRING="-O2 -fPIC -DNDEBUG -ffat-lto-objects" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib$SYSTEMBITS -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF ..
 make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1

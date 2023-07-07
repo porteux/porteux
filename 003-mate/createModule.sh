@@ -237,7 +237,7 @@ mv $MODULEPATH/packages/usr/bin/mate-system-monitor $MODULEPATH/
 
 AggressiveStrip
 
-mv $MODULEPATH/usr/bin/mate-system-monitor $MODULEPATH/packages/usr/bin
+mv $MODULEPATH/mate-system-monitor $MODULEPATH/packages/usr/bin
 
 ### copy cache files
 

@@ -333,16 +333,16 @@ GenericStrip
 
 mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib64/libglibmm-* $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libgtkmm-* $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libgdkmm-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libgtk* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libgdk* $MODULEPATH/
 
 AggressiveStrip
 
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib64/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec/
 mv $MODULEPATH/libglibmm-* $MODULEPATH/packages/usr/lib64/
-mv $MODULEPATH/libgtkmm-* $MODULEPATH/packages/usr/lib64/
-mv $MODULEPATH/libgdkmm-* $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/libgtk* $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/libgdk* $MODULEPATH/packages/usr/lib64/
 
 ### copy cache files
 
