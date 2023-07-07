@@ -3,7 +3,7 @@
 CopyToDevel() {
 	mkdir -p $PORTEUXBUILDERPATH/05-devel/packages  > /dev/null 2>&1
 	cd $MODULEPATH/packages
-	find . -regex '.*\.\(h\|c\|m4\|cmake\|a\|o\|pc\|gir\|deps\|vapi\)$' -exec cp --parents {} $PORTEUXBUILDERPATH/05-devel/packages \;
+	find . -regex '.*\.\(h\|c\|m4\|cmake\|a\|o\|pc\|gir\|deps\|vapi\|in\)$' -exec cp --parents {} $PORTEUXBUILDERPATH/05-devel/packages \;
 }
 
 InstallAdditionalPackages() {
@@ -22,6 +22,5 @@ Finalize() {
 
 	# script clean up
 	rm -fr $MODULEPATH/packages/
-	rm -fr /tmp/SBo/
 }
 

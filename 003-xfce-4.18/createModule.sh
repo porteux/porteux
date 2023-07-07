@@ -17,7 +17,7 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 ### download packages from slackware repositories
 
-#DownloadFromSlackware
+DownloadFromSlackware
 
 ### packages outside Slackware repository
 

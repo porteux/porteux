@@ -31,6 +31,7 @@ DownloadPackage "gstreamer" &
 DownloadPackage "gwenview" &
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
+DownloadPackage "json-glib" &
 DownloadPackage "kactivities" &
 wait
 DownloadPackage "kactivities-stats" &

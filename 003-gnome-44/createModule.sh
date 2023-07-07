@@ -114,6 +114,7 @@ for package in \
 	eog \
 	evince \
 	gnome-system-monitor \
+	vte-gtk4 \
 	gnome-console \
 	gnome-tweaks \
 	gnome-user-share \

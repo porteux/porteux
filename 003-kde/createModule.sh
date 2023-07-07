@@ -150,6 +150,10 @@ InstallAdditionalPackages
 
 mv $MODULEPATH/packages/usr/share/kf5/infopage/body-background.png $MODULEPATH/packages/usr/share/wallpapers
 
+### fix some .desktop files
+
+sed -i "s|Categories=Graphics;|Categories=|g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
+
 ### copy build files to 05-devel
 
 CopyToDevel
@@ -158,6 +162,7 @@ CopyToDevel
 
 cd $MODULEPATH/packages/
 
+rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
 
