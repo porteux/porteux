@@ -332,6 +332,9 @@ mv $MODULEPATH/packages/usr/lib64/dri $MODULEPATH/
 GenericStrip
 
 mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libepoxy* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libFLAC* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libgiomm-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib64/libglibmm-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib64/libgtk* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib64/libgdk* $MODULEPATH/
@@ -340,6 +343,9 @@ AggressiveStrip
 
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib64/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec/
+mv $MODULEPATH/libepoxy* $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/libFLAC* $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/libgiomm-* $MODULEPATH/packages/usr/lib64/
 mv $MODULEPATH/libglibmm-* $MODULEPATH/packages/usr/lib64/
 mv $MODULEPATH/libgtk* $MODULEPATH/packages/usr/lib64/
 mv $MODULEPATH/libgdk* $MODULEPATH/packages/usr/lib64/
