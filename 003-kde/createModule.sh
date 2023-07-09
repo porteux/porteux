@@ -152,7 +152,7 @@ mv $MODULEPATH/packages/usr/share/kf5/infopage/body-background.png $MODULEPATH/p
 
 ### fix some .desktop files
 
-sed -i "s|Categories=Graphics;|Categories=|g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
+sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
 
 ### copy build files to 05-devel
 
@@ -165,6 +165,7 @@ cd $MODULEPATH/packages/
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
+rm usr/share/plasma/avatars/*
 
 rm -R usr/lib
 rm -R usr/share/chromium
@@ -187,7 +188,6 @@ rm -R usr/share/kde4
 rm -R usr/share/kf5/kdoctools
 rm -R usr/share/kf5/locale
 rm -R usr/share/ksplash/Themes/Classic
-rm -R usr/share/plasma/avatars
 rm -R usr/share/plasma/desktoptheme/air
 rm -R usr/share/plasma/desktoptheme/oxygen
 rm -R usr/share/plasma/emoji
@@ -202,6 +202,8 @@ rm -R usr/share/themes/Breeze/gtk-4.0
 rm -R usr/share/themes/Breeze-Dark/gtk-4.0
 rm -R usr/share/phonon4qt5
 rm -R usr/share/wallpapers/Next
+
+find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o -name "Air Balloon.png.license" -o -name "Astronaut.png" -o -name "Astronaut.png.license" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
 AggressiveStrip
