@@ -328,27 +328,10 @@ find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
 # move out things that don't support stripping
 mv $MODULEPATH/packages/usr/lib64/dri $MODULEPATH/
-
 GenericStrip
-
-mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libepoxy* $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libFLAC* $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libgiomm-* $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libglibmm-* $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libgtk* $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libgdk* $MODULEPATH/
+mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib64/
 
 AggressiveStrip
-
-mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib64/
-mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec/
-mv $MODULEPATH/libepoxy* $MODULEPATH/packages/usr/lib64/
-mv $MODULEPATH/libFLAC* $MODULEPATH/packages/usr/lib64/
-mv $MODULEPATH/libgiomm-* $MODULEPATH/packages/usr/lib64/
-mv $MODULEPATH/libglibmm-* $MODULEPATH/packages/usr/lib64/
-mv $MODULEPATH/libgtk* $MODULEPATH/packages/usr/lib64/
-mv $MODULEPATH/libgdk* $MODULEPATH/packages/usr/lib64/
 
 ### copy cache files
 
