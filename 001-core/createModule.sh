@@ -222,6 +222,7 @@ rm -R usr/lib/ldscripts
 rm -R usr/lib/modprobe.d
 rm -R usr/lib/udev
 rm -R usr/lib64/locale/C.utf8
+rm -R usr/lib64/p7zip/Codecs
 rm -R usr/lib64/python2.7
 rm -R usr/lib64/python3.9/idlelib
 rm -R usr/lib64/python3.9/lib2to3
@@ -300,7 +301,11 @@ rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
 rm lib64/*.a
 rm usr/bin/js[0-9]*
+rm usr/bin/7za
+rm usr/bin/7zr
 rm usr/bin/smbtorture
+rm usr/lib64/p7zip/7za
+rm usr/lib64/p7zip/7zr
 rm usr/lib64/liblibboost_*
 rm usr/libexec/samba/rpcd_*
 rm usr/local/bin/webfsd
@@ -312,6 +317,8 @@ find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 mv $MODULEPATH/packages/lib64 $MODULEPATH/ # move out /lib64 so we can strip safely
 GenericStrip
 mv $MODULEPATH/lib64 $MODULEPATH/packages/
+
+AggressiveStrip
 
 ### copy cache files
 

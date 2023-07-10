@@ -6,6 +6,7 @@ source "$PWD/../builder-utils/setflags.sh"
 SetFlags "$MODULENAME"
 
 source "$PWD/../builder-utils/downloadfromslackware.sh"
+source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 
 ### create module folder
@@ -62,6 +63,8 @@ rm -R usr/share/icons
 rm -R usr/share/locale
 rm -R usr/share/sgml/docbook
 rm -R usr/share/valadoc-*
+
+AggressiveStrip
 
 ### add symlink from /usr/include to /usr/local/include required by some packages
 
