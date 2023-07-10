@@ -25,27 +25,27 @@ DownloadFromSlackware
 ### packages that require specific stripping
 
 currentPackage=llvm
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-mv ../packages/$currentPackage-[0-9]* .
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-tar xvf $currentPackage-*.txz
-mkdir -p $currentPackage-stripped-$version/usr/lib
-cp usr/lib/LLVMgold.so $currentPackage-stripped-$version/usr/lib
-cp usr/lib/libLLVM*.so* $currentPackage-stripped-$version/usr/lib
-cd $currentPackage-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/$currentPackage
+tar xvf ${currentPackage}-*.txz
+mkdir -p ${currentPackage}-stripped-$version/usr/lib
+cp usr/lib/LLVMgold.so ${currentPackage}-stripped-$version/usr/lib
+cp usr/lib/libLLVM*.so* ${currentPackage}-stripped-$version/usr/lib
+cd ${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=vulkan-sdk
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-mv ../packages/$currentPackage-[0-9]* .
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
-tar xvf $currentPackage-*.txz
-mkdir -p $currentPackage-stripped-$version/usr/lib
-cp usr/lib/libvulkan.so* $currentPackage-stripped-$version/usr/lib
-cd $currentPackage-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/$currentPackage
+tar xvf ${currentPackage}-*.txz
+mkdir -p ${currentPackage}-stripped-$version/usr/lib
+cp usr/lib/libvulkan.so* ${currentPackage}-stripped-$version/usr/lib
+cd ${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 

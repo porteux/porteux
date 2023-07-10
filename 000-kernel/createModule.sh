@@ -1,14 +1,14 @@
 #!/bin/sh
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ]; then
-    echo "05-devel module needs to be activated"
-    exit 1
+	echo "05-devel module needs to be activated"
+	exit 1
 fi
 
 # switch to root
 if [ $(whoami) != root ]; then
 	echo "Please enter root's password below:"
 	su -c "$0 $1"
-    exit
+	exit
 fi
 
 function version { echo "$@" | awk -F. '{ printf("%d%03d%03d\n", $1,$2,$3); }'; }
@@ -75,17 +75,13 @@ cd linux-$KERNELVERSION
 patch -p1 < $MODULEPATH/linux-$KERNELVERSION/aufs.patch > /dev/null 2>&1
 rm -r $MODULEPATH/a && rm -r $MODULEPATH/b && rm -r $MODULEPATH/aufs
 
-echo "Patching for LTO..."
-wget https://raw.githubusercontent.com/CachyOS/kernel-patches/master/$KERNELMAJORVERSION.$KERNELMINORVERSION/misc/gcc-lto/0001-gcc-LTO-support-for-the-kernel.patch > /dev/null 2>&1
-git apply 0001-gcc-LTO-support-for-the-kernel.patch > /dev/null 2>&1
-
 echo "Building vmlinuz (this may take a while)..."
 CPUTHREADS=$(nproc --all)
 make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 make clean
 
-echo "Installing modules (this may take a while)..."
+echo "Building modules (this may take a while)..."
 make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3 -mtune=skylake" || { echo "Fail to build kernel."; exit 1; }
 make -j$CPUTHREADS modules_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
 make -j$CPUTHREADS firmware_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
@@ -137,7 +133,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename
 mkdir -p $MODULEPATH/lib/firmware/intel
-cd $currentPackage*
+cd ${currentPackage}*
 ln -s sof-tplg-v$version sof-tplg
 mv sof-tplg $MODULEPATH/lib/firmware/intel
 mv sof-tplg* $MODULEPATH/lib/firmware/intel

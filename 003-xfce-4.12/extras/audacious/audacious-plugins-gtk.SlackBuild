@@ -93,5 +93,5 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-gtk3-$ARCH-$BUILD.txz
-/sbin/upgradepkg --install-new --reinstall $OUTPUT/$PKGNAM-$VERSION-gtk3-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-gtk-$ARCH-$BUILD.txz
+/sbin/upgradepkg --install-new --reinstall $OUTPUT/$PKGNAM-$VERSION-gtk-$ARCH-$BUILD.txz

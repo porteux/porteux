@@ -31,6 +31,7 @@ DownloadPackage "gstreamer" &
 DownloadPackage "gwenview" &
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
+DownloadPackage "json-glib" &
 DownloadPackage "kactivities" &
 wait
 DownloadPackage "kactivities-stats" &
@@ -184,6 +185,7 @@ wait
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "kColorPicker" &
 	DownloadPackage "kImageAnnotator" &
+	DownloadPackage "kio-admin" &
 	wait
 fi
 

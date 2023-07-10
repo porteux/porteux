@@ -22,85 +22,85 @@ DownloadFromSlackware
 ### packages that require specific stripping
 
 currentPackage=qt5
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-mv $MODULEPATH/packages/$currentPackage-[0-9]* .
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg qt5*.txz || exit 1
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg $currentPackage-*.txz
-mkdir $currentPackage-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Concurrent.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Core.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5DBus.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5DesignerComponents.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Designer.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5EglFSDeviceIntegration.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5EglFsKmsSupport.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Gui.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Help.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Multimedia.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Network.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5OpenGL.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5PrintSupport.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5QmlModels.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Qml.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5QmlWorkerScript.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickControls2.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickParticles.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickShapes.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Quick.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickTemplates2.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickTest.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickWidgets.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Script.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5ScriptTools.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Sensors.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5SerialPort.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Sql.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Svg.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Test.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5TextToSpeech.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5WaylandClient.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5WaylandCompositor.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5WebChannel.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Widgets.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5X11Extras.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5XcbQpa.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5XmlPatterns.* "$currentPackage-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Xml.* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/bin/qdbus "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/bearer/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/egldeviceintegrations/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/generic/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/iconengines/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/imageformats/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/platforminputcontexts/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/platforms/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/printsupport/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/qmltooling/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/sensors/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/sqldrivers/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/texttospeech/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/wayland-decoration-client/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/wayland-graphics-integration-client/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/wayland-graphics-integration-server/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/wayland-shell-integration/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/xcbglintegrations/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/Qt/labs/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtAudioEngine/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtGraphicalEffects/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtMultimedia/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtQml/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtQuick/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtQuick.2/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtSensors/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtTest/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWayland/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWebChannel/* "$currentPackage-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWebSockets/* "$currentPackage-stripped-$version"
-rm "$currentPackage-stripped-$version"/usr/lib$SYSTEMBITS/*.prl
-cd $currentPackage-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$currentPackage-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/$currentPackage
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Concurrent.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Core.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5DBus.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5DesignerComponents.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Designer.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5EglFSDeviceIntegration.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5EglFsKmsSupport.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Gui.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Help.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Multimedia.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Network.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5OpenGL.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5PrintSupport.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5QmlModels.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Qml.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5QmlWorkerScript.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickControls2.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickParticles.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickShapes.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Quick.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickTemplates2.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickTest.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5QuickWidgets.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Script.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5ScriptTools.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Sensors.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5SerialPort.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Sql.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Svg.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Test.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5TextToSpeech.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5WaylandClient.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5WaylandCompositor.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5WebChannel.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Widgets.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5X11Extras.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5XcbQpa.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5XmlPatterns.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt5Xml.* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/bin/qdbus "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/bearer/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/egldeviceintegrations/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/generic/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/iconengines/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/imageformats/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/platforminputcontexts/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/platforms/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/printsupport/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/qmltooling/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/sensors/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/sqldrivers/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/texttospeech/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/wayland-decoration-client/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/wayland-graphics-integration-client/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/wayland-graphics-integration-server/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/wayland-shell-integration/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/plugins/xcbglintegrations/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/Qt/labs/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtAudioEngine/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtGraphicalEffects/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtMultimedia/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtQml/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtQuick/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtQuick.2/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtSensors/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtTest/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWayland/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWebChannel/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWebSockets/* "${currentPackage}-stripped-$version"
+rm "${currentPackage}-stripped-$version"/usr/lib$SYSTEMBITS/*.prl
+cd ${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside Slackware repository ###
 
@@ -109,11 +109,11 @@ installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
 currentPackage=FeatherPad
 mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-info=$(DownloadLatestFromGithub "tsujan" $currentPackage)
+info=$(DownloadLatestFromGithub "tsujan" ${currentPackage})
 version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
-cd $currentPackage*
+cd ${currentPackage}*
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
 make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
@@ -122,20 +122,20 @@ cd $MODULEPATH/${currentPackage,,}/package
 rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=audacious
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
 version=${info#* }
-cp $SCRIPTPATH/extras/audacious-qt/$currentPackage-qt.SlackBuild .
-sh $currentPackage-qt.SlackBuild || exit 1
-rm -fr $MODULEPATH/$currentPackage
+cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
+sh ${currentPackage}-qt.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/$currentPackage && cd $MODULEPATH/$currentPackage
-info=$(DownloadLatestFromGithub "audacious-media-player" $currentPackage)
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
 version=${info#* }
-cp $SCRIPTPATH/extras/audacious-qt/$currentPackage-qt.SlackBuild .
-sh $currentPackage-qt.SlackBuild || exit 1
-rm -fr $MODULEPATH/$currentPackage
+cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
+sh ${currentPackage}-qt.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 
@@ -150,6 +150,10 @@ InstallAdditionalPackages
 
 mv $MODULEPATH/packages/usr/share/kf5/infopage/body-background.png $MODULEPATH/packages/usr/share/wallpapers
 
+### fix some .desktop files
+
+sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
+
 ### copy build files to 05-devel
 
 CopyToDevel
@@ -158,8 +162,10 @@ CopyToDevel
 
 cd $MODULEPATH/packages/
 
+rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
+rm usr/share/plasma/avatars/*
 
 rm -R usr/lib
 rm -R usr/share/chromium
@@ -182,7 +188,6 @@ rm -R usr/share/kde4
 rm -R usr/share/kf5/kdoctools
 rm -R usr/share/kf5/locale
 rm -R usr/share/ksplash/Themes/Classic
-rm -R usr/share/plasma/avatars
 rm -R usr/share/plasma/desktoptheme/air
 rm -R usr/share/plasma/desktoptheme/oxygen
 rm -R usr/share/plasma/emoji
@@ -198,7 +203,10 @@ rm -R usr/share/themes/Breeze-Dark/gtk-4.0
 rm -R usr/share/phonon4qt5
 rm -R usr/share/wallpapers/Next
 
+find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o -name "Air Balloon.png.license" -o -name "Astronaut.png" -o -name "Astronaut.png.license" \) -exec rm -rf '{}' \; 2>/dev/null
+
 GenericStrip
+AggressiveStrip
 
 ### copy cache files
 

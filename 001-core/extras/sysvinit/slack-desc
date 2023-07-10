@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':'.
+
+        |-----handy-ruler------------------------------------------------------|
+sysvinit: sysvinit (init, the parent of all processes)
+sysvinit:
+sysvinit: System V style init programs by Miquel van Smoorenburg that control
+sysvinit: the booting and shutdown of your system. These support a number of
+sysvinit: system runlevels, each with a specific set of utilities spawned.
+sysvinit: For example, the normal system runlevel is 3, which starts agetty
+sysvinit: on virtual consoles tty1 - tty6. Runlevel 4 starts xdm.
+sysvinit: Runlevel 0 shuts the system down.
+sysvinit:
+sysvinit: Homepage: http://www.nongnu.org/sysvinit/
+sysvinit:
