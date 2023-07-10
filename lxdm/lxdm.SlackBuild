@@ -1,7 +1,7 @@
 #!/bin/sh
 
 PKGNAM=lxdm
-VERSION=${VERSION:-20170805_e3e7517}
+VERSION=${VERSION:-20220901_2d4ba97}
 BUILD=${BUILD:-1}
 
 if [ -z "$ARCH" ]; then
@@ -74,7 +74,7 @@ patch -p1 < $CWD/patches/lxdm-set_DESKTOP_SESSION_in_env.diff
 # According to upstream that seems to be related to a bug in Gtk+3
 # version(ie. 3.18.9) shipped with Slackware 14.2.
 #
-patch -p0 < $CWD/patches/set_user_list_scrolled_min_content_height.patch
+#patch -p0 < $CWD/patches/set_user_list_scrolled_min_content_height.patch
 
 sh autogen.sh || true
 

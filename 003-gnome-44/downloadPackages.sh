@@ -8,6 +8,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
 DownloadPackage "dconf" &
+DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gexiv2" &
@@ -22,9 +23,10 @@ DownloadPackage "gst-plugins-base" &
 DownloadPackage "gst-plugins-good" &
 DownloadPackage "gst-plugins-libav" &
 DownloadPackage "gstreamer" &
+DownloadPackage "gtk4" &
 DownloadPackage "hyphen" &
-DownloadPackage "ibus" &
 wait
+DownloadPackage "ibus" &
 DownloadPackage "json-glib" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
@@ -56,7 +58,6 @@ DownloadPackage "libglvnd" &
 wait
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
-DownloadPackage "oniguruma" & # required by jq
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "xtrans" &
 wait

@@ -82,4 +82,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/${PKGNAM}-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $OUTPUT/${PKGNAM}-gtk4-$VERSION-$ARCH-$BUILD.txz
