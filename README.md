@@ -52,9 +52,7 @@ All this performance benefit is achieved without providing ancient software. It 
 
 ## Compatibility with Porteus 5
 
-Apart from 001-core, 002-xorg and 002-xtra modules, all Porteus 5 modules are compatible with PorteuX. In order to use a given Porteus 5 desktop environment (003-xx) you need to download and activate (during boot time) the compatibility module [009-porteus5-compatibility-stable.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-stable.xzm) (or [009-porteus5-compatibility-current.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-current.xzm) if you're using PorteuX current/unstable).
-
-You might need to run `cache-module` in the terminal, answer 'y', copy /tmp/009-caches.xzm module to your /porteux/base folder and finally reboot.
+PorteuX and Porteus follow the same basic structure, so a given module made in Porteus 5 should work in PorteuX stable and vice-versa, however this does not apply to the base modules (000-kernel, 001-core, 002-xorg, 002-xtra and 003-desktopenvironment).
 
 ## Building
 
