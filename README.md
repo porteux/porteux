@@ -11,8 +11,8 @@ Out of the box PorteuX can open basically any multimedia file. Hardware accelera
 If you're new to PorteuX and have never used Porteus or Slax, it's recommended to read this [in-depth review of Porteus](https://medium.com/@fulalas/porteus-5-review-a-different-and-powerful-linux-distro-33df8789a758).
 
 PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable and current/unstable. Current/unstable is the bleeding edge one and it's recommended for testing. After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases): <br />
-. GNOME 42.10 (or 44.1 in current)<br />
-. KDE 5.23.5 (or 5.27.5 in current)<br />
+. GNOME 42.10 (or 44.2 in current)<br />
+. KDE 5.23.5 (or 5.27.6 in current)<br />
 . LXDE 0.10.1<br />
 . LXQt 1.3.0<br />
 . MATE 1.27.1<br />
@@ -52,9 +52,7 @@ All this performance benefit is achieved without providing ancient software. It 
 
 ## Compatibility with Porteus 5
 
-Apart from 001-core, 002-xorg and 002-xtra modules, all Porteus 5 modules are compatible with PorteuX. In order to use a given Porteus 5 desktop environment (003-xx) you need to download and activate (during boot time) the compatibility module [009-porteus5-compatibility-stable.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-stable.xzm) (or [009-porteus5-compatibility-current.xzm](https://github.com/porteux/porteux/raw/main/extras/009-porteus5-compatibility-current.xzm) if you're using PorteuX current/unstable).
-
-You might need to run `cache-module` in the terminal, answer 'y', copy /tmp/009-caches.xzm module to your /porteux/base folder and finally reboot.
+PorteuX and Porteus follow the same basic structure, so a given module made in Porteus 5 should work in PorteuX stable and vice-versa, however this does not apply to the base modules (000-kernel, 001-core, 002-xorg, 002-xtra and 003-desktopenvironment).
 
 ## Building
 
