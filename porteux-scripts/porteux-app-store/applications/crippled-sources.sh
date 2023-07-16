@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CURRENTPACKAGE=nvidia-driver
+CURRENTPACKAGE=crippled-sources
 PORTEUXFULLVERSION=$(cat /etc/porteux-version)
 PORTEUXVERSION=${PORTEUXFULLVERSION//*-}
 
@@ -13,17 +13,17 @@ else
 	SLACKWAREVERSION=stable
 fi
 
-APPLICATIONURL="https://github.com/porteux/porteux/releases/download/$PORTEUXVERSION/$CURRENTPACKAGE-$SLACKWAREVERSION.zip"
-OUTPUTDIR="$PORTDIR/modules/"
+APPLICATIONURL="https://github.com/porteux/porteux/releases/download/$PORTEUXVERSION/$CURRENTPACKAGE.zip"
+OUTPUTDIR="$PORTDIR/optional/"
 BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
 MODULEDIR="$BUILDDIR/$CURRENTPACKAGE-module"
 
 rm -fr "$BUILDDIR" &>/dev/null
 mkdir "$BUILDDIR" &>/dev/null
 
-wget -T 5 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
-MODULEFILENAME=$(unzip -Z1 $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip) || exit 1
-unzip $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip -d "$BUILDDIR" &>/dev/null || exit 1
+wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
+MODULEFILENAME=$(unzip -Z1 $BUILDDIR/$CURRENTPACKAGE.zip) || exit 1
+unzip $BUILDDIR/$CURRENTPACKAGE.zip -d "$BUILDDIR" &>/dev/null || exit 1
 
 if [ ! -w "$OUTPUTDIR" ]; then
     mv "$BUILDDIR"/"$MODULEFILENAME" /tmp &>/dev/null
