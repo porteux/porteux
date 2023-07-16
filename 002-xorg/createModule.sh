@@ -331,7 +331,9 @@ mv $MODULEPATH/packages/usr/lib64/dri $MODULEPATH/
 GenericStrip
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib64/
 
+mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 AggressiveStrip
+mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
 
 ### copy cache files
 
