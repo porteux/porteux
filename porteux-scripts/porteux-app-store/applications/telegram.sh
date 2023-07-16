@@ -3,7 +3,7 @@
 CURRENTPACKAGE=telegram
 FRIENDLYPACKAGENAME="Telegram"
 CATEGORY=Network
-APPLICATIONURL=$(curl -s https://api.github.com/repos/telegramdesktop/tdesktop/releases/latest | grep "http" | grep ".tar.xz" | head -1 | cut -d \" -f 4)
+APPLICATIONURL=https://telegram.org/dl/desktop/linux
 FULLVERSION=$(curl -s https://api.github.com/repos/telegramdesktop/tdesktop/releases/latest | grep "\"tag_name\":" | cut -d \" -f 4 | head -n 1)
 VERSION="${FULLVERSION//[vV]}"
 ARCH=$(uname -m)
@@ -15,7 +15,7 @@ APPLICATIONFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH"
 rm -fr "$BUILDDIR"
 mkdir "$BUILDDIR" && cd "$BUILDDIR"
 
-wget -T 5 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
+wget -T 15 --content-disposition "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
 tar xvf $BUILDDIR/*.tar.xz -C $BUILDDIR || exit 1
 
 mkdir -p "$MODULEDIR/opt/$CURRENTPACKAGE"
