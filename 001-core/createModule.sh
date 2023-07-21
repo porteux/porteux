@@ -307,6 +307,7 @@ rm usr/bin/smbtorture
 rm usr/lib64/p7zip/7za
 rm usr/lib64/p7zip/7zr
 rm usr/lib64/liblibboost_*
+rm usr/lib64/libslang.so.1*
 rm usr/libexec/samba/rpcd_*
 rm usr/local/bin/webfsd
 rm var/db/Makefile
