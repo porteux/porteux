@@ -20,7 +20,6 @@ DownloadPackage "gstreamer" &
 DownloadPackage "hyphen" &
 wait
 DownloadPackage "ibus" &
-DownloadPackage "json-glib" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libxklavier" &

@@ -315,9 +315,12 @@ rm var/db/Makefile
 find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
-mv $MODULEPATH/packages/lib64 $MODULEPATH/ # move out /lib64 so we can strip safely
+# move out stuff that can't be stripped
+mv $MODULEPATH/packages/lib64 $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
 GenericStrip
 mv $MODULEPATH/lib64 $MODULEPATH/packages/
+mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib64
 
 AggressiveStrip
 

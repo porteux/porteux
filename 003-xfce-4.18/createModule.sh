@@ -293,7 +293,7 @@ rm usr/share/icons/hicolor/scalable/status/keyboard.svg
 rm usr/share/icons/hicolor/scalable/status/phone.svg
 
 GenericStrip
-AggressiveStrip
+AggressiveStripAllAll
 
 ### copy cache files
 

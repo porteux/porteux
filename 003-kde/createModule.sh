@@ -206,7 +206,7 @@ rm -R usr/share/wallpapers/Next
 find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o -name "Air Balloon.png.license" -o -name "Astronaut.png" -o -name "Astronaut.png.license" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
-AggressiveStrip
+AggressiveStripAll
 
 ### copy cache files
 

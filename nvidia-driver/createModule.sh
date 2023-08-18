@@ -49,22 +49,25 @@ if [[ "$@" == *"--strip"* ]]; then
 	rm -f $INSTALLERFOLDER/usr/lib/libnvidia-compiler.so*
 	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libcudadebugger.so*
 	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libnvidia-compiler.so*
-	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libnvidia-rtcore.so*
 	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libnvoptix.so*
 	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libnvidia-gtk2*
 	
 	source "$PWD/../builder-utils/genericstrip.sh"
 	
-	mkdir $INSTALLERFOLDER/nostrip
-	mkdir $INSTALLERFOLDER/nostrip64
+	mkdir $INSTALLERFOLDER/../nostrip
+	mkdir $INSTALLERFOLDER/../nostrip64
 	
-	mv $INSTALLERFOLDER/usr/lib/libnvidia-glvkspirv.* $INSTALLERFOLDER/nostrip
-	mv $INSTALLERFOLDER/usr/lib64/libnvidia-glvkspirv.* $INSTALLERFOLDER/nostrip64
+	mv $INSTALLERFOLDER/usr/lib/libnvidia-glvkspirv.* $INSTALLERFOLDER/../nostrip
+	mv $INSTALLERFOLDER/usr/lib64/libnvidia-glvkspirv.* $INSTALLERFOLDER/../nostrip64
+	mv $INSTALLERFOLDER/usr/lib64/vdpau $INSTALLERFOLDER/../
+	mv $INSTALLERFOLDER/usr/bin $INSTALLERFOLDER/../
 	
-	AggressiveStrip
+	AggressiveStripAll
 	
-	mv $INSTALLERFOLDER/nostrip/libnvidia-glvkspirv.* $INSTALLERFOLDER/usr/lib
-	mv $INSTALLERFOLDER/nostrip64/libnvidia-glvkspirv.* $INSTALLERFOLDER/usr/lib64
+	mv $INSTALLERFOLDER/../nostrip/libnvidia-glvkspirv.* $INSTALLERFOLDER/usr/lib
+	mv $INSTALLERFOLDER/../nostrip64/libnvidia-glvkspirv.* $INSTALLERFOLDER/usr/lib64
+	mv $INSTALLERFOLDER/../vdpau $INSTALLERFOLDER/usr/lib64
+	mv $INSTALLERFOLDER/../bin $INSTALLERFOLDER/usr/
 fi
 
 # disable nouveau
@@ -90,5 +93,9 @@ mv /tmp/$MODULEFILENAME $MODULESFOLDER || exit 1
 rm -f /tmp/nvidia.tar.gz
 rm -f /tmp/nvidia.xzm
 rm -rf $INSTALLERFOLDER
+rm -rf $INSTALLERFOLDER/../nostrip
+rm -rf $INSTALLERFOLDER/../nostrip64
+
+sync
 
 echo "Nvidia driver module has been placed in $MODULESFOLDER"
