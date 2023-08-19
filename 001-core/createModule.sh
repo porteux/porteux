@@ -42,7 +42,6 @@ cp --parents -P usr/lib64/libgmp.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libgmpxx.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libgomp.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libltdl.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libslang.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libstdc++.so.6* ${currentPackage}-stripped-$version/
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
@@ -135,7 +134,7 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=unrar
-version=6.2.6
+version=6.2.10
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
