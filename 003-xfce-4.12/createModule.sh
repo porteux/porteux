@@ -238,6 +238,10 @@ sed -i "s|Utility;||g" $MODULEPATH/packages/usr/share/applications/xfce4-taskman
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/Thunar-bulk-rename.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/xfce4-sensors.desktop
 sed -i "s|Core;||g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
+sed -z -i "s|OnlyShowIn=MATE;\\n||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
+sed -i "s|MATE;||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
+sed -i "s|MATE ||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
+sed -i "s| MATE||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
 
 ### add xfce session
 
