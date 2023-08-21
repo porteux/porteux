@@ -52,13 +52,13 @@ All this performance benefit is achieved without providing ancient software. It 
 
 ## Compatibility with Porteus 5
 
-PorteuX and Porteus follow the same basic structure, so a given module made in Porteus 5 should work in PorteuX stable and vice-versa, however this does not apply to the base modules (000-kernel, 001-core, 002-xorg, 002-xtra and 003-desktopenvironment).
+PorteuX and Porteus follow the same basic structure, so a given module built in Porteus 5 should work in PorteuX current, and modules built in PorteuX stable should work in Porteus 5. However, this does not apply to the base modules (000-kernel, 001-core, 002-xorg, 002-xtra and 003-desktopenvironment).
 
 ## Building
 
 PorteuX can be built in a live session of Slackware 64-bit, Porteus 64-bit or PorteuX 64-bit. At the moment the main scripts are not generating ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-xorg, 002-xtra, 003-desktop-environment, 05-devel, 06-crippled_sources).
 
-To build PorteuX, run the commands below in the exact order as described: <br />
+To build PorteuX, run the commands below as root in the exact order as described: <br />
 1- in 000-kernel folder call `createModule.sh`<br />
 2- in 001-core folder call `createModule.sh`<br />
 3- in 002-xorg folder call `createModule.sh`<br />
