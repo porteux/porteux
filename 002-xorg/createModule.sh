@@ -82,6 +82,8 @@ filename=${info% *}
 tar xvf "$filename" && rm "$filename" || exit 1
 sed -i "s|+++ .*/gtk/|+++ gtk/|g" gtk3-classic*/*.patch
 sed -i "s|+++ .*/gdk/|+++ gdk/|g" gtk3-classic*/*.patch
+rm gtk3-classic*/gtk+-atk-bridge-meson.build.patch
+rm gtk3-classic*/gtk+-atk-bridge-meson_options.txt.patch
 wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 sed -i "s|# Configure, build, and install:|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\n# Configure, build, and install:|g" ${currentPackage}.SlackBuild
 sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
@@ -148,6 +150,7 @@ wget http://openbox.org/dist/openbox/openbox-$version.tar.xz || exit 1
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -z -i "s|make\n|make -j8\n|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
