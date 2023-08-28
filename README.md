@@ -68,7 +68,7 @@ To build PorteuX, run the commands below as root in the exact order as described
 
 In the end all modules will be in their respective subfolders inside /tmp/porteux-builder-[version].
 
-New optimizations made to the kernel require either 32 GB of RAM to build in RAM (default) or 8 GB if the user changes the output to a physical storage unit by changing `PORTEUXBUILDERPATH` in `builder-utils/setflags.sh`.
+New optimizations made to the kernel require either 64 GB of RAM to build in RAM (default) or 8 GB if the user changes the output to a physical storage unit by editing `PORTEUXBUILDERPATH` in `builder-utils/setflags.sh`.
 
 ## Contributing
 
