@@ -97,6 +97,19 @@ wget https://github.com/slicer69/sysvinit/releases/download/$version/sysvinit-$v
 sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=neofetch
+mkdir -p $MODULEPATH/${currentPackage}/package/usr/bin && cd $MODULEPATH/${currentPackage}
+wget https://github.com/hykilpikonna/hyfetch/archive/refs/heads/master.zip -O ${currentPackage}.zip || exit 1
+unzip ${currentPackage}.zip
+rm ${currentPackage}.zip
+cp -p */${currentPackage} package/usr/bin
+chown 755 package/usr/bin/${currentPackage}
+chmod +x package/usr/bin/${currentPackage}
+version=$(date -r package/usr/bin/${currentPackage} +%Y%m%d)
+cd $MODULEPATH/${currentPackage}/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=p7zip
 version=17.04
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
