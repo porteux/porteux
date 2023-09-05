@@ -1,0 +1,19 @@
+--- lxqt-powermanagement/src/idlenesswatcher.cpp	2023-09-04 21:54:49.639947513 +0200
++++ lxqt-powermanagement/src/idlenesswatcher.cpp.patched	2023-09-04 21:54:34.632947656 +0200
+@@ -30,7 +30,6 @@
+ #include <Solid/Device>
+ #include <Solid/Battery>
+ #include <KWindowSystem/KWindowSystem>
+-#include <KWindowSystem/KX11Extras>
+ #include <KWindowSystem/KWindowInfo>
+ #include <QDebug>
+ #include <LXQt/lxqtnotification.h>
+@@ -162,7 +161,7 @@
+ 
+     // check if disable Idleness when fullscreen is enabled
+     if (mPSettings.isDisableIdlenessWhenFullscreenEnabled()) {
+-        WId w = KX11Extras::activeWindow();
++        WId w = KWindowSystem::activeWindow();
+         KWindowInfo info(w, NET::WMState);
+         if (info.hasState(NET::FullScreen)) {
+             QTimer::singleShot(0, this, [] {

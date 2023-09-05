@@ -1,0 +1,155 @@
+--- plugin-taskbar/lxqttaskbutton.cpp	2023-09-04 22:04:03.000000000 +0200
++++ plugin-taskbar/lxqttaskbutton-patched.cpp	2023-09-04 23:03:13.157908379 +0200
+@@ -54,7 +54,7 @@
+ #include "lxqttaskgroup.h"
+ #include "lxqttaskbar.h"
+ 
+-#include <KWindowSystem/KX11Extras>
++#include <KWindowSystem/KWindowSystem>
+ // Necessary for closeApplication()
+ #include <KWindowSystem/NETWM>
+ #include <QX11Info>
+@@ -151,7 +151,7 @@
+     if (ico.isNull())
+     {
+         int devicePixels = mIconSize * devicePixelRatioF();
+-        ico = KX11Extras::icon(mWindow, devicePixels, devicePixels);
++        ico = KWindowSystem::icon(mWindow, devicePixels, devicePixels);
+     }
+     setIcon(ico.isNull() ? XdgIcon::defaultApplicationIcon() : ico);
+ }
+@@ -415,7 +415,7 @@
+  ************************************************/
+ bool LXQtTaskButton::isApplicationActive() const
+ {
+-    return KX11Extras::activeWindow() == mWindow;
++    return KWindowSystem::activeWindow() == mWindow;
+ }
+ 
+ /************************************************
+@@ -426,16 +426,16 @@
+     KWindowInfo info(mWindow, NET::WMDesktop | NET::WMState | NET::XAWMState);
+     if (parentTaskBar()->raiseOnCurrentDesktop() && info.isMinimized())
+     {
+-        KX11Extras::setOnDesktop(mWindow, KX11Extras::currentDesktop());
++        KWindowSystem::setOnDesktop(mWindow, KWindowSystem::currentDesktop());
+     }
+     else
+     {
+         int winDesktop = info.desktop();
+-        if (KX11Extras::currentDesktop() != winDesktop)
+-            KX11Extras::setCurrentDesktop(winDesktop);
++        if (KWindowSystem::currentDesktop() != winDesktop)
++            KWindowSystem::setCurrentDesktop(winDesktop);
+     }
+     // bypass focus stealing prevention
+-    KX11Extras::forceActiveWindow(mWindow);
++    KWindowSystem::forceActiveWindow(mWindow);
+ 
+     setUrgencyHint(false);
+ }
+@@ -445,7 +445,7 @@
+  ************************************************/
+ void LXQtTaskButton::minimizeApplication()
+ {
+-    KX11Extras::minimizeWindow(mWindow);
++    KWindowSystem::minimizeWindow(mWindow);
+ }
+ 
+ /************************************************
+@@ -557,7 +557,7 @@
+     if (!ok)
+         return;
+ 
+-    KX11Extras::setOnDesktop(mWindow, desk);
++    KWindowSystem::setOnDesktop(mWindow, desk);
+ }
+ 
+ /************************************************
+@@ -565,7 +565,7 @@
+  ************************************************/
+ void LXQtTaskButton::moveApplicationToPrevNextDesktop(bool next)
+ {
+-    int deskNum = KX11Extras::numberOfDesktops();
++    int deskNum = KWindowSystem::numberOfDesktops();
+     if (deskNum <= 1)
+         return;
+     int targetDesk = KWindowInfo(mWindow, NET::WMDesktop).desktop() + (next ? 1 : -1);
+@@ -575,7 +575,7 @@
+     else if (targetDesk < 1)
+         targetDesk = deskNum;
+ 
+-    KX11Extras::setOnDesktop(mWindow, targetDesk);
++    KWindowSystem::setOnDesktop(mWindow, targetDesk);
+ }
+ 
+ /************************************************
+@@ -585,10 +585,10 @@
+ {
+     KWindowInfo info(mWindow, NET::WMDesktop);
+     if (!info.isOnCurrentDesktop())
+-        KX11Extras::setCurrentDesktop(info.desktop());
++        KWindowSystem::setCurrentDesktop(info.desktop());
+     if (isMinimized())
+-        KX11Extras::unminimizeWindow(mWindow);
+-    KX11Extras::forceActiveWindow(mWindow);
++        KWindowSystem::unminimizeWindow(mWindow);
++    KWindowSystem::forceActiveWindow(mWindow);
+     const QRect& windowGeometry = KWindowInfo(mWindow, NET::WMFrameExtents).frameGeometry();
+     QList<QScreen *> screens = QGuiApplication::screens();
+     if (screens.size() > 1){
+@@ -628,10 +628,10 @@
+ {
+     KWindowInfo info(mWindow, NET::WMDesktop);
+     if (!info.isOnCurrentDesktop())
+-        KX11Extras::setCurrentDesktop(info.desktop());
++        KWindowSystem::setCurrentDesktop(info.desktop());
+     if (isMinimized())
+-        KX11Extras::unminimizeWindow(mWindow);
+-    KX11Extras::forceActiveWindow(mWindow);
++        KWindowSystem::unminimizeWindow(mWindow);
++    KWindowSystem::forceActiveWindow(mWindow);
+     const QRect& g = KWindowInfo(mWindow, NET::WMGeometry).geometry();
+     int X = g.center().x();
+     int Y = g.center().y();
+@@ -646,10 +646,10 @@
+ {
+     KWindowInfo info(mWindow, NET::WMDesktop);
+     if (!info.isOnCurrentDesktop())
+-        KX11Extras::setCurrentDesktop(info.desktop());
++        KWindowSystem::setCurrentDesktop(info.desktop());
+     if (isMinimized())
+-        KX11Extras::unminimizeWindow(mWindow);
+-    KX11Extras::forceActiveWindow(mWindow);
++        KWindowSystem::unminimizeWindow(mWindow);
++    KWindowSystem::forceActiveWindow(mWindow);
+     const QRect& g = KWindowInfo(mWindow, NET::WMGeometry).geometry();
+     int X = g.bottomRight().x();
+     int Y = g.bottomRight().y();
+@@ -701,7 +701,7 @@
+     */
+ 
+     /********** Desktop menu **********/
+-    int deskNum = KX11Extras::numberOfDesktops();
++    int deskNum = KWindowSystem::numberOfDesktops();
+     if (deskNum > 1)
+     {
+         int winDesk = KWindowInfo(mWindow, NET::WMDesktop).desktop();
+@@ -715,7 +715,7 @@
+ 
+         for (int i = 1; i <= deskNum; ++i)
+         {
+-            auto deskName = KX11Extras::desktopName(i).trimmed();
++            auto deskName = KWindowSystem::desktopName(i).trimmed();
+             if (deskName.isEmpty())
+                 a = deskMenu->addAction(tr("Desktop &%1").arg(i));
+             else
+@@ -726,7 +726,7 @@
+             connect(a, &QAction::triggered, this, &LXQtTaskButton::moveApplicationToDesktop);
+         }
+ 
+-        int curDesk = KX11Extras::currentDesktop();
++        int curDesk = KWindowSystem::currentDesktop();
+         a = menu->addAction(tr("&To Current Desktop"));
+         a->setData(curDesk);
+         a->setEnabled(curDesk != winDesk);

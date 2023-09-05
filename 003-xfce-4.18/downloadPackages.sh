@@ -5,6 +5,7 @@ REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "accountsservice" &
 DownloadPackage "blueman" &
 DownloadPackage "dconf" &
 DownloadPackage "ffmpegthumbnailer" &
