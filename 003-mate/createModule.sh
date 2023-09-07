@@ -234,7 +234,7 @@ GenericStrip
 
 # move out things that don't support aggressive stripping
 mv $MODULEPATH/packages/usr/bin/mate-system-monitor $MODULEPATH/
-AggressiveStrip
+AggressiveStripAll
 mv $MODULEPATH/mate-system-monitor $MODULEPATH/packages/usr/bin
 
 ### copy cache files

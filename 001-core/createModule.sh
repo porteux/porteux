@@ -97,12 +97,26 @@ wget https://github.com/slicer69/sysvinit/releases/download/$version/sysvinit-$v
 sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=neofetch
+mkdir -p $MODULEPATH/${currentPackage}/package/usr/bin && cd $MODULEPATH/${currentPackage}
+wget https://github.com/hykilpikonna/hyfetch/archive/refs/heads/master.zip -O ${currentPackage}.zip || exit 1
+unzip ${currentPackage}.zip
+rm ${currentPackage}.zip
+cp -p */${currentPackage} package/usr/bin
+sed -i "s|has pkginfo && tot pkginfo -i|#has pkginfo && tot pkginfo -i|g" package/usr/bin/${currentPackage}
+chown 755 package/usr/bin/${currentPackage}
+chmod +x package/usr/bin/${currentPackage}
+version=$(date -r package/usr/bin/${currentPackage} +%Y%m%d)
+cd $MODULEPATH/${currentPackage}/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=p7zip
 version=17.04
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://github.com/flyfishzy/p7zip/archive/refs/tags/v$version.tar.gz -O ${currentPackage}-$version.tar.gz || exit 1
-sed -i "s|make |make -j$NUMBERTHREADS |g" ./${currentPackage}.SlackBuild
+sed -i "s|make |make -j$NUMBERTHREADS |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -135,11 +149,11 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=unrar
-version=6.2.6
+version=6.2.10
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
-sed -i "s|make |make -j$NUMBERTHREADS |g" ./${currentPackage}.SlackBuild
+sed -i "s|make |make -j$NUMBERTHREADS |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -307,6 +321,7 @@ rm usr/bin/smbtorture
 rm usr/lib64/p7zip/7za
 rm usr/lib64/p7zip/7zr
 rm usr/lib64/liblibboost_*
+rm usr/lib64/libslang.so.1*
 rm usr/libexec/samba/rpcd_*
 rm usr/local/bin/webfsd
 rm var/db/Makefile
@@ -314,11 +329,13 @@ rm var/db/Makefile
 find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
-mv $MODULEPATH/packages/lib64 $MODULEPATH/ # move out /lib64 so we can strip safely
+# move out stuff that can't be stripped
+mv $MODULEPATH/packages/lib64 $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
 GenericStrip
-mv $MODULEPATH/lib64 $MODULEPATH/packages/
-
 AggressiveStrip
+mv $MODULEPATH/lib64 $MODULEPATH/packages/
+mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib64
 
 ### copy cache files
 

@@ -224,7 +224,6 @@ currentPackage=menu-cache
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/${currentPackage} || exit 1
 cd ${currentPackage}
-patch -p0 < $SCRIPTPATH/extras/lxqt/menu-tags.h.patch || exit 1
 version=`git describe | cut -d- -f1`
 sh ./autogen.sh && CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" \
 ./configure \
@@ -244,7 +243,6 @@ installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lxqt
-installpkg $MODULEPATH/packages/json-glib*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu-qt*.txz || exit 1
 installpkg $MODULEPATH/packages/libkscreen*.txz || exit 1
 installpkg $MODULEPATH/packages/kidletime*.txz || exit 1
@@ -259,7 +257,9 @@ git submodule init || exit 1
 git submodule update --remote --rebase || exit 1
 cp $SCRIPTPATH/extras/lxqt/build_all_cmake_projects.sh .
 cp $SCRIPTPATH/extras/lxqt/*.patch .
-rm menu-tags.h.patch
+if [ $SLACKWAREVERSION != "current" ]; then
+	cp $SCRIPTPATH/extras/lxqt/stable/notification-lxqt-notificationd.patch .
+fi
 for i in *.patch; do patch -p0 < $i || exit 1; done
 sh build_all_cmake_projects.sh || exit 1
 rm -fr $MODULEPATH/${currentPackage}
@@ -357,7 +357,7 @@ rm -R usr/share/screengrab/translations
 rm -R usr/share/Thunar
 
 GenericStrip
-AggressiveStrip
+AggressiveStripAll
 
 ### copy cache files
 

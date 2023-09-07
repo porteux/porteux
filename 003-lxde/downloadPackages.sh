@@ -7,7 +7,6 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
-DownloadPackage "json-glib" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
 wait
