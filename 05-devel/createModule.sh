@@ -18,7 +18,6 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 DownloadFromSlackware
 
 if [ ! -f $MODULEPATH/packages/kernel-headers*.txz ]; then
-	curentPackage=kernel-headers
 	wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNELVERSION-x86-1.txz -P $MODULEPATH/packages || exit 1
 fi
 

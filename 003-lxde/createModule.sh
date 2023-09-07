@@ -50,7 +50,7 @@ version=0.2.5
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/gpicview || exit 1
 cd ${currentPackage}
-patch -p0 < $SCRIPTPATH/extras/gpicview/image-view.c.patch || exit 1
+cp $SCRIPTPATH/extras/gpicview/image-view.c src/ || exit 1
 ./autogen.sh
 CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
 make -j$NUMBERTHREADS install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
@@ -201,7 +201,6 @@ currentPackage=menu-cache
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/${currentPackage}
 cd ${currentPackage}
-patch -p0 < $SCRIPTPATH/extras/lxde/menu-tags.h.patch || exit 1
 version=`git describe | cut -d- -f1`
 sh ./autogen.sh && CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" \
 ./configure \
@@ -542,8 +541,8 @@ InstallAdditionalPackages
 ### fix some .desktop files
 
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/epdfview.desktop
-sed -i "s|Core;||g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
-sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
+sed -i "s|Core;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
+sed -i "s|System;|Utility|g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
 
 ### add lxde session
 
@@ -571,7 +570,7 @@ rm -R usr/share/gdm
 rm -R usr/share/gnome
 
 GenericStrip
-AggressiveStrip
+AggressiveStripAll
 
 ### copy cache files
 

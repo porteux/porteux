@@ -242,7 +242,7 @@ mv $MODULEPATH/packages/frei0r-plugins-*.t?z . || exit 1
 mv $MODULEPATH/packages/opencl-headers-*.t?z . || exit 1
 installpkg frei0r-plugins*.t?z
 installpkg opencl-headers*.t?z
-sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc\\\\|g" ./${currentPackage}.SlackBuild
+sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc\\\\|g" ${currentPackage}.SlackBuild
 GLSLANG=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -268,8 +268,8 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/multimedia/${currentPackage}/ -A * || exit 1
 info=$(DownloadLatestFromGithub "mpv-player" ${currentPackage})
 version=${info#* }
-wget https://waf.io/waf-2.0.24 || exit 1
-sed -z -i "s|--enable-html-build \\\\\n| |g" ./${currentPackage}.SlackBuild
+sed -z -i "s|-Dhtml-build=enabled \\\\\n| |g" ${currentPackage}.SlackBuild
+sed -z -i "s|-Dmanpage-build=enabled \\\\\n| |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild

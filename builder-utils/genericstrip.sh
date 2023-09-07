@@ -7,6 +7,8 @@ GenericStrip() {
 		CURRENTDIR="$PWD"
 	fi
 
+	rm -R "$CURRENTDIR"/etc/logrotate.d
+
 	rm -R "$CURRENTDIR"/usr/doc
 	rm -R "$CURRENTDIR"/usr/include
 	rm -R "$CURRENTDIR"/usr/man
@@ -87,4 +89,8 @@ GenericStrip() {
 
 AggressiveStrip() {
 	find . | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+}
+
+AggressiveStripAll() {
+	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
 }

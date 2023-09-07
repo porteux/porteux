@@ -24,10 +24,9 @@ DownloadPackage "gst-plugins-good" &
 DownloadPackage "gst-plugins-libav" &
 DownloadPackage "gstreamer" &
 DownloadPackage "gtk4" &
-DownloadPackage "hyphen" &
 wait
+DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
-DownloadPackage "json-glib" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libhandy" &
