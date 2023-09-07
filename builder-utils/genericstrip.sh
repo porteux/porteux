@@ -7,6 +7,8 @@ GenericStrip() {
 		CURRENTDIR="$PWD"
 	fi
 
+	rm -R "$CURRENTDIR"/etc/logrotate.d
+
 	rm -R "$CURRENTDIR"/usr/doc
 	rm -R "$CURRENTDIR"/usr/include
 	rm -R "$CURRENTDIR"/usr/man

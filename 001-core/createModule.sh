@@ -103,6 +103,7 @@ wget https://github.com/hykilpikonna/hyfetch/archive/refs/heads/master.zip -O ${
 unzip ${currentPackage}.zip
 rm ${currentPackage}.zip
 cp -p */${currentPackage} package/usr/bin
+sed -i "s|has pkginfo && tot pkginfo -i|#has pkginfo && tot pkginfo -i|g" package/usr/bin/${currentPackage}
 chown 755 package/usr/bin/${currentPackage}
 chmod +x package/usr/bin/${currentPackage}
 version=$(date -r package/usr/bin/${currentPackage} +%Y%m%d)
