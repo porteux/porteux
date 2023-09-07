@@ -1,0 +1,40 @@
+--- src/image-view.c	2023-09-08 01:05:59.538205161 +0200
++++ src/image-view-patched.c	2023-09-08 00:10:57.000000000 +0200
+@@ -357,38 +357,10 @@
+     if( new_scale == iv->scale )
+         return;
+ //    gdouble factor = new_scale / iv->scale;
+-
+-    gint xPos, yPos;
+-    gtk_widget_get_pointer(GTK_WIDGET(iv), &xPos, &yPos);
+-
+-    gdouble hadj_value = gtk_adjustment_get_value(iv->hadj);
+-    gdouble vadj_value = gtk_adjustment_get_value(iv->vadj);
+-
+-    // if the pointer is not inside the window...
+-    if (xPos < hadj_value || xPos > hadj_value + iv->hadj->page_size ||
+-        yPos < vadj_value || yPos > vadj_value + iv->vadj->page_size)
+-    {
+-        // ...pretend that it is over the center of the image
+-        xPos = iv->img_area.width / 2;
+-        yPos = iv->img_area.height / 2;
+-    }
+-
+-    gdouble oldRelativePositionX =  (gdouble) xPos / iv->img_area.width;
+-    gdouble oldRelativePositionY = (gdouble) yPos / iv->img_area.height;
+-    gdouble visibleAreaX = xPos - hadj_value;
+-    gdouble visibleAreaY = yPos - vadj_value;
+-
+     iv->scale = new_scale;
+     if( iv->pix )
+     {
+         calc_image_area( iv );
+-
+-        hadj_value = oldRelativePositionX * iv->img_area.width - visibleAreaX;
+-        vadj_value = oldRelativePositionY * iv->img_area.height - visibleAreaY;
+-
+-        iv->hadj->value = hadj_value > 0 ? hadj_value : 0;
+-        iv->vadj->value = vadj_value > 0 ? vadj_value : 0;
+-
+         gtk_widget_queue_resize( (GtkWidget*)iv );
+ //        gtk_widget_queue_draw( (GtkWidget*)iv );
