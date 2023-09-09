@@ -542,6 +542,7 @@ InstallAdditionalPackages
 
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/epdfview.desktop
 sed -i "s|Core;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
+sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|System;|Utility;|g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
 
 ### add lxde session
