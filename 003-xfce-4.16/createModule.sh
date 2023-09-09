@@ -237,6 +237,7 @@ patch --no-backup-if-mismatch -d $MODULEPATH/packages/ -p0 < $SCRIPTPATH/extras/
 sed -i "s|Categories=System;|Categories=|g" $MODULEPATH/packages/usr/share/applications/thunar.desktop
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/epdfview.desktop
 sed -i "s|Graphics;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
+sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|Utility;||g" $MODULEPATH/packages/usr/share/applications/xfce4-taskmanager.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/thunar-bulk-rename.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/xfce4-sensors.desktop
