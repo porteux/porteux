@@ -1,182 +1,40 @@
---- src/image-view.c	2022-12-29 21:03:53.063213374 +1300
-+++ src/image-view-patched.c	2021-01-10 17:20:03.000000000 +1300
-@@ -24,11 +24,10 @@
- static void image_view_finalize(GObject *iv);
- 
- static void image_view_clear( ImageView* iv );
--static gboolean on_idle( ImageView* iv );
- static void calc_image_area( ImageView* iv );
--static void paint(  ImageView* iv, GdkRectangle* invalid_rect, GdkInterpType type );
- 
- #if GTK_CHECK_VERSION(3, 0, 0)
-+static void paint(  ImageView* iv, GdkRectangle* invalid_rect, GdkInterpType type, cairo_t* cr );
- 
- static void image_view_paint(  ImageView* iv, cairo_t* cr );
- 
-@@ -37,6 +36,8 @@
- static gboolean on_draw_event(GtkWidget* widget, cairo_t* cr);
- 
- #else // GTK2
-+static gboolean on_idle( ImageView* iv );
-+static void paint(  ImageView* iv, GdkRectangle* invalid_rect, GdkInterpType type );
- 
- static void image_view_paint(  ImageView* iv, GdkEventExpose* evt );
- 
-@@ -268,16 +269,13 @@
-         {
-             cairo_rectangle_int_t rectangle;
-             cairo_region_get_rectangle(region, i, &rectangle);
--            paint( iv, &rectangle, GDK_INTERP_NEAREST );
-+            paint( iv, &rectangle, GDK_INTERP_BILINEAR, cr );
-         }
- 
-         cairo_region_destroy (region);
+--- src/image-view.c	2023-09-08 01:05:59.538205161 +0200
++++ src/image-view-patched.c	2023-09-08 00:10:57.000000000 +0200
+@@ -357,38 +357,10 @@
+     if( new_scale == iv->scale )
+         return;
+ //    gdouble factor = new_scale / iv->scale;
 -
--        if( 0 == iv->idle_handler )
--            iv->idle_handler = g_idle_add( (GSourceFunc)on_idle, iv );
-     }
- }
--#else
-+#else // GTK2
- 
- gboolean on_expose_event( GtkWidget* widget, GdkEventExpose* evt )
- {
-@@ -308,7 +306,7 @@
-         for( i = 0; i < n_rects; ++i )
-         {
-             // GdkRectangle& rect = rects[i];
--            paint( iv, rects + i, GDK_INTERP_NEAREST );
-+            paint( iv, rects + i, GDK_INTERP_BILINEAR );
-         }
-         g_free( rects );
- 
-@@ -343,15 +341,13 @@
- 
- void image_view_set_pixbuf( ImageView* iv, GdkPixbuf* pixbuf )
- {
--    if( pixbuf != iv->pix )
+-    gint xPos, yPos;
+-    gtk_widget_get_pointer(GTK_WIDGET(iv), &xPos, &yPos);
+-
+-    gdouble hadj_value = gtk_adjustment_get_value(iv->hadj);
+-    gdouble vadj_value = gtk_adjustment_get_value(iv->vadj);
+-
+-    // if the pointer is not inside the window...
+-    if (xPos < hadj_value || xPos > hadj_value + iv->hadj->page_size ||
+-        yPos < vadj_value || yPos > vadj_value + iv->vadj->page_size)
 -    {
-+
-         image_view_clear( iv );
-         if( G_LIKELY(pixbuf) )
-             iv->pix = (GdkPixbuf*)g_object_ref( pixbuf );
-         calc_image_area( iv );
-         gtk_widget_queue_resize( (GtkWidget*)iv );
--//        gtk_widget_queue_draw( (GtkWidget*)iv);
+-        // ...pretend that it is over the center of the image
+-        xPos = iv->img_area.width / 2;
+-        yPos = iv->img_area.height / 2;
 -    }
-+
- }
- 
- void image_view_set_scale( ImageView* iv, gdouble new_scale, GdkInterpType type )
-@@ -390,6 +386,8 @@
-     }
- }
- 
-+#if GTK_CHECK_VERSION(3, 0, 0)
-+#else // GTK2
- gboolean on_idle( ImageView* iv )
- {
-     GDK_THREADS_ENTER();
-@@ -435,6 +433,7 @@
-     iv->idle_handler = 0;
-     return FALSE;
- }
-+#endif
- 
- void calc_image_area( ImageView* iv )
- {
-@@ -460,7 +459,11 @@
-     }
- }
- 
-+#if GTK_CHECK_VERSION(3, 0, 0)
-+void paint( ImageView* iv, GdkRectangle* invalid_rect, GdkInterpType type, cairo_t* cr )
-+#else // GTK2
- void paint( ImageView* iv, GdkRectangle* invalid_rect, GdkInterpType type )
-+#endif
- {
-     GdkRectangle rect;
-     if( ! gdk_rectangle_intersect( invalid_rect, &iv->img_area, &rect ) )
-@@ -470,51 +473,48 @@
-     int dest_y;
- 
-     GdkPixbuf* src_pix = NULL;
--    if( iv->scale == 1.0 )  // original size
--    {
--        src_pix = (GdkPixbuf*)g_object_ref( iv->pix );
--        dest_x = iv->img_area.x;
--        dest_y = iv->img_area.y;
--    }
--    else    // scaling is needed
--    {
--        dest_x = rect.x;
--        dest_y = rect.y;
 -
--        rect.x -= iv->img_area.x;
--        rect.y -= iv->img_area.y;
+-    gdouble oldRelativePositionX =  (gdouble) xPos / iv->img_area.width;
+-    gdouble oldRelativePositionY = (gdouble) yPos / iv->img_area.height;
+-    gdouble visibleAreaX = xPos - hadj_value;
+-    gdouble visibleAreaY = yPos - vadj_value;
 -
--        GdkPixbuf* scaled_pix = NULL;
--        int src_x = (int)floor( ((gdouble)rect.x) / iv->scale + 0.5 );
--        int src_y = (int)floor( ((gdouble)rect.y) / iv->scale + 0.5 );
--        int src_w = (int)floor( ((gdouble)rect.width) / iv->scale + 0.5 );
--        int src_h = (int)floor( ((gdouble)rect.height) / iv->scale + 0.5 );
--        if( src_y > gdk_pixbuf_get_height( iv->pix ) )
--            src_y = gdk_pixbuf_get_height( iv->pix );
--        if( src_x + src_w > gdk_pixbuf_get_width( iv->pix ) )
--            src_w = gdk_pixbuf_get_width( iv->pix ) - src_x;
--        if( src_y + src_h > gdk_pixbuf_get_height( iv->pix ) )
--            src_h = gdk_pixbuf_get_height( iv->pix ) - src_y;
--        //g_debug("orig src: x=%d, y=%d, w=%d, h=%d",
--        //        src_x, src_y, src_w, src_h );
-+    GdkPixbuf* scaled_pix = NULL;
- 
--        if ((src_w > 0) && (src_h > 0))
--        {
--            src_pix = gdk_pixbuf_new_subpixbuf( iv->pix, src_x, src_y,  src_w, src_h );
--            scaled_pix = gdk_pixbuf_scale_simple( src_pix, rect.width, rect.height, type );
--            g_object_unref( src_pix );
--            src_pix = scaled_pix;
--        }
-+    dest_x = rect.x;
-+    dest_y = rect.y;
-+
-+    rect.x -= iv->img_area.x;
-+    rect.y -= iv->img_area.y;
-+
-+    int src_x = (int)floor( ((gdouble)rect.x) / iv->scale + 0.5 );
-+    int src_y = (int)floor( ((gdouble)rect.y) / iv->scale + 0.5 );
-+    int src_w = (int)floor( ((gdouble)rect.width) / iv->scale + 0.5 );
-+    int src_h = (int)floor( ((gdouble)rect.height) / iv->scale + 0.5 );
-+    if( src_y > gdk_pixbuf_get_height( iv->pix ) )
-+        src_y = gdk_pixbuf_get_height( iv->pix );
-+    if( src_x + src_w > gdk_pixbuf_get_width( iv->pix ) )
-+        src_w = gdk_pixbuf_get_width( iv->pix ) - src_x;
-+    if( src_y + src_h > gdk_pixbuf_get_height( iv->pix ) )
-+        src_h = gdk_pixbuf_get_height( iv->pix ) - src_y;
-+    //g_debug("orig src: x=%d, y=%d, w=%d, h=%d",
-+    //        src_x, src_y, src_w, src_h );
- 
-+    if ((src_w > 0) && (src_h > 0))
-+    {
-+        src_pix = gdk_pixbuf_new_subpixbuf( iv->pix, src_x, src_y,  src_w, src_h );
-+        scaled_pix = gdk_pixbuf_scale_simple( src_pix, rect.width, rect.height, type );
-+        g_object_unref( src_pix );
-+        src_pix = scaled_pix;
-     }
- 
-     if( G_LIKELY(src_pix) )
+     iv->scale = new_scale;
+     if( iv->pix )
      {
-         GtkWidget* widget = (GtkWidget*)iv;
-+#if GTK_CHECK_VERSION(3, 0, 0)
-+#else // GTK2
-         cairo_t *cr = gdk_cairo_create (gtk_widget_get_window(widget));
-+#endif
-         gdk_cairo_set_source_pixbuf (cr, src_pix, dest_x, dest_y);
-         cairo_paint (cr);
-+#if GTK_CHECK_VERSION(3, 0, 0)
-+#else // GTK2
-         cairo_destroy (cr);
-+#endif
- 
-         g_object_unref( src_pix );
-     }
+         calc_image_area( iv );
+-
+-        hadj_value = oldRelativePositionX * iv->img_area.width - visibleAreaX;
+-        vadj_value = oldRelativePositionY * iv->img_area.height - visibleAreaY;
+-
+-        iv->hadj->value = hadj_value > 0 ? hadj_value : 0;
+-        iv->vadj->value = vadj_value > 0 ? vadj_value : 0;
+-
+         gtk_widget_queue_resize( (GtkWidget*)iv );
+ //        gtk_widget_queue_draw( (GtkWidget*)iv );

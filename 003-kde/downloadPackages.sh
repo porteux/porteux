@@ -184,6 +184,7 @@ wait
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "kColorPicker" &
 	DownloadPackage "kImageAnnotator" &
+	DownloadPackage "kio-admin" &
 	wait
 fi
 

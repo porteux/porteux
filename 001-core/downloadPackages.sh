@@ -138,7 +138,6 @@ DownloadPackage "libzip" &
 DownloadPackage "lmdb" &
 wait
 DownloadPackage "lm_sensors" &
-DownloadPackage "logrotate" &
 DownloadPackage "lsof" &
 DownloadPackage "lvm2" &
 DownloadPackage "lynx" &
@@ -208,7 +207,6 @@ DownloadPackage "sshfs" &
 DownloadPackage "sudo" &
 DownloadPackage "sysfsutils" &
 DownloadPackage "sysklogd" &
-DownloadPackage "sysvinit" &
 DownloadPackage "sysvinit-functions" &
 wait
 DownloadPackage "sysvinit-scripts" &

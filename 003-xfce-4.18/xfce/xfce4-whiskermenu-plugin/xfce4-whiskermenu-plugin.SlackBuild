@@ -71,6 +71,8 @@ cd build
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib${LIBDIRSUFFIX} \
     -DCMAKE_INSTALL_MANDIR=/usr/man \
+    -DENABLE_ACCOUNTS_SERVICE=OFF \
+    -DENABLE_GTK_LAYER_SHELL=OFF \
     -DCMAKE_BUILD_TYPE=Release ..
   make $NUMJOBS || make || exit 1
   make $NUMJOBS install DESTDIR=$PKG || exit 1
