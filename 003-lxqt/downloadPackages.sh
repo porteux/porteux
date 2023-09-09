@@ -8,10 +8,9 @@ GenerateRepositoryUrls "$REPOSITORY"
 DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "hunspell" &
-DownloadPackage "json-glib" &
 DownloadPackage "kidletime" &
-wait
 DownloadPackage "kwindowsystem" &
+wait
 DownloadPackage "libcanberra" &
 DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libkscreen" &

@@ -1,0 +1,79 @@
+#!/bin/bash
+
+cd $(dirname $0) ; CWD=$(pwd)
+
+PKGNAM=sysvinit
+VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+# Automatically determine the architecture we're building on:
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) export ARCH=i586 ;;
+    arm*) export ARCH=arm ;;
+    # Unless $ARCH is already set, use uname -m for all other archs:
+       *) export ARCH=$( uname -m ) ;;
+  esac
+fi
+
+PKG=$CWD/package-$PKGNAM
+
+rm -rf $PKGNAM-$VERSION
+tar xvf $PKGNAM-$VERSION.tar.?z || exit 1
+cd $PKGNAM-$VERSION
+
+chown -R root:root .
+find . \
+  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
+  -exec chmod 755 {} \+ -o \
+  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
+  -exec chmod 644 {} \+
+
+# Fix paths for /etc/forcefsck and /etc/fastboot:
+zcat $CWD/sysvinit.paths.diff.gz | patch -p1 -E --verbose --backup --suffix=.orig || exit 1
+
+# Fix failure to show program version:
+zcat $CWD/sysvinit.always.define.version.diff.gz | patch -p1 --verbose || exit 1
+
+# Use /dev/initctl instead of /run/initctl ; this is a named pipe and probably
+# should be in /dev anyway, but more importantly, having the upgraded package
+# expect it in /run breaks shutdown/reboot without manual intervention:
+for replace in src/shutdown.c src/Makefile src/initreq.h src/init.c doc/initctl doc/Install man/init.8 man/initctl.5 man/po/* ; do
+  sed -i "s|run/initctl|dev/initctl|g" $replace
+done
+
+# Since they usually don't update the version here, let's try to make sure:
+sed -i "s/define VERSION.*/define VERSION \"$VERSION\"/g" src/init.c
+
+cd src
+make clobber || exit 1
+make -j$NUMBERTHREADS || exit 1
+
+mkdir -p $PKG/etc/inittab.d
+mkdir -p $PKG/sbin
+for program in halt init killall5 shutdown runlevel ; do
+  strip --strip-unneeded $program
+  cat $program > $PKG/sbin/$program
+  chmod 755 $PKG/sbin/$program
+  chown root:root $PKG/sbin/$program
+done
+mkdir -p $PKG/usr/bin
+for program in last ; do
+  strip --strip-unneeded $program
+  cat $program > $PKG/usr/bin/$program
+  chmod 755 $PKG/usr/bin/$program
+  chown root:root $PKG/usr/bin/$program
+done
+( cd $PKG/usr/bin ; ln -sf last lastb )
+mv $PKG/sbin/init $PKG/sbin/init.new
+chmod 755 $PKG/sbin/init.new
+chown root:root $PKG/sbin/init.new
+
+mkdir -p $PKG/install
+zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+# Build the package:
+cd $PKG
+cp $SCRIPTPATH/extras/$PKGNAM/init sbin/init.new
+makepkg -l y -c n $MODULEPATH/packages/sysvinit-$VERSION-$ARCH-$BUILD.txz

@@ -50,6 +50,7 @@ DownloadPackage "hicolor-icon-theme" &
 DownloadPackage "iceauth" &
 DownloadPackage "intel-vaapi-driver" &
 DownloadPackage "json-c" &
+DownloadPackage "json-glib" &
 DownloadPackage "lame" &
 DownloadPackage "lcms2" &
 wait

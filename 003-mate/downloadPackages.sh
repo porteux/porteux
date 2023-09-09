@@ -17,7 +17,6 @@ DownloadPackage "hunspell" &
 wait
 DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
-DownloadPackage "json-glib" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgpod" &

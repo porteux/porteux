@@ -12,6 +12,8 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
+MODULEPATH=/tmp/xfce
+
 CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH}
 PKG=$TMP/package-$PRGNAM

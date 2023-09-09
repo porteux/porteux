@@ -137,12 +137,16 @@ from=/path/porteux.iso
 
 fsck
 
-   ... Enables a filesystem check for ext(2,3,4) partitions during
-       boot time before anything is mounted by PorteuX. XFS does
-       not need fsck as a check is performed automatically during
-       the mount operation.
-       NOTE:  On some systems, you will need to use the 'delay='
+   ... Enables a filesystem check for ext(2,3,4), fat and ntfs
+       partitions during boot time before anything is mounted.
+       XFS does not need fsck as a check is performed automatically
+       when it's mounted. A log file will be shown after boot.
+       NOTE: On some systems, you will need to use the 'delay='
        cheatcode in order to allow your devices to settle up.
+
+fscknolog
+
+   ... Same as above but the log file won't be shown after boot.
 
 guiexec=my_script
 guiexec=firefox;pidgin
@@ -365,7 +369,7 @@ vga_detect
        proprietary driver at startup.  You must have a module
        containing the appropriate graphics driver stored in your
        /porteux/optional/ directory. The driver module is available in
-       the PorteuX App Store. If you want compile your own driver,
+       the PorteuX App Store. If you want to compile your own driver,
        please note that the module's name must contain nvidia-[number],
        where [number] is the number of the driver version.
 

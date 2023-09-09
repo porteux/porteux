@@ -7,6 +7,8 @@ GenericStrip() {
 		CURRENTDIR="$PWD"
 	fi
 
+	rm -R "$CURRENTDIR"/etc/logrotate.d
+
 	rm -R "$CURRENTDIR"/usr/doc
 	rm -R "$CURRENTDIR"/usr/include
 	rm -R "$CURRENTDIR"/usr/man
@@ -82,7 +84,13 @@ GenericStrip() {
 	
 	find "$CURRENTDIR"/usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
 
-	find "$CURRENTDIR" | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
+	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag 2> /dev/null
+}
 
-	find "$CURRENTDIR" | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
+AggressiveStrip() {
+	find . | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+}
+
+AggressiveStripAll() {
+	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
 }

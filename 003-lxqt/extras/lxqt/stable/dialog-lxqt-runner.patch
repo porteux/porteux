@@ -1,0 +1,79 @@
+--- lxqt-runner/dialog.cpp	2023-09-04 22:04:05.000000000 +0200
++++ lxqt-runner/dialog-patched.cpp	2023-09-04 23:33:29.203891059 +0200
+@@ -55,7 +55,6 @@
+ #include <QScrollBar>
+ 
+ #include <KWindowSystem/KWindowSystem>
+-#include <KWindowSystem/KX11Extras>
+ 
+ #define DEFAULT_SHORTCUT "Alt+F2"
+ 
+@@ -201,8 +200,8 @@
+  ************************************************/
+ void Dialog::showEvent(QShowEvent *event)
+ {
+-    connect(KX11Extras::self(), &KX11Extras::activeWindowChanged, this, &Dialog::onActiveWindowChanged);
+-    connect(KX11Extras::self(), &KX11Extras::currentDesktopChanged, this, &Dialog::onCurrentDesktopChanged);
++    connect(KWindowSystem::self(), &KWindowSystem::activeWindowChanged, this, &Dialog::onActiveWindowChanged);
++    connect(KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &Dialog::onCurrentDesktopChanged);
+     return QDialog::showEvent(event);
+ }
+ 
+@@ -213,8 +212,8 @@
+ void Dialog::hideEvent(QHideEvent *event)
+ {
+     QDialog::hideEvent(event);
+-    disconnect(KX11Extras::self(), &KX11Extras::currentDesktopChanged, this, &Dialog::onCurrentDesktopChanged);
+-    disconnect(KX11Extras::self(), &KX11Extras::activeWindowChanged, this, &Dialog::onActiveWindowChanged);
++    disconnect(KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, &Dialog::onCurrentDesktopChanged);
++    disconnect(KWindowSystem::self(), &KWindowSystem::activeWindowChanged, this, &Dialog::onActiveWindowChanged);
+ }
+ 
+ 
+@@ -349,7 +348,7 @@
+ {
+     // Using KWindowSystem to detect the active window since
+     // QWidget::isActiveWindow is not working reliably.
+-    if (isVisible() && (KX11Extras::activeWindow() == winId()))
++    if (isVisible() && (KWindowSystem::activeWindow() == winId()))
+     {
+         hide();
+     }
+@@ -357,7 +356,7 @@
+     {
+         realign();
+         show();
+-        KX11Extras::forceActiveWindow(winId());
++        KWindowSystem::forceActiveWindow(winId());
+         ui->commandEd->setFocus();
+         ui->commandEd->selectAll();
+     }
+@@ -378,7 +377,7 @@
+         screenNumber = screen ? screens.indexOf(screen) : 0;
+     }
+ 
+-    desktop = screens.at(screenNumber)->availableGeometry().intersected(KX11Extras::workArea(screenNumber));
++    desktop = screens.at(screenNumber)->availableGeometry().intersected(KWindowSystem::workArea(screenNumber));
+ 
+     QRect rect = this->geometry();
+     rect.moveCenter(desktop.center());
+@@ -452,7 +451,7 @@
+         if (mDesktopChanged)
+         {
+             mDesktopChanged = false;
+-            KX11Extras::forceActiveWindow(winId());
++            KWindowSystem::forceActiveWindow(winId());
+         } else
+         {
+             hide();
+@@ -468,8 +467,8 @@
+ {
+     if (isVisible())
+     {
+-        KX11Extras::setOnDesktop(winId(), screen);
+-        KX11Extras::forceActiveWindow(winId());
++        KWindowSystem::setOnDesktop(winId(), screen);
++        KWindowSystem::forceActiveWindow(winId());
+         //Note: workaround for changing desktop while runner is shown
+         // The KWindowSystem::forceActiveWindow may fail to correctly activate runner if there
+         // are any other windows on the new desktop (probably because of the sequence while WM
