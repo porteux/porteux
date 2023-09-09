@@ -139,7 +139,6 @@ DownloadPackage "lmdb" &
 wait
 DownloadPackage "lm_sensors" &
 DownloadPackage "lsof" &
-DownloadPackage "lua" &
 DownloadPackage "lvm2" &
 DownloadPackage "lynx" &
 DownloadPackage "lz4" &
@@ -241,6 +240,7 @@ wait
 ### slackware current only packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "lua" &
 	DownloadPackage "lzlib" &
 	DownloadPackage "mozjs102" &
 	wait
