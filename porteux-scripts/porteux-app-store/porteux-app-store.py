@@ -181,8 +181,10 @@ class AppWindow(Gtk.ApplicationWindow):
     def execute_external_script(self, script_command):
         hasInternet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 1.1.1.1 > /dev/null 2>&1"])
         if hasInternet != 0:
-            subprocess.call([GTK_DIALOG_SCRIPT, "-p", "No internet connection"])
-            return
+            hasInternet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 8.8.8.8 > /dev/null 2>&1"])
+            if hasInternet != 0:
+                subprocess.call([GTK_DIALOG_SCRIPT, "-p", "No internet connection"])
+                return
 
         with open('/dev/null', 'w') as devnull:
             progress_dialog = subprocess.Popen(
