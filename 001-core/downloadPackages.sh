@@ -139,6 +139,7 @@ DownloadPackage "lmdb" &
 wait
 DownloadPackage "lm_sensors" &
 DownloadPackage "lsof" &
+DownloadPackage "lua" &
 DownloadPackage "lvm2" &
 DownloadPackage "lynx" &
 DownloadPackage "lz4" &

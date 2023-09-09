@@ -248,20 +248,20 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-# required by mpv -- lua version > 5.1.5 is not supported
-currentPackage=lua
-version=5.1.5
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/development/${currentPackage}/ -A * || exit 1
-wget https://www.lua.org/ftp/${currentPackage}-$version.tar.gz || exit 1
-sed -z -i "s|make |make -j$NUMBERTHREADS |g" ${currentPackage}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-rm -fr $MODULEPATH/${currentPackage}
+# required by mpv
+currentPackage=LuaJIT
+mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/development/${currentPackage,,}/ -A * || exit 1
+version=2.0.5
+wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/tags/v${version}.tar.gz -O ${currentPackage}-${version}.tar.gz
+sed -z -i "s|make |make -j$NUMBERTHREADS |g" ${currentPackage,,}.SlackBuild
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage,,}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage,,}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage,,}.SlackBuild
+sh ${currentPackage,,}.SlackBuild || exit 1
+mv /tmp/${currentPackage,,}*.t?z $MODULEPATH/packages
+installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
+rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=mpv
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
