@@ -347,7 +347,6 @@ class Application(Gtk.Application):
                 filePath = APP_STORE_PATH + filename
                 if self.is_recently_updated(filePath):
                     continue
-
                 with open(filePath, 'wb') as file, urlopen(REPO_FOLDER_PATH + filename) as nfile:
                     file.write(nfile.read())
                     os.chmod(filePath, 0o755)
@@ -366,14 +365,14 @@ class Application(Gtk.Application):
                             continue
                         with open(scriptPath, 'w') as script, urlopen(REPO_APPS_FOLDER + app['script'] + '.sh') as nscript:
                             script.write(nscript.read().decode('utf-8'))
-                        os.chmod(APPS_FOLDER + app['script'] + '.sh', 0o755)
+                        os.chmod(scriptPath, 0o755)
                     if "icon" in app:
                         iconPath = ICONS_FOLDER + app['icon']
                         if self.is_recently_updated(iconPath):
                             continue
-                        with open(ICONS_FOLDER + app['icon'], 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
+                        with open(iconPath, 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
                             icon.write(nicon.read())
-                        os.chmod(ICONS_FOLDER + app['icon'], 0o644)
+                        os.chmod(iconPath, 0o644)
             
             progress_dialog.send_signal(signal.SIGINT)
         
