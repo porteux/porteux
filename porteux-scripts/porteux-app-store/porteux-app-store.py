@@ -177,14 +177,19 @@ class AppWindow(Gtk.ApplicationWindow):
 
     def show_dialog_porteux(self, input):
         subprocess.call([GTK_DIALOG_SCRIPT, "-p", input])
-        
-    def execute_external_script(self, script_command):
-        hasInternet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 1.1.1.1 > /dev/null 2>&1"])
-        if hasInternet != 0:
-            hasInternet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 8.8.8.8 > /dev/null 2>&1"])
-            if hasInternet != 0:
+
+    def has_internet(self):
+        has_Internet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 1.1.1.1 > /dev/null 2>&1"])
+        if has_Internet != 0:
+            has_Internet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 8.8.8.8 > /dev/null 2>&1"])
+            if has_Internet != 0:
                 subprocess.call([GTK_DIALOG_SCRIPT, "-p", "No internet connection"])
-                return
+                return False
+        return True
+
+    def execute_external_script(self, script_command):
+        if not self.has_internet():
+            return
 
         with open('/dev/null', 'w') as devnull:
             progress_dialog = subprocess.Popen(
@@ -311,55 +316,70 @@ class Application(Gtk.Application):
         self.window.show_all()
         self.window.present()
     
+    def is_recently_updated(self, filePath):
+        if not exists(filePath):
+            return False
+
+        fileStat = Path(filePath).stat()
+        fileDateTime = datetime.fromtimestamp(fileStat.st_mtime, tz=None)
+        return (datetime.today() - fileDateTime).seconds <= 3600 * MAX_AGE_HOURS
+    
     def update_changed_files(self):
-        if exists(APP_STORE_PATH + 'porteux-app-store-db.json'):
-            fileStat = Path(APP_STORE_PATH + 'porteux-app-store-db.json').stat()
-            fileDateTime = datetime.fromtimestamp(fileStat.st_mtime, tz=None)
-            if (datetime.today() - fileDateTime).seconds <= 3600 * MAX_AGE_HOURS:
-                return
-        
-        with open('/dev/null', 'w') as devnull:
-            progress_dialog = subprocess.Popen(
-                [GTK_PROGRESS_SCRIPT, "-w", "PorteuX App Store", "-m", "Updating application list...", "-t", " "],
-                stderr=devnull
-            )
-        
+        db_path = APP_STORE_PATH + 'porteux-app-store-db.json'
+
         try:
-            with urlopen(REPO_FOLDER_PATH + 'porteux-app-store-db.json') as ndb:
-                if ndb.status != 200:
-                    return
+            with open('/dev/null', 'w') as devnull:
+                    progress_dialog = subprocess.Popen(
+                        [GTK_PROGRESS_SCRIPT, "-w", "PorteuX App Store", "-m", "Updating application list...", "-t", " "],
+                        stderr=devnull
+                    )
 
-                db_decoded = ndb.read().decode('utf-8')
-                DB = json.loads(db_decoded)
+            if not self.is_recently_updated(db_path):
+                with urlopen(REPO_FOLDER_PATH + 'porteux-app-store-db.json') as ndb:
+                    if ndb.status == 200:
+                        db_decoded = ndb.read().decode('utf-8')
+                        with open(APP_STORE_PATH + 'porteux-app-store-db.json', 'w') as db_file:
+                            db_file.write(db_decoded)
+            
+            files = [ 'porteux-app-store-live.sh', 'appimage-builder.sh', 'module-builder.sh' ]
 
-                with open(APP_STORE_PATH + 'porteux-app-store-db.json', 'w') as db_file:
-                    db_file.write(db_decoded)
-        except:
-            progress_dialog.send_signal(signal.SIGINT)
-            return
-                
-        files = [ 'porteux-app-store-live.sh', 'appimage-builder.sh', 'module-builder.sh' ]
+            for filename in files:
+                filePath = APP_STORE_PATH + filename
+                if self.is_recently_updated(filePath):
+                    continue
 
-        for filename in files:
-            with open(APP_STORE_PATH + filename, 'wb') as file, urlopen(REPO_FOLDER_PATH + filename) as nfile:
-                file.write(nfile.read())
-                os.chmod(APP_STORE_PATH + filename, 0o755)
+                with open(filePath, 'wb') as file, urlopen(REPO_FOLDER_PATH + filename) as nfile:
+                    file.write(nfile.read())
+                    os.chmod(filePath, 0o755)
 
-        os.makedirs(APPS_FOLDER, exist_ok=True)
-        
-        for _, apps in DB.items():
-            for _, app in apps.items():
-                if "script" in app:
-                    with open(APPS_FOLDER + app['script'] + '.sh', 'w') as script, urlopen(REPO_APPS_FOLDER + app['script'] + '.sh') as nscript:
-                        script.write(nscript.read().decode('utf-8'))
-                    os.chmod(APPS_FOLDER + app['script'] + '.sh', 0o755)
-                if "icon" in app:
-                    if not exists(ICONS_FOLDER + app['icon']):
+            os.makedirs(APPS_FOLDER, exist_ok = True)
+            
+            with open(db_path, 'r') as db_file:
+                data = db_file.read()
+            DB = json.loads(data)
+
+            for _, apps in DB.items():
+                for _, app in apps.items():
+                    if "script" in app:
+                        scriptPath = APPS_FOLDER + app['script'] + '.sh'
+                        if self.is_recently_updated(scriptPath):
+                            continue
+                        with open(scriptPath, 'w') as script, urlopen(REPO_APPS_FOLDER + app['script'] + '.sh') as nscript:
+                            script.write(nscript.read().decode('utf-8'))
+                        os.chmod(APPS_FOLDER + app['script'] + '.sh', 0o755)
+                    if "icon" in app:
+                        iconPath = ICONS_FOLDER + app['icon']
+                        if self.is_recently_updated(iconPath):
+                            continue
                         with open(ICONS_FOLDER + app['icon'], 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
                             icon.write(nicon.read())
                         os.chmod(ICONS_FOLDER + app['icon'], 0o644)
+            
+            progress_dialog.send_signal(signal.SIGINT)
         
-        progress_dialog.send_signal(signal.SIGINT)
+        except:
+            progress_dialog.send_signal(signal.SIGINT)
+            return
 
 if __name__ == "__main__":
     app = Application()
