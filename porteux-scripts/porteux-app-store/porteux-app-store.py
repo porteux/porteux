@@ -28,6 +28,14 @@ ICONS_FOLDER = '/usr/share/pixmaps/'
 REPO_ICONS_FOLDER = REPO_FOLDER_PATH + 'icons/'
 MAX_AGE_HOURS=6
 
+def is_recently_updated(filePath, hours = MAX_AGE_HOURS):
+    if not exists(filePath):
+        return False
+
+    fileStat = Path(filePath).stat()
+    fileDateTime = datetime.fromtimestamp(fileStat.st_mtime, tz=None)
+    return (datetime.today() - fileDateTime).seconds <= 3600 * hours
+
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -187,7 +195,7 @@ class AppWindow(Gtk.ApplicationWindow):
                 return False
         return True
 
-    def execute_external_script(self, script_command):
+    def execute_external_script(self, script_name, extra_cmds = ""):
         if not self.has_internet():
             return
 
@@ -197,8 +205,14 @@ class AppWindow(Gtk.ApplicationWindow):
                 stderr=devnull
             )
 
+        scriptPath = APPS_FOLDER + script_name + ".sh"
+        if not is_recently_updated(scriptPath):
+            with open(scriptPath, "w") as script, urlopen(REPO_APPS_FOLDER + script_name + ".sh") as nscript:
+                script.write(nscript.read().decode("utf-8"))
+            os.chmod(scriptPath, 0o755)
+
         activate_parameter = self.on_main_get_activate_module_paramater(self.check_button_module)
-        result = subprocess.run(["/bin/bash", "-c", script_command + " " + activate_parameter], stdout=subprocess.PIPE)
+        result = subprocess.run(["/bin/bash", "-c", scriptPath + " " + extra_cmds + " " + activate_parameter], stdout=subprocess.PIPE)
         output = result.stdout.decode("utf-8")
 
         if output:
@@ -233,10 +247,10 @@ class AppWindow(Gtk.ApplicationWindow):
             appFolderDialog = GtkFolder(self, applicationName)
             response = appFolderDialog.run()
             if response == Gtk.ResponseType.OK:
-                self.execute_external_script(APP_STORE_PATH + "applications/" + app["script"] + ".sh " + appFolderDialog.get_result())
+                self.execute_external_script(app["script"], appFolderDialog.get_result());
             appFolderDialog.destroy() 
         else:
-            self.execute_external_script(APP_STORE_PATH + "applications/" + app["script"] + ".sh")
+            self.execute_external_script(app["script"])
 
     def on_dialog_combobox_channel_changed(self, combobox, combobox_language):
         combobox_language.set_sensitive(True)
@@ -247,7 +261,7 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_dialog_button_download_clicked(self, button, app, combobox_channel, combobox_language, dialog):
         channel = combobox_channel.get_active_text()
         language = combobox_language.get_active_text()
-        self.execute_external_script(APP_STORE_PATH + "applications/" + app["script"] + ".sh {0} {1}".format(channel, language))
+        self.execute_external_script(app["script"], "{0} {1}".format(channel, language))
         dialog.destroy()
 
     def on_dialog_button_close_clicked(self, button, dialog):
@@ -316,13 +330,6 @@ class Application(Gtk.Application):
         self.window.show_all()
         self.window.present()
     
-    def is_recently_updated(self, filePath):
-        if not exists(filePath):
-            return False
-
-        fileStat = Path(filePath).stat()
-        fileDateTime = datetime.fromtimestamp(fileStat.st_mtime, tz=None)
-        return (datetime.today() - fileDateTime).seconds <= 3600 * MAX_AGE_HOURS
     
     def update_changed_files(self):
         db_path = APP_STORE_PATH + 'porteux-app-store-db.json'
@@ -334,7 +341,7 @@ class Application(Gtk.Application):
                         stderr=devnull
                     )
 
-            if not self.is_recently_updated(db_path):
+            if not is_recently_updated(db_path):
                 with urlopen(REPO_FOLDER_PATH + 'porteux-app-store-db.json') as ndb:
                     if ndb.status == 200:
                         db_decoded = ndb.read().decode('utf-8')
@@ -345,7 +352,7 @@ class Application(Gtk.Application):
 
             for filename in files:
                 filePath = APP_STORE_PATH + filename
-                if self.is_recently_updated(filePath):
+                if is_recently_updated(filePath):
                     continue
                 with open(filePath, 'wb') as file, urlopen(REPO_FOLDER_PATH + filename) as nfile:
                     file.write(nfile.read())
@@ -359,16 +366,9 @@ class Application(Gtk.Application):
 
             for _, apps in DB.items():
                 for _, app in apps.items():
-                    if "script" in app:
-                        scriptPath = APPS_FOLDER + app['script'] + '.sh'
-                        if self.is_recently_updated(scriptPath):
-                            continue
-                        with open(scriptPath, 'w') as script, urlopen(REPO_APPS_FOLDER + app['script'] + '.sh') as nscript:
-                            script.write(nscript.read().decode('utf-8'))
-                        os.chmod(scriptPath, 0o755)
                     if "icon" in app:
                         iconPath = ICONS_FOLDER + app['icon']
-                        if self.is_recently_updated(iconPath):
+                        if is_recently_updated(iconPath, 720):
                             continue
                         with open(iconPath, 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
                             icon.write(nicon.read())
