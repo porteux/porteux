@@ -1,0 +1,24 @@
+From 707213c1c0bf3acc9b7cdd22a13f8ea84d9c7229 Mon Sep 17 00:00:00 2001
+From: Nathaniel Russell <46272571+nater1983@users.noreply.github.com>
+Date: Thu, 14 Sep 2023 17:02:02 +0000
+Subject: [PATCH] Xsession: Add language for Gnome
+
+---
+ data/Xsession.in | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/data/Xsession.in b/data/Xsession.in
+index 2e4de4fe3..a31d374ba 100755
+--- a/data/Xsession.in
++++ b/data/Xsession.in
+@@ -45,6 +45,10 @@ elif [ -f /usr/etc/xprofile ]; then
+ fi
+ test -f "$HOME/.xprofile" && . "$HOME/.xprofile"
+ 
++# Get the AccountsService value for LANG over the system dbus. This is the user setting in GNOME:
++gnome_lang_usr="$(busctl get-property org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u) org.freedesktop.Accounts.User Language | cut -d\" -f2)"
++[ "$DESKTOP_SESSION" = "gnome-xorg" ] && [ -n "$gnome_lang_usr" ] && export LANG=$gnome_lang_usr
++
+ # Translation stuff
+ if [ -x "@libexecdir@/gdmtranslate" ] ; then
+   gdmtranslate="@libexecdir@/gdmtranslate"

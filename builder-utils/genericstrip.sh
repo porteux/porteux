@@ -38,7 +38,6 @@ GenericStrip() {
 	rm -R "$CURRENTDIR"/usr/share/sounds
 	rm -R "$CURRENTDIR"/usr/share/themes/HighContrast
 	rm -R "$CURRENTDIR"/usr/share/vala
-	rm -R "$CURRENTDIR"/usr/share/xdg-desktop-portal
 	rm -R "$CURRENTDIR"/usr/share/*/translations
 	rm -R "$CURRENTDIR"/usr/lib/pkgconfig
 	rm -R "$CURRENTDIR"/usr/lib64/pkgconfig
