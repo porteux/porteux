@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|' on
+# the right side marks the last column you can put a character in.  You must make
+# exactly 11 lines for the formatting to be correct.  It's also customary to
+# leave one space after the ':'.
+
+             |-----handy-ruler------------------------------------------------------|
+geocode-glib2: geocode-glib2 (convenience library for the geocoding)
+geocode-glib2:
+geocode-glib2: geocode-glib2 is a convenience library for the geocoding (finding
+geocode-glib2: longitude, and latitude from an address) and reverse geocoding
+geocode-glib2: (finding an address from coordinates). It uses Nominatim service to
+geocode-glib2: achieve that. It also caches (reverse-)geocoding requests for faster
+geocode-glib2: results and to avoid unnecessary server load.
+geocode-glib2:
+geocode-glib2: geocode-glib2 uses soup3 API.
+geocode-glib2:
+geocode-glib2: https://git.gnome.org/browse/geocode-glib
