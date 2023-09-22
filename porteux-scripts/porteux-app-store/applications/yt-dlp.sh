@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 CURRENTPACKAGE="yt-dlp"
 VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/yt-dlp/yt-dlp/releases/latest | rev | cut -d / -f 1 | rev)
 APPLICATIONURL="https://github.com/yt-dlp/yt-dlp/releases/latest"
