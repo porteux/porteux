@@ -1,8 +1,8 @@
 #!/bin/bash
 
 CURRENTPACKAGE="yt-dlp"
-VERSION=$(curl -s "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest" | grep "\"tag_name\":" | cut -d \" -f 4)
-APPLICATIONURL="https://github.com/yt-dlp/yt-dlp/releases/download/${VERSION}/yt-dlp"
+VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/yt-dlp/yt-dlp/releases/latest | rev | cut -d / -f 1 | rev)
+APPLICATIONURL="https://github.com/yt-dlp/yt-dlp/releases/latest"
 ARCH=$(uname -m)
 OUTPUTDIR="$PORTDIR/modules/"
 BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
