@@ -25,7 +25,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &
 	DownloadPackage "libdbusmenu" &
 	DownloadPackage "libindicator" &
-	DownloadPackage "linuxdoc-tools" &
 	wait
 else
 	DownloadPackage "gtk+2" &
