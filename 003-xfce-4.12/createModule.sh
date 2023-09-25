@@ -35,10 +35,6 @@ installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 if [ $SLACKWAREVERSION == "current" ]; then
-	# required by gtk+2
-	installpkg $MODULEPATH/packages/linuxdoc-tools*.txz || exit 1
-	rm $MODULEPATH/packages/linuxdoc-tools*.txz || exit 1
-	
 	# building gtk+2 because new GLib 2.76+ has broken it
 	currentPackage=gtk+2
 	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
