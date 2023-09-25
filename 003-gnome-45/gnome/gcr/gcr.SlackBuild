@@ -16,7 +16,7 @@ fi
 
 CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH}
-PKG=$TMP/package-$PRGNAM
+PKG=$TMP/package-$PKGNAM
 OUTPUT=${OUTPUT:-$TMP/packages}
 JOBS="-j$(nproc --all)"
 
