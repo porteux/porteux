@@ -71,6 +71,7 @@ rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/xtrans*
 
 # required by mutter 45+
+cd $MODULEPATH
 pip install attrs
 pip install jinja2
 

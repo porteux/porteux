@@ -49,7 +49,7 @@ GenericStrip() {
 	rm -R "$CURRENTDIR"/usr/lib64/python2.7
 	rm -R "$CURRENTDIR"/var/log/pkgtools
 	rm -R "$CURRENTDIR"/var/log/setup
-	rm -R "$CURRENTDIR"/var/lib/pkgtools/douninst.sh
+	rm -R "$CURRENTDIR"/var/lib/pkgtools/douninst.sh/
 	rm -R "$CURRENTDIR"/var/lib/pkgtools/setup
 	
 	rm "$CURRENTDIR"/usr/bin/gtk-demo

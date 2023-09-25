@@ -34,7 +34,21 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-# required by most of the packages
+if [ $SLACKWAREVERSION == "current" ]; then
+	# required by gtk+2
+	installpkg $MODULEPATH/packages/linuxdoc-tools*.txz || exit 1
+	rm $MODULEPATH/packages/linuxdoc-tools*.txz || exit 1
+	
+	# building gtk+2 because new GLib 2.76+ has broken it
+	currentPackage=gtk+2
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+	wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
+	cp $SCRIPTPATH/extras/gtk+2/${currentPackage}.SlackBuild .
+	sh ${currentPackage}.SlackBuild || exit 1
+	rm -fr $MODULEPATH/${currentPackage}
+fi
+
+# required by most packages
 installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 
 currentPackage=gpicview
