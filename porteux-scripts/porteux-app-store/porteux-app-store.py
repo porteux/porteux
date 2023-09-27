@@ -34,7 +34,7 @@ def is_recently_updated(filePath, hours = MAX_AGE_HOURS):
 
     fileStat = Path(filePath).stat()
     fileDateTime = datetime.fromtimestamp(fileStat.st_mtime, tz=None)
-    return (datetime.today() - fileDateTime).seconds <= 3600 * hours
+    return (datetime.today() - fileDateTime).total_seconds() <= 3600 * hours
 
 class AppWindow(Gtk.ApplicationWindow):
     def __init__(self, *args, **kwargs):
