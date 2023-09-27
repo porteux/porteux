@@ -52,6 +52,7 @@ DownloadPackage "etc" &
 DownloadPackage "ethtool" &
 wait
 DownloadPackage "eudev" &
+DownloadPackage "exfatprogs" &
 DownloadPackage "f2fs-tools" &
 DownloadPackage "fftw" &
 DownloadPackage "file" &
