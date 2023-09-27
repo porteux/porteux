@@ -417,7 +417,7 @@
 		},
 		"Neovim": {
 			"script": "neovim",
-			"icon": "nvim.png"
+			"icon": "neovim.png"
 		}
 	},
 	"Office": {
