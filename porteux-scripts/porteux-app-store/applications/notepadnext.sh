@@ -3,9 +3,9 @@
 CURRENTPACKAGE=notepadnext
 FRIENDLYNAME="Notepad++ (Next)"
 CATEGORY=Utility
-APPLICATIONURL=$(curl -s https://api.github.com/repos/dail8859/NotepadNext/releases/latest | grep "http" | grep "AppImage\"" | cut -d \" -f 4)
-FULLVERSION=$(curl -s https://api.github.com/repos/dail8859/NotepadNext/releases/latest | grep "\"tag_name\":" | cut -d \" -f 4 | head -n 1)
+FULLVERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/dail8859/NotepadNext/releases/latest | rev | cut -d / -f 1 | rev)
 VERSION="${FULLVERSION//[vV]}"
+APPLICATIONURL="https://github.com/balena-io/etcher/releases/latest/download/NotepadNext-${FULLVERSION}-x86_64.AppImage"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
 RESULT=$(/opt/porteux-scripts/porteux-app-store/appimage-builder.sh "$CURRENTPACKAGE" "$FRIENDLYNAME" "$CATEGORY" "$APPLICATIONURL" "$VERSION" "$ACTIVATEMODULE")
