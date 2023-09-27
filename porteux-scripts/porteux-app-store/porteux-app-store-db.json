@@ -414,6 +414,10 @@
 		},
 		"VSCode (Codium)":{
 			"script": "vscode"
+		},
+		"Neovim": {
+			"script": "neovim",
+			"icon": "nvim.png"
 		}
 	},
 	"Office": {
