@@ -28,7 +28,6 @@ GenericStrip() {
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/64x64
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/72x72
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/96x96
-	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/128x128
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/192x192
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/256x256
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/512x512

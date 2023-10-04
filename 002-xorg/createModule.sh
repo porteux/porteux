@@ -80,10 +80,11 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 info=$(DownloadLatestSourceFromGithub "lah7" "gtk3-classic")
 filename=${info% *}
 tar xvf "$filename" && rm "$filename" || exit 1
-sed -i "s|+++ .*/gtk/|+++ gtk/|g" gtk3-classic*/*.patch
-sed -i "s|+++ .*/gdk/|+++ gdk/|g" gtk3-classic*/*.patch
 rm gtk3-classic*/gtk+-atk-bridge-meson.build.patch
 rm gtk3-classic*/gtk+-atk-bridge-meson_options.txt.patch
+rm gtk3-classic*/appearance__disable-backdrop.patch
+sed -i "s|+++ .*/gtk/|+++ gtk/|g" gtk3-classic*/*.patch
+sed -i "s|+++ .*/gdk/|+++ gdk/|g" gtk3-classic*/*.patch
 wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 sed -i "s|# Configure, build, and install:|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\n# Configure, build, and install:|g" ${currentPackage}.SlackBuild
 sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
