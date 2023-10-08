@@ -1,0 +1,18 @@
+--- libmate-panel-applet/mate-panel-applet-gsettings.c	2023-10-08 21:08:18.607497000 +0200
++++ libmate-panel-applet/mate-panel-applet-gsettings-patched.c	2023-10-08 21:07:27.648267700 +0200
+@@ -90,6 +90,15 @@
+ static void
+ register_dconf_editor_relocatable_schema (const gchar *schema, const gchar *path)
+ {
++    GSettingsSchema * res = g_settings_schema_source_lookup (
++                            g_settings_schema_source_get_default(), 
++                            "ca.desrt.dconf-editor.Settings", FALSE);                                 
++    if (res == NULL)
++    {
++        g_object_unref (res);
++        return;
++    }
++    
+     GSettings *dconf_editor_settings;
+     dconf_editor_settings = g_settings_new ("ca.desrt.dconf-editor.Settings");
+ 
