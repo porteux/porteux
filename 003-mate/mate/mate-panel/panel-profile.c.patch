@@ -4,10 +4,10 @@
  static void
  unregister_dconf_editor_relocatable_schema (const gchar *path)
  {
-+    GSettingsSchema * res = g_settings_schema_source_lookup (
++    GSettingsSchema * dconf_editor_schema = g_settings_schema_source_lookup (
 +                            g_settings_schema_source_get_default(), 
 +                            "ca.desrt.dconf-editor.Settings", FALSE);                                 
-+    if (res == NULL)
++    if (dconf_editor_schema == NULL)
 +        return;
 +
      GSettings *dconf_editor_settings;
