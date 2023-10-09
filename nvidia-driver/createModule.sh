@@ -9,9 +9,10 @@ if [ $(whoami) != root ]; then
 fi
 
 [ `getconf LONG_BIT` = "64" ] && SYSTEMBITS=64
-MODULESFOLDER=$(readlink -f $PORTDIR/modules)
-INSTALLERFOLDER=/tmp/nvidia
-mkdir $INSTALLERFOLDER
+OUTPUTDIR="$PORTDIR/modules"
+INSTALLERDIR=/tmp/nvidia
+MODULEDIR=$INSTALLERDIR/nvidia-module
+mkdir -p $INSTALLERDIR/nvidia-module
 
 # add ABI compatible setting
 echo '
@@ -21,59 +22,47 @@ EndSection' >> /etc/X11/xorg.conf
 
 echo "Creating memory changes file..."
 sync; echo 3 > /proc/sys/vm/drop_caches
-tar cf /tmp/nvidia.tar.xz --exclude={"*/.*","*/.wh.*",".cache","dev","home","mnt","opt","root","run","tmp","var","etc/cups","etc/udev","etc/profile.d","etc/porteux","lib/firmware","lib/modules/*porteux/modules.*"} -C /mnt/live/memory changes || exit 1
+tar cf $INSTALLERDIR/nvidia.tar.xz --exclude={"*/.*","*/.wh.*",".cache","dev","home","mnt","opt","root","run","tmp","var","etc/cups","etc/udev","etc/profile.d","etc/porteux","lib/firmware","lib/modules/*porteux/modules.*"} -C /mnt/live/memory changes || exit 1
 
 echo "Extracting memory changes file..."
-tar xf /tmp/nvidia.tar.xz --strip 1 -C $INSTALLERFOLDER || exit 1
+tar xf $INSTALLERDIR/nvidia.tar.xz --strip 1 -C $MODULEDIR || exit 1
 
 echo  "Cleaning up driver directory..."
-find $INSTALLERFOLDER -name '*.la' -delete
-find $INSTALLERFOLDER -type f -maxdepth 1 -delete
-find $INSTALLERFOLDER -type l -maxdepth 1 -delete
-find $INSTALLERFOLDER/etc/ -maxdepth 1 \( -type f -o -type d \) ! \( -name "modprobe.d" -o -name "OpenCL" -o -name "vulkan" -o -name "X11" \) -delete 2>/dev/null
-rm -f $INSTALLERFOLDER/usr/bin/nvidia-debugdump
-rm -f $INSTALLERFOLDER/usr/bin/nvidia-installer
-rm -f $INSTALLERFOLDER/usr/bin/nvidia-uninstall
-rm -f $INSTALLERFOLDER/etc/X11/xorg.conf.nvidia-xconfig-original
-rm -rf $INSTALLERFOLDER/usr/{man,src}
-rm -f $INSTALLERFOLDER/usr/bin/gnome-keyring-daemon
-rm -rf $INSTALLERFOLDER/usr/lib$SYSTEMBITS/{gio,gtk-2.0,gtk-3.0}
-rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/{libXvMCgallium.*,libgsm.*,libudev.*,libunrar.*}
-rm -rf $INSTALLERFOLDER/usr/local
-rm -rf $INSTALLERFOLDER/usr/share/{glib-2.0,man,mime,pixmaps}
-rm -f $INSTALLERFOLDER/usr/{,local/}share/applications/mimeinfo.cache
-rm -rf $INSTALLERFOLDER/usr/share/doc/NVIDIA_GLX-1.0/{html,samples,LICENSE,NVIDIA_Changelog,README.txt}
+find $MODULEDIR -name '*.la' -delete
+find $MODULEDIR -type f -maxdepth 1 -delete
+find $MODULEDIR -type l -maxdepth 1 -delete
+find $MODULEDIR/etc/ -maxdepth 1 \( -type f -o -type d \) ! \( -name "modprobe.d" -o -name "OpenCL" -o -name "vulkan" -o -name "X11" \) -delete 2>/dev/null
+rm -f $MODULEDIR/usr/bin/nvidia-debugdump
+rm -f $MODULEDIR/usr/bin/nvidia-installer
+rm -f $MODULEDIR/usr/bin/nvidia-uninstall
+rm -f $MODULEDIR/etc/X11/xorg.conf.nvidia-xconfig-original
+rm -rf $MODULEDIR/usr/{man,src}
+rm -f $MODULEDIR/usr/bin/gnome-keyring-daemon
+rm -rf $MODULEDIR/usr/lib$SYSTEMBITS/{gio,gtk-2.0,gtk-3.0}
+rm -f $MODULEDIR/usr/lib$SYSTEMBITS/{libXvMCgallium.*,libgsm.*,libudev.*,libunrar.*}
+rm -rf $MODULEDIR/usr/local
+rm -rf $MODULEDIR/usr/share/{glib-2.0,man,mime,pixmaps}
+rm -f $MODULEDIR/usr/{,local/}share/applications/mimeinfo.cache
+rm -rf $MODULEDIR/usr/share/doc/NVIDIA_GLX-1.0/{html,samples,LICENSE,NVIDIA_Changelog,README.txt}
 
-# optional stripping
-if [[ "$@" == *"--strip"* ]]; then
-	rm -f $INSTALLERFOLDER/usr/lib/libnvidia-compiler.so*
-	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libcudadebugger.so*
-	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libnvidia-compiler.so*
-	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libnvoptix.so*
-	rm -f $INSTALLERFOLDER/usr/lib$SYSTEMBITS/libnvidia-gtk2*
-	
-	source "$PWD/../builder-utils/genericstrip.sh"
-	
-	mkdir $INSTALLERFOLDER/../nostrip
-	mkdir $INSTALLERFOLDER/../nostrip64
-	
-	mv $INSTALLERFOLDER/usr/lib/libnvidia-glvkspirv.* $INSTALLERFOLDER/../nostrip
-	mv $INSTALLERFOLDER/usr/lib64/libnvidia-glvkspirv.* $INSTALLERFOLDER/../nostrip64
-	mv $INSTALLERFOLDER/usr/lib64/vdpau $INSTALLERFOLDER/../
-	mv $INSTALLERFOLDER/usr/bin $INSTALLERFOLDER/../
-	
-	AggressiveStripAll
-	
-	mv $INSTALLERFOLDER/../nostrip/libnvidia-glvkspirv.* $INSTALLERFOLDER/usr/lib
-	mv $INSTALLERFOLDER/../nostrip64/libnvidia-glvkspirv.* $INSTALLERFOLDER/usr/lib64
-	mv $INSTALLERFOLDER/../vdpau $INSTALLERFOLDER/usr/lib64
-	mv $INSTALLERFOLDER/../bin $INSTALLERFOLDER/usr/
-fi
+# strip
+mkdir -p $MODULEDIR/../nostrip
+mkdir -p $MODULEDIR/../nostrip64
+
+mv $MODULEDIR/usr/lib/libnvidia-glvkspirv.* $MODULEDIR/../nostrip
+mv $MODULEDIR/usr/lib64/libnvidia-glvkspirv.* $MODULEDIR/../nostrip64
+mv $MODULEDIR/usr/lib64/vdpau $MODULEDIR/../
+
+find $MODULEDIR | xargs file | egrep -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+
+mv $MODULEDIR/../nostrip/libnvidia-glvkspirv.* $MODULEDIR/usr/lib
+mv $MODULEDIR/../nostrip64/libnvidia-glvkspirv.* $MODULEDIR/usr/lib64
+mv $MODULEDIR/../vdpau $MODULEDIR/usr/lib64
 
 # disable nouveau
-mkdir -p $INSTALLERFOLDER/etc/modprobe.d 2>/dev/null
+mkdir -p $MODULEDIR/etc/modprobe.d 2>/dev/null
 echo 'blacklist nouveau
-options nouveau modeset=0' > $INSTALLERFOLDER/etc/modprobe.d/nvidia-installer-disable-nouveau.conf
+options nouveau modeset=0' > $MODULEDIR/etc/modprobe.d/nvidia-installer-disable-nouveau.conf
 
 # get driver version
 DRIVERFILE=$(find /usr/lib$SYSTEMBITS/libEGL_nvidia.so* \! -type l)
@@ -81,21 +70,23 @@ DRIVERVERSION=$(echo $DRIVERFILE | cut -d'.' -f3-)
 
 # build xzm module
 echo "Creating driver module..."
-if [[ "$@" == *"--strip"* ]]; then
-	MODULEFILENAME=08-nvidia-$DRIVERVERSION-k.$(uname -r)-stripped-$(arch).xzm
+MODULEFILENAME=08-nvidia-$DRIVERVERSION-k.$(uname -r)-$(arch).xzm
+
+if [ ! -w "$OUTPUTDIR" ]; then
+    dir2xzm -q ${MODULEDIR} -o=/tmp/${MODULEFILENAME} || exit 1
+    sync
+    echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
+elif [ ! -f "$OUTPUTDIR"/"$MODULEFILENAME" ]; then
+	dir2xzm -q ${MODULEDIR} -o="$OUTPUTDIR"/${MODULEFILENAME} || exit 1
+	sync
+    echo "Module placed in $OUTPUTDIR"
 else
-	MODULEFILENAME=08-nvidia-$DRIVERVERSION-k.$(uname -r)-$(arch).xzm
+    dir2xzm -q ${MODULEDIR} -o=/tmp/${MODULEFILENAME} || exit 1
+    sync
+    echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
 fi
-dir2xzm $INSTALLERFOLDER/ -o=/tmp/$MODULEFILENAME || exit 1
-mv /tmp/$MODULEFILENAME $MODULESFOLDER || exit 1
 
 # clean up
-rm -f /tmp/nvidia.tar.gz
-rm -f /tmp/nvidia.xzm
-rm -rf $INSTALLERFOLDER
-rm -rf $INSTALLERFOLDER/../nostrip
-rm -rf $INSTALLERFOLDER/../nostrip64
+rm -rf $INSTALLERDIR
 
-sync
-
-echo "Nvidia driver module has been placed in $MODULESFOLDER"
+echo "Finished successfully"
