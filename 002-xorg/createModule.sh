@@ -219,6 +219,11 @@ cp -fs xinitrc.openbox-session xinitrc
 
 patch --no-backup-if-mismatch -d $MODULEPATH/packages -p0 < $SCRIPTPATH/extras/freedesktop/freedesktop.org.xml.patch
 
+### fix gtk2 adwaita theme cursor click on text box having wrong offset
+
+sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}||g" $MODULEPATH/packages/usr/share/themes/Adwaita-dark/gtk-2.0/main.rc
+sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}||g" $MODULEPATH/packages/usr/share/themes/Adwaita/gtk-2.0/main.rc
+
 ### copy build files to 05-devel
 
 CopyToDevel
