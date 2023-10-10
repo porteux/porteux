@@ -134,10 +134,8 @@ filename=${info% *}
 tar xvf $filename && rm $filename
 mkdir -p $MODULEPATH/lib/firmware/intel
 cd ${currentPackage}*
-ln -s sof-tplg-v$version sof-tplg
+mv sof $MODULEPATH/lib/firmware/intel
 mv sof-tplg $MODULEPATH/lib/firmware/intel
-mv sof-tplg* $MODULEPATH/lib/firmware/intel
-cp -r sof-v$version $MODULEPATH/lib/firmware/intel/sof
 cd ..
 
 echo "Blacklisting..."
