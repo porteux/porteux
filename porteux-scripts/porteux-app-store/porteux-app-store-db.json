@@ -497,12 +497,12 @@
         },
         "VSCode (Codium)":{
             "script": "vscode",
-            "icon": "vscodium.svg",
+            "icon": "vscodium.png",
             "tooltip": "Microsoft VS Code with no telemetry/tracking"
         },
         "Neovim": {
             "script": "neovim",
-            "icon": "nvim.png",
+            "icon": "neovim.png",
             "tooltip": "Improved version of Vim editor"
         }
     },
