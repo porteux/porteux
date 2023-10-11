@@ -6,9 +6,9 @@ if [ "$(uname -m)" != "x86_64" ]; then
 fi
 
 if [ `whoami` != root ]; then
-	echo "Please enter root's password below:"
-	su -c "/opt/porteux-scripts/porteux-app-store/applications/opera.sh $1 $2 $3"
-	exit 0
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/opera.sh $1 $2 $3"
+    exit 0
 fi
 
 if [ "$#" -lt 1 ]; then
@@ -42,7 +42,7 @@ remove_application_temp_dir(){
 
 chromium_family_locale_striptease(){
     local locale_dir="$1"
-    
+
     find "$locale_dir" -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en-US.*" -o -name "en_US.*" -o -name "$LANGUAGE.*" \) -delete
 }
 
@@ -55,7 +55,7 @@ striptease(){
 }
 
 get_module_name(){
-    local pkgver; pkgver="$2"    
+    local pkgver; pkgver="$2"
     local arch; arch="$3"
     local build; build="$4"
 
@@ -77,11 +77,11 @@ make_module_opera(){
     local product_name; product_name=$([ "$CHANNEL" == "stable" ] && echo "$APP" || echo "$APP-$CHANNEL")
 
     create_application_temp_dir "$APP" || exit 1
-    
+
     $WGET_WITH_TIME_OUT -P $TMP/"$APP"/ -r -nd --no-parent https://rpm.opera.com/rpm/ -A opera_"$CHANNEL"-*.rpm || exit 1
     pkgver=$(find $TMP/"$APP" -name "opera_*.rpm" -exec basename {} \; | cut -d '-' -f2)
     pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64" "1")
-    
+
     mv $TMP/"$APP"/opera_*.rpm $TMP/"$APP"/"$pkg_name".rpm
     mkdir -p "$TMP/$APP/$pkg_name" &&
     rpm2cpio "$TMP/$APP/${pkg_name}.rpm" | cpio -idmv -D "$TMP/$APP/$pkg_name" &&
