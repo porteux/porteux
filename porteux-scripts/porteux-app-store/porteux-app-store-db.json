@@ -460,7 +460,7 @@
     "Virtual Machines": {
         "VirtualBox": {
             "script": "virtualbox",
-            "icon": "virtualbox.png",
+            "icon": "virtualbox.svg",
             "tooltip": "Official Oracle virtual machine utility"
         },
         "VirtualBox Guest Additions": {
@@ -573,7 +573,7 @@
         },
         "Wine":{
             "script": "wine",
-            "icon": "wine.png",
+            "icon": "wine.svg",
             "tooltip": "Run Windows applications on Linux",
             "infoDialog": "It's recommended to download multilib, also available in the app store."
         },
