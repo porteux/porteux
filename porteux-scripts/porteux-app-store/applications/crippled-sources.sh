@@ -8,9 +8,9 @@ systemFullVersion=$(cat /etc/slackware-version)
 SLACKWAREVERSION=${systemFullVersion//* }
 
 if [[ "$SLACKWAREVERSION" == *"+" ]]; then
-	SLACKWAREVERSION=current
+    SLACKWAREVERSION=current
 else
-	SLACKWAREVERSION=stable
+    SLACKWAREVERSION=stable
 fi
 
 APPLICATIONURL="https://github.com/porteux/porteux/releases/download/$PORTEUXVERSION/$CURRENTPACKAGE.zip"

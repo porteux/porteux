@@ -6,9 +6,9 @@ if [ "$(uname -m)" != "x86_64" ]; then
 fi
 
 if [ `whoami` != root ]; then
-	echo "Please enter root's password below:"
-	su -c "/opt/porteux-scripts/porteux-app-store/applications/chromium.sh $1 $2 $3"
-	exit 0
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/chromium.sh $1 $2 $3"
+    exit 0
 fi
 
 if [ "$#" -lt 1 ]; then
@@ -42,28 +42,28 @@ remove_application_temp_dir(){
 
 chromium_family_locale_striptease(){
     local locale_dir="$1"
-    
+
     find "$locale_dir" -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en-US.*" -o -name "en_US.*" -o -name "$LANGUAGE.*" \) -delete
 }
 
 striptease(){
     local pkg_dir="$TMP/$1/$2"
 
-		declare -a targets=("executable" "shared object")
-		for target in "${targets[@]}"
-		do
-				find "$pkg_dir" -print0 | xargs -0 file | grep "$target" | grep ELF | cut -f 1 -d : | \
-						xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment \
-						--remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
-				find "$pkg_dir" -exec file {} +
-		done
-		find "$pkg_dir" -name "chromedriver" -type f -delete
-		rm "$pkg_dir"/usr/lib64/chromium/locales/*.info
-		chromium_family_locale_striptease "$pkg_dir"/usr/lib64/chromium*/locales
+        declare -a targets=("executable" "shared object")
+        for target in "${targets[@]}"
+        do
+                find "$pkg_dir" -print0 | xargs -0 file | grep "$target" | grep ELF | cut -f 1 -d : | \
+                        xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment \
+                        --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
+                find "$pkg_dir" -exec file {} +
+        done
+        find "$pkg_dir" -name "chromedriver" -type f -delete
+        rm "$pkg_dir"/usr/lib64/chromium/locales/*.info
+        chromium_family_locale_striptease "$pkg_dir"/usr/lib64/chromium*/locales
 }
 
 get_module_name(){
-    local pkgver; pkgver="$2"    
+    local pkgver; pkgver="$2"
     local arch; arch="$3"
     local build; build="$4"
 
@@ -86,7 +86,7 @@ get_repo_version_chromium(){
     else
         exit 1
     fi
-    
+
     echo "$ver"
 }
 
@@ -110,7 +110,7 @@ make_module_chromium(){
     else
         exit 1
     fi
-    
+
     mkdir -p "$TMP/$APP/$pkg_name/usr/bin" && mkdir -p "$TMP/$APP/$pkg_name/usr/lib64" && mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications" &&
     mv -f "$TMP/$APP/$pkg_name/$APP-$CHANNEL-${pkgver}" "$TMP/$APP/$pkg_name/usr/lib64" &&
     cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "$APP-$CHANNEL-${pkgver}/" "$product_name" &&
