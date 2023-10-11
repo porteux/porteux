@@ -83,10 +83,7 @@ class AppWindow(Gtk.ApplicationWindow):
         self.add(self.box_main)
 
     def create_button_application(self, label_name, tooltip, apps):
-        if "icon" in apps[label_name]:
-            icon_name = apps[label_name]["icon"]
-        else:
-            icon_name = label_name.lower().split(" ")[0]
+        icon_name = os.path.splitext(apps[label_name]["icon"])[0]
 
         icon = Gio.ThemedIcon(name=icon_name)
         image = Gtk.Image.new_from_gicon(icon, Gtk.IconSize.DIALOG)
@@ -369,13 +366,12 @@ class Application(Gtk.Application):
 
             for _, apps in DB.items():
                 for _, app in apps.items():
-                    if "icon" in app:
-                        iconPath = ICONS_FOLDER + app['icon']
-                        if is_recently_updated(iconPath, 720):
-                            continue
-                        with open(iconPath, 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
-                            icon.write(nicon.read())
-                        os.chmod(iconPath, 0o644)
+                    iconPath = ICONS_FOLDER + app['icon']
+                    if is_recently_updated(iconPath, 720):
+                        continue
+                    with open(iconPath, 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
+                        icon.write(nicon.read())
+                    os.chmod(iconPath, 0o644)
 
             progress_dialog.send_signal(signal.SIGINT)
 

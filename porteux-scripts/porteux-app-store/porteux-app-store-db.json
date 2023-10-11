@@ -2,7 +2,7 @@
     "Web Browsers": {
         "Brave": {
             "script": "brave-browser",
-            "icon": "brave-browser",
+            "icon": "brave-browser.png",
             "channels": [
                 "stable"
             ],
@@ -66,6 +66,7 @@
         },
         "Chromium": {
             "script": "chromium",
+            "icon": "chromium.svg",
             "channels": [
                 "stable",
                 "developer"
@@ -130,6 +131,7 @@
         },
         "Firefox": {
             "script": "firefox",
+            "icon": "firefox.svg",
             "channels": [
                 "latest",
                 "beta-latest",
@@ -238,6 +240,7 @@
         },
         "Chrome": {
             "script": "google-chrome",
+            "icon": "chrome.svg",
             "channels": [
                 "stable",
                 "unstable",
@@ -303,6 +306,7 @@
         },
         "Opera": {
             "script": "opera",
+            "icon": "opera.svg",
             "channels": [
                 "stable",
                 "developer",
@@ -356,6 +360,7 @@
         },
         "Palemoon": {
             "script": "palemoon",
+            "icon": "palemoon.svg",
             "channels": [
                 "stable"
             ],
@@ -365,6 +370,7 @@
         },
         "Vivaldi": {
             "script": "vivaldi",
+            "icon": "vivaldi.svg",
             "channels": [
                 "stable",
                 "snapshot"
@@ -454,10 +460,12 @@
     "Virtual Machines": {
         "VirtualBox": {
             "script": "virtualbox",
+            "icon": "virtualbox.png",
             "tooltip": "Official Oracle virtual machine utility"
         },
         "VirtualBox Guest Additions": {
             "script": "virtualbox-guestadditions",
+            "icon": "virtualbox.png",
             "tooltip": "Additional drivers to improve virtual machine experience",
             "infoDialog": "This module is meant to be built and loaded inside VirtualBox."
         }
@@ -465,11 +473,13 @@
     "Drivers": {
         "Nvidia 5xx": {
             "script": "nvidia",
+            "icon": "nvidia.png",
             "tooltip": "Official Nvidia driver with all utilities and libraries",
             "infoDialog": "Nvidia driver will be loaded after the system is restarted."
         },
         "Nvidia Lite 5xx": {
             "script": "nvidia-lite",
+            "icon": "nvidia.png",
             "tooltip": "Official Nvidia driver without some non-critical libraries",
             "infoDialog": "Nvidia driver will be loaded after the system is restarted."
         }
@@ -477,81 +487,99 @@
     "Development": {
         "Devel Kit": {
             "script": "devel",
-            "icon": "devel",
+            "icon": "devel.png",
             "tooltip": "Set of development utilities for compiling and versioning applications"
         },
         "Notepad++ (Next)": {
             "script": "notepadnext",
+            "icon": "notepadnext.svg",
             "tooltip": "Unofficial port of Notepad++ to Linux"
         },
         "VSCode (Codium)":{
             "script": "vscode",
+            "icon": "vscodium.svg",
             "tooltip": "Microsoft VS Code with no telemetry/tracking"
+        },
+        "Neovim": {
+            "script": "neovim",
+            "icon": "nvim.png",
+            "tooltip": "Improved version of Vim editor"
         }
     },
     "Office": {
         "OnlyOffice":{
             "script": "onlyoffice",
-            "icon": "onlyoffice",
+            "icon": "onlyoffice.png",
             "tooltip": "Office suite for Linux"
         }
     },
     "Games": {
         "Cemu (Wii U)":{
             "script": "cemu",
+            "icon": "cemu.png",
             "tooltip": "Cemu emulator for Nintendo Wii U"
         },
         "PCSX2 (PS2)":{
             "script": "pcsx2",
+            "icon": "pcsx2.png",
             "tooltip": "PCSX2 emulator for Sony Playstation 2"
         },
         "Steam":{
             "script": "steam",
+            "icon": "steam.png",
             "tooltip": "Steam requires multilib, also available in the app store",
             "infoDialog": "Steam requires multilib, also available in the app store.",
             "askInstallationPath": true
         },
         "Yuzu (Switch)":{
             "script": "yuzu",
+            "icon": "yuzu.png",
             "tooltip": "Yuzu emulator for Nintendo Switch"
         }
     },
     "Messengers": {
         "Teams":{
             "script": "teams",
+            "icon": "teams.png",
             "tooltip": "Official Microsoft Teams client for Linux"
         },
         "Telegram":{
             "script": "telegram",
+            "icon": "telegram.png",
             "tooltip": "Official Telegram client for Linux"
         },
         "WhatsApp (WALC)":{
             "script": "whatsapp",
+            "icon": "whatsapp.png",
             "tooltip": "Improved WhatsApp client for Linux"
         }
     },
     "Utils": {
         "Crippled Sources":{
             "script": "crippled-sources",
-            "icon": "crippled",
+            "icon": "crippled.png",
             "tooltip": "Set of kernel files for compiling drivers"
         },
         "Etcher": {
             "script": "etcher",
+            "icon": "etcher.png",
             "tooltip": "Flash OS images to SD cards and USB drives"
         },
         "Multilib Lite":{
             "script": "multilib",
+            "icon": "multilib.svg",
             "tooltip": "Set of essential libraries for 32bit compatibility"
 
         },
         "Wine":{
             "script": "wine",
+            "icon": "wine.png",
             "tooltip": "Run Windows applications on Linux",
             "infoDialog": "It's recommended to download multilib, also available in the app store."
         },
         "yt-dlp":{
             "script": "yt-dlp",
+            "icon": "yt-dlp.png",
             "tooltip": "Terminal application to download videos from various platforms"
         }
     }
