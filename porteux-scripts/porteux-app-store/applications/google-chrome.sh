@@ -6,9 +6,9 @@ if [ "$(uname -m)" != "x86_64" ]; then
 fi
 
 if [ `whoami` != root ]; then
-	echo "Please enter root's password below:"
-	su -c "/opt/porteux-scripts/porteux-app-store/applications/google-chrome.sh $1 $2 $3"
-	exit 0
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/google-chrome.sh $1 $2 $3"
+    exit 0
 fi
 
 if [ "$#" -lt 1 ]; then
@@ -42,20 +42,20 @@ remove_application_temp_dir(){
 
 chromium_family_locale_striptease(){
     local locale_dir="$1"
-    
+
     find "$locale_dir" -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en-US.*" -o -name "en_US.*" -o -name "$LANGUAGE.*" \) -delete
 }
 
 striptease(){
     local pkg_dir="$TMP/$1/$2"
 
-		find "$pkg_dir/usr/share" -mindepth 1 -maxdepth 1 -type d -not -name applications -exec rm -rf '{}' \;
-		rm -rf "${pkg_dir:?}/etc"
-		chromium_family_locale_striptease "$pkg_dir"/opt/google/chrome*/locales
+        find "$pkg_dir/usr/share" -mindepth 1 -maxdepth 1 -type d -not -name applications -exec rm -rf '{}' \;
+        rm -rf "${pkg_dir:?}/etc"
+        chromium_family_locale_striptease "$pkg_dir"/opt/google/chrome*/locales
 }
 
 get_module_name(){
-    local pkgver; pkgver="$2"    
+    local pkgver; pkgver="$2"
     local arch; arch="$3"
     local build; build="$4"
 
@@ -71,7 +71,7 @@ finisher(){
 
 get_repo_version_google_chrome(){
     local ver=()
-    
+
     local versions; versions=$(curl -s https://dl.google.com/linux/chrome/rpm/stable/x86_64/repodata/other.xml.gz | \
         gzip -df | grep -o 'ver="[^"]*"') || exit 1
     for version in $versions; do

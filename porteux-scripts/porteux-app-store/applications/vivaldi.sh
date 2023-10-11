@@ -1,23 +1,23 @@
 #!/bin/bash
 
 if [ "$(uname -m)" != "x86_64" ]; then
-		echo "Unsupported system architecture"
-		exit 1
+    echo "Unsupported system architecture"
+    exit 1
 fi
 
 if [ `whoami` != root ]; then
-	echo "Please enter root's password below:"
-	su -c "/opt/porteux-scripts/porteux-app-store/applications/vivaldi.sh $1 $2 $3"
-	exit 0
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/vivaldi.sh $1 $2 $3"
+    exit 0
 fi
 
 if [ "$#" -lt 1 ]; then
-		echo "Usage:   $0 [channel] [language] [optional: --activate-module]"
-		echo "If no language is specified, en-US will be set"
-		echo "Channels available: developer | stable"
-		echo ""
-		echo "Example: $0 stable pt-BR"
-		exit 1
+    echo "Usage:   $0 [channel] [language] [optional: --activate-module]"
+    echo "If no language is specified, en-US will be set"
+    echo "Channels available: developer | stable"
+    echo ""
+    echo "Example: $0 stable pt-BR"
+    exit 1
 fi
 
 # Global variables
@@ -42,20 +42,20 @@ remove_application_temp_dir(){
 
 chromium_family_locale_striptease(){
     local locale_dir="$1"
-    
+
     find "$locale_dir" -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en-US.*" -o -name "en_US.*" -o -name "$LANGUAGE.*" \) -delete
 }
 
 striptease(){
     local pkg_dir="$TMP/$1/$2"
 
-		rm -rf "$pkg_dir/opt/vivaldi*/resources/vivaldi/default-bookmarks"
-		chromium_family_locale_striptease "$pkg_dir"/opt/vivaldi*/locales
-		find "$pkg_dir"/opt/vivaldi*/resources/vivaldi/_locales -mindepth 1 -maxdepth 1 -type d ! \( -name "en" -o -name "${LANGUAGE//-/_}" \) -exec rm -rf {} +
+    rm -rf "$pkg_dir/opt/vivaldi*/resources/vivaldi/default-bookmarks"
+    chromium_family_locale_striptease "$pkg_dir"/opt/vivaldi*/locales
+    find "$pkg_dir"/opt/vivaldi*/resources/vivaldi/_locales -mindepth 1 -maxdepth 1 -type d ! \( -name "en" -o -name "${LANGUAGE//-/_}" \) -exec rm -rf {} +
 }
 
 get_module_name(){
-    local pkgver; pkgver="$2"    
+    local pkgver; pkgver="$2"
     local arch; arch="$3"
     local build; build="$4"
 
@@ -84,7 +84,7 @@ make_module_vivaldi(){
     local product_name; product_name=$([ "$CHANNEL" == "stable" ] && echo "$APP" || echo "$APP-$CHANNEL")
 
     create_application_temp_dir "$APP" &&
-    
+
     $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.rpm" "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/vivaldi-${CHANNEL}-${pkgver}.x86_64.rpm" &&
     mkdir -p "$TMP/$APP/$pkg_name" &&
     rpm2cpio "$TMP/$APP/${pkg_name}.rpm" | cpio -idmv -D "$TMP/$APP/$pkg_name" &&
