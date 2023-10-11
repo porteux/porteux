@@ -82,8 +82,11 @@ class AppWindow(Gtk.ApplicationWindow):
 
         self.add(self.box_main)
 
-    def create_button_application(self, label_name, tooltip):
-        icon_name = label_name.lower().split(" ")[0]
+    def create_button_application(self, label_name, tooltip, apps):
+        if "icon" in apps[label_name]:
+            icon_name = apps[label_name]["icon"]
+        else:
+            icon_name = label_name.lower().split(" ")[0]
 
         icon = Gio.ThemedIcon(name=icon_name)
         image = Gtk.Image.new_from_gicon(icon, Gtk.IconSize.DIALOG)
@@ -108,11 +111,11 @@ class AppWindow(Gtk.ApplicationWindow):
 
         for button_name in apps:
             if "tooltip" in apps[button_name]:
-                tt = apps[button_name]["tooltip"]
+                tooltip = apps[button_name]["tooltip"]
             else:
-                tt = button_name
+                tooltip = button_name
 
-            button = self.create_button_application(button_name, tt)
+            button = self.create_button_application(button_name, tooltip, apps)
             button.connect("clicked", lambda _, name=button_name: self.on_section_button_clicked(section_name, name))
             flowbox.add(button)
 
