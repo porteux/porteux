@@ -1,5 +1,69 @@
 {
 	"Web Browsers": {
+		"Brave": {
+			"script": "brave-browser",
+			"icon": "brave-browser",
+			"channels": [
+				"stable"
+			],
+			"locales": [
+				"af",
+				"am",
+				"ar",
+				"bg",
+				"bn",
+				"ca",
+				"cs",
+				"da",
+				"de",
+				"el",
+				"en-GB",
+				"en-US",
+				"es",
+				"es-419",
+				"et",
+				"fa",
+				"fi",
+				"fil",
+				"fr",
+				"gu",
+				"he",
+				"hi",
+				"hr",
+				"hu",
+				"id",
+				"it",
+				"ja",
+				"kn",
+				"ko",
+				"lt",
+				"lv",
+				"ml",
+				"mr",
+				"ms",
+				"nb",
+				"nl",
+				"pl",
+				"pt-BR",
+				"pt-PT",
+				"ro",
+				"ru",
+				"sk",
+				"sl",
+				"sr",
+				"sv",
+				"sw",
+				"ta",
+				"te",
+				"th",
+				"tr",
+				"uk",
+				"ur",
+				"vi",
+				"zh-CN",
+				"zh-TW"
+			]
+		},
 		"Chromium": {
 			"script": "chromium",
 			"channels": [
@@ -389,84 +453,107 @@
 	},
 	"Virtual Machines": {
 		"VirtualBox": {
-			"script": "virtualbox"
+			"script": "virtualbox",
+			"tooltip": "Official Oracle virtual machine utility"
 		},
 		"VirtualBox Guest Additions": {
 			"script": "virtualbox-guestadditions",
-			"tooltip": "This module is meant to be built and loaded inside VirtualBox.",
+			"tooltip": "Additional drivers to improve virtual machine experience",
 			"infoDialog": "This module is meant to be built and loaded inside VirtualBox."
 		}
 	},
 	"Drivers": {
 		"Nvidia 5xx": {
 			"script": "nvidia",
-			"tooltip": "Nvidia driver will be loaded after the system is restarted.",
+			"tooltip": "Official Nvidia driver with all utilities and libraries",
+			"infoDialog": "Nvidia driver will be loaded after the system is restarted."
+		},
+		"Nvidia Lite 5xx": {
+			"script": "nvidia-lite",
+			"tooltip": "Official Nvidia driver without some non-critical libraries",
 			"infoDialog": "Nvidia driver will be loaded after the system is restarted."
 		}
 	},
 	"Development": {
 		"Devel Kit": {
 			"script": "devel",
-			"icon": "devel.png"
+			"icon": "devel",
+			"tooltip": "Set of development utilities for compiling and versioning applications"
 		},
 		"Notepad++ (Next)": {
-			"script": "notepadnext"
+			"script": "notepadnext",
+			"tooltip": "Unofficial port of Notepad++ to Linux"
 		},
 		"VSCode (Codium)":{
-			"script": "vscode"
-		},
-		"Neovim": {
-			"script": "neovim",
-			"icon": "neovim.png"
+			"script": "vscode",
+			"tooltip": "Microsoft VS Code with no telemetry/tracking"
 		}
 	},
 	"Office": {
 		"OnlyOffice":{
 			"script": "onlyoffice",
-			"icon": "onlyoffice.png"
+			"icon": "onlyoffice",
+			"tooltip": "Office suite for Linux"
 		}
 	},
 	"Games": {
 		"Cemu (Wii U)":{
-			"script": "cemu"
+			"script": "cemu",
+			"tooltip": "Cemu emulator for Nintendo Wii U"
 		},
 		"PCSX2 (PS2)":{
-			"script": "pcsx2"
+			"script": "pcsx2",
+			"tooltip": "PCSX2 emulator for Sony Playstation 2"
 		},
 		"Steam":{
 			"script": "steam",
-			"tooltip": "Steam requires multilib, also available in the app store.",
+			"tooltip": "Steam requires multilib, also available in the app store",
 			"infoDialog": "Steam requires multilib, also available in the app store.",
 			"askInstallationPath": true
+		},
+		"Yuzu (Switch)":{
+			"script": "yuzu",
+			"tooltip": "Yuzu emulator for Nintendo Switch"
 		}
 	},
 	"Messengers": {
 		"Teams":{
-			"script": "teams"
+			"script": "teams",
+			"tooltip": "Official Microsoft Teams client for Linux"
 		},
 		"Telegram":{
-			"script": "telegram"
+			"script": "telegram",
+			"tooltip": "Official Telegram client for Linux"
 		},
 		"WhatsApp (WALC)":{
-			"script": "whatsapp"
+			"script": "whatsapp",
+			"tooltip": "Improved WhatsApp client for Linux"
 		}
 	},
 	"Utils": {
 		"Crippled Sources":{
 			"script": "crippled-sources",
-			"icon": "crippled.png"
+			"icon": "crippled",
+			"tooltip": "Set of kernel files for compiling drivers"
 		},
 		"Etcher": {
-			"script": "etcher"
+			"script": "etcher",
+			"tooltip": "Flash OS images to SD cards and USB drives"
 		},
 		"Multilib Lite":{
-			"script": "multilib"
+			"script": "multilib",
+			"tooltip": "Set of essential libraries for 32bit compatibility"
+			
 		},
 		"Wine":{
-			"script": "wine"
+			"script": "wine",
+			"tooltip": "Run Windows applications on Linux",
+			"infoDialog": "It's recommended to download multilib, also available in the app store."
 		},
 		"yt-dlp":{
-			"script": "yt-dlp"
+			"script": "yt-dlp",
+			"tooltip": "Terminal application to download videos from various platforms"
+			
 		}
 	}
 }
