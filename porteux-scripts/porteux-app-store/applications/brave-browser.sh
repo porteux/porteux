@@ -6,9 +6,9 @@ if [ "$(uname -m)" != "x86_64" ]; then
 fi
 
 if [ `whoami` != root ]; then
-	echo "Please enter root's password below:"
-	su -c "/opt/porteux-scripts/porteux-app-store/applications/brave.sh $1 $2 $3"
-	exit 0
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/brave.sh $1 $2 $3"
+    exit 0
 fi
 
 if [ "$#" -lt 1 ]; then
@@ -39,8 +39,8 @@ locale_striptease(){
 }
 
 striptease(){
-	rm -rf ${MODULEDIR}/usr/share/man
-	locale_striptease
+    rm -rf ${MODULEDIR}/usr/share/man
+    locale_striptease
 }
 
 rm -fr "${BUILDDIR}"

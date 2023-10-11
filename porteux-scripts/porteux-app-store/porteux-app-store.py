@@ -42,9 +42,9 @@ class AppWindow(Gtk.ApplicationWindow):
 
         with open(APP_STORE_PATH + 'porteux-app-store-db.json') as db:
             self.applications = json.load(db)
-        
+
         self.set_has_tooltip(True)
-        
+
         self.box_main = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.box_applications = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.VERTICAL)
         self.box_action_buttons = Gtk.Box(spacing = 5, orientation = Gtk.Orientation.HORIZONTAL)
@@ -57,7 +57,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         self.box_main.pack_start(Gtk.Separator(), False, False, 5)
 
-        for section, apps in self.applications.items(): 
+        for section, apps in self.applications.items():
             section = self.create_section_applications(section, apps)
             self.box_applications.pack_start(section, False, False, 5)
 
@@ -91,17 +91,17 @@ class AppWindow(Gtk.ApplicationWindow):
         icon = Gio.ThemedIcon(name=icon_name)
         image = Gtk.Image.new_from_gicon(icon, Gtk.IconSize.DIALOG)
         label = Gtk.Label(label=label_name)
-        
+
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         box.pack_start(image, True, True, 0)
         box.pack_start(label, True, True, 0)
-        
+
         button = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
         button.set_can_focus(False)
         button.set_tooltip_text(tooltip)
-        
+
         button.add(box)
-        
+
         return button
 
     def create_section_applications(self, section_name, apps):
@@ -125,7 +125,7 @@ class AppWindow(Gtk.ApplicationWindow):
         label.set_halign(Gtk.Align.START)
         box.pack_start(label, False, False, 5)
         box.pack_start(flowbox, False, False, 5)
-            
+
         box.pack_start(Gtk.Separator(), False, False, 5)
 
         return box
@@ -134,7 +134,7 @@ class AppWindow(Gtk.ApplicationWindow):
         dialog = Gtk.Dialog(title="Select Options", parent=self, modal=True)
         dialog.set_default_size(250, 220)
         dialog.set_resizable(False)
-        
+
         combobox_channel = Gtk.ComboBoxText()
         combobox_language = Gtk.ComboBoxText()
 
@@ -151,14 +151,14 @@ class AppWindow(Gtk.ApplicationWindow):
 
         for channel in app["channels"]:
             combobox_channel.append_text(channel)
-        
+
         combobox_channel.set_active(0)
 
         label_application=Gtk.Label(label=applicationName)
         dialog.vbox.pack_start(label_application, False, False, 5)
-        
+
         dialog.vbox.pack_start(Gtk.Separator(), False, False, 5)
-        
+
         label_channel=Gtk.Label(label="Channel:")
         label_channel.set_halign(Gtk.Align.START)
         dialog.vbox.pack_start(label_channel, False, False, 5)
@@ -251,7 +251,7 @@ class AppWindow(Gtk.ApplicationWindow):
             response = appFolderDialog.run()
             if response == Gtk.ResponseType.OK:
                 self.execute_external_script(app["script"], appFolderDialog.get_result());
-            appFolderDialog.destroy() 
+            appFolderDialog.destroy()
         else:
             self.execute_external_script(app["script"])
 
@@ -332,8 +332,8 @@ class Application(Gtk.Application):
 
         self.window.show_all()
         self.window.present()
-    
-    
+
+
     def update_changed_files(self):
         db_path = APP_STORE_PATH + 'porteux-app-store-db.json'
 
@@ -350,7 +350,7 @@ class Application(Gtk.Application):
                         db_decoded = ndb.read().decode('utf-8')
                         with open(APP_STORE_PATH + 'porteux-app-store-db.json', 'w') as db_file:
                             db_file.write(db_decoded)
-            
+
             files = [ 'porteux-app-store-live.sh', 'appimage-builder.sh', 'module-builder.sh' ]
 
             for filename in files:
@@ -362,7 +362,7 @@ class Application(Gtk.Application):
                     os.chmod(filePath, 0o755)
 
             os.makedirs(APPS_FOLDER, exist_ok = True)
-            
+
             with open(db_path, 'r') as db_file:
                 data = db_file.read()
             DB = json.loads(data)
@@ -376,9 +376,9 @@ class Application(Gtk.Application):
                         with open(iconPath, 'wb') as icon, urlopen(REPO_ICONS_FOLDER + app['icon']) as nicon:
                             icon.write(nicon.read())
                         os.chmod(iconPath, 0o644)
-            
+
             progress_dialog.send_signal(signal.SIGINT)
-        
+
         except:
             progress_dialog.send_signal(signal.SIGINT)
             return

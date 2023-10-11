@@ -13,7 +13,7 @@ CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
 [[ $INSTALLDIR = --* ]] && echo "Installation path can't be empty." && exit 1
 
 mkdir -p "$INSTALLDIR" || exit 1
-rm -fr "$TEMPDIR"	
+rm -fr "$TEMPDIR"
 mkdir "$TEMPDIR" && cd "$TEMPDIR"
 
 wget -T 5 "$APPLICATIONURL" -P "$TEMPDIR" || exit 1
