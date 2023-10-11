@@ -6,9 +6,9 @@ if [ "$(uname -m)" != "x86_64" ]; then
 fi
 
 if [ `whoami` != root ]; then
-	echo "Please enter root's password below:"
-	su -c "/opt/porteux-scripts/porteux-app-store/applications/firefox.sh $1 $2 $3"
-	exit 0
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/firefox.sh $1 $2 $3"
+    exit 0
 fi
 
 if [ "$#" -lt 1 ]; then
@@ -41,7 +41,7 @@ remove_application_temp_dir(){
 }
 
 get_module_name(){
-    local pkgver; pkgver="$2"    
+    local pkgver; pkgver="$2"
     local arch; arch="$3"
     local build; build="$4"
 
@@ -82,7 +82,7 @@ make_module_firefox(){
     mkdir -p "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution" 2> /dev/null
     cat > "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution/policies.json" << EOF
 {
-"policies": 
+"policies":
 {
 "DisableAppUpdate": true,
 "DisableTelemetry": true,
