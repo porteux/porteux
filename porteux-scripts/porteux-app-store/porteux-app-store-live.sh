@@ -42,7 +42,7 @@ else
     if [ $time_diff -gt $max_age_seconds ]; then
         update_app
     fi
-fi 
+fi
 
 # run app store
 "$LOCAL_PATH/porteux-app-store.py"
