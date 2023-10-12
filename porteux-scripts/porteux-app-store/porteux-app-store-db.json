@@ -465,7 +465,7 @@
         },
         "VirtualBox Guest Additions": {
             "script": "virtualbox-guestadditions",
-            "icon": "virtualbox.png",
+            "icon": "virtualbox.svg",
             "tooltip": "Additional drivers to improve virtual machine experience",
             "infoDialog": "This module is meant to be built and loaded inside VirtualBox."
         }
