@@ -185,7 +185,6 @@ DownloadPackage "procps-ng" &
 DownloadPackage "python3" &
 DownloadPackage "python-urllib3" &
 DownloadPackage "readline" &
-DownloadPackage "reiserfsprogs" &
 DownloadPackage "rpcbind" &
 DownloadPackage "rpm2tgz" &
 DownloadPackage "rpm" &
