@@ -221,8 +221,11 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=nv-codec-headers
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
-info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
-version=${info#* }
+# TODO: remove hardcoded version when upstream fixes ffmpeg compilation error
+#info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
+#version=${info#* }
+version=12.0.16.1
+wget https://github.com/FFmpeg/${currentPackage}/releases/download/n${version}/${currentPackage}-${version}.tar.gz
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -234,15 +237,16 @@ rm /tmp/${currentPackage}*.t?z
 # required by ffmpeg
 installpkg $MODULEPATH/packages/openal-soft-*.t?z || exit 1
 installpkg $MODULEPATH/packages/vid.stab-*.t?z || exit 1
+installpkg $MODULEPATH/packages/frei0r-plugins*.t?z || exit 1
+rm $MODULEPATH/packages/frei0r-plugins-*.t?z || exit 1
+installpkg $MODULEPATH/packages/opencl-headers*.t?z || exit 1
+rm $MODULEPATH/packages/opencl-headers-*.t?z || exit 1
 
 currentPackage=ffmpeg
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
-mv $MODULEPATH/packages/frei0r-plugins-*.t?z . || exit 1
-mv $MODULEPATH/packages/opencl-headers-*.t?z . || exit 1
-installpkg frei0r-plugins*.t?z
-installpkg opencl-headers*.t?z
-sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc\\\\|g" ${currentPackage}.SlackBuild
+sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc \\\\|g" ${currentPackage}.SlackBuild
 GLSLANG=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
