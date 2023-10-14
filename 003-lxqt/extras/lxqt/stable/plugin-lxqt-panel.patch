@@ -1,5 +1,5 @@
---- panel/plugin.cpp	2023-09-04 22:04:03.000000000 +0200
-+++ panel/plugin-patched.cpp	2023-09-04 23:06:34.062906463 +0200
+--- lxqt-panel/panel/plugin.cpp	2023-09-04 22:04:03.000000000 +0200
++++ lxqt-panel/panel/plugin-patched.cpp	2023-09-04 23:06:34.062906463 +0200
 @@ -31,8 +31,7 @@
  #include "pluginsettings_p.h"
  #include "lxqtpanel.h"

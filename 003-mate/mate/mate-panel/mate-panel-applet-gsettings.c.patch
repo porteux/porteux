@@ -1,6 +1,6 @@
---- libmate-panel-applet/mate-panel-applet-gsettings.c	2023-10-08 21:08:18.607497000 +0200
-+++ libmate-panel-applet/mate-panel-applet-gsettings-patched.c	2023-10-08 21:07:27.648267700 +0200
-@@ -90,6 +90,15 @@
+--- libmate-panel-applet/mate-panel-applet-gsettings.c	2023-10-13 23:11:04.110761864 +0200
++++ libmate-panel-applet/mate-panel-applet-gsettings.patched	2023-10-13 23:11:38.073760991 +0200
+@@ -90,6 +90,12 @@
  static void
  register_dconf_editor_relocatable_schema (const gchar *schema, const gchar *path)
  {

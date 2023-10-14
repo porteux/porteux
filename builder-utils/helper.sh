@@ -18,7 +18,7 @@ Finalize() {
 
 	# create module
 	zstdFlags="-comp zstd -b 256K -Xcompression-level 22"
-	mksquashfs $MODULEPATH/packages/ $MODULEPATH/$MODULENAME-$SLACKWAREVERSION-$(date +%Y%m%d).xzm $zstdFlags -noappend
+	mksquashfs $MODULEPATH/packages/ $MODULEPATH/$MODULENAME-$PORTEUXBUILD-$(date +%Y%m%d).xzm $zstdFlags -noappend
 
 	# script clean up
 	rm -fr $MODULEPATH/packages/

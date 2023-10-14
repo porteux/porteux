@@ -1,5 +1,5 @@
---- lxqt-panel/CMakeLists.txt	2023-09-04 22:04:03.000000000 +0200
-+++ lxqt-panel/CMakeLists-patched.txt	2023-09-04 22:53:11.382914117 +0200
+--- lxqt-panel/CMakeLists.txt	2023-10-14 19:46:02.000000000 +0200
++++ lxqt-panel/CMakeLists.txt.patched	2023-10-14 22:05:50.162961393 +0200
 @@ -30,7 +30,7 @@
  set(CMAKE_AUTORCC ON)
  

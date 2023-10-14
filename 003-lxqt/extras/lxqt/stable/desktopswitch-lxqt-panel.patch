@@ -1,5 +1,5 @@
---- plugin-desktopswitch/desktopswitch.cpp	2023-09-04 22:04:03.000000000 +0200
-+++ plugin-desktopswitch/desktopswitch-patched.cpp	2023-09-04 22:59:12.845910670 +0200
+--- lxqt-panel/plugin-desktopswitch/desktopswitch.cpp	2023-09-04 22:04:03.000000000 +0200
++++ lxqt-panel/plugin-desktopswitch/desktopswitch-patched.cpp	2023-09-04 22:59:12.845910670 +0200
 @@ -33,7 +33,6 @@
  #include <lxqt-globalkeys.h>
  #include <LXQt/GridLayout>

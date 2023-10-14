@@ -258,7 +258,7 @@ git submodule update --remote --rebase || exit 1
 cp $SCRIPTPATH/extras/lxqt/build_all_cmake_projects.sh .
 cp $SCRIPTPATH/extras/lxqt/*.patch .
 if [ $SLACKWAREVERSION != "current" ]; then
-	cp $SCRIPTPATH/extras/lxqt/stable/notification-lxqt-notificationd.patch .
+	cp $SCRIPTPATH/extras/lxqt/stable/*.patch .
 fi
 for i in *.patch; do patch -p0 < $i || exit 1; done
 sh build_all_cmake_projects.sh || exit 1
