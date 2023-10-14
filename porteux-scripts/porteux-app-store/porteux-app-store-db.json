@@ -511,6 +511,18 @@
             "script": "onlyoffice",
             "icon": "onlyoffice.png",
             "tooltip": "Office suite for Linux"
+        },
+        "LibreOffice":{
+            "script": "libreoffice",
+            "icon": "libreoffice.png",
+            "tooltip": "LibreOffice suite for Linux"
+        }
+    },
+    "Graphics": {
+        "Lunacy":{
+            "script": "lunacy",
+            "icon": "lunacy.png",
+            "tooltip": "Design creation application"
         }
     },
     "Games": {
