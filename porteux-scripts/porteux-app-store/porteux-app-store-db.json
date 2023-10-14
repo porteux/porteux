@@ -593,6 +593,11 @@
             "script": "yt-dlp",
             "icon": "yt-dlp.png",
             "tooltip": "Terminal application to download videos from various platforms"
+        },
+        "KeePassXC":{
+            "script": "keepassxc",
+            "icon": "keepassxc.png",
+            "tooltip": "Password Manager"
         }
     }
 }
