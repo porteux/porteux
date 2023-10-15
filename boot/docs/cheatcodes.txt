@@ -321,6 +321,12 @@ rootcopy=/path/to_folder/with_files
        filesystem. This directory will be used instead of the
        traditional /porteux/rootcopy.
        Example: 'rootcopy=/mnt/sda5/porteux-files'
+       
+rootmount
+
+   ... Instead of copying files from rootcopy, it mounts them.
+       The advantage is faster boot and less RAM. It's only
+       supported in POSIX filesystem and when copy2ram is off.
 
 cfgfile=some_name.sgn
 
