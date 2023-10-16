@@ -283,9 +283,9 @@ ramsize=some_value%
    ... Will let you set a custom size for the tmpfs partition
        which is used as the root (/) of your live filesystem
        when changes are not saved on a real filesystem
-       (i.e., Always Fresh mode). The default value is 60% of
+       (i.e., Always Fresh mode). The default value is 85% of
        available RAM memory.
-       Example: 'ramsize=40%'
+       Example: 'ramsize=50%'
 
 rammod=module
 rammod=folder
@@ -321,6 +321,12 @@ rootcopy=/path/to_folder/with_files
        filesystem. This directory will be used instead of the
        traditional /porteux/rootcopy.
        Example: 'rootcopy=/mnt/sda5/porteux-files'
+       
+rootmount
+
+   ... Instead of copying files from rootcopy, it mounts them.
+       The advantage is faster boot and less RAM. It's only
+       supported in POSIX filesystem and when copy2ram is off.
 
 cfgfile=some_name.sgn
 

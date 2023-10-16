@@ -60,7 +60,7 @@ rm -R usr/share/gnome
 rm -R usr/share/help
 rm -R usr/share/icons
 rm -R usr/share/locale
-rm -R usr/share/sgml/docbook
+rm -R usr/share/sgml/docbook/dsssl-stylesheets*
 rm -R usr/share/valadoc-*
 
 AggressiveStrip
