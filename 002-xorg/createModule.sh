@@ -80,10 +80,11 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 info=$(DownloadLatestSourceFromGithub "lah7" "gtk3-classic")
 filename=${info% *}
 tar xvf "$filename" && rm "$filename" || exit 1
-sed -i "s|+++ .*/gtk/|+++ gtk/|g" gtk3-classic*/*.patch
-sed -i "s|+++ .*/gdk/|+++ gdk/|g" gtk3-classic*/*.patch
 rm gtk3-classic*/gtk+-atk-bridge-meson.build.patch
 rm gtk3-classic*/gtk+-atk-bridge-meson_options.txt.patch
+rm gtk3-classic*/appearance__disable-backdrop.patch
+sed -i "s|+++ .*/gtk/|+++ gtk/|g" gtk3-classic*/*.patch
+sed -i "s|+++ .*/gdk/|+++ gdk/|g" gtk3-classic*/*.patch
 wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 sed -i "s|# Configure, build, and install:|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\n# Configure, build, and install:|g" ${currentPackage}.SlackBuild
 sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
@@ -107,10 +108,10 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=imlib2
-version=1.7.4
+version=1.12.1
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
-wget https://netactuate.dl.sourceforge.net/project/enlightenment/imlib2-src/$version/imlib2-$version.tar.bz2 || exit 1
+wget https://sourceforge.net/projects/enlightenment/files/imlib2-src/$version/imlib2-$version.tar.xz || exit 1
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -150,6 +151,8 @@ wget http://openbox.org/dist/openbox/openbox-$version.tar.xz || exit 1
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -i "s|patch -p1 < \$CWD/py2-to-py3.patch|cp \$CWD/*.patch .|g" ${currentPackage}.SlackBuild
+sed -i "s|\$CWD/patches/\*|\*.patch|g" ${currentPackage}.SlackBuild
 sed -z -i "s|make\n|make -j8\n|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -215,6 +218,11 @@ cp -fs xinitrc.openbox-session xinitrc
 ### add xzm to freedesktop.org.xml
 
 patch --no-backup-if-mismatch -d $MODULEPATH/packages -p0 < $SCRIPTPATH/extras/freedesktop/freedesktop.org.xml.patch
+
+### fix gtk2 adwaita theme cursor click on text box having wrong offset
+
+sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}|GtkEntry::inner-border = {2, 2, 7, 7}|g" $MODULEPATH/packages/usr/share/themes/Adwaita-dark/gtk-2.0/main.rc
+sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}|GtkEntry::inner-border = {2, 2, 7, 7}|g" $MODULEPATH/packages/usr/share/themes/Adwaita/gtk-2.0/main.rc
 
 ### copy build files to 05-devel
 

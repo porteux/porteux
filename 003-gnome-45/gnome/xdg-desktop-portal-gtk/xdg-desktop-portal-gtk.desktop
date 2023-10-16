@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=xdg-desktop-portal-gtk
+Comment=Start the xdg-desktop-portal-gtk
+Exec=/usr/bin/daemon -frB --pidfiles=~/.run --name=xdg-desktop-portal-gtk /usr/libexec/xdg-desktop-portal-gtk
+Terminal=false
+Type=Application
+X-GNOME-Autostart-Phase=Initialization

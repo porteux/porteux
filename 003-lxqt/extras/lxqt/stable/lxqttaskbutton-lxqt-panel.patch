@@ -1,5 +1,5 @@
---- plugin-taskbar/lxqttaskbutton.cpp	2023-09-04 22:04:03.000000000 +0200
-+++ plugin-taskbar/lxqttaskbutton-patched.cpp	2023-09-04 23:03:13.157908379 +0200
+--- lxqt-panel/plugin-taskbar/lxqttaskbutton.cpp	2023-09-04 22:04:03.000000000 +0200
++++ lxqt-panel/plugin-taskbar/lxqttaskbutton-patched.cpp	2023-09-04 23:03:13.157908379 +0200
 @@ -54,7 +54,7 @@
  #include "lxqttaskgroup.h"
  #include "lxqttaskbar.h"
