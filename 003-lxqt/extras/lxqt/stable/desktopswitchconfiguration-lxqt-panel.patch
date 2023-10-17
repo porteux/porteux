@@ -1,5 +1,5 @@
---- plugin-desktopswitch/desktopswitchconfiguration.cpp	2023-09-04 22:04:03.000000000 +0200
-+++ plugin-desktopswitch/desktopswitchconfiguration-patched.cpp	2023-09-04 23:09:06.063905013 +0200
+--- lxqt-panel/plugin-desktopswitch/desktopswitchconfiguration.cpp	2023-09-04 22:04:03.000000000 +0200
++++ lxqt-panel/plugin-desktopswitch/desktopswitchconfiguration-patched.cpp	2023-09-04 23:09:06.063905013 +0200
 @@ -26,7 +26,7 @@
  
  #include "desktopswitchconfiguration.h"

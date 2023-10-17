@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+     |-----handy-ruler------------------------------------------------------|
+libei: libei (library for Emulated Input)
+libei:
+libei: libei is a library for Emulated Input, primarily aimed at the Wayland
+libei: stack. It provides three parts:
+libei: * EI (Emulated Input) for the client side (libei)
+libei: * EIS (Emulated Input Server) for the server side (libeis)
+libei: * oeffis is an optional helper library for DBus communication with the
+libei: XDG RemoteDesktop portal (liboeffis)
+libei:
+libei: https://gitlab.freedesktop.org/libinput/libei
+libei:
