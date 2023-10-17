@@ -4,16 +4,20 @@ SetFlags() {
     MODULENAME="$1"
 
     systemFullVersion=$(cat /etc/slackware-version)
-    export SLACKWAREVERSION=${systemFullVersion//* }
 
-    if [[ "$SLACKWAREVERSION" == *"+" ]]; then
-	    export SLACKWAREVERSION=current
+    if [[ ${systemFullVersion//* } != *"+" ]]; then
+	    export SLACKWAREVERSION=15.0
+	    export PORTEUXBUILD=stable
+	else
+		export SLACKWAREVERSION=current
+		export PORTEUXBUILD=current
 	fi
+
     export SLACKBUILDVERSION=$SLACKWAREVERSION
-	export KERNELVERSION="6.5.1"
+	export KERNELVERSION="6.5.7"
 
     export SCRIPTPATH="$PWD"
-    export PORTEUXBUILDERPATH="/tmp/porteux-builder-$SLACKWAREVERSION"
+    export PORTEUXBUILDERPATH="/tmp/porteux-builder-$PORTEUXBUILD"
     export MODULEPATH="$PORTEUXBUILDERPATH/$MODULENAME"
     export BUILDERUTILSPATH="$SCRIPTPATH/../builderutils"
 
