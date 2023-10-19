@@ -97,6 +97,24 @@ wget https://github.com/slicer69/sysvinit/releases/download/$version/sysvinit-$v
 sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+# temporary to build procps
+installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
+
+currentPackage=procps
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+version=$(curl -s https://gitlab.com/${currentPackage}-ng/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/a/${currentPackage}-ng/
+rm ${currentPackage}*.tar.xz
+sed -i "s|PKGNAM=.*|PKGNAM=${currentPackage}|g" ${currentPackage}-ng.SlackBuild
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-${version//[vV]}}|g" ${currentPackage}-ng.SlackBuild
+sed -i "s|\$VERSION.tar.xz|v\$VERSION.tar.gz|g" ${currentPackage}-ng.SlackBuild
+sed -i "s|cd procps-\$VERSION \|\| cd \$PKGNAM-\$VERSION|cd procps-v\$VERSION \|\| cd \$PKGNAM-v\$VERSION|g" ${currentPackage}-ng.SlackBuild
+sed -i '0,/\.\/configure/s|./configure|./autogen.sh \&\& ./configure|' ${currentPackage}-ng.SlackBuild
+wget https://gitlab.com/${currentPackage}-ng/procps/-/archive/${version}/procps-${version}.tar.gz
+sh ${currentPackage}-ng.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=neofetch
 mkdir -p $MODULEPATH/${currentPackage}/package/usr/bin && cd $MODULEPATH/${currentPackage}
 wget https://github.com/hykilpikonna/hyfetch/archive/refs/heads/master.zip -O ${currentPackage}.zip || exit 1
