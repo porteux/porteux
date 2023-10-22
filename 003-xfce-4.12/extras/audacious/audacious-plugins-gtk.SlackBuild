@@ -16,14 +16,6 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
-if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
-  echo "$PKGNAM-$VERSION-$ARCH-$BUILD.txz"
-  exit 0
-fi
-
 TMP=${TMP:-$MODULEPATH/$PKGNAM}
 PKG=$TMP/package-${PKGNAM}
 OUTPUT=$MODULEPATH/packages
@@ -48,14 +40,6 @@ if [ ! -r /usr/lib${LIBDIRSUFFIX}/pkgconfig/libpulse.pc ]; then
   PULSEOPTS="-Dpulse=false"
 else
   unset PULSEOPTS
-fi
-
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
-if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
-  echo "$PKGNAM-$VERSION-$ARCH-$BUILD$TAG.txz"
-  exit 0
 fi
 
 tar xvf ${PKGNAM}-${PKGNAM}-$VERSION.tar.?z || exit 1
