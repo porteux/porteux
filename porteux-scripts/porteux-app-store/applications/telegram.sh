@@ -19,31 +19,44 @@ wget -T 15 --content-disposition "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
 tar xvf $BUILDDIR/*.tar.xz -C $BUILDDIR || exit 1
 
 mkdir -p "$MODULEDIR/opt/$CURRENTPACKAGE"
-mkdir -p "$MODULEDIR/usr/share/applications"
-mkdir -p "$MODULEDIR/usr/share/pixmaps"
 
-cat > "$MODULEDIR/usr/share/applications/$CURRENTPACKAGE.desktop" << EOF
+mkdir -p "$MODULEDIR/home/guest/.local/share/applications"
+
+cat > "$MODULEDIR/home/guest/.local/share/applications/telegramdesktop.desktop" << EOF
 [Desktop Entry]
 Version=$VERSION
-Name=$FRIENDLYPACKAGENAME
-Exec=sh -c /opt/$CURRENTPACKAGE/$APPLICATIONFILENAME %u
+Name=Telegram Desktop
+Comment=Official desktop version of Telegram messaging app
+TryExec=/opt/telegram/$APPLICATIONFILENAME
+Exec=/opt/$CURRENTPACKAGE/$APPLICATIONFILENAME %u
+Icon=telegram
 Terminal=false
-X-MultipleArgs=false
+StartupWMClass=TelegramDesktop
 Type=Application
-Icon=$CURRENTPACKAGE
-StartupNotify=true
-Categories=$CATEGORY;
+Categories=Chat;Network;InstantMessaging;Qt;
+MimeType=x-scheme-handler/tg;
+Keywords=tg;chat;im;messaging;messenger;sms;tdesktop;
+Actions=quit;
+SingleMainWindow=true
+X-GNOME-UsesNotifications=true
+X-GNOME-SingleWindow=true
+
+[Desktop Action quit]
+Exec=/opt/telegram/$APPLICATIONFILENAME -quit
+Name=Quit Telegram
+Icon=application-exit
 EOF
 
 cp "$BUILDDIR/$FRIENDLYPACKAGENAME/$FRIENDLYPACKAGENAME" "$MODULEDIR/opt/$CURRENTPACKAGE/$APPLICATIONFILENAME" || exit 1
 
 chmod 755 -R "$MODULEDIR" 2> /dev/null || exit 1
-chmod 644 "$MODULEDIR"/usr/share/applications/* 2> /dev/null || exit 1
+chown -R guest: "$MODULEDIR/home/guest/"
+chmod 644 "$MODULEDIR"/home/guest/.local/share/applications/* 2> /dev/null || exit
 
 MODULEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH.xzm"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
+/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEM/ODULE"
 
 # cleanup
 rm -fr "$BUILDDIR" 2> /dev/null
