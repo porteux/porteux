@@ -1,5 +1,5 @@
---- plugin-taskbar/lxqttaskbar.h	2023-09-04 22:04:03.000000000 +0200
-+++ plugin-taskbar/lxqttaskbar-patched.h	2023-09-04 23:01:58.926909086 +0200
+--- lxqt-panel/plugin-taskbar/lxqttaskbar.h	2023-09-04 22:04:03.000000000 +0200
++++ lxqt-panel/plugin-taskbar/lxqttaskbar-patched.h	2023-09-04 23:01:58.926909086 +0200
 @@ -43,7 +43,7 @@
  #include <QMap>
  #include <lxqt-globalkeys.h>

@@ -77,7 +77,7 @@ rm -r $MODULEPATH/a && rm -r $MODULEPATH/b && rm -r $MODULEPATH/aufs
 
 echo "Building vmlinuz (this may take a while)..."
 CPUTHREADS=$(nproc --all)
-make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-g -O3 -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 make clean
 
@@ -134,10 +134,8 @@ filename=${info% *}
 tar xvf $filename && rm $filename
 mkdir -p $MODULEPATH/lib/firmware/intel
 cd ${currentPackage}*
-ln -s sof-tplg-v$version sof-tplg
+mv sof $MODULEPATH/lib/firmware/intel
 mv sof-tplg $MODULEPATH/lib/firmware/intel
-mv sof-tplg* $MODULEPATH/lib/firmware/intel
-cp -r sof-v$version $MODULEPATH/lib/firmware/intel/sof
 cd ..
 
 echo "Blacklisting..."

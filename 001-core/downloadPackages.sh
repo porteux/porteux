@@ -52,6 +52,7 @@ DownloadPackage "etc" &
 DownloadPackage "ethtool" &
 wait
 DownloadPackage "eudev" &
+DownloadPackage "exfatprogs" &
 DownloadPackage "f2fs-tools" &
 DownloadPackage "fftw" &
 DownloadPackage "file" &
@@ -184,7 +185,6 @@ DownloadPackage "procps-ng" &
 DownloadPackage "python3" &
 DownloadPackage "python-urllib3" &
 DownloadPackage "readline" &
-DownloadPackage "reiserfsprogs" &
 DownloadPackage "rpcbind" &
 DownloadPackage "rpm2tgz" &
 DownloadPackage "rpm" &
@@ -240,6 +240,7 @@ wait
 ### slackware current only packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "lua" &
 	DownloadPackage "lzlib" &
 	DownloadPackage "mozjs102" &
 	wait

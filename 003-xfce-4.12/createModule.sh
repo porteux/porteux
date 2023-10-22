@@ -34,7 +34,17 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-# required by most of the packages
+if [ $SLACKWAREVERSION == "current" ]; then
+	# building gtk+2 because new GLib 2.76+ has broken it
+	currentPackage=gtk+2
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+	wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
+	cp $SCRIPTPATH/extras/gtk+2/${currentPackage}.SlackBuild .
+	sh ${currentPackage}.SlackBuild || exit 1
+	rm -fr $MODULEPATH/${currentPackage}
+fi
+
+# required by most packages
 installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 
 currentPackage=gpicview
@@ -42,9 +52,8 @@ version=0.2.5
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/gpicview || exit 1
 cd ${currentPackage}
-patch -p0 < $SCRIPTPATH/extras/gpicview/image-view.c.patch || exit 1
 ./autogen.sh
-CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
 make -j$NUMBERTHREADS install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -232,17 +241,17 @@ patch --no-backup-if-mismatch -d $MODULEPATH/packages/ -p0 < $SCRIPTPATH/extras/
 
 ### fix some .desktop files
 
-sed -i "s|Categories=System;|Categories=|g" $MODULEPATH/packages/usr/share/applications/Thunar.desktop
-sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/epdfview.desktop
 sed -i "s|Graphics;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
-sed -i "s|Utility;||g" $MODULEPATH/packages/usr/share/applications/xfce4-taskmanager.desktop
+sed -i "s|Core;||g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
+sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
+sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/Thunar.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/Thunar-bulk-rename.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/xfce4-sensors.desktop
-sed -i "s|Core;||g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -z -i "s|OnlyShowIn=MATE;\\n||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
 sed -i "s|MATE;||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
 sed -i "s|MATE ||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
 sed -i "s| MATE||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
+sed -i "s|Utility;||g" $MODULEPATH/packages/usr/share/applications/xfce4-taskmanager.desktop
 
 ### add xfce session
 

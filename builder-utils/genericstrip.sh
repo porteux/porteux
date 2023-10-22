@@ -28,7 +28,6 @@ GenericStrip() {
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/64x64
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/72x72
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/96x96
-	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/128x128
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/192x192
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/256x256
 	rm -R "$CURRENTDIR"/usr/share/icons/hicolor/512x512
@@ -38,7 +37,6 @@ GenericStrip() {
 	rm -R "$CURRENTDIR"/usr/share/sounds
 	rm -R "$CURRENTDIR"/usr/share/themes/HighContrast
 	rm -R "$CURRENTDIR"/usr/share/vala
-	rm -R "$CURRENTDIR"/usr/share/xdg-desktop-portal
 	rm -R "$CURRENTDIR"/usr/share/*/translations
 	rm -R "$CURRENTDIR"/usr/lib/pkgconfig
 	rm -R "$CURRENTDIR"/usr/lib64/pkgconfig
@@ -50,7 +48,7 @@ GenericStrip() {
 	rm -R "$CURRENTDIR"/usr/lib64/python2.7
 	rm -R "$CURRENTDIR"/var/log/pkgtools
 	rm -R "$CURRENTDIR"/var/log/setup
-	rm -R "$CURRENTDIR"/var/lib/pkgtools/douninst.sh
+	rm -R "$CURRENTDIR"/var/lib/pkgtools/douninst.sh/
 	rm -R "$CURRENTDIR"/var/lib/pkgtools/setup
 	
 	rm "$CURRENTDIR"/usr/bin/gtk-demo
@@ -84,13 +82,25 @@ GenericStrip() {
 	
 	find "$CURRENTDIR"/usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
 
-	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag 2> /dev/null
+	find "$CURRENTDIR" | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag 2> /dev/null
 }
 
 AggressiveStrip() {
-	find . | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+	if [ "$1" ]; then
+		CURRENTDIR="$1"
+	else
+		CURRENTDIR="$PWD"
+	fi
+
+	find "$CURRENTDIR" | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
 }
 
 AggressiveStripAll() {
-	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+	if [ "$1" ]; then
+		CURRENTDIR="$1"
+	else
+		CURRENTDIR="$PWD"
+	fi
+
+	find "$CURRENTDIR" | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
 }

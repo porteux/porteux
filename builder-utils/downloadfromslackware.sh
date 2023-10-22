@@ -7,6 +7,5 @@ DownloadFromSlackware() {
 		sh $SCRIPTPATH/downloadPackages.sh $PATCHREPOSITORY || exit
 	fi
 
-	#sh $SCRIPTPATH/downloadPackages.sh $EXTRAREPOSITORY || exit
 	sh $SCRIPTPATH/downloadPackages.sh $REPOSITORY || exit
 }

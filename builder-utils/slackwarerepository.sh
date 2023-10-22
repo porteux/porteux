@@ -23,7 +23,7 @@ GenerateRepositoryUrls() {
 
 DownloadPackage() {
 	cd $MODULEPATH/packages
-	
+
 	# if the package is already presented, don't download it again
 	if find . -regex "./$1[-_][0-9]+.*" -type f | grep -q .; then
 		return
