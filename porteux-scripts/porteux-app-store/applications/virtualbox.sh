@@ -6,6 +6,7 @@ if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ] || [ 
 fi
 
 CURRENTPACKAGE=virtualbox
+ARCH=$(uname -m)
 OUTPUTDIR="$PORTDIR/optional"
 BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
 rm -fr "$BUILDDIR"
@@ -16,11 +17,8 @@ mkdir "$MODULEDIR"
 
 CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
 [ ! $CURRENTUSER ] && CURRENTUSER=guest
-
-ARCH=$(uname -m)
-
-CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
-[ ! $CURRENTUSER ] && CURRENTUSER=guest
+USERHOMEFOLDER=$(getent passwd ${CURRENTUSER} | cut -d: -f6)
+[ ! -e $USERHOMEFOLDER ] && USERHOMEFOLDER=home/guest
 
 if [[ ! "$1" || "$1" == "--activate-module" ]]; then
     # download the latest version
@@ -57,8 +55,8 @@ cp -r --parents /opt/VirtualBox $MODULEDIR/
 for a in \`seq 0 6\`; do
     cp -r --parents /etc/rc.d/rc${a}.d/{K[0-9][0-9]vbox*,S[0-9][0-9]vbox*} $MODULEDIR/ 2>/dev/null
 done
-mkdir -p $MODULEDIR/home/"$CURRENTUSER"/.config/VirtualBox/
-cat > $MODULEDIR/home/"$CURRENTUSER"/.config/VirtualBox/VirtualBox.xml << EOF
+mkdir -p $MODULEDIR/${USERHOMEFOLDER}/.config/VirtualBox/
+cat > $MODULEDIR/${USERHOMEFOLDER}/.config/VirtualBox/VirtualBox.xml << EOF
 <?xml version="1.0"?>
 <VirtualBox xmlns="http://www.virtualbox.org/" version="1.12-linux">
   <Global>
@@ -68,7 +66,7 @@ cat > $MODULEDIR/home/"$CURRENTUSER"/.config/VirtualBox/VirtualBox.xml << EOF
   </Global>
 </VirtualBox>
 EOF
-echo "$CURRENTUSER" | sudo -S chown -R "$CURRENTUSER":users $MODULEDIR/home/"$CURRENTUSER"
+echo "$CURRENTUSER" | sudo -S chown -R "$CURRENTUSER":users "$MODULEDIR/${USERHOMEFOLDER}"
 
 # strip
 rm -fr $MODULEDIR/opt/VirtualBox/additions
