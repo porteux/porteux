@@ -244,7 +244,6 @@ rm $MODULEPATH/packages/opencl-headers-*.t?z || exit 1
 
 currentPackage=ffmpeg
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc \\\\|g" ${currentPackage}.SlackBuild
 GLSLANG=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
