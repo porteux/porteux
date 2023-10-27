@@ -54,7 +54,7 @@ EOF
 
     mkdir -p "$MODULEDIR/${USERHOMEFOLDER}/.config/libreoffice/4/user"
     cp "$MODULEDIR/root/.config/libreoffice/4/user/registrymodifications.xcu" "$MODULEDIR/${USERHOMEFOLDER}/.config/libreoffice/4/user"
-    
+
     echo ${CURRENTUSER} | sudo -S chown -R ${CURRENTUSER}:users "$MODULEDIR/${USERHOMEFOLDER}"
 fi
 

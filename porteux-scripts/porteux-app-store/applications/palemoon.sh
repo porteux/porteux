@@ -54,6 +54,23 @@ get_module_name(){
     echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${build}"
 }
 
+set_sane_defaults(){
+    local pkg_dir="$TMP/$1/$2"
+    local porteux_version=$(cat /etc/os-release | grep VERSION= | cut -d \" -f 2)
+
+    mkdir -p "$pkg_dir"/usr/lib64/${APP}/distribution/
+    cat >> "$pkg_dir"/usr/lib64/${APP}/distribution/distribution.ini << EOF
+[Global]
+id=PorteuX
+version=${porteux_version}
+about=Palemoon for PorteuX
+
+[Preferences]
+app.update.auto=false
+app.update.enabled=false
+EOF
+}
+
 add_language_pack(){
     if [ ! ${LANGUAGE} = "en-US" ]; then
         local pkg_dir="$TMP/$1/$2"
@@ -61,9 +78,8 @@ add_language_pack(){
 
         curl --silent --user-agent 'PaleMoon' --output "$pkg_dir/usr/lib64/${APP}/distribution/extensions/langpack-${LANGUAGE}@palemoon.org.xpi" "https://addons.palemoon.org/?component=download&id=langpack-${LANGUAGE}@palemoon.org"
         chmod 644 "$pkg_dir/usr/lib64/${APP}/distribution/extensions/langpack-${LANGUAGE}@palemoon.org.xpi"
-    
+
         cat >> "$pkg_dir"/usr/lib64/${APP}/distribution/distribution.ini << EOF
-[Preferences]
 general.useragent.locale="${LANGUAGE}"
 EOF
     fi
@@ -100,6 +116,8 @@ make_module_palemoon(){
     mv -f "$TMP/$APP/$pkg_name/palemoon-${pkgver}" $TMP/"$APP"/"$pkg_name"/usr/lib64 &&
     cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "palemoon-${pkgver}/" palemoon &&
     cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/palemoon/palemoon" palemoon &&
+
+    set_sane_defaults "$APP" "$pkg_name"
 
     add_language_pack "$APP" "$pkg_name"
 
