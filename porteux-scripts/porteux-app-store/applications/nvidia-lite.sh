@@ -22,8 +22,7 @@ MODULEDIR="$BUILDDIR/$CURRENTPACKAGE-module"
 rm -fr "$BUILDDIR" &>/dev/null
 mkdir "$BUILDDIR" &>/dev/null
 
-#wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
-cp /mnt/nvme0n1p2/porteux-releases/0.6/current/nvidia-driver-current.zip "$BUILDDIR"
+wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
 MODULEFILENAME=$(unzip -Z1 $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip) || exit 1
 unzip $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip -d "$BUILDDIR" &>/dev/null || exit 1
 
@@ -38,6 +37,7 @@ rm -f $EXTRACTEDMODULEPATH/usr/lib$SYSTEMBITS/libcudadebugger.so*
 rm -f $EXTRACTEDMODULEPATH/usr/lib$SYSTEMBITS/libnvidia-compiler.so*
 rm -f $EXTRACTEDMODULEPATH/usr/lib$SYSTEMBITS/libnvoptix.so*
 rm -f $EXTRACTEDMODULEPATH/usr/lib$SYSTEMBITS/libnvidia-gtk2*
+rm -f $EXTRACTEDMODULEPATH/usr/share/nvidia/nvoptix.bin
 
 MODULEFILENAME="${MODULEFILENAME/nvidia/nvidia-lite}"
 
