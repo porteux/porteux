@@ -129,6 +129,14 @@ cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=power-profiles-daemon
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+version=$(curl -s https://gitlab.freedesktop.org/hadess/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wget https://gitlab.freedesktop.org/hadess/${currentPackage}/-/archive/${version}/${currentPackage}-${version}.tar.gz
+cp $SCRIPTPATH/extras/${currentPackage}/* .
+sh ${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=p7zip
 version=17.04
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -155,7 +163,7 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=unrar
-version=6.2.10
+version=6.24
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1

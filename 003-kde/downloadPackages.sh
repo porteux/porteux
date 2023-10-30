@@ -155,7 +155,6 @@ DownloadPackage "plasma-workspace" &
 DownloadPackage "polkit-kde-agent" &
 DownloadPackage "polkit-qt" &
 DownloadPackage "powerdevil" &
-DownloadPackage "power-profiles-daemon" &
 DownloadPackage "prison" &
 DownloadPackage "purpose" &
 wait

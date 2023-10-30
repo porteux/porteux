@@ -186,7 +186,6 @@ for package in \
 	gnome-browser-connector \
 	file-roller \
 	gnome-backgrounds \
-	power-profiles-daemon \
 ; do
 cd $SCRIPTPATH/gnome/$package || exit 1
 sh ${package}.SlackBuild || exit 1
@@ -225,6 +224,7 @@ rm usr/bin/js91
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
 rm -R etc/dconf
+rm -R etc/dbus-1/system.d
 rm -R etc/geoclue
 rm -R etc/opt
 rm -R usr/lib
@@ -259,7 +259,6 @@ rm -R usr/share/vala
 rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
-find etc/dbus-1/system.d/ -mindepth 1 -maxdepth 1 ! \( -name "net.hadess.PowerProfiles.conf" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 
