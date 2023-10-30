@@ -137,14 +137,6 @@ cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
 sh ${currentPackage}-qt.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=power-profiles-daemon
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-version=0.13
-wget https://gitlab.freedesktop.org/hadess/${currentPackage}/-/archive/${version}/${currentPackage}-${version}.tar.gz
-cp $SCRIPTPATH/extras/${currentPackage}/* .
-sh ${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z

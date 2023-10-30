@@ -110,8 +110,8 @@ modulesDependencies=$(ls ../../lib/modules/*/modules.dep)
 modulesPath=${modulesDependencies%/modules.dep}
 
 # manually copy intel bluetooth firmwares until we find a way to do this automatically
-cp firmware/lib/intel/ibt*.sfi ../../lib/firmware/intel
-cp firmware/lib/intel/ibt*.ddc ../../lib/firmware/intel
+cp intel/ibt*.sfi ../../lib/firmware/intel
+cp intel/ibt*.ddc ../../lib/firmware/intel
 
 for dependency in $(cat $modulesDependencies | cut -d':' -f1); do
 	firmwares=$(modinfo -F firmware $modulesPath/$dependency)
