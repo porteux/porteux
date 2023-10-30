@@ -177,7 +177,6 @@ DownloadPackage "pcre" &
 DownloadPackage "pkgtools" &
 DownloadPackage "polkit" &
 DownloadPackage "popt" &
-DownloadPackage "powertop" &
 wait
 DownloadPackage "ppp" &
 DownloadPackage "pptp" &

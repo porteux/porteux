@@ -14,16 +14,14 @@ DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gexiv2" &
 DownloadPackage "glade" &
 DownloadPackage "gjs" &
-DownloadPackage "glib-networking" &
 wait
+DownloadPackage "glib-networking" &
 DownloadPackage "gperf" &
 DownloadPackage "graphene" &
 DownloadPackage "gsettings-desktop-schemas" &
 DownloadPackage "gst-plugins-bad-free" &
-DownloadPackage "gst-plugins-base" &
 DownloadPackage "gst-plugins-good" &
 DownloadPackage "gst-plugins-libav" &
-DownloadPackage "gstreamer" &
 DownloadPackage "gtk4" &
 wait
 DownloadPackage "hyphen" &
