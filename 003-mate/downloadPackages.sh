@@ -44,8 +44,6 @@ fi
 
 DownloadPackage "enchant" & # to build pluma
 DownloadPackage "glade" & # to build gtksourceview4
-DownloadPackage "gst-plugins-base" & # to build caja-extensions
-DownloadPackage "gstreamer" & # to build caja-extensions
 DownloadPackage "gtk+2" & # to build mate-themes
 DownloadPackage "libgtop" & # to build mate-utils
 DownloadPackage "python-pip" & # to install lxml

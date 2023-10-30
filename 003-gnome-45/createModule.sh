@@ -177,7 +177,6 @@ rm -R usr/lib
 rm -R usr/lib64/aspell
 rm -R usr/lib64/python2.7
 rm -R usr/lib64/peas-demo
-rm -R usr/share/gstreamer-1.0/gdb
 rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gnome-settings-daemon-3.0
 rm -R usr/lib64/python3.9/site-packages/pip*
@@ -194,8 +193,6 @@ rm -R usr/share/dbus-1/services/org.gnome.ScreenSaver.service
 rm -R usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 rm -R usr/share/gjs-1.0
 rm -R usr/share/glade/pixmaps
-rm -R usr/share/gst-plugins-base
-rm -R usr/share/gstreamer-1.0/gdb
 rm -R usr/share/gtk-4.0
 rm -R usr/share/ibus
 rm -R usr/share/installed-tests

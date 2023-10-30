@@ -121,21 +121,20 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
+installpkg $MODULEPATH/packages/gst-plugins-base*.txz || exit 1
+installpkg $MODULEPATH/packages/gstreamer*.txz || exit 1
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
+installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
+installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 rm $MODULEPATH/packages/enchant*.txz
 installpkg $MODULEPATH/packages/glade*.txz || exit 1
 rm $MODULEPATH/packages/glade*.txz
-installpkg $MODULEPATH/packages/gst-plugins-base*.txz || exit 1
-rm $MODULEPATH/packages/gst-plugins-base*.txz
-installpkg $MODULEPATH/packages/gstreamer*.txz || exit 1
-rm $MODULEPATH/packages/gstreamer*.txz
 installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 rm $MODULEPATH/packages/gtk+2*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
-installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
-installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
-installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 
 # mate packages
 for currentPackage in \
