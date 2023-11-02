@@ -60,8 +60,7 @@ mv /tmp/kernel-headers-*.txz $MODULEPATH/../05-devel/packages
 rm $MODULEPATH/kernel-headers.SlackBuild
 
 echo "Downloading AUFS..."
-git clone -b aufs$KERNELMAJORVERSION.$KERNELMINORVERSION https://github.com/sfjro/aufs-standalone $MODULEPATH/aufs > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
-
+git clone https://github.com/sfjro/aufs-standalone $MODULEPATH/aufs > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
 git -C $MODULEPATH/aufs checkout origin/aufs$KERNELMAJORVERSION.$KERNELMINORVERSION > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
 
 echo "Patching AUFS..."
@@ -90,7 +89,7 @@ cd ..
 
 echo "Creating symlinks..."
 dir=$(ls lib/modules/)
-rm lib/modules/$dir/build lib/modules/$dir/source
+rm lib/modules/$dir/build lib/modules/$dir/source > /dev/null 2>&1
 ln -sf /usr/src/linux lib/modules/$dir/build
 ln -sf /usr/src/linux lib/modules/$dir/source
 
@@ -105,13 +104,14 @@ rm kernel-firmware-*.txz
 cd firmware && mv install/doinst.sh . && sh ./doinst.sh
 
 echo "Adding firmware..."
+# manually copy intel bluetooth firmwares until kernel fixes drivers/bluetooth/btintel.c
+mkdir -p $MODULEPATH/lib/firmware/intel > /dev/null 2>&1
+cp lib/firmware/intel/ibt* $MODULEPATH/lib/firmware/intel
+
+# add firmware based on modules.dep
 cd lib
 modulesDependencies=$(ls ../../lib/modules/*/modules.dep)
 modulesPath=${modulesDependencies%/modules.dep}
-
-# manually copy intel bluetooth firmwares until we find a way to do this automatically
-cp intel/ibt*.sfi ../../lib/firmware/intel
-cp intel/ibt*.ddc ../../lib/firmware/intel
 
 for dependency in $(cat $modulesDependencies | cut -d':' -f1); do
 	firmwares=$(modinfo -F firmware $modulesPath/$dependency)
@@ -128,6 +128,7 @@ for dependency in $(cat $modulesDependencies | cut -d':' -f1); do
 		done <<< "$targetFiles"
 	done
 done
+
 cd ../..
 
 echo "Downloading and installing sof for Intel..."
