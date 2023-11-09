@@ -68,7 +68,6 @@
             "script": "chromium",
             "icon": "chromium.svg",
             "channels": [
-                "stable",
                 "developer"
             ],
             "locales": [
