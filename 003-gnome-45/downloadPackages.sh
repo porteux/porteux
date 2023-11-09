@@ -52,10 +52,12 @@ DownloadPackage "boost" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
+DownloadPackage "gst-plugins-base" & # required by cogl
+DownloadPackage "gstreamer" & # required by cogl
 DownloadPackage "iso-codes" &
+wait
 DownloadPackage "krb5" &
 DownloadPackage "libglvnd" &
-wait
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
 DownloadPackage "python-pip" &

@@ -264,6 +264,9 @@ for i in *.patch; do patch -p0 < $i || exit 1; done
 sh build_all_cmake_projects.sh || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+# removing because it's only needed for building
+rm $MODULEPATH/packages/lxqt-build-tools*.txz
+
 currentPackage=kora
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/bikass/${currentPackage}/archive/refs/heads/master.tar.gz || exit 1

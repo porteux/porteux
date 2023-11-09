@@ -102,18 +102,13 @@ installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
 
 currentPackage=procps
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+cp $SCRIPTPATH/extras/procps/* .
 version=$(curl -s https://gitlab.com/${currentPackage}-ng/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/a/${currentPackage}-ng/
-rm ${currentPackage}*.tar.xz
-sed -i "s|PKGNAM=.*|PKGNAM=${currentPackage}|g" ${currentPackage}-ng.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-${version//[vV]}}|g" ${currentPackage}-ng.SlackBuild
-sed -i "s|\$VERSION.tar.xz|v\$VERSION.tar.gz|g" ${currentPackage}-ng.SlackBuild
-sed -i "s|cd procps-\$VERSION \|\| cd \$PKGNAM-\$VERSION|cd procps-v\$VERSION \|\| cd \$PKGNAM-v\$VERSION|g" ${currentPackage}-ng.SlackBuild
-sed -i '0,/\.\/configure/s|./configure|./autogen.sh \&\& ./configure|' ${currentPackage}-ng.SlackBuild
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-${version//[vV]}}|g" ${currentPackage}.SlackBuild
 wget https://gitlab.com/${currentPackage}-ng/procps/-/archive/${version}/procps-${version}.tar.gz
-sh ${currentPackage}-ng.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/package-${currentPackage}
 
 currentPackage=neofetch
 mkdir -p $MODULEPATH/${currentPackage}/package/usr/bin && cd $MODULEPATH/${currentPackage}
@@ -163,7 +158,7 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=unrar
-version=6.24
+version=6.2.12
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
