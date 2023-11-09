@@ -60,6 +60,8 @@ rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
 rm $MODULEPATH/packages/glade*
+rm $MODULEPATH/packages/gst-plugins-base*
+rm $MODULEPATH/packages/gstreamer*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libglvnd*
