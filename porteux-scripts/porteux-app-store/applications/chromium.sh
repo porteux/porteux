@@ -14,9 +14,9 @@ fi
 if [ "$#" -lt 1 ]; then
     echo "Usage:   $0 [channel] [language] [optional: --activate-module]"
     echo "If no language is specified, en-US will be set"
-    echo "Channels available: developer | stable"
+    echo "Channels available: developer"
     echo ""
-    echo "Example: $0 stable pt-BR"
+    echo "Example: $0 developer pt-BR"
     exit 1
 fi
 
@@ -78,10 +78,7 @@ finisher(){
 }
 
 get_repo_version_chromium(){
-    if [ "$CHANNEL" == "stable" ]; then
-        local repo_id='clickot/ungoogled-chromium-binaries'
-        local ver; ver=$(curl -s "https://api.github.com/repos/${repo_id}/releases/latest" | grep "\"tag_name\":" | cut -d \" -f 4) || exit 1
-    elif [ "$CHANNEL" == "developer" ]; then
+    if [ "$CHANNEL" == "developer" ]; then
         local ver; ver=$(curl -s "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media") || exit 1
     else
         exit 1
@@ -91,11 +88,11 @@ get_repo_version_chromium(){
 }
 
 make_module_chromium(){
-    if [ "$CHANNEL" != "developer" ] && [ "$CHANNEL" != "stable" ]; then echo "Non-existent channel. Options: developer | stable" && exit 1; fi
+    if [ "$CHANNEL" != "developer" ]; then echo "Non-existent channel. Options: developer" && exit 1; fi
 
     local pkgver; pkgver=$(get_repo_version_chromium "$CHANNEL")
     local pkg_name; pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64" "1")
-    local product_name; product_name=$([ "$CHANNEL" == "stable" ] && echo "$APP" || echo "$APP-$CHANNEL")
+    local product_name; product_name="$APP-$CHANNEL"
 
     create_application_temp_dir "$APP" && mkdir -p "$TMP/$APP/$pkg_name" || exit 1
 
@@ -103,10 +100,6 @@ make_module_chromium(){
         $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.zip" "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F${pkgver}%2Fchrome-linux.zip?alt=media" &&
         unzip -a "$TMP/$APP/${pkg_name}.zip" -d "$TMP/$APP/$pkg_name" &&
         mv -f "$TMP/$APP/$pkg_name/chrome-linux" "$TMP/$APP/$pkg_name/$APP-$CHANNEL-${pkgver}" || exit 1
-    elif [ "$CHANNEL" == "stable" ]; then
-        $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.xz" "https://github.com/clickot/ungoogled-chromium-binaries/releases/download/${pkgver}/ungoogled-chromium_${pkgver}.1_linux.tar.xz" &&
-        tar -xvf "$TMP/$APP/${pkg_name}.tar.xz" -C "$TMP/$APP/$pkg_name" &&
-        mv -f "$TMP/$APP/$pkg_name/ungoogled-chromium_${pkgver}.1_linux" "$TMP/$APP/$pkg_name/$APP-$CHANNEL-${pkgver}" || exit 1
     else
         exit 1
     fi
