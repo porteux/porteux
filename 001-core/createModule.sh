@@ -90,7 +90,7 @@ rm -fr $MODULEPATH/${currentPackage}
 ### packages outside slackware repository
 
 currentPackage=sysvinit
-version=3.07
+version=3.08
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 cp $SCRIPTPATH/extras/${currentPackage}/* .
 wget https://github.com/slicer69/sysvinit/releases/download/$version/sysvinit-$version.tar.xz -O ${currentPackage}-$version.tar.gz || exit 1
