@@ -63,25 +63,24 @@ git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KE
 
 echo "Patching AUFS..."
 cd $MODULEPATH/linux-${KERNELVERSION}
-for i in kbuild base standalone mmap; do
-	patchfile=../aufs_sources/aufs${KERNELMAJORVERSION}-$i.patch
-	patch -N -p1 < ${patchfile} > /dev/null 2>&1 || { echo "Failed to add AUFS patch 'aufs${KERNELMAJORVERSION}-$i.patch'."; exit 1; }
+rm ../aufs_sources/tmpfs-idr.patch # this patch isn't useful
+cp -r ../aufs_sources/{fs,Documentation} .
+cp ../aufs_sources/include/uapi/linux/aufs_type.h include/uapi/linux
+for i in ../aufs_sources/*.patch; do
+	patch -N -p1 < "$i" > /dev/null 2>&1 || { echo "Failed to add AUFS patch '${i}'."; exit 1; }
 done
-cp -r ../aufs_sources/{fs,Documentation} . || exit 1
-cp ../aufs_sources/include/uapi/linux/aufs_type.h include/linux || cp ../aufs_sources/include/linux/aufs_type.h include/linux || exit 1
-[ -d ../aufs_sources/include/uapi ] && cp -r ../aufs_sources/include/uapi/linux/aufs_type.h include/uapi/linux || exit 1
 rm -fr ../aufs_sources
 
 echo "Building vmlinuz (this may take a while)..."
 CPUTHREADS=$(nproc --all)
-make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j${CPUTHREADS} "KCFLAGS=-g -O3 -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-g -O3 -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 make clean
 
 echo "Building modules (this may take a while)..."
-make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j${CPUTHREADS} "KCFLAGS=-O3 -mtune=skylake" || { echo "Fail to build kernel."; exit 1; }
-make -j${CPUTHREADS} modules_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
-make -j${CPUTHREADS} firmware_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
+make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-O3 -mtune=skylake" || { echo "Fail to build kernel."; exit 1; }
+make -j$CPUTHREADS modules_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
+make -j$CPUTHREADS firmware_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
 
 cd ..
 
