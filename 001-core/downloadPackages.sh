@@ -26,8 +26,8 @@ DownloadPackage "cdrtools" &
 DownloadPackage "cifs-utils" &
 DownloadPackage "coreutils" &
 DownloadPackage "cpio" &
-DownloadPackage "cracklib" &
 wait
+DownloadPackage "cracklib" &
 DownloadPackage "curl" &
 DownloadPackage "cyrus-sasl" &
 DownloadPackage "db48" &
@@ -35,7 +35,6 @@ DownloadPackage "dbus" &
 DownloadPackage "dbus-glib" &
 DownloadPackage "dcron" &
 DownloadPackage "devs" &
-DownloadPackage "dhcp" &
 DownloadPackage "dhcpcd" &
 DownloadPackage "dialog" &
 wait
