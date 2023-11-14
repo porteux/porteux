@@ -203,6 +203,11 @@ mv -f "$TEMPBUNDLE" ca-certificates.crt
 cd $MODULEPATH/packages
 find usr/share/kbd -type f -name "*.gz" -exec gunzip {} \;
 
+### set NetworkManager to use internal dhcp
+
+sed -i "s|dhcp=dhclient|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/NetworkManager.conf || exit 1
+sed -i "s|#dhcp=internal|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/conf.d/00-dhcp-client.conf || exit 1
+
 ### fix symlinks
 
 cd $MODULEPATH/packages/bin
