@@ -291,6 +291,9 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-static=no
 
+cp $SCRIPTPATH/extras/lxde/lxtask*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
 make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
