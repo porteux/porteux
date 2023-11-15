@@ -65,7 +65,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-make -j$NUMBERTHREADS install || exit 1
+make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # temporary to build yelp-tools
@@ -83,7 +83,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-make -j$NUMBERTHREADS install || exit 1
+make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # temporary to build engrampa and mate-search-tool
@@ -96,7 +96,7 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
 meson --prefix /usr ..
-ninja -j$NUMBERTHREADS install || exit 1
+ninja -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
@@ -113,7 +113,7 @@ cd ${currentPackage}*
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
 CFLAGS="-O3 -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
-make -j$NUMBERTHREADS install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
 /sbin/makepkg -l y -c n $MODULEPATH/packages/mate-utils-$version-$ARCH-1.txz
@@ -121,6 +121,13 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
+installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
+installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+
+# required just for building
+installpkg $MODULEPATH/packages/boost*.txz || exit 1
+rm $MODULEPATH/packages/boost*.txz
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 rm $MODULEPATH/packages/enchant*.txz
 installpkg $MODULEPATH/packages/glade*.txz || exit 1
@@ -133,15 +140,13 @@ installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 rm $MODULEPATH/packages/gtk+2*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
-installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
-installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
-installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 
 # mate packages
 for currentPackage in \
 	mate-common \
 	mate-desktop \
 	libmatekbd \
+	exempi \
 	caja \
 	mate-polkit \
 	zenity \
