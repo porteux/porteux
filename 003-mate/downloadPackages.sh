@@ -42,6 +42,7 @@ fi
 
 ### temporary packages for further building
 
+DownloadPackage "boost" & # to build exempi
 DownloadPackage "enchant" & # to build pluma
 DownloadPackage "glade" & # to build gtksourceview4
 DownloadPackage "gst-plugins-base" &
