@@ -30,7 +30,7 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CFLAGS:STRING="-O2 -fPIC -DNDEBUG -ffat-lto-objects" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib$SYSTEMBITS -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF ..
-make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -55,7 +55,7 @@ version=1.0.22
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
 wget https://www.quut.com/${currentPackage}/${currentPackage}-$version.tar.gz || exit 1
-sed -z -i "s|make\nmake |make -j$NUMBERTHREADS\nmake -j$NUMBERTHREADS |g" ${currentPackage}.SlackBuild
+sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -69,7 +69,7 @@ version=1.3.7
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/multimedia/${currentPackage}/ -A * || exit 1
 wget https://downloads.xvid.com/downloads/${currentPackage}-$version.tar.gz || exit 1
-sed -z -i "s|make\nmake |make -j$NUMBERTHREADS\nmake -j$NUMBERTHREADS |g" ${currentPackage}.SlackBuild
+sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -84,7 +84,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/${currentPackage}/${currentPackage}/ || exit 1
 cd ${currentPackage}
 CFLAGS="-O3 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --disable-static
-make -j$NUMBERTHREADS install || exit 1
+make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=x264
@@ -94,7 +94,7 @@ tar xvf ${currentPackage}-master.tar.gz && rm ${currentPackage}-master.tar.gz ||
 cd ${currentPackage}-master
 version=$(date -r . +%Y%m%d)
 CFLAGS="-O3 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --enable-shared --enable-pic --enable-strip --enable-lto --disable-cli
-make -j$NUMBERTHREADS install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -109,7 +109,7 @@ cd multicoreware-${currentPackage}*
 version=$(date -r . +%Y%m%d)
 mkdir ../${currentPackage}_${version} && mv * ../${currentPackage}_${version} && cd ..
 tar cvfz ${currentPackage}_${version}.tar.gz ${currentPackage}_${version} || exit 1
-sed -z -i "s| make| make -j$NUMBERTHREADS|g" ${currentPackage}.SlackBuild
+sed -z -i "s| make| make -j${NUMBERTHREADS}|g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -123,7 +123,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/audio/${currentPackage}/ -A * || exit 1
 info=$(DownloadLatestFromGithub "njh" ${currentPackage})
 version=${info#* }
-sed -z -i "s|make\nmake |make -j$NUMBERTHREADS\nmake -j$NUMBERTHREADS |g" ${currentPackage}.SlackBuild
+sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -137,7 +137,7 @@ version=0.1.6
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/audio/${currentPackage}/ -A * || exit 1
 wget https://sourceforge.net/projects/${currentPackage}/files/${currentPackage}/${currentPackage}-$version.tar.gz || exit 1
-sed -z -i "s|make\nmake|make -j$NUMBERTHREADS\nmake -j$NUMBERTHREADS |g" ${currentPackage}.SlackBuild
+sed -z -i "s|make\nmake|make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -152,7 +152,7 @@ wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/lib${currentPackage}/ -A
 mv lib${currentPackage}.SlackBuild ${currentPackage}.SlackBuild
 info=$(DownloadLatestFromGithub "enzo1982" ${currentPackage})
 version=${info#* }
-sed -z -i "s|make\nmake |make -j$NUMBERTHREADS\nmake -j$NUMBERTHREADS |g" ${currentPackage}.SlackBuild
+sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
 sed -i "s|patch |#patch |g" ${currentPackage}.SlackBuild
 sed -i "s|PRGNAM=libmp4v2|PRGNAM=mp4v2|g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
@@ -211,7 +211,7 @@ cd ${currentPackage}-master
 version=$(date -r . +%Y%m%d)
 mkdir build && cd build
 meson -Denable_tests=false -Denable_tools=false --prefix /usr ..
-DESTDIR=$MODULEPATH/${currentPackage}/package ninja -j$NUMBERTHREADS install || exit 1
+DESTDIR=$MODULEPATH/${currentPackage}/package ninja -j${NUMBERTHREADS} install || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -244,8 +244,11 @@ rm $MODULEPATH/packages/opencl-headers-*.t?z || exit 1
 
 currentPackage=ffmpeg
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
+if [ $SLACKWAREVERSION != "current" ]; then
+	rm ffmpeg-*.tar.xz
+	wget https://ffmpeg.org/releases/ffmpeg-4.4.4.tar.xz
+fi
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc \\\\|g" ${currentPackage}.SlackBuild
 GLSLANG=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -258,7 +261,7 @@ mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/development/${currentPackage,,}/ -A * || exit 1
 version=2.0.5
 wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/tags/v${version}.tar.gz -O ${currentPackage}-${version}.tar.gz
-sed -z -i "s|make |make -j$NUMBERTHREADS |g" ${currentPackage,,}.SlackBuild
+sed -z -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage,,}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage,,}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage,,}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage,,}.SlackBuild

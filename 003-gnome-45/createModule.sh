@@ -60,6 +60,8 @@ rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
 rm $MODULEPATH/packages/glade*
+rm $MODULEPATH/packages/gst-plugins-base*
+rm $MODULEPATH/packages/gstreamer*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libglvnd*
@@ -131,7 +133,6 @@ for package in \
 	gnome-browser-connector \
 	file-roller \
 	gnome-backgrounds \
-	power-profiles-daemon \
 	xdg-desktop-portal-gtk \
 ; do
 cd $SCRIPTPATH/gnome/$package || exit 1
@@ -171,13 +172,13 @@ rm usr/bin/js102
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
 rm -R etc/dconf
+rm -R etc/dbus-1/system.d
 rm -R etc/geoclue
 rm -R etc/opt
 rm -R usr/lib
 rm -R usr/lib64/aspell
 rm -R usr/lib64/python2.7
 rm -R usr/lib64/peas-demo
-rm -R usr/share/gstreamer-1.0/gdb
 rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gnome-settings-daemon-3.0
 rm -R usr/lib64/python3.9/site-packages/pip*
@@ -194,8 +195,6 @@ rm -R usr/share/dbus-1/services/org.gnome.ScreenSaver.service
 rm -R usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 rm -R usr/share/gjs-1.0
 rm -R usr/share/glade/pixmaps
-rm -R usr/share/gst-plugins-base
-rm -R usr/share/gstreamer-1.0/gdb
 rm -R usr/share/gtk-4.0
 rm -R usr/share/ibus
 rm -R usr/share/installed-tests
@@ -207,7 +206,6 @@ rm -R usr/share/vala
 rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
-find etc/dbus-1/system.d/ -mindepth 1 -maxdepth 1 ! \( -name "net.hadess.PowerProfiles.conf" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 

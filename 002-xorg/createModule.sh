@@ -256,6 +256,8 @@ rm -R usr/share/gnome
 rm -R usr/share/gnome-session
 rm -R usr/share/gobject-introspection-1.0/tests
 rm -R usr/share/graphite2
+rm -R usr/share/gst-plugins-base
+rm -R usr/share/gstreamer-1.0/gdb
 rm -R usr/share/gtk-*
 rm -R usr/share/imlib2
 rm -R usr/share/libcaca

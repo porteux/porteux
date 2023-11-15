@@ -10,11 +10,11 @@ Out of the box PorteuX can open basically any multimedia file. Hardware accelera
 
 If you're new to PorteuX and have never used Porteus or Slax, it's recommended to read this [in-depth review of Porteus](https://medium.com/@fulalas/porteus-5-review-a-different-and-powerful-linux-distro-33df8789a758).
 
-PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable and current/unstable. Current/unstable is the bleeding edge one and it's recommended for testing. After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases): <br />
-. GNOME 42.10 (or 45.0 in current)<br />
-. KDE 5.23.5 (or 5.27.8 in current)<br />
+PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable (safer) and current/rolling (bleeding edge). After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases): <br />
+. GNOME 42.10 (or 45.1 in current)<br />
+. KDE 5.23.5 (or 5.27.9 in current)<br />
 . LXDE 0.10.1<br />
-. LXQt 1.3.0<br />
+. LXQt 1.4.0<br />
 . MATE 1.27.3<br />
 . Xfce 4.12<br />
 . Xfce 4.18<br />

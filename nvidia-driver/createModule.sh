@@ -47,17 +47,32 @@ rm -rf $MODULEDIR/usr/share/doc/NVIDIA_GLX-1.0/{html,samples,LICENSE,NVIDIA_Chan
 
 # strip
 mkdir -p $MODULEDIR/../nostrip
-mkdir -p $MODULEDIR/../nostrip64
 
+if [ "$SYSTEMBITS" = 64 ]; then
+	mkdir -p $MODULEDIR/../nostrip64
+fi
+
+mv $MODULEDIR/usr/lib/libnvidia-eglcore.* $MODULEDIR/../nostrip
 mv $MODULEDIR/usr/lib/libnvidia-glvkspirv.* $MODULEDIR/../nostrip
-mv $MODULEDIR/usr/lib64/libnvidia-glvkspirv.* $MODULEDIR/../nostrip64
-mv $MODULEDIR/usr/lib64/vdpau $MODULEDIR/../
+mv $MODULEDIR/usr/lib/libnvidia-gpucomp.* $MODULEDIR/../nostrip
+mv $MODULEDIR/usr/lib/libnvidia-tls.* $MODULEDIR/../nostrip
+mv $MODULEDIR/usr/lib/vdpau $MODULEDIR/../nostrip
+
+if [ "$SYSTEMBITS" = 64 ]; then
+	mv $MODULEDIR/usr/lib64/libnvidia-eglcore.* $MODULEDIR/../nostrip64
+	mv $MODULEDIR/usr/lib64/libnvidia-glvkspirv.* $MODULEDIR/../nostrip64
+	mv $MODULEDIR/usr/lib64/libnvidia-gpucomp.* $MODULEDIR/../nostrip64
+	mv $MODULEDIR/usr/lib64/libnvidia-tls.* $MODULEDIR/../nostrip64
+	mv $MODULEDIR/usr/lib64/vdpau $MODULEDIR/../nostrip64
+fi
 
 find $MODULEDIR | xargs file | egrep -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
 
-mv $MODULEDIR/../nostrip/libnvidia-glvkspirv.* $MODULEDIR/usr/lib
-mv $MODULEDIR/../nostrip64/libnvidia-glvkspirv.* $MODULEDIR/usr/lib64
-mv $MODULEDIR/../vdpau $MODULEDIR/usr/lib64
+mv $MODULEDIR/../nostrip/* $MODULEDIR/usr/lib
+
+if [ "$SYSTEMBITS" = 64 ]; then
+	mv $MODULEDIR/../nostrip64/* $MODULEDIR/usr/lib64
+fi
 
 # disable nouveau
 mkdir -p $MODULEDIR/etc/modprobe.d 2>/dev/null
