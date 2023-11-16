@@ -1,3 +1,7 @@
+## Downloading The Latest Version
+
+Since Github has been very unstable, it might happen that clicking on the releases page will not show the latest version. The temporary solution is to access the latest release direct link: https://github.com/porteux/porteux/releases/latest
+
 ## About
 
 PorteuX is a Linux distro based on Slackware, inspired by Slax and Porteus and available to the public for free. Its main goal is to be super fast, small, portable, modular and immutable (if the user wants so).
