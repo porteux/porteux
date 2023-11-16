@@ -10,13 +10,11 @@ DownloadPackage "aspell" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
-DownloadPackage "gexiv2" &
 wait
+DownloadPackage "gexiv2" &
 DownloadPackage "glade" &
 DownloadPackage "glib-networking" &
 DownloadPackage "graphene" &
-DownloadPackage "gst-plugins-base" &
-DownloadPackage "gstreamer" &
 DownloadPackage "hyphen" &
 wait
 DownloadPackage "ibus" &

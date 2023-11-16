@@ -1,0 +1,14 @@
+--- src/functions.c	2023-11-14 15:03:49.609968183 +0100
++++ src/functions.c.patched	2023-11-14 15:06:11.572952558 +0100
+@@ -141,9 +141,9 @@
+     get_system_status (sys_stat);
+ 
+     memory_used = sys_stat->mem_total - sys_stat->mem_free;
+-    if ( show_cached_as_free )
++    if ( !show_cached_as_free )
+     {
+-        memory_used-=sys_stat->mem_cached+sys_stat->mem_buffered;
++        memory_used+=sys_stat->mem_cached+sys_stat->mem_buffered;
+     }
+     /* FIXME: this will work only for < 2048 TB but where so many memory... */
+     sprintf (tooltip, _("Memory: %d MB of %d MB used"), (int)(memory_used / 1024),

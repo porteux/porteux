@@ -14,7 +14,7 @@ SetFlags() {
 	fi
 
     export SLACKBUILDVERSION=$SLACKWAREVERSION
-	export KERNELVERSION="6.5.7"
+	export KERNELVERSION="6.6.1"
 
     export SCRIPTPATH="$PWD"
     export PORTEUXBUILDERPATH="/tmp/porteux-builder-$PORTEUXBUILD"
@@ -31,11 +31,11 @@ SetFlags() {
         export SYSTEMBITS=
     fi
 
-	NUMBERTHREADS=$(nproc --all)
+	export NUMBERTHREADS=$(nproc --all)
 
-    export REPOSITORY="ftp://ftp.slackware.com/pub/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
-    export PATCHREPOSITORY="ftp://ftp.slackware.com/pub/slackware/slackware$SYSTEMBITS/patches"
-    export SOURCEREPOSITORY="ftp://ftp.slackware.com/pub/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/source"
+    export REPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
+    export PATCHREPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS/patches"
+    export SOURCEREPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/source"
 
     if [ "$SLACKWAREVERSION" != "current" ]; then
         export SLACKBUILDREPOSITORY="ftp://ftp.slackbuilds.org/pub/slackbuilds/$SLACKBUILDVERSION"

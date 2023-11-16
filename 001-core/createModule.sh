@@ -90,12 +90,25 @@ rm -fr $MODULEPATH/${currentPackage}
 ### packages outside slackware repository
 
 currentPackage=sysvinit
-version=3.07
+version=3.08
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 cp $SCRIPTPATH/extras/${currentPackage}/* .
 wget https://github.com/slicer69/sysvinit/releases/download/$version/sysvinit-$version.tar.xz -O ${currentPackage}-$version.tar.gz || exit 1
 sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
+
+# temporary to build procps
+installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
+
+currentPackage=procps
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+cp $SCRIPTPATH/extras/procps/* .
+version=$(curl -s https://gitlab.com/${currentPackage}-ng/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-${version//[vV]}}|g" ${currentPackage}.SlackBuild
+wget https://gitlab.com/${currentPackage}-ng/procps/-/archive/${version}/procps-${version}.tar.gz
+sh ${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/package-${currentPackage}
 
 currentPackage=neofetch
 mkdir -p $MODULEPATH/${currentPackage}/package/usr/bin && cd $MODULEPATH/${currentPackage}
@@ -116,7 +129,7 @@ version=17.04
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://github.com/flyfishzy/p7zip/archive/refs/tags/v$version.tar.gz -O ${currentPackage}-$version.tar.gz || exit 1
-sed -i "s|make |make -j$NUMBERTHREADS |g" ${currentPackage}.SlackBuild
+sed -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -136,24 +149,12 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=TLP
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
-info=`DownloadLatestFromGithub "linrunner" "TLP"`
-version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=unrar
-version=6.2.10
+version=6.2.12
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
-sed -i "s|make |make -j$NUMBERTHREADS |g" ${currentPackage}.SlackBuild
+sed -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
@@ -166,7 +167,7 @@ version=1.21
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://www.kraxel.org/releases/webfs/webfs-$version.tar.gz || exit 1
 tar xvf ${currentPackage}*.tar.gz && cd ${currentPackage}-$version || exit 1
-make -j$NUMBERTHREADS install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
@@ -201,6 +202,11 @@ mv -f "$TEMPBUNDLE" ca-certificates.crt
 
 cd $MODULEPATH/packages
 find usr/share/kbd -type f -name "*.gz" -exec gunzip {} \;
+
+### set NetworkManager to use internal dhcp
+
+sed -i "s|dhcp=dhclient|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/NetworkManager.conf || exit 1
+sed -i "s|#dhcp=internal|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/conf.d/00-dhcp-client.conf || exit 1
 
 ### fix symlinks
 

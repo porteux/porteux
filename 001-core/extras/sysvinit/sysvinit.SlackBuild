@@ -29,11 +29,9 @@ find . \
   \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
   -exec chmod 644 {} \+
 
-# Fix paths for /etc/forcefsck and /etc/fastboot:
-zcat $CWD/sysvinit.paths.diff.gz | patch -p1 -E --verbose --backup --suffix=.orig || exit 1
-
 # Fix failure to show program version:
 zcat $CWD/sysvinit.always.define.version.diff.gz | patch -p1 --verbose || exit 1
+sed -i "s/define VERSION.*/define VERSION \"$VERSION\"/g" src/init.c
 
 # Use /dev/initctl instead of /run/initctl ; this is a named pipe and probably
 # should be in /dev anyway, but more importantly, having the upgraded package
@@ -41,9 +39,6 @@ zcat $CWD/sysvinit.always.define.version.diff.gz | patch -p1 --verbose || exit 1
 for replace in src/shutdown.c src/Makefile src/initreq.h src/init.c doc/initctl doc/Install man/init.8 man/initctl.5 man/po/* ; do
   sed -i "s|run/initctl|dev/initctl|g" $replace
 done
-
-# Since they usually don't update the version here, let's try to make sure:
-sed -i "s/define VERSION.*/define VERSION \"$VERSION\"/g" src/init.c
 
 cd src
 make clobber || exit 1
