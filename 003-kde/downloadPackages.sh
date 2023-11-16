@@ -25,15 +25,13 @@ DownloadPackage "ffmpegthumbs" &
 DownloadPackage "frameworkintegration" &
 wait
 DownloadPackage "graphene" &
-DownloadPackage "gst-plugins-base" &
 DownloadPackage "gst-plugins-good" &
-DownloadPackage "gstreamer" &
 DownloadPackage "gwenview" &
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "kactivities" &
-wait
 DownloadPackage "kactivities-stats" &
+wait
 DownloadPackage "kactivitymanagerd" &
 DownloadPackage "kapidox" &
 DownloadPackage "karchive" &
@@ -157,7 +155,6 @@ DownloadPackage "plasma-workspace" &
 DownloadPackage "polkit-kde-agent" &
 DownloadPackage "polkit-qt" &
 DownloadPackage "powerdevil" &
-DownloadPackage "power-profiles-daemon" &
 DownloadPackage "prison" &
 DownloadPackage "purpose" &
 wait

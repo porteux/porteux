@@ -14,16 +14,14 @@ DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gexiv2" &
 DownloadPackage "glade" &
 DownloadPackage "gjs" &
-DownloadPackage "glib-networking" &
 wait
+DownloadPackage "glib-networking" &
 DownloadPackage "gperf" &
 DownloadPackage "graphene" &
 DownloadPackage "gsettings-desktop-schemas" &
 DownloadPackage "gst-plugins-bad-free" &
-DownloadPackage "gst-plugins-base" &
 DownloadPackage "gst-plugins-good" &
 DownloadPackage "gst-plugins-libav" &
-DownloadPackage "gstreamer" &
 DownloadPackage "gtk4" &
 wait
 DownloadPackage "hyphen" &
@@ -54,10 +52,12 @@ DownloadPackage "boost" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
+DownloadPackage "gst-plugins-base" & # required by cogl
+DownloadPackage "gstreamer" & # required by cogl
 DownloadPackage "iso-codes" &
+wait
 DownloadPackage "krb5" &
 DownloadPackage "libglvnd" &
-wait
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
 DownloadPackage "python-pip" &

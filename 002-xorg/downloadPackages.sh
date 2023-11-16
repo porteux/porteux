@@ -43,6 +43,8 @@ DownloadPackage "graphite2" &
 wait
 DownloadPackage "gsettings-desktop-schemas" &
 DownloadPackage "gsl" &
+DownloadPackage "gst-plugins-base" & # required by bluetooth audio
+DownloadPackage "gstreamer" & # required by bluetooth audio
 DownloadPackage "gtkmm3" &
 DownloadPackage "gvfs" &
 DownloadPackage "harfbuzz" &
@@ -176,7 +178,6 @@ DownloadPackage "pulseaudio" &
 DownloadPackage "pycairo" &
 DownloadPackage "pygobject3" &
 DownloadPackage "pyxdg" &
-DownloadPackage "radeontool" &
 DownloadPackage "rdesktop" &
 DownloadPackage "sbc" &
 DownloadPackage "SDL2" &

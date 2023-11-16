@@ -116,7 +116,7 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
-make -j$NUMBERTHREADS && make install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
+make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
@@ -135,14 +135,6 @@ info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
 version=${info#* }
 cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
 sh ${currentPackage}-qt.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=power-profiles-daemon
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-version=0.13
-wget https://gitlab.freedesktop.org/hadess/${currentPackage}/-/archive/${version}/${currentPackage}-${version}.tar.gz
-cp $SCRIPTPATH/extras/${currentPackage}/* .
-sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root

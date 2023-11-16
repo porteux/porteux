@@ -1,0 +1,18 @@
+--- src/xfce-taskmanager-linux.c	2023-11-14 15:03:32.522970064 +0100
++++ src/xfce-taskmanager-linux.c.patched	2023-11-14 15:06:37.416949713 +0100
+@@ -272,8 +272,8 @@
+     {
+         if(!strncmp(buffer,"MemTotal:",9))
+             sys_stat->mem_total=atoi(buffer+10),reach++;
+-        else if(!strncmp(buffer,"MemFree:",8))
+-            sys_stat->mem_free=atoi(buffer+9),reach++;
++		else if(!strncmp(buffer,"MemAvailable:",13))
++            sys_stat->mem_free=atoi(buffer+14),reach++;
+         else if(!strncmp(buffer,"Cached:",7))
+             sys_stat->mem_cached+=atoi(buffer+8),reach++;
+ 	else if(!strncmp(buffer,"SReclaimable:", 13))
+@@ -320,3 +320,4 @@
+     }
+ }
+ 
++

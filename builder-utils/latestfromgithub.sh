@@ -40,8 +40,8 @@ DownloadLatestFromGithub() {
     url=
 
     releaseInfo=$(curl -s https://api.github.com/repos/"$repository"/"$project"/releases)
-    version=$(echo "$releaseInfo" | tr ',' '\n' | grep "\"tag_name\":" | cut -d \" -f 4 | grep -v "alpha" | grep -v "beta" | sort -V -r | head -n 1)
-    url=$(echo "$releaseInfo" | tr ',' '\n' | grep ".tar" | grep -v ".asc" | grep -v ".sha256" | grep "\"browser_download_url\":" | grep "$version" | grep -v "alpha" | grep -v "beta" | cut -d \" -f 4 | head -n 1)
+    version=$(echo "$releaseInfo" | tr ',' '\n' | grep "\"tag_name\":" | cut -d \" -f 4 | grep -v "alpha" | grep -v "beta" | grep -E -v "\-rc[0-9]" | sort -V -r | head -n 1)
+    url=$(echo "$releaseInfo" | tr ',' '\n' | grep ".tar" | grep -v ".asc" | grep -v ".sha256" | grep "\"browser_download_url\":" | grep "$version" | grep -v "alpha" | grep -v "beta" | grep -E -v "\-rc[0-9]" | cut -d \" -f 4 | head -n 1)
     
     # if there are no releases available, try to get from 'tags'
     if [ ! "$url" ]; then
