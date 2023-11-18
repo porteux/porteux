@@ -6,7 +6,6 @@ REPOSITORY="$1"
 GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "libcue" &
-DownloadPackage "neon" &
 DownloadPackage "vid.stab" &
 DownloadPackage "openal-soft" &
 wait
