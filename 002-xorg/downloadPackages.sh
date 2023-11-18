@@ -39,6 +39,7 @@ DownloadPackage "glu" &
 DownloadPackage "gnome-themes-extra" &
 DownloadPackage "gobject-introspection" &
 DownloadPackage "gparted" &
+DownloadPackage "graphene" & # required by libgstopengl
 DownloadPackage "graphite2" &
 wait
 DownloadPackage "gsettings-desktop-schemas" &
@@ -161,7 +162,6 @@ DownloadPackage "mobile-broadband-provider-info" &
 DownloadPackage "mpg123" &
 DownloadPackage "mtdev" &
 wait
-DownloadPackage "ndctl" &
 DownloadPackage "ocl-icd" &
 DownloadPackage "openjpeg" &
 DownloadPackage "opus" &
@@ -180,8 +180,6 @@ DownloadPackage "pygobject3" &
 DownloadPackage "pyxdg" &
 DownloadPackage "rdesktop" &
 DownloadPackage "sbc" &
-DownloadPackage "SDL2" &
-DownloadPackage "sdl" &
 DownloadPackage "setxkbmap" &
 DownloadPackage "shared-mime-info" &
 DownloadPackage "speex" &
@@ -192,7 +190,6 @@ DownloadPackage "taglib" &
 DownloadPackage "udisks2" &
 DownloadPackage "upower" &
 DownloadPackage "v4l-utils" &
-DownloadPackage "volume_key" &
 DownloadPackage "vorbis-tools" &
 DownloadPackage "vte" &
 DownloadPackage "wavpack" &

@@ -72,11 +72,8 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-# todo: get gtk version from slackware and use it to download the matched gtk classic version
 currentPackage=gtk+3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#version=`ls *.tar.?z -a | cut -d'-' -f2- | cut -d'-' -f1`
-#wget https://github.com/lah7/gtk3-classic/releases/download/$version/gtk3-classic-$version-1-x86_64.pkg.tar.zst
 info=$(DownloadLatestSourceFromGithub "lah7" "gtk3-classic")
 filename=${info% *}
 tar xvf "$filename" && rm "$filename" || exit 1
@@ -319,6 +316,9 @@ rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
+rm usr/lib64/libbd_crypto.*
+rm usr/lib64/libbd_nvdimm.*
+rm usr/lib64/libbd_vdo.*
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
 rm usr/share/applications/mimeinfo.cache

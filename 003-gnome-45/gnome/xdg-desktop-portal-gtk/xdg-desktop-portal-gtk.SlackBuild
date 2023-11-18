@@ -1,5 +1,5 @@
 #!/bin/bash
-# this package required to make dark theme work properly in gnome 45+
+# this package is required to make dark theme work properly in gnome 45+
 
 PRGNAM=xdg-desktop-portal-gtk
 VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
@@ -49,27 +49,30 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \+
 
+mkdir -p build
+cd build
+
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-./configure \
-  --prefix=/usr \
-  --libdir=/usr/lib${LIBDIRSUFFIX} \
-  --sysconfdir=/etc \
-  --localstatedir=/var \
-  --mandir=/usr/man \
-  --docdir=/usr/doc/$PRGNAM-$VERSION \
-  --build=$ARCH-slackware-linux \
-  --disable-silent-rules \
-  --enable-appchooser \
-  --enable-settings \
-  --disable-background \
-  --disable-lockdown \
-  --disable-screencast \
-  --disable-screenshot \
-  --disable-wallpaper
+meson .. \
+ --prefix=/usr \
+ --buildtype=release \
+ --libdir=lib${LIBDIRSUFFIX} \
+ --libexecdir=/usr/libexec \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ -Ddefault_library=shared \
+ -Dsystemd-user-unit-dir=no \
+ -Dwallpaper=disabled \
+ -Dsettings=enabled \
+ -Dappchooser=enabled \
+ -Dlockdown=disabled \
 
-make $JOBS
-make install-strip DESTDIR=$PKG
+ninja $JOBS || ninja
+DESTDIR=$PKG ninja install
+cd ..
 
 # install xdg autostart file
 mkdir -p $PKG/etc/xdg/autostart

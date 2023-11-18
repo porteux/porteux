@@ -309,6 +309,7 @@ cd $MODULEPATH/packages/
 rm -R usr/share/ffmpeg/examples
 rm -R usr/share/lua
 
+rm usr/lib64/mpg123/output_sdl.so
 rm usr/share/applications/mimeinfo.cache
 
 GenericStrip
