@@ -53,7 +53,6 @@ wait
 DownloadPackage "eudev" &
 DownloadPackage "exfatprogs" &
 DownloadPackage "f2fs-tools" &
-DownloadPackage "fftw" &
 DownloadPackage "file" &
 DownloadPackage "findutils" &
 DownloadPackage "flex" &
@@ -246,6 +245,7 @@ fi
 ### packages that require specific striping
 
 DownloadPackage "binutils" &
+DownloadPackage "fftw" & # required by pulse plugins
 DownloadPackage "ntp" &
 DownloadPackage "openldap" &
 wait

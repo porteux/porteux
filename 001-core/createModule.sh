@@ -62,6 +62,17 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=fftw
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents usr/lib64/libfftw3f.* ${currentPackage}-stripped-$version/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=ntp
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
