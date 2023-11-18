@@ -272,16 +272,9 @@ rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=mpv
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/multimedia/${currentPackage}/ -A * || exit 1
+cp $SCRIPTPATH/extras/${currentPackage}/* .
 info=$(DownloadLatestFromGithub "mpv-player" ${currentPackage})
-version=${info#* }
-sed -z -i "s|-Dhtml-build=enabled \\\\\n| |g" ${currentPackage}.SlackBuild
-sed -z -i "s|-Dmanpage-build=enabled|-Dlua=luajit|g" ${currentPackage}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
