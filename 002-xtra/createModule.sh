@@ -276,7 +276,7 @@ cp $SCRIPTPATH/extras/${currentPackage}/* .
 info=$(DownloadLatestFromGithub "mpv-player" ${currentPackage})
 sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
-exit
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
