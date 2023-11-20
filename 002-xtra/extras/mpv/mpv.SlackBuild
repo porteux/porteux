@@ -67,7 +67,7 @@ meson \
   --mandir=/usr/man \
   -Dbuildtype=release \
   -Dmanpage-build=disabled \
-  -Dlibmpv=true \
+  -Dlibmpv=false \
   -Dhtml-build=disabled \
   -Dcdda=enabled \
   -Ddvdnav=enabled \

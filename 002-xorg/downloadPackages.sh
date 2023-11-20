@@ -184,9 +184,8 @@ DownloadPackage "setxkbmap" &
 DownloadPackage "shared-mime-info" &
 DownloadPackage "speex" &
 DownloadPackage "speexdsp" &
-DownloadPackage "startup-notification" &
 wait
-DownloadPackage "taglib" &
+DownloadPackage "startup-notification" &
 DownloadPackage "udisks2" &
 DownloadPackage "upower" &
 DownloadPackage "v4l-utils" &
