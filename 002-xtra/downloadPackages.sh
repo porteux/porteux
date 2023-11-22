@@ -14,6 +14,10 @@ wait
 
 DownloadPackage "frei0r-plugins" & # temporary to build ffmpeg
 DownloadPackage "opencl-headers" & # temporary to build ffmpeg
+DownloadPackage "python-glad2" & # temporary to build libplacebo
+DownloadPackage "python-Jinja2" & # temporary to build libplacebo
+DownloadPackage "python-MarkupSafe" & # temporary to build libplacebo
+DownloadPackage "vulkan-sdk" & # temporary to build libplacebo
 wait
 
 ### script clean up

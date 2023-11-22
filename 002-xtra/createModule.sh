@@ -270,6 +270,32 @@ mv /tmp/${currentPackage,,}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
 rm -fr $MODULEPATH/${currentPackage,,}
 
+# required by libplacebo
+installpkg $MODULEPATH/packages/python-glad2-*.t?z || exit 1
+rm $MODULEPATH/packages/python-glad2-*.t?z || exit 1
+installpkg $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
+rm $MODULEPATH/packages/python-Jinja2*.t?z || exit 1
+installpkg $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
+rm $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
+installpkg $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
+rm $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
+
+currentPackage=libplacebo
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+version=$(curl -s https://code.videolan.org/videolan/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+version=${version//[vV]}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/graphics/${currentPackage,,}/ -A * || exit 1
+wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
+#sed -z -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage,,}.SlackBuild
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage,,}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage,,}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage,,}.SlackBuild
+sed -i "s|-Dbuildtype=\$RELEASE|-Dbuildtype=\$RELEASE -Dvulkan=disabled -Ddemos=false|g"  ${currentPackage,,}.SlackBuild
+sh ${currentPackage,,}.SlackBuild || exit 1
+mv /tmp/${currentPackage,,}*.t?z $MODULEPATH/packages
+installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=mpv
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 cp $SCRIPTPATH/extras/${currentPackage}/* .
