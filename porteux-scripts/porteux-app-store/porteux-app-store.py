@@ -250,7 +250,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         if "channels" in application:
             self.show_dialog_options(application_name, application)
-        elif "ask_installation_path" in application:
+        elif "askInstallationPath" in application:
             application_folder_dialog = GtkFolder(self, application_name)
             response = application_folder_dialog.run()
             if response == Gtk.ResponseType.OK:
