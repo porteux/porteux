@@ -21,17 +21,6 @@ DownloadFromSlackware
 
 ### packages outside Slackware repository
 
-currentPackage=acpilight
-version=20201001
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}-$version.tar.gz .
-tar xvf ${currentPackage}-$version.tar.?z || exit 1
-cd ${currentPackage}-$version
-make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=xcape
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/misc/${currentPackage}/ -A * || exit 1
