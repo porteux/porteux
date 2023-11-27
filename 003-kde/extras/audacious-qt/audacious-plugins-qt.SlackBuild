@@ -80,6 +80,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --mandir=/usr/man \
   --disable-gtk \
   --enable-qt \
+  --disable-neon \
   --enable-aac \
   --program-prefix= \
   --program-suffix= \

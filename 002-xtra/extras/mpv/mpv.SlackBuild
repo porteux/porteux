@@ -71,6 +71,7 @@ meson \
   -Ddvdnav=enabled \
   -Ddvbin=enabled \
   -Dvulkan=disabled \
+  -Dshaderc=disabled \
   -Dlua=luajit \
   $pipewire \
   $BUILD_OPTS \

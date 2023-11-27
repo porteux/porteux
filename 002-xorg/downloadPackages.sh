@@ -83,7 +83,6 @@ DownloadPackage "libglade" &
 DownloadPackage "libglvnd" &
 wait
 DownloadPackage "libgphoto2" &
-DownloadPackage "libical" &
 DownloadPackage "libinput" &
 DownloadPackage "libICE" &
 DownloadPackage "libjpeg-turbo" &
@@ -117,9 +116,6 @@ DownloadPackage "libwacom" &
 DownloadPackage "libwebp" &
 DownloadPackage "libX11" &
 DownloadPackage "libXau" &
-DownloadPackage "libXaw3d" &
-DownloadPackage "libXaw3dXft" &
-DownloadPackage "libXaw" &
 DownloadPackage "libxcb" &
 DownloadPackage "libXcomposite" &
 wait
