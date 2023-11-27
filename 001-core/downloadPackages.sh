@@ -30,7 +30,6 @@ wait
 DownloadPackage "cracklib" &
 DownloadPackage "curl" &
 DownloadPackage "cyrus-sasl" &
-DownloadPackage "db48" &
 DownloadPackage "dbus" &
 DownloadPackage "dbus-glib" &
 DownloadPackage "dcron" &
