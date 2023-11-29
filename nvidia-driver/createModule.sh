@@ -57,6 +57,7 @@ mv $MODULEDIR/usr/lib/libnvidia-encode.* $MODULEDIR/../nostrip &>/dev/null
 mv $MODULEDIR/usr/lib/libnvidia-eglcore.* $MODULEDIR/../nostrip &>/dev/null
 mv $MODULEDIR/usr/lib/libnvidia-glvkspirv.* $MODULEDIR/../nostrip &>/dev/null
 mv $MODULEDIR/usr/lib/libnvidia-gpucomp.* $MODULEDIR/../nostrip &>/dev/null
+mv $MODULEDIR/usr/lib/libnvidia-nvvm.* $MODULEDIR/../nostrip &>/dev/null
 mv $MODULEDIR/usr/lib/libnvidia-tls.* $MODULEDIR/../nostrip &>/dev/null
 mv $MODULEDIR/usr/lib/vdpau $MODULEDIR/../nostrip &>/dev/null
 
@@ -66,6 +67,7 @@ if [ "$SYSTEMBITS" = 64 ]; then
 	mv $MODULEDIR/usr/lib64/libnvidia-eglcore.* $MODULEDIR/../nostrip64 &>/dev/null
 	mv $MODULEDIR/usr/lib64/libnvidia-glvkspirv.* $MODULEDIR/../nostrip64 &>/dev/null
 	mv $MODULEDIR/usr/lib64/libnvidia-gpucomp.* $MODULEDIR/../nostrip64 &>/dev/null
+	mv $MODULEDIR/usr/lib64/libnvidia-nvvm.* $MODULEDIR/../nostrip64 &>/dev/null
 	mv $MODULEDIR/usr/lib64/libnvidia-tls.* $MODULEDIR/../nostrip64 &>/dev/null
 	mv $MODULEDIR/usr/lib64/vdpau $MODULEDIR/../nostrip64 &>/dev/null
 fi
