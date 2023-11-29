@@ -37,6 +37,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &
 	DownloadPackage "libdbusmenu" &
 	DownloadPackage "libindicator" &
+	DownloadPackage "libsoup" & # for stable this libsoup2 will be in 002-xorg
 	wait
 fi
 

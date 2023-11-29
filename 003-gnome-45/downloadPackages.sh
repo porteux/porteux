@@ -30,7 +30,6 @@ DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libhandy" &
 DownloadPackage "libnma" &
-DownloadPackage "libsoup3" &
 DownloadPackage "libxklavier" &
 wait
 DownloadPackage "libyaml" &
