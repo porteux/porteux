@@ -19,6 +19,7 @@ DownloadPackage "cairo" &
 DownloadPackage "cairomm" &
 wait
 DownloadPackage "cdparanoia-III" &
+DownloadPackage "db48" & # required by bluez (obexd)
 DownloadPackage "dejavu-fonts-ttf" &
 DownloadPackage "desktop-file-utils" &
 DownloadPackage "djvulibre" &
@@ -83,6 +84,7 @@ DownloadPackage "libglade" &
 DownloadPackage "libglvnd" &
 wait
 DownloadPackage "libgphoto2" &
+DownloadPackage "libical" &
 DownloadPackage "libinput" &
 DownloadPackage "libICE" &
 DownloadPackage "libjpeg-turbo" &
@@ -116,6 +118,7 @@ DownloadPackage "libwacom" &
 DownloadPackage "libwebp" &
 DownloadPackage "libX11" &
 DownloadPackage "libXau" &
+DownloadPackage "libXaw" &
 DownloadPackage "libxcb" &
 DownloadPackage "libXcomposite" &
 wait
@@ -238,6 +241,16 @@ DownloadPackage "xsetroot" &
 DownloadPackage "xterm" &
 DownloadPackage "xvinfo" &
 wait
+
+### slackware specific version packages
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
+	wait
+elif
+	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)
+	wait
+fi
 
 ### packages that require specific striping
 

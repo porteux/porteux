@@ -270,6 +270,7 @@ rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/bin/canberra*
 rm usr/lib64/libkeybinder.*
 rm usr/lib64/libpoppler-qt5*
+rm usr/libexec/indicator-loader
 rm usr/share/applications/xfce4-file-manager.desktop
 rm usr/share/applications/xfce4-mail-reader.desktop
 rm usr/share/applications/xfce4-terminal-emulator.desktop

@@ -11,15 +11,15 @@ DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gtksourceview3" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
-wait
 DownloadPackage "libdbusmenu" &
+wait
 DownloadPackage "libgtop" &
 DownloadPackage "libnma" &
+DownloadPackage "libwnck3" &
+DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "pavucontrol" &
 DownloadPackage "polkit-gnome" &
-DownloadPackage "libwnck3" &
-DownloadPackage "libxklavier" &
 wait
 
 ### slackware current only packages
@@ -27,6 +27,7 @@ wait
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &
 	DownloadPackage "libindicator" &
+	DownloadPackage "libsoup" & # for stable this libsoup2 will be in 002-xorg
 	wait
 fi
 

@@ -122,7 +122,6 @@ DownloadPackage "libpwquality" &
 DownloadPackage "libqmi" &
 DownloadPackage "libraw1394" &
 DownloadPackage "libseccomp" &
-DownloadPackage "libsoup" &
 wait
 DownloadPackage "libssh2" &
 DownloadPackage "libtasn1" &

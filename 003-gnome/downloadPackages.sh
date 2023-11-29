@@ -32,7 +32,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "gtk4" &
 	DownloadPackage "libhandy" &
 	DownloadPackage "libnma" &
-	DownloadPackage "libsoup3" &
 	DownloadPackage "openssl" &
 	DownloadPackage "vte" &
 	wait
