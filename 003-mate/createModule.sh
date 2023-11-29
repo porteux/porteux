@@ -214,7 +214,7 @@ rm -R usr/lib64/python2.7
 rm -R usr/lib64/peas-demo
 rm -R usr/lib64/python3.9/site-packages/pip
 rm -R usr/lib64/python3.9/site-packages/pip-21.3.1-py3.9.egg-info
-rm -R run
+rm -R run/
 rm -R usr/share/accountsservice
 rm -R usr/share/engrampa
 rm -R usr/share/gnome
@@ -230,6 +230,7 @@ rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
+rm usr/lib64/libsoup-gnome*
 rm usr/libexec/indicator-loader
 
 find usr/share/libmateweather -mindepth 1 -maxdepth 1 ! \( -name "Locations.xml" -o -name "locations.dtd" \) -exec rm -rf '{}' \; 2>/dev/null
