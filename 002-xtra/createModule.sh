@@ -271,8 +271,9 @@ installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
 rm -fr $MODULEPATH/${currentPackage,,}
 
 # required by libplacebo
-installpkg $MODULEPATH/packages/python-glad2-*.t?z || exit 1
-rm $MODULEPATH/packages/python-glad2-*.t?z || exit 1
+pip install glad2
+rm $MODULEPATH/packages/python-pip*.t?z || exit 1
+
 installpkg $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
 rm $MODULEPATH/packages/python-Jinja2*.t?z || exit 1
 installpkg $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
@@ -286,9 +287,11 @@ version=$(curl -s https://code.videolan.org/videolan/${currentPackage}/-/tags?fo
 version=${version//[vV]}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/graphics/${currentPackage}/ -A * || exit 1
 wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
+cp $SCRIPTPATH/extras/${currentPackage}/meson.build.patch . || exit 1
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -i "s|chown -R.*|patch -p0 < \${CWD}/meson\.build\.patch \|\| exit 1\nchown -R root:root \.|g" ${currentPackage}.SlackBuild
 sed -i "s|-Dbuildtype=\$RELEASE|-Dbuildtype=\$RELEASE -Dvulkan=disabled -Ddemos=false -Dshaderc=disabled -Dglslang=disabled|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -327,7 +330,6 @@ cd $MODULEPATH/packages/
 rm -R usr/share/ffmpeg/examples
 rm -R usr/share/lua
 
-rm usr/lib64/mpg123/output_sdl.so
 rm usr/share/applications/mimeinfo.cache
 
 GenericStrip

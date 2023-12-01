@@ -58,6 +58,7 @@ DownloadPackage "flex" &
 DownloadPackage "floppy" &
 DownloadPackage "fuse3" &
 DownloadPackage "gawk" &
+DownloadPackage "gd" &
 wait
 DownloadPackage "gdbm" &
 DownloadPackage "gettext" &

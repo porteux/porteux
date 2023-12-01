@@ -97,7 +97,6 @@ DownloadPackage "libopusenc" &
 DownloadPackage "libpciaccess" &
 wait
 DownloadPackage "libpng" &
-DownloadPackage "libproxy" &
 DownloadPackage "librsvg" &
 DownloadPackage "libsamplerate" &
 DownloadPackage "libsecret" &
@@ -247,7 +246,7 @@ wait
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
 	wait
-elif
+else
 	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)
 	wait
 fi

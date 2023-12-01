@@ -39,7 +39,6 @@ mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/LLVMgold.so ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
@@ -225,6 +224,8 @@ sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}|GtkEntry::inner-border = {2, 2, 
 
 CopyToDevel
 
+mv $MODULEPATH/packages/usr/lib64/gobject-introspection $PORTEUXBUILDERPATH/05-devel/packages/usr/lib64
+
 ### module clean up
 
 cd $MODULEPATH/packages/
@@ -243,8 +244,10 @@ rm -R usr/lib64/gdkmm-*
 rm -R usr/lib64/giomm-*
 rm -R usr/lib64/glibmm-*
 rm -R usr/lib64/gnome-settings-daemon-*
+rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gtkmm-*
 rm -R usr/lib64/openjpeg-*
+rm -R usr/lib64/libxslt-plugins
 rm -R usr/lib64/pangomm-*
 rm -R usr/lib64/python2*
 rm -R usr/lib64/sigc++-*
@@ -319,6 +322,9 @@ rm usr/bin/Xdmx
 rm usr/lib64/libbd_crypto.*
 rm usr/lib64/libbd_nvdimm.*
 rm usr/lib64/libbd_vdo.*
+rm usr/lib64/libMesaOpenCL*
+rm usr/lib64/libRusticlOpenCL*
+rm usr/lib64/mpg123/output_sdl.so
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
 rm usr/share/applications/mimeinfo.cache
