@@ -268,6 +268,7 @@ rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
 rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/bin/canberra*
+rm usr/lib64/girepository-1.0/SoupGNOME*
 rm usr/lib64/libkeybinder.*
 rm usr/lib64/libpoppler-qt5*
 rm usr/lib64/libsoup-gnome*

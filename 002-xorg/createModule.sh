@@ -322,7 +322,10 @@ rm usr/bin/Xdmx
 rm usr/lib64/libbd_crypto.*
 rm usr/lib64/libbd_nvdimm.*
 rm usr/lib64/libbd_vdo.*
+rm usr/lib64/libLLVMExtensions*
+rm usr/lib64/libLLVMLTO*
 rm usr/lib64/libMesaOpenCL*
+rm usr/lib64/libpoppler-cpp*
 rm usr/lib64/libRusticlOpenCL*
 rm usr/lib64/mpg123/output_sdl.so
 rm usr/share/applications/gcr-prompter.desktop
