@@ -230,6 +230,7 @@ rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
+rm usr/lib64/girepository-1.0/SoupGNOME*
 rm usr/lib64/libsoup-gnome*
 rm usr/libexec/indicator-loader
 

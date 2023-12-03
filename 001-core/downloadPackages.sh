@@ -213,6 +213,7 @@ DownloadPackage "telnet" &
 DownloadPackage "tevent" &
 DownloadPackage "traceroute" &
 wait
+DownloadPackage "uring" &
 DownloadPackage "usb_modeswitch" &
 DownloadPackage "usbmuxd" &
 DownloadPackage "usbutils" &
@@ -238,6 +239,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "lua" &
 	DownloadPackage "lzlib" &
 	DownloadPackage "mozjs102" &
+	DownloadPackage "userspace-rcu" &
 	wait
 fi
 

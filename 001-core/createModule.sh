@@ -252,6 +252,9 @@ rm -R usr/etc
 rm -R usr/lib/ldscripts
 rm -R usr/lib/modprobe.d
 rm -R usr/lib/udev
+rm -R usr/lib64/guile
+rm -R usr/lib64/services
+rm -R usr/lib64/krb5/plugins
 rm -R usr/lib64/locale/C.utf8
 rm -R usr/lib64/p7zip/Codecs
 rm -R usr/lib64/python2.7
@@ -259,6 +262,7 @@ rm -R usr/lib64/python3.9/idlelib
 rm -R usr/lib64/python3.9/lib2to3
 rm -R usr/lib64/python3.9/site-packages/demo
 rm -R usr/lib64/python3.9/turtledemo
+rm -R usr/lib64/sasl2
 rm -R usr/lib64/systemd
 rm -R usr/local/etc
 rm -R usr/local/games
@@ -335,12 +339,14 @@ rm usr/bin/js[0-9]*
 rm usr/bin/7za
 rm usr/bin/7zr
 rm usr/bin/smbtorture
-rm usr/lib64/p7zip/7za
-rm usr/lib64/p7zip/7zr
+rm usr/bin/wpa_gui
 rm usr/lib64/liblibboost_*
 rm usr/lib64/libslang.so.1*
+rm usr/lib64/p7zip/7za
+rm usr/lib64/p7zip/7zr
 rm usr/libexec/samba/rpcd_*
 rm usr/local/bin/webfsd
+rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
 
 find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
