@@ -289,7 +289,6 @@ rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/bin/canberra*
 rm usr/lib64/girepository-1.0/SoupGNOME*
 rm usr/lib64/libkeybinder.*
-rm usr/lib64/libpoppler-qt5*
 rm usr/lib64/libsoup-gnome*
 rm usr/share/applications/exo*
 rm usr/share/backgrounds/xfce/xfce-stripes.png

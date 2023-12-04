@@ -310,28 +310,6 @@ CopyToDevel
 
 cd $MODULEPATH/packages/
 
-rm etc/xdg/autostart/blueman.desktop
-rm usr/bin/canberra*
-rm usr/share/lxqt/wallpapers/after-the-rain.jpg
-rm usr/share/lxqt/wallpapers/appleflower.png
-rm usr/share/lxqt/wallpapers/beam.png
-rm usr/share/lxqt/wallpapers/butterfly.png
-rm usr/share/lxqt/wallpapers/cloud.png
-rm usr/share/lxqt/wallpapers/drop.png
-rm usr/share/lxqt/wallpapers/flowers.png
-rm usr/share/lxqt/wallpapers/fog.jpg
-rm usr/share/lxqt/wallpapers/kde-plasma.png
-rm usr/share/lxqt/wallpapers/License
-rm usr/share/lxqt/wallpapers/lxqt-origami-green.png
-rm usr/share/lxqt/wallpapers/origami-light.png
-rm usr/share/lxqt/wallpapers/plasma_arch.png
-rm usr/share/lxqt/wallpapers/plasma-logo-bright.png
-rm usr/share/lxqt/wallpapers/this-is-not-windows.jpg
-rm usr/share/lxqt/wallpapers/triangles-logo.png
-rm usr/share/lxqt/wallpapers/Valendas.png
-rm usr/share/lxqt/wallpapers/waves-purple-logo.jpg
-rm usr/share/nm-tray/nm-tray*.qm
-
 rm -R usr/lib
 rm -R usr/lib64/gnome-settings-daemon-3.0/
 rm -R usr/lib64/gtk-2.0/
@@ -358,6 +336,30 @@ rm -R usr/share/qterminal
 rm -R usr/share/qtermwidget5/translations
 rm -R usr/share/screengrab/translations
 rm -R usr/share/Thunar
+
+rm etc/xdg/autostart/blueman.desktop
+rm usr/bin/canberra*
+rm usr/lib64/libcanberra-gtk.*
+rm usr/lib64/libdbusmenu-gtk.*
+rm usr/share/lxqt/wallpapers/after-the-rain.jpg
+rm usr/share/lxqt/wallpapers/appleflower.png
+rm usr/share/lxqt/wallpapers/beam.png
+rm usr/share/lxqt/wallpapers/butterfly.png
+rm usr/share/lxqt/wallpapers/cloud.png
+rm usr/share/lxqt/wallpapers/drop.png
+rm usr/share/lxqt/wallpapers/flowers.png
+rm usr/share/lxqt/wallpapers/fog.jpg
+rm usr/share/lxqt/wallpapers/kde-plasma.png
+rm usr/share/lxqt/wallpapers/License
+rm usr/share/lxqt/wallpapers/lxqt-origami-green.png
+rm usr/share/lxqt/wallpapers/origami-light.png
+rm usr/share/lxqt/wallpapers/plasma_arch.png
+rm usr/share/lxqt/wallpapers/plasma-logo-bright.png
+rm usr/share/lxqt/wallpapers/this-is-not-windows.jpg
+rm usr/share/lxqt/wallpapers/triangles-logo.png
+rm usr/share/lxqt/wallpapers/Valendas.png
+rm usr/share/lxqt/wallpapers/waves-purple-logo.jpg
+rm usr/share/nm-tray/nm-tray*.qm
 
 GenericStrip
 AggressiveStripAll

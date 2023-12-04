@@ -71,6 +71,7 @@ meson .. \
  -Dbash_completion=true \
  -Dsystemd_user_services=false \
  -Dtest_utils=false \
+ -Dsoup=soup3 \
  -Dtests_tap_protocol=false
 
 ninja $JOBS || ninja

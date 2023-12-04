@@ -12,8 +12,8 @@ DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gexiv2" &
-DownloadPackage "glade" &
 DownloadPackage "gjs" &
+DownloadPackage "hunspell" &
 wait
 DownloadPackage "glib-networking" &
 DownloadPackage "gperf" &
@@ -30,6 +30,7 @@ DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libhandy" &
 DownloadPackage "libnma" &
+DownloadPackage "libproxy" &
 DownloadPackage "libxklavier" &
 wait
 DownloadPackage "libyaml" &

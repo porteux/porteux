@@ -12,14 +12,15 @@ DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
 wait
 DownloadPackage "gexiv2" &
-DownloadPackage "glade" &
 DownloadPackage "glib-networking" &
 DownloadPackage "graphene" &
+DownloadPackage "hunspell" &
 DownloadPackage "hyphen" &
 wait
 DownloadPackage "ibus" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
+DownloadPackage "libproxy" &
 DownloadPackage "libxklavier" &
 DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "woff2" &
@@ -32,8 +33,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "gtk4" &
 	DownloadPackage "libhandy" &
 	DownloadPackage "libnma" &
-	DownloadPackage "openssl" &
-	DownloadPackage "vte" &
 	wait
 fi
 

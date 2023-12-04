@@ -130,8 +130,8 @@ installpkg $MODULEPATH/packages/boost*.txz || exit 1
 rm $MODULEPATH/packages/boost*.txz
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 rm $MODULEPATH/packages/enchant*.txz
-installpkg $MODULEPATH/packages/glade*.txz || exit 1
-rm $MODULEPATH/packages/glade*.txz
+#installpkg $MODULEPATH/packages/glade*.txz || exit 1
+#rm $MODULEPATH/packages/glade*.txz
 installpkg $MODULEPATH/packages/gst-plugins-base*.txz || exit 1
 rm $MODULEPATH/packages/gst-plugins-base*.txz
 installpkg $MODULEPATH/packages/gstreamer*.txz || exit 1
@@ -231,6 +231,12 @@ rm -R var/lib/AccountsService
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
 rm usr/lib64/girepository-1.0/SoupGNOME*
+rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
+rm usr/lib64/libappindicator.*
+rm usr/lib64/libcanberra-gtk.*
+rm usr/lib64/libdbusmenu-gtk.*
+rm usr/lib64/libindicator.*
+rm usr/lib64/libkeybinder.*
 rm usr/lib64/libsoup-gnome*
 rm usr/libexec/indicator-loader
 
