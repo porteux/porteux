@@ -269,8 +269,12 @@ rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
 rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/bin/canberra*
 rm usr/lib64/girepository-1.0/SoupGNOME*
+rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
+rm usr/lib64/libappindicator.*
+rm usr/lib64/libcanberra-gtk.*
+rm usr/lib64/libdbusmenu-gtk.*
+rm usr/lib64/libindicator.*
 rm usr/lib64/libkeybinder.*
-rm usr/lib64/libpoppler-qt5*
 rm usr/lib64/libsoup-gnome*
 rm usr/libexec/indicator-loader
 rm usr/share/applications/xfce4-file-manager.desktop

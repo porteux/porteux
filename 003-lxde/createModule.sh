@@ -549,8 +549,12 @@ cd $MODULEPATH/packages/
 
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
+rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
+rm usr/lib64/libappindicator.*
+rm usr/lib64/libcanberra-gtk.*
+rm usr/lib64/libdbusmenu-gtk.*
+rm usr/lib64/libindicator.*
 rm usr/lib64/libkeybinder.*
-rm usr/lib64/libpoppler-qt5*
 rm usr/libexec/indicator-loader
 rm usr/share/lxde/wallpapers/lxde_green.jpg
 rm usr/share/lxde/wallpapers/lxde_red.jpg
