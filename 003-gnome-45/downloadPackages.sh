@@ -12,31 +12,27 @@ DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gexiv2" &
+wait
 DownloadPackage "gjs" &
 DownloadPackage "hunspell" &
-wait
 DownloadPackage "glib-networking" &
 DownloadPackage "gperf" &
-DownloadPackage "graphene" &
-DownloadPackage "gsettings-desktop-schemas" &
 DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "gst-plugins-good" &
 DownloadPackage "gst-plugins-libav" &
-DownloadPackage "gtk4" &
 wait
+DownloadPackage "gtk4" &
 DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libhandy" &
 DownloadPackage "libnma" &
+wait
 DownloadPackage "libproxy" &
 DownloadPackage "libxklavier" &
-wait
 DownloadPackage "libyaml" &
-DownloadPackage "openssl" &
 DownloadPackage "pipewire" &
-DownloadPackage "vte" &
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait
@@ -52,13 +48,12 @@ DownloadPackage "boost" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
-DownloadPackage "gst-plugins-base" & # required by cogl
-DownloadPackage "gstreamer" & # required by cogl
 DownloadPackage "iso-codes" &
-wait
 DownloadPackage "krb5" &
+wait
 DownloadPackage "libglvnd" &
 DownloadPackage "libsass" & # required by gnome-console
+DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
 DownloadPackage "python-pip" &
 DownloadPackage "sassc" & # required by gnome-console

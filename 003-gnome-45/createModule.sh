@@ -63,6 +63,7 @@ rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libglvnd*
 rm $MODULEPATH/packages/libsass*
+rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/python-pip*
 rm $MODULEPATH/packages/sassc*
