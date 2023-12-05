@@ -12,18 +12,16 @@ DownloadPackage "babl" &
 DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
+wait
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "hunspell" &
-wait
 DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
-DownloadPackage "libgpod" &
 DownloadPackage "libgtop" &
 wait
 DownloadPackage "libnma" &
-DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
@@ -44,7 +42,6 @@ fi
 ### temporary packages for further building
 
 DownloadPackage "boost" & # to build exempi
-#DownloadPackage "glade" & # to build gtksourceview4
 DownloadPackage "gtk+2" & # to build mate-themes
 DownloadPackage "python-pip" & # to install lxml
 wait
