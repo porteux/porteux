@@ -204,7 +204,6 @@ cd $MODULEPATH/packages/
 
 rm -R usr/lib
 rm -R usr/lib64/python2.7
-rm -R usr/lib64/peas-demo
 rm -R usr/lib64/python3.9/site-packages/pip
 rm -R usr/lib64/python3.9/site-packages/pip-21.3.1-py3.9.egg-info
 rm -R run/
@@ -223,6 +222,7 @@ rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
+rm usr/bin/peas-demo
 rm usr/lib64/girepository-1.0/SoupGNOME*
 rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib64/libappindicator.*

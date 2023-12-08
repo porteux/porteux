@@ -61,7 +61,6 @@ rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
-rm $MODULEPATH/packages/libglvnd*
 rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
@@ -163,7 +162,6 @@ rm -R usr/lib64/glade
 rm -R usr/lib64/gnome-settings-daemon-3.0
 rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gtk-2.0
-rm -R usr/lib64/peas-demo
 rm -R usr/lib64/python2.7
 rm -R usr/lib64/python3.9/site-packages/pip*
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
@@ -201,6 +199,7 @@ rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
 rm usr/bin/gtk4-widget-factory
 rm usr/bin/js102
+rm usr/bin/peas-demo
 rm usr/lib64/gstreamer-1.0/libgstfluidsynthmidi.*
 rm usr/lib64/gstreamer-1.0/libgstneonhttpsrc.*
 rm usr/lib64/gstreamer-1.0/libgstopencv.*

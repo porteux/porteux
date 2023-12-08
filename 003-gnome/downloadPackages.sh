@@ -49,7 +49,6 @@ DownloadPackage "egl-wayland" &
 DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "iso-codes" &
 DownloadPackage "krb5" &
-DownloadPackage "libglvnd" &
 wait
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
