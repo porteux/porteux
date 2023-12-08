@@ -51,7 +51,6 @@ DownloadPackage "egl-wayland" &
 DownloadPackage "iso-codes" &
 DownloadPackage "krb5" &
 wait
-DownloadPackage "libglvnd" &
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
