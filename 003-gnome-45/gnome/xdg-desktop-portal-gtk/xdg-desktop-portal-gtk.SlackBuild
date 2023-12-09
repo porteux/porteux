@@ -64,7 +64,7 @@ meson .. \
  --mandir=/usr/man \
  --localstatedir=/var \
  -Ddefault_library=shared \
- -Dsystemd-user-unit-dir=no \
+ -Dsystemd-user-unit-dir= \
  -Dwallpaper=disabled \
  -Dsettings=enabled \
  -Dappchooser=enabled \

@@ -271,9 +271,9 @@ installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
 rm -fr $MODULEPATH/${currentPackage,,}
 
 # required by libplacebo
-pip install glad2
+installpkg $MODULEPATH/packages/python-pip-*.t?z || exit 1
 rm $MODULEPATH/packages/python-pip*.t?z || exit 1
-
+pip install glad2
 installpkg $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
 rm $MODULEPATH/packages/python-Jinja2*.t?z || exit 1
 installpkg $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1

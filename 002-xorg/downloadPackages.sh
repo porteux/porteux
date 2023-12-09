@@ -244,6 +244,7 @@ wait
 ### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "libdeflate" & # required by libtiff 
 	DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
 	wait
 else
