@@ -198,6 +198,10 @@ rm xinitrc.mate-session xinitrc
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/

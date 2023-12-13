@@ -190,8 +190,10 @@ installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 # required by xfce4-xkb-plugin
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
-# required by xfce4-screenshooter
-installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
+if [ $SLACKWAREVERSION == "current" ]; then
+	# required by xfce4-screenshooter in current
+	installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
+fi
 
 # xfce packages
 for package in \
@@ -269,6 +271,10 @@ chmod 0755 $MODULEPATH/packages/etc/X11/xinit/xinitrc.xfce
 ### copy build files to 05-devel
 
 CopyToDevel
+
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
 
 ### module clean up
 

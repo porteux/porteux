@@ -158,6 +158,10 @@ sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okul
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/

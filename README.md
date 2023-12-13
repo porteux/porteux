@@ -49,7 +49,7 @@ Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
 [https://youtu.be/DJd38Nch6rQ](https://youtu.be/DJd38Nch6rQ)
 
-Clear Linux, considered the fastest Linux distro, is slower than PorteuX:
+Clear Linux, considered the fastest Linux distro, is slower than PorteuX in Geekbench:
 ![clearlinux-vs-porteux](https://user-images.githubusercontent.com/126424580/230231475-8f2f3f68-8ac1-4338-924c-5aa7c147bd8c.png)
 
 All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and all applications are usually as new as possible.

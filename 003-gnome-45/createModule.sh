@@ -127,7 +127,7 @@ for package in \
 	gnome-browser-connector \
 	file-roller \
 	gnome-backgrounds \
-	xdg-desktop-portal-gtk \
+	xdg-desktop-portal-gnome \
 ; do
 cd $SCRIPTPATH/gnome/$package || exit 1
 sh ${package}.SlackBuild || exit 1
@@ -147,6 +147,10 @@ InstallAdditionalPackages
 ### copy build files to 05-devel
 
 CopyToDevel
+
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
 
 ### module clean up
 
