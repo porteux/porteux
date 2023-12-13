@@ -188,6 +188,10 @@ sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}|GtkEntry::inner-border = {2, 2, 
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 mv $MODULEPATH/packages/usr/lib64/gobject-introspection $PORTEUXBUILDERPATH/05-devel/packages/usr/lib64
 
 ### module clean up

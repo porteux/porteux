@@ -241,6 +241,10 @@ chmod 644 etc/rc.d/rc.wireless
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/

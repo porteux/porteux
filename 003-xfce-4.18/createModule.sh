@@ -251,6 +251,10 @@ chmod 0755 $MODULEPATH/packages/etc/X11/xinit/xinitrc.xfce
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/

@@ -272,10 +272,10 @@ rm -fr $MODULEPATH/${currentPackage,,}
 
 # required by libplacebo
 installpkg $MODULEPATH/packages/python-pip-*.t?z || exit 1
-rm $MODULEPATH/packages/python-pip*.t?z || exit 1
+rm $MODULEPATH/packages/python-pip-*.t?z || exit 1
 pip install glad2
 installpkg $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
-rm $MODULEPATH/packages/python-Jinja2*.t?z || exit 1
+rm $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
 installpkg $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
 rm $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
 installpkg $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
@@ -322,6 +322,10 @@ sed -i "s|Exec=.*|Exec=mpv --player-operation-mode=pseudo-gui --hwdec=auto --no-
 ### copy build files to 05-devel
 
 CopyToDevel
+
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
 
 ### module clean up
 

@@ -1,7 +1,6 @@
-#!/bin/bash
-# this package is required to make dark theme work properly in gnome 45+
+#!/bin/sh
 
-PRGNAM=xdg-desktop-portal-gtk
+PRGNAM=geocode-glib
 VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 BUILD=${BUILD:-1}
 
@@ -45,42 +44,32 @@ cd $PRGNAM-$VERSION
 chown -R root:root .
 find -L . \
  \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \+ -o \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \+
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-mkdir -p build
+mkdir build
 cd build
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-meson .. \
- --prefix=/usr \
- --buildtype=release \
- --libdir=lib${LIBDIRSUFFIX} \
- --libexecdir=/usr/libexec \
- --sysconfdir=/etc \
- --infodir=/usr/info \
- --mandir=/usr/man \
- --localstatedir=/var \
- -Ddefault_library=shared \
- -Dsystemd-user-unit-dir= \
- -Dwallpaper=disabled \
- -Dsettings=enabled \
- -Dappchooser=enabled \
- -Dlockdown=disabled \
+ meson .. \
+  --prefix=/usr \
+  --libdir=/usr/lib${LIBDIRSUFFIX} \
+  --sysconfdir=/etc \
+  --localstatedir=/var \
+  --mandir=/usr/man \
+  -Denable-gtk-doc=false \
+  -Denable-installed-tests=false \
+  -Denable-introspection=true
 
 ninja $JOBS || ninja
 DESTDIR=$PKG ninja install
+
 cd ..
 
-# install xdg autostart file
-mkdir -p $PKG/etc/xdg/autostart
-cat $CWD/xdg-desktop-portal-gtk.desktop > $PKG/etc/xdg/autostart/xdg-desktop-portal-gtk.desktop.new
-
 mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
+cp $CWD/slack-desc $PKG/install
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
