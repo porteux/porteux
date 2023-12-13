@@ -36,7 +36,7 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.xz
+tar xfv $CWD/$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -58,6 +58,7 @@ cd build
     --mandir=/usr/man \
     --prefix=/usr \
     --sysconfdir=/etc \
+    -Dsystemduserunitdir=/usr/lib \
     -Dstrip=true
   "${NINJA:=ninja}"
   DESTDIR=$PKG $NINJA ${JOBS} install

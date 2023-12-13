@@ -26,7 +26,14 @@ rm *.t?z
 
 ### strip
 
-GenericStrip
+rm -R $MODULEPATH/packages/var/log/pkgtools
+rm -R $MODULEPATH/packages/var/log/setup
+rm -R $MODULEPATH/packages/var/lib/pkgtools/douninst.sh/
+rm -R $MODULEPATH/packages/var/lib/pkgtools/setup
+
+rm $MODULEPATH/packages/var/log/removed_packages
+rm $MODULEPATH/packages/var/log/removed_scripts
+rm $MODULEPATH/packages/var/log/removed_uninstall_scripts
 
 ### finalize
 
