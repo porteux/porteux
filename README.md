@@ -15,8 +15,8 @@ Out of the box PorteuX can open basically any multimedia file. Hardware accelera
 If you're new to PorteuX and have never used Porteus or Slax, it's recommended to read this [in-depth review of Porteus](https://medium.com/@fulalas/porteus-5-review-a-different-and-powerful-linux-distro-33df8789a758).
 
 PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable (safer) and current/rolling (bleeding edge). After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases): <br />
-. GNOME 42.10 (or 45.1 in current)<br />
-. KDE 5.23.5 (or 5.27.9 in current)<br />
+. GNOME 42.10 (or 45.2 in current)<br />
+. KDE 5.23.5 (or 5.27.10 in current)<br />
 . LXDE 0.10.1<br />
 . LXQt 1.4.0<br />
 . MATE 1.27.3<br />
@@ -26,6 +26,8 @@ PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stabl
 PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's simple like that. Avoid ISO installer applications such as Rufus or Etcher because by default they set the bootable unit to be read-only. For more details, please read `install.txt` file in the root folder of the ISO.
 
 Xfce 4.12 is the recommended version for the best balance between performance and flexibility. Many patches have been applied to this Xfce version to improve the user experience. For optimal performance, remember to turn off the compositor when running 3D applications such as games and benchmarks (Settings -> Window Manager Tweaks -> Compositor tab).
+
+If you want to have PorteuX working on a language different than English, download multilanguage package and use PorteuX Language Switcher application to configure the language.
 
 If you want to build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, headers, etc. If you need to build a driver (e.g. VirtualBox or any physical device), you should also download and activate 06-crippled_sources xzm module. It's not recommended to have these 2 modules activated during boot time, instead put them inside /porteux/optional folder and activate them only when needed.
 
@@ -63,12 +65,13 @@ PorteuX and Porteus follow the same basic structure, so a given module built in 
 PorteuX can be built in a live session of Slackware 64-bit, Porteus 64-bit or PorteuX 64-bit. At the moment the main scripts are not generating ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-xorg, 002-xtra, 003-desktop-environment, 05-devel, 06-crippled_sources).
 
 To build PorteuX, run the commands below as root in the exact order as described: <br />
-1- in 000-kernel folder call `createModule.sh`<br />
-2- in 001-core folder call `createModule.sh`<br />
-3- in 002-xorg folder call `createModule.sh`<br />
-4- in 002-xtra folder call `createModule.sh`<br />
-5- in 003-desktopenvironment folder call `createModule.sh` (where 'desktopenvironment' is the one of your preference)<br />
-6- in 05-devel folder call `createModule.sh`<br />
+1- in 000-kernel folder run `createModule.sh`<br />
+2- in 001-core folder run `createModule.sh`<br />
+3- in 002-xorg folder run `createModule.sh`<br />
+4- in 002-xtra folder run `createModule.sh`<br />
+5- in 003-desktopenvironment folder run `createModule.sh` (where 'desktopenvironment' is the one of your preference)<br />
+6- in 05-devel folder run `createModule.sh`<br />
+7- (optional) in 08-multilanguage folder run `createModule.sh`<br />
 
 In the end all modules will be in their respective subfolders inside /tmp/porteux-builder-[version].
 
