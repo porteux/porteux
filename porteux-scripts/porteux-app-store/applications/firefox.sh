@@ -69,7 +69,7 @@ make_module_firefox(){
     create_application_temp_dir "$APP"
 
     $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.bz2" "https://download.mozilla.org/?product=firefox-${CHANNEL}-ssl&os=linux64&lang=${LANGUAGE}" &&
-    $WGET_WITH_TIME_OUT -P $TMP/"$APP" "http://ftp.slackware.com/pub/slackware/slackware64-current/source/xap/mozilla-firefox/mozilla-firefox.desktop" &&
+    $WGET_WITH_TIME_OUT -P $TMP/"$APP" "http://ftp.slackware.com/pub/slackware/slackware64-current/source/xap/mozilla-firefox/firefox.desktop" &&
     mkdir -p "$TMP/$APP/$pkg_name" &&
     tar -xvf "$TMP/$APP/${pkg_name}.tar.bz2" -C "$TMP/$APP/$pkg_name" &&
     mkdir -p "$TMP/$APP/$pkg_name/usr/bin" && mkdir -p "$TMP/$APP/$pkg_name/usr/lib64" && mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications" &&
@@ -78,7 +78,7 @@ make_module_firefox(){
     mv -f "$TMP/$APP/$pkg_name/firefox-${pkgver}" $TMP/"$APP"/"$pkg_name"/usr/lib64 &&
     cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "firefox-${pkgver}/" firefox &&
     cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/firefox/firefox" firefox &&
-    mv -f "$TMP/$APP/mozilla-firefox.desktop" "$TMP/$APP/$pkg_name/usr/share/applications" &&
+    mv -f "$TMP/$APP/firefox.desktop" "$TMP/$APP/$pkg_name/usr/share/applications" &&
     mkdir -p "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution" 2> /dev/null
     cat > "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution/policies.json" << EOF
 {
