@@ -27,12 +27,11 @@ DownloadPackage "ibus" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libhandy" &
-DownloadPackage "libnma" &
 wait
+DownloadPackage "libnma" &
 DownloadPackage "libproxy" &
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
-DownloadPackage "pipewire" &
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait
