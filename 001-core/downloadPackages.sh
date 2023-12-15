@@ -128,6 +128,7 @@ DownloadPackage "libssh2" &
 DownloadPackage "libtasn1" &
 DownloadPackage "libtirpc" &
 DownloadPackage "libunistring" &
+DownloadPackage "liburing" & # required by samba
 DownloadPackage "libusb" &
 DownloadPackage "libusb-compat" &
 DownloadPackage "libusbmuxd" &
