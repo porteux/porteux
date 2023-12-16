@@ -112,7 +112,7 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
-CFLAGS="-O3 -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
+CFLAGS="-O3 -s -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
@@ -121,6 +121,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
+installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
@@ -128,14 +129,6 @@ installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 # required just for building
 installpkg $MODULEPATH/packages/boost*.txz || exit 1
 rm $MODULEPATH/packages/boost*.txz
-installpkg $MODULEPATH/packages/enchant*.txz || exit 1
-rm $MODULEPATH/packages/enchant*.txz
-installpkg $MODULEPATH/packages/glade*.txz || exit 1
-rm $MODULEPATH/packages/glade*.txz
-installpkg $MODULEPATH/packages/gst-plugins-base*.txz || exit 1
-rm $MODULEPATH/packages/gst-plugins-base*.txz
-installpkg $MODULEPATH/packages/gstreamer*.txz || exit 1
-rm $MODULEPATH/packages/gstreamer*.txz
 installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 rm $MODULEPATH/packages/gtk+2*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
@@ -205,16 +198,19 @@ rm xinitrc.mate-session xinitrc
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/
 
 rm -R usr/lib
 rm -R usr/lib64/python2.7
-rm -R usr/lib64/peas-demo
 rm -R usr/lib64/python3.9/site-packages/pip
 rm -R usr/lib64/python3.9/site-packages/pip-21.3.1-py3.9.egg-info
-rm -R run
+rm -R run/
 rm -R usr/share/accountsservice
 rm -R usr/share/engrampa
 rm -R usr/share/gnome
@@ -230,6 +226,16 @@ rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
+rm usr/bin/peas-demo
+rm usr/lib64/girepository-1.0/SoupGNOME*
+rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
+rm usr/lib64/libappindicator.*
+rm usr/lib64/libcanberra-gtk.*
+rm usr/lib64/libdbusmenu-gtk.*
+rm usr/lib64/libindicator.*
+rm usr/lib64/libkeybinder.*
+rm usr/lib64/libsoup-gnome*
+rm usr/libexec/indicator-loader
 
 find usr/share/libmateweather -mindepth 1 -maxdepth 1 ! \( -name "Locations.xml" -o -name "locations.dtd" \) -exec rm -rf '{}' \; 2>/dev/null
 

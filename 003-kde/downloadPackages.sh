@@ -142,7 +142,6 @@ DownloadPackage "oxygen" &
 wait
 DownloadPackage "phonon" &
 DownloadPackage "phonon-backend-gstreamer" &
-DownloadPackage "pipewire" &
 DownloadPackage "plasma-browser-integration" &
 DownloadPackage "plasma-desktop" &
 DownloadPackage "plasma-framework" &

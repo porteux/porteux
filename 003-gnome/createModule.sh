@@ -1,3 +1,4 @@
+
 #!/bin/sh
 MODULENAME=003-gnome
 
@@ -70,16 +71,12 @@ rm $MODULEPATH/packages/boost*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
-rm $MODULEPATH/packages/glade*
 rm $MODULEPATH/packages/gst-plugins-bad-free*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
-rm $MODULEPATH/packages/libglvnd*
 rm $MODULEPATH/packages/libsass*
-rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
-rm $MODULEPATH/packages/openssl*
 rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/xtrans*
@@ -87,7 +84,6 @@ rm $MODULEPATH/packages/xtrans*
 # slackware current only removal -- these are already in base
 if [ $SLACKWAREVERSION == "current" ]; then
 	rm $MODULEPATH/packages/libnma*
-	rm $MODULEPATH/packages/vte*
 fi
 
 # some packages (e.g nautilus and vte) require this folder
@@ -186,6 +182,7 @@ for package in \
 	gnome-browser-connector \
 	file-roller \
 	gnome-backgrounds \
+	xdg-desktop-portal-gnome \
 ; do
 cd $SCRIPTPATH/gnome/$package || exit 1
 sh ${package}.SlackBuild || exit 1
@@ -206,22 +203,13 @@ InstallAdditionalPackages
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/
-
-rm etc/xdg/autostart/blueman.desktop
-rm etc/xdg/autostart/ibus*.desktop
-rm usr/bin/canberra*
-rm usr/bin/gtk4-builder-tool
-rm usr/bin/gtk4-demo
-rm usr/bin/gtk4-demo-application
-rm usr/bin/gtk4-icon-browser
-rm usr/bin/gtk4-launch
-rm usr/bin/gtk4-print-editor
-rm usr/bin/gtk4-widget-factory
-rm usr/bin/js91
-rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
 rm -R etc/dconf
 rm -R etc/dbus-1/system.d
@@ -229,12 +217,13 @@ rm -R etc/geoclue
 rm -R etc/opt
 rm -R usr/lib
 rm -R usr/lib64/aspell
-rm -R usr/lib64/python2.7
-rm -R usr/lib64/peas-demo
-rm -R usr/lib64/graphene-1.0
+rm -R usr/lib64/glade
 rm -R usr/lib64/gnome-settings-daemon-3.0
-rm -R usr/lib64/tracker-3.0
+rm -R usr/lib64/graphene-1.0
+rm -R usr/lib64/gtk-2.0
+rm -R usr/lib64/python2.7
 rm -R usr/lib64/python3.9/site-packages/pip*
+rm -R usr/lib64/tracker-3.0
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
@@ -258,6 +247,32 @@ rm -R usr/share/pixmaps
 rm -R usr/share/vala
 rm -R usr/share/zsh
 rm -R var/lib/AccountsService
+
+rm etc/xdg/autostart/blueman.desktop
+rm etc/xdg/autostart/ibus*.desktop
+rm usr/bin/canberra*
+rm usr/bin/gtk4-builder-tool
+rm usr/bin/gtk4-demo
+rm usr/bin/gtk4-demo-application
+rm usr/bin/gtk4-icon-browser
+rm usr/bin/gtk4-launch
+rm usr/bin/gtk4-print-editor
+rm usr/bin/gtk4-widget-factory
+rm usr/bin/js91
+rm usr/bin/peas-demo
+rm usr/lib64/gstreamer-1.0/libgstfluidsynthmidi.*
+rm usr/lib64/gstreamer-1.0/libgstneonhttpsrc.*
+rm usr/lib64/gstreamer-1.0/libgstopencv.*
+rm usr/lib64/gstreamer-1.0/libgstopenexr.*
+rm usr/lib64/gstreamer-1.0/libgstqmlgl.*
+rm usr/lib64/gstreamer-1.0/libgstqroverlay.*
+rm usr/lib64/gstreamer-1.0/libgsttaglib.*
+rm usr/lib64/gstreamer-1.0/libgstwebrtc.*
+rm usr/lib64/gstreamer-1.0/libgstzxing.*
+rm usr/lib64/libcanberra-gtk.*
+rm usr/lib64/libgstopencv-1.0.*
+rm usr/lib64/libgstwebrtcnice.*
+rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null

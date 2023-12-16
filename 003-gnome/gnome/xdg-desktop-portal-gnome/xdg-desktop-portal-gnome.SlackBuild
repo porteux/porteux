@@ -1,15 +1,8 @@
 #!/bin/bash
 
-cd $(dirname $0) ; CWD=$(pwd)
-
-PRGNAM=gtksourceview4
-SRCNAM=gtksourceview
-VERSION=${VERSION:-4.8.1}
+PRGNAM=xdg-desktop-portal-gnome
+VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 BUILD=${BUILD:-1}
-CWD=$(pwd)
-PKG=$MODULEPATH/$PRGNAM/package-$PRGNAM
-OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -19,13 +12,11 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
-if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
-  echo "$PRGNAM-$VERSION-$ARCH-$BUILD.$PKGTYPE"
-  exit 0
-fi
+CWD=$(pwd)
+TMP=${TMP:-$MODULEPATH}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-$TMP/packages}
+JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i586" ]; then
   SLKCFLAGS="-O3 -march=i586 -mtune=i686"
@@ -33,9 +24,6 @@ if [ "$ARCH" = "i586" ]; then
 elif [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
-elif [ "$ARCH" = "aarch64" ]; then
-  SLKCFLAGS="-O3 -fPIC"
-  LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "x86_64" ]; then
   SLKCFLAGS="-O3 -fPIC"
   LIBDIRSUFFIX="64"
@@ -44,13 +32,12 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
-
-rm -fr $MODULEPATH/$PRGNAM
-mkdir -p $MODULEPATH/$PRGNAM && cd $MODULEPATH/$PRGNAM
-wget -c http://ftp.gnome.org/pub/GNOME/sources/gtksourceview/4.8/$SRCNAM-$VERSION.tar.xz
-tar xvf $SRCNAM-$VERSION.tar.xz || exit 1
-cd $SRCNAM-$VERSION
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT
+cd $TMP
+rm -rf $PRGNAM-$VERSION
+tar xfv $CWD/$PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
 
 chown -R root:root .
 find -L . \
@@ -71,14 +58,15 @@ cd build
     --mandir=/usr/man \
     --prefix=/usr \
     --sysconfdir=/etc \
-    -Dglade_catalog=false
-  "${NINJA:=ninja}" -j$(nproc --all)
-  DESTDIR=$PKG $NINJA install
+    -Dsystemduserunitdir=/usr/lib \
+    -Dstrip=true
+  "${NINJA:=ninja}"
+  DESTDIR=$PKG $NINJA ${JOBS} install
 cd ..
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
+cat $CWD/doinst.sh > $PKG/install/doinst.sh
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}
-/sbin/upgradepkg --install-new --reinstall $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}

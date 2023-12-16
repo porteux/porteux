@@ -12,18 +12,16 @@ DownloadPackage "babl" &
 DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
+wait
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "hunspell" &
-wait
 DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
-DownloadPackage "libgpod" &
 DownloadPackage "libgtop" &
 wait
 DownloadPackage "libnma" &
-DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
@@ -37,18 +35,14 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &
 	DownloadPackage "libdbusmenu" &
 	DownloadPackage "libindicator" &
+	DownloadPackage "libsoup" & # in stable this libsoup2 will be in base
 	wait
 fi
 
 ### temporary packages for further building
 
 DownloadPackage "boost" & # to build exempi
-DownloadPackage "enchant" & # to build pluma
-DownloadPackage "glade" & # to build gtksourceview4
-DownloadPackage "gst-plugins-base" &
-DownloadPackage "gstreamer" &
 DownloadPackage "gtk+2" & # to build mate-themes
-DownloadPackage "libgtop" & # to build mate-utils
 DownloadPackage "python-pip" & # to install lxml
 wait
 

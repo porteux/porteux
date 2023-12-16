@@ -32,12 +32,7 @@ rm ${BUILDDIR}/${MODULEFILENAME}
 EXTRACTEDMODULEPATH=${BUILDDIR}/${MODULEDIR}
 [ ! $EXTRACTEDMODULEPATH ] && MODULEDIR=${BUILDDIR}/08-nvidia-*
 
-rm -f $EXTRACTEDMODULEPATH/usr/lib/libnvidia-compiler.so*
-rm -f $EXTRACTEDMODULEPATH/usr/lib$SYSTEMBITS/libcudadebugger.so*
-rm -f $EXTRACTEDMODULEPATH/usr/lib$SYSTEMBITS/libnvidia-compiler.so*
-rm -f $EXTRACTEDMODULEPATH/usr/lib$SYSTEMBITS/libnvoptix.so*
-rm -f $EXTRACTEDMODULEPATH/usr/lib$SYSTEMBITS/libnvidia-gtk2*
-rm -f $EXTRACTEDMODULEPATH/usr/share/nvidia/nvoptix.bin
+find $EXTRACTEDMODULEPATH \( -type f -name libnvidia-compiler* -o -name libcudadebugger* -o -name *nvoptix* -o -name libnvidia-gtk2* \) -delete
 
 MODULEFILENAME="${MODULEFILENAME/nvidia/nvidia-lite}"
 

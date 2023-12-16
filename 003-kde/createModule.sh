@@ -115,7 +115,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
+cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -s -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
@@ -157,6 +157,10 @@ sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okul
 ### copy build files to 05-devel
 
 CopyToDevel
+
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
 
 ### module clean up
 

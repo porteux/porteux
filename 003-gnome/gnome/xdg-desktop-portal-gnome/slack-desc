@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                        |-----handy-ruler------------------------------------------------------|
+xdg-desktop-portal-gnome: xdg-desktop-portal-gnome (GNOME's xdg-desktop-portal Backend)
+xdg-desktop-portal-gnome:
+xdg-desktop-portal-gnome: A backend implementation for xdg-desktop-portal that is using GTK and 
+xdg-desktop-portal-gnome: various pieces of GNOME infrastructure, such as the 
+xdg-desktop-portal-gnome: org.gnome.Shell.Screenshot or org.gnome.SessionManager D-Bus 
+xdg-desktop-portal-gnome: interfaces. 
+xdg-desktop-portal-gnome:
+xdg-desktop-portal-gnome:
+xdg-desktop-portal-gnome:
+xdg-desktop-portal-gnome: https://gitlab.gnome.org/GNOME/xdg-desktop-portal-gnome
+xdg-desktop-portal-gnome:

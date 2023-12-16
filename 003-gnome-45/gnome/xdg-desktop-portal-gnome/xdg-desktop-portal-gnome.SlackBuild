@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-PRGNAM=geocode-glib
+PRGNAM=xdg-desktop-portal-gnome
 VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 BUILD=${BUILD:-1}
 
@@ -32,13 +32,11 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
-
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+tar xfv $CWD/$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -50,26 +48,25 @@ find -L . \
 
 mkdir build
 cd build
-
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
- meson .. \
-  --prefix=/usr \
-  --libdir=/usr/lib${LIBDIRSUFFIX} \
-  --sysconfdir=/etc \
-  --localstatedir=/var \
-  --mandir=/usr/man \
-  -Denable-gtk-doc=false \
-  -Denable-installed-tests=false \
-  -Denable-introspection=true
-
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
-
+  CFLAGS="$SLKCFLAGS" \
+  CXXFLAGS="$SLKCFLAGS" \
+  meson .. \
+    --buildtype=release \
+    --infodir=/usr/info \
+    --libdir=/usr/lib${LIBDIRSUFFIX} \
+    --localstatedir=/var \
+    --mandir=/usr/man \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    -Dsystemduserunitdir=/usr/lib \
+    -Dstrip=true
+  "${NINJA:=ninja}"
+  DESTDIR=$PKG $NINJA ${JOBS} install
 cd ..
 
 mkdir -p $PKG/install
-cp $CWD/slack-desc $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+cat $CWD/doinst.sh > $PKG/install/doinst.sh
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}

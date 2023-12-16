@@ -39,7 +39,6 @@ mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/LLVMgold.so ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
@@ -72,11 +71,8 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-# todo: get gtk version from slackware and use it to download the matched gtk classic version
 currentPackage=gtk+3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#version=`ls *.tar.?z -a | cut -d'-' -f2- | cut -d'-' -f1`
-#wget https://github.com/lah7/gtk3-classic/releases/download/$version/gtk3-classic-$version-1-x86_64.pkg.tar.zst
 info=$(DownloadLatestSourceFromGithub "lah7" "gtk3-classic")
 filename=${info% *}
 tar xvf "$filename" && rm "$filename" || exit 1
@@ -119,30 +115,6 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=libdaemon
-version=0.14
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
-wget http://0pointer.de/lennart/projects/libdaemon/${currentPackage}-$version.tar.gz || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=nss-mdns
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/network/${currentPackage}/ -A * || exit 1
-info=$(DownloadLatestFromGithub "lathiat" "nss-mdns")
-version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=openbox
 version=3.6.1
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -167,18 +139,6 @@ sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=xclip
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/misc/${currentPackage}/ -A * || exit 1
-info=$(DownloadLatestFromGithub "astrand" "xclip")
-version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
@@ -228,6 +188,12 @@ sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}|GtkEntry::inner-border = {2, 2, 
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
+mv $MODULEPATH/packages/usr/lib64/gobject-introspection $PORTEUXBUILDERPATH/05-devel/packages/usr/lib64
+
 ### module clean up
 
 cd $MODULEPATH/packages/
@@ -246,8 +212,10 @@ rm -R usr/lib64/gdkmm-*
 rm -R usr/lib64/giomm-*
 rm -R usr/lib64/glibmm-*
 rm -R usr/lib64/gnome-settings-daemon-*
+rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gtkmm-*
 rm -R usr/lib64/openjpeg-*
+rm -R usr/lib64/libxslt-plugins
 rm -R usr/lib64/pangomm-*
 rm -R usr/lib64/python2*
 rm -R usr/lib64/sigc++-*
@@ -319,6 +287,15 @@ rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
+rm usr/lib64/libbd_crypto.*
+rm usr/lib64/libbd_nvdimm.*
+rm usr/lib64/libbd_vdo.*
+rm usr/lib64/libLLVMExtensions*
+rm usr/lib64/libLLVMLTO*
+rm usr/lib64/libMesaOpenCL*
+rm usr/lib64/libpoppler-cpp*
+rm usr/lib64/libRusticlOpenCL*
+rm usr/lib64/mpg123/output_sdl.so
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
 rm usr/share/applications/mimeinfo.cache
