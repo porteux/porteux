@@ -21,17 +21,6 @@ DownloadFromSlackware
 
 ### packages outside Slackware repository
 
-currentPackage=acpilight
-version=20201001
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}-$version.tar.gz .
-tar xvf ${currentPackage}-$version.tar.?z || exit 1
-cd ${currentPackage}-$version
-make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=xcape
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/misc/${currentPackage}/ -A * || exit 1
@@ -51,7 +40,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/gpicview || exit 1
 cd ${currentPackage}
 ./autogen.sh
-CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
+CFLAGS="-g -O3 -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -145,7 +134,7 @@ sed -i "s|baobab||g" ./Makefile.am
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|mate-screenshot||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
-CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
+CFLAGS="-O3 -s -m64 -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
@@ -159,7 +148,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
+CFLAGS="-O3 -s -m64 -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -259,6 +248,10 @@ chmod 0755 $MODULEPATH/packages/etc/X11/xinit/xinitrc.xfce
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/
@@ -279,8 +272,15 @@ rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
 rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/bin/canberra*
+rm usr/lib64/girepository-1.0/SoupGNOME*
+rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
+rm usr/lib64/libappindicator.*
+rm usr/lib64/libcanberra-gtk.*
+rm usr/lib64/libdbusmenu-gtk.*
+rm usr/lib64/libindicator.*
 rm usr/lib64/libkeybinder.*
-rm usr/lib64/libpoppler-qt5*
+rm usr/lib64/libsoup-gnome*
+rm usr/libexec/indicator-loader
 rm usr/share/applications/xfce4-file-manager.desktop
 rm usr/share/applications/xfce4-mail-reader.desktop
 rm usr/share/applications/xfce4-terminal-emulator.desktop

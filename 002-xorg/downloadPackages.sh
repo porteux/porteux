@@ -19,6 +19,7 @@ DownloadPackage "cairo" &
 DownloadPackage "cairomm" &
 wait
 DownloadPackage "cdparanoia-III" &
+DownloadPackage "db48" & # required by bluez (obexd)
 DownloadPackage "dejavu-fonts-ttf" &
 DownloadPackage "desktop-file-utils" &
 DownloadPackage "djvulibre" &
@@ -39,6 +40,7 @@ DownloadPackage "glu" &
 DownloadPackage "gnome-themes-extra" &
 DownloadPackage "gobject-introspection" &
 DownloadPackage "gparted" &
+DownloadPackage "graphene" & # required by libgstopengl
 DownloadPackage "graphite2" &
 wait
 DownloadPackage "gsettings-desktop-schemas" &
@@ -95,7 +97,6 @@ DownloadPackage "libopusenc" &
 DownloadPackage "libpciaccess" &
 wait
 DownloadPackage "libpng" &
-DownloadPackage "libproxy" &
 DownloadPackage "librsvg" &
 DownloadPackage "libsamplerate" &
 DownloadPackage "libsecret" &
@@ -116,8 +117,6 @@ DownloadPackage "libwacom" &
 DownloadPackage "libwebp" &
 DownloadPackage "libX11" &
 DownloadPackage "libXau" &
-DownloadPackage "libXaw3d" &
-DownloadPackage "libXaw3dXft" &
 DownloadPackage "libXaw" &
 DownloadPackage "libxcb" &
 DownloadPackage "libXcomposite" &
@@ -161,7 +160,6 @@ DownloadPackage "mobile-broadband-provider-info" &
 DownloadPackage "mpg123" &
 DownloadPackage "mtdev" &
 wait
-DownloadPackage "ndctl" &
 DownloadPackage "ocl-icd" &
 DownloadPackage "openjpeg" &
 DownloadPackage "opus" &
@@ -171,6 +169,7 @@ DownloadPackage "orc" &
 DownloadPackage "pamixer" &
 DownloadPackage "pango" &
 DownloadPackage "pangomm" &
+DownloadPackage "pipewire" & # required by xdg-desktop-portal
 DownloadPackage "pixman" &
 DownloadPackage "poppler" &
 wait
@@ -180,19 +179,15 @@ DownloadPackage "pygobject3" &
 DownloadPackage "pyxdg" &
 DownloadPackage "rdesktop" &
 DownloadPackage "sbc" &
-DownloadPackage "SDL2" &
-DownloadPackage "sdl" &
 DownloadPackage "setxkbmap" &
 DownloadPackage "shared-mime-info" &
 DownloadPackage "speex" &
 DownloadPackage "speexdsp" &
-DownloadPackage "startup-notification" &
 wait
-DownloadPackage "taglib" &
+DownloadPackage "startup-notification" &
 DownloadPackage "udisks2" &
 DownloadPackage "upower" &
 DownloadPackage "v4l-utils" &
-DownloadPackage "volume_key" &
 DownloadPackage "vorbis-tools" &
 DownloadPackage "vte" &
 DownloadPackage "wavpack" &
@@ -246,6 +241,17 @@ DownloadPackage "xsetroot" &
 DownloadPackage "xterm" &
 DownloadPackage "xvinfo" &
 wait
+
+### slackware specific version packages
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "libdeflate" & # required by libtiff 
+	DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
+	wait
+else
+	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)
+	wait
+fi
 
 ### packages that require specific striping
 

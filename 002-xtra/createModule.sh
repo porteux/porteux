@@ -29,7 +29,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CFLAGS:STRING="-O2 -fPIC -DNDEBUG -ffat-lto-objects" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib$SYSTEMBITS -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF ..
+cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CFLAGS:STRING="-O2 -s -fPIC -DNDEBUG -ffat-lto-objects" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib$SYSTEMBITS -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -270,18 +270,41 @@ mv /tmp/${currentPackage,,}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
 rm -fr $MODULEPATH/${currentPackage,,}
 
-currentPackage=mpv
+# required by libplacebo
+installpkg $MODULEPATH/packages/python-pip-*.t?z || exit 1
+rm $MODULEPATH/packages/python-pip-*.t?z || exit 1
+installpkg $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
+rm $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
+installpkg $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
+rm $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
+installpkg $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
+rm $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
+
+cd $MODULEPATH
+pip install glad2 || exit 1
+
+currentPackage=libplacebo
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/multimedia/${currentPackage}/ -A * || exit 1
-info=$(DownloadLatestFromGithub "mpv-player" ${currentPackage})
-version=${info#* }
-sed -z -i "s|-Dhtml-build=enabled \\\\\n| |g" ${currentPackage}.SlackBuild
-sed -z -i "s|-Dmanpage-build=enabled|-Dlua=luajit|g" ${currentPackage}.SlackBuild
+version=$(curl -s https://code.videolan.org/videolan/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+version=${version//[vV]}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/graphics/${currentPackage}/ -A * || exit 1
+wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
+cp $SCRIPTPATH/extras/${currentPackage}/meson.build.patch . || exit 1
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -i "s|chown -R.*|patch -p0 < \${CWD}/meson\.build\.patch \|\| exit 1\nchown -R root:root \.|g" ${currentPackage}.SlackBuild
+sed -i "s|-Dbuildtype=\$RELEASE|-Dbuildtype=\$RELEASE -Dvulkan=disabled -Ddemos=false -Dshaderc=disabled -Dglslang=disabled|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+installpkg $MODULEPATH/packages/${currentPackage}*.t?z
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=mpv
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+cp $SCRIPTPATH/extras/${currentPackage}/* .
+info=$(DownloadLatestFromGithub "mpv-player" ${currentPackage})
+sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
@@ -302,6 +325,10 @@ sed -i "s|Exec=.*|Exec=mpv --player-operation-mode=pseudo-gui --hwdec=auto --no-
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/
@@ -309,6 +336,7 @@ cd $MODULEPATH/packages/
 rm -R usr/share/ffmpeg/examples
 rm -R usr/share/lua
 
+rm usr/bin/alsoft-config
 rm usr/share/applications/mimeinfo.cache
 
 GenericStrip

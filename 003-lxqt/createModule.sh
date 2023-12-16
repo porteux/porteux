@@ -69,7 +69,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 -DENABLE_SAMPLES=off ..
+cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -s -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 -DENABLE_SAMPLES=off ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -103,7 +103,7 @@ version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 cp $SCRIPTPATH/extras/adwaita-qt/adwaitastyle.cpp.patch .
 patch -p0 < adwaitastyle.cpp.patch || exit 1
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
+cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -s -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -131,7 +131,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
+cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -s -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
@@ -165,7 +165,7 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sed -i "s|set(NM_TRAY_VERSION \".*|set(NM_TRAY_VERSION \"${version}\")|g" CMakeLists.txt
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib64 ..
+cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -s -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib64 ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -178,7 +178,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-CFLAGS="-O3 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O3 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="-O3 -s -pipe -fPIC -DNDEBUG" CXXFLAGS="-O3 -s -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package  || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -193,7 +193,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sh autogen.sh
-CFLAGS="-O3 -pipe -fPIC -DNDEBUG" CXXFLAGS="-O3 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="-O3 -s -pipe -fPIC -DNDEBUG" CXXFLAGS="-O3 -s -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -205,7 +205,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/libfm ${currentPackage}
 cd ${currentPackage}
 version=`git describe | cut -d- -f1`
-./autogen.sh --prefix=/usr --without-gtk --disable-demo && CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" \
+./autogen.sh --prefix=/usr --without-gtk --disable-demo && CFLAGS="-g -O3 -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \
@@ -225,7 +225,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/${currentPackage} || exit 1
 cd ${currentPackage}
 version=`git describe | cut -d- -f1`
-sh ./autogen.sh && CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" \
+sh ./autogen.sh && CFLAGS="-g -O3 -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" \
 ./configure \
   --prefix=/usr \
   --libdir=/usr/lib$SYSTEMBITS \
@@ -306,31 +306,13 @@ sed -i "s|SESSIONTEMPLATE|/usr/bin/startlxqt|g" $MODULEPATH/packages/etc/lxdm/lx
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/
-
-rm etc/xdg/autostart/blueman.desktop
-rm usr/bin/canberra*
-rm usr/share/lxqt/wallpapers/after-the-rain.jpg
-rm usr/share/lxqt/wallpapers/appleflower.png
-rm usr/share/lxqt/wallpapers/beam.png
-rm usr/share/lxqt/wallpapers/butterfly.png
-rm usr/share/lxqt/wallpapers/cloud.png
-rm usr/share/lxqt/wallpapers/drop.png
-rm usr/share/lxqt/wallpapers/flowers.png
-rm usr/share/lxqt/wallpapers/fog.jpg
-rm usr/share/lxqt/wallpapers/kde-plasma.png
-rm usr/share/lxqt/wallpapers/License
-rm usr/share/lxqt/wallpapers/lxqt-origami-green.png
-rm usr/share/lxqt/wallpapers/origami-light.png
-rm usr/share/lxqt/wallpapers/plasma_arch.png
-rm usr/share/lxqt/wallpapers/plasma-logo-bright.png
-rm usr/share/lxqt/wallpapers/this-is-not-windows.jpg
-rm usr/share/lxqt/wallpapers/triangles-logo.png
-rm usr/share/lxqt/wallpapers/Valendas.png
-rm usr/share/lxqt/wallpapers/waves-purple-logo.jpg
-rm usr/share/nm-tray/nm-tray*.qm
 
 rm -R usr/lib
 rm -R usr/lib64/gnome-settings-daemon-3.0/
@@ -358,6 +340,30 @@ rm -R usr/share/qterminal
 rm -R usr/share/qtermwidget5/translations
 rm -R usr/share/screengrab/translations
 rm -R usr/share/Thunar
+
+rm etc/xdg/autostart/blueman.desktop
+rm usr/bin/canberra*
+rm usr/lib64/libcanberra-gtk.*
+rm usr/lib64/libdbusmenu-gtk.*
+rm usr/share/lxqt/wallpapers/after-the-rain.jpg
+rm usr/share/lxqt/wallpapers/appleflower.png
+rm usr/share/lxqt/wallpapers/beam.png
+rm usr/share/lxqt/wallpapers/butterfly.png
+rm usr/share/lxqt/wallpapers/cloud.png
+rm usr/share/lxqt/wallpapers/drop.png
+rm usr/share/lxqt/wallpapers/flowers.png
+rm usr/share/lxqt/wallpapers/fog.jpg
+rm usr/share/lxqt/wallpapers/kde-plasma.png
+rm usr/share/lxqt/wallpapers/License
+rm usr/share/lxqt/wallpapers/lxqt-origami-green.png
+rm usr/share/lxqt/wallpapers/origami-light.png
+rm usr/share/lxqt/wallpapers/plasma_arch.png
+rm usr/share/lxqt/wallpapers/plasma-logo-bright.png
+rm usr/share/lxqt/wallpapers/this-is-not-windows.jpg
+rm usr/share/lxqt/wallpapers/triangles-logo.png
+rm usr/share/lxqt/wallpapers/Valendas.png
+rm usr/share/lxqt/wallpapers/waves-purple-logo.jpg
+rm usr/share/nm-tray/nm-tray*.qm
 
 GenericStrip
 AggressiveStripAll

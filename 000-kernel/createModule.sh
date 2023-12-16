@@ -73,12 +73,12 @@ rm -fr ../aufs_sources
 
 echo "Building vmlinuz (this may take a while)..."
 CPUTHREADS=$(nproc --all)
-make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-g -O3 -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-g -O3 -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 make clean
 
 echo "Building modules (this may take a while)..."
-make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-O3 -mtune=skylake" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-O3 -s -mtune=skylake" || { echo "Fail to build kernel."; exit 1; }
 make -j$CPUTHREADS modules_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
 make -j$CPUTHREADS firmware_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
 

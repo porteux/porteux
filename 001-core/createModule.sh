@@ -62,6 +62,17 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=fftw
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib64/libfftw3f.* ${currentPackage}-stripped-$version/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=ntp
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
@@ -103,7 +114,7 @@ installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
 currentPackage=procps
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 cp $SCRIPTPATH/extras/procps/* .
-version=$(curl -s https://gitlab.com/${currentPackage}-ng/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+version=$(curl -s https://gitlab.com/${currentPackage}-ng/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-${version//[vV]}}|g" ${currentPackage}.SlackBuild
 wget https://gitlab.com/${currentPackage}-ng/procps/-/archive/${version}/procps-${version}.tar.gz
 sh ${currentPackage}.SlackBuild || exit 1
@@ -230,6 +241,10 @@ chmod 644 etc/rc.d/rc.wireless
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/
@@ -241,6 +256,9 @@ rm -R usr/etc
 rm -R usr/lib/ldscripts
 rm -R usr/lib/modprobe.d
 rm -R usr/lib/udev
+rm -R usr/lib64/guile
+rm -R usr/lib64/services
+rm -R usr/lib64/krb5/plugins
 rm -R usr/lib64/locale/C.utf8
 rm -R usr/lib64/p7zip/Codecs
 rm -R usr/lib64/python2.7
@@ -248,6 +266,7 @@ rm -R usr/lib64/python3.9/idlelib
 rm -R usr/lib64/python3.9/lib2to3
 rm -R usr/lib64/python3.9/site-packages/demo
 rm -R usr/lib64/python3.9/turtledemo
+rm -R usr/lib64/sasl2
 rm -R usr/lib64/systemd
 rm -R usr/local/etc
 rm -R usr/local/games
@@ -324,12 +343,15 @@ rm usr/bin/js[0-9]*
 rm usr/bin/7za
 rm usr/bin/7zr
 rm usr/bin/smbtorture
+rm usr/bin/wpa_gui
+rm usr/lib64/liblibboost_*
+rm usr/lib64/libqgpgme.*
+rm usr/lib64/libslang.so.1*
 rm usr/lib64/p7zip/7za
 rm usr/lib64/p7zip/7zr
-rm usr/lib64/liblibboost_*
-rm usr/lib64/libslang.so.1*
 rm usr/libexec/samba/rpcd_*
 rm usr/local/bin/webfsd
+rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
 
 find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
