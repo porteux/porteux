@@ -1,5 +1,5 @@
 
- PorteuX v0.9
+ PorteuX v1.0
 
  If you need to edit the boot command line, hit [Tab].
  When finished, press [Enter]. Default usernames/passwords:
