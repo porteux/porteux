@@ -14,7 +14,7 @@ Out of the box PorteuX can open basically any multimedia file. Hardware accelera
 
 If you're new to PorteuX and have never used Porteus or Slax, it's recommended to read this [in-depth review of Porteus](https://medium.com/@fulalas/porteus-5-review-a-different-and-powerful-linux-distro-33df8789a758).
 
-PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable (safer) and current/rolling (bleeding edge). After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases): <br />
+PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable (safer) and current/rolling (bleeding edge). After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases/latest): <br />
 . GNOME 42.10 (or 45.2 in current)<br />
 . KDE 5.23.5 (or 5.27.10 in current)<br />
 . LXDE 0.10.1<br />
@@ -45,14 +45,18 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. Its ISOs have the average size of 410 MB and after boot the whole system takes no more than 1 GB of RAM, even considering that everything is loaded in RAM.
+PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. Its ISOs have the average size of 425 MB and after boot the whole system takes about 1 GB of RAM, even considering that the system is running in RAM.
 
 Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
 [https://youtu.be/DJd38Nch6rQ](https://youtu.be/DJd38Nch6rQ)
 
-Clear Linux, considered the fastest Linux distro, is slower than PorteuX in Geekbench:
-![clearlinux-vs-porteux](https://user-images.githubusercontent.com/126424580/230231475-8f2f3f68-8ac1-4338-924c-5aa7c147bd8c.png)
+Clear Linux, considered the fastest Linux distro, is slower than PorteuX in Geekbench 6:
+![clear-linux-40520-vs-porteux-0 9](https://github.com/porteux/porteux/assets/126424580/8ff3cb62-91a0-4171-8c05-133e75845c6b)
+
+Sources:
+[ClearLinux40520](https://browser.geekbench.com/v6/cpu/4073056)
+[PorteuX0.9](https://browser.geekbench.com/v6/cpu/4087178)
 
 All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and all applications are usually as new as possible.
 
@@ -65,13 +69,14 @@ PorteuX and Porteus follow the same basic structure, so a given module built in 
 PorteuX can be built in a live session of Slackware 64-bit, Porteus 64-bit or PorteuX 64-bit. At the moment the main scripts are not generating ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-xorg, 002-xtra, 003-desktop-environment, 05-devel, 06-crippled_sources).
 
 To build PorteuX, run the commands below as root in the exact order as described: <br />
-1- in 000-kernel folder run `createModule.sh`<br />
-2- in 001-core folder run `createModule.sh`<br />
-3- in 002-xorg folder run `createModule.sh`<br />
-4- in 002-xtra folder run `createModule.sh`<br />
-5- in 003-desktopenvironment folder run `createModule.sh` (where 'desktopenvironment' is the one of your preference)<br />
-6- in 05-devel folder run `createModule.sh`<br />
-7- (optional) in 08-multilanguage folder run `createModule.sh`<br />
+1. in 000-kernel folder run `createModule.sh`<br />
+2. in 001-core folder run `createModule.sh`<br />
+3. in 002-xorg folder run `createModule.sh`<br />
+4. in 002-xtra folder run `createModule.sh`<br />
+5. in 003-desktopenvironment folder run `createModule.sh` (where 'desktopenvironment' is the one of your preference)<br />
+6. in 05-devel folder run `createModule.sh`<br />
+7. (optional) in 08-multilanguage folder run `createModule.sh`<br />
+8. (optional) in 0050-multilib-lite folder run `createModule.sh`<br />
 
 In the end all modules will be in their respective subfolders inside /tmp/porteux-builder-[version].
 
