@@ -143,9 +143,6 @@ for package in \
 	bubblewrap \
 	geoclue2 \
 	cogl \
-	clutter \
-	clutter-gtk \
-	clutter-gst \
 	geocode-glib \
 	geocode-glib2 \
 	libgweather \
@@ -178,7 +175,6 @@ for package in \
 	gnome-tweaks \
 	gnome-user-share \
 	libwnck4 \
-	gnome-panel \
 	gnome-browser-connector \
 	file-roller \
 	gnome-backgrounds \
