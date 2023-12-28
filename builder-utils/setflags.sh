@@ -24,11 +24,11 @@ SetFlags() {
     if [ ! $ARCH ]; then
         export ARCH=$(uname -m)
     fi
+    
+    export ARCHITECTURELEVEL="x86-64-v2"
 
     if [ ! $SYSTEMBITS ] && [ `getconf LONG_BIT` == "64" ]; then
         export SYSTEMBITS="64"
-    elif [ $SYSTEMBITS == "32" ]; then
-        export SYSTEMBITS=
     fi
 
 	export NUMBERTHREADS=$(nproc --all)
