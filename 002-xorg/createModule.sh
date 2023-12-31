@@ -55,6 +55,20 @@ cd ${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=pulseaudio
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libpulse.so.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libpulse-simple.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon.so* ${currentPackage}-stripped-$version
+cd ${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 ### packages outside slackware repository ###
 
 currentPackage=archivemount
@@ -190,6 +204,12 @@ patch --no-backup-if-mismatch -d $MODULEPATH/packages -p0 < $SCRIPTPATH/extras/f
 sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}|GtkEntry::inner-border = {2, 2, 7, 7}|g" $MODULEPATH/packages/usr/share/themes/Adwaita-dark/gtk-2.0/main.rc
 sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}|GtkEntry::inner-border = {2, 2, 7, 7}|g" $MODULEPATH/packages/usr/share/themes/Adwaita/gtk-2.0/main.rc
 
+### enable pipewire with pulseaudio compatibility
+
+mv $MODULEPATH/etc/xdg/autostart/pipewire.desktop.sample $MODULEPATH/etc/xdg/autostart/pipewire.desktop
+mv $MODULEPATH/etc/xdg/autostart/pipewire-pulse.desktop.sample $MODULEPATH/etc/xdg/autostart/pipewire-pulse.desktop
+mv $MODULEPATH/etc/xdg/autostart/wireplumber.desktop.sample $MODULEPATH/etc/xdg/autostart/wireplumber.desktop
+
 ### copy build files to 05-devel
 
 CopyToDevel
@@ -284,6 +304,7 @@ rm etc/profile.d/vte.csh
 rm etc/profile.d/vte.sh
 rm etc/rc_maps.cfg
 rm etc/xdg/autostart/at-spi-dbus-bus.desktop
+rm etc/xdg/autostart/pulseaudio.desktop
 rm usr/bin/cacaclock
 rm usr/bin/cacademo
 rm usr/bin/cacafire

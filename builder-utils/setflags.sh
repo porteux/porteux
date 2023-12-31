@@ -29,6 +29,8 @@ SetFlags() {
 
     if [ ! $SYSTEMBITS ] && [ `getconf LONG_BIT` == "64" ]; then
         export SYSTEMBITS="64"
+    else
+		export SYSTEMBITS=
     fi
 
 	export NUMBERTHREADS=$(nproc --all)

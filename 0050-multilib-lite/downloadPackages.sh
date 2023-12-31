@@ -52,6 +52,7 @@ DownloadPackage "libX11" &
 wait
 DownloadPackage "libXau" &
 DownloadPackage "libxcb" &
+DownloadPackage "libXcomposite" &
 DownloadPackage "libXdamage" &
 DownloadPackage "libXdmcp" &
 DownloadPackage "libXext" &
@@ -59,9 +60,9 @@ DownloadPackage "libXfixes" &
 DownloadPackage "libXi" &
 DownloadPackage "libXrandr" &
 DownloadPackage "libXrender" &
+wait
 DownloadPackage "libxml2" &
 DownloadPackage "libxshmfence" &
-wait
 DownloadPackage "libXtst" &
 DownloadPackage "libXxf86vm" &
 DownloadPackage "llvm" &
