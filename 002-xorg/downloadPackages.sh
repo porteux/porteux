@@ -19,6 +19,7 @@ DownloadPackage "cairo" &
 DownloadPackage "cairomm" &
 wait
 DownloadPackage "cdparanoia-III" &
+DownloadPackage "daemon" &
 DownloadPackage "db48" & # required by bluez (obexd)
 DownloadPackage "dejavu-fonts-ttf" &
 DownloadPackage "desktop-file-utils" &
