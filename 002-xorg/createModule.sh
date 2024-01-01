@@ -261,6 +261,7 @@ rm -R usr/share/libgphoto2/*/konica/japanese
 rm -R usr/share/libgphoto2/*/konica/korean
 rm -R usr/share/libgphoto2/*/konica/spanish
 rm -R usr/share/libgphoto2_port
+rm -R usr/share/svgalib-demos
 rm -R usr/share/themes/Artwiz-boxed
 rm -R usr/share/themes/Bear2
 rm -R usr/share/themes/Clearlooks-3.4
