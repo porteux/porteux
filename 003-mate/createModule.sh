@@ -220,7 +220,6 @@ rm -R usr/share/icons/ContrastHigh
 rm -R usr/share/icons/mate
 rm -R usr/share/icons/mate-black
 rm -R usr/share/mate-media/icons
-rm -R usr/share/svgalib-demos
 rm -R usr/share/Thunar
 rm -R usr/share/mate-power-manager/icons
 rm -R var/lib/AccountsService
