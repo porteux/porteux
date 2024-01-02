@@ -9,7 +9,7 @@
 
  -Graphics Mode-
  Run PorteuX the best way possible, loading the desktop
- enviroment and saving changes by default (if supported).
+ environment and saving changes by default (if supported).
 
 
  -Always Fresh-
