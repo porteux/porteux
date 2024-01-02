@@ -4,7 +4,7 @@
 
 PorteuX can be installed to any media storage (including USB flash drive)
 without requiring your personal data to be erased. Partitions supported:
-btrfs, EXT, FAT, NTFS and XFS.
+ext2, ext3, ext4, FAT, exFAT, NTFS and XFS.
 
 The simplest way to do that is copying the ISO content to your media
 storage and running the installer, which will just make the media
@@ -58,7 +58,7 @@ that your BIOS is set to boot from the media storage where PorteuX is.
 ~~~~~~~~~~
 
 1) If your media storage is formatted with a Linux filesystem
-(e.g. EXT or btrfs), before the first boot make sure the folder
+(e.g. EXT4 or XFS), before the first boot make sure the folder
 /porteux has guest ownership otherwise changes will not be
 automatically saved.
 
