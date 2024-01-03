@@ -31,7 +31,7 @@ if [[ ! "$1" || "$1" == "--activate-module" ]]; then
 else
     # use file provided by the user
     INSTALLERPATH="$1"
-    CURRENTVERSION=$(find "$INSTALLERPATH" -name "*.[0-9]*" | sort -V | tail -n 1)
+    CURRENTVERSION=$(ls "$INSTALLERPATH" -a | cut -d'-' -f2)
 fi
 
 # install
