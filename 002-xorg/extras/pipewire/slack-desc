@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+      |-----handy-ruler------------------------------------------------------|
+pipewire: pipewire (multimedia processing)
+pipewire:
+pipewire: PipeWire is a project that aims to greatly improve handling of audio
+pipewire: and video under Linux. It provides a low-latency, graph based
+pipewire: processing engine on top of audio and video devices that can be used
+pipewire: to support the use cases currently handled by both pulseaudio and
+pipewire: JACK. PipeWire was designed with a powerful security model
+pipewire: particularly suited for containerized applications.
+pipewire:
+pipewire: Homepage: https://pipewire.org/
+pipewire:
