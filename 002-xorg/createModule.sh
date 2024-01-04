@@ -61,10 +61,13 @@ mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libpulse.so.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libpulse-simple.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-stripped-$version
+cp --parents -P -r usr/lib$SYSTEMBITS/cmake/* $MODULEPATH/../05-devel/packages
+cp --parents -P -r usr/lib$SYSTEMBITS/pkgconfig/* $MODULEPATH/../05-devel/packages
+cp --parents -P -r usr/include/* $MODULEPATH/../05-devel/packages
 cd ${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -161,6 +164,14 @@ sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.Sl
 sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=pipewire
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
+version=$(curl -s https://gitlab.com/${currentPackage}/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wget https://gitlab.freedesktop.org/${currentPackage}/${currentPackage}/-/archive/${version}/${currentPackage}-${version}.tar.gz || exit 1
+sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=paper-icon-theme
@@ -299,7 +310,6 @@ rm etc/profile.d/vte.csh
 rm etc/profile.d/vte.sh
 rm etc/rc_maps.cfg
 rm etc/xdg/autostart/at-spi-dbus-bus.desktop
-rm etc/xdg/autostart/pulseaudio.desktop
 rm usr/bin/cacaclock
 rm usr/bin/cacademo
 rm usr/bin/cacafire
@@ -317,7 +327,6 @@ rm usr/lib64/libLLVMLTO*
 rm usr/lib64/libMesaOpenCL*
 rm usr/lib64/libpoppler-cpp*
 rm usr/lib64/libRusticlOpenCL*
-rm usr/lib64/mpg123/output_sdl.so
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
 rm usr/share/applications/mimeinfo.cache

@@ -22,7 +22,7 @@ elif [ "$ARCH" = "aarch64" ]; then
   SLKCFLAGS="-O3 -fPIC"
   LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-g -O3 -march=${ARCHITECTURELEVEL} -fPIC"
+  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL} -fPIC"
   LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "arm" ]; then
   SLKCFLAGS="-O3 -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard"
