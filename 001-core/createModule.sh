@@ -113,10 +113,10 @@ installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
 
 currentPackage=procps
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/procps/* .
+cp $SCRIPTPATH/extras/${currentPackage}/* .
 version=$(curl -s https://gitlab.com/${currentPackage}-ng/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-${version//[vV]}}|g" ${currentPackage}.SlackBuild
-wget https://gitlab.com/${currentPackage}-ng/procps/-/archive/${version}/procps-${version}.tar.gz
+wget https://gitlab.com/${currentPackage}-ng/${currentPackage}/-/archive/${version}/${currentPackage}-${version}.tar.gz
 sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 rm -fr $MODULEPATH/package-${currentPackage}

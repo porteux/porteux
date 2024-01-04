@@ -170,7 +170,6 @@ DownloadPackage "orc" &
 DownloadPackage "pamixer" &
 DownloadPackage "pango" &
 DownloadPackage "pangomm" &
-DownloadPackage "pipewire" & # required by xdg-desktop-portal
 DownloadPackage "pixman" &
 DownloadPackage "poppler" &
 wait
