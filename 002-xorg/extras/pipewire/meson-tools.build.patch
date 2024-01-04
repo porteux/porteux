@@ -1,0 +1,14 @@
+--- src/tools/meson.build	2024-01-04 14:40:15.309969813 +0100
++++ src/tools/meson.build.patched	2024-01-04 14:40:24.748969723 +0100
+@@ -75,11 +75,6 @@
+       input: pw_cat,
+       output: alias,
+     )
+-    install_symlink(
+-      alias,
+-      pointing_to: pw_cat.name(),
+-      install_dir: pipewire_bindir,
+-    )
+   endforeach
+ elif not sndfile_dep.found() and get_option('pw-cat').enabled()
+   error('pw-cat is enabled but required dependency `sndfile` was not found.')
