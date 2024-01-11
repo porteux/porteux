@@ -171,6 +171,9 @@ rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
 rm usr/share/plasma/avatars/*
 
+rm -R etc/kde/xdg/autostart/baloo_file.desktop
+rm -R etc/kde/xdg/autostart/kaccess.desktop
+rm -R etc/kde/xdg/autostart/xembedsniproxy.desktop
 rm -R usr/lib
 rm -R usr/share/chromium
 rm -R usr/share/emoticons/EmojiOne
