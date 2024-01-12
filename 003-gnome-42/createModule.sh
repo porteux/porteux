@@ -137,19 +137,16 @@ for package in \
 	exempi \
 	tracker3 \
 	gtksourceview5 \
-	rest \
 	libwpe \
 	wpebackend-fdo \
 	bubblewrap \
 	geoclue2 \
-	cogl \
 	geocode-glib \
 	geocode-glib2 \
 	libgweather \
 	libpeas \
 	gsound \
 	amtk \
-	libmanette \
 	gnome-autoar \
 	gnome-desktop \
 	gnome-settings-daemon \
