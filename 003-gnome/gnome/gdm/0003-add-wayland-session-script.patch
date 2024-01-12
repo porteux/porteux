@@ -1,0 +1,28 @@
+From 434629695b426fedc46e6dcfdcc66120852ffe85 Mon Sep 17 00:00:00 2001
+From: Nathaniel Russell <46272571+nater1983@users.noreply.github.com>
+Date: Thu, 14 Sep 2023 17:04:39 +0000
+Subject: [PATCH] Update gdm-wayland-session.c
+
+---
+ daemon/gdm-wayland-session.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/daemon/gdm-wayland-session.c b/daemon/gdm-wayland-session.c
+index d0404d2c1..3fa2d12d1 100644
+--- a/daemon/gdm-wayland-session.c
++++ b/daemon/gdm-wayland-session.c
+@@ -356,9 +356,11 @@ spawn_session (State        *state,
+                 g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
+         }
+ 
+-        subprocess = g_subprocess_launcher_spawnv (launcher,
+-                                                   (const char * const *) argv,
+-                                                   &error);
++        subprocess = g_subprocess_launcher_spawn (launcher,
++                                                  &error,
++                                                  GDMCONFDIR "/wayland-session",
++                                                  state->session_command,
++                                                  NULL);
+         g_strfreev (argv);
+ 
+         if (subprocess == NULL) {
