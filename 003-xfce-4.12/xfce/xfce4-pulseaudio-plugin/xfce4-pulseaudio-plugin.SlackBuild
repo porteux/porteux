@@ -32,10 +32,10 @@ set -e
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
-VERSION=${VERSION:-$(echo $PRGNAM-*.tar.lz | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.lz || exit 1
+tar xvf $CWD/$PRGNAM-$VERSION.tar.?z || exit 1
 cd $PRGNAM-$VERSION
 chown -R root:root .
 find -L . \
@@ -46,7 +46,7 @@ find -L . \
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS -fvisibility-inlines-hidden -Wl,--enable-new-dtags" \
-./configure \
+./autogen.sh \
   --prefix=/usr \
   --libdir=/usr/lib${LIBDIRSUFFIX} \
   --sysconfdir=/etc \
