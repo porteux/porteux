@@ -36,7 +36,8 @@ chown -R root:root .
 
 # Add dependencies
 (
-wireplumberVersion=$(curl -s https://gitlab.com/pipewire/wireplumber/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+#wireplumberVersion=$(curl -s https://gitlab.com/pipewire/wireplumber/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wireplumberVersion=0.4.17
 wget https://gitlab.freedesktop.org/pipewire/wireplumber/-/archive/${wireplumberVersion}/wireplumber-${wireplumberVersion}.tar.gz
 cd subprojects
 tar xf ../wireplumber*.tar.?z
