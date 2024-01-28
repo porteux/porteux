@@ -78,7 +78,7 @@ cp -f arch/x86/boot/bzImage ../vmlinuz
 make clean
 
 echo "Building modules (this may take a while)..."
-make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s -mtune=${ARCHITECTURELEVEL}" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s" || { echo "Fail to build kernel."; exit 1; }
 make -j$CPUTHREADS modules_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
 make -j$CPUTHREADS firmware_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
 
