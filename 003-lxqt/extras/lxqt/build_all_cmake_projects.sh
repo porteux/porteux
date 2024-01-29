@@ -44,7 +44,7 @@ fi
 if [[ -n  "$CMAKE_GENERATOR" ]]; then
 	if [[ "$CMAKE_GENERATOR" = "Ninja" ]]; then
 		CMAKE_MAKE_PROGRAM="ninja"
-		CMAKE_GENERATOR="-G $CMAKE_GENERATOR -DCMAKE_MAKE_PROGRAM=$CMAKE_MAKE_PROGRAM"
+		CMAKE_GENERATOR="$CMAKE_GENERATOR -DCMAKE_MAKE_PROGRAM=$CMAKE_MAKE_PROGRAM"
 	fi
 fi
 
@@ -63,7 +63,7 @@ do
 	echo $'\n'$'\n'"Building: $d using externally specified options: $ALL_CMAKE_FLAGS"$'\n'
 	mkdir -p "$MODULEPATH/lxqt/$d/build" && cd "$MODULEPATH/lxqt/$d/build" || exit 1
 
-	cmake $ALL_CMAKE_FLAGS -DCMAKE_CXX_FLAGS:STRING="-g -O3 -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -fvisibility-inlines-hidden -Wl,--enable-new-dtags -flto -fuse-linker-plugin" .. && "$CMAKE_MAKE_PROGRAM" -j$JOB_NUM || exit 1
+	CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fvisibility-inlines-hidden -Wl,--enable-new-dtags -flto -fuse-linker-plugin" cmake $ALL_CMAKE_FLAGS .. && "$CMAKE_MAKE_PROGRAM" -j$JOB_NUM || exit 1
 	version=`git describe | cut -d- -f1`
 
 	"$CMAKE_MAKE_PROGRAM" install DESTDIR=$MODULEPATH/lxqt/$d/package/$d-$version-$ARCH-1

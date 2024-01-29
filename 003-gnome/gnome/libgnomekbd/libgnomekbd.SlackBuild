@@ -1,7 +1,7 @@
 #!/bin/sh
 
-PRGNAM=$(basename $0 | cut -f1 -d.)
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+PRGNAM=libgnomekbd
+VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 BUILD=${BUILD:-1}
 
 if [ -z "$ARCH" ]; then
@@ -18,14 +18,11 @@ PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$TMP/packages}
 JOBS="-j$(nproc --all)"
 
-if [ "$ARCH" = "i586" ]; then
-  SLKCFLAGS="-O3 -march=i586 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "i686" ]; then
+if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -fPIC"
+  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL} -fPIC"
   LIBDIRSUFFIX="64"
 else
   SLKCFLAGS="-O3"
@@ -34,14 +31,11 @@ fi
 
 set -e
 
-UMASKBKP=$(umask)
-umask 0022
-
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+tar xfv $CWD/$PRGNAM-$VERSION.tar.xz
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -51,24 +45,27 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+mkdir -p build
+cd build
+
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
- ./configure \
+meson .. \
  --prefix=/usr \
- --libdir=/usr/lib${LIBDIRSUFFIX} \
+ --mandir=/usr/man \
+ --datadir=/usr/share \
+ --includedir=/usr/include \
+ --libdir=lib${LIBDIRSUFFIX} \
  --libexecdir=/usr/libexec \
  --sysconfdir=/etc \
  --localstatedir=/var \
- --docdir=/usr/doc/$PKGNAM-$VERSION \
- --enable-shared=yes \
- --disable-static \
- --enable-introspection=yes \
- --build=$ARCH-slackware-linux
+ --buildtype=release \
+ -Dtests=false 
 
-make $JOBS || make
-make DESTDIR=$PKG install
+ninja $JOBS || ninja
+DESTDIR=$PKG ninja install
 
-find $PKG -name '*.la' -delete
+cd ..
 
 mkdir -p $PKG/install
 #      |-----handy-ruler------------------------------------------------------|
@@ -88,5 +85,3 @@ EOT
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
-
-umask ${UMASKBKP}

@@ -1,0 +1,18 @@
+--- panels/meson-panels.build	2024-01-16 20:12:20.854887987 +0100
++++ panels/meson-panels.build.patched	2024-01-16 20:12:14.657888669 +0100
+@@ -3,7 +3,6 @@
+ panels = [
+   'applications',
+   'background',
+-  'color',
+   'datetime',
+   'default-apps',
+   'display',
+@@ -12,7 +11,6 @@
+   'mouse',
+   'multitasking',
+   'notifications',
+-  'online-accounts',
+   'power',
+   'printers',
+   'privacy',

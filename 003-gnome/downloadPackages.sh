@@ -8,32 +8,33 @@ GenerateRepositoryUrls "$REPOSITORY"
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
 DownloadPackage "dconf" &
+DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
-wait
 DownloadPackage "gexiv2" &
-DownloadPackage "glib-networking" &
-DownloadPackage "hunspell" &
-DownloadPackage "hyphen" &
 wait
+DownloadPackage "gjs" &
+DownloadPackage "hunspell" &
+DownloadPackage "glib-networking" &
+DownloadPackage "gperf" &
+DownloadPackage "gst-plugins-bad-free" &
+DownloadPackage "gst-plugins-good" &
+DownloadPackage "gst-plugins-libav" &
+wait
+DownloadPackage "gtk4" &
+DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
+DownloadPackage "libhandy" &
+wait
+DownloadPackage "libnma" &
 DownloadPackage "libproxy" &
 DownloadPackage "libxklavier" &
-DownloadPackage "xorg-server-xwayland" &
+DownloadPackage "libyaml" &
 DownloadPackage "woff2" &
+DownloadPackage "xorg-server-xwayland" &
 wait
-
-### slackware current only packages
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "gsettings-desktop-schemas" &
-	DownloadPackage "gtk4" &
-	DownloadPackage "libhandy" &
-	DownloadPackage "libnma" &
-	wait
-fi
 
 ### packages that require specific striping
 
@@ -46,14 +47,13 @@ DownloadPackage "boost" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
-DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "iso-codes" &
 DownloadPackage "krb5" &
 wait
 DownloadPackage "libsass" & # required by gnome-console
+DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
-DownloadPackage "llvm" & # required by mozjs
-DownloadPackage "rust" &
+DownloadPackage "python-pip" &
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "xtrans" &
 wait

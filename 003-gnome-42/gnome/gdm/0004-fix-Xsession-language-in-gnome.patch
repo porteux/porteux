@@ -1,0 +1,14 @@
+diff -Naur gdm-42.0/data/Xsession.in gdm-42.0-patched/data/Xsession.in
+--- gdm-42.0/data/Xsession.in	2022-03-21 13:12:40.487113700 -0500
++++ gdm-42.0-patched/data/Xsession.in	2022-08-09 21:19:33.559221580 -0500
+@@ -45,6 +45,10 @@
+ fi
+ test -f "$HOME/.xprofile" && . "$HOME/.xprofile"
+ 
++# Get the AccountsService value for LANG over the system dbus. This is the user setting in GNOME:
++gnome_lang_usr="$(busctl get-property org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u) org.freedesktop.Accounts.User Language | cut -d\" -f2)"
++[ "$DESKTOP_SESSION" = "gnome-xorg" ] && [ -n "$gnome_lang_usr" ] && export LANG=$gnome_lang_usr
++
+ # Translation stuff
+ if [ -x "@libexecdir@/gdmtranslate" ] ; then
+   gdmtranslate="@libexecdir@/gdmtranslate"
