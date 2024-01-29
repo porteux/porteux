@@ -10,6 +10,11 @@ DownloadPackage "vid.stab" &
 DownloadPackage "openal-soft" &
 wait
 
+if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "libvpx" &
+	wait
+fi
+
 ### temporary packages for further building
 
 DownloadPackage "frei0r-plugins" & # temporary to build ffmpeg

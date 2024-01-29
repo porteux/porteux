@@ -1,0 +1,18 @@
+--- meson.build	2024-01-16 20:12:49.114884877 +0100
++++ meson.build.patched	2024-01-16 20:12:43.107885538 +0100
+@@ -164,7 +164,6 @@
+ endif
+ 
+ accounts_dep = dependency('accountsservice', version: '>= 0.6.39')
+-colord_dep = dependency('colord', version: '>= 0.1.34')
+ gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0', version: '>= 2.23.0')
+ gio_dep = dependency('gio-2.0')
+ glib_dep = dependency('glib-2.0', version: '>= 2.75.0')
+@@ -172,7 +171,6 @@
+ gnome_bg_dep = dependency('gnome-bg-4')
+ gnome_rr_dep = dependency('gnome-rr-4')
+ gnome_settings_dep = dependency('gnome-settings-daemon', version: '>= 41.0')
+-goa_dep = dependency('goa-1.0', version: goa_req_version)
+ gsettings_desktop_dep = dependency('gsettings-desktop-schemas', version: '>= 42.alpha')
+ libxml_dep = dependency('libxml-2.0')
+ pulse_dep = dependency('libpulse', version: pulse_req_version)

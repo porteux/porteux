@@ -1,5 +1,5 @@
 #%PAM-1.0
-#auth        include     login
+auth        include     system-auth
 -auth       optional    pam_gnome_keyring.so
 account     include     login
 password    include     login

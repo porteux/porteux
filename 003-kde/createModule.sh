@@ -115,7 +115,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -s -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
+CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
@@ -171,6 +171,9 @@ rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
 rm usr/share/plasma/avatars/*
 
+rm -R etc/kde/xdg/autostart/baloo_file.desktop
+rm -R etc/kde/xdg/autostart/kaccess.desktop
+rm -R etc/kde/xdg/autostart/xembedsniproxy.desktop
 rm -R usr/lib
 rm -R usr/share/chromium
 rm -R usr/share/emoticons/EmojiOne

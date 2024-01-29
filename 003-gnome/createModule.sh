@@ -1,4 +1,3 @@
-
 #!/bin/sh
 MODULENAME=003-gnome
 
@@ -22,7 +21,7 @@ DownloadFromSlackware
 
 ### packages that require specific stripping
 
-# only include libgtk file, since gtk+3-classic breaks Gnome's UI
+# only include libgtk file, since gtk+3-classic breaks gnome UI
 currentPackage=gtk+3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
@@ -52,17 +51,6 @@ cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
 sh ${currentPackage}-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=meson
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	cp $SCRIPTPATH/extras/meson/* .
-	sh ${currentPackage}.SlackBuild || exit 1
-	rm -fr $MODULEPATH/package-${currentPackage}
-	rm -fr $MODULEPATH/${currentPackage}*
-	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
-	rm $MODULEPATH/packages/meson-*.txz
-fi
-
 # required from now on
 installpkg $MODULEPATH/packages/*.txz || exit 1
 
@@ -71,101 +59,54 @@ rm $MODULEPATH/packages/boost*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
-rm $MODULEPATH/packages/gst-plugins-bad-free*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
+rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
-rm $MODULEPATH/packages/llvm*
-rm $MODULEPATH/packages/rust*
+rm $MODULEPATH/packages/python-pip*
 rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/xtrans*
 
-# slackware current only removal -- these are already in base
-if [ $SLACKWAREVERSION == "current" ]; then
-	rm $MODULEPATH/packages/libnma*
-fi
-
-# some packages (e.g nautilus and vte) require this folder
-mkdir -p /usr/local > /dev/null 2>&1
-ln -s /usr/include /usr/local/include > /dev/null 2>&1
-
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=gsettings-desktop-schemas
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-	
-	currentPackage=gtk4
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-
-	currentPackage=libhandy
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-
-	currentPackage=libnma
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-
-	currentPackage=libsoup3
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-	rm $MODULEPATH/packages/libsoup3*
-
-	currentPackage=vte
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-fi
+# required by mutter 45+
+cd $MODULEPATH
+pip install attrs
+pip install jinja2
 
 # gnome packages
 for package in \
-	mozjs91 \
-	upower \
 	libstemmer \
 	exempi \
 	tracker3 \
 	gtksourceview5 \
-	rest \
 	libwpe \
 	wpebackend-fdo \
 	bubblewrap \
 	geoclue2 \
-	cogl \
-	clutter \
-	clutter-gtk \
-	clutter-gst \
-	geocode-glib \
 	geocode-glib2 \
 	libgweather \
 	libpeas \
 	gsound \
 	amtk \
-	libmanette \
 	gnome-autoar \
 	gnome-desktop \
+	gcr \
 	gnome-settings-daemon \
+	appstream \
 	libadwaita \
 	gnome-bluetooth \
 	libgnomekbd \
 	libnma-gtk4 \
 	gnome-control-center \
+	libgusb \
+	colord \
+	libei \
 	mutter \
-	gjs \
 	gnome-shell \
 	gnome-session \
 	gnome-menus \
+	libportal \
+	libcloudproviders \
 	nautilus \
 	nautilus-python \
 	gdm \
@@ -178,7 +119,6 @@ for package in \
 	gnome-tweaks \
 	gnome-user-share \
 	libwnck4 \
-	gnome-panel \
 	gnome-browser-connector \
 	file-roller \
 	gnome-backgrounds \
@@ -223,7 +163,6 @@ rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gtk-2.0
 rm -R usr/lib64/python2.7
 rm -R usr/lib64/python3.9/site-packages/pip*
-rm -R usr/lib64/tracker-3.0
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
@@ -258,7 +197,7 @@ rm usr/bin/gtk4-icon-browser
 rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
 rm usr/bin/gtk4-widget-factory
-rm usr/bin/js91
+rm usr/bin/js102
 rm usr/bin/peas-demo
 rm usr/lib64/gstreamer-1.0/libgstfluidsynthmidi.*
 rm usr/lib64/gstreamer-1.0/libgstneonhttpsrc.*

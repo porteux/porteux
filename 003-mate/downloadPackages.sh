@@ -19,13 +19,12 @@ DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
-DownloadPackage "libgtop" &
 wait
+DownloadPackage "libgtop" &
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
-DownloadPackage "svgalib" &
 DownloadPackage "xtrans" &
 wait
 

@@ -19,6 +19,7 @@ DownloadPackage "cairo" &
 DownloadPackage "cairomm" &
 wait
 DownloadPackage "cdparanoia-III" &
+DownloadPackage "daemon" &
 DownloadPackage "db48" & # required by bluez (obexd)
 DownloadPackage "dejavu-fonts-ttf" &
 DownloadPackage "desktop-file-utils" &
@@ -169,7 +170,6 @@ DownloadPackage "orc" &
 DownloadPackage "pamixer" &
 DownloadPackage "pango" &
 DownloadPackage "pangomm" &
-DownloadPackage "pipewire" & # required by xdg-desktop-portal
 DownloadPackage "pixman" &
 DownloadPackage "poppler" &
 wait
@@ -180,11 +180,14 @@ DownloadPackage "pyxdg" &
 DownloadPackage "rdesktop" &
 DownloadPackage "sbc" &
 DownloadPackage "setxkbmap" &
+DownloadPackage "sdl" &
+DownloadPackage "SDL2" &
 DownloadPackage "shared-mime-info" &
 DownloadPackage "speex" &
 DownloadPackage "speexdsp" &
-wait
 DownloadPackage "startup-notification" &
+wait
+DownloadPackage "svgalib" &
 DownloadPackage "udisks2" &
 DownloadPackage "upower" &
 DownloadPackage "v4l-utils" &

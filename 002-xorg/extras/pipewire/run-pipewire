@@ -1,0 +1,13 @@
+#!/bin/sh
+
+pipewire &
+
+# Wait for pipewire to load
+sleepTimes=50
+while [ $sleepTimes -gt 0 ] && ! pgrep -x "pipewire" > /dev/null; do
+	sleep 0.2
+	let sleepTimes=sleepTimes-1
+done
+
+wireplumber &
+pipewire-pulse &
