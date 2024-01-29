@@ -142,7 +142,6 @@ for currentPackage in \
 	libmatekbd \
 	exempi \
 	caja \
-	mate-polkit \
 	zenity \
 	marco \
 	libmatemixer \
