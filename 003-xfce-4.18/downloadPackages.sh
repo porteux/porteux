@@ -19,6 +19,7 @@ DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "pavucontrol" &
+DownloadPackage "polkit-gnome" &
 wait
 
 ### slackware current only packages
