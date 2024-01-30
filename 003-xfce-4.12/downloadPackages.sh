@@ -10,12 +10,13 @@ DownloadPackage "dconf" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
-wait
 DownloadPackage "libnma" &
+wait
 DownloadPackage "libwnck" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "pavucontrol" &
+DownloadPackage "polkit-gnome" &
 wait
 
 ### slackware current only packages

@@ -554,7 +554,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 rm etc/xdg/autostart/blueman.desktop
-rm etc/xdg/autostart/lxpolkit.desktop
 rm usr/bin/canberra*
 rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib64/libappindicator.*
