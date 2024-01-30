@@ -15,13 +15,12 @@ Out of the box PorteuX can open basically any multimedia file. Hardware accelera
 If you're new to PorteuX and have never used Slax or Porteus, it's recommended to read this [in-depth review of Porteus](https://medium.com/@fulalas/porteus-5-review-a-different-and-powerful-linux-distro-33df8789a758).
 
 PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable (safer) and current/rolling (bleeding edge). After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases/latest): <br />
-. GNOME 42.10 (or 45.3 in current)<br />
-. KDE 5.23.5 (or 5.27.11 in current)<br />
-. LXDE 0.10.1<br />
-. LXQt 1.4.0<br />
-. MATE 1.27.3<br />
-. Xfce 4.12<br />
-. Xfce 4.18<br />
+. GNOME<br />
+. KDE<br />
+. LXDE<br />
+. LXQt<br />
+. MATE<br />
+. Xfce<br />
 
 PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's simple like that. Please avoid ISO installer applications such as Rufus or Etcher because by default they set the bootable unit to be read-only. For more details, read `install.txt` file in the root folder of the ISO.
 
