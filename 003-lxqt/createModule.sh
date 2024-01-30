@@ -290,8 +290,6 @@ echo "Generating icon package. This may take a while..."
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-rm MODULEPATH/packages/lxqt-policykit*
-
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
