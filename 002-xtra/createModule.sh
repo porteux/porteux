@@ -244,44 +244,6 @@ installpkg /tmp/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 rm /tmp/${currentPackage}*.t?z
 
-# required by ffmpeg
-installpkg $MODULEPATH/packages/openal-soft-*.t?z || exit 1
-installpkg $MODULEPATH/packages/vid.stab-*.t?z || exit 1
-installpkg $MODULEPATH/packages/frei0r-plugins*.t?z || exit 1
-rm $MODULEPATH/packages/frei0r-plugins-*.t?z || exit 1
-installpkg $MODULEPATH/packages/opencl-headers*.t?z || exit 1
-rm $MODULEPATH/packages/opencl-headers-*.t?z || exit 1
-
-currentPackage=ffmpeg
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
-if [ $SLACKWAREVERSION != "current" ]; then
-	rm ffmpeg-*.tar.xz
-	wget https://ffmpeg.org/releases/ffmpeg-4.4.4.tar.xz
-fi
-sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc \\\\|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s |g" ${currentPackage}.SlackBuild
-GLSLANG=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-rm -fr $MODULEPATH/${currentPackage}
-
-# required by mpv
-currentPackage=LuaJIT
-mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/development/${currentPackage,,}/ -A * || exit 1
-version=2.0.5
-wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/tags/v${version}.tar.gz -O ${currentPackage}-${version}.tar.gz
-sed -z -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage,,}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage,,}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage,,}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage,,}.SlackBuild
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
-sh ${currentPackage,,}.SlackBuild || exit 1
-mv /tmp/${currentPackage,,}*.t?z $MODULEPATH/packages
-installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
-rm -fr $MODULEPATH/${currentPackage,,}
-
 # required by libplacebo
 installpkg $MODULEPATH/packages/python-pip-*.t?z || exit 1
 rm $MODULEPATH/packages/python-pip-*.t?z || exit 1
@@ -312,6 +274,44 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
+
+# required by ffmpeg
+installpkg $MODULEPATH/packages/openal-soft-*.t?z || exit 1
+installpkg $MODULEPATH/packages/vid.stab-*.t?z || exit 1
+installpkg $MODULEPATH/packages/frei0r-plugins*.t?z || exit 1
+rm $MODULEPATH/packages/frei0r-plugins-*.t?z || exit 1
+installpkg $MODULEPATH/packages/opencl-headers*.t?z || exit 1
+rm $MODULEPATH/packages/opencl-headers-*.t?z || exit 1
+
+currentPackage=ffmpeg
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
+if [ $SLACKWAREVERSION != "current" ]; then
+	rm ffmpeg-*.tar.xz
+	wget https://ffmpeg.org/releases/ffmpeg-4.4.4.tar.xz
+fi
+sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc \\\\|g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s |g" ${currentPackage}.SlackBuild
+GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+installpkg $MODULEPATH/packages/${currentPackage}*.t?z
+rm -fr $MODULEPATH/${currentPackage}
+
+# required by mpv
+currentPackage=LuaJIT
+mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/development/${currentPackage,,}/ -A * || exit 1
+version=2.0.5
+wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/tags/v${version}.tar.gz -O ${currentPackage}-${version}.tar.gz
+sed -z -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage,,}.SlackBuild
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage,,}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage,,}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage,,}.SlackBuild
+sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+sh ${currentPackage,,}.SlackBuild || exit 1
+mv /tmp/${currentPackage,,}*.t?z $MODULEPATH/packages
+installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
+rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=mpv
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
