@@ -201,6 +201,10 @@ rm *.t?z
 
 InstallAdditionalPackages
 
+### fix applications shortcuts
+
+sed -i "s|Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULEPATH/packages/usr/share/applications/gparted.desktop
+
 ### fix symlinks
 
 cd $MODULEPATH/packages/etc/X11/xinit/

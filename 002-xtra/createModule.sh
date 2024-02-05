@@ -230,11 +230,9 @@ rm -fr $MODULEPATH/${currentPackage}
 # temporary just to build ffmpeg and mpv
 currentPackage=nv-codec-headers
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
-# TODO: remove hardcoded version when upstream fixes ffmpeg compilation error
-#info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
-#version=${info#* }
-version=12.0.16.1
+wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/d/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
+version=${info#* }
 wget https://github.com/FFmpeg/${currentPackage}/releases/download/n${version}/${currentPackage}-${version}.tar.gz
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
@@ -261,14 +259,13 @@ currentPackage=libplacebo
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 version=$(curl -s https://code.videolan.org/videolan/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 version=${version//[vV]}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/graphics/${currentPackage}/ -A * || exit 1
+wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
 cp $SCRIPTPATH/extras/${currentPackage}/meson.build.patch . || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sed -i "s|chown -R.*|patch -p0 < \${CWD}/meson\.build\.patch \|\| exit 1\nchown -R root:root \.|g" ${currentPackage}.SlackBuild
-sed -i "s|-Dbuildtype=\$RELEASE|-Dbuildtype=\$RELEASE -Dvulkan=disabled -Ddemos=false -Dshaderc=disabled -Dglslang=disabled|g" ${currentPackage}.SlackBuild
+sed -i "s|cd \$PKGNAM-v\$VERSION|cd \$PKGNAM-v\$VERSION|g" ${currentPackage}.SlackBuild
+sed -i "s|glslang=enabled|glslang=disabled -Dvulkan=disabled -Dshaderc=disabled |g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
