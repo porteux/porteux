@@ -55,8 +55,10 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-version=${info#* }
+#info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+#version=${info#* }
+version=1.27.0
+wget https://github.com/mate-desktop/atril/releases/download/v${version}/atril-${version}.tar.xz
 cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
@@ -168,6 +170,11 @@ installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 
 # required by xfce4-xkb-plugin
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	# required by xfce4-screenshooter in current
+	installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
+fi
 
 # xfce packages
 for package in \
