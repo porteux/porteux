@@ -169,7 +169,7 @@ echo "Creating kernel xzm module..."
 mv lib ${MODULEPATH}/${MODULENAME}
 
 # strip kernel module
-find ${MODULEPATH}/${MODULENAME} | xargs file | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+find ${MODULEPATH}/${MODULENAME} | xargs strip -S --strip-unneeded -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 
 # create kernel module xzm module
 dir2xzm ${MODULEPATH}/${MODULENAME} -o=${MODULENAME}-${KERNELVERSION}.xzm -q > /dev/null 2>&1
@@ -205,7 +205,7 @@ find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "COPYING" -delet
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "CREDITS" -delete -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name 'MAINTAINERS*' -delete -print > /dev/null 2>&1
 
-find ${CRIPPLEDSOURCEPATH} | xargs file | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+find ${CRIPPLEDSOURCEPATH} | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 
 # create crippled xzm module
 dir2xzm ${MODULEPATH}/${CRIPPLEDMODULENAME} -q > /dev/null 2>&1
