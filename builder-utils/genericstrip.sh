@@ -8,7 +8,6 @@ GenericStrip() {
 	fi
 
 	rm -R "$CURRENTDIR"/etc/logrotate.d
-
 	rm -R "$CURRENTDIR"/usr/doc
 	rm -R "$CURRENTDIR"/usr/include
 	rm -R "$CURRENTDIR"/usr/man
@@ -51,13 +50,6 @@ GenericStrip() {
 	rm -R "$CURRENTDIR"/var/lib/pkgtools/douninst.sh/
 	rm -R "$CURRENTDIR"/var/lib/pkgtools/setup
 	
-	rm "$CURRENTDIR"/usr/bin/gtk-demo
-	rm "$CURRENTDIR"/usr/bin/gtk2-demo
-	rm "$CURRENTDIR"/usr/bin/gtk3-demo
-	rm "$CURRENTDIR"/usr/bin/gtk3-demo-application
-	rm "$CURRENTDIR"/usr/share/applications/gtk3-demo.desktop
-	rm "$CURRENTDIR"/usr/share/applications/gtk3-icon-browser.desktop
-	rm "$CURRENTDIR"/usr/share/applications/gtk3-widget-factory.desktop
 	rm "$CURRENTDIR"/usr/share/pixmaps/*.xpm
 	rm "$CURRENTDIR"/var/log/removed_packages
 	rm "$CURRENTDIR"/var/log/removed_scripts
@@ -81,7 +73,7 @@ GenericStrip() {
 	find "$CURRENTDIR" -name '*.vapi' -delete
 	
 	find "$CURRENTDIR"/usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
-
+	
 	find "$CURRENTDIR" | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag 2> /dev/null
 }
 
@@ -92,7 +84,7 @@ AggressiveStrip() {
 		CURRENTDIR="$PWD"
 	fi
 
-	find "$CURRENTDIR" | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+	find "$CURRENTDIR" | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }
 
 AggressiveStripAll() {
@@ -102,5 +94,5 @@ AggressiveStripAll() {
 		CURRENTDIR="$PWD"
 	fi
 
-	find "$CURRENTDIR" | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+	find "$CURRENTDIR" | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }

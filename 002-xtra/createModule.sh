@@ -172,12 +172,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libass
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
+wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/libass/${currentPackage}.SlackBuild  || exit 1
 info=$(DownloadLatestFromGithub "libass" ${currentPackage})
 version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -233,10 +230,6 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/d/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
 version=${info#* }
-wget https://github.com/FFmpeg/${currentPackage}/releases/download/n${version}/${currentPackage}-${version}.tar.gz
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 installpkg /tmp/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
@@ -262,9 +255,8 @@ version=${version//[vV]}
 wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
 cp $SCRIPTPATH/extras/${currentPackage}/meson.build.patch . || exit 1
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sed -i "s|chown -R.*|patch -p0 < \${CWD}/meson\.build\.patch \|\| exit 1\nchown -R root:root \.|g" ${currentPackage}.SlackBuild
-sed -i "s|cd \$PKGNAM-v\$VERSION|cd \$PKGNAM-v\$VERSION|g" ${currentPackage}.SlackBuild
+sed -i "s|\$PKGNAM-\$VERSION-\$ARCH|\$PKGNAM-\${VERSION//[vV]}-\$ARCH|g" ${currentPackage}.SlackBuild
 sed -i "s|glslang=enabled|glslang=disabled -Dvulkan=disabled -Dshaderc=disabled |g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
@@ -289,6 +281,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 fi
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc \\\\|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s |g" ${currentPackage}.SlackBuild
+sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -354,8 +347,10 @@ GenericStrip
 
 # move out things that don't support aggressive stripping
 mv $MODULEPATH/packages/usr/bin/transmission-gtk $MODULEPATH/
-AggressiveStrip
+mv $MODULEPATH/packages/usr/lib64/libluajit* $MODULEPATH/
+AggressiveStripAll
 mv $MODULEPATH/transmission-gtk $MODULEPATH/packages/usr/bin/
+mv $MODULEPATH/libluajit* $MODULEPATH/packages/usr/lib64/
 
 ### copy cache files
 

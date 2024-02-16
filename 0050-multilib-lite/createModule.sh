@@ -151,9 +151,14 @@ find $MODULEPATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name
 
 mv $MODULEPATH/packages/lib $MODULEPATH/ # move out /lib so we can strip safely
 mv $MODULEPATH/packages/usr/lib/dri $MODULEPATH/ # move out usr/lib/dri so we can strip safely
+mv $MODULEPATH/packages/usr/lib/libgcc* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib/libstdc++* $MODULEPATH/
 GenericStrip
+AggressiveStripAll
 mv $MODULEPATH/lib $MODULEPATH/packages/
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib/
+mv $MODULEPATH/libgcc* $MODULEPATH/packages/usr/lib/
+mv $MODULEPATH/libstdc++* $MODULEPATH/packages/usr/lib/
 
 ### finalize
 

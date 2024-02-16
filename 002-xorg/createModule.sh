@@ -103,6 +103,7 @@ wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 sed -i "s|# Configure, build, and install:|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\n# Configure, build, and install:|g" ${currentPackage}.SlackBuild
 sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" ${currentPackage}.SlackBuild
+sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
 sed -i "s|-\${VERSION}-\$ARCH-\${BUILD}|-classic-\${VERSION}-\$ARCH-\${BUILD}|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
@@ -310,6 +311,7 @@ rm -R usr/share/X11/locale/zh_TW.big5
 rm -R usr/X11R6/include
 rm -R usr/X11R6/man
 
+
 rm etc/profile.d/vte.csh
 rm etc/profile.d/vte.sh
 rm etc/rc_maps.cfg
@@ -319,6 +321,8 @@ rm usr/bin/cacademo
 rm usr/bin/cacafire
 rm usr/bin/gdm-control
 rm usr/bin/gnome-panel-control
+rm usr/bin/gtk3-demo
+rm usr/bin/gtk3-demo-application
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/rsvg-convert
@@ -333,6 +337,9 @@ rm usr/lib64/libpoppler-cpp*
 rm usr/lib64/libRusticlOpenCL*
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
+rm usr/share/applications/gtk3-demo.desktop
+rm usr/share/applications/gtk3-icon-browser.desktop
+rm usr/share/applications/gtk3-widget-factory.desktop
 rm usr/share/applications/mimeinfo.cache
 rm usr/share/applications/qv4l2.desktop
 rm usr/share/applications/qvidcap.desktop
@@ -353,10 +360,14 @@ find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
 # move out things that don't support stripping
 mv $MODULEPATH/packages/usr/lib64/dri $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libatk-[0-9]* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libepoxy* $MODULEPATH/
 mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 GenericStrip
-AggressiveStrip
+AggressiveStripAll
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/libatk-[0-9]* $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/libepoxy* $MODULEPATH/packages/usr/lib64/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
 
 ### copy cache files

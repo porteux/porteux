@@ -39,7 +39,7 @@ cd $TMP
 rm -rf $PKGNAM-v$VERSION
 cd $PKGNAM
 tar xvf $PKGNAM-v$VERSION.tar.?z || exit 1
-tar xvf psmisc-$PSMISCVER.tar.xz || exit 1
+tar xvf psmisc-$PSMISCVER.tar.?z || exit 1
 tar xvf procinfo-ng-$PROCINFONGVER.tar.xz || exit 1
 tar xvf procinfo-$PROCINFOVER.tar.xz || exit 1
 chown -R root:root .
@@ -129,7 +129,7 @@ ln -sf /bin/ps $PKG/usr/bin/ps
 # Create /etc/sysctl.d:
 mkdir -p $PKG/etc/sysctl.d
 
-cd psmisc-$PSMISCVER || exit 1
+cd ../psmisc-$PSMISCVER || exit 1
 
 if [ ! -r configure ]; then
   if [ -x ./autogen.sh ]; then

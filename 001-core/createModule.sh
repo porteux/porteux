@@ -342,7 +342,6 @@ rm etc/ld.so.cache
 rm etc/motd
 rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
-rm lib64/*.a
 rm usr/bin/js[0-9]*
 rm usr/bin/7za
 rm usr/bin/7zr
@@ -363,11 +362,15 @@ find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
 # move out stuff that can't be stripped
 mv $MODULEPATH/packages/lib64 $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libgcc* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib64/libstdc++* $MODULEPATH/
 GenericStrip
 AggressiveStrip
 mv $MODULEPATH/lib64 $MODULEPATH/packages/
+mv $MODULEPATH/libgcc* $MODULEPATH/packages/usr/lib64
 mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib64
+mv $MODULEPATH/libstdc++* $MODULEPATH/packages/usr/lib64
 
 ### copy cache files
 
