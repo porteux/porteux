@@ -26,6 +26,7 @@ DownloadPackage "desktop-file-utils" &
 DownloadPackage "djvulibre" &
 DownloadPackage "esound" &
 DownloadPackage "exiv2" &
+DownloadPackage "expat" &
 DownloadPackage "flac" &
 DownloadPackage "fontconfig" &
 DownloadPackage "freeglut" &
