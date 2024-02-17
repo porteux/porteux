@@ -360,14 +360,10 @@ find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
 # move out things that don't support stripping
 mv $MODULEPATH/packages/usr/lib64/dri $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libatk-[0-9]* $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libepoxy* $MODULEPATH/
 mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 GenericStrip
-AggressiveStripAll
+AggressiveStrip
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib64/
-mv $MODULEPATH/libatk-[0-9]* $MODULEPATH/packages/usr/lib64/
-mv $MODULEPATH/libepoxy* $MODULEPATH/packages/usr/lib64/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
 
 ### copy cache files

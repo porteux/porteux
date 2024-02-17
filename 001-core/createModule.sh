@@ -36,7 +36,6 @@ cp --parents -P lib64/libsigsegv.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libatomic.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libcares.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libcups.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libexpat.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libgcc_s.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libgmp.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libgmpxx.* ${currentPackage}-stripped-$version/
@@ -362,15 +361,11 @@ find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
 # move out stuff that can't be stripped
 mv $MODULEPATH/packages/lib64 $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libgcc* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libstdc++* $MODULEPATH/
 GenericStrip
 AggressiveStrip
 mv $MODULEPATH/lib64 $MODULEPATH/packages/
-mv $MODULEPATH/libgcc* $MODULEPATH/packages/usr/lib64
 mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib64
-mv $MODULEPATH/libstdc++* $MODULEPATH/packages/usr/lib64
 
 ### copy cache files
 
