@@ -55,10 +55,8 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-#version=${info#* }
-version=1.27.0
-wget https://github.com/mate-desktop/atril/releases/download/v${version}/atril-${version}.tar.xz
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+version=${info#* }
 cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
@@ -70,7 +68,7 @@ git clone https://github.com/stevenhoneyman/${currentPackage}
 cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sh autogen.sh
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug || exit 1
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug || exit 1
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz

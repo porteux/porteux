@@ -55,10 +55,8 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-#version=${info#* }
-version=1.27.0
-wget https://github.com/mate-desktop/atril/releases/download/v${version}/atril-${version}.tar.xz
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+version=${info#* }
 cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1

@@ -49,6 +49,9 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+cp $SCRIPTPATH/extras/atril/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
+
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
 ./configure \
@@ -67,6 +70,8 @@ CXXFLAGS="$SLKCFLAGS" \
   --enable-comics \
   --enable-epub \
   --enable-xps \
+  --disable-gtk-doc \
+  --disable-tests \
   --build=$ARCH-slackware-linux
 
 make -j$(nproc --all)

@@ -45,6 +45,9 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+cp $SCRIPTPATH/extras/atril/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
+
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
 ./configure \
@@ -68,7 +71,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --disable-caja \
   --build=$ARCH-slackware-linux
 
-make $NUMJOBS || make || exit 1
+make $NUMJOBS || exit 1
 make install DESTDIR=$PKG
 
 # Don't ship .la files:
