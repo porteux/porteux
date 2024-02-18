@@ -2,7 +2,7 @@
 
 if [ `whoami` != root ]; then
     echo "Please enter root's password below:"
-    /opt/porteux-scripts/xorg/psu $(realpath "$0")
+    /opt/porteux-scripts/gui/psu $(realpath "$0")
     exit 0
 fi
 
