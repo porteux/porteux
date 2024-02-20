@@ -65,7 +65,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --disable-static \
   --build=$ARCH-porteux-linux || exit 1
 
-make $NUMJOBS || make || exit 1
+make $NUMJOBS || exit 1
 make $NUMJOBS install DESTDIR=$PKG || exit 1
 
 mkdir -p $PKG/usr/doc/$PKGNAM-$VERSION

@@ -74,7 +74,7 @@ CFLAGS="$SLKCFLAGS" \
   --disable-network-manager \
   --build=$ARCH-porteux-linux || exit 1
 
-make $NUMJOBS || make || exit 1
+make $NUMJOBS || exit 1
 make $NUMJOBS install DESTDIR=$PKG || exit 1
 
 # Compress and link manpages, if any:
