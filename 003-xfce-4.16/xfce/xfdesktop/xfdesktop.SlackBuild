@@ -83,32 +83,8 @@ CFLAGS="$SLKCFLAGS" \
 make $NUMJOBS || make || exit 1
 make $NUMJOBS install DESTDIR=$PKG || exit 1
 
-# Compress and if needed symlink the man pages:
-if [ -d $PKG/usr/man ]; then
-  ( cd $PKG/usr/man
-    for manpagedir in $(find . -type d -name "man*") ; do
-      ( cd $manpagedir
-        for eachpage in $( find . -type l -maxdepth 1) ; do
-          ln -s $( readlink $eachpage ).gz $eachpage.gz
-          rm $eachpage
-        done
-        gzip -9 *.?
-      )
-    done
-  )
-fi
-
 # We don't want icon caches:
 find $PKG/usr/share/icons -type f -name "icon-theme.cache" -exec rm -f {} \;
-
-# Add a documentation directory.  Not all of these files are expected to be
-# present, but listing them ensures that documentation that might appear and
-# disappear from version to version will not be missed.
-mkdir -p $PKG/usr/doc/${PKGNAM}-$VERSION
-cp -a \
-  AUTHORS BUGS COMPOSITOR COPYING* FAQ HACKING INSTALL \
-  NEWS NOTES README* THANKS TODO example.gtkrc-2.0 \
-  $PKG/usr/doc/${PKGNAM}-$VERSION
 
 # If there's a ChangeLog, installing at least part of the recent history
 # is useful, but don't let it get totally out of control:
