@@ -34,7 +34,7 @@ elif [ "$ARCH" = "aarch64" ]; then
   SLKCFLAGS="-O3 -fPIC"
   LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL} -fPIC"
+  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
   LIBDIRSUFFIX="64"
 else
   SLKCFLAGS="-O3"

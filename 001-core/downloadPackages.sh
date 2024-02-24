@@ -15,7 +15,7 @@ DownloadPackage "attr" &
 DownloadPackage "bash" &
 DownloadPackage "bc" &
 DownloadPackage "bin" &
-wait
+exit
 DownloadPackage "bluez" &
 DownloadPackage "bluez-firmware" &
 DownloadPackage "bridge-utils" &
@@ -237,6 +237,7 @@ wait
 ### slackware current only packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "avahi" &
 	DownloadPackage "lua" &
 	DownloadPackage "lzlib" &
 	DownloadPackage "mozjs102" &

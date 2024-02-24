@@ -22,7 +22,7 @@ elif [ "$ARCH" = "aarch64" ]; then
   SLKCFLAGS="-O3 -fPIC"
   LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL} -fPIC"
+  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
   LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "arm" ]; then
   SLKCFLAGS="-O3 -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard"
@@ -49,7 +49,7 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-cp $SCRIPTPATH/extras/atril/*.patch .
+cp $SCRIPTPATH/extras/${PRGNAM}/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
 
 CFLAGS="$SLKCFLAGS" \
