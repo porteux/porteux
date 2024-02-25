@@ -1,5 +1,5 @@
---- src/lxdm.c	2022-09-01 08:36:47.000000000 +0200
-+++ src/lxdm.c.patched	2024-02-24 23:39:15.319385518 +0100
+--- src/lxdm.c	2022-09-01 10:36:47.000000000 +0400
++++ src/lxdm.patched.c	2009-01-01 04:37:16.258022902 +0400
 @@ -44,6 +44,8 @@
  #include <sys/wait.h>
  #include <glib.h>
@@ -18,44 +18,37 @@
  	char *option;	/* hold option in config file */
  	xconn_t dpy;	/* hold this, or X crack */
  	LXDM_AUTH auth;
-@@ -347,6 +351,36 @@
+@@ -347,6 +351,29 @@
  	return s;
  }
  
 +static void remove_user_login_from_utmp(const int tty, const char *display)
 +{
-+    struct utmpx ut;
-+    memset(&ut, 0, sizeof(struct utmpx));
++	struct utmpx ut = {0};
 +
-+    ut.ut_type = DEAD_PROCESS;
-+    ut.ut_pid = getpid();
++	struct timeval tv;
++	gettimeofday(&tv, NULL);
 +
-+    const char* full_tty;
-+    asprintf(&full_tty, "tty%d", tty);
-+    strncpy(ut.ut_line, full_tty, sizeof(ut.ut_line) - 1);
++	ut = (struct utmpx) {
++		.ut_pid = getpid(),
++		.ut_type = DEAD_PROCESS,
++		.ut_tv.tv_sec = tv.tv_sec,
++		.ut_tv.tv_usec = tv.tv_usec
++	};
 +
-+    const char* full_display;
-+    asprintf(&full_display, "%s.0", display);
-+    strncpy(ut.ut_host, full_display, sizeof(ut.ut_host) - 1);
++	sprintf(ut.ut_line, "tty%d", tty);
++	sprintf(ut.ut_host, "%s.0", display);
 +
-+    struct timeval tv;
-+    gettimeofday(&tv, NULL);
-+    ut.ut_tv.tv_sec = tv.tv_sec;
-+    ut.ut_tv.tv_usec = tv.tv_usec;
-+
-+    setutxent();
-+    pututxline(&ut);
-+    endutxent();
-+    updwtmpx("/var/log/wtmp", &ut);
-+    
-+    g_free(full_tty);
-+    g_free(full_display);
++	setutxent();
++	pututxline(&ut);
++	endutxent();
++	updwtmpx("/var/log/wtmp", &ut);
 +}
 +
  static void lxsession_stop(LXSession *s)
  {
  	if(s->greeter)
-@@ -1168,6 +1202,7 @@
+@@ -1168,6 +1195,7 @@
  	int level;
  	LXSession *s=data;
  
@@ -63,45 +56,38 @@
  	gchar *argv[] = { "/etc/lxdm/PostLogout", NULL };
  	g_spawn_async(NULL, argv, s->env, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL);
  
-@@ -1351,6 +1386,37 @@
+@@ -1351,6 +1379,30 @@
  	g_key_file_free(var);
  }
  
-+static void add_user_login_to_utmp(const int tty, const char *display, const char *username)
++static void add_user_login_to_utmp(const int tty, const char *display, const char username[UT_NAMESIZE])
 +{
-+    struct utmpx ut;
-+    memset(&ut, 0, sizeof(struct utmpx));
++	struct utmpx ut = {0};
 +
-+    const char* full_tty;
-+    asprintf(&full_tty, "tty%d", tty);
-+    strncpy(ut.ut_line, full_tty, sizeof(ut.ut_line) - 1);
-+    
-+    const char* full_display;
-+    asprintf(&full_display, "%s.0", display);
-+    strncpy(ut.ut_host, full_display, sizeof(ut.ut_host) - 1);    
++	struct timeval tv;
++	gettimeofday(&tv, NULL);
 +
-+    strncpy(ut.ut_user, username, sizeof(ut.ut_user) - 1);
-+    ut.ut_pid = getpid();
-+    ut.ut_type = USER_PROCESS;
-+    
-+    struct timeval tv;
-+    gettimeofday(&tv, NULL);
-+    ut.ut_tv.tv_sec = tv.tv_sec;
-+    ut.ut_tv.tv_usec = tv.tv_usec;
-+    
-+    setutxent();
-+    pututxline(&ut);
-+    endutxent();
-+    updwtmpx("/var/log/wtmp", &ut);
-+    
-+    g_free(full_tty);
-+    g_free(full_display);
++	ut = (struct utmpx) {
++		.ut_pid = getpid(),
++		.ut_type = USER_PROCESS,
++		.ut_tv.tv_sec = tv.tv_sec,
++		.ut_tv.tv_usec = tv.tv_usec
++	};
++
++	sprintf(ut.ut_line, "tty%d", tty);
++	sprintf(ut.ut_host, "%s.0", display);
++	strcpy(ut.ut_user, username);
++
++	setutxent();
++	pututxline(&ut);
++	endutxent();
++	updwtmpx("/var/log/wtmp", &ut);
 +}
 +
  void lxdm_do_login(struct passwd *pw, char *session, char *lang, char *option)
  {
  	char *session_name=0,*session_exec=0,*session_desktop_names=0;
-@@ -1421,6 +1487,8 @@
+@@ -1421,6 +1473,8 @@
  	s->greeter=FALSE;
  	s->idle=FALSE;
  	s->user=pw->pw_uid;
@@ -110,7 +96,7 @@
  	if(option)
  		s->option=g_strdup(option);
  #if HAVE_LIBCK_CONNECTOR
-@@ -1509,7 +1577,9 @@
+@@ -1509,7 +1563,9 @@
  		switch_user(pw, session_exec, env);
  		lxdm_quit_self(4);
  	}*/
