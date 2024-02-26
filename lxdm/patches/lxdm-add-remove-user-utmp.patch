@@ -37,7 +37,7 @@
 +	};
 +
 +	sprintf(ut.ut_line, "tty%d", tty);
-+	sprintf(ut.ut_host, "%s.0", display);
++	strcpy(ut.ut_host, display);
 +
 +	setutxent();
 +	pututxline(&ut);
@@ -60,7 +60,7 @@
  	g_key_file_free(var);
  }
  
-+static void add_user_login_to_utmp(const int tty, const char *display, const char username[UT_NAMESIZE])
++static void add_user_login_to_utmp(const int tty, const char *display, const char *username)
 +{
 +	struct utmpx ut = {0};
 +
@@ -75,7 +75,7 @@
 +	};
 +
 +	sprintf(ut.ut_line, "tty%d", tty);
-+	sprintf(ut.ut_host, "%s.0", display);
++	strcpy(ut.ut_host, display);
 +	strcpy(ut.ut_user, username);
 +
 +	setutxent();
