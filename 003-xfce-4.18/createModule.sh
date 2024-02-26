@@ -132,6 +132,8 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
 sed -i "s|baobab||g" ./Makefile.am
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|mate-screenshot||g" ./Makefile.am
