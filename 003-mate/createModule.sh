@@ -103,29 +103,15 @@ rm -fr $MODULEPATH/${currentPackage}
 # required from now on
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
-
-currentPackage=mate-utils
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-sed -i "s|mate-dictionary||g" ./Makefile.am
-sed -i "s|logview||g" ./Makefile.am
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
-/sbin/makepkg -l y -c n $MODULEPATH/packages/mate-utils-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-# required from now on
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
+fi
 
 # required just for building
 installpkg $MODULEPATH/packages/boost*.txz || exit 1
@@ -138,7 +124,6 @@ rm $MODULEPATH/packages/iso-codes*.txz
 # mate packages
 for currentPackage in \
 	mate-desktop \
-	atril \
 	libmatekbd \
 	exempi \
 	caja \
@@ -164,8 +149,8 @@ for currentPackage in \
 	mate-system-monitor \
 	libgxps \
 	gtksourceview4 \
-	atril \
 	caja-extensions \
+	atril \
 	mozo \
 	pluma \
 ; do
@@ -174,6 +159,22 @@ cd $SCRIPTPATH/mate/${currentPackage} || exit 1
 sh ${currentPackage}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+currentPackage=mate-utils
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+version=${info#* }
+filename=${info% *}
+tar xvf $filename && rm $filename || exit 1
+cd ${currentPackage}*
+sed -i "s|mate-dictionary||g" ./Makefile.am
+sed -i "s|logview||g" ./Makefile.am
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
+make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+cd $MODULEPATH/${currentPackage}/package
+wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
+/sbin/makepkg -l y -c n $MODULEPATH/packages/mate-utils-$version-$ARCH-1.txz
+rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 
