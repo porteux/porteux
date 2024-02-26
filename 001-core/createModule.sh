@@ -19,108 +19,6 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 DownloadFromSlackware
 
-### packages that require specific stripping
-
-currentPackage=aaa_libraries
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P lib64/libfuse.* ${currentPackage}-stripped-$version/
-cp --parents -P lib64/libgssapi_krb5.* ${currentPackage}-stripped-$version/
-cp --parents -P lib64/libk5crypto.* ${currentPackage}-stripped-$version/
-cp --parents -P lib64/libkrb5.* ${currentPackage}-stripped-$version/
-cp --parents -P lib64/libkrb5support.* ${currentPackage}-stripped-$version/
-cp --parents -P lib64/libsigsegv.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libatomic.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libcares.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libcups.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libgcc_s.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libgmp.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libgmpxx.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libgomp.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libltdl.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libslang.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libstdc++.so.6* ${currentPackage}-stripped-$version/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	currentPackage=avahi
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	mv ../packages/${currentPackage}-[0-9]* .
-	version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-	ROOT=./ installpkg ${currentPackage}-*.txz
-	mkdir ${currentPackage}-stripped-$version
-	cp --parents -P usr/lib64/libavahi-client.* ${currentPackage}-stripped-$version/
-	cp --parents -P usr/lib64/libavahi-common.* ${currentPackage}-stripped-$version/
-	cp --parents -P usr/lib64/libavahi-glib.* ${currentPackage}-stripped-$version/
-	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-	/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
-	rm -fr $MODULEPATH/${currentPackage}
-fi
-
-currentPackage=binutils
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents usr/bin/ar ${currentPackage}-stripped-$version/
-cp --parents usr/bin/strip ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib$SYSTEMBITS/libbfd* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib$SYSTEMBITS/libsframe* ${currentPackage}-stripped-$version/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=fftw
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib64/libfftw3f.* ${currentPackage}-stripped-$version/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=ntp
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents usr/bin/ntpdate ${currentPackage}-stripped-$version/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=openldap
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents etc/openldap/ldap.conf.new ${currentPackage}-stripped-$version/
-mv ${currentPackage}-stripped-$version/etc/openldap/ldap.conf.new ${currentPackage}-stripped-$version/etc/openldap/ldap.conf
-cp --parents usr/include/* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib$SYSTEMBITS/libl* ${currentPackage}-stripped-$version/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=polkit
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
-sed -i "s|Djs_engine=mozjs|Djs_engine=duktape|g" ${currentPackage}.SlackBuild
-sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
 ### packages outside slackware repository
 
 currentPackage=sysvinit
@@ -216,6 +114,108 @@ cp libduktape.so $MODULEPATH/${currentPackage}/package/usr/lib64
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-${version}-${ARCH}-1.txz
 /sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/duktape*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+### packages that require specific stripping
+
+currentPackage=aaa_libraries
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P lib64/libfuse.* ${currentPackage}-stripped-$version/
+cp --parents -P lib64/libgssapi_krb5.* ${currentPackage}-stripped-$version/
+cp --parents -P lib64/libk5crypto.* ${currentPackage}-stripped-$version/
+cp --parents -P lib64/libkrb5.* ${currentPackage}-stripped-$version/
+cp --parents -P lib64/libkrb5support.* ${currentPackage}-stripped-$version/
+cp --parents -P lib64/libsigsegv.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib64/libatomic.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib64/libcares.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib64/libcups.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib64/libgcc_s.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib64/libgmp.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib64/libgmpxx.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib64/libgomp.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib64/libltdl.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib64/libslang.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib64/libstdc++.so.6* ${currentPackage}-stripped-$version/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	currentPackage=avahi
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+	mv ../packages/${currentPackage}-[0-9]* .
+	version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+	ROOT=./ installpkg ${currentPackage}-*.txz
+	mkdir ${currentPackage}-stripped-$version
+	cp --parents -P usr/lib64/libavahi-client.* ${currentPackage}-stripped-$version/
+	cp --parents -P usr/lib64/libavahi-common.* ${currentPackage}-stripped-$version/
+	cp --parents -P usr/lib64/libavahi-glib.* ${currentPackage}-stripped-$version/
+	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+	/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+	rm -fr $MODULEPATH/${currentPackage}
+fi
+
+currentPackage=binutils
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents usr/bin/ar ${currentPackage}-stripped-$version/
+cp --parents usr/bin/strip ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib$SYSTEMBITS/libbfd* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib$SYSTEMBITS/libsframe* ${currentPackage}-stripped-$version/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=fftw
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib64/libfftw3f.* ${currentPackage}-stripped-$version/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=ntp
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents usr/bin/ntpdate ${currentPackage}-stripped-$version/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=openldap
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents etc/openldap/ldap.conf.new ${currentPackage}-stripped-$version/
+mv ${currentPackage}-stripped-$version/etc/openldap/ldap.conf.new ${currentPackage}-stripped-$version/etc/openldap/ldap.conf
+cp --parents usr/include/* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib$SYSTEMBITS/libl* ${currentPackage}-stripped-$version/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=polkit
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+sed -i "s|Djs_engine=mozjs|Djs_engine=duktape|g" ${currentPackage}.SlackBuild
+sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root

@@ -228,8 +228,13 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=nv-codec-headers
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/d/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
-version=${info#* }
+if [ $SLACKWAREVERSION == "current" ]; then
+	info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
+	version=${info#* }
+else
+	version=12.0.16.1
+	wget https://github.com/FFmpeg/${currentPackage}/releases/download/n${version}/${currentPackage}-${version}.tar.gz
+fi
 sh ${currentPackage}.SlackBuild || exit 1
 installpkg /tmp/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
@@ -247,6 +252,17 @@ rm $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
 
 cd $MODULEPATH
 pip install glad2 || exit 1
+
+if [ $SLACKWAREVERSION != "current" ]; then
+	currentPackage=meson
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+	cp $SCRIPTPATH/extras/meson/* .
+	sh ${currentPackage}.SlackBuild || exit 1
+	rm -fr $MODULEPATH/package-${currentPackage}
+	rm -fr $MODULEPATH/${currentPackage}*
+	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
+	rm $MODULEPATH/packages/meson-*.txz
+fi
 
 currentPackage=libplacebo
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
