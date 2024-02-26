@@ -1,4 +1,3 @@
-
 #!/bin/sh
 MODULENAME=003-gnome
 

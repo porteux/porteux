@@ -38,6 +38,9 @@ rm -rf $PRGNAM-$VERSION
 tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
+
 mkdir -p build
 cd build
 
