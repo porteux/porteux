@@ -56,6 +56,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	mkdir ${currentPackage}-stripped-$version
 	cp --parents -P usr/lib64/libavahi-client.* ${currentPackage}-stripped-$version/
 	cp --parents -P usr/lib64/libavahi-common.* ${currentPackage}-stripped-$version/
+	cp --parents -P usr/lib64/libavahi-glib.* ${currentPackage}-stripped-$version/
 	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 	/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 	rm -fr $MODULEPATH/${currentPackage}
@@ -109,6 +110,15 @@ cp --parents usr/include/* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib$SYSTEMBITS/libl* ${currentPackage}-stripped-$version/
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=polkit
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
+sed -i "s|Djs_engine=mozjs|Djs_engine=duktape|g" ${currentPackage}.SlackBuild
+sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside slackware repository
@@ -190,14 +200,22 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=webfs
-version=1.21
+currentPackage=duktape
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget https://www.kraxel.org/releases/webfs/webfs-$version.tar.gz || exit 1
-tar xvf ${currentPackage}*.tar.gz && cd ${currentPackage}-$version || exit 1
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+info=$(DownloadLatestFromGithub "svaarala" ${currentPackage})
+version=${info#* }
+filename=${info% *}
+tar xvf ${filename} && cd ${currentPackage}-${version}/src
+gcc -fPIC -c duktape.c -l duktape.h
+gcc -shared -o libduktape.so duktape.o
+chmod 755 libduktape.so
+mkdir -p $MODULEPATH/${currentPackage}/package/usr/lib64
+mkdir $MODULEPATH/${currentPackage}/package/usr/include
+cp duktape.c duktape.h duk_config.h $MODULEPATH/${currentPackage}/package/usr/include
+cp libduktape.so $MODULEPATH/${currentPackage}/package/usr/lib64
 cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-${version}-${ARCH}-1.txz
+/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/duktape*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
@@ -355,7 +373,6 @@ rm etc/ld.so.cache
 rm etc/motd
 rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
-rm usr/bin/js[0-9]*
 rm usr/bin/7za
 rm usr/bin/7zr
 rm usr/bin/smbtorture
@@ -366,7 +383,6 @@ rm usr/lib64/libslang.so.1*
 rm usr/lib64/p7zip/7za
 rm usr/lib64/p7zip/7zr
 rm usr/libexec/samba/rpcd_*
-rm usr/local/bin/webfsd
 rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
 
@@ -375,11 +391,9 @@ find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
 # move out stuff that can't be stripped
 mv $MODULEPATH/packages/lib64 $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
 GenericStrip
 AggressiveStrip
 mv $MODULEPATH/lib64 $MODULEPATH/packages/
-mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib64
 
 ### copy cache files
 
