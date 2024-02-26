@@ -98,7 +98,7 @@ CXXFLAGS+="$SLKCFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing -fno-
   --without-system-icu \
   --with-system-zlib \
   --disable-tests \
-  --disable-strip \
+  --enable-strip \
   --with-intl-api \
   --enable-readline \
   --enable-optimize \
