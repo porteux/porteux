@@ -104,7 +104,7 @@ info=$(DownloadLatestFromGithub "svaarala" ${currentPackage})
 version=${info#* }
 filename=${info% *}
 tar xvf ${filename} && cd ${currentPackage}-${version}/src
-gcc -fPIC -c duktape.c -l duktape.h
+gcc -O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC -c duktape.c -l duktape.h
 gcc -shared -o libduktape.so duktape.o
 chmod 755 libduktape.so
 mkdir -p $MODULEPATH/${currentPackage}/package/usr/lib64
