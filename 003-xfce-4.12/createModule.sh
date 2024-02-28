@@ -172,6 +172,28 @@ cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=mate-polkit
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+version=${info#* }
+tar xfv ${currentPackage}-${version}.tar.xz && cd ${currentPackage}-${version} || exit 1
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
+mkdir ${currentPackage}-package
+mkdir build && cd build
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto" meson .. \
+ --prefix=/usr \
+ --buildtype=release \
+ --libdir=lib${SYSTEMBITS} \
+ --libexecdir=/usr/libexec \
+ --sysconfdir=/etc \
+ -Daccountsservice=false
+ninja -j${NUMBERTHREADS} && DESTDIR=../${currentPackage}-package ninja install
+cd ../${currentPackage}-package
+sed -i "s|OnlyShowIn=MATE;||g" etc/xdg/autostart/polkit-mate-authentication-agent-1.desktop
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=gtksourceview
 version=2.10.5
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}

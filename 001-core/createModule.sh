@@ -297,10 +297,10 @@ rm -R usr/lib64/krb5/plugins
 rm -R usr/lib64/locale/C.utf8
 rm -R usr/lib64/p7zip/Codecs
 rm -R usr/lib64/python2.7
-rm -R usr/lib64/python3.9/idlelib
-rm -R usr/lib64/python3.9/lib2to3
-rm -R usr/lib64/python3.9/site-packages/demo
-rm -R usr/lib64/python3.9/turtledemo
+rm -R usr/lib64/python*/idlelib
+rm -R usr/lib64/python*/lib2to3
+rm -R usr/lib64/python*/site-packages/demo
+rm -R usr/lib64/python*/turtledemo
 rm -R usr/lib64/sasl2
 rm -R usr/lib64/systemd
 rm -R usr/local/etc
@@ -330,23 +330,8 @@ rm -R usr/share/lynx
 rm -R usr/share/mc/examples
 rm -R usr/share/mc/help
 rm -R usr/share/mc/hints
-rm -R usr/share/terminfo/1
-rm -R usr/share/terminfo/2
-rm -R usr/share/terminfo/3
-rm -R usr/share/terminfo/4
-rm -R usr/share/terminfo/5
-rm -R usr/share/terminfo/6
-rm -R usr/share/terminfo/7
-rm -R usr/share/terminfo/8
-rm -R usr/share/terminfo/9
-rm -R usr/share/terminfo/A
-rm -R usr/share/terminfo/E
-rm -R usr/share/terminfo/L
-rm -R usr/share/terminfo/M
-rm -R usr/share/terminfo/N
-rm -R usr/share/terminfo/P
-rm -R usr/share/terminfo/Q
-rm -R usr/share/terminfo/X
+rm -R usr/share/terminfo/[0-9]
+rm -R usr/share/terminfo/[A-Z]
 rm -R usr/share/terminfo/b
 rm -R usr/share/terminfo/c
 rm -R usr/share/terminfo/e
@@ -389,9 +374,10 @@ rm var/db/Makefile
 find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
+GenericStrip
+
 # move out stuff that can't be stripped
 mv $MODULEPATH/packages/lib64 $MODULEPATH/
-GenericStrip
 AggressiveStrip
 mv $MODULEPATH/lib64 $MODULEPATH/packages/
 
