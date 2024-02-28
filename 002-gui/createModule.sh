@@ -279,38 +279,25 @@ rm -R usr/share/themes/Clearlooks-Olive
 rm -R usr/share/themes/Mikachu
 rm -R usr/share/themes/Natura
 rm -R usr/share/themes/Orang
-rm -R usr/share/X11/locale/am_ET.UTF-8
-rm -R usr/share/X11/locale/cs_CZ.UTF-8
-rm -R usr/share/X11/locale/el_GR.UTF-8
-rm -R usr/share/X11/locale/fi_FI.UTF-8
-rm -R usr/share/X11/locale/ja
-rm -R usr/share/X11/locale/ja.JIS
-rm -R usr/share/X11/locale/ja.SJIS
-rm -R usr/share/X11/locale/ja_JP.UTF-8
-rm -R usr/share/X11/locale/km_KH.UTF-8
-rm -R usr/share/X11/locale/ko_KR.UTF-8
-rm -R usr/share/X11/locale/pt_BR.UTF-8
-rm -R usr/share/X11/locale/pt_PT.UTF-8
-rm -R usr/share/X11/locale/ru_RU.UTF-8
-rm -R usr/share/X11/locale/sr_RS.UTF-8
+rm -R usr/share/X11/locale/am*
+rm -R usr/share/X11/locale/cs*
+rm -R usr/share/X11/locale/el*
+rm -R usr/share/X11/locale/fi*
+rm -R usr/share/X11/locale/georgian*
+rm -R usr/share/X11/locale/ja*
+rm -R usr/share/X11/locale/km*
+rm -R usr/share/X11/locale/ko*
+rm -R usr/share/X11/locale/nokhchi*
+rm -R usr/share/X11/locale/mulelao*
+rm -R usr/share/X11/locale/pt*
+rm -R usr/share/X11/locale/ru*
+rm -R usr/share/X11/locale/sr*
 rm -R usr/share/X11/locale/tatar-cyr
-rm -R usr/share/X11/locale/th_TH
-rm -R usr/share/X11/locale/th_TH.UTF-8
-rm -R usr/share/X11/locale/vi_VN.tcvn
-rm -R usr/share/X11/locale/vi_VN.viscii
-rm -R usr/share/X11/locale/zh_CN
-rm -R usr/share/X11/locale/zh_CN.UTF-8
-rm -R usr/share/X11/locale/zh_CN.gb18030
-rm -R usr/share/X11/locale/zh_CN.gbk
-rm -R usr/share/X11/locale/zh_HK.UTF-8
-rm -R usr/share/X11/locale/zh_HK.big5
-rm -R usr/share/X11/locale/zh_HK.big5hkscs
-rm -R usr/share/X11/locale/zh_TW
-rm -R usr/share/X11/locale/zh_TW.UTF-8
-rm -R usr/share/X11/locale/zh_TW.big5
+rm -R usr/share/X11/locale/th*
+rm -R usr/share/X11/locale/vi*
+rm -R usr/share/X11/locale/zh*
 rm -R usr/X11R6/include
 rm -R usr/X11R6/man
-
 
 rm etc/profile.d/vte.csh
 rm etc/profile.d/vte.sh
