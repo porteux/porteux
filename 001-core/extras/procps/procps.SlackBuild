@@ -77,6 +77,9 @@ CXXFLAGS="$SLKCFLAGS" \
   --with-elogind \
   --disable-modern-top \
   --build=$ARCH-slackware-linux || exit 1
+  
+# fix libproc2.pc having unknown version
+sed -i "s|Version:.*|Version: ${VERSION}|g" library/libproc2.pc
 
 make $NUMJOBS || exit 1
 make install DESTDIR=$PKG || exit 1

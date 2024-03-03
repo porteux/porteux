@@ -101,8 +101,10 @@ ninja -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1

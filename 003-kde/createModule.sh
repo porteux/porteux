@@ -109,10 +109,12 @@ installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
 currentPackage=FeatherPad
 mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-info=$(DownloadLatestFromGithub "tsujan" ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
+#info=$(DownloadLatestFromGithub "tsujan" ${currentPackage})
+#version=${info#* }
+#filename=${info% *}
+version="1.4.1"
+wget https://github.com/tsujan/${currentPackage}/releases/download/V${version}/${currentPackage}-${version}.tar.xz
+tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
 CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
@@ -166,6 +168,7 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+em usr/share/applications/org.kde.plasma.emojier.desktop
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc

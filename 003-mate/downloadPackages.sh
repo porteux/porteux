@@ -18,9 +18,11 @@ DownloadPackage "hunspell" &
 DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
+DownloadPackage "libappindicator" &
 DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libgtop" &
+DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
