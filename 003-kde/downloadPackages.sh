@@ -5,6 +5,7 @@ REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "accountsservice" &
 DownloadPackage "ark" &
 DownloadPackage "attica" &
 DownloadPackage "baloo" &
@@ -13,8 +14,8 @@ DownloadPackage "bluedevil" &
 DownloadPackage "bluez-qt" &
 DownloadPackage "breeze" &
 DownloadPackage "breeze-gtk" &
-DownloadPackage "breeze-icons" &
 wait
+DownloadPackage "breeze-icons" &
 DownloadPackage "cfitsio" &
 DownloadPackage "dolphin" &
 DownloadPackage "dolphin-plugins" &
@@ -168,6 +169,7 @@ DownloadPackage "syndication" &
 wait
 DownloadPackage "syntax-highlighting" &
 DownloadPackage "systemsettings" &
+DownloadPackage "taglib" &
 DownloadPackage "threadweaver" &
 DownloadPackage "wayland-protocols" &
 DownloadPackage "xcb-util-cursor" &

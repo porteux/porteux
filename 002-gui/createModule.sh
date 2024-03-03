@@ -38,9 +38,8 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=gtk+3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestSourceFromGithub "lah7" "gtk3-classic")
-filename=${info% *}
-tar xvf "$filename" && rm "$filename" || exit 1
+wget https://github.com/lah7/gtk3-classic/archive/refs/heads/master.tar.gz || exit 1
+tar xvf master.tar.gz && rm master.tar.gz || exit 1
 rm gtk3-classic*/gtk+-atk-bridge-meson.build.patch
 rm gtk3-classic*/gtk+-atk-bridge-meson_options.txt.patch
 rm gtk3-classic*/appearance__disable-backdrop.patch
