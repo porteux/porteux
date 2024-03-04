@@ -15,8 +15,8 @@ DownloadPackage "gexiv2" &
 DownloadPackage "glib-networking" &
 DownloadPackage "hunspell" &
 DownloadPackage "hyphen" &
-wait
 DownloadPackage "ibus" &
+wait
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libproxy" &

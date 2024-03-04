@@ -146,6 +146,8 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
 sed -i "s|baobab||g" ./Makefile.am
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|mate-screenshot||g" ./Makefile.am
@@ -167,6 +169,28 @@ cd ${currentPackage}*
 CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=mate-polkit
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+version=${info#* }
+tar xfv ${currentPackage}-${version}.tar.xz && cd ${currentPackage}-${version} || exit 1
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
+mkdir ${currentPackage}-package
+mkdir build && cd build
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto" meson .. \
+ --prefix=/usr \
+ --buildtype=release \
+ --libdir=lib${SYSTEMBITS} \
+ --libexecdir=/usr/libexec \
+ --sysconfdir=/etc \
+ -Daccountsservice=false
+ninja -j${NUMBERTHREADS} && DESTDIR=../${currentPackage}-package ninja install
+cd ../${currentPackage}-package
+sed -i "s|OnlyShowIn=MATE;||g" etc/xdg/autostart/polkit-mate-authentication-agent-1.desktop
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -298,6 +322,7 @@ rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
 rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/bin/canberra*
+rm usr/bin/gtk-demo
 rm usr/lib64/girepository-1.0/SoupGNOME*
 rm usr/lib64/libkeybinder.*
 rm usr/lib64/libsoup-gnome*

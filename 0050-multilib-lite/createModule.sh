@@ -149,9 +149,11 @@ find $MODULEPATH/packages/bin \( -type f -o -type l \) ! -name "sln" -delete
 find $MODULEPATH/packages/usr -mindepth 1 -maxdepth 1 -type d ! -name "lib" -exec rm -rf {} +
 find $MODULEPATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name "en_US.utf8" -exec rm -rf {} +
 
-mv $MODULEPATH/packages/lib $MODULEPATH/ # move out /lib so we can strip safely
-mv $MODULEPATH/packages/usr/lib/dri $MODULEPATH/ # move out usr/lib/dri so we can strip safely
+# move out things that don't support stripping
+mv $MODULEPATH/packages/lib $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib/dri $MODULEPATH/
 GenericStrip
+AggressiveStripAll
 mv $MODULEPATH/lib $MODULEPATH/packages/
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib/
 

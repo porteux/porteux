@@ -1,5 +1,5 @@
---- panels/display/meson-panels-display.build	2024-01-16 20:11:58.289890471 +0100
-+++ panels/display/meson-panels-display.build.patched	2024-01-16 20:11:49.237891467 +0100
+--- panels/display/meson.build	2024-01-16 20:11:58.289890471 +0100
++++ panels/display/meson.build.patched	2024-01-16 20:11:49.237891467 +0100
 @@ -30,7 +30,6 @@
  )
  

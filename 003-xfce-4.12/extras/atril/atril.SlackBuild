@@ -25,7 +25,7 @@ elif [ "$ARCH" = "aarch64" ]; then
   SLKCFLAGS="-O3 -fPIC"
   LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL} -fPIC"
+  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
   LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "arm" ]; then
   SLKCFLAGS="-O3 -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard"
@@ -44,6 +44,9 @@ find -L . \
   -o -perm 511 \) -exec chmod 755 {} \; -o \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+cp $SCRIPTPATH/extras/${PKGNAM}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
@@ -68,7 +71,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --disable-caja \
   --build=$ARCH-slackware-linux
 
-make $NUMJOBS || make || exit 1
+make $NUMJOBS || exit 1
 make install DESTDIR=$PKG
 
 # Don't ship .la files:

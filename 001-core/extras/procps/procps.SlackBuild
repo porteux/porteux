@@ -2,7 +2,7 @@
 
 PKGNAM=procps
 VERSION=${VERSION:-4.0.4}
-PSMISCVER=${PSMISCVER:-23.3}
+PSMISCVER=${PSMISCVER:-v23.3}
 PROCINFONGVER=${PROCINFONGVER:-2.0.304}
 PROCINFOVER=${PROCINFOVER:-18}
 BUILD=${BUILD:-1}
@@ -26,7 +26,7 @@ if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -s -march=i686 -mtune=i686 -flto -FPIC"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL} -flto -fPIC"
+  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -flto -fPIC"
   LIBDIRSUFFIX="64"
 else
   SLKCFLAGS="-O3 -flto"
@@ -39,7 +39,7 @@ cd $TMP
 rm -rf $PKGNAM-v$VERSION
 cd $PKGNAM
 tar xvf $PKGNAM-v$VERSION.tar.?z || exit 1
-tar xvf psmisc-$PSMISCVER.tar.xz || exit 1
+tar xvf psmisc-$PSMISCVER.tar.?z || exit 1
 tar xvf procinfo-ng-$PROCINFONGVER.tar.xz || exit 1
 tar xvf procinfo-$PROCINFOVER.tar.xz || exit 1
 chown -R root:root .
@@ -77,7 +77,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --with-elogind \
   --disable-modern-top \
   --build=$ARCH-slackware-linux || exit 1
-
+  
 # fix libproc2.pc having unknown version
 sed -i "s|Version:.*|Version: ${VERSION}|g" library/libproc2.pc
 
@@ -125,11 +125,22 @@ rm -f $PKG/usr/bin/free $PKG/usr/bin/pidof $PKG/usr/bin/ps
 ln -sf /bin/free $PKG/usr/bin/free
 ln -sf /sbin/pidof $PKG/usr/bin/pidof
 ln -sf /bin/ps $PKG/usr/bin/ps
+# WTF changing the name of this
+( cd $PKG/bin ; ln -sf pidwait pwait )
+( cd $PKG/usr/man/man1 ; ln -sf pidwait.1 pwait.1 )
 
 # Create /etc/sysctl.d:
 mkdir -p $PKG/etc/sysctl.d
 
 cd ../psmisc-$PSMISCVER || exit 1
+
+if [ ! -r configure ]; then
+  if [ -x ./autogen.sh ]; then
+    NOCONFIGURE=1 ./autogen.sh
+  else
+    autoreconf -vif
+  fi
+fi
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \

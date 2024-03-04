@@ -11,7 +11,6 @@ DownloadPackage "autoconf-archive" &
 DownloadPackage "binutils" &
 DownloadPackage "bison" &
 DownloadPackage "cmake" &
-DownloadPackage "expat" &
 DownloadPackage "gc" &
 DownloadPackage "gcc" &
 DownloadPackage "gcc-g++" &

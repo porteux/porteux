@@ -22,7 +22,7 @@ if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL} -fPIC"
+  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
   LIBDIRSUFFIX="64"
 else
   SLKCFLAGS="-O3"
@@ -41,6 +41,9 @@ cd $PRGNAM-$VERSION
 # libgnome-volume-control subproject can be builded with shared library and alsa.
 sed -i "s#'static=true',#'static=false','pkglibdir=/usr/lib${LIBDIRSUFFIX}',#" meson.build
 sed -i 's/alsa=false/alsa=true/' meson.build
+
+cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
 
 mkdir -p build
 cd build

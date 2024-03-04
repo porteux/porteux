@@ -73,14 +73,14 @@ rm -fr ../aufs_sources
 
 echo "Building vmlinuz (this may take a while)..."
 CPUTHREADS=$(nproc --all)
-make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fno-tree-vectorize -mpopcnt -fivopts -fmodulo-sched -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 make clean
 
 echo "Building modules (this may take a while)..."
-make olddefconfig > /dev/null 2>&1 && make INSTALL_MOD_STRIP=1 -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s" || { echo "Fail to build kernel."; exit 1; }
-make -j$CPUTHREADS modules_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
-make -j$CPUTHREADS firmware_install INSTALL_MOD_PATH=../ > /dev/null 2>&1
+make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s" || { echo "Fail to build kernel."; exit 1; }
+make -j$CPUTHREADS INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
+make -j$CPUTHREADS INSTALL_MOD_PATH=../ firmware_install > /dev/null 2>&1
 
 cd ..
 
@@ -167,6 +167,11 @@ chmod 755 ${MODULEPATH}/${MODULENAME}/sbin/cryptsetup
 
 echo "Creating kernel xzm module..."
 mv lib ${MODULEPATH}/${MODULENAME}
+
+# strip kernel module
+find ${MODULEPATH}/${MODULENAME} | xargs strip -S --strip-unneeded -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+
+# create kernel module xzm module
 dir2xzm ${MODULEPATH}/${MODULENAME} -o=${MODULENAME}-${KERNELVERSION}.xzm -q > /dev/null 2>&1
 
 echo "Creating crippled xzm module..."
@@ -195,10 +200,15 @@ rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch/x86/boot/compressed/vml
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -regex '.*\.\(bin\|elf\|exe\|o\|patch\|txt\|xsl\|xz\|ko\|zst\|json\|py\)$' -delete
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name ".*" -delete -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "README*" -delete -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name '*LICENSE*' -delete -print > /dev/null 2>&1
+find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name 'LICENSE*' -delete -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "COPYING" -delete -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "CREDITS" -delete -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name 'MAINTAINERS*' -delete -print > /dev/null 2>&1
+
+find ${CRIPPLEDSOURCEPATH} | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+
+mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build
+cp ${SCRIPTPATH}/${SYSTEMBITS}bit.config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/.config
 
 # create crippled xzm module
 dir2xzm ${MODULEPATH}/${CRIPPLEDMODULENAME} -q > /dev/null 2>&1

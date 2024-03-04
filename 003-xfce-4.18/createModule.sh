@@ -132,6 +132,8 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
 sed -i "s|baobab||g" ./Makefile.am
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|mate-screenshot||g" ./Makefile.am
@@ -156,6 +158,28 @@ cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=mate-polkit
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+version=${info#* }
+tar xfv ${currentPackage}-${version}.tar.xz && cd ${currentPackage}-${version} || exit 1
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
+mkdir ${currentPackage}-package
+mkdir build && cd build
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto" meson .. \
+ --prefix=/usr \
+ --buildtype=release \
+ --libdir=lib${SYSTEMBITS} \
+ --libexecdir=/usr/libexec \
+ --sysconfdir=/etc \
+ -Daccountsservice=false
+ninja -j${NUMBERTHREADS} && DESTDIR=../${currentPackage}-package ninja install
+cd ../${currentPackage}-package
+sed -i "s|OnlyShowIn=MATE;||g" etc/xdg/autostart/polkit-mate-authentication-agent-1.desktop
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
+rm -fr $MODULEPATH/${currentPackage}
+
 # required by mousepad
 installpkg $MODULEPATH/packages/gtksourceview3-*.txz || exit 1
 
@@ -168,6 +192,11 @@ installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 
 # required by xfce4-xkb-plugin
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	# required by xfce4-screenshooter in current
+	installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
+fi
 
 # we want to build from current sources regardless
 export SOURCEREPOSITORY="ftp://ftp.slackware.com/pub/slackware/slackware$SYSTEMBITS-current/source"
