@@ -149,7 +149,6 @@ wait
 DownloadPackage "mlocate" &
 DownloadPackage "ModemManager" &
 DownloadPackage "mozilla-nss" &
-DownloadPackage "mozjs78" &
 DownloadPackage "mpfr" &
 DownloadPackage "ncurses" &
 DownloadPackage "nettle" &
@@ -165,15 +164,14 @@ DownloadPackage "openssh" &
 DownloadPackage "openssl" &
 DownloadPackage "openvpn" &
 DownloadPackage "p11-kit" &
-DownloadPackage "pam" &
 wait
+DownloadPackage "pam" &
 DownloadPackage "parted" &
 DownloadPackage "patch" &
 DownloadPackage "pciutils" &
 DownloadPackage "pcre2" &
 DownloadPackage "pcre" &
 DownloadPackage "pkgtools" &
-DownloadPackage "polkit" &
 DownloadPackage "popt" &
 wait
 DownloadPackage "ppp" &
@@ -237,9 +235,9 @@ wait
 ### slackware current only packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "avahi" &
 	DownloadPackage "lua" &
 	DownloadPackage "lzlib" &
-	DownloadPackage "mozjs102" &
 	DownloadPackage "userspace-rcu" &
 	wait
 fi

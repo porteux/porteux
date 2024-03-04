@@ -1,4 +1,3 @@
-
 #!/bin/sh
 MODULENAME=003-gnome
 
@@ -251,7 +250,7 @@ rm usr/bin/gtk4-icon-browser
 rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
 rm usr/bin/gtk4-widget-factory
-rm usr/bin/js91
+rm usr/bin/js[0-9]*
 rm usr/bin/peas-demo
 rm usr/lib64/gstreamer-1.0/libgstfluidsynthmidi.*
 rm usr/lib64/gstreamer-1.0/libgstneonhttpsrc.*
@@ -270,8 +269,10 @@ rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 
+mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
 GenericStrip
 AggressiveStripAll
+mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib64
 
 ### copy cache files
 

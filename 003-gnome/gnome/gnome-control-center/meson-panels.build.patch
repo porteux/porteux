@@ -1,5 +1,5 @@
---- panels/meson-panels.build	2024-01-16 20:12:20.854887987 +0100
-+++ panels/meson-panels.build.patched	2024-01-16 20:12:14.657888669 +0100
+--- panels/meson.build	2024-01-16 20:12:20.854887987 +0100
++++ panels/meson.build.patched	2024-01-16 20:12:14.657888669 +0100
 @@ -3,7 +3,6 @@
  panels = [
    'applications',

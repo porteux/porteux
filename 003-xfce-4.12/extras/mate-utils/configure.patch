@@ -1,0 +1,21 @@
+--- configure	2024-02-26 13:40:32.000000000 +0100
++++ configure.patched	2024-02-26 13:45:29.342141411 +0100
+@@ -20386,7 +20386,6 @@
+ LIBMATE_PANEL_APPLET_REQUIRED=1.17.0
+ LIBGTOP_REQUIRED=2.12.0
+ LIBCANBERRA_GTK_REQUIRED=0.4
+-MATE_DESKTOP_REQUIRED=1.27.1
+ UDISKS2_REQUIRED=1.90.0
+ 
+ 
+@@ -20996,8 +20995,8 @@
+ 
+ 
+ pkg_failed=no
+-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for mate-desktop-2.0 >= $MATE_DESKTOP_REQUIRED" >&5
+-printf %s "checking for mate-desktop-2.0 >= $MATE_DESKTOP_REQUIRED... " >&6; }
++{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for" >&5
++printf %s "checking for... " >&6; }
+ 
+ if test -n "$MATE_DESKTOP_CFLAGS"; then
+     pkg_cv_MATE_DESKTOP_CFLAGS="$MATE_DESKTOP_CFLAGS"

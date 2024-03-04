@@ -172,12 +172,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libass
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
+wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/libass/${currentPackage}.SlackBuild  || exit 1
 info=$(DownloadLatestFromGithub "libass" ${currentPackage})
 version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -230,19 +227,58 @@ rm -fr $MODULEPATH/${currentPackage}
 # temporary just to build ffmpeg and mpv
 currentPackage=nv-codec-headers
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
-# TODO: remove hardcoded version when upstream fixes ffmpeg compilation error
-#info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
-#version=${info#* }
-version=12.0.16.1
-wget https://github.com/FFmpeg/${currentPackage}/releases/download/n${version}/${currentPackage}-${version}.tar.gz
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/d/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+if [ $SLACKWAREVERSION == "current" ]; then
+	info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
+	version=${info#* }
+else
+	version=12.0.16.1
+	wget https://github.com/FFmpeg/${currentPackage}/releases/download/n${version}/${currentPackage}-${version}.tar.gz
+fi
 sh ${currentPackage}.SlackBuild || exit 1
 installpkg /tmp/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 rm /tmp/${currentPackage}*.t?z
+
+# required by libplacebo
+installpkg $MODULEPATH/packages/python-pip-*.t?z || exit 1
+rm $MODULEPATH/packages/python-pip-*.t?z || exit 1
+installpkg $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
+rm $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
+installpkg $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
+rm $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
+installpkg $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
+rm $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
+
+cd $MODULEPATH
+pip install glad2 || exit 1
+
+if [ $SLACKWAREVERSION != "current" ]; then
+	currentPackage=meson
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+	cp $SCRIPTPATH/extras/meson/* .
+	sh ${currentPackage}.SlackBuild || exit 1
+	rm -fr $MODULEPATH/package-${currentPackage}
+	rm -fr $MODULEPATH/${currentPackage}*
+	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
+	rm $MODULEPATH/packages/meson-*.txz
+fi
+
+currentPackage=libplacebo
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+version=$(curl -s https://code.videolan.org/videolan/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+version=${version//[vV]}
+wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
+cp $SCRIPTPATH/extras/${currentPackage}/meson.build.patch . || exit 1
+sed -i "s|chown -R.*|patch -p0 < \${CWD}/meson\.build\.patch \|\| exit 1\nchown -R root:root \.|g" ${currentPackage}.SlackBuild
+sed -i "s|\$PKGNAM-\$VERSION-\$ARCH|\$PKGNAM-\${VERSION//[vV]}-\$ARCH|g" ${currentPackage}.SlackBuild
+sed -i "s|glslang=enabled|glslang=disabled -Dvulkan=disabled -Dshaderc=disabled |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+installpkg $MODULEPATH/packages/${currentPackage}*.t?z
+rm -fr $MODULEPATH/${currentPackage}
 
 # required by ffmpeg
 installpkg $MODULEPATH/packages/openal-soft-*.t?z || exit 1
@@ -261,7 +297,8 @@ if [ $SLACKWAREVERSION != "current" ]; then
 fi
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc \\\\|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s |g" ${currentPackage}.SlackBuild
-GLSLANG=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
+sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
+GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
@@ -281,37 +318,6 @@ sh ${currentPackage,,}.SlackBuild || exit 1
 mv /tmp/${currentPackage,,}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
 rm -fr $MODULEPATH/${currentPackage,,}
-
-# required by libplacebo
-installpkg $MODULEPATH/packages/python-pip-*.t?z || exit 1
-rm $MODULEPATH/packages/python-pip-*.t?z || exit 1
-installpkg $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
-rm $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
-installpkg $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
-rm $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
-installpkg $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
-rm $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
-
-cd $MODULEPATH
-pip install glad2 || exit 1
-
-currentPackage=libplacebo
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-version=$(curl -s https://code.videolan.org/videolan/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-version=${version//[vV]}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/graphics/${currentPackage}/ -A * || exit 1
-wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
-cp $SCRIPTPATH/extras/${currentPackage}/meson.build.patch . || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|chown -R.*|patch -p0 < \${CWD}/meson\.build\.patch \|\| exit 1\nchown -R root:root \.|g" ${currentPackage}.SlackBuild
-sed -i "s|-Dbuildtype=\$RELEASE|-Dbuildtype=\$RELEASE -Dvulkan=disabled -Ddemos=false -Dshaderc=disabled -Dglslang=disabled|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mpv
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}

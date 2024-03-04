@@ -1,0 +1,10 @@
+--- data/Xsession	2024-02-24 16:34:53.053439846 +0100
++++ data/Xsession.patched	2024-02-24 16:34:23.840438464 +0100
+@@ -43,6 +43,5 @@
+ 		eval "$(dbus-launch --sh-syntax --exit-with-session)"
+ 	fi
+ 
+-	exec -l bash -c "$LXSESSION"
++	exec -l bash -c "$LXSESSION" 2> ~/.xsession-errors
+ fi
+-

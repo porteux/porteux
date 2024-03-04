@@ -32,6 +32,7 @@ DownloadPackage "libnma" &
 DownloadPackage "libproxy" &
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
+DownloadPackage "mozjs102" &
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait

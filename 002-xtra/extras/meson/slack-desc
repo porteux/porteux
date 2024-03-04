@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+     |-----handy-ruler------------------------------------------------------|
+meson: meson (A high performance build system)
+meson:
+meson: Meson is a cross-platform build system designed to be both as fast
+meson: and as user friendly as possible. It supports many languages and
+meson: compilers, including GCC and Clang. Its build definitions are written
+meson: in a simple non-turing complete domain specific language.
+meson:
+meson: Homepage: http://mesonbuild.com/
+meson:
+meson:
+meson:
