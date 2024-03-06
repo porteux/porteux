@@ -183,6 +183,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "kColorPicker" &
 	DownloadPackage "kImageAnnotator" &
 	DownloadPackage "kio-admin" &
+	DownloadPackage "zxing-cpp" &
 	wait
 fi
 

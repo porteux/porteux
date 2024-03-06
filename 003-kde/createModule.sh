@@ -168,7 +168,8 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
-em usr/share/applications/org.kde.plasma.emojier.desktop
+rm usr/bin/systemmonitor
+rm usr/share/applications/org.kde.plasma.emojier.desktop
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
