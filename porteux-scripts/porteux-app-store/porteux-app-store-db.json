@@ -702,11 +702,6 @@
             "tooltip": "Steam requires multilib, also available in the app store",
             "infoDialog": "Steam requires multilib, also available in the app store.",
             "askInstallationPath": true
-        },
-        "Yuzu (Switch)":{
-            "script": "yuzu",
-            "icon": "yuzu.png",
-            "tooltip": "Yuzu emulator for Nintendo Switch"
         }
     },
     "Messengers": {
