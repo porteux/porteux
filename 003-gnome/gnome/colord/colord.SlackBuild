@@ -1,9 +1,8 @@
 #!/bin/sh
 
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
 PRGNAM=colord
-VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
-TAG=${TAG:-_gfs}
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -14,24 +13,10 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 JOBS="-j$(nproc --all)"
-
-bailout() {
-  printf "This requires a \"colord\" user and group.\n"
-  printf "groupadd -g 303 colord\n"
-  printf "useradd -d /var/lib/colord -u 303 -g colord -s /bin/false colord"
-  echo
-  exit 1
-}
-
-if ! getent group colord 2>/dev/null 1>/dev/null ; then
-  bailout
-elif ! getent passwd colord 2>/dev/null 1>/dev/null ; then
-  bailout
-fi
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -49,8 +34,13 @@ set -e
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
+rm -rf $PRGNAM-*
+
+info=$(DownloadLatestFromGithub "hughsie" ${PRGNAM})
+VERSION=${info#* }
+BUILD=${BUILD:-1}
+
+tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -66,7 +56,7 @@ mv po/fur.po po/ur.po
 sed -i 's/fur/ur/' po/LINGUAS
 
 # Since polkit in current apply upstream git
-# we have to reduce the polkit version used to test
+# we have to reduce the polkit VERSION used to test
 # https://github.com/hughsie/colord/issues/36
 sed -i "s|0.114|0.113|" meson.build
 
@@ -116,4 +106,4 @@ cat $CWD/slack-desc > $PKG/install/slack-desc
 cat $CWD/doinst.sh > $PKG/install/doinst.sh
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

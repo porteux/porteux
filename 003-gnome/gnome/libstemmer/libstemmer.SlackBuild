@@ -2,13 +2,10 @@
 
 PRGNAM=libstemmer
 SRCNAM=libstemmer_c
-VERSION=${VERSION:-$(echo $SRCNAM-*.tgz | cut -f 2 -d - | cut -f 1 -d .)}
-BUILD=${BUILD:-1}
 
-
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 CWD=$(pwd)
 JOBS="-j$(nproc --all)"
 
@@ -35,8 +32,13 @@ rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $SRCNAM
-tar xfv $CWD/$SRCNAM-$VERSION.tgz
-cd $SRCNAM
+
+VERSION=2.2.0
+wget https://snowballstem.org/dist/${SRCNAM}-${VERSION}.tar.gz
+BUILD=${BUILD:-1}
+
+tar xfv $SRCNAM-$VERSION.tar.?z*
+cd $SRCNAM-$VERSION
 
 chown -R root:root .
 find -L . \
@@ -57,4 +59,4 @@ mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz

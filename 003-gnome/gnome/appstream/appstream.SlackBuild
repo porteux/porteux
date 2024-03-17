@@ -1,8 +1,8 @@
 #!/bin/sh
 
-PRGNAM=AppStream
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
+PRGNAM=appstream
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -12,9 +12,9 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 CWD=$(pwd)
 JOBS="-j$(nproc --all)"
 
@@ -34,9 +34,14 @@ set -e
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
+rm -rf $PRGNAM-*
+
+info=$(DownloadLatestFromGithub "ximion" ${PRGNAM})
+VERSION=${info#* }
+BUILD=${BUILD:-1}
+
 mkdir $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -70,12 +75,10 @@ meson setup .. \
   DESTDIR=$PKG $NINJA install
 cd ..
 
-# Preserve customizations:
-mv -i $PKG/etc/appstream.conf{,.new}
+rm -fr $PKG/usr/share/appstream
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
-zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/${PRGNAM,,}-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

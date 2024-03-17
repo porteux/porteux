@@ -1,9 +1,6 @@
 #!/bin/sh
 
-PKGNAM=geoclue2
-SRCNAM=geoclue
-VERSION=${VERSION:-$(echo $SRCNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+PRGNAM=geoclue
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -14,9 +11,9 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
-PKG=$TMP/package-$PKGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
@@ -34,9 +31,14 @@ set -e
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $SRCNAM-$VERSION*
-tar xfv $CWD/$SRCNAM-$VERSION.tar.bz2
-cd $SRCNAM-$VERSION
+rm -rf $PRGNAM-**
+
+VERSION=$(curl -s https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+BUILD=${BUILD:-1}
+
+tar xfv $PRGNAM-$VERSION.tar.gz
+cd $PRGNAM-$VERSION
 
 chown -R root:root .
 find -L . \
@@ -81,7 +83,6 @@ cd ..
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
-cp $CWD/doinst.sh $PKG/install
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/${PRGNAM}2-$VERSION-$ARCH-$BUILD.txz

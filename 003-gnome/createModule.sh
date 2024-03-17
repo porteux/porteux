@@ -73,8 +73,12 @@ cd $MODULEPATH
 pip install attrs
 pip install jinja2
 
+export GNOME_LATEST_MAJOR_VERSION=45
+export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/' )
+
 # gnome packages
 for package in \
+	libxmlb \
 	libstemmer \
 	exempi \
 	tracker3 \
@@ -83,11 +87,10 @@ for package in \
 	wpebackend-fdo \
 	bubblewrap \
 	geoclue2 \
-	geocode-glib2 \
+	geocode-glib \
 	libgweather \
 	libpeas \
 	gsound \
-	amtk \
 	gnome-autoar \
 	gnome-desktop \
 	gcr \
@@ -95,7 +98,6 @@ for package in \
 	appstream \
 	libadwaita \
 	gnome-bluetooth \
-	libgnomekbd \
 	libnma-gtk4 \
 	gnome-control-center \
 	libgusb \

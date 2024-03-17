@@ -1,12 +1,6 @@
 #!/bin/bash
 
-cd $(dirname $0) ; CWD=$(pwd)
-
-PKGNAM=libnma-gtk4
-SRCNAM=libnma
-VERSION=${VERSION:-$(echo $SRCNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d- | rev)}
-BUILD=${BUILD:-1}
-NUMJOBS="-j$(nproc --all)"
+PRGNAM=libnma
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -16,9 +10,10 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-TMP=${TMP:-$MODULEPATH}
-PKG=$TMP/package-$PKGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -34,9 +29,14 @@ fi
 rm -rf $PKG
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $SRCNAM-$VERSION
-tar xvf $CWD/$SRCNAM-$VERSION.tar.xz || exit 1
-cd $SRCNAM-$VERSION || exit 1
+rm -rf $PRGNAM-*
+
+wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+tar xvf $PRGNAM-$VERSION.tar.?z* || exit 1
+cd $PRGNAM-$VERSION || exit 1
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
@@ -79,8 +79,7 @@ rm $PKG/usr/lib${LIBDIRSUFFIX}/libnma.so.0
 rm $PKG/usr/lib${LIBDIRSUFFIX}/libnma.so
 
 mkdir -p $PKG/install
-zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-gtk4-$VERSION-$ARCH-$BUILD$TAG.txz

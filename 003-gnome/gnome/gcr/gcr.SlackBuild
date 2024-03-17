@@ -1,10 +1,6 @@
 #!/bin/bash
 
-cd $(dirname $0) ; CWD=$(pwd)
-
-PKGNAM=gcr
-VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-2}
+PRGNAM=gcr
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -15,9 +11,9 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
-PKG=$TMP/package-$PKGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
+PKG=$TMP/package-$PRGNAM
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
@@ -34,22 +30,21 @@ fi
 rm -rf $PKG
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PKGNAM-$VERSION
-tar xvf $CWD/$PKGNAM-$VERSION.tar.xz || exit 1
-cd $PKGNAM-$VERSION || exit 1
+rm -rf $PRGNAM-$VERSION
+
+wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+rm ${PRGNAM}-3*
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+tar xvf $PRGNAM-$VERSION.tar.?z* || exit 1
+cd $PRGNAM-$VERSION || exit 1
 chown -R root:root .
 find . \
  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
  -exec chmod 755 {} \+ -o \
  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
  -exec chmod 644 {} \+
-
-# We disabled these before through ./configure options that don't exist with
-# meson.
-#zcat $CWD/gcr.meson.disable.schemas-compile.update-mime.update-icon-cache.diff.gz | patch -p1 --verbose || exit 1
-
-# Fix for recent meson:
-#zcat $CWD/b3ca1d02bb0148ca787ac4aead164d7c8ce2c4d8.patch.gz | patch -p1 --verbose || exit 1
 
 # Configure, build, and install:
 export CFLAGS="$SLKCFLAGS"
@@ -77,7 +72,6 @@ cd ..
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
-zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
