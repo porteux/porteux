@@ -145,13 +145,11 @@ for package in \
 	libgweather \
 	libpeas \
 	gsound \
-	amtk \
 	gnome-autoar \
 	gnome-desktop \
 	gnome-settings-daemon \
 	libadwaita \
 	gnome-bluetooth \
-	libgnomekbd \
 	libnma-gtk4 \
 	gnome-control-center \
 	mutter \
