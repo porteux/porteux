@@ -1,0 +1,74 @@
+From 109bd9718ce7e0a5f93eb11320e0f38cf9ec6d04 Mon Sep 17 00:00:00 2001
+From: Nathaniel Russell <naterussell83@gmail.com>
+Date: Thu, 29 Feb 2024 01:45:26 +0000
+Subject: [PATCH] Allow Tweaks to work with python3.9 and python3.10 
+
+---
+ gtweak/widgets.py | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/gtweak/widgets.py b/gtweak/widgets.py
+index 17868ddb..9e9757f9 100644
+--- a/gtweak/widgets.py
++++ b/gtweak/widgets.py
+@@ -309,7 +309,7 @@ class TweakPreferencesGroup(Adw.PreferencesGroup, TweakGroup):
+ 
+ class TweakCheckButton(Adw.Bin):
+ 
+-    def __init__(self, title: str, keyvalue: str, subtitle: str | None = None):
++    def __init__(self, title: str, keyvalue: str, subtitle: Union[str, None] = None):
+         super().__init__()
+ 
+         self.keyvalue = keyvalue
+@@ -553,6 +553,7 @@ class GSettingsTweakComboRow(Adw.ComboRow, _GSettingsTweak, _DependableMixin):
+                 self._extra_info += " " + " ".join(op[0] for op in self._key_options)
+         return self._extra_info
+ 
++from typing import Union
+ 
+ class FileChooserButton(Gtk.Button, GObject.Object):
+     """
+@@ -576,7 +577,7 @@ class FileChooserButton(Gtk.Button, GObject.Object):
+         if self._file:
+             self._btn_content.set_label(self._file.get_basename())
+ 
+-    def get_absolute_path(self) -> str | None:
++    def get_absolute_path(self) -> Union[str, None]:
+         return self._file.get_path() if self._file else None
+ 
+     @GObject.Property(str)
+@@ -584,7 +585,7 @@ class FileChooserButton(Gtk.Button, GObject.Object):
+         return self._file.get_uri()
+ 
+     @file_uri.setter
+-    def _set_file_uri(self, uri: str | None):
++    def _set_file_uri(self, uri: Union[str, None]):
+         self._file = Gio.File.new_for_uri(uri) if uri else None
+ 
+         if self._file and self.get_realized():
+@@ -696,10 +697,11 @@ class GSettingsSwitchTweakValue(Gtk.Box, _GSettingsTweak):
+     def get_active(self):
+         raise NotImplementedError()
+ 
++from typing import Optional
+ 
+ class TweaksCheckGroupActionRow(Adw.PreferencesRow, Tweak):
+ 
+-    def __init__(self, title, setting, key_name, subtitle = None, **options):
++    def __init__(self, title, setting, key_name, subtitle: Optional[str] = None, **options):
+         Adw.PreferencesRow.__init__(self, title=title, activatable=False)
+         Tweak.__init__(self, title, "", **options)
+ 
+@@ -731,7 +733,7 @@ class TweaksCheckGroupActionRow(Adw.PreferencesRow, Tweak):
+ 
+         self.settings.connect(f"changed::{self.key_name}", self._on_settings_changed)
+ 
+-    def add_row(self, title: str, key_name: str, subtitle: str | None = None) -> TweakCheckButton:
++    def add_row(self, title: str, key_name: str, subtitle: Optional[str] = None) -> TweakCheckButton:
+         row = TweakCheckButton(title=title, subtitle=subtitle, keyvalue=key_name)
+ 
+         if self.group is None:
+-- 
+GitLab
+
+

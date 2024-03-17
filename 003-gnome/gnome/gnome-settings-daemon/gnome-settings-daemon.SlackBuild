@@ -1,8 +1,6 @@
 #!/bin/sh
 
 PRGNAM=gnome-settings-daemon
-VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -13,9 +11,9 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
@@ -29,27 +27,21 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
-
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+rm -rf $PRGNAM-*
+
+wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-# Need it if want to run tests
-sed -e 's/libsystemd/libelogind/' \
-    -i plugins/power/test.py
+patch -Np1 -i $CWD/disable-systemd.patch
 
-# Fixing backlight functionality in gnome-control-center:
-sed -e 's/(backlight->logind_proxy)/(0)/' \
-    -i plugins/power/gsd-backlight.c
-
-# Patches from Gentoo Linux
-patch -Np1 -i $CWD/gnome-settings-daemon-3.38.1-Allow-udev-optional-on-Linux.patch
-patch -Np1 -i $CWD/gnome-settings-daemon-3.38.1-build-Allow-NM-optional-on-Linux.patch
-patch -Np1 -i $CWD/gnome-settings-daemon-3.38.1-build-Make-colord-and-wacom-optional-and-controllabl.patch
+set -e
 
 mkdir -p build
 cd build
@@ -67,7 +59,8 @@ meson .. \
  --mandir=/usr/man \
  --localstatedir=/var \
  -Ddefault_library=shared \
- -Dsystemd=false
+ -Dsystemd=false \
+ -Delogind=true
 
 ninja $JOBS || ninja
 DESTDIR=$PKG ninja install
@@ -76,10 +69,6 @@ DESTDIR=$PKG ninja install
 cp $CWD/org.gnome.settings-daemon.plugins.power.gschema.override $PKG/usr/share/glib-2.0/schemas
 
 cd ..
-mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
-cp -a AUTHORS COPYING* ChangeLog MAINTAINERS NEWS README \
-  $PKG/usr/doc/$PRGNAM-$VERSION
-cat $CWD/$(basename $0) > $PKG/usr/doc/$PRGNAM-$VERSION/$(basename $0)
 
 mkdir -p $PKG/install
 #      |-----handy-ruler------------------------------------------------------|
@@ -120,4 +109,4 @@ fi
 EOT
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

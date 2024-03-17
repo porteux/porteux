@@ -1,8 +1,6 @@
 #!/bin/sh
 
 PRGNAM=exempi
-VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -13,9 +11,9 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
@@ -34,8 +32,13 @@ set -e
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
+rm -rf $PRGNAM-*
+
+VERSION=$(curl -s https://gitlab.freedesktop.org/libopenraw/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wget https://gitlab.freedesktop.org/libopenraw/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+BUILD=${BUILD:-1}
+
+tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 chown -R root:root .
 find -L .  -perm /111 -a \! -perm 755 -a -exec chmod 755 {} \+ -o \
@@ -68,4 +71,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

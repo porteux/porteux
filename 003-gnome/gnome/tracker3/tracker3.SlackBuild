@@ -1,9 +1,6 @@
 #!/bin/sh
 
-PRGNAM=$(basename $0 | cut -f1 -d.)
-PKGNAM=tracker
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PKGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+PRGNAM=tracker
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -14,9 +11,9 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
@@ -32,15 +29,19 @@ fi
 
 set -e
 
-UMASKBKP=$(umask)
-umask 0022
-
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PKGNAM-$VERSION
-tar xvf $CWD/$PKGNAM-$VERSION.tar.xz
-cd $PKGNAM-$VERSION
+rm -rf $PRGNAM-$VERSION
+
+wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+rm tracker-miners*
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+tar xvf $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
 chown -R root:root .
 find -L . \
  \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
@@ -51,7 +52,6 @@ find -L . \
 mkdir -p build
 cd build
 
-# Tests required for compile tracker-miners
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
 meson .. \
@@ -78,10 +78,6 @@ find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | gr
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 
 cd ..
-mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
-cp -a AUTHORS COPYING* ChangeLog* MAINTAINERS NEWS *.md \
-  $PKG/usr/doc/$PRGNAM-$VERSION
-cat $CWD/$(basename $0) > $PKG/usr/doc/$PRGNAM-$VERSION/$(basename $0)
 
 mkdir -p $PKG/install
 #      |-----handy-ruler------------------------------------------------------|
@@ -118,6 +114,4 @@ fi
 EOT
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
-
-umask ${UMASKBKP}
+/sbin/makepkg -l y -c n $OUTPUT/${PRGNAM}3-$VERSION-$ARCH-$BUILD.txz

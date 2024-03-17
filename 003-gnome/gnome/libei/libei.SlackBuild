@@ -1,8 +1,6 @@
 #!/bin/sh
 
-PRGNAM=$(basename $0 | cut -f1 -d.)
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+PRGNAM=libei
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -12,9 +10,9 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 CWD=$(pwd)
 JOBS="-j$(nproc --all)"
 
@@ -34,9 +32,16 @@ set -e
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+rm -rf $PRGNAM-*
+
+VERSION=$(curl -s https://gitlab.freedesktop.org/libinput/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wget https://gitlab.freedesktop.org/libinput/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+BUILD=${BUILD:-1}
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
+
+sed -i "s/subdir('doc')//" meson.build
 
 chown -R root:root .
 find -L . \
@@ -60,7 +65,6 @@ meson .. \
     --sysconfdir=/etc \
     -Dstrip=true \
     -Dsd-bus-provider=libelogind \
-    -Ddocumentation=api \
     -Dliboeffis=auto \
     -Dtests=disabled
   "${NINJA:=ninja}"
@@ -70,8 +74,7 @@ cd ..
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
 
 mkdir -p $PKG/install
-if [ -f $CWD/slack-required ]; then cat $CWD/slack-required > $PKG/install/slack-required; fi
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

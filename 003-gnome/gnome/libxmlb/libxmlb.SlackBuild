@@ -1,6 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-PRGNAM=gnome-browser-connector
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
+PRGNAM=libxmlb
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -34,11 +36,11 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-*
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep ' <title>' | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+info=$(DownloadLatestFromGithub "hughsie" ${PRGNAM})
+VERSION=${info#* }
 BUILD=${BUILD:-1}
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -47,31 +49,33 @@ find -L . \
   -o -perm 511 \) -exec chmod 755 {} \; -o \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-sed -i "s|'python3'|'/usr/bin/python3'|" meson.build
-
-mkdir -p build
+ 
+mkdir build
 cd build
+  CFLAGS="$SLKCFLAGS" \
+  CXXFLAGS="$SLKCFLAGS" \
+  meson .. \
+    --buildtype=release \
+    --infodir=/usr/info \
+    --libdir=/usr/lib${LIBDIRSUFFIX} \
+    --localstatedir=/var \
+    --mandir=/usr/man \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    -Dstrip=true \
+    -Dintrospection=true \
+    -Dtests=false \
+    -Dgtkdoc=false \
+    -Dstemmer=false \
+    -Dcli=true
+  "${NINJA:=ninja}"
+  DESTDIR=$PKG $NINJA install
 
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
-meson .. \
- --prefix=/usr \
- --buildtype=release \
- --libdir=lib${LIBDIRSUFFIX} \
- --libexecdir=/usr/libexec \
- --sysconfdir=/etc \
- --infodir=/usr/info \
- --mandir=/usr/man \
- --localstatedir=/var
-
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
-
-#cp -r $PKG/etc/chromium/ $PKG/etc/chrome
+cd ..
 
 mkdir -p $PKG/install
-cp $CWD/slack-desc $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
+

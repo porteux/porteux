@@ -1,8 +1,6 @@
 #!/bin/sh
 
-PRGNAM=$(basename $0 | cut -f1 -d.)
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+PRGNAM=eog
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -13,9 +11,9 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
@@ -31,14 +29,16 @@ fi
 
 set -e
 
-UMASKBKP=$(umask)
-umask 0022
-
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+rm -rf $PRGNAM-*
+
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v ">NAUTILUS_PYTHON" | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+BUILD=${BUILD:-1}
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -117,6 +117,4 @@ fi
 EOT
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
-
-umask ${UMASKBKP}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

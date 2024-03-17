@@ -1,8 +1,6 @@
 #!/bin/sh
 
-PRGNAM=$(basename $0 | cut -f1 -d.)
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+PRGNAM=gspell
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -12,9 +10,9 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 CWD=$(pwd)
 JOBS="-j$(nproc --all)"
 
@@ -31,14 +29,16 @@ fi
 
 set -e
 
-UMASKBKP=$(umask)
-umask 0022
-
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+rm -rf $PRGNAM-*
+
+wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -50,7 +50,7 @@ find -L . \
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-./configure \
+./autogen.sh \
  --prefix=/usr \
  --libdir=/usr/lib${LIBDIRSUFFIX} \
  --libexecdir=/usr/libexec \
@@ -85,6 +85,4 @@ $PRGNAM:
 EOT
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
-
-umask ${UMASKBKP}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
