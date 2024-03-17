@@ -362,7 +362,6 @@ rm usr/bin/7za
 rm usr/bin/7zr
 rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
-rm usr/lib64/liblibboost_*
 rm usr/lib64/libqgpgme.*
 rm usr/lib64/libslang.so.1*
 rm usr/lib64/p7zip/7za
