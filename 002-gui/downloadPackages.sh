@@ -259,7 +259,6 @@ fi
 
 ### packages that require specific striping
 
-DownloadPackage "boost" &
 DownloadPackage "llvm" &
 DownloadPackage "vulkan-sdk" &
 wait

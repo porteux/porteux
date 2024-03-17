@@ -114,7 +114,10 @@ for package in \
 	gdm \
 	gspell \
 	gnome-text-editor \
-	eog \
+	libjxl \
+	libheif \
+	glycin-loaders \
+	loupe \
 	evince \
 	gnome-system-monitor \
 	gnome-console \
@@ -131,6 +134,11 @@ sh ${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/$package-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+# only required for building not for run-time
+rm $MODULEPATH/packages/rust*
+rm $MODULEPATH/packages/libheif*
+rm $MODULEPATH/packages/libjxl*
 
 ### fake root
 
