@@ -96,11 +96,6 @@ copy2ram
        You can also use the 'rammod' cheatcode to selectively load
        modules to RAM - see the 'rammod' description below.
 
-debug
-
-   ... Start the shell several times during the boot to perform
-       debugging actions.
-
 delay=some_value
 
    ... To be used for devices which need extra time to settle up.
@@ -434,7 +429,7 @@ does not get saved in cases where you experience a hang (kernel crash)
 or power interrupt.
 Please use with caution!
 
-While you are running a session with changes=EXIT, you can use the
+While you are running a session with changes=EXIT:, you can use the
 'dump-session' command (run as root from the command line) to move all 
 of your changes from RAM to your storage media.  This will reduce the 
 risk of data loss and free up your RAM.
