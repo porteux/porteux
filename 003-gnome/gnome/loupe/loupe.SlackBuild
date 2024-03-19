@@ -40,8 +40,6 @@ find -L . \
 mkdir -p build
 cd build
 
-export CARGO_PROFILE_RELEASE_LTO=true CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
-
 meson .. \
  --prefix=/usr \
  --buildtype=release \
@@ -52,7 +50,7 @@ meson .. \
  --mandir=/usr/man \
  --localstatedir=/var
 
-DESTDIR=$PKG ninja $JOBS install
+RUSTFLAGS="-C panic=abort -C strip=debuginfo" DESTDIR=$PKG ninja $JOBS install
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
