@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PRGNAM=glycin-loaders
+PRGNAM=glycin
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -40,8 +40,6 @@ find -L . \
 mkdir -p build
 cd build
 
-export CARGO_PROFILE_RELEASE_LTO=true CARGO_PROFILE_RELEASE_CODEGEN_UNITS=1
-
 meson .. \
  --prefix=/usr \
  --buildtype=release \
@@ -53,7 +51,7 @@ meson .. \
  --localstatedir=/var \
  -Dtest_skip_install=true
 
-DESTDIR=$PKG ninja $JOBS install
+RUSTFLAGS="-C panic=abort -C strip=debuginfo" DESTDIR=$PKG ninja $JOBS install
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
