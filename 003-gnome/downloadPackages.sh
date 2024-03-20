@@ -32,7 +32,7 @@ DownloadPackage "libnma" &
 DownloadPackage "libproxy" &
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
-DownloadPackage "mozjs102" &
+DownloadPackage "mozjs115" &
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait
@@ -50,8 +50,8 @@ DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
 DownloadPackage "iso-codes" &
 DownloadPackage "krb5" &
-wait
 DownloadPackage "libsass" & # required by gnome-console
+wait
 DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
 DownloadPackage "python-pip" &

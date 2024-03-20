@@ -60,6 +60,7 @@ cd build
     --mandir=/usr/man \
     --prefix=/usr \
     --sysconfdir=/etc \
+    -Dbuild-testsuite=false \
     -Dvapi=true
   ninja $JOBS || ninja
   DESTDIR=$PKG ninja install

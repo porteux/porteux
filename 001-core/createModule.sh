@@ -375,7 +375,7 @@ find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
 mv $MODULEPATH/packages/lib64/libc-* $MODULEPATH/
 GenericStrip
-mv $MODULEPATH/lib64/libc- $MODULEPATH/packages/lib64
+mv $MODULEPATH/libc- $MODULEPATH/packages/lib64
 
 # move out stuff that can't be stripped
 mv $MODULEPATH/packages/lib64 $MODULEPATH/
