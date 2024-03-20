@@ -54,26 +54,12 @@ rm -fr $MODULEPATH/${currentPackage}
 # required from now on
 installpkg $MODULEPATH/packages/*.txz || exit 1
 
-# only required for building not for run-time
-rm $MODULEPATH/packages/boost*
-rm $MODULEPATH/packages/cups*
-rm $MODULEPATH/packages/dbus-python*
-rm $MODULEPATH/packages/egl-wayland*
-rm $MODULEPATH/packages/iso-codes*
-rm $MODULEPATH/packages/krb5*
-rm $MODULEPATH/packages/libsass*
-rm $MODULEPATH/packages/libsoup3*
-rm $MODULEPATH/packages/libwnck3*
-rm $MODULEPATH/packages/python-pip*
-rm $MODULEPATH/packages/sassc*
-rm $MODULEPATH/packages/xtrans*
-
 # required by mutter 45+
 cd $MODULEPATH
 pip install attrs
 pip install jinja2
 
-export GNOME_LATEST_MAJOR_VERSION=45
+export GNOME_LATEST_MAJOR_VERSION=$(curl https://static.gnome.org/calendars/schedule-unstable.ics 2>/dev/null | grep " stable release" | grep "DESCRIPTION:" | cut -d " " -f2 | cut -d "." -f 1)
 export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/' )
 
 # gnome packages
@@ -93,7 +79,6 @@ for package in \
 	gsound \
 	gnome-autoar \
 	gnome-desktop \
-	gcr \
 	gnome-settings-daemon \
 	appstream \
 	libadwaita \
@@ -114,9 +99,6 @@ for package in \
 	gdm \
 	gspell \
 	gnome-text-editor \
-	libjxl \
-	libheif \
-	glycin-loaders \
 	loupe \
 	evince \
 	gnome-system-monitor \
@@ -136,9 +118,20 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # only required for building not for run-time
+rm $MODULEPATH/packages/boost*
+rm $MODULEPATH/packages/cups*
+rm $MODULEPATH/packages/dbus-python*
+rm $MODULEPATH/packages/egl-wayland*
+rm $MODULEPATH/packages/iso-codes*
+rm $MODULEPATH/packages/krb5*
+rm $MODULEPATH/packages/libsass*
+rm $MODULEPATH/packages/libsoup3*
+rm $MODULEPATH/packages/libwnck3*
+rm $MODULEPATH/packages/llvm*
+rm $MODULEPATH/packages/python-pip*
 rm $MODULEPATH/packages/rust*
-rm $MODULEPATH/packages/libheif*
-rm $MODULEPATH/packages/libjxl*
+rm $MODULEPATH/packages/sassc*
+rm $MODULEPATH/packages/xtrans*
 
 ### fake root
 

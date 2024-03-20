@@ -79,7 +79,7 @@ cd build
     -Dsysconfsubdir=/etc/gdm \
     -Dinitial-vt=7
   "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA install
+  DESTDIR=$PKG $NINJA $JOBS install
 cd ..
 
 mkdir -p $PKG/etc/pam.d
@@ -87,10 +87,7 @@ cat $CWD/gdm-autologin.pam > $PKG/etc/pam.d/gdm-autologin
 cat $CWD/gdm-password.pam > $PKG/etc/pam.d/gdm-password
 cat $CWD/gdm-launch-environment.pam > $PKG/etc/pam.d/gdm-launch-environment
 cat $CWD/wayland-session > $PKG/etc/gdm/wayland-session
-
-# Install GDM wrapper script:
-mv $PKG/usr/sbin/{gdm,gdm-bin}
-cat $CWD/gdm.wrap > $PKG/usr/sbin/gdm
+chmod 755 $PKG/etc/gdm/wayland-session
 
 # Handle /etc/gdm/custom.conf a little nicer:
 mv $PKG/etc/gdm/{custom.conf,custom.conf.new}

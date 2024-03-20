@@ -38,6 +38,11 @@ rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.xz ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH} 2>/dev/null
 
+echo "Downloading firmware in the background..."
+if [ ! -f kernel-firmware-*.txz ]; then
+	wget -r -nd --no-parent ftp://ftp.slackware.com/pub/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz > /dev/null 2>&1 & || { echo "Fail to download firmware."; exit 1; }
+fi
+
 echo "Downloading kernel source code..."
 if [ ! -f linux-${KERNELVERSION}.tar.xz ]; then
 	wget -P ${MODULEPATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNELMAJORVERSION}.x/linux-${KERNELVERSION}.tar.xz > /dev/null 2>&1 || { echo "Fail to download kernel source code."; exit 1; }
@@ -90,10 +95,8 @@ rm lib/modules/$dir/build lib/modules/$dir/source > /dev/null 2>&1
 ln -sf /usr/src/linux lib/modules/$dir/build
 ln -sf /usr/src/linux lib/modules/$dir/source
 
-echo "Downloading firmware..."
-if [ ! -f kernel-firmware-*.txz ]; then
-	wget -r -nd --no-parent ftp://ftp.slackware.com/pub/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz > /dev/null 2>&1 || { echo "Fail to download firmware."; exit 1; }
-fi
+# wait for firmware download to finish
+wait
 
 echo "Extracting firmware..."
 mkdir firmware && tar xf kernel-firmware-*.txz -C firmware > /dev/null 2>&1

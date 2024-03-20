@@ -1,17 +1,7 @@
-From 707213c1c0bf3acc9b7cdd22a13f8ea84d9c7229 Mon Sep 17 00:00:00 2001
-From: Nathaniel Russell <46272571+nater1983@users.noreply.github.com>
-Date: Thu, 14 Sep 2023 17:02:02 +0000
-Subject: [PATCH] Xsession: Add language for Gnome
-
----
- data/Xsession.in | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/data/Xsession.in b/data/Xsession.in
-index 2e4de4fe3..a31d374ba 100755
---- a/data/Xsession.in
-+++ b/data/Xsession.in
-@@ -45,6 +45,10 @@ elif [ -f /usr/etc/xprofile ]; then
+diff -Naur gdm-42.0/data/Xsession.in gdm-42.0-patched/data/Xsession.in
+--- gdm-42.0/data/Xsession.in	2022-03-21 13:12:40.487113700 -0500
++++ gdm-42.0-patched/data/Xsession.in	2022-08-09 21:19:33.559221580 -0500
+@@ -45,6 +45,10 @@
  fi
  test -f "$HOME/.xprofile" && . "$HOME/.xprofile"
  

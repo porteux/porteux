@@ -38,6 +38,7 @@ DownloadPackage "ninja" &
 wait
 DownloadPackage "perl" &
 DownloadPackage "pkg-config" &
+DownloadPackage "python-packaging" &
 DownloadPackage "python-setuptools" &
 DownloadPackage "texinfo" &
 DownloadPackage "util-macros" &
