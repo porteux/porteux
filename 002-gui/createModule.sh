@@ -59,7 +59,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=galculator
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/academic/${currentPackage}/ -A * || exit 1
-info=$(DownloadLatestFromGithub "galculator" "galculator")
+info=$(DownloadLatestFromGithub "${currentPackage}" "${currentPackage}")
 version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
@@ -102,7 +102,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=webp-pixbuf-loader
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/graphics/${currentPackage}/ -A * || exit 1
-info=$(DownloadLatestFromGithub "aruiz" "webp-pixbuf-loader")
+info=$(DownloadLatestFromGithub "aruiz" "${currentPackage}")
 version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
@@ -111,6 +111,16 @@ sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.Sl
 sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=libjxl
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
+tagInfo=$(curl -s https://api.github.com/repos/${currentPackage}/${currentPackage}/tags)
+version=$(echo "$tagInfo" | tr ',' '\n' | grep "\"name\":" | cut -d \" -f 4 | grep -v "alpha" | grep -v "beta" | sort -V -r | head -n 1)
+wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/tags/${version}.tar.gz -O ${currentPackage}-${version//[vV]}.tar.gz
+sh ${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pipewire

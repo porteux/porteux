@@ -11,7 +11,6 @@ DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
-DownloadPackage "gcr4" & # required by gnome-settings-daemon
 DownloadPackage "gexiv2" &
 wait
 DownloadPackage "gjs" &
