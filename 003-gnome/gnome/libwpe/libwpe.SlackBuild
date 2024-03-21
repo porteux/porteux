@@ -62,8 +62,7 @@ meson .. \
  --localstatedir=/var \
  -Dbuild-docs=false
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 cd ..
 

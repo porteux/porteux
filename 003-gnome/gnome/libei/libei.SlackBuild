@@ -68,7 +68,7 @@ meson .. \
     -Dliboeffis=auto \
     -Dtests=disabled
   "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA install
+  DESTDIR=$PKG $NINJA $JOBS install
 cd ..
 
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la

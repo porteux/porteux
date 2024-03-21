@@ -90,8 +90,7 @@ meson .. \
  -Dsystemd=false \
  -Dinstalled_tests=false
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 mkdir -p $PKG/install
 #      |-----handy-ruler------------------------------------------------------|

@@ -34,7 +34,8 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-*
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep ' <title>' | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+#VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep ' <title>' | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+VERSION="45.1"
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 BUILD=${BUILD:-1}
 
@@ -48,8 +49,9 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
-for i in *.patch; do patch -Np1 -i $i || exit 1; done
+# only for version 45.2+ and python < 3.10
+#cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
+#for i in *.patch; do patch -Np1 -i $i || exit 1; done
 
 mkdir -p build
 cd build
@@ -64,8 +66,7 @@ meson .. \
  --mandir=/usr/man \
  --buildtype=release
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 cd ..
 

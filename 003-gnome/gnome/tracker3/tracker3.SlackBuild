@@ -71,8 +71,7 @@ meson .. \
  -Dsoup=soup3 \
  -Dtests_tap_protocol=false
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true

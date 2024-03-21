@@ -72,8 +72,7 @@ meson .. \
  -Denable-backend=true \
  -Ddemo-agent=false
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 # gnome-keyring offical slackware package have a geoclue.conf
 # mv $PKG/etc/geoclue/geoclue.conf $PKG/etc/geoclue/geoclue.conf.new

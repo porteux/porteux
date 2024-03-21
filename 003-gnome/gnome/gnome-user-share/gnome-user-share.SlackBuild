@@ -69,8 +69,7 @@ meson .. \
  -Dsystemduserunitdir=/usr/lib/systemd/user/ \
  -Dmodules_path=/usr/lib${LIBDIRSUFFIX}/modules
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 cd ..
 

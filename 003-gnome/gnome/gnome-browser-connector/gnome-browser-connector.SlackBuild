@@ -65,8 +65,7 @@ meson .. \
  --mandir=/usr/man \
  --localstatedir=/var
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 #cp -r $PKG/etc/chromium/ $PKG/etc/chrome
 
