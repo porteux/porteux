@@ -250,7 +250,7 @@ wait
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libdeflate" & # required by libtiff 
-	DownloadPackage "libgcr4" & # required by gvfs 1.54+
+	DownloadPackage "gcr4" & # required by gvfs 1.54+
 	DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
 	wait
 else
