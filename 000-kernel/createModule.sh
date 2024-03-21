@@ -38,11 +38,6 @@ rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.xz ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH} 2>/dev/null
 
-echo "Downloading firmware in the background..."
-if [ ! -f kernel-firmware-*.txz ]; then
-	wget -r -nd --no-parent ftp://ftp.slackware.com/pub/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz > /dev/null 2>&1 & || { echo "Fail to download firmware."; exit 1; }
-fi
-
 echo "Downloading kernel source code..."
 if [ ! -f linux-${KERNELVERSION}.tar.xz ]; then
 	wget -P ${MODULEPATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNELMAJORVERSION}.x/linux-${KERNELVERSION}.tar.xz > /dev/null 2>&1 || { echo "Fail to download kernel source code."; exit 1; }
@@ -75,6 +70,13 @@ for i in ../aufs_sources/*.patch; do
 	patch -N -p1 < "$i" > /dev/null 2>&1 || { echo "Failed to add AUFS patch '${i}'."; exit 1; }
 done
 rm -fr ../aufs_sources
+
+echo "Downloading firmware in the background..."
+(
+if [ ! -f kernel-firmware-*.txz ]; then
+	wget -r -nd --no-parent http://slackware.uk/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz -P ${MODULEPATH} > /dev/null 2>&1 || { echo "Fail to download firmware."; exit 1; }
+fi
+) &
 
 echo "Building vmlinuz (this may take a while)..."
 CPUTHREADS=$(nproc --all)
