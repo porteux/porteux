@@ -99,6 +99,7 @@ for package in \
 	gdm \
 	gspell \
 	gnome-text-editor \
+	glycin \
 	loupe \
 	evince \
 	gnome-system-monitor \
