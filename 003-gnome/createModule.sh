@@ -59,7 +59,7 @@ cd $MODULEPATH
 pip install attrs
 pip install jinja2
 
-export GNOME_LATEST_MAJOR_VERSION=$(curl https://static.gnome.org/calendars/schedule-unstable.ics 2>/dev/null | grep " stable release" | grep "DESCRIPTION:" | cut -d " " -f2 | cut -d "." -f 1)
+export GNOME_LATEST_MAJOR_VERSION=46
 export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/' )
 
 # gnome packages
@@ -109,6 +109,7 @@ for package in \
 	gnome-browser-connector \
 	file-roller \
 	gnome-backgrounds \
+	adwaita-icon-theme \
 	xdg-desktop-portal-gnome \
 ; do
 cd $SCRIPTPATH/gnome/$package || exit 1
@@ -131,6 +132,7 @@ rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/python-pip*
 rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
+rm $MODULEPATH/packages/vulkan-sdk*
 rm $MODULEPATH/packages/xtrans*
 
 ### fake root
@@ -149,6 +151,10 @@ CopyToDevel
 ### copy language files to 08-multilanguage
 
 CopyToMultiLanguage
+
+### update icon cache
+
+gtk-update-icon-cache $MODULEPATH/packages/usr/share/icons/Adwaita
 
 ### module clean up
 

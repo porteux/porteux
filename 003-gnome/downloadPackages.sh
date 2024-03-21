@@ -11,6 +11,7 @@ DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
+DownloadPackage "gcr4" & # required by gnome-settings-daemon
 DownloadPackage "gexiv2" &
 wait
 DownloadPackage "gjs" &
@@ -57,6 +58,7 @@ DownloadPackage "libwnck3" &
 DownloadPackage "python-pip" &
 DownloadPackage "rust" & # required by loupe
 DownloadPackage "sassc" & # required by gnome-console
+DownloadPackage "vulkan-sdk" & # required by gtksourceview
 DownloadPackage "xtrans" &
 wait
 
