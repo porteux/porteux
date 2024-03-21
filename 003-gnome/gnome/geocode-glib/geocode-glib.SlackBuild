@@ -14,6 +14,7 @@ CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$MODULEPATH/packages}
+JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -64,7 +65,7 @@ cd build
     -Denable-installed-tests=false \
     -Dsoup2=false
   "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA install
+  DESTDIR=$PKG $NINJA $JOBS install
 cd ..
 
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la

@@ -62,8 +62,7 @@ meson .. \
  --buildtype=release \
  -Ddocs=disabled
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 # Don't ship .la files:
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/nautilus/extensions-3.0/*.la

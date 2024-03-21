@@ -69,7 +69,7 @@ cd build
     -Dstemmer=false \
     -Dcli=true
   "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA install
+  DESTDIR=$PKG $NINJA $JOBS install
 
 cd ..
 

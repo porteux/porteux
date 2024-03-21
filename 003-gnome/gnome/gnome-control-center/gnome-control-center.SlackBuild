@@ -48,6 +48,8 @@ mv libgnome-volume-control-master/* subprojects/gvc
 # libgnome-volume-control subproject can be builded with shared library and alsa.
 sed -i "s#'static=true',#'static=false','pkglibdir=/usr/lib${LIBDIRSUFFIX}',#" meson.build
 sed -i 's/alsa=false/alsa=true/' meson.build
+
+# remove colord and gnome-online-accounts dependencies
 sed -i '/^colord_dep = dependency/d' meson.build
 sed -i '/^goa_dep = dependency/d' meson.build
 
@@ -73,8 +75,7 @@ meson .. \
  -Dmalcontent=false \
  -Ddocumentation=false
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install

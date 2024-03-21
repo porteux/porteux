@@ -53,8 +53,7 @@ meson .. \
  -Dtests=false \
  -Dgtk_doc=false
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 find $PKG -name '*.la' -delete
 

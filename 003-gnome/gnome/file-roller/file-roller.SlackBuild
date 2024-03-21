@@ -69,8 +69,7 @@ meson .. \
  -Dpackagekit=false \
  -Dlibarchive=enabled
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 cd ..
 

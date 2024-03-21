@@ -62,8 +62,7 @@ meson .. \
  --localstatedir=/var \
  -Dbuild_docs=false
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install

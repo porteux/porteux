@@ -63,8 +63,7 @@ meson .. \
  -Dgtk_doc=false \
  -Dintrospection=true
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $JOBS install
 
 cd ..
 
