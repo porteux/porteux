@@ -155,6 +155,7 @@ mv $MODULEPATH/packages/usr/share/kf5/infopage/body-background.png $MODULEPATH/p
 ### fix some .desktop files
 
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
+sed -i "s|image/x-xcf|image/x-xcf;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.kde.gwenview.desktop
 
 ### copy build files to 05-devel
 

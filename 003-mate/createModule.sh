@@ -187,6 +187,10 @@ rm *.t?z
 
 InstallAdditionalPackages
 
+### fix some .desktop files
+
+sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/eom.desktop
+
 ### add mate session
 
 sed -i "s|SESSIONTEMPLATE|/usr/bin/mate-session|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf

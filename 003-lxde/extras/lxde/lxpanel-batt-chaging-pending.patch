@@ -1,0 +1,12 @@
+diff -urp lxpanel-0.10.1/plugins/batt.orig/batt_sys.c lxpanel-0.10.1/plugins/batt/batt_sys.c
+--- plugins/batt.orig/batt_sys.c	2021-01-30 07:34:46.000000000 +0900
++++ plugins/batt/batt_sys.c	2023-02-07 16:34:54.182239090 +0900
+@@ -396,6 +396,7 @@ gboolean battery_is_charging( battery *b
+     return ( strcasecmp( b->state, "Unknown" ) == 0
+             || strcasecmp( b->state, "Full" ) == 0
+             || strcasecmp( b->state, "Charging" ) == 0
++            || strcasecmp( b->state, "not charging" ) == 0
+             || b->current_now == 0 ); /* bug sf.net, #720 */
+ }
+ 
+Only in lxpanel-0.10.1/plugins/batt: batt_sys.c~

@@ -1,0 +1,42 @@
+From d682b50677dde648bf4ff0fca52b9ff8e1d25d09 Mon Sep 17 00:00:00 2001
+From: Mamoru TASAKA <mtasaka@fedoraproject.org>
+Date: Sun, 1 Aug 2021 21:50:00 +0900
+Subject: [PATCH] volumealsa: poll alsa mixer several times at startup
+
+On Fedora 34, the default alsa mixer is replaced by pipewire-alsa.
+Very often time, pipewire wakes up later than lxpanel is launched, which
+makes alsa mixer not detectable at lxpanel startup.
+
+For workaround, poll mixer several times at lxpanel startup.
+---
+ plugins/volumealsa/volumealsa.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/plugins/volumealsa/volumealsa.c b/plugins/volumealsa/volumealsa.c
+index 5c41051..bf5410b 100644
+--- plugins/volumealsa/volumealsa.c
++++ plugins/volumealsa/volumealsa.c
+@@ -963,10 +963,17 @@ static GtkWidget *volumealsa_constructor(LXPanel *panel, config_setting_t *setti
+         lxpanel_apply_hotkey(&vol->hotkey_mute, tmp_str, volume_mute, vol, FALSE);
+ 
+     /* Initialize ALSA.  If that fails, present nothing. */
+-    if ( ! asound_initialize(vol))
+     {
+-        volumealsa_destructor(vol);
+-        return NULL;
++        int ret = 0;
++        for (int i = 0 ; i < 4 ; i++) {
++            ret = asound_initialize(vol);
++            if (ret) break;
++            usleep(350 * 1000);
++        }
++        if (!ret) {
++            volumealsa_destructor(vol);
++            return NULL;
++        }
+     }
+ 
+     /* Allocate top level widget and set into Plugin widget pointer. */
+-- 
+2.31.1
+

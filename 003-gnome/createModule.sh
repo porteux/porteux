@@ -129,7 +129,6 @@ rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
-rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/python-pip*
 rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
