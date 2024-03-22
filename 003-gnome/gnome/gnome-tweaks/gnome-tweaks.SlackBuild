@@ -34,8 +34,7 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-*
 
-#VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep ' <title>' | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-VERSION="45.1"
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -V -r | head -1)
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 BUILD=${BUILD:-1}
 
@@ -50,8 +49,8 @@ find -L . \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
 # only for version 45.2+ and python < 3.10
-#cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
-#for i in *.patch; do patch -Np1 -i $i || exit 1; done
+cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
+for i in *.patch; do patch -Np1 -i $i || exit 1; done
 
 mkdir -p build
 cd build

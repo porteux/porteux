@@ -34,7 +34,7 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-*
 
-VERSION=$(curl -s https://gitlab.freedesktop.org/libinput/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+VERSION=$(curl -s https://gitlab.freedesktop.org/libinput/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
 wget https://gitlab.freedesktop.org/libinput/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 BUILD=${BUILD:-1}
 
