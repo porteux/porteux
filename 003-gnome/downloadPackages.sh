@@ -54,6 +54,7 @@ DownloadPackage "libsass" & # required by gnome-console
 wait
 DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
+DownloadPackage "llvm" & # required by glycin
 DownloadPackage "python-pip" &
 DownloadPackage "rust" & # required by loupe
 DownloadPackage "sassc" & # required by gnome-console

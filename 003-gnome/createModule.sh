@@ -58,9 +58,15 @@ installpkg $MODULEPATH/packages/*.txz || exit 1
 cd $MODULEPATH
 pip install attrs
 pip install jinja2
+pip install pygments
 
-export GNOME_LATEST_MAJOR_VERSION=46
+export GNOME_LATEST_MAJOR_VERSION=$(curl -s https://download.gnome.org/core/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/')
+gnomeLatestVersionTest=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/')
+[ ! "${gnomeLatestVersionTest}" ] && ((GNOME_LATEST_MAJOR_VERSION--))
 export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/' )
+[ ! "${GNOME_LATEST_MAJOR_VERSION}" ] || [ ! "${GNOME_LATEST_VERSION}" ] && echo "Couldn't detect GNOME latest version" && exit 1
+
+echo "Building GNOME ${GNOME_LATEST_VERSION}..."
 
 # gnome packages
 for package in \
@@ -84,9 +90,11 @@ for package in \
 	libadwaita \
 	gnome-bluetooth \
 	libnma-gtk4 \
-	gnome-control-center \
 	libgusb \
 	colord \
+	colord-gtk \
+	gnome-online-accounts \
+	gnome-control-center \
 	libei \
 	mutter \
 	gnome-shell \
@@ -99,6 +107,7 @@ for package in \
 	gdm \
 	gspell \
 	gnome-text-editor \
+	libheif \
 	glycin \
 	loupe \
 	evince \
@@ -126,9 +135,11 @@ rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
+rm $MODULEPATH/packages/libheif*
 rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
+rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/python-pip*
 rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
