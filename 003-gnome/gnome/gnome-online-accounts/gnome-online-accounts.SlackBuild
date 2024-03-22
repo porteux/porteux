@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-PRGNAM=gnome-control-center
+PRGNAM=gnome-online-accounts
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -41,37 +41,42 @@ BUILD=${BUILD:-1}
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-wget https://gitlab.gnome.org/GNOME/libgnome-volume-control/-/archive/master/libgnome-volume-control-master.tar.gz
-tar xvf libgnome-volume-control-master.tar.?z*
-mv libgnome-volume-control-master/* subprojects/gvc
+chown -R root:root .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# libgnome-volume-control subproject can be builded with shared library and alsa.
-sed -i "s#'static=true',#'static=false','pkglibdir=/usr/lib${LIBDIRSUFFIX}',#" meson.build
-sed -i 's/alsa=false/alsa=true/' meson.build
-
-mkdir -p build
+mkdir build
 cd build
-
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-meson .. \
- --prefix=/usr \
- --buildtype=release \
- --libdir=lib${LIBDIRSUFFIX} \
- --libexecdir=/usr/libexec \
- --sysconfdir=/etc \
- --infodir=/usr/info \
- --mandir=/usr/man \
- --localstatedir=/var \
- -Ddefault_library=shared \
- -Dtests=false \
- -Dmalcontent=false \
- -Ddocumentation=false
+meson \
+    --buildtype=release \
+    --libdir=/usr/lib${LIBDIRSUFFIX} \
+    --localstatedir=/var \
+    --mandir=/usr/man \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    -Dman=false \
+    -Dkerberos=true \
+    -Dexchange=true \
+    -Dwindows_live=true \
+    -Dintrospection=true \
+    -Downcloud=true \
+    -Dimap_smtp=true \
+    -Dms_graph=true \
+    -Dgoogle=true \
+    -Dfedora=false
+  "${NINJA:=ninja}"
+  DESTDIR=$PKG ninja $JOBS install
+cd ..
 
-DESTDIR=$PKG ninja $JOBS install
+rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
 
 mkdir -p $PKG/install
-cp $CWD/slack-desc $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

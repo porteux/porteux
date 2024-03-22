@@ -5,8 +5,37 @@ Subject: [PATCH] Allow Tweaks to work with python3.9 and python3.10
 
 ---
  gtweak/widgets.py | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ meson.build | 6 +++---
+ gnome-tweaks | 4 +++-
+ 3 file changed, 13 insertions(+), 9 deletions(-)
 
+diff --git a/meson.build b/meson.build
+index b0121b61..ddd331ba 100644
+--- a/meson.build
++++ b/meson.build
+@@ -12,9 +12,9 @@ if not python3.found()
+     error('No valid python3 installation found!')
+ endif
+ 
+-# Tweaks requires at least Python 3.10 for certain type annotations
+-if not python3.language_version().version_compare('>= 3.10')
+-  error('Python 3.10 or newer is required.')
++# Tweaks requires at least Python 3.9 for certain type annotations
++if not python3.language_version().version_compare('>= 3.9')
++  error('Python 3.9 or newer is required.')
+ endif
+ 
+ # Declare runtime dependency versions here to make packaging more obvious
+@@ -23,7 +23,7 @@ dependency('gobject-introspection-1.0', version: '>= 1.78.0')
+ dependency('gtk4', version: '>= 4.10.0')
+ dependency('libadwaita-1', version: '>= 1.4.0')
+ dependency('pygobject-3.0', version: '>= 3.46.0')
+-dependency('gudev-1.0', version: '>= 238')
++dependency('gudev-1.0', version: '>= 237')
+ dependency('gsettings-desktop-schemas', version: '>= 46.0')
+ 
+ prefix = get_option('prefix')
+ 
 diff --git a/gtweak/widgets.py b/gtweak/widgets.py
 index 17868ddb..9e9757f9 100644
 --- a/gtweak/widgets.py
@@ -68,7 +97,22 @@ index 17868ddb..9e9757f9 100644
          row = TweakCheckButton(title=title, subtitle=subtitle, keyvalue=key_name)
  
          if self.group is None:
+
+diff --git a/gnome-tweaks b/gnome-tweaks
+index 53c3cca6..0626e61e 100755
+--- a/gnome-tweaks
++++ b/gnome-tweaks
+@@ -55,7 +55,9 @@ def setup_defs_for_prefix(prefix: str):
+     gtweak.PKG_DATA_DIR = os.path.join(me, "data")
+ 
+ 
+-def setup_defs(prefix: str | None = None):
++from typing import Optional
++
++def setup_defs(prefix: Optional[str] = None):
+     """
+     Setup the directory definitions
+     """
 -- 
 GitLab
-
 
