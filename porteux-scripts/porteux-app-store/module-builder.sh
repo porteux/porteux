@@ -7,12 +7,16 @@ fi
 
 INPUTDIR=$(readlink -f "$1")
 OUTPUTFILEPATH=$(readlink -f "$2")
-MODULEFILENAME=${OUTPUTFILEPATH##*/}
+if [ -n "$OUTPUTFILEPATH" ]; then
+    MODULEFILENAME="${OUTPUTFILEPATH##*/}"
+else
+    MODULEFILENAME="${2##*/}"
+fi
 OUTPUTDIR=${OUTPUTFILEPATH%/*}
 
 if [ ! -w "$OUTPUTDIR" ]; then
     dir2xzm "$INPUTDIR" -o="/tmp/$MODULEFILENAME" -q &>/dev/null
-    echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
+    echo "Destination ${2%/*} is not writable. New module placed in /tmp and not activated."
 elif [ ! -f "$OUTPUTFILEPATH" ]; then
     dir2xzm "$INPUTDIR" -o="$OUTPUTFILEPATH" -q &>/dev/null
     echo "Module placed in $OUTPUTDIR"
