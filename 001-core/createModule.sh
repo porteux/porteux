@@ -19,6 +19,103 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 DownloadFromSlackware
 
+### packages outside slackware repository
+
+currentPackage=sysvinit
+version=3.08
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+cp $SCRIPTPATH/extras/${currentPackage}/* .
+wget https://github.com/slicer69/sysvinit/releases/download/$version/sysvinit-$version.tar.xz -O ${currentPackage}-$version.tar.gz || exit 1
+sh ${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+# temporary to build procps
+installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
+
+currentPackage=procps
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+cp $SCRIPTPATH/extras/${currentPackage}/* .
+version=$(curl -s https://gitlab.com/${currentPackage}-ng/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-${version//[vV]}}|g" ${currentPackage}.SlackBuild
+wget https://gitlab.com/${currentPackage}-ng/${currentPackage}/-/archive/${version}/${currentPackage}-${version}.tar.gz
+sh ${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/package-${currentPackage}
+
+currentPackage=neofetch
+mkdir -p $MODULEPATH/${currentPackage}/package/usr/bin && cd $MODULEPATH/${currentPackage}
+wget https://github.com/hykilpikonna/hyfetch/archive/refs/heads/master.zip -O ${currentPackage}.zip || exit 1
+unzip ${currentPackage}.zip
+rm ${currentPackage}.zip
+cp -p */${currentPackage} package/usr/bin
+sed -i "s|has pkginfo && tot pkginfo -i|#has pkginfo && tot pkginfo -i|g" package/usr/bin/${currentPackage}
+chown 755 package/usr/bin/${currentPackage}
+chmod +x package/usr/bin/${currentPackage}
+version=$(date -r package/usr/bin/${currentPackage} +%Y%m%d)
+cd $MODULEPATH/${currentPackage}/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=p7zip
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
+info=$(DownloadLatestFromGithub "p7zip-project" ${currentPackage})
+version=${info#* }
+filename=${info% *}
+sed -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=pptp
+version=1.10.0
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/network/${currentPackage}/ -A * || exit 1
+wget http://downloads.sourceforge.net/pptpclient/pptp-$version.tar.gz || exit 1
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=unrar
+version=6.2.12
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
+wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
+sed -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=duktape
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "svaarala" ${currentPackage})
+version=${info#* }
+filename=${info% *}
+tar xvf ${filename} && cd ${currentPackage}-${version}/src
+gcc -O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC -c duktape.c -l duktape.h
+gcc -shared -o libduktape.so duktape.o
+chmod 755 libduktape.so
+mkdir -p $MODULEPATH/${currentPackage}/package/usr/lib64
+mkdir $MODULEPATH/${currentPackage}/package/usr/include
+cp duktape.c duktape.h duk_config.h $MODULEPATH/${currentPackage}/package/usr/include
+cp libduktape.so $MODULEPATH/${currentPackage}/package/usr/lib64
+cd $MODULEPATH/${currentPackage}/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-${version}-${ARCH}-1.txz
+/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/duktape*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
 ### packages that require specific stripping
 
 currentPackage=aaa_libraries
@@ -36,7 +133,6 @@ cp --parents -P lib64/libsigsegv.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libatomic.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libcares.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libcups.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libexpat.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libgcc_s.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libgmp.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib64/libgmpxx.* ${currentPackage}-stripped-$version/
@@ -48,6 +144,21 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+if [ $SLACKWAREVERSION == "current" ]; then
+	currentPackage=avahi
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+	mv ../packages/${currentPackage}-[0-9]* .
+	version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+	ROOT=./ installpkg ${currentPackage}-*.txz
+	mkdir ${currentPackage}-stripped-$version
+	cp --parents -P usr/lib64/libavahi-client.* ${currentPackage}-stripped-$version/
+	cp --parents -P usr/lib64/libavahi-common.* ${currentPackage}-stripped-$version/
+	cp --parents -P usr/lib64/libavahi-glib.* ${currentPackage}-stripped-$version/
+	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+	/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+	rm -fr $MODULEPATH/${currentPackage}
+fi
+
 currentPackage=binutils
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
@@ -58,6 +169,17 @@ cp --parents usr/bin/ar ${currentPackage}-stripped-$version/
 cp --parents usr/bin/strip ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib$SYSTEMBITS/libbfd* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib$SYSTEMBITS/libsframe* ${currentPackage}-stripped-$version/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=fftw
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib64/libfftw3f.* ${currentPackage}-stripped-$version/
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -87,89 +209,13 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-### packages outside slackware repository
-
-currentPackage=sysvinit
-version=3.08
+currentPackage=polkit
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/${currentPackage}/* .
-wget https://github.com/slicer69/sysvinit/releases/download/$version/sysvinit-$version.tar.xz -O ${currentPackage}-$version.tar.gz || exit 1
-sh ${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# temporary to build procps
-installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
-
-currentPackage=procps
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/procps/* .
-version=$(curl -s https://gitlab.com/${currentPackage}-ng/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-${version//[vV]}}|g" ${currentPackage}.SlackBuild
-wget https://gitlab.com/${currentPackage}-ng/procps/-/archive/${version}/procps-${version}.tar.gz
-sh ${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-rm -fr $MODULEPATH/package-${currentPackage}
-
-currentPackage=neofetch
-mkdir -p $MODULEPATH/${currentPackage}/package/usr/bin && cd $MODULEPATH/${currentPackage}
-wget https://github.com/hykilpikonna/hyfetch/archive/refs/heads/master.zip -O ${currentPackage}.zip || exit 1
-unzip ${currentPackage}.zip
-rm ${currentPackage}.zip
-cp -p */${currentPackage} package/usr/bin
-sed -i "s|has pkginfo && tot pkginfo -i|#has pkginfo && tot pkginfo -i|g" package/usr/bin/${currentPackage}
-chown 755 package/usr/bin/${currentPackage}
-chmod +x package/usr/bin/${currentPackage}
-version=$(date -r package/usr/bin/${currentPackage} +%Y%m%d)
-cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=p7zip
-version=17.04
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
-wget https://github.com/flyfishzy/p7zip/archive/refs/tags/v$version.tar.gz -O ${currentPackage}-$version.tar.gz || exit 1
-sed -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+sed -i "s|Djs_engine=mozjs|Djs_engine=duktape|g" ${currentPackage}.SlackBuild
+sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=pptp
-version=1.10.0
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/network/${currentPackage}/ -A * || exit 1
-wget http://downloads.sourceforge.net/pptpclient/pptp-$version.tar.gz || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=unrar
-version=6.2.12
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
-wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
-sed -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=webfs
-version=1.21
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget https://www.kraxel.org/releases/webfs/webfs-$version.tar.gz || exit 1
-tar xvf ${currentPackage}*.tar.gz && cd ${currentPackage}-$version || exit 1
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
@@ -230,6 +276,10 @@ chmod 644 etc/rc.d/rc.wireless
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/
@@ -241,13 +291,17 @@ rm -R usr/etc
 rm -R usr/lib/ldscripts
 rm -R usr/lib/modprobe.d
 rm -R usr/lib/udev
+rm -R usr/lib64/guile
+rm -R usr/lib64/services
+rm -R usr/lib64/krb5/plugins
 rm -R usr/lib64/locale/C.utf8
 rm -R usr/lib64/p7zip/Codecs
 rm -R usr/lib64/python2.7
-rm -R usr/lib64/python3.9/idlelib
-rm -R usr/lib64/python3.9/lib2to3
-rm -R usr/lib64/python3.9/site-packages/demo
-rm -R usr/lib64/python3.9/turtledemo
+rm -R usr/lib64/python*/idlelib
+rm -R usr/lib64/python*/lib2to3
+rm -R usr/lib64/python*/site-packages/demo
+rm -R usr/lib64/python*/turtledemo
+rm -R usr/lib64/sasl2
 rm -R usr/lib64/systemd
 rm -R usr/local/etc
 rm -R usr/local/games
@@ -276,23 +330,8 @@ rm -R usr/share/lynx
 rm -R usr/share/mc/examples
 rm -R usr/share/mc/help
 rm -R usr/share/mc/hints
-rm -R usr/share/terminfo/1
-rm -R usr/share/terminfo/2
-rm -R usr/share/terminfo/3
-rm -R usr/share/terminfo/4
-rm -R usr/share/terminfo/5
-rm -R usr/share/terminfo/6
-rm -R usr/share/terminfo/7
-rm -R usr/share/terminfo/8
-rm -R usr/share/terminfo/9
-rm -R usr/share/terminfo/A
-rm -R usr/share/terminfo/E
-rm -R usr/share/terminfo/L
-rm -R usr/share/terminfo/M
-rm -R usr/share/terminfo/N
-rm -R usr/share/terminfo/P
-rm -R usr/share/terminfo/Q
-rm -R usr/share/terminfo/X
+rm -R usr/share/terminfo/[0-9]
+rm -R usr/share/terminfo/[A-Z]
 rm -R usr/share/terminfo/b
 rm -R usr/share/terminfo/c
 rm -R usr/share/terminfo/e
@@ -319,29 +358,30 @@ rm etc/ld.so.cache
 rm etc/motd
 rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
-rm lib64/*.a
-rm usr/bin/js[0-9]*
 rm usr/bin/7za
 rm usr/bin/7zr
 rm usr/bin/smbtorture
+rm usr/bin/wpa_gui
+rm usr/lib64/liblibboost_*
+rm usr/lib64/libqgpgme.*
+rm usr/lib64/libslang.so.1*
 rm usr/lib64/p7zip/7za
 rm usr/lib64/p7zip/7zr
-rm usr/lib64/liblibboost_*
-rm usr/lib64/libslang.so.1*
 rm usr/libexec/samba/rpcd_*
-rm usr/local/bin/webfsd
+rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
 
 find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
+mv $MODULEPATH/packages/lib64/libc-* $MODULEPATH/
+GenericStrip
+mv $MODULEPATH/lib64/libc- $MODULEPATH/packages/lib64
+
 # move out stuff that can't be stripped
 mv $MODULEPATH/packages/lib64 $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
-GenericStrip
 AggressiveStrip
 mv $MODULEPATH/lib64 $MODULEPATH/packages/
-mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib64
 
 ### copy cache files
 

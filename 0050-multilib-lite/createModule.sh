@@ -4,7 +4,6 @@ MODULENAME="0050-multilib-lite"
 
 source "$PWD/../builder-utils/setflags.sh"
 
-export ARCH=i586
 export SYSTEMBITS=32
 
 SetFlags "$MODULENAME"
@@ -30,8 +29,21 @@ mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 tar xvf ${currentPackage}-*.txz
 mkdir -p ${currentPackage}-stripped-$version/usr/lib
-cp usr/lib/LLVMgold.so ${currentPackage}-stripped-$version/usr/lib
 cp usr/lib/libLLVM*.so* ${currentPackage}-stripped-$version/usr/lib
+cd ${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=pulseaudio
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libpulse-simple.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -137,9 +149,11 @@ find $MODULEPATH/packages/bin \( -type f -o -type l \) ! -name "sln" -delete
 find $MODULEPATH/packages/usr -mindepth 1 -maxdepth 1 -type d ! -name "lib" -exec rm -rf {} +
 find $MODULEPATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name "en_US.utf8" -exec rm -rf {} +
 
-mv $MODULEPATH/packages/lib $MODULEPATH/ # move out /lib so we can strip safely
-mv $MODULEPATH/packages/usr/lib/dri $MODULEPATH/ # move out usr/lib/dri so we can strip safely
+# move out things that don't support stripping
+mv $MODULEPATH/packages/lib $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib/dri $MODULEPATH/
 GenericStrip
+AggressiveStripAll
 mv $MODULEPATH/lib $MODULEPATH/packages/
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib/
 

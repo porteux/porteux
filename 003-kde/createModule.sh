@@ -109,13 +109,15 @@ installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
 currentPackage=FeatherPad
 mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-info=$(DownloadLatestFromGithub "tsujan" ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
+#info=$(DownloadLatestFromGithub "tsujan" ${currentPackage})
+#version=${info#* }
+#filename=${info% *}
+version="1.4.1"
+wget https://github.com/tsujan/${currentPackage}/releases/download/V${version}/${currentPackage}-${version}.tar.xz
+tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_CXX_FLAGS:STRING="-O3 -flto -fPIC -DNDEBUG" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
+CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
@@ -158,15 +160,23 @@ sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okul
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/
 
+em usr/share/applications/org.kde.plasma.emojier.desktop
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
 rm usr/share/plasma/avatars/*
 
+rm -R etc/kde/xdg/autostart/baloo_file.desktop
+rm -R etc/kde/xdg/autostart/kaccess.desktop
+rm -R etc/kde/xdg/autostart/xembedsniproxy.desktop
 rm -R usr/lib
 rm -R usr/share/chromium
 rm -R usr/share/emoticons/EmojiOne

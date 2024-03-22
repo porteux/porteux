@@ -58,5 +58,4 @@ case $SHELL in
   ;;
 esac
 
-# We have to use eval here:
-eval exec "$@"
+eval exec $@

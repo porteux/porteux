@@ -1,0 +1,69 @@
+~~~~~~~~~~~~~~~~~
+| Introduction: |
+~~~~~~~~~~~~~~~~~
+
+PorteuX can be installed to any media storage (including USB flash drive)
+without requiring your personal data to be erased. Partitions supported:
+ext2, ext3, ext4, FAT, exFAT, NTFS and XFS.
+
+The simplest way to do that is copying the ISO content to your media
+storage and running the installer, which will just make the media
+bootable (instructions below), not touching or removing your existing data.
+
+It's not recommended to use any third-party ISO installer application,
+such as Rufus or Etcher because the media storage will be set to
+read-only mode, making it impossible to write any data, including
+automatic save changes.
+
+~~~~~~~~~~~~~~~
+| EFI System: |
+~~~~~~~~~~~~~~~
+
+1) Make sure the first partition is of type FAT32.
+2) Copy /boot and /EFI folders onto the FAT32 partition.
+3) The second partition can be any of the supported ones and it will
+contain /porteux folder.
+
+~~~~~~~~~~~~~~~~~~
+| Legacy System: |
+~~~~~~~~~~~~~~~~~~
+
+1) Copy /boot, /EFI and /porteux folders onto the desired partition.
+
+~~~~~~~~~~~~~~~~~
+| From Windows: |
+~~~~~~~~~~~~~~~~~
+
+1) Navigate into the /boot folder that you have just copied.
+2) Run 'porteux-installer-for-windows.exe' and follow the instructions. 
+
+~~~~~~~~~~~~~~~
+| From Linux: |
+~~~~~~~~~~~~~~~
+
+1) Navigate into the /boot folder that you have just copied.
+2) From the terminal, run 'porteux-installer-for-linux.run' and follow
+the instructions.
+
+~~~~~~~~~~~~~~~
+| Conclusion: |
+~~~~~~~~~~~~~~~
+
+After running the installation program, you should be able to boot 
+PorteuX from your media storage. Reboot your computer, and make sure 
+that your BIOS is set to boot from the media storage where PorteuX is.
+
+~~~~~~~~~~
+| Notes: |
+~~~~~~~~~~
+
+1) If your media storage is formatted with a Linux filesystem
+(e.g. EXT4 or XFS), before the first boot make sure the folder
+/porteux has guest ownership otherwise changes will not be
+automatically saved.
+
+2) If your media storage is formatted with a Windows filesystem
+(e.g. FAT or NTFS), the changes you make to your system will not be 
+automatically saved; PorteuX will default to 'Always Fresh' mode.
+In this case, you can create a '.dat' file container using
+PorteuX Save Session application after the system boots.

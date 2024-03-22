@@ -41,6 +41,10 @@ rm -fr $MODULEPATH/${currentPackage}
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
 rm *.t?z
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/
