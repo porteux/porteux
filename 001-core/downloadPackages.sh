@@ -30,7 +30,6 @@ wait
 DownloadPackage "cracklib" &
 DownloadPackage "curl" &
 DownloadPackage "cyrus-sasl" &
-DownloadPackage "db48" &
 DownloadPackage "dbus" &
 DownloadPackage "dbus-glib" &
 DownloadPackage "dcron" &
@@ -53,13 +52,13 @@ wait
 DownloadPackage "eudev" &
 DownloadPackage "exfatprogs" &
 DownloadPackage "f2fs-tools" &
-DownloadPackage "fftw" &
 DownloadPackage "file" &
 DownloadPackage "findutils" &
 DownloadPackage "flex" &
 DownloadPackage "floppy" &
 DownloadPackage "fuse3" &
 DownloadPackage "gawk" &
+DownloadPackage "gd" &
 wait
 DownloadPackage "gdbm" &
 DownloadPackage "gettext" &
@@ -124,12 +123,12 @@ DownloadPackage "libpwquality" &
 DownloadPackage "libqmi" &
 DownloadPackage "libraw1394" &
 DownloadPackage "libseccomp" &
-DownloadPackage "libsoup" &
 wait
 DownloadPackage "libssh2" &
 DownloadPackage "libtasn1" &
 DownloadPackage "libtirpc" &
 DownloadPackage "libunistring" &
+DownloadPackage "liburing" & # required by samba
 DownloadPackage "libusb" &
 DownloadPackage "libusb-compat" &
 DownloadPackage "libusbmuxd" &
@@ -150,7 +149,6 @@ wait
 DownloadPackage "mlocate" &
 DownloadPackage "ModemManager" &
 DownloadPackage "mozilla-nss" &
-DownloadPackage "mozjs78" &
 DownloadPackage "mpfr" &
 DownloadPackage "ncurses" &
 DownloadPackage "nettle" &
@@ -166,15 +164,14 @@ DownloadPackage "openssh" &
 DownloadPackage "openssl" &
 DownloadPackage "openvpn" &
 DownloadPackage "p11-kit" &
-DownloadPackage "pam" &
 wait
+DownloadPackage "pam" &
 DownloadPackage "parted" &
 DownloadPackage "patch" &
 DownloadPackage "pciutils" &
 DownloadPackage "pcre2" &
 DownloadPackage "pcre" &
 DownloadPackage "pkgtools" &
-DownloadPackage "polkit" &
 DownloadPackage "popt" &
 wait
 DownloadPackage "ppp" &
@@ -215,6 +212,7 @@ DownloadPackage "telnet" &
 DownloadPackage "tevent" &
 DownloadPackage "traceroute" &
 wait
+DownloadPackage "uring" &
 DownloadPackage "usb_modeswitch" &
 DownloadPackage "usbmuxd" &
 DownloadPackage "usbutils" &
@@ -237,15 +235,17 @@ wait
 ### slackware current only packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "avahi" &
 	DownloadPackage "lua" &
 	DownloadPackage "lzlib" &
-	DownloadPackage "mozjs102" &
+	DownloadPackage "userspace-rcu" &
 	wait
 fi
 
 ### packages that require specific striping
 
 DownloadPackage "binutils" &
+DownloadPackage "fftw" & # required by pulse plugins
 DownloadPackage "ntp" &
 DownloadPackage "openldap" &
 wait

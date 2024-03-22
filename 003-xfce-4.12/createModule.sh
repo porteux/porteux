@@ -29,6 +29,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -53,7 +54,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/gpicview || exit 1
 cd ${currentPackage}
 ./autogen.sh
-CFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -70,6 +71,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
 version=${info#* }
 cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
+sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -144,11 +146,13 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
 sed -i "s|baobab||g" ./Makefile.am
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|mate-screenshot||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
-CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
@@ -162,9 +166,31 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=mate-polkit
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+version=${info#* }
+tar xfv ${currentPackage}-${version}.tar.xz && cd ${currentPackage}-${version} || exit 1
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
+mkdir ${currentPackage}-package
+mkdir build && cd build
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto" meson .. \
+ --prefix=/usr \
+ --buildtype=release \
+ --libdir=lib${SYSTEMBITS} \
+ --libexecdir=/usr/libexec \
+ --sysconfdir=/etc \
+ -Daccountsservice=false
+ninja -j${NUMBERTHREADS} && DESTDIR=../${currentPackage}-package ninja install
+cd ../${currentPackage}-package
+sed -i "s|OnlyShowIn=MATE;||g" etc/xdg/autostart/polkit-mate-authentication-agent-1.desktop
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -174,7 +200,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://download.gnome.org/sources/gtksourceview/2.10/gtksourceview-$version.tar.gz || exit 1
 tar xvf ${currentPackage}-$version.tar.?z || exit 1
 cd ${currentPackage}-$version
-CFLAGS="-O3 -m64 -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -189,6 +215,11 @@ installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 
 # required by xfce4-xkb-plugin
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	# required by xfce4-screenshooter in current
+	installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
+fi
 
 # xfce packages
 for package in \
@@ -267,6 +298,10 @@ chmod 0755 $MODULEPATH/packages/etc/X11/xinit/xinitrc.xfce
 
 CopyToDevel
 
+### copy language files to 08-multilanguage
+
+CopyToMultiLanguage
+
 ### module clean up
 
 cd $MODULEPATH/packages/
@@ -287,8 +322,10 @@ rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
 rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/bin/canberra*
+rm usr/bin/gtk-demo
+rm usr/lib64/girepository-1.0/SoupGNOME*
 rm usr/lib64/libkeybinder.*
-rm usr/lib64/libpoppler-qt5*
+rm usr/lib64/libsoup-gnome*
 rm usr/share/applications/exo*
 rm usr/share/backgrounds/xfce/xfce-stripes.png
 rm usr/share/backgrounds/xfce/xfce-teal.jpg

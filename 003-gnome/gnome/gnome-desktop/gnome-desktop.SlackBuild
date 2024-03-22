@@ -18,14 +18,11 @@ PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$TMP/packages}
 JOBS="-j$(nproc --all)"
 
-if [ "$ARCH" = "i586" ]; then
-  SLKCFLAGS="-O3 -march=i586 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "i686" ]; then
+if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -fPIC"
+  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
   LIBDIRSUFFIX="64"
 else
   SLKCFLAGS="-O3"
@@ -66,14 +63,12 @@ meson .. \
  --sysconfdir=/etc \
  --localstatedir=/var \
  --buildtype=release \
- -Ddate_in_gnome_version=true \
  -Ddesktop_docs=false \
  -Ddebug_tools=false \
  -Dudev=enabled \
  -Dsystemd=disabled \
  -Dgtk_doc=false \
- -Dinstalled_tests=false \
- -Dgnome_distributor="PorteuX"
+ -Dinstalled_tests=false
 
 ninja $JOBS || ninja
 DESTDIR=$PKG ninja install

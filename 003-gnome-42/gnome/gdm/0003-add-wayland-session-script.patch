@@ -1,0 +1,18 @@
+diff -Naur gdm-42.0/daemon/gdm-wayland-session.c gdm-42.0-patched/daemon/gdm-wayland-session.c
+--- gdm-42.0/daemon/gdm-wayland-session.c	2022-08-08 23:41:59.415766201 -0500
++++ gdm-42.0-patched/daemon/gdm-wayland-session.c	2022-08-08 23:54:05.595800828 -0500
+@@ -356,9 +356,11 @@
+                 g_subprocess_launcher_setenv (launcher, "DBUS_SESSION_BUS_ADDRESS", state->bus_address, TRUE);
+         }
+ 
+-        subprocess = g_subprocess_launcher_spawnv (launcher,
+-                                                   (const char * const *) argv,
+-                                                   &error);
++        subprocess = g_subprocess_launcher_spawn (launcher,
++                                                  &error,
++                                                  GDMCONFDIR "/wayland-session",
++                                                  state->session_command,
++                                                  NULL);
+         g_strfreev (argv);
+ 
+         if (subprocess == NULL) {

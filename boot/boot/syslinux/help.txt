@@ -1,0 +1,29 @@
+
+ PorteuX v1.1
+
+ If you need to edit the boot command line, hit [Tab].
+ When finished, press [Enter]. Default usernames/passwords:
+ guest / guest
+ root / toor
+
+
+ -Graphics Mode-
+ Run PorteuX the best way possible, loading the desktop
+ environment and saving changes by default (if supported).
+
+
+ -Always Fresh-
+ Start a fresh session loading only the base modules and
+ not saving any changes.
+
+
+ -Copy To RAM-
+ Same as Graphics Mode, but copying all modules to RAM.
+
+
+ -Text Mode-
+ Start in text mode, not loading the desktop environment.
+
+
+ -Text Mode Fresh-
+ Same as Always Fresh, but starting in text mode.

@@ -31,14 +31,11 @@ fi
 
 NUMJOBS="-j$(nproc --all)"
 
-if [ "$ARCH" = "i586" ]; then
-  SLKCFLAGS="-O3 -march=i586 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "s390" ]; then
-  SLKCFLAGS="-O3"
+if [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O3 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
 elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-g -O3 -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -m64 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -mtune=skylake -flto -fuse-linker-plugin -fwhole-program"
+  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -flto -fuse-linker-plugin -fwhole-program"
   LIBDIRSUFFIX="64"
 else
   SLKCFLAGS="-O3"
@@ -76,40 +73,14 @@ CFLAGS="$SLKCFLAGS" \
   --disable-debug \
   --build=$ARCH-porteux-linux || exit 1
 
-# Build and install:
-make $NUMJOBS || make || exit 1
+make $NUMJOBS || exit 1
 make $NUMJOBS install DESTDIR=$PKG || exit 1
 
 # Don't ship .la files:
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
 
-# Compress and if needed symlink the man pages:
-if [ -d $PKG/usr/man ]; then
-  ( cd $PKG/usr/man
-    for manpagedir in $(find . -type d -name "man*") ; do
-      ( cd $manpagedir
-        for eachpage in $( find . -type l -maxdepth 1) ; do
-          ln -s $( readlink $eachpage ).gz $eachpage.gz
-          rm $eachpage
-        done
-        gzip -9 *.?
-      )
-    done
-  )
-fi
-
 # We don't want icon caches:
 find $PKG/usr/share/icons -type f -name "icon-theme.cache" -exec rm -f {} \;
-
-# Add a documentation directory.  Not all of these files are expected to be
-# present, but listing them ensures that documentation that might appear and
-# disappear from version to version will not be missed.
-mkdir -p $PKG/usr/doc/${PKGNAM}-$VERSION
-cp -a \
-  AUTHORS BUGS COMPOSITOR COPYING* FAQ HACKING INSTALL \
-  NEWS NOTES README* THANKS TODO example.gtkrc-2.0 \
-  $PKG/usr/doc/${PKGNAM}-$VERSION
-ln -s /usr/share/gtk-doc/html/xfconf/ $PKG/usr/doc/${PKGNAM}-$VERSION/html
 
 # If there's a ChangeLog, installing at least part of the recent history
 # is useful, but don't let it get totally out of control:
