@@ -181,7 +181,7 @@ sed -i "s|OnlyShowIn=MATE;||g" etc/xdg/autostart/polkit-mate-authentication-agen
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by mousepad
-installpkg $MODULEPATH/packages/gtksourceview3-*.txz || exit 1
+installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 
 # required by xfce4-panel
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
