@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+pexpect: pexpect (Python module for spawning child applications)
+pexpect:
+pexpect: Pexpect is a Python module for spawning child applications,
+pexpect: controlling them, and responding to expected patterns in their
+pexpect: output.  Pexpect can be used for automating interactive
+pexpect: applications such as ssh, ftp, passwd, telnet, etc.
+pexpect: Pexpect is pure Python.
+pexpect:
+pexpect:
+pexpect:
+pexpect:
