@@ -90,8 +90,6 @@ for package in \
 	libadwaita \
 	gnome-bluetooth \
 	libnma-gtk4 \
-	libgusb \
-	colord \
 	colord-gtk \
 	gnome-online-accounts \
 	gnome-control-center \

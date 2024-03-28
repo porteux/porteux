@@ -7,6 +7,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
+DownloadPackage "colord" &
 DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
@@ -26,6 +27,7 @@ DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
+DownloadPackage "libgusb" &
 DownloadPackage "libhandy" &
 wait
 DownloadPackage "libnma" &
