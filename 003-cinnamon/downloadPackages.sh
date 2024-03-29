@@ -31,35 +31,35 @@ DownloadPackage "libgusb" &
 DownloadPackage "libhandy" &
 DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
+DownloadPackage "libsoup" & # required by settings -> Date&Time
 wait
 DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
+DownloadPackage "mozjs115" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "polkit-gnome" & # consider using mate-polkit instead
 DownloadPackage "python-certifi" &
 DownloadPackage "python-charset-normalizer" &
-DownloadPackage "python-distro" &
 wait
+DownloadPackage "python-distro" &
 DownloadPackage "python-idna" &
 DownloadPackage "python-pillow" &
 DownloadPackage "python-psutil" &
 DownloadPackage "python-requests" &
 DownloadPackage "python-six" &
 DownloadPackage "python-webencodings" &
-DownloadPackage "xtrans" & # maybe remove?
 wait
 
 ### temporary packages for further building
 
 DownloadPackage "libgsf" &
 DownloadPackage "libxklavier" &
-DownloadPackage "gtk+3" &
 DownloadPackage "iso-codes" &
 DownloadPackage "python-build" &
 DownloadPackage "python-flit-core" &
-wait
 DownloadPackage "python-installer" &
+wait
 DownloadPackage "python-pyproject-hooks" &
 DownloadPackage "python-six" &
 DownloadPackage "python-tomli" &

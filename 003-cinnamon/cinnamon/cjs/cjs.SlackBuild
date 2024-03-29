@@ -48,6 +48,8 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+patch -Np1 -i $CWD/mozjs115-compatible.patch
+
 mkdir -p build
 cd build
   CFLAGS="$SLKCFLAGS" \
