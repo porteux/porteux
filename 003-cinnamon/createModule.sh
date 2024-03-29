@@ -19,20 +19,6 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 DownloadFromSlackware
 
-### packages that require specific stripping
-
-# only include libgtk file, since gtk+3-classic breaks gnome apps UI
-currentPackage=gtk+3
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz || exit 1
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libgtk-3* ${currentPackage}-stripped-$version || exit 1
-cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
 ### packages outside Slackware repository
 
 currentPackage=audacious
@@ -57,8 +43,20 @@ cp -R $SCRIPTPATH/../${currentPackage}/* .
 GTK3=yes sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=mozjs102
-wget -c https://slackware.uk/cumulative/slackware64-current/slackware64/l/${currentPackage}-102.15.1esr-x86_64-2.txz -P $MODULEPATH/packages
+# required from now on
+installpkg $MODULEPATH/packages/aspell*.txz || exit 1
+installpkg $MODULEPATH/packages/colord*.txz || exit 1
+installpkg $MODULEPATH/packages/enchant*.txz || exit 1
+installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
+installpkg $MODULEPATH/packages/libgee*.txz || exit 1
+installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
+installpkg $MODULEPATH/packages/libhandy*.txz || exit 1
+installpkg $MODULEPATH/packages/libnma*.txz || exit 1
+installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
+installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
+installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
+installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
+installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 
 # required only for building
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
@@ -84,19 +82,6 @@ rm $MODULEPATH/packages/python-wheel*.txz
 installpkg $MODULEPATH/packages/xorg-server-xwayland*.txz || exit 1
 rm $MODULEPATH/packages/xorg-server-xwayland*.txz
 
-# required from now on
-installpkg $MODULEPATH/packages/aspell*.txz || exit 1
-installpkg $MODULEPATH/packages/colord*.txz || exit 1
-installpkg $MODULEPATH/packages/enchant*.txz || exit 1
-installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
-installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
-installpkg $MODULEPATH/packages/libhandy*.txz || exit 1
-installpkg $MODULEPATH/packages/libnma*.txz || exit 1
-installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
-installpkg $MODULEPATH/packages/libwnck3.txz || exit 1
-installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
-installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
-
 # gnome packages
 for package in \
 	tinycss2 \
@@ -110,6 +95,7 @@ for package in \
 	python-pam \
 	cinnamon-desktop \
 	libgnomekbd \
+	libdbusmenu \
 	xapp \
 	cinnamon-session \
 	cinnamon-settings-daemon \
@@ -118,11 +104,9 @@ for package in \
 	zenity \
 	cogl \
 	clutter \
-	clutter-gtk \
 	muffin \
 	caribou \
 	pexpect \
-	metacity \
 	polib \
 	nemo \
 	python3-xapp \
