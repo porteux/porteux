@@ -100,20 +100,17 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=duktape
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "svaarala" ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf ${filename} && cd ${currentPackage}-${version}/src
-gcc -O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC -c duktape.c -l duktape.h
-gcc -shared -o libduktape.so duktape.o
-chmod 755 libduktape.so
-mkdir -p $MODULEPATH/${currentPackage}/package/usr/lib64
-mkdir $MODULEPATH/${currentPackage}/package/usr/include
-cp duktape.c duktape.h duk_config.h $MODULEPATH/${currentPackage}/package/usr/include
-cp libduktape.so $MODULEPATH/${currentPackage}/package/usr/lib64
-cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-${version}-${ARCH}-1.txz
-/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/duktape*.txz
+cp $SCRIPTPATH/extras/${currentPackage}/* .
+sh ${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=polkit
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+sed -i "s|Djs_engine=mozjs|Djs_engine=duktape|g" ${currentPackage}.SlackBuild
+sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages that require specific stripping
@@ -207,15 +204,6 @@ cp --parents usr/include/* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib$SYSTEMBITS/libl* ${currentPackage}-stripped-$version/
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=polkit
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|Djs_engine=mozjs|Djs_engine=duktape|g" ${currentPackage}.SlackBuild
-sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root

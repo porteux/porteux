@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PRGNAM=gnome-tweaks
+PRGNAM=nemo-extensions
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -10,10 +10,10 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
+CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-CWD=$(pwd)
 JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
@@ -34,13 +34,14 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-*
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -V -r | head -1)
-wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+tagInfo=$(curl -s https://api.github.com/repos/linuxmint/${PRGNAM}/tags)
+#VERSION=$(echo "$tagInfo" | tr ',' '\n' | grep "\"name\":" | cut -d \" -f 4 | grep -v "alpha" | grep -v "beta" | grep -v "master" | grep "^[0-9]" | sort -V -r | head -n 1)
+VERSION="6.0.1"
+wget -c https://github.com/linuxmint/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz -O ${PRGNAM}-${VERSION}.tar.gz
 BUILD=${BUILD:-1}
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
-
 chown -R root:root .
 find -L . \
  \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
@@ -48,25 +49,27 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+cd nemo-fileroller
 mkdir -p build
 cd build
+  CFLAGS="$SLKCFLAGS" \
+  CXXFLAGS="$SLKCFLAGS" \
+  meson setup \
+    --prefix=/usr \
+    --buildtype=release \
+    --libdir=lib${LIBDIRSUFFIX} \
+    --libexecdir=/usr/lib${LIBDIRSUFFIX} \
+    --mandir=/usr/man
 
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
-meson .. \
- --prefix=/usr \
- --libdir=/usr/lib${LIBDIRSUFFIX} \
- --sysconfdir=/etc \
- --localstatedir=/var \
- --mandir=/usr/man \
- --buildtype=release
-
-DESTDIR=$PKG ninja $JOBS install
-
+  DESTDIR=$PKG ninja $JOBS install
 cd ..
 
+# Don't ship .la files:
+rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
+
 mkdir -p $PKG/install
-cp $CWD/slack-desc $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
+

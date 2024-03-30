@@ -55,16 +55,15 @@ installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
-installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 
 # required only for building
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
 rm $MODULEPATH/packages/libgsf*.txz
-installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
-rm $MODULEPATH/packages/libxklavier*.txz
 installpkg $MODULEPATH/packages/python-build*.txz || exit 1
 rm $MODULEPATH/packages/python-build*.txz
 installpkg $MODULEPATH/packages/python-flit-core*.txz || exit 1
@@ -75,12 +74,12 @@ installpkg $MODULEPATH/packages/python-pyproject-hooks*.txz || exit 1
 rm $MODULEPATH/packages/python-pyproject-hooks*.txz
 installpkg $MODULEPATH/packages/python-tomli*.txz || exit 1
 rm $MODULEPATH/packages/python-tomli*.txz
-installpkg $MODULEPATH/packages/python-six*.txz || exit 1
-rm $MODULEPATH/packages/python-six*.txz
 installpkg $MODULEPATH/packages/python-wheel*.txz || exit 1
 rm $MODULEPATH/packages/python-wheel*.txz
 installpkg $MODULEPATH/packages/xorg-server-xwayland*.txz || exit 1
 rm $MODULEPATH/packages/xorg-server-xwayland*.txz
+installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+rm $MODULEPATH/packages/xtrans*.txz
 
 # gnome packages
 for package in \
@@ -179,11 +178,19 @@ rm -R usr/lib64/python2.7
 rm -R usr/lib64/python3.9/site-packages/pip*
 rm -R usr/share/dbus-1/services/org.gnome.FileRoller.service
 rm -R usr/share/cjs-1.0
+rm -R usr/share/clutter-1.0
+rm -R usr/share/cogl
+rm -R usr/share/gdm
 rm -R usr/share/glade/pixmaps
 rm -R usr/share/gnome
 rm -R usr/share/installed-tests
+rm -R usr/share/libdbusmenu
+rm -R usr/share/mate-panel
 rm -R usr/share/pixmaps
+rm -R usr/share/Thunar
 rm -R usr/share/vala
+rm -R usr/share/xed/gir-1.0
+rm -R usr/share/xviewer/gir-1.0
 rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 

@@ -34,7 +34,7 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-*
 
-VERSION="4.8.3"
+VERSION="4.8.4"
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 BUILD=${BUILD:-1}
 

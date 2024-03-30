@@ -1,6 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-PRGNAM=gnome-tweaks
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
+PRGNAM=duktape
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -10,10 +12,10 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
+CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-CWD=$(pwd)
 JOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
@@ -34,13 +36,12 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-*
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -V -r | head -1)
-wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+info=$(DownloadLatestFromGithub "svaarala" ${PRGNAM})
+VERSION=${info#* }
 BUILD=${BUILD:-1}
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
-
 chown -R root:root .
 find -L . \
  \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
@@ -48,25 +49,16 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-mkdir -p build
-cd build
+# Don't use tools/configure.py, because it still requires python2.
+sed -i 's/^#undef DUK_USE_FASTINT$/#define DUK_USE_FASTINT/' src/duk_config.h
+sed -i 's/duktape\.c/& -lm/' Makefile.sharedlibrary
 
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
-meson .. \
- --prefix=/usr \
- --libdir=/usr/lib${LIBDIRSUFFIX} \
- --sysconfdir=/etc \
- --localstatedir=/var \
- --mandir=/usr/man \
- --buildtype=release
+make $JOBS -f Makefile.sharedlibrary LIBDIR=/lib${LIBDIRSUFFIX} INSTALL_PREFIX=/usr DESTDIR=$PKG install || exit 1
 
-DESTDIR=$PKG ninja $JOBS install
-
-cd ..
+rm $PKG/usr/lib${LIBDIRSUFFIX}/libduktaped*
 
 mkdir -p $PKG/install
-cp $CWD/slack-desc $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
