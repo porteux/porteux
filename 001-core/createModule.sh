@@ -85,7 +85,7 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=unrar
-version=6.2.12
+version=7.0.7
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
@@ -94,6 +94,8 @@ sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-j1 ||g" ${currentPackage}.SlackBuild
+sed -i "s|libunrar.so.5|libunrar.so.7|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
