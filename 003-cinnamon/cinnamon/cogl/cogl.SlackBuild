@@ -58,6 +58,9 @@ CXXFLAGS="$SLKCFLAGS" \
   --mandir=/usr/man \
   --docdir=/usr/doc/$PRGNAM-$VERSION \
   --disable-static \
+  --disable-gtk-doc \
+  --disable-glibtest \
+  --enable-unit-tests=no \
   --enable-kms-egl-platform \
   --build=$ARCH-slackware-linux
 
