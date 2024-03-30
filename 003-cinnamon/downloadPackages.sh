@@ -9,23 +9,22 @@ DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
 DownloadPackage "babl" &
 DownloadPackage "blueman" &
+DownloadPackage "colord" &
 DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 wait
 DownloadPackage "ffmpegthumbnailer" &
-DownloadPackage "gettext-tools" &
 DownloadPackage "hunspell" &
 DownloadPackage "hyphen" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
-wait
 DownloadPackage "libcanberra" &
+wait
 DownloadPackage "libgee" &
 DownloadPackage "libgpod" &
-DownloadPackage "libgsf" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
 DownloadPackage "libhandy" &
@@ -53,18 +52,17 @@ wait
 
 ### temporary packages for further building
 
-DownloadPackage "libgsf" &
-DownloadPackage "libxklavier" &
 DownloadPackage "iso-codes" &
+DownloadPackage "libgsf" &
 DownloadPackage "python-build" &
 DownloadPackage "python-flit-core" &
 DownloadPackage "python-installer" &
 wait
 DownloadPackage "python-pyproject-hooks" &
-DownloadPackage "python-six" &
 DownloadPackage "python-tomli" &
 DownloadPackage "python-wheel" &
 DownloadPackage "xorg-server-xwayland" &
+DownloadPackage "xtrans" &
 wait
 
 ### script clean up

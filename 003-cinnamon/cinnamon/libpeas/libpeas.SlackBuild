@@ -34,12 +34,13 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-*
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
-wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+#VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v "libpeas" | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
+VERSION="1.36.0"
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${PRGNAM}-${VERSION}/${PRGNAM}-${PRGNAM}-${VERSION}.tar.gz
 BUILD=${BUILD:-1}
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
+tar xfv $PRGNAM-$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$PRGNAM-$VERSION
 
 chown -R root:root .
 find -L . \
@@ -61,7 +62,10 @@ cd build
    -Dpython3=true \
    -Dintrospection=true \
    -Dvapi=true \
-   -Dgtk_doc=false
+   -Dgtk_doc=false \
+   -Dglade_catalog=false \
+   -Dlua51=false \
+   -Ddemos=false
 
   DESTDIR=$PKG ninja $JOBS install
 cd ..
