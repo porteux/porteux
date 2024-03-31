@@ -67,8 +67,8 @@ meson .. \
     -Dsd-bus-provider=libelogind \
     -Dliboeffis=auto \
     -Dtests=disabled
-  "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA $JOBS install
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $JOBS install
 cd ..
 
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la

@@ -63,13 +63,11 @@ CXXFLAGS="$SLKCFLAGS" \
  --enable-vala=yes \
  --build=$ARCH-slackware-linux
 
-make $JOBS || make
-DESTDIR=$PKG make install
+DESTDIR=$PKG make $JOBS install
 
 find $PKG -name '*.la' -delete
 
 mkdir -p $PKG/install
-#      |-----handy-ruler------------------------------------------------------|
 cat <<EOT >$PKG/install/slack-desc
 $PRGNAM:
 $PRGNAM: gspell - a spell-checking library for GTK applications

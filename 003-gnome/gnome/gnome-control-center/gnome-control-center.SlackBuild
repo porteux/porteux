@@ -41,14 +41,6 @@ BUILD=${BUILD:-1}
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-wget https://gitlab.gnome.org/GNOME/libgnome-volume-control/-/archive/master/libgnome-volume-control-master.tar.gz
-tar xvf libgnome-volume-control-master.tar.?z*
-mv libgnome-volume-control-master/* subprojects/gvc
-
-# libgnome-volume-control subproject can be builded with shared library and alsa.
-sed -i "s#'static=true',#'static=false','pkglibdir=/usr/lib${LIBDIRSUFFIX}',#" meson.build
-sed -i 's/alsa=false/alsa=true/' meson.build
-
 mkdir -p build
 cd build
 

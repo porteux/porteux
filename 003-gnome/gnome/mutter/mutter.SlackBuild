@@ -48,14 +48,8 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# ...fix a race condition that sometimes occurs due to meson dependency ordering (Linux From Scratch)
-sed -i '/libmutter_dep = declare_dependency(/a sources: mutter_built_sources,' src/meson.build
-
 mkdir -p build
 cd build
-
-SLKCFLAGS="${CFLAGS/-O2/-O3} -fno-semantic-interposition"
-LDFLAGS+=" -Wl,-Bsymbolic-functions"
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
@@ -93,7 +87,6 @@ meson .. \
 DESTDIR=$PKG ninja $JOBS install
 
 mkdir -p $PKG/install
-#      |-----handy-ruler------------------------------------------------------|
 cat <<EOT >$PKG/install/slack-desc
 $PRGNAM:
 $PRGNAM: Mutter
