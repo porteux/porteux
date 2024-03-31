@@ -72,8 +72,6 @@ installpkg $MODULEPATH/packages/python-installer*.txz || exit 1
 rm $MODULEPATH/packages/python-installer*.txz
 installpkg $MODULEPATH/packages/python-pyproject-hooks*.txz || exit 1
 rm $MODULEPATH/packages/python-pyproject-hooks*.txz
-#installpkg $MODULEPATH/packages/python-tomli*.txz || exit 1
-#rm $MODULEPATH/packages/python-tomli*.txz
 installpkg $MODULEPATH/packages/python-wheel*.txz || exit 1
 rm $MODULEPATH/packages/python-wheel*.txz
 installpkg $MODULEPATH/packages/xorg-server-xwayland*.txz || exit 1
@@ -112,10 +110,6 @@ for package in \
 	python3-xapp \
 	cinnamon-screensaver \
 	cinnamon \
-	file-roller \
-	gnome-terminal \
-	gnome-screenshot \
-	gnome-system-monitor \
 	gspell \
 	gtksourceview4 \
 	libpeas \
@@ -123,6 +117,10 @@ for package in \
 	xreader \
 	xviewer \
 	xed \
+	file-roller \
+	gnome-terminal \
+	gnome-screenshot \
+	gnome-system-monitor \
 ; do
 cd $SCRIPTPATH/cinnamon/$package || exit 1
 sh ${package}.SlackBuild || exit 1

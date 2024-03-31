@@ -58,8 +58,7 @@ DownloadPackage "python-build" &
 DownloadPackage "python-flit-core" &
 DownloadPackage "python-installer" &
 wait
-#DownloadPackage "python-pyproject-hooks" &
-DownloadPackage "python-tomli" &
+DownloadPackage "python-pyproject-hooks" &
 DownloadPackage "python-wheel" &
 DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "xtrans" &

@@ -62,7 +62,8 @@ CXXFLAGS="$SLKCFLAGS" \
   --disable-dumper \
   --with-gtk=3
 
-make $JOBS install DESTDIR=$PKG
+make $JOBS
+make install DESTDIR=$PKG
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
