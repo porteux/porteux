@@ -195,12 +195,21 @@ rm -R usr/share/xviewer/gir-1.0
 rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
+rm etc/profile.d/80xapp-gtk3-module.sh
 rm etc/xdg/autostart/blueman.desktop
+rm etc/xdg/autostart/caribou-autostart.desktop
+rm etc/xdg/autostart/xapp-sn-watcher.desktop
 rm usr/bin/canberra*
+rm usr/bin/pastebin
+rm usr/bin/xfce4-set-wallpaper
 rm usr/bin/js[0-9]*
 rm usr/bin/peas-demo
 rm usr/lib64/libcanberra-gtk.*
 rm usr/lib64/libdbusmenu-gtk.*
+rm usr/lib64/xapps/mate-xapp-status-applet.py
+rm usr/share/dbus-1/services/org.mate.panel.applet.MateXAppStatusAppletFactory.service
+rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
+rm usr/share/dbus-1/services/org.gnome.Caribou.Daemon.service
 
 mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
 GenericStrip
