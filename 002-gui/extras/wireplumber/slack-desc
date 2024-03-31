@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+           |-----handy-ruler------------------------------------------------------|
+wireplumber: wireplumber (session and policy manager for pipewire)
+wireplumber:
+wireplumber: WirePlumber is a modular session / policy manager for PipeWire and a
+wireplumber: GObject-based high-level library that wraps PipeWire's API, providing
+wireplumber: convenience for writing the daemon's modules as well as external tools
+wireplumber: for managing PipeWire.
+wireplumber:
+wireplumber: Homepage: https://gitlab.freedesktop.org/pipewire/wireplumber
+wireplumber:
+wireplumber:
+wireplumber:
