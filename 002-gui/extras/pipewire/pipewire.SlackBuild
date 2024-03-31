@@ -35,14 +35,18 @@ tar xfv $PRGNAM-$VERSION.tar.?z* || exit 1
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
+find . \
+  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
+  -exec chmod 755 {} \+ -o \
+  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
+  -exec chmod 644 {} \+
 
-# patching meson is only required in Slackware 15.0
+# only required in Slackware 15.0
 if [ $SLACKWAREVERSION != "current" ]; then
 	cp $SCRIPTPATH/extras/$PRGNAM/*.patch .
 	for i in *.patch; do patch -p0 < $i || exit 1; done
 fi
 
-# Configure, build, and install:
 export CFLAGS="$SLKCFLAGS"
 export CXXFLAGS="$SLKCFLAGS"
 mkdir build
@@ -68,8 +72,7 @@ cd build
   -Dpipewire-jack=disabled \
   -Dsession-managers=[] \
   .. || exit 1
-  "${NINJA:=ninja}" -j${NUMBERTHREADS} || exit 1
-  DESTDIR=$PKG $NINJA install || exit 1
+  DESTDIR=$PKG "${NINJA:=ninja}" $NUMJOBS install || exit 1
 cd ..
 
 mkdir -p $PKG/etc/pipewire
@@ -80,6 +83,7 @@ mkdir -p $PKG/etc/xdg/autostart
 cp $SCRIPTPATH/extras/pipewire/pipewire.desktop $PKG/etc/xdg/autostart
 chmod 644 $PKG/etc/xdg/autostart/pipewire.desktop
 
+# only required in Slackware 15.0
 if [ $SLACKWAREVERSION != "current" ]; then
 	cd $PKG/usr/bin
 	ln -sf pipewire pipewire-aes67
