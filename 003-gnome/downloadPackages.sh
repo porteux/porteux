@@ -39,11 +39,6 @@ DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait
 
-### packages that require specific striping
-
-DownloadPackage "gtk+3" &
-wait
-
 ### temporary packages for further building
 
 DownloadPackage "boost" &

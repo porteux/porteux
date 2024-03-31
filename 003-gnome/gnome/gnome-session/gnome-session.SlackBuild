@@ -77,7 +77,6 @@ DESTDIR=$PKG ninja $JOBS install
 cd ..
 
 mkdir -p $PKG/install
-#      |-----handy-ruler------------------------------------------------------|
 cat <<EOT >$PKG/install/slack-desc
 $PRGNAM:
 $PRGNAM: GNOME Session

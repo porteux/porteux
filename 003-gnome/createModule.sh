@@ -40,8 +40,24 @@ rm -fr $MODULEPATH/${currentPackage}
 # required from now on
 installpkg $MODULEPATH/packages/*.txz || exit 1
 
+# only required for building not for run-time
+rm $MODULEPATH/packages/boost*
+rm $MODULEPATH/packages/cups*
+rm $MODULEPATH/packages/dbus-python*
+rm $MODULEPATH/packages/egl-wayland*
+rm $MODULEPATH/packages/iso-codes*
+rm $MODULEPATH/packages/krb5*
+rm $MODULEPATH/packages/libsass*
+rm $MODULEPATH/packages/libsoup3*
+rm $MODULEPATH/packages/libwnck3*
+rm $MODULEPATH/packages/llvm*
+rm $MODULEPATH/packages/python-pip*
+rm $MODULEPATH/packages/rust*
+rm $MODULEPATH/packages/sassc*
+rm $MODULEPATH/packages/vulkan-sdk*
+rm $MODULEPATH/packages/xtrans*
+
 # required by mutter 45+
-cd $MODULEPATH
 pip install attrs
 pip install jinja2
 pip install pygments
@@ -113,22 +129,7 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # only required for building not for run-time
-rm $MODULEPATH/packages/boost*
-rm $MODULEPATH/packages/cups*
-rm $MODULEPATH/packages/dbus-python*
-rm $MODULEPATH/packages/egl-wayland*
-rm $MODULEPATH/packages/iso-codes*
-rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libheif*
-rm $MODULEPATH/packages/libsass*
-rm $MODULEPATH/packages/libsoup3*
-rm $MODULEPATH/packages/libwnck3*
-rm $MODULEPATH/packages/llvm*
-rm $MODULEPATH/packages/python-pip*
-rm $MODULEPATH/packages/rust*
-rm $MODULEPATH/packages/sassc*
-rm $MODULEPATH/packages/vulkan-sdk*
-rm $MODULEPATH/packages/xtrans*
 
 ### fake root
 
