@@ -126,8 +126,12 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=pipewire
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
-version=$(curl -s https://gitlab.com/${currentPackage}/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-wget https://gitlab.freedesktop.org/${currentPackage}/${currentPackage}/-/archive/${version}/${currentPackage}-${version}.tar.gz || exit 1
+sh ${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=wireplumber
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
 sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
