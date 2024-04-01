@@ -346,7 +346,6 @@ rm -R usr/share/terminfo/z
 rm -R usr/x86_64-slackware-linux
 
 rm etc/init.d
-rm etc/ld.so.cache
 rm etc/motd
 rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
@@ -365,6 +364,7 @@ rm var/db/Makefile
 find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
+# move out libc because it can't be stripped at all
 mv $MODULEPATH/packages/lib64/libc.so* $MODULEPATH/
 mv $MODULEPATH/packages/lib64/libc-* $MODULEPATH/
 GenericStrip
