@@ -1,42 +1,53 @@
-From d682b50677dde648bf4ff0fca52b9ff8e1d25d09 Mon Sep 17 00:00:00 2001
-From: Mamoru TASAKA <mtasaka@fedoraproject.org>
-Date: Sun, 1 Aug 2021 21:50:00 +0900
-Subject: [PATCH] volumealsa: poll alsa mixer several times at startup
-
-On Fedora 34, the default alsa mixer is replaced by pipewire-alsa.
-Very often time, pipewire wakes up later than lxpanel is launched, which
-makes alsa mixer not detectable at lxpanel startup.
-
-For workaround, poll mixer several times at lxpanel startup.
----
- plugins/volumealsa/volumealsa.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/plugins/volumealsa/volumealsa.c b/plugins/volumealsa/volumealsa.c
-index 5c41051..bf5410b 100644
---- plugins/volumealsa/volumealsa.c
-+++ plugins/volumealsa/volumealsa.c
-@@ -963,10 +963,17 @@ static GtkWidget *volumealsa_constructor(LXPanel *panel, config_setting_t *setti
+--- plugins/volumealsa/volumealsa.c	2024-04-01 15:09:45.357033200 +0200
++++ plugins/volumealsa/volumealsa-patched.c	2024-04-01 15:11:39.391695400 +0200
+@@ -69,6 +69,7 @@
+ #include <poll.h>
+ #endif
+ #include <math.h>
++#include <threads.h>
+ #include <libfm/fm-gtk.h>
+ 
+ #include "plugin.h"
+@@ -920,6 +921,26 @@
+     vol->mute_check_handler = g_signal_connect(vol->mute_check, "toggled", G_CALLBACK(volumealsa_popup_mute_toggled), vol);
+ }
+ 
++static int *wait_for_pipewire(void *arg)
++{
++    VolumeALSAPlugin *vol = (VolumeALSAPlugin *)arg;
++    asound_initialize(vol);
++
++    int number_attempts = 50;
++    while (number_attempts > 0 &&  0 != system("lsof | grep libwireplumber-module-logind > /dev/null"))
++    {
++        number_attempts--;
++        usleep(200 * 1000);
++    }
++
++    if ( ! asound_initialize(vol))
++    {
++        volumealsa_destructor(vol);
++    }
++
++    return 0;
++}
++
+ /* Plugin constructor. */
+ static GtkWidget *volumealsa_constructor(LXPanel *panel, config_setting_t *settings)
+ {
+@@ -962,12 +983,9 @@
+     if (config_setting_lookup_string(settings, "VolumeMuteKey", &tmp_str))
          lxpanel_apply_hotkey(&vol->hotkey_mute, tmp_str, volume_mute, vol, FALSE);
  
-     /* Initialize ALSA.  If that fails, present nothing. */
+-    /* Initialize ALSA.  If that fails, present nothing. */
 -    if ( ! asound_initialize(vol))
-     {
+-    {
 -        volumealsa_destructor(vol);
 -        return NULL;
-+        int ret = 0;
-+        for (int i = 0 ; i < 4 ; i++) {
-+            ret = asound_initialize(vol);
-+            if (ret) break;
-+            usleep(350 * 1000);
-+        }
-+        if (!ret) {
-+            volumealsa_destructor(vol);
-+            return NULL;
-+        }
-     }
+-    }
++    thrd_t tid;
++    thrd_create(&tid, wait_for_pipewire, (void *)vol);
++    thrd_detach(tid);
  
      /* Allocate top level widget and set into Plugin widget pointer. */
--- 
-2.31.1
-
+     vol->panel = panel;

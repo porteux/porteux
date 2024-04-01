@@ -60,7 +60,7 @@ cd build
     --mandir=/usr/man \
     --prefix=/usr \
     --sysconfdir=/etc \
-    -Duse_polkit=disabled \
+    -Duse_polkit=enabled \
     -Duse_logind=enabled \
     -Duse_cups=disabled
   
