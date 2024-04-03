@@ -52,7 +52,7 @@ cd build
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-meson .. \
+meson setup \
  --prefix=/usr \
  --buildtype=release \
  --libdir=lib${LIBDIRSUFFIX} \
@@ -74,8 +74,6 @@ meson .. \
 
 DESTDIR=$PKG ninja $JOBS install
 
-# gnome-keyring offical slackware package have a geoclue.conf
-# mv $PKG/etc/geoclue/geoclue.conf $PKG/etc/geoclue/geoclue.conf.new
 rm -rf $PKG/etc/geoclue/geoclue.conf
 
 cd ..

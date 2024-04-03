@@ -54,7 +54,7 @@ cd build
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-meson .. \
+meson setup \
  --prefix=/usr \
  --libdir=/usr/lib${LIBDIRSUFFIX} \
  --sysconfdir=/etc \
@@ -63,7 +63,10 @@ meson .. \
  -Dpython3=true \
  -Dintrospection=true \
  -Dvapi=true \
- -Dgtk_doc=false
+ -Dgtk_doc=false \
+ -Dglade_catalog=false \
+ -Dlua51=false \
+ -Ddemos=false
 
 DESTDIR=$PKG ninja $JOBS install
 

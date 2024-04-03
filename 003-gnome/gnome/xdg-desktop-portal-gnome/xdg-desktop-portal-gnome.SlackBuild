@@ -60,8 +60,8 @@ cd build
     --sysconfdir=/etc \
     -Dsystemduserunitdir=/usr/lib \
     -Dstrip=true
-  "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA ${JOBS} install
+
+  DESTDIR=$PKG "${NINJA:=ninja}" ${JOBS} install
 cd ..
 
 mkdir -p $PKG/install

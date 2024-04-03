@@ -57,7 +57,7 @@ mkdir build
 cd build
   CFLAGS="$SLKCFLAGS" \
   CXXFLAGS="$SLKCFLAGS" \
-  meson .. \
+  meson setup \
     --buildtype=release \
     --infodir=/usr/info \
     --libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -78,8 +78,8 @@ cd build
     -Dsystemduserunitdir=no \
     -Dsysconfsubdir=/etc/gdm \
     -Dinitial-vt=7
-  "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA $JOBS install
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $JOBS install
 cd ..
 
 mkdir -p $PKG/etc/pam.d

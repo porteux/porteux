@@ -116,7 +116,6 @@ for package in \
 	python-pam \
 	cinnamon-desktop \
 	libgnomekbd \
-	libdbusmenu \
 	xapp \
 	cinnamon-session \
 	cinnamon-settings-daemon \
@@ -193,7 +192,9 @@ rm -R usr/lib64/gtk-2.0
 rm -R usr/lib64/libappindicator.*
 rm -R usr/lib64/peas-demo
 rm -R usr/lib64/python2.7
-rm -R usr/lib64/python3.9/site-packages/pip*
+rm -R usr/lib64/python*/site-packages/pip*
+rm -R usr/lib64/python*/site-packages/*-info
+rm -R usr/lib64/python*/site-packages/psutil/tests
 rm -R usr/share/dbus-1/services/org.gnome.FileRoller.service
 rm -R usr/share/cjs-1.0
 rm -R usr/share/clutter-1.0

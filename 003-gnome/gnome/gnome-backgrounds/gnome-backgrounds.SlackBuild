@@ -53,13 +53,13 @@ cd build
 
   CFLAGS="$SLKCFLAGS" \
   CXXFLAGS="$SLKCFLAGS" \
-  meson .. \
+  meson setup \
 	 --prefix=/usr \
 	 --libdir=/usr/lib${LIBDIRSUFFIX} \
 	 --sysconfdir=/etc \
 	 --localstatedir=/var
-  "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA $JOBS install
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $JOBS install
 cd ..
 
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la 

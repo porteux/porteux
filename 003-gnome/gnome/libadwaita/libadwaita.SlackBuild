@@ -57,7 +57,7 @@ cd build
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-meson .. \
+meson setup \
  --prefix=/usr \
  --mandir=/usr/man \
  --datadir=/usr/share \
@@ -71,8 +71,7 @@ meson .. \
  -Dexamples=false \
  -Dtests=false
 
-ninja $NUMJOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $NUMJOBS install
 
 # Don't ship .la files:
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la

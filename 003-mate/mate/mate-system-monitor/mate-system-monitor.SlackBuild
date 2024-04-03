@@ -70,13 +70,8 @@ make install DESTDIR=$PKG
 # Remove old GNOME stuff
 rm -rf $PKG/usr/share/omf/mate-system-monitor
 
-# We add Slackware logo
-mkdir -p $PKG/usr/share/pixmaps/mate-system-monitor/distribution/
-cp $CWD/side.png $PKG/usr/share/pixmaps/mate-system-monitor/distribution/
-
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
-cat $CWD/doinst.sh > $PKG/install/doinst.sh
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}

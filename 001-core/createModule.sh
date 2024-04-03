@@ -109,7 +109,6 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=polkit
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|Djs_engine=mozjs|Djs_engine=duktape|g" ${currentPackage}.SlackBuild
 sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages

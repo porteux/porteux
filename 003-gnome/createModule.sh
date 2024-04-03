@@ -58,9 +58,10 @@ rm $MODULEPATH/packages/vulkan-sdk*
 rm $MODULEPATH/packages/xtrans*
 
 # required by mutter 45+
-pip install attrs
-pip install jinja2
-pip install pygments
+cd $MODULEPATH
+pip install attrs || exit 1
+pip install jinja2 || exit 1
+pip install pygments || exit 1
 
 export GNOME_LATEST_MAJOR_VERSION=$(curl -s https://download.gnome.org/core/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/')
 gnomeLatestVersionTest=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/')
@@ -160,14 +161,13 @@ rm -R etc/dconf
 rm -R etc/dbus-1/system.d
 rm -R etc/geoclue
 rm -R etc/opt
-rm -R usr/lib
 rm -R usr/lib64/aspell
 rm -R usr/lib64/glade
 rm -R usr/lib64/gnome-settings-daemon-3.0
 rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gtk-2.0
-rm -R usr/lib64/python2.7
-rm -R usr/lib64/python3.9/site-packages/pip*
+rm -R usr/lib64/python2*
+rm -R usr/lib64/python*/site-packages/pip*
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
@@ -203,7 +203,6 @@ rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
 rm usr/bin/gtk4-widget-factory
 rm usr/bin/js[0-9]*
-rm usr/bin/peas-demo
 rm usr/lib64/gstreamer-1.0/libgstfluidsynthmidi.*
 rm usr/lib64/gstreamer-1.0/libgstneonhttpsrc.*
 rm usr/lib64/gstreamer-1.0/libgstopencv.*
@@ -218,6 +217,7 @@ rm usr/lib64/libgstopencv-1.0.*
 rm usr/lib64/libgstwebrtcnice.*
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
+find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 

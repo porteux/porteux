@@ -15,8 +15,6 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-#wget -c https://pub.mate-desktop.org/releases/1.27/$PRGNAM-$VERSION.tar.xz
-
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
   LIBDIRSUFFIX=""
@@ -53,6 +51,7 @@ find -L . \
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
+[ ! -e configure ] && ./autogen.sh
 ./configure \
   --prefix=/usr \
   --libdir=/usr/lib${LIBDIRSUFFIX} \

@@ -49,20 +49,26 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
-./configure \
-  --prefix=/usr \
-  --libdir=/usr/lib${LIBDIRSUFFIX} \
-  --sysconfdir=/etc \
-  --localstatedir=/var \
-  --mandir=/usr/man \
-  --docdir=/usr/doc/$PRGNAM-$VERSION \
-  --enable-man=false \
-  --build=$ARCH-slackware-linux
-
-make $JOBS || make
-make install DESTDIR=$PKG
+mkdir build
+cd build
+  CFLAGS="$SLKCFLAGS" \
+  CXXFLAGS="$SLKCFLAGS" \
+  meson setup \
+    --buildtype=release \
+    --infodir=/usr/info \
+    --libdir=/usr/lib${LIBDIRSUFFIX} \
+    --localstatedir=/var \
+    --mandir=/usr/man \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    -Dbash_completion=disabled \
+    -Dzsh_completion=disabled \
+    -Dselinux=disabled \
+    -Dtests=false \
+    -Dman=disabled
+  
+  DESTDIR=$PKG "${NINJA:=ninja}" $JOBS install
+cd ..
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
