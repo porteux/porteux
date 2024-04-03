@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
 PRGNAM=xapp
 
 if [ -z "$ARCH" ]; then
@@ -34,9 +36,8 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-*
 
-tagInfo=$(curl -s https://api.github.com/repos/linuxmint/${PRGNAM}/tags)
-VERSION=$(echo "$tagInfo" | tr ',' '\n' | grep "\"name\":" | cut -d \" -f 4 | grep -v "alpha" | grep -v "beta" | grep -v "master" | grep "^[0-9]" | sort -V -r | head -n 1)
-wget -c https://github.com/linuxmint/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz -O ${PRGNAM}-${VERSION}.tar.gz
+info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM})
+VERSION=${info#* }
 BUILD=${BUILD:-1}
 
 tar xvf $PRGNAM-$VERSION.tar.?z

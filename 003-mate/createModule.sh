@@ -109,7 +109,6 @@ installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
-installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
@@ -122,6 +121,8 @@ installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 rm $MODULEPATH/packages/gtk+2*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
+installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+rm $MODULEPATH/packages/xtrans*.txz
 
 # mate packages
 for currentPackage in \

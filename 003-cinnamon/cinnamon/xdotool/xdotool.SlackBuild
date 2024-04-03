@@ -49,11 +49,6 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# 20200329 bkw: make this section a bit more readable I hope.
-# The LDCONFIG=true is counter-intuitive: it means "run the 'true'
-# command instead of the 'ldconfig' command". In other words, do
-# NOT run ldconfig (opposite of what it seems to mean in English).
-COMMON="WITHOUT_RPATH_FIX=1 LDCONFIG=true"
 LIBDIR=/usr/lib$LIBDIRSUFFIX
 
 mkdir -p $PKG/$LIBDIR
@@ -63,7 +58,7 @@ make $JOBS install \
   PREFIX=/usr \
   INSTALLLIB=$LIBDIR \
   DESTDIR=$PKG \
-  $COMMON
+  WITHOUT_RPATH_FIX=1
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

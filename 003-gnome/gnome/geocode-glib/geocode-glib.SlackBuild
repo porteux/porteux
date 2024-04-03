@@ -51,7 +51,7 @@ mkdir build
 cd build
   CFLAGS="$SLKCFLAGS" \
   CXXFLAGS="$SLKCFLAGS" \
-  meson .. \
+  meson setup \
     --buildtype=release \
     --infodir=/usr/info \
     --libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -64,8 +64,8 @@ cd build
     -Denable-gtk-doc=false \
     -Denable-installed-tests=false \
     -Dsoup2=false
-  "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA $JOBS install
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $JOBS install
 cd ..
 
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la

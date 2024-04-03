@@ -53,7 +53,7 @@ mkdir build
 cd build
   CFLAGS="$SLKCFLAGS" \
   CXXFLAGS="$SLKCFLAGS" \
-  meson .. \
+  meson setup \
     --buildtype=release \
     --infodir=/usr/info \
     --libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -65,8 +65,8 @@ cd build
     -Dbackend-gtk4=auto \
     -Ddocs=false \
     -Dtests=false
-  "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA $JOBS install
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $JOBS install
 cd ..
 
 mkdir -p $PKG/install

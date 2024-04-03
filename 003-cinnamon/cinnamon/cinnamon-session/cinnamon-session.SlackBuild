@@ -34,8 +34,7 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 rm -rf $PRGNAM-*
 
-tagInfo=$(curl -s https://api.github.com/repos/linuxmint/${PRGNAM}/tags)
-VERSION=$(echo "$tagInfo" | tr ',' '\n' | grep "\"name\":" | cut -d \" -f 4 | grep -v "alpha" | grep -v "beta" | grep -v "master" | grep "^[0-9]" | sort -V -r | head -n 1)
+VERSION=$(curl -s https://github.com/linuxmint/${PRGNAM}/tags/ | grep "/linuxmint/${PRGNAM}/releases/tag/" | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | uniq | sort -V -r | head -n 1)
 wget -c https://github.com/linuxmint/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz -O ${PRGNAM}-${VERSION}.tar.gz
 BUILD=${BUILD:-1}
 

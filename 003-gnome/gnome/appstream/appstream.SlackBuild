@@ -56,7 +56,7 @@ cd build
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-meson setup .. \
+meson setup \
     --buildtype=release \
     --libdir=/usr/lib${LIBDIRSUFFIX} \
     --localstatedir=/var \
@@ -71,8 +71,8 @@ meson setup .. \
     -Dapidocs=false \
     -Dsystemd=false \
     -Dinstall-docs=false
-  "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA $JOBS install
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $JOBS install
 cd ..
 
 rm -fr $PKG/usr/share/appstream

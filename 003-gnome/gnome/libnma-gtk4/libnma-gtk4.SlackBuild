@@ -55,10 +55,9 @@ meson setup \
   --localstatedir=/var \
   --mandir=/usr/man \
   -Dlibnma_gtk4=true \
-  -Dgtk_doc=false \
-  .. || exit 1
-  "${NINJA:=ninja}" $NUMJOBS || exit 1
-  DESTDIR=$PKG $NINJA $JOBS install || exit 1
+  -Dgtk_doc=false
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $JOBS install || exit 1
 cd ..
 
 # Remove all extra bits included in the base libnma package

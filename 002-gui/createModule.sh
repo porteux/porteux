@@ -116,9 +116,8 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=libjxl
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
-tagInfo=$(curl -s https://api.github.com/repos/${currentPackage}/${currentPackage}/tags)
-version=$(echo "$tagInfo" | tr ',' '\n' | grep "\"name\":" | cut -d \" -f 4 | grep -v "alpha" | grep -v "beta" | sort -V -r | head -n 1)
-wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/tags/${version}.tar.gz -O ${currentPackage}-${version//[vV]}.tar.gz
+info=$(DownloadLatestFromGithub "${currentPackage}" ${currentPackage})
+version=${info#* }
 sh ${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}

@@ -35,7 +35,7 @@ cd $TMP
 rm -rf $PRGNAM-*
 
 VERSION="0.4.6"
-wget https://launchpad.net/ubuntu/+archive/primary/+files/libtimezonemap_0.4.6.tar.gz
+wget https://launchpad.net/ubuntu/+archive/primary/+files/${PRGNAM}_${VERSION}.tar.gz
 BUILD=${BUILD:-1}
 
 tar xfv ${PRGNAM}_${VERSION}.tar.?z*

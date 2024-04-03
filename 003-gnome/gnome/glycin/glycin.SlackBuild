@@ -40,7 +40,7 @@ find -L . \
 mkdir -p build
 cd build
 
-meson .. \
+meson setup \
  --prefix=/usr \
  --buildtype=release \
  --libdir=lib${LIBDIRSUFFIX} \

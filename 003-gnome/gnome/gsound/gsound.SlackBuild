@@ -50,7 +50,7 @@ find -L . \
 
 mkdir -p build
 cd build
-meson .. \
+meson setup \
  --prefix=/usr \
  --libdir=/usr/lib${LIBDIRSUFFIX} \
  --sysconfdir=/etc \
