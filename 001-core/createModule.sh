@@ -288,10 +288,14 @@ rm -R usr/lib64/services
 rm -R usr/lib64/krb5/plugins
 rm -R usr/lib64/locale/C.utf8
 rm -R usr/lib64/p7zip/Codecs
-rm -R usr/lib64/python2.7
+rm -R usr/lib64/python2.*
+rm -R usr/lib64/python*/config-3.11-x86_64-linux-gnu/
 rm -R usr/lib64/python*/idlelib
+rm -R usr/lib64/python*/ensurepip
 rm -R usr/lib64/python*/lib2to3
 rm -R usr/lib64/python*/site-packages/demo
+rm -R usr/lib64/python*/site-packages/msi
+rm -R usr/lib64/python*/site-packages/peg_generator/
 rm -R usr/lib64/python*/turtledemo
 rm -R usr/lib64/sasl2
 rm -R usr/lib64/systemd
