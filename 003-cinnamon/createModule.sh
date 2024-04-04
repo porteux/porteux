@@ -70,6 +70,7 @@ rm -fr $MODULEPATH/${currentPackage}
 # required from now on
 installpkg $MODULEPATH/packages/aspell*.txz || exit 1
 installpkg $MODULEPATH/packages/colord*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgee*.txz || exit 1
@@ -184,17 +185,15 @@ rm -R etc/dconf
 rm -R etc/dbus-1/system.d
 rm -R etc/geoclue
 rm -R etc/opt
-rm -R usr/lib
+rm -R usr/lib*/python*/site-packages/pip*
+rm -R usr/lib*/python*/site-packages/*-info
+rm -R usr/lib*/python*/site-packages/psutil/tests
 rm -R usr/lib64/aspell
 rm -R usr/lib64/glade
 rm -R usr/lib64/graphene-1.0
 rm -R usr/lib64/gtk-2.0
 rm -R usr/lib64/libappindicator.*
-rm -R usr/lib64/peas-demo
-rm -R usr/lib64/python2.7
-rm -R usr/lib64/python*/site-packages/pip*
-rm -R usr/lib64/python*/site-packages/*-info
-rm -R usr/lib64/python*/site-packages/psutil/tests
+rm -R usr/lib64/python2*
 rm -R usr/share/dbus-1/services/org.gnome.FileRoller.service
 rm -R usr/share/cjs-1.0
 rm -R usr/share/clutter-1.0
@@ -221,13 +220,14 @@ rm usr/bin/canberra*
 rm usr/bin/pastebin
 rm usr/bin/xfce4-set-wallpaper
 rm usr/bin/js[0-9]*
-rm usr/bin/peas-demo
 rm usr/lib64/libcanberra-gtk.*
 rm usr/lib64/libdbusmenu-gtk.*
 rm usr/lib64/xapps/mate-xapp-status-applet.py
 rm usr/share/dbus-1/services/org.mate.panel.applet.MateXAppStatusAppletFactory.service
 rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
 rm usr/share/dbus-1/services/org.gnome.Caribou.Daemon.service
+
+find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 
 mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
 GenericStrip
