@@ -69,8 +69,8 @@ meson \
     -Dms_graph=true \
     -Dgoogle=true \
     -Dfedora=false
-  "${NINJA:=ninja}"
-  DESTDIR=$PKG ninja $JOBS install
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $JOBS install
 cd ..
 
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
