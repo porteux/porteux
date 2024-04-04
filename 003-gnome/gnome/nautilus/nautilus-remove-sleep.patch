@@ -1,0 +1,18 @@
+--- src/nautilus-main.c	2024-04-04 09:45:57.869049826 +0200
++++ src/nautilus-main.c.patched	2024-04-04 09:46:17.672052251 +0200
+@@ -56,15 +56,6 @@
+ 
+     g_set_prgname (APPLICATION_ID);
+ 
+-    if (getuid () == 0)
+-    {
+-        g_warning (_("\n========================================================"
+-                     "\nThis app cannot work correctly if run as root (not even"
+-                     "\nwith sudo). Consider running `nautilus admin:/` instead."
+-                     "\n========================================================"));
+-        sleep (7);
+-    }
+-
+     nautilus_register_resource ();
+     /* Run the nautilus application. */
+     application = nautilus_application_new ();

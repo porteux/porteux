@@ -298,7 +298,7 @@ fi
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc \\\\|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s |g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
-GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
+AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}

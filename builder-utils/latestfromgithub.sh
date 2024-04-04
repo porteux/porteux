@@ -7,8 +7,7 @@ DownloadLatestFromGithub() {
     versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep "/${repository}/${project}/releases/tag/" | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "master.")
     versionNormalized=$(echo "${versions//_/.}" | sort -V -r | head -n 1)
     [[ ${versions} == *"${versionNormalized}"* ]] && version=${versionNormalized} || version=${versionNormalized//./_}
-    releaseUrl="https://github.com/${repository}/${project}/releases/download/${version}/${project}-${version}.tar"
-    releaseUrlNormalized="https://github.com/${repository}/${project}/releases/download/${version}/${project}-${version//[^0-9.]/}.tar"
+    releaseUrl="https://github.com/${repository}/${project}/releases/download/${version}/${project}-${version//[^0-9.]/}.tar"
     tagUrl="https://github.com/${repository}/${project}/archive/refs/tags/${version}.tar.gz"
     validUrl=
 
@@ -16,10 +15,6 @@ DownloadLatestFromGithub() {
         validUrl="${releaseUrl}.xz"
     elif wget --spider "${releaseUrl}.gz" 2>/dev/null; then
         validUrl="${releaseUrl}.gz"
-    elif wget --spider "${releaseUrlNormalized}.xz" 2>/dev/null; then
-        validUrl="${releaseUrlNormalized}.xz"
-    elif wget --spider "${releaseUrlNormalized}.gz" 2>/dev/null; then
-        validUrl="${releaseUrlNormalized}.gz"
     else
         validUrl=${tagUrl}
     fi
