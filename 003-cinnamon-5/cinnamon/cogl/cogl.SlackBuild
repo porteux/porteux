@@ -14,7 +14,7 @@ CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-JOBS="-j$(nproc --all)"
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -63,7 +63,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --enable-kms-egl-platform \
   --build=$ARCH-slackware-linux
 
-make $JOBS install DESTDIR=$PKG
+make $NUMJOBS install DESTDIR=$PKG
 
 # Don't ship .la files:
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la

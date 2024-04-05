@@ -67,8 +67,8 @@ meson setup \
   -D_systemd=false \
   -Dicu=false \
   .. || exit 1
-  "${NINJA:=ninja}" $NUMJOBS || exit 1
-  DESTDIR=$PKG $NINJA install || exit 1
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $NUMJOBS install || exit 1
 cd ..
 
 # Don't ship .la files:

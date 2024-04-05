@@ -14,7 +14,7 @@ TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 CWD=$(pwd)
-JOBS="-j$(nproc --all)"
+NUMJOBS="-j$(nproc --all)"
 
 set -e
 
@@ -50,7 +50,7 @@ meson setup \
  --mandir=/usr/man \
  --localstatedir=/var
 
-RUSTFLAGS="-C panic=abort -C strip=debuginfo" DESTDIR=$PKG ninja $JOBS install
+RUSTFLAGS="-C panic=abort -C strip=debuginfo" DESTDIR=$PKG ninja $NUMJOBS install
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

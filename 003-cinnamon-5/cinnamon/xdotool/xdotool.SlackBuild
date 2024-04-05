@@ -16,7 +16,7 @@ CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-JOBS="-j$(nproc --all)"
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -53,7 +53,7 @@ LIBDIR=/usr/lib$LIBDIRSUFFIX
 
 mkdir -p $PKG/$LIBDIR
 
-make $JOBS install \
+make $NUMJOBS install \
   WARNFLAGS="$SLKCFLAGS" \
   PREFIX=/usr \
   INSTALLLIB=$LIBDIR \

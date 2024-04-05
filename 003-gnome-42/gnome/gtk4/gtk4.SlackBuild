@@ -72,8 +72,8 @@ meson setup \
   -Dinstall-tests=false \
   -Dwayland-backend=true \
   .. || exit 1
-  "${NINJA:=ninja}" $NUMJOBS || exit 1
-  DESTDIR=$PKG $NINJA install || exit 1
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $NUMJOBS install || exit 1
 cd ..
 
 mkdir -p $PKG/install 

@@ -29,7 +29,7 @@ TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 CWD=$(pwd)
-JOBS="-j$(nproc --all)"
+NUMJOBS="-j$(nproc --all)"
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
@@ -60,7 +60,7 @@ cd build
     -DCMAKE_INSTALL_MANDIR=/usr/man \
     -DBUILD_TESTING=OFF \
     -DCMAKE_BUILD_TYPE=Release ..
-  make $JOBS install DESTDIR=$PKG || exit 1
+  make $NUMJOBS install DESTDIR=$PKG || exit 1
 cd ..
 
 mkdir -p $PKG/install
