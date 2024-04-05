@@ -16,7 +16,7 @@ CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$TMP/packages}
-JOBS="-j$(nproc --all)"
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -56,7 +56,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --enable-man=false \
   --build=$ARCH-slackware-linux
 
-make $JOBS || make
+make $NUMJOBS || make
 make install DESTDIR=$PKG
 
 mkdir -p $PKG/install

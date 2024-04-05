@@ -14,7 +14,7 @@ CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-JOBS="-j$(nproc --all)"
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -69,7 +69,7 @@ meson setup \
  -Dpackagekit=false \
  -Dlibarchive=enabled
 
-DESTDIR=$PKG ninja $JOBS install
+DESTDIR=$PKG ninja $NUMJOBS install
 
 cd ..
 

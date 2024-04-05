@@ -16,7 +16,7 @@ CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-JOBS="-j$(nproc --all)"
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -67,7 +67,7 @@ cd build
     -Dnative_backend=true \
     -Ddefault_driver=auto
   
-  DESTDIR=$PKG ninja $JOBS install
+  DESTDIR=$PKG ninja $NUMJOBS install
 cd ..
 
 # Don't ship .la files:

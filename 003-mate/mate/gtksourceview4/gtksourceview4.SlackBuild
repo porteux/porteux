@@ -6,7 +6,8 @@ PRGNAM=gtksourceview4
 SRCNAM=gtksourceview
 VERSION=${VERSION:-4.8.1}
 BUILD=${BUILD:-1}
-CWD=$(pwd)
+NUMJOBS="-j$(nproc --all)"
+
 PKG=$MODULEPATH/$PRGNAM/package-$PRGNAM
 OUTPUT=${OUTPUT:-$MODULEPATH/packages}
 
@@ -69,8 +70,8 @@ cd build
     --prefix=/usr \
     --sysconfdir=/etc \
     -Dglade_catalog=false
-  "${NINJA:=ninja}" -j$(nproc --all)
-  DESTDIR=$PKG $NINJA install
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $NUMJOBS install
 cd ..
 
 mkdir -p $PKG/install
