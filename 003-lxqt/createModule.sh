@@ -69,7 +69,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 -DENABLE_SAMPLES=off ..
+CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_SAMPLES=off ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -104,7 +104,7 @@ version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 cp $SCRIPTPATH/extras/adwaita-qt/adwaitastyle.cpp.patch .
 patch -p0 < adwaitastyle.cpp.patch || exit 1
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
+CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -134,7 +134,7 @@ wget https://github.com/tsujan/${currentPackage}/releases/download/V${version}/$
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
+CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
@@ -168,7 +168,7 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sed -i "s|set(NM_TRAY_VERSION \".*|set(NM_TRAY_VERSION \"${version}\")|g" CMakeLists.txt
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib64 ..
+CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -325,22 +325,21 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
-rm -R usr/lib
-rm -R usr/lib64/gnome-settings-daemon-3.0/
-rm -R usr/lib64/gtk-2.0/
-rm -R usr/lib64/qt5/mkspecs
+rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0/
+rm -R usr/lib${SYSTEMBITS}/gtk-2.0/
+rm -R usr/lib${SYSTEMBITS}/qt5/mkspecs
 rm -R usr/share/featherpad
+rm -R usr/share/libfm-qt/translations
+rm -R usr/share/lximage-qt
+rm -R usr/share/lxqt-archiver
 rm -R usr/share/lxqt/graphics
 rm -R usr/share/lxqt/panel
-rm -R usr/share/lxqt/translations
 rm -R usr/share/lxqt/themes/Arch-Colors
 rm -R usr/share/lxqt/themes/KDE-Plasma
 rm -R usr/share/lxqt/themes/light
 rm -R usr/share/lxqt/themes/silver
 rm -R usr/share/lxqt/themes/Valendas
-rm -R usr/share/libfm-qt/translations
-rm -R usr/share/lximage-qt
-rm -R usr/share/lxqt-archiver
+rm -R usr/share/lxqt/translations
 rm -R usr/share/obconf-qt
 rm -R usr/share/pavucontrol-qt
 rm -R usr/share/pcmanfm-qt/translations
@@ -354,8 +353,8 @@ rm -R usr/share/Thunar
 
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
-rm usr/lib64/libcanberra-gtk.*
-rm usr/lib64/libdbusmenu-gtk.*
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
+rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/share/lxqt/wallpapers/after-the-rain.jpg
 rm usr/share/lxqt/wallpapers/appleflower.png
 rm usr/share/lxqt/wallpapers/beam.png
@@ -375,6 +374,8 @@ rm usr/share/lxqt/wallpapers/triangles-logo.png
 rm usr/share/lxqt/wallpapers/Valendas.png
 rm usr/share/lxqt/wallpapers/waves-purple-logo.jpg
 rm usr/share/nm-tray/nm-tray*.qm
+
+[ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
 AggressiveStripAll

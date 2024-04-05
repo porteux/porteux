@@ -7,7 +7,6 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
-DownloadPackage "babl" &
 DownloadPackage "blueman" &
 DownloadPackage "colord" &
 DownloadPackage "dbus-python" &
@@ -16,7 +15,6 @@ DownloadPackage "enchant" &
 wait
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "hunspell" &
-DownloadPackage "hyphen" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &

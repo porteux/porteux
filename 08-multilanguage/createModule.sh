@@ -25,10 +25,10 @@ rm *.t?z
 
 ### strip
 
-rm -R $MODULEPATH/packages/var/log/pkgtools
-rm -R $MODULEPATH/packages/var/log/setup
 rm -R $MODULEPATH/packages/var/lib/pkgtools/douninst.sh/
 rm -R $MODULEPATH/packages/var/lib/pkgtools/setup
+rm -R $MODULEPATH/packages/var/log/pkgtools
+rm -R $MODULEPATH/packages/var/log/setup
 
 rm $MODULEPATH/packages/var/log/removed_packages
 rm $MODULEPATH/packages/var/log/removed_scripts

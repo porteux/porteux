@@ -228,34 +228,33 @@ CopyToDevel
 
 CopyToMultiLanguage
 
-mv $MODULEPATH/packages/usr/lib64/gobject-introspection $PORTEUXBUILDERPATH/05-devel/packages/usr/lib64
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/gobject-introspection $PORTEUXBUILDERPATH/05-devel/packages/usr/lib${SYSTEMBITS}
 
 ### module clean up
 
 cd $MODULEPATH/packages/
 
 rm -R etc/OpenCL
-rm -R etc/X11/xorg.conf.d
 rm -R etc/pam.d
 rm -R etc/rc_keymaps
+rm -R etc/X11/xorg.conf.d
 rm -R etc/xdg/Xwayland-session.d
-rm -R usr/lib
-rm -R usr/lib64/atkmm-*
-rm -R usr/lib64/cairomm-*
-rm -R usr/lib64/clang
-rm -R usr/lib64/dri/*.la
-rm -R usr/lib64/gdkmm-*
-rm -R usr/lib64/giomm-*
-rm -R usr/lib64/glibmm-*
-rm -R usr/lib64/gnome-settings-daemon-*
-rm -R usr/lib64/graphene-1.0
-rm -R usr/lib64/gtkmm-*
-rm -R usr/lib64/openjpeg-*
-rm -R usr/lib64/libxslt-plugins
-rm -R usr/lib64/pangomm-*
-rm -R usr/lib64/python2*
-rm -R usr/lib64/sigc++-*
-rm -R usr/lib64/xmms
+rm -R usr/lib${SYSTEMBITS}/atkmm-*
+rm -R usr/lib${SYSTEMBITS}/cairomm-*
+rm -R usr/lib${SYSTEMBITS}/clang
+rm -R usr/lib${SYSTEMBITS}/dri/*.la
+rm -R usr/lib${SYSTEMBITS}/gdkmm-*
+rm -R usr/lib${SYSTEMBITS}/giomm-*
+rm -R usr/lib${SYSTEMBITS}/glibmm-*
+rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-*
+rm -R usr/lib${SYSTEMBITS}/graphene-1.0
+rm -R usr/lib${SYSTEMBITS}/gtkmm-*
+rm -R usr/lib${SYSTEMBITS}/libxslt-plugins
+rm -R usr/lib${SYSTEMBITS}/openjpeg-*
+rm -R usr/lib${SYSTEMBITS}/pangomm-*
+rm -R usr/lib${SYSTEMBITS}/python2*
+rm -R usr/lib${SYSTEMBITS}/sigc++-*
+rm -R usr/lib${SYSTEMBITS}/xmms
 rm -R usr/share/gnome
 rm -R usr/share/gnome-session
 rm -R usr/share/gobject-introspection-1.0/tests
@@ -287,8 +286,8 @@ rm -R usr/share/X11/locale/georgian*
 rm -R usr/share/X11/locale/ja*
 rm -R usr/share/X11/locale/km*
 rm -R usr/share/X11/locale/ko*
-rm -R usr/share/X11/locale/nokhchi*
 rm -R usr/share/X11/locale/mulelao*
+rm -R usr/share/X11/locale/nokhchi*
 rm -R usr/share/X11/locale/pt*
 rm -R usr/share/X11/locale/ru*
 rm -R usr/share/X11/locale/sr*
@@ -314,14 +313,14 @@ rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
-rm usr/lib64/libbd_crypto.*
-rm usr/lib64/libbd_nvdimm.*
-rm usr/lib64/libbd_vdo.*
-rm usr/lib64/libLLVMExtensions*
-rm usr/lib64/libLLVMLTO*
-rm usr/lib64/libMesaOpenCL*
-rm usr/lib64/libpoppler-cpp*
-rm usr/lib64/libRusticlOpenCL*
+rm usr/lib${SYSTEMBITS}/libbd_crypto.*
+rm usr/lib${SYSTEMBITS}/libbd_nvdimm.*
+rm usr/lib${SYSTEMBITS}/libbd_vdo.*
+rm usr/lib${SYSTEMBITS}/libLLVMExtensions*
+rm usr/lib${SYSTEMBITS}/libLLVMLTO*
+rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
+rm usr/lib${SYSTEMBITS}/libpoppler-cpp*
+rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
 rm usr/share/applications/gtk3-demo.desktop
@@ -336,8 +335,8 @@ rm usr/share/fonts/TTF/Deja*Italic*
 rm usr/share/fonts/TTF/DejaVuMathTeXGyre.ttf
 rm usr/share/fonts/TTF/DejaVuSans-BoldOblique.ttf
 rm usr/share/fonts/TTF/DejaVuSans-ExtraLight.ttf
-rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf
+rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 rm usr/share/xsessions/openbox-gnome.desktop
@@ -346,11 +345,11 @@ rm usr/share/xsessions/openbox-kde.desktop
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
 # move out things that don't support stripping
-mv $MODULEPATH/packages/usr/lib64/dri $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/dri $MODULEPATH/
 mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 GenericStrip
 AggressiveStrip
-mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib64/
+mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
 
 ### copy cache files

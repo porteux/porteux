@@ -1,8 +1,0 @@
-PRGNAM="mozjs91"
-VERSION="91.13.0"
-HOMEPAGE="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey"
-DOWNLOAD="https://archive.mozilla.org/pub/firefox/releases/91.13.0esr/source/firefox-91.13.0esr.source.tar.xz"
-MD5SUM="63f84a77e8266256428c77895ecfb481"
-REQUIRES=""
-MAINTAINER="Frank Honolka"
-EMAIL="slackernetuk@gmail.com"
