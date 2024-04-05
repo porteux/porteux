@@ -1,0 +1,12 @@
+     |-----handy-ruler------------------------------------------------------|
+polib: polib (pot, po, and mo file manipulation library)
+polib:
+polib: Allows you to load existing files, iterate through it's entries, add,
+polib: modify entries, comments or metadata, etc., or create new po files
+polib: from scratch.
+polib:
+polib: Homepage: https://bitbucket.org/izi/polib/wiki/Home
+polib:
+polib:
+polib:
+polib:
