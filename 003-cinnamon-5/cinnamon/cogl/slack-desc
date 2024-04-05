@@ -1,0 +1,12 @@
+    |-----handy-ruler------------------------------------------------------|
+cogl: cogl (Rendering Library)
+cogl:
+cogl: Cogl is a small open source library for using 3D graphics hardware
+cogl: for rendering.
+cogl:
+cogl: The API departs from the flat state machine style of OpenGL and is
+cogl: designed to make it easy to write orthogonal components that can
+cogl: render without stepping on each others toes.
+cogl:
+cogl: Project URL: https://github.com/GNOME/cogl/
+cogl:
