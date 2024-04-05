@@ -165,7 +165,9 @@ kmap=keyboardmap:variant
        Keyboard layout variants are also supported.
        Example: 'kmap=pl:qwertz' will set the polish keyboard layout
        with 'qwertz' as a variant.
-       Please notice this cheatcode will not work in Wayland sessions.
+       Please notice that changing the keyboard layout using the desktop
+       environment settings may overwrite this cheatcode. Also, it will
+       not work in Wayland sessions.
 
 load=module
 load=module[1];module[n]

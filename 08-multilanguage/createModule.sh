@@ -34,6 +34,8 @@ rm $MODULEPATH/packages/var/log/removed_packages
 rm $MODULEPATH/packages/var/log/removed_scripts
 rm $MODULEPATH/packages/var/log/removed_uninstall_scripts
 
+find $MODULEPATH/packages -type f -name '*.desktop' -exec rm -f {} +
+
 ### finalize
 
 Finalize
