@@ -63,8 +63,8 @@ mv $MODULEDIR/usr/lib/vdpau $MODULEDIR/../nostrip &>/dev/null
 
 if [ "$SYSTEMBITS" = 64 ]; then
 	mv $MODULEDIR/usr/lib64/libnvcuvid.* $MODULEDIR/../nostrip64 &>/dev/null
-	mv $MODULEDIR/usr/lib64/libnvidia-encode.* $MODULEDIR/../nostrip64 &>/dev/null
 	mv $MODULEDIR/usr/lib64/libnvidia-eglcore.* $MODULEDIR/../nostrip64 &>/dev/null
+	mv $MODULEDIR/usr/lib64/libnvidia-encode.* $MODULEDIR/../nostrip64 &>/dev/null
 	mv $MODULEDIR/usr/lib64/libnvidia-glvkspirv.* $MODULEDIR/../nostrip64 &>/dev/null
 	mv $MODULEDIR/usr/lib64/libnvidia-gpucomp.* $MODULEDIR/../nostrip64 &>/dev/null
 	mv $MODULEDIR/usr/lib64/libnvidia-nvvm.* $MODULEDIR/../nostrip64 &>/dev/null

@@ -68,7 +68,7 @@ git clone https://github.com/stevenhoneyman/${currentPackage}
 cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sh autogen.sh
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug || exit 1
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug || exit 1
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -559,21 +559,22 @@ cd $MODULEPATH/packages/
 
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
-rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
-rm usr/lib64/libappindicator.*
-rm usr/lib64/libcanberra-gtk.*
-rm usr/lib64/libdbusmenu-gtk.*
-rm usr/lib64/libindicator.*
-rm usr/lib64/libkeybinder.*
+rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
+rm usr/lib${SYSTEMBITS}/libappindicator.*
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
+rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
+rm usr/lib${SYSTEMBITS}/libindicator.*
+rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/libexec/indicator-loader
 rm usr/share/lxde/wallpapers/lxde_green.jpg
 rm usr/share/lxde/wallpapers/lxde_red.jpg
 
-rm -R usr/lib
-rm -R usr/share/Thunar
 rm -R usr/share/engrampa
 rm -R usr/share/gdm
 rm -R usr/share/gnome
+rm -R usr/share/Thunar
+
+[ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
 AggressiveStripAll

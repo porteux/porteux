@@ -6,11 +6,11 @@ SetFlags() {
     systemFullVersion=$(cat /etc/slackware-version)
 
     if [[ ${systemFullVersion//* } != *"+" ]]; then
-	export SLACKWAREVERSION=15.0
-	export PORTEUXBUILD=stable
+        export SLACKWAREVERSION=15.0
+        export PORTEUXBUILD=stable
     else
-	export SLACKWAREVERSION=current
-	export PORTEUXBUILD=current
+        export SLACKWAREVERSION=current
+        export PORTEUXBUILD=current
     fi
 
     export SLACKBUILDVERSION=$SLACKWAREVERSION
@@ -30,7 +30,7 @@ SetFlags() {
     if [ ! $SYSTEMBITS ] && [ `getconf LONG_BIT` == "64" ]; then
         export SYSTEMBITS="64"
     else
-	export SYSTEMBITS=
+        export SYSTEMBITS=
     fi
 
     export NUMBERTHREADS=$(nproc --all)

@@ -157,17 +157,17 @@ gtk-update-icon-cache $MODULEPATH/packages/usr/share/icons/Adwaita
 
 cd $MODULEPATH/packages/
 
-rm -R etc/dconf
 rm -R etc/dbus-1/system.d
+rm -R etc/dconf
 rm -R etc/geoclue
 rm -R etc/opt
-rm -R usr/lib64/aspell
-rm -R usr/lib64/glade
-rm -R usr/lib64/gnome-settings-daemon-3.0
-rm -R usr/lib64/graphene-1.0
-rm -R usr/lib64/gtk-2.0
-rm -R usr/lib64/python2*
-rm -R usr/lib64/python*/site-packages/pip*
+rm -R usr/lib${SYSTEMBITS}/aspell
+rm -R usr/lib${SYSTEMBITS}/glade
+rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
+rm -R usr/lib${SYSTEMBITS}/graphene-1.0
+rm -R usr/lib${SYSTEMBITS}/gtk-2.0
+rm -R usr/lib${SYSTEMBITS}/python2*
+rm -R usr/lib${SYSTEMBITS}/python*/site-packages/pip*
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
@@ -181,11 +181,11 @@ rm -R usr/share/dbus-1/services/org.gnome.ScreenSaver.service
 rm -R usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 rm -R usr/share/gjs-1.0
 rm -R usr/share/glade/pixmaps
+rm -R usr/share/gnome/autostart
+rm -R usr/share/gnome/shutdown
 rm -R usr/share/gtk-4.0
 rm -R usr/share/ibus
 rm -R usr/share/installed-tests
-rm -R usr/share/gnome/autostart
-rm -R usr/share/gnome/shutdown
 rm -R usr/share/libgweather-4
 rm -R usr/share/pixmaps
 rm -R usr/share/vala
@@ -203,28 +203,28 @@ rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
 rm usr/bin/gtk4-widget-factory
 rm usr/bin/js[0-9]*
-rm usr/lib64/gstreamer-1.0/libgstfluidsynthmidi.*
-rm usr/lib64/gstreamer-1.0/libgstneonhttpsrc.*
-rm usr/lib64/gstreamer-1.0/libgstopencv.*
-rm usr/lib64/gstreamer-1.0/libgstopenexr.*
-rm usr/lib64/gstreamer-1.0/libgstqmlgl.*
-rm usr/lib64/gstreamer-1.0/libgstqroverlay.*
-rm usr/lib64/gstreamer-1.0/libgsttaglib.*
-rm usr/lib64/gstreamer-1.0/libgstwebrtc.*
-rm usr/lib64/gstreamer-1.0/libgstzxing.*
-rm usr/lib64/libcanberra-gtk.*
-rm usr/lib64/libgstopencv-1.0.*
-rm usr/lib64/libgstwebrtcnice.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstfluidsynthmidi.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstneonhttpsrc.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstopencv.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstopenexr.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqmlgl.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqroverlay.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgsttaglib.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstwebrtc.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
+rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
+rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
-find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
+[ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 
-mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
 GenericStrip
 AggressiveStripAll
-mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib64
+mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
 

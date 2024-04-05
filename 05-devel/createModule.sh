@@ -34,23 +34,23 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
-rm -R usr/x86_64-slackware-linux
-rm -R usr/etc
 rm -R usr/doc
+rm -R usr/etc
 rm -R usr/info
+rm -R usr/lib${SYSTEMBITS}/bash
+rm -R usr/lib*/python2*
 rm -R usr/local
 rm -R usr/man
-rm -R usr/lib64/bash
-rm -R usr/lib64/python2.*
 rm -R usr/share/applications
-rm -R usr/share/devhelp
 rm -R usr/share/cmake-*/Help
+rm -R usr/share/devhelp
 rm -R usr/share/gnome
 rm -R usr/share/help
 rm -R usr/share/icons
 rm -R usr/share/locale
 rm -R usr/share/sgml/docbook/dsssl-stylesheets*
 rm -R usr/share/valadoc-*
+rm -R usr/x86_64-slackware-linux
 rm -R var/log/pkgtools
 rm -R var/log/setup
 

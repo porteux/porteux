@@ -122,22 +122,22 @@ mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
-cp --parents -P lib64/libfuse.* ${currentPackage}-stripped-$version/
-cp --parents -P lib64/libgssapi_krb5.* ${currentPackage}-stripped-$version/
-cp --parents -P lib64/libk5crypto.* ${currentPackage}-stripped-$version/
-cp --parents -P lib64/libkrb5.* ${currentPackage}-stripped-$version/
-cp --parents -P lib64/libkrb5support.* ${currentPackage}-stripped-$version/
-cp --parents -P lib64/libsigsegv.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libatomic.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libcares.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libcups.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libgcc_s.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libgmp.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libgmpxx.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libgomp.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libltdl.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libslang.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib64/libstdc++.so.6* ${currentPackage}-stripped-$version/
+cp --parents -P lib${SYSTEMBITS}/libfuse.* ${currentPackage}-stripped-$version/
+cp --parents -P lib${SYSTEMBITS}/libgssapi_krb5.* ${currentPackage}-stripped-$version/
+cp --parents -P lib${SYSTEMBITS}/libk5crypto.* ${currentPackage}-stripped-$version/
+cp --parents -P lib${SYSTEMBITS}/libkrb5.* ${currentPackage}-stripped-$version/
+cp --parents -P lib${SYSTEMBITS}/libkrb5support.* ${currentPackage}-stripped-$version/
+cp --parents -P lib${SYSTEMBITS}/libsigsegv.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libatomic.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libcares.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libcups.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libgcc_s.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libgmp.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libgmpxx.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libgomp.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libltdl.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libslang.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.so.6* ${currentPackage}-stripped-$version/
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -149,9 +149,9 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 	ROOT=./ installpkg ${currentPackage}-*.txz
 	mkdir ${currentPackage}-stripped-$version
-	cp --parents -P usr/lib64/libavahi-client.* ${currentPackage}-stripped-$version/
-	cp --parents -P usr/lib64/libavahi-common.* ${currentPackage}-stripped-$version/
-	cp --parents -P usr/lib64/libavahi-glib.* ${currentPackage}-stripped-$version/
+	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped-$version/
+	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped-$version/
+	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped-$version/
 	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 	/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 	rm -fr $MODULEPATH/${currentPackage}
@@ -177,7 +177,7 @@ mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib64/libfftw3f.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libfftw3f.* ${currentPackage}-stripped-$version/
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -275,35 +275,35 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+rm -R lib${SYSTEMBITS}/pkgconfig
 rm -R lib/systemd
-rm -R lib64/pkgconfig
 rm -R mnt/*
 rm -R usr/etc
+rm -R usr/lib${SYSTEMBITS}/guile
+rm -R usr/lib${SYSTEMBITS}/krb5/plugins
+rm -R usr/lib${SYSTEMBITS}/locale/C.utf8
+rm -R usr/lib${SYSTEMBITS}/p7zip/Codecs
+rm -R usr/lib${SYSTEMBITS}/sasl2
+rm -R usr/lib${SYSTEMBITS}/services
+rm -R usr/lib${SYSTEMBITS}/systemd
 rm -R usr/lib/ldscripts
 rm -R usr/lib/modprobe.d
+rm -R usr/lib*/python2*
+rm -R usr/lib*/python*/config-3.11-x86_64-linux-gnu/
+rm -R usr/lib*/python*/ensurepip
+rm -R usr/lib*/python*/idlelib
+rm -R usr/lib*/python*/lib2to3
+rm -R usr/lib*/python*/site-packages/demo
+rm -R usr/lib*/python*/site-packages/msi
+rm -R usr/lib*/python*/site-packages/peg_generator/
+rm -R usr/lib*/python*/turtledemo
 rm -R usr/lib/udev
-rm -R usr/lib64/guile
-rm -R usr/lib64/services
-rm -R usr/lib64/krb5/plugins
-rm -R usr/lib64/locale/C.utf8
-rm -R usr/lib64/p7zip/Codecs
-rm -R usr/lib64/python2.*
-rm -R usr/lib64/python*/config-3.11-x86_64-linux-gnu/
-rm -R usr/lib64/python*/idlelib
-rm -R usr/lib64/python*/ensurepip
-rm -R usr/lib64/python*/lib2to3
-rm -R usr/lib64/python*/site-packages/demo
-rm -R usr/lib64/python*/site-packages/msi
-rm -R usr/lib64/python*/site-packages/peg_generator/
-rm -R usr/lib64/python*/turtledemo
-rm -R usr/lib64/sasl2
-rm -R usr/lib64/systemd
 rm -R usr/local/etc
 rm -R usr/local/games
 rm -R usr/local/include
 rm -R usr/local/info
 rm -R usr/local/lib
-rm -R usr/local/lib64
+rm -R usr/local/lib${SYSTEMBITS}
 rm -R usr/local/man
 rm -R usr/local/sbin
 rm -R usr/local/share
@@ -356,28 +356,28 @@ rm usr/bin/7za
 rm usr/bin/7zr
 rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
-rm usr/lib64/libqgpgme.*
-rm usr/lib64/libslang.so.1*
-rm usr/lib64/p7zip/7za
-rm usr/lib64/p7zip/7zr
+rm usr/lib${SYSTEMBITS}/libqgpgme.*
+rm usr/lib${SYSTEMBITS}/libslang.so.1*
+rm usr/lib${SYSTEMBITS}/p7zip/7za
+rm usr/lib${SYSTEMBITS}/p7zip/7zr
 rm usr/libexec/samba/rpcd_*
 rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
 
-find usr/lib64/python* -type d -name 'test' -prune -exec rm -rf {} +
-find usr/lib64/python* -type d -name 'tests' -prune -exec rm -rf {} +
+find usr/lib${SYSTEMBITS}/python* -type d -name 'test' -prune -exec rm -rf {} +
+find usr/lib${SYSTEMBITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +
 
 # move out libc because it can't be stripped at all
-mv $MODULEPATH/packages/lib64/libc.so* $MODULEPATH/
-mv $MODULEPATH/packages/lib64/libc-* $MODULEPATH/
+mv $MODULEPATH/packages/lib${SYSTEMBITS}/libc.so* $MODULEPATH/
+mv $MODULEPATH/packages/lib${SYSTEMBITS}/libc-* $MODULEPATH/
 GenericStrip
-mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib64
-mv $MODULEPATH/libc-* $MODULEPATH/packages/lib64
+mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib${SYSTEMBITS}
+mv $MODULEPATH/libc-* $MODULEPATH/packages/lib${SYSTEMBITS}
 
 # move out stuff that can't be stripped
-mv $MODULEPATH/packages/lib64 $MODULEPATH/
+mv $MODULEPATH/packages/lib${SYSTEMBITS} $MODULEPATH/
 AggressiveStrip
-mv $MODULEPATH/lib64 $MODULEPATH/packages/
+mv $MODULEPATH/lib${SYSTEMBITS} $MODULEPATH/packages/
 
 ### copy cache files
 

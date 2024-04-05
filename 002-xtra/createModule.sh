@@ -189,7 +189,7 @@ mkdir package
 tar xvf ${currentPackage}-${version}.tar.gz
 cd ${currentPackage}-${version}
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_C_FLAGS:STRING="-O3 -march=${ARCHITECTURELEVEL} -s -flto" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib64 ..  || exit 1
+cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_C_FLAGS:STRING="-O3 -march=${ARCHITECTURELEVEL} -s -flto" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} ..  || exit 1
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-${version}-$ARCH-1.txz

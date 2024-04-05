@@ -236,11 +236,11 @@ rm -R etc/dbus-1/system.d
 rm -R etc/dconf
 rm -R etc/geoclue
 rm -R etc/opt
-rm -R usr/lib64/aspell
-rm -R usr/lib64/glade
-rm -R usr/lib64/graphene-1.0
-rm -R usr/lib64/gtk-2.0
-rm -R usr/lib64/python2*
+rm -R usr/lib${SYSTEMBITS}/aspell
+rm -R usr/lib${SYSTEMBITS}/glade
+rm -R usr/lib${SYSTEMBITS}/graphene-1.0
+rm -R usr/lib${SYSTEMBITS}/gtk-2.0
+rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/lib*/python*/site-packages/*-info
 rm -R usr/lib*/python*/site-packages/pip*
 rm -R usr/lib*/python*/site-packages/psutil/tests
@@ -269,22 +269,22 @@ rm usr/bin/canberra*
 rm usr/bin/js[0-9]*
 rm usr/bin/pastebin
 rm usr/bin/xfce4-set-wallpaper
-rm usr/lib64/libcanberra-gtk.*
-rm usr/lib64/libdbusmenu-gtk.*
-rm usr/lib64/xapps/mate-xapp-status-applet.py
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
+rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
+rm usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py
 rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
 rm usr/share/dbus-1/services/org.gnome.Caribou.Daemon.service
 rm usr/share/dbus-1/services/org.gnome.FileRoller.service
 rm usr/share/dbus-1/services/org.mate.panel.applet.MateXAppStatusAppletFactory.service
 
-find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
+[ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/cinnamon/faces -mindepth 1 -maxdepth 1 ! \( -name "user-generic*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/cinnamon/thumbnails/cursors -mindepth 1 -maxdepth 1 ! \( -name "Adwaita*" -o -name "Paper*" -o -name "unknown*" -o -name "Yaru*" \) -exec rm -rf '{}' \; 2>/dev/null
 
-mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
 GenericStrip
 AggressiveStripAll
-mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib64
+mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
 
