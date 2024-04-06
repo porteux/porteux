@@ -45,7 +45,7 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have the average size of 425 MB and after boot the whole system takes about 1 GB of RAM, even considering that the system is running in RAM.
+PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have less than 500 MB and after boot the whole system takes about 1 GB of RAM, even considering that the system is running in RAM.
 
 Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
