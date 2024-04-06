@@ -1,8 +1,6 @@
 #!/bin/sh
 
-PRGNAM=$(basename $0 | cut -f1 -d.)
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+PRGNAM=gnome-session
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -13,10 +11,10 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
-JOBS="-j$(nproc --all)"
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -34,8 +32,13 @@ set -e
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+rm -rf $PRGNAM-*
+
+wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -45,14 +48,14 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-patch -p1 -i $CWD/files/gnome-session-3.38.0-meson-Support-elogind.patch
+patch -p1 -i $CWD/meson-add-elogind-support.patch
 
 mkdir -p build
 cd build
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-meson .. \
+meson setup \
  --prefix=/usr \
  --buildtype=release \
  --libdir=lib${LIBDIRSUFFIX} \
@@ -66,27 +69,14 @@ meson .. \
  -Dsystemd_session=disable \
  -Ddefault_library=shared \
  -Dsession_selector=true \
- -Dconsolekit=false \
  -Ddocbook=false \
  -Dman=false
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $NUMJOBS install
 
 cd ..
 
-mkdir -p $PKG/etc/X11/Sessions
-cat $CWD/files/Gnome > $PKG/etc/X11/Sessions/Gnome
-cat $CWD/files/defaults.list-r5 > $PKG/etc/X11/Sessions/gnome-mimeapps.list
-
-# I don't know if its needed on Slackware, but in doubt...
-mkdir -p $PKG/etc/X11/xinit/xinitrc.d
-cat $CWD/files/15-xdg-data-gnome-r1 > $PKG/etc/X11/xinit/xinitrc.d/15-xdg-data-gnome
-cat $CWD/files/10-user-dirs-update-gnome-r1 > $PKG/etc/X11/xinit/xinitrc.d/10-user-dirs-update-gnome
-cat $CWD/files/90-xcursor-theme-gnome > $PKG/etc/X11/xinit/xinitrc.d/90-xcursor-theme-gnome
-
 mkdir -p $PKG/install
-#      |-----handy-ruler------------------------------------------------------|
 cat <<EOT >$PKG/install/slack-desc
 $PRGNAM:
 $PRGNAM: GNOME Session
@@ -102,4 +92,4 @@ $PRGNAM:
 EOT
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

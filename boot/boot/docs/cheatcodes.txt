@@ -57,8 +57,8 @@ changes=/path/file.dat
        device and will store changes to it.
    ... If you use a directory, PorteuX will save changes to it (it
        will make a 'changes' subdirectory there). This should only
-       be used for linux filesystems, if changes need to be saved to a
-       FAT or NTFS partition, a savefile container has to be used.
+       be used for linux filesystems, if changes need to be saved to
+       a FAT or NTFS partition, a savefile container has to be used.
 
 changes-ro
 
@@ -85,21 +85,12 @@ cliexec=my_script;reboot
 
 copy2ram
 
-   ... Copy all modules to RAM. You'll need at least 256MB of RAM
-       to boot PorteuX properly. 64-bit PorteuX with KDE-4 requires
-       at least 768MB of RAM for this.
-       Copy2ram slows down the boot phase but speeds up PorteuX!
+   ... Copy all modules to RAM. You'll need at least 1.5 GB of RAM
+       to boot PorteuX properly. Copy2ram slows down the boot phase
+       a bit but speeds up PorteuX!
 
-       Reminder: the 'noeject' cheatcode can be used together with
-       'copy2ram' to prevent unmounting of your booting media
-       (CD/DVD disc, USB, card readers, etc).
-       You can also use the 'rammod' cheatcode to selectively load
-       modules to RAM - see the 'rammod' description below.
-
-debug
-
-   ... Start the shell several times during the boot to perform
-       debugging actions.
+       You can use the 'rammod' cheatcode to selectively load modules
+       to RAM - see the 'rammod' description below.
 
 delay=some_value
 
@@ -164,9 +155,9 @@ kmap=keyboardmap
 kmap=keyboardmap1,keyboardmap2,keyboardmap3
 kmap=keyboardmap:variant
 
-   ... Specifies the preferred keyboard layout for KDE/LXDE/XFCE or
-       other desktop. A full list of supported layouts can be found in
-       the /etc/X11/xkb/symbols folder. Up to 3 layouts are supported.
+   ... Specifies the preferred keyboard layout for Xorg sessions of any
+       desktop environment. A full list of supported layouts can be found
+       in the /etc/X11/xkb/symbols folder. Up to 3 layouts are supported.
        Example: 'kmap=ara,us' will set the Arabic keyboard layout at
        startup. 'kmap=ara,us' will keep Arabic layout as default
        with possibility of switching to 'us' by 'alt+shift' key
@@ -174,6 +165,9 @@ kmap=keyboardmap:variant
        Keyboard layout variants are also supported.
        Example: 'kmap=pl:qwertz' will set the polish keyboard layout
        with 'qwertz' as a variant.
+       Please notice that changing the keyboard layout using the desktop
+       environment settings may overwrite this cheatcode. Also, it will
+       not work in Wayland sessions.
 
 load=module
 load=module[1];module[n]
@@ -234,7 +228,7 @@ noload=module[1];module[n]
        modules on the PorteuX booting media, including /base and /modules
        folders, so using noload=kde will disable loading of all modules
        with 'kde' in the name. It is useful with the copy2ram cheatcode,
-       because any un-used module is not copied to ram.  Multiple modules
+       because any un-used module is not copied to RAM.  Multiple modules
        can be listed, but they must be separated by semicolons, with no
        spaces.
        Example: 'noload=lxde;devel' will prevent the loading of any
@@ -328,7 +322,7 @@ rootmount
        The advantage is faster boot and less RAM. It's only
        supported in POSIX filesystem and when copy2ram is off.
 
-cfgfile=some_name.sgn
+cfgfile=some_name.cfg
 
    ... This cheatcode specifies the *.cfg file which PorteuX will
        search for.  This is useful when you want to store several
@@ -390,10 +384,10 @@ volume=some_value%
 zram=some_value%
 
    ... enable the use of zram, which is a compressed block device
-       inside your RAM that acts as a swap partition.  Zram operates
+       inside your RAM that acts as a swap partition. Zram operates
        faster than using swap on a hard drive and creates more
        (virtual) memory than using RAM alone because the data inside
-       is compressed.  This will provide a performance boost on
+       is compressed. This will provide a performance boost on
        systems with low RAM, but it uses more processor cycles (to
        compress and decompress the data) than regular swap.
        Example: 'zram=33%' will set aside 33% of your RAM as a zram
@@ -434,7 +428,7 @@ does not get saved in cases where you experience a hang (kernel crash)
 or power interrupt.
 Please use with caution!
 
-While you are running a session with changes=EXIT, you can use the
+While you are running a session with changes=EXIT:, you can use the
 'dump-session' command (run as root from the command line) to move all 
 of your changes from RAM to your storage media.  This will reduce the 
 risk of data loss and free up your RAM.

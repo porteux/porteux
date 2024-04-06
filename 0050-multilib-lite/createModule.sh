@@ -67,19 +67,11 @@ rm *.t?z
 ### strip
 
 rm -fr $MODULEPATH/packages/etc
-rm -fr $MODULEPATH/packages/lib64
-rm -fr $MODULEPATH/packages/run
-rm -fr $MODULEPATH/packages/var/db
-rm -fr $MODULEPATH/packages/var/kerberos
-rm -fr $MODULEPATH/packages/var/run
-rm -fr $MODULEPATH/packages/var/cache
-rm -fr $MODULEPATH/packages/var/cache/fontconfig
-rm -fr $MODULEPATH/packages/var/lib/dbus
-rm -fr $MODULEPATH/packages/var/log/pkgtools
-rm -fr $MODULEPATH/packages/var/log/setup
+rm -fr $MODULEPATH/packages/lib${SYSTEMBITS}
 rm -fr $MODULEPATH/packages/lib/e2fsprogs
 rm -fr $MODULEPATH/packages/lib/elogind
 rm -fr $MODULEPATH/packages/lib/udev
+rm -fr $MODULEPATH/packages/run
 rm -fr $MODULEPATH/packages/usr/lib/clang
 rm -fr $MODULEPATH/packages/usr/lib/dbus-1.0
 rm -fr $MODULEPATH/packages/usr/lib/gcc
@@ -90,6 +82,14 @@ rm -fr $MODULEPATH/packages/usr/lib/libscanbuild
 rm -fr $MODULEPATH/packages/usr/lib/python2.7
 rm -fr $MODULEPATH/packages/usr/lib/python3.9
 rm -fr $MODULEPATH/packages/usr/lib/xmms
+rm -fr $MODULEPATH/packages/var/cache
+rm -fr $MODULEPATH/packages/var/cache/fontconfig
+rm -fr $MODULEPATH/packages/var/db
+rm -fr $MODULEPATH/packages/var/kerberos
+rm -fr $MODULEPATH/packages/var/lib/dbus
+rm -fr $MODULEPATH/packages/var/log/pkgtools
+rm -fr $MODULEPATH/packages/var/log/setup
+rm -fr $MODULEPATH/packages/var/run
 
 rm $MODULEPATH/packages/*
 rm $MODULEPATH/packages/bin/cpp
@@ -97,8 +97,8 @@ rm $MODULEPATH/packages/lib/e2initrd_helper
 rm $MODULEPATH/packages/lib/libacl*
 rm $MODULEPATH/packages/lib/libaio*
 rm $MODULEPATH/packages/lib/libattr*
-rm $MODULEPATH/packages/lib/libdevmapper*
 rm $MODULEPATH/packages/lib/libdb*
+rm $MODULEPATH/packages/lib/libdevmapper*
 rm $MODULEPATH/packages/lib/libdm*
 rm $MODULEPATH/packages/lib/libfuse*
 rm $MODULEPATH/packages/lib/libgpm*
@@ -107,10 +107,7 @@ rm $MODULEPATH/packages/lib/libsigsegv*
 rm $MODULEPATH/packages/lib/libsysfs*
 rm $MODULEPATH/packages/lib/libtermcap*
 rm $MODULEPATH/packages/lib/libudev*
-
-rm $MODULEPATH/packages/usr/lib/*.o
-rm $MODULEPATH/packages/usr/lib/*.spec
-rm $MODULEPATH/packages/usr/lib/xml2Conf.sh
+rm $MODULEPATH/packages/usr/lib/libadm*
 rm $MODULEPATH/packages/usr/lib/libargon*
 rm $MODULEPATH/packages/usr/lib/libcares.*
 rm $MODULEPATH/packages/usr/lib/libcc1.*
@@ -123,7 +120,6 @@ rm $MODULEPATH/packages/usr/lib/libhistoy*
 rm $MODULEPATH/packages/usr/lib/libhsail-rt.*
 rm $MODULEPATH/packages/usr/lib/libidn*
 rm $MODULEPATH/packages/usr/lib/libisl*
-rm $MODULEPATH/packages/usr/lib/libadm*
 rm $MODULEPATH/packages/usr/lib/libkdb*
 rm $MODULEPATH/packages/usr/lib/libkrad*
 rm $MODULEPATH/packages/usr/lib/liblber*
@@ -143,6 +139,9 @@ rm $MODULEPATH/packages/usr/lib/libunwind*
 rm $MODULEPATH/packages/usr/lib/libusb*
 rm $MODULEPATH/packages/usr/lib/libvga*
 rm $MODULEPATH/packages/usr/lib/libvpx*
+rm $MODULEPATH/packages/usr/lib/*.o
+rm $MODULEPATH/packages/usr/lib/*.spec
+rm $MODULEPATH/packages/usr/lib/xml2Conf.sh
 
 find $MODULEPATH/packages/sbin \( -type f -o -type l \) ! \( -name "ldconfig" -o -name "sln" \) -delete
 find $MODULEPATH/packages/bin \( -type f -o -type l \) ! -name "sln" -delete

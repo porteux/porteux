@@ -1,8 +1,6 @@
 #!/bin/sh
 
 PRGNAM=gnome-desktop
-VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -13,10 +11,10 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
-JOBS="-j$(nproc --all)"
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -34,8 +32,13 @@ set -e
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.xz
+rm -rf $PRGNAM-*
+
+wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -45,15 +48,12 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# Don't build manual test programs (Gentoo ty again S2)
-sed -i -e "/'test-.*'/d" libgnome-desktop/meson.build
-
 mkdir -p build
 cd build
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-meson .. \
+meson setup \
  --prefix=/usr \
  --mandir=/usr/man \
  --datadir=/usr/share \
@@ -70,14 +70,12 @@ meson .. \
  -Dgtk_doc=false \
  -Dinstalled_tests=false
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $NUMJOBS install
 
 cd ..
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install
-cp $CWD/doinst.sh $PKG/install
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

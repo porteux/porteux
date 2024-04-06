@@ -1,8 +1,6 @@
 #!/bin/sh
 
-PRGNAM=$(basename $0 | cut -f1 -d.)
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+PRGNAM=mutter
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -13,10 +11,10 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
-JOBS="-j$(nproc --all)"
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -31,14 +29,16 @@ fi
 
 set -e
 
-UMASKBKP=$(umask)
-umask 0022
-
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+rm -rf $PRGNAM-*
+
+wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+BUILD=${BUILD:-1}
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -48,18 +48,12 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# ...fix a race condition that sometimes occurs due to meson dependency ordering (Linux From Scratch)
-sed -i '/libmutter_dep = declare_dependency(/a sources: mutter_built_sources,' src/meson.build
-
 mkdir -p build
 cd build
 
-SLKCFLAGS="${CFLAGS/-O2/-O3} -fno-semantic-interposition"
-LDFLAGS+=" -Wl,-Bsymbolic-functions"
-
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-meson .. \
+meson setup \
  --prefix=/usr \
  --buildtype=release \
  --libdir=lib${LIBDIRSUFFIX} \
@@ -90,11 +84,9 @@ meson .. \
  -Dsystemd=false \
  -Dinstalled_tests=false
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $NUMJOBS install
 
 mkdir -p $PKG/install
-#      |-----handy-ruler------------------------------------------------------|
 cat <<EOT >$PKG/install/slack-desc
 $PRGNAM:
 $PRGNAM: Mutter
@@ -110,6 +102,4 @@ $PRGNAM:
 EOT
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
-
-umask ${UMASKBKP}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz

@@ -19,20 +19,6 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 DownloadFromSlackware
 
-### packages that require specific stripping
-
-# only include libgtk file, since gtk+3-classic breaks Gnome's UI
-currentPackage=gtk+3
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz || exit 1
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libgtk-3* ${currentPackage}-stripped-$version || exit 1
-cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
 ### packages outside Slackware repository
 
 currentPackage=audacious
@@ -145,13 +131,11 @@ for package in \
 	libgweather \
 	libpeas \
 	gsound \
-	amtk \
 	gnome-autoar \
 	gnome-desktop \
 	gnome-settings-daemon \
 	libadwaita \
 	gnome-bluetooth \
-	libgnomekbd \
 	libnma-gtk4 \
 	gnome-control-center \
 	mutter \
@@ -191,6 +175,10 @@ rm *.t?z
 
 InstallAdditionalPackages
 
+### fix some .desktop files
+
+sed -i "s|image/x-icns|image/x-icns;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.gnome.eog.desktop
+
 ### copy build files to 05-devel
 
 CopyToDevel
@@ -203,19 +191,18 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
-rm -R etc/dconf
 rm -R etc/dbus-1/system.d
+rm -R etc/dconf
 rm -R etc/geoclue
 rm -R etc/opt
-rm -R usr/lib
-rm -R usr/lib64/aspell
-rm -R usr/lib64/glade
-rm -R usr/lib64/gnome-settings-daemon-3.0
-rm -R usr/lib64/graphene-1.0
-rm -R usr/lib64/gtk-2.0
-rm -R usr/lib64/python2.7
-rm -R usr/lib64/python3.9/site-packages/pip*
-rm -R usr/lib64/tracker-3.0
+rm -R usr/lib${SYSTEMBITS}/aspell
+rm -R usr/lib${SYSTEMBITS}/glade
+rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
+rm -R usr/lib${SYSTEMBITS}/graphene-1.0
+rm -R usr/lib${SYSTEMBITS}/gtk-2.0
+rm -R usr/lib${SYSTEMBITS}/tracker-3.0
+rm -R usr/lib*/python2*
+rm -R usr/lib*/python3*/site-packages/pip*
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
@@ -229,11 +216,11 @@ rm -R usr/share/dbus-1/services/org.gnome.ScreenSaver.service
 rm -R usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 rm -R usr/share/gjs-1.0
 rm -R usr/share/glade/pixmaps
+rm -R usr/share/gnome/autostart
+rm -R usr/share/gnome/shutdown
 rm -R usr/share/gtk-4.0
 rm -R usr/share/ibus
 rm -R usr/share/installed-tests
-rm -R usr/share/gnome/autostart
-rm -R usr/share/gnome/shutdown
 rm -R usr/share/libgweather-4
 rm -R usr/share/pixmaps
 rm -R usr/share/vala
@@ -251,28 +238,28 @@ rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
 rm usr/bin/gtk4-widget-factory
 rm usr/bin/js[0-9]*
-rm usr/bin/peas-demo
-rm usr/lib64/gstreamer-1.0/libgstfluidsynthmidi.*
-rm usr/lib64/gstreamer-1.0/libgstneonhttpsrc.*
-rm usr/lib64/gstreamer-1.0/libgstopencv.*
-rm usr/lib64/gstreamer-1.0/libgstopenexr.*
-rm usr/lib64/gstreamer-1.0/libgstqmlgl.*
-rm usr/lib64/gstreamer-1.0/libgstqroverlay.*
-rm usr/lib64/gstreamer-1.0/libgsttaglib.*
-rm usr/lib64/gstreamer-1.0/libgstwebrtc.*
-rm usr/lib64/gstreamer-1.0/libgstzxing.*
-rm usr/lib64/libcanberra-gtk.*
-rm usr/lib64/libgstopencv-1.0.*
-rm usr/lib64/libgstwebrtcnice.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstfluidsynthmidi.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstneonhttpsrc.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstopencv.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstopenexr.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqmlgl.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqroverlay.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgsttaglib.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstwebrtc.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
+rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
+rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
+[ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 
-mv $MODULEPATH/packages/usr/lib64/libmozjs-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
 GenericStrip
 AggressiveStripAll
-mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib64
+mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
 

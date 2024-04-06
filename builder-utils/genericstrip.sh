@@ -38,7 +38,7 @@ GenericStrip() {
 	rm -R usr/lib64/cmake
 	rm -R usr/lib64/gnome-keyring
 	rm -R usr/lib64/gtk-2.0/include
-	rm -R usr/lib64/python2.7
+	rm -R usr/lib64/python2*
 	rm -R var/log/pkgtools
 	rm -R var/log/setup
 	rm -R var/lib/pkgtools/douninst.sh/

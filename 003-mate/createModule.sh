@@ -109,7 +109,6 @@ installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
-installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
@@ -122,6 +121,8 @@ installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 rm $MODULEPATH/packages/gtk+2*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
+installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+rm $MODULEPATH/packages/xtrans*.txz
 
 # mate packages
 for currentPackage in \
@@ -187,6 +188,10 @@ rm *.t?z
 
 InstallAdditionalPackages
 
+### fix some .desktop files
+
+sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/eom.desktop
+
 ### add mate session
 
 sed -i "s|SESSIONTEMPLATE|/usr/bin/mate-session|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
@@ -210,38 +215,36 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
-rm -R usr/lib
-rm -R usr/lib64/python2.7
-rm -R usr/lib64/python3.9/site-packages/pip
-rm -R usr/lib64/python3.9/site-packages/pip-21.3.1-py3.9.egg-info
 rm -R run/
+rm -R usr/lib*/python2*
+rm -R usr/lib*/python*/site-packages/*-info
+rm -R usr/lib*/python*/site-packages/pip*
 rm -R usr/share/accountsservice
 rm -R usr/share/engrampa
-rm -R usr/share/gnome
 rm -R usr/share/gdm
+rm -R usr/share/gnome
 rm -R usr/share/icons/ContrastHigh
 rm -R usr/share/icons/mate
 rm -R usr/share/icons/mate-black
 rm -R usr/share/mate-media/icons
-rm -R usr/share/Thunar
 rm -R usr/share/mate-power-manager/icons
+rm -R usr/share/Thunar
 rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
-rm usr/bin/peas-demo
-rm usr/lib64/girepository-1.0/SoupGNOME*
-rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
-rm usr/lib64/libappindicator.*
-rm usr/lib64/libcanberra-gtk.*
-rm usr/lib64/libdbusmenu-gtk.*
-rm usr/lib64/libindicator.*
-rm usr/lib64/libkeybinder.*
-rm usr/lib64/libsoup-gnome*
+rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
+rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
+rm usr/lib${SYSTEMBITS}/libappindicator.*
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
+rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
+rm usr/lib${SYSTEMBITS}/libindicator.*
+rm usr/lib${SYSTEMBITS}/libkeybinder.*
+rm usr/lib${SYSTEMBITS}/libsoup-gnome*
 rm usr/libexec/indicator-loader
 
+[ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/libmateweather -mindepth 1 -maxdepth 1 ! \( -name "Locations.xml" -o -name "locations.dtd" \) -exec rm -rf '{}' \; 2>/dev/null
-
 find usr/share/themes -mindepth 1 -maxdepth 1 ! \( -name "Adwaita" -o -name "Adwaita-dark" -o -name "DustBlue" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip

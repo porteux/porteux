@@ -34,11 +34,18 @@ fi
 
 set -e
 
-rm -fr $MODULEPATH/$PRGNAM
-mkdir -p $MODULEPATH/$PRGNAM && cd $MODULEPATH/$PRGNAM
-wget -c https://download.gnome.org/sources/$PRGNAM/1.30/$PRGNAM-$VERSION.tar.xz
-tar xvf $PRGNAM-$VERSION.tar.xz || exit 1
-cd $PRGNAM-$VERSION
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT
+cd $TMP
+rm -rf $PRGNAM-*
+
+#VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v "libpeas" | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
+VERSION="1.36.0"
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${PRGNAM}-${VERSION}/${PRGNAM}-${PRGNAM}-${VERSION}.tar.gz
+BUILD=${BUILD:-1}
+
+tar xfv $PRGNAM-$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$PRGNAM-$VERSION
 
 chown -R root:root .
 find -L . \
@@ -51,16 +58,21 @@ mkdir build
 cd build
   CFLAGS="$SLKCFLAGS" \
   CXXFLAGS="$SLKCFLAGS" \
-  meson .. \
-    --buildtype=release \
-    --infodir=/usr/info \
-    --libdir=/usr/lib${LIBDIRSUFFIX} \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --prefix=/usr \
-    --sysconfdir=/etc
-  ninja -j$(nproc --all)
-  DESTDIR=$PKG ninja install
+  meson setup \
+   --prefix=/usr \
+   --libdir=/usr/lib${LIBDIRSUFFIX} \
+   --sysconfdir=/etc \
+   --localstatedir=/var \
+   --buildtype=release \
+   -Dpython3=true \
+   -Dintrospection=true \
+   -Dvapi=true \
+   -Dgtk_doc=false \
+   -Dglade_catalog=false \
+   -Dlua51=false \
+   -Ddemos=false
+
+  DESTDIR=$PKG ninja $JOBS install
 cd ..
 
 # Don't ship .la files:
@@ -68,7 +80,6 @@ rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
-cat $CWD/doinst.sh  > $PKG/install/doinst.sh
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}

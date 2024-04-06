@@ -1,0 +1,44 @@
+From cddf60a71ac509a8b01c45e3b428e0e4ccb193fe Mon Sep 17 00:00:00 2001
+From: Luke Shumaker <luke...@lukeshu.com>
+Date: Sun, 5 May 2019 17:40:11 -0400
+Subject: [PATCH 3/7] Support HiDPI on GTK+ 3
+
+For the most part, GDK 3 magically takes care of HiDPI support for us,
+scaling between application-pixels and device-pixels.  But when we speak
+directly to the X server (as when we set `_NET_WM_STRUT_PARTIAL`), this
+translation doesn't happen for us.  So scale the numbers we send to the X
+server by the GDK scale_factor.
+
+Without this, lxpanel (with `--enable-gtk3`) properly renders at HiDPI
+(assuming GDK_SCALE is configured correctly), but doesn't reserve
+enough space at the edge of the screen.
+
+Signed-off-by: Vadim Ushakov <wandrien....@gmail.com>
+---
+ src/panel.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/src/panel.c b/src/panel.c
+index 2b5fc9b..12e8c5a 100644
+--- src/panel.c
++++ src/panel.c
+@@ -674,9 +674,14 @@ void _panel_set_wm_strut(LXPanel *panel)
+     if (p->setstrut &&
+         _panel_edge_can_strut(panel, p->edge, p->monitor, &strut_size))
+     {
+-        desired_strut[index] = strut_size;
+-        desired_strut[4 + index * 2] = strut_lower;
+-        desired_strut[5 + index * 2] = strut_upper - 1;
++#if GTK_CHECK_VERSION(3, 10, 0)
++        gint scale_factor = gtk_widget_get_scale_factor(GTK_WIDGET(panel));
++#else
++        gint scale_factor = 1;
++#endif
++        desired_strut[index] = strut_size * scale_factor;
++        desired_strut[4 + index * 2] = strut_lower * scale_factor;
++        desired_strut[5 + index * 2] = (strut_upper - 1) * scale_factor;
+     }
+     else
+     {
+-- 
+2.40.1

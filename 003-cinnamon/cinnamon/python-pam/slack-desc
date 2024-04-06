@@ -1,0 +1,12 @@
+          |-----handy-ruler------------------------------------------------------|
+python-pam: python-pam (Authentication Module)
+python-pam:
+python-pam: This module provides an authenticate function that allows the caller
+python-pam: to authenticate a given username / password against the PAM system
+python-pam: on Linux.
+python-pam:
+python-pam:
+python-pam:
+python-pam:
+python-pam: Project URL: https://github.com/FirefighterBlu3/python-pam
+python-pam:

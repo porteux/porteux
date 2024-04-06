@@ -16,7 +16,7 @@ CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$TMP/packages}
-JOBS="-j$(nproc --all)"
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -76,8 +76,8 @@ cd build
     -Dsystemduserunitdir=no \
     -Dsysconfsubdir=/etc/gdm \
     -Dinitial-vt=7
-  "${NINJA:=ninja}"
-  DESTDIR=$PKG $NINJA install
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $NUMJOBS install
 cd ..
 
 mkdir -p $PKG/etc/pam.d

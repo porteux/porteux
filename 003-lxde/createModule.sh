@@ -68,7 +68,7 @@ git clone https://github.com/stevenhoneyman/${currentPackage}
 cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sh autogen.sh
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug || exit 1
+CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug || exit 1
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -171,6 +171,10 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/libfm ${currentPackage}
 cd ${currentPackage}
 version=`git describe | cut -d- -f1`
+sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/base/fm-file-info.c || exit 1
+sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/job/fm-deep-count-job.c || exit 1
+sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/job/fm-file-ops-job.c || exit 1
+sed -i "s|g_file_info_get_size(info)|g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/modules/vfs-search.c || exit 1
 ./autogen.sh --prefix=/usr --without-gtk --disable-demo && CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" \
 ./configure \
 	--prefix=/usr \
@@ -495,7 +499,7 @@ version=`git describe | cut -d- -f1`
 	--enable-static=no
 
 cp $SCRIPTPATH/extras/lxde/lxpanel*.patch .
-for i in *.patch; do patch -p0 < $i; done
+for i in *.patch; do patch -p0 < $i || exit 1; done
 
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
@@ -534,7 +538,7 @@ InstallAdditionalPackages
 ### fix some .desktop files
 
 sed -i "s|Core;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
-sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
+sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|System;|Utility;|g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
 
 ### add lxde session
@@ -555,21 +559,22 @@ cd $MODULEPATH/packages/
 
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
-rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
-rm usr/lib64/libappindicator.*
-rm usr/lib64/libcanberra-gtk.*
-rm usr/lib64/libdbusmenu-gtk.*
-rm usr/lib64/libindicator.*
-rm usr/lib64/libkeybinder.*
+rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
+rm usr/lib${SYSTEMBITS}/libappindicator.*
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
+rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
+rm usr/lib${SYSTEMBITS}/libindicator.*
+rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/libexec/indicator-loader
 rm usr/share/lxde/wallpapers/lxde_green.jpg
 rm usr/share/lxde/wallpapers/lxde_red.jpg
 
-rm -R usr/lib
-rm -R usr/share/Thunar
 rm -R usr/share/engrampa
 rm -R usr/share/gdm
 rm -R usr/share/gnome
+rm -R usr/share/Thunar
+
+[ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
 AggressiveStripAll

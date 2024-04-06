@@ -71,6 +71,13 @@ for i in ../aufs_sources/*.patch; do
 done
 rm -fr ../aufs_sources
 
+echo "Downloading firmware in the background..."
+(
+if [ ! -f kernel-firmware-*.txz ]; then
+	wget -r -nd --no-parent http://slackware.uk/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz -P ${MODULEPATH} > /dev/null 2>&1 || { echo "Fail to download firmware."; exit 1; }
+fi
+) &
+
 echo "Building vmlinuz (this may take a while)..."
 CPUTHREADS=$(nproc --all)
 make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fno-tree-vectorize -mpopcnt -fivopts -fmodulo-sched -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
@@ -90,10 +97,8 @@ rm lib/modules/$dir/build lib/modules/$dir/source > /dev/null 2>&1
 ln -sf /usr/src/linux lib/modules/$dir/build
 ln -sf /usr/src/linux lib/modules/$dir/source
 
-echo "Downloading firmware..."
-if [ ! -f kernel-firmware-*.txz ]; then
-	wget -r -nd --no-parent ftp://ftp.slackware.com/pub/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz > /dev/null 2>&1 || { echo "Fail to download firmware."; exit 1; }
-fi
+# wait for firmware download to finish
+wait
 
 echo "Extracting firmware..."
 mkdir firmware && tar xf kernel-firmware-*.txz -C firmware > /dev/null 2>&1
@@ -154,10 +159,10 @@ blacklist ssb
 EOF
 
 cat > ${MODULEPATH}/${MODULENAME}/etc/modprobe.d/broadcom_blacklist.conf <<EOF
-blacklist ssb
-blacklist bcma
 blacklist b43
+blacklist bcma
 blacklist brcmsmac
+blacklist ssb
 EOF
 
 echo "Copying cryptsetup..."
@@ -185,25 +190,25 @@ rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch
 mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch
 mv ${CRIPPLEDSOURCEPATH}/x86 ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch/
 
+rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch/x86/boot/bzImage > /dev/null 2>&1
+rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch/x86/boot/compressed/vmlinux > /dev/null 2>&1
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/Documentation > /dev/null 2>&1
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/drivers > /dev/null 2>&1
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/firmware > /dev/null 2>&1
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/fs > /dev/null 2>&1
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/net > /dev/null 2>&1
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/sound > /dev/null 2>&1
+rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.tmp_versions > /dev/null 2>&1
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/tools/testing/ > /dev/null 2>&1
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/vmlinux* > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.tmp_versions > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch/x86/boot/bzImage > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch/x86/boot/compressed/vmlinux > /dev/null 2>&1
 
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -regex '.*\.\(bin\|elf\|exe\|o\|patch\|txt\|xsl\|xz\|ko\|zst\|json\|py\)$' -delete
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name ".*" -delete -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "README*" -delete -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name 'LICENSE*' -delete -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "COPYING" -delete -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "CREDITS" -delete -print > /dev/null 2>&1
+find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name 'LICENSE*' -delete -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name 'MAINTAINERS*' -delete -print > /dev/null 2>&1
+find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "README*" -delete -print > /dev/null 2>&1
 
 find ${CRIPPLEDSOURCEPATH} | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 

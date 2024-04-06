@@ -183,16 +183,16 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=faad2
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/audio/${currentPackage}/ -A * || exit 1
 info=$(DownloadLatestFromGithub "knik0" ${currentPackage})
 version=${info#* }
-sed -i "s|SRCVER=\${.*}|SRCVER=\$VERSION|g" ${currentPackage}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+mkdir package
+tar xvf ${currentPackage}-${version}.tar.gz
+cd ${currentPackage}-${version}
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_C_FLAGS:STRING="-O3 -march=${ARCHITECTURELEVEL} -s -flto" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} ..  || exit 1
+make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+cd $MODULEPATH/${currentPackage}/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-${version}-$ARCH-1.txz
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -298,7 +298,7 @@ fi
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc \\\\|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s |g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
-GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
+AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}

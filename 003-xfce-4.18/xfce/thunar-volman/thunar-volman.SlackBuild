@@ -17,14 +17,6 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
-if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
-  echo "$PKGNAM-$VERSION-$ARCH-$BUILD.txz"
-  exit 0
-fi
-
 NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
@@ -65,21 +57,7 @@ CXXFLAGS="$SLKCFLAGS" \
   --disable-static \
   --build=$ARCH-porteux-linux || exit 1
 
-make $NUMJOBS || exit 1
 make $NUMJOBS install DESTDIR=$PKG || exit 1
-
-mkdir -p $PKG/usr/doc/$PKGNAM-$VERSION
-cp -a \
-  AUTHORS COPYING* INSTALL NEWS README* THANKS \
-  $PKG/usr/doc/$PKGNAM-$VERSION
-
-# If there's a ChangeLog, installing at least part of the recent history
-# is useful, but don't let it get totally out of control:
-if [ -r ChangeLog ]; then
-  DOCSDIR=$(echo $PKG/usr/doc/${PKGNAM}-$VERSION)
-  cat ChangeLog | head -n 1000 > $DOCSDIR/ChangeLog
-  touch -r ChangeLog $DOCSDIR/ChangeLog
-fi
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
