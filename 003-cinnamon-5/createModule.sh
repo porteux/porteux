@@ -89,10 +89,6 @@ installpkg $MODULEPATH/packages/mozjs78*.txz || exit 1
 rm $MODULEPATH/packages/mozjs78*.txz
 installpkg $MODULEPATH/packages/python-pip*.txz || exit 1
 rm $MODULEPATH/packages/python-pip*.txz
-installpkg $MODULEPATH/packages/rust*.txz || exit 1
-rm $MODULEPATH/packages/rust*.txz
-installpkg $MODULEPATH/packages/xorg-server-xwayland*.txz || exit 1
-rm $MODULEPATH/packages/xorg-server-xwayland*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
