@@ -57,8 +57,8 @@ meson setup \
   -Dlibnma_gtk4=true \
   -Dgtk_doc=false \
   .. || exit 1
-  "${NINJA:=ninja}" $NUMJOBS || exit 1
-  DESTDIR=$PKG $NINJA install || exit 1
+
+  DESTDIR=$PKG "${NINJA:=ninja}" $NUMJOBS install || exit 1
 cd ..
 
 # Remove all extra bits included in the base libnma package

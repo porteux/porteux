@@ -1,0 +1,11 @@
+pytz: pytz (World timezone definitions for Python)
+pytz:
+pytz: pytz brings the Olson tz database into Python. This library allows
+pytz: accurate and cross platform timezone calculations using Python 2.3
+pytz: or higher. It also solves the issue of ambiguous times at the end
+pytz: of daylight savings, which you can read more about in the Python
+pytz: Library Reference (datetime.tzinfo).
+pytz:
+pytz: Homepage: https://launchpad.net/pytz
+pytz:
+pytz:

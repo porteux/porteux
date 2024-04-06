@@ -1,8 +1,6 @@
 #!/bin/sh
 
-PRGNAM=$(basename $0 | cut -f1 -d.)
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+PRGNAM=file-roller
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -13,10 +11,10 @@ if [ -z "$ARCH" ]; then
 fi
 
 CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
-JOBS="-j$(nproc --all)"
+OUTPUT=${OUTPUT:-$MODULEPATH/packages}
+NUMJOBS="-j$(nproc --all)"
 
 if [ "$ARCH" = "i686" ]; then
   SLKCFLAGS="-O3 -march=i686 -mtune=i686"
@@ -31,14 +29,16 @@ fi
 
 set -e
 
-UMASKBKP=$(umask)
-umask 0022
-
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+rm -rf $PRGNAM-*
+
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -V -r | head -1)
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+BUILD=${BUILD:-1}
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
@@ -53,7 +53,7 @@ cd build
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-meson .. \
+meson setup \
  --prefix=/usr \
  --buildtype=release \
  --libdir=lib${LIBDIRSUFFIX} \
@@ -69,13 +69,11 @@ meson .. \
  -Dpackagekit=false \
  -Dlibarchive=enabled
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+DESTDIR=$PKG ninja $NUMJOBS install
 
 cd ..
 
 mkdir -p $PKG/install
-#      |-----handy-ruler------------------------------------------------------|
 cat <<EOT >$PKG/install/slack-desc
 $PRGNAM:
 $PRGNAM: File Roller
@@ -90,29 +88,5 @@ $PRGNAM: https://wiki.gnome.org/Apps/FileRoller
 $PRGNAM:
 EOT
 
-cat <<\EOT >$PKG/install/doinst.sh
-if [ -x /usr/bin/update-mime-database ]; then
-  /usr/bin/update-mime-database /usr/share/mime &> /dev/null
-fi
-
-if [ -x /usr/bin/update-desktop-database ]; then
-  /usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
-fi
-
-if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
-  if [ -x /usr/bin/gtk-update-icon-cache ]; then
-    /usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
-  fi
-fi
-
-if [ -e usr/share/glib-2.0/schemas ]; then
-  if [ -x /usr/bin/glib-compile-schemas ]; then
-    /usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
-  fi
-fi
-EOT
-
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
-
-umask ${UMASKBKP}
+/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz

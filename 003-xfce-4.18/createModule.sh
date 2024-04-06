@@ -181,7 +181,7 @@ sed -i "s|OnlyShowIn=MATE;||g" etc/xdg/autostart/polkit-mate-authentication-agen
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by mousepad
-installpkg $MODULEPATH/packages/gtksourceview3-*.txz || exit 1
+installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 
 # required by xfce4-panel
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
@@ -258,7 +258,7 @@ patch --no-backup-if-mismatch -d $MODULEPATH/packages/ -p0 < $SCRIPTPATH/extras/
 
 sed -i "s|Core;||g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|Graphics;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
-sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
+sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -z -i "s|OnlyShowIn=MATE;\\n||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
 sed -i "s|MATE;||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
 sed -i "s|MATE ||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
@@ -290,12 +290,11 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
-rm -R usr/lib
-rm -R usr/lib64/gnome-settings-daemon-3.0
-rm -R usr/lib64/python2.7
+rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
+rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/share/engrampa
-rm -R usr/share/gnome
 rm -R usr/share/gdm
+rm -R usr/share/gnome
 rm -R usr/share/themes/Default/balou
 rm -R usr/share/Thunar
 
@@ -303,28 +302,30 @@ rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
 rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/bin/canberra*
-rm usr/lib64/girepository-1.0/SoupGNOME*
-rm usr/lib64/gtk-2.0/modules/libcanberra-gtk-module.*
-rm usr/lib64/libappindicator.*
-rm usr/lib64/libcanberra-gtk.*
-rm usr/lib64/libdbusmenu-gtk.*
-rm usr/lib64/libindicator.*
-rm usr/lib64/libkeybinder.*
-rm usr/lib64/libsoup-gnome*
+rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
+rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
+rm usr/lib${SYSTEMBITS}/libappindicator.*
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
+rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
+rm usr/lib${SYSTEMBITS}/libindicator.*
+rm usr/lib${SYSTEMBITS}/libkeybinder.*
+rm usr/lib${SYSTEMBITS}/libsoup-gnome*
 rm usr/libexec/indicator-loader
 rm usr/share/applications/xfce4-file-manager.desktop
 rm usr/share/applications/xfce4-mail-reader.desktop
 rm usr/share/applications/xfce4-terminal-emulator.desktop
 rm usr/share/applications/xfce4-web-browser.desktop
-rm usr/share/backgrounds/xfce/xfce-stripes.png
-rm usr/share/backgrounds/xfce/xfce-teal.jpg
-rm usr/share/backgrounds/xfce/xfce-verticals.png
 rm usr/share/backgrounds/xfce/xfce-flower.svg
 rm usr/share/backgrounds/xfce/xfce-leaves.svg
 rm usr/share/backgrounds/xfce/xfce-shapes.svg
+rm usr/share/backgrounds/xfce/xfce-stripes.png
+rm usr/share/backgrounds/xfce/xfce-teal.jpg
+rm usr/share/backgrounds/xfce/xfce-verticals.png
 rm usr/share/icons/hicolor/scalable/status/computer.svg
 rm usr/share/icons/hicolor/scalable/status/keyboard.svg
 rm usr/share/icons/hicolor/scalable/status/phone.svg
+
+[ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
 AggressiveStripAll

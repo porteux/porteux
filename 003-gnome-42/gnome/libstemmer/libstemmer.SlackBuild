@@ -10,7 +10,7 @@ TMP=${TMP:-$MODULEPATH}
 PKG=$TMP/package-$PRGNAM
 OUTPUT=${OUTPUT:-$TMP/packages}
 CWD=$(pwd)
-JOBS="-j$(nproc --all)"
+NUMJOBS="-j$(nproc --all)"
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -47,7 +47,7 @@ find -L . \
 
 patch -Np0 -i $CWD/libstemmer_c-shared-library.patch
 
-make $JOBS libstemmer.so stemwords || make libstemmer.so stemwords
+make $NUMJOBS libstemmer.so stemwords || make libstemmer.so stemwords
 
 mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}
 mv libstemmer.so* $PKG/usr/lib${LIBDIRSUFFIX}

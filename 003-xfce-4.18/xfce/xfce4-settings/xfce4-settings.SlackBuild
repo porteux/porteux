@@ -9,7 +9,6 @@ wget -r -nd --no-parent $SOURCEREPOSITORY/xfce/$PKGNAM/ -A $PKGNAM-*
 VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 BUILD=${BUILD:-1}
 
-# Automatically determine the architecture we're building on:
 MARCH=$( uname -m )
 if [ -z "$ARCH" ]; then
   case "$MARCH" in
@@ -19,14 +18,6 @@ if [ -z "$ARCH" ]; then
     # Unless $ARCH is already set, use uname -m for all other archs:
     *)       export ARCH=$MARCH ;;
   esac
-fi
-
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
-if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
-  echo "$PKGNAM-$VERSION-$ARCH-$BUILD.txz"
-  exit 0
 fi
 
 NUMJOBS="-j$(nproc --all)"
@@ -74,19 +65,7 @@ CFLAGS="$SLKCFLAGS" \
   --disable-debug \
   --build=$ARCH-porteux-linux || exit 1
 
-make $NUMJOBS || exit 1
 make $NUMJOBS install DESTDIR=$PKG || exit 1
-
-# We don't want icon caches:
-find $PKG/usr/share/icons -type f -name "icon-theme.cache" -exec rm -f {} \;
-
-# If there's a ChangeLog, installing at least part of the recent history
-# is useful, but don't let it get totally out of control:
-if [ -r ChangeLog ]; then
-  DOCSDIR=$(echo $PKG/usr/doc/${PKGNAM}-$VERSION)
-  cat ChangeLog | head -n 1000 > $DOCSDIR/ChangeLog
-  touch -r ChangeLog $DOCSDIR/ChangeLog
-fi
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -1,8 +1,6 @@
 #!/bin/bash
 
 PRGNAM=pipewire
-VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
 
 if [ -z "$ARCH" ]; then
   case "$( uname -m )" in
@@ -27,43 +25,32 @@ else
   LIBDIRSUFFIX=""
 fi
 
+VERSION=$(curl -s https://gitlab.com/${PRGNAM}/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz || exit 1
+BUILD=${BUILD:-1}
+
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 tar xfv $PRGNAM-$VERSION.tar.?z* || exit 1
 cd $PRGNAM-$VERSION
 
 chown -R root:root .
+find . \
+  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
+  -exec chmod 755 {} \+ -o \
+  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
+  -exec chmod 644 {} \+
 
-# Add dependencies
-(
-#wireplumberVersion=$(curl -s https://gitlab.com/pipewire/wireplumber/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-wireplumberVersion=0.4.17
-wget https://gitlab.freedesktop.org/pipewire/wireplumber/-/archive/${wireplumberVersion}/wireplumber-${wireplumberVersion}.tar.gz
-cd subprojects
-tar xf ../wireplumber*.tar.?z
-mv wireplumber-* wireplumber
-
-luaVersion="5.4.6"
-cd wireplumber
-wget https://www.lua.org/ftp/lua-${luaVersion}.tar.gz
-cd subprojects
-rm lua.wrap
-tar xf ../lua-${luaVersion}.tar.?z
-mv lua-* lua
-cp $SCRIPTPATH/extras/$PRGNAM/lua/* lua/
-)
-
-# patching meson is only required in 15.0
+# only required in Slackware 15.0
 if [ $SLACKWAREVERSION != "current" ]; then
 	cp $SCRIPTPATH/extras/$PRGNAM/*.patch .
 	for i in *.patch; do patch -p0 < $i || exit 1; done
 fi
 
-# Configure, build, and install:
 export CFLAGS="$SLKCFLAGS"
 export CXXFLAGS="$SLKCFLAGS"
-mkdir meson-build
-cd meson-build
+mkdir build
+cd build
   unshare -n meson setup \
   --prefix=/usr \
   --libdir=lib${LIBDIRSUFFIX} \
@@ -83,10 +70,9 @@ cd meson-build
   -Dvulkan=disabled \
   -Djack=disabled \
   -Dpipewire-jack=disabled \
-  -Dsession-managers=wireplumber \
+  -Dsession-managers=[] \
   .. || exit 1
-  "${NINJA:=ninja}" -j${NUMBERTHREADS} || exit 1
-  DESTDIR=$PKG $NINJA install || exit 1
+  DESTDIR=$PKG "${NINJA:=ninja}" $NUMJOBS install || exit 1
 cd ..
 
 mkdir -p $PKG/etc/pipewire
@@ -97,6 +83,7 @@ mkdir -p $PKG/etc/xdg/autostart
 cp $SCRIPTPATH/extras/pipewire/pipewire.desktop $PKG/etc/xdg/autostart
 chmod 644 $PKG/etc/xdg/autostart/pipewire.desktop
 
+# only required in Slackware 15.0
 if [ $SLACKWAREVERSION != "current" ]; then
 	cd $PKG/usr/bin
 	ln -sf pipewire pipewire-aes67
@@ -111,7 +98,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 fi
 
 mkdir -p $PKG/install
-cat $SCRIPTPATH/extras/pipewire/slack-desc > $PKG/install/slack-desc
+cat $SCRIPTPATH/extras/${PRGNAM}/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
