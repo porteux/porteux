@@ -175,6 +175,10 @@ rm *.t?z
 
 InstallAdditionalPackages
 
+### fix some .desktop files
+
+sed -i "s|image/x-icns|image/x-icns;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.gnome.eog.desktop
+
 ### copy build files to 05-devel
 
 CopyToDevel

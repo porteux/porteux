@@ -114,6 +114,17 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
+# required by new wireplumber
+if [ $SLACKWAREVERSION != "current" ]; then
+	currentPackage=lua
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+	wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/d/${currentPackage}/ || exit 1
+	sh ${currentPackage}.SlackBuild || exit 1
+	mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+	installpkg $MODULEPATH/packages/lua*.txz
+	rm -fr $MODULEPATH/${currentPackage}
+fi
+
 ### packages that require specific stripping
 
 currentPackage=aaa_libraries
@@ -289,13 +300,14 @@ rm -R usr/lib${SYSTEMBITS}/systemd
 rm -R usr/lib/ldscripts
 rm -R usr/lib/modprobe.d
 rm -R usr/lib*/python2*
-rm -R usr/lib*/python*/config-3.11-x86_64-linux-gnu/
+rm -R usr/lib*/python*/config-3.11-x86_64-linux-gnu
 rm -R usr/lib*/python*/ensurepip
 rm -R usr/lib*/python*/idlelib
 rm -R usr/lib*/python*/lib2to3
 rm -R usr/lib*/python*/site-packages/demo
 rm -R usr/lib*/python*/site-packages/msi
-rm -R usr/lib*/python*/site-packages/peg_generator/
+rm -R usr/lib*/python*/site-packages/peg_generator
+rm -R usr/lib*/python*/site-packages/*-info
 rm -R usr/lib*/python*/turtledemo
 rm -R usr/lib/udev
 rm -R usr/local/etc
