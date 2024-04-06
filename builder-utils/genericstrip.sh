@@ -7,6 +7,12 @@ GenericStrip() {
 	rm -R usr/man
 	rm -R usr/src
 	rm -R usr/info
+	rm -R usr/lib*/cmake
+	rm -R usr/lib*/gnome-keyring
+	rm -R usr/lib*/gtk*/include
+	rm -R usr/lib*/pkgconfig
+	rm -R usr/lib*/python2*
+	rm -R usr/lib*/systemd
 	rm -R usr/share/aclocal
 	rm -R usr/share/bash-completion
 	rm -R usr/share/cmake
@@ -31,14 +37,6 @@ GenericStrip() {
 	rm -R usr/share/themes/HighContrast
 	rm -R usr/share/vala
 	rm -R usr/share/*/translations
-	rm -R usr/lib/pkgconfig
-	rm -R usr/lib64/pkgconfig
-	rm -R usr/lib/cmake
-	rm -R usr/lib/systemd
-	rm -R usr/lib64/cmake
-	rm -R usr/lib64/gnome-keyring
-	rm -R usr/lib64/gtk-2.0/include
-	rm -R usr/lib64/python2*
 	rm -R var/log/pkgtools
 	rm -R var/log/setup
 	rm -R var/lib/pkgtools/douninst.sh/
@@ -79,6 +77,8 @@ AggressiveStripAll() {
 	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }
 
-if [ "$1" ]; then
+if [ ! "$1" ]; then
+	GenericStrip
+elif [ "$1" ]; then
 	"$1"
 fi
