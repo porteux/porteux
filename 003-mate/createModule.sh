@@ -114,6 +114,8 @@ fi
 # required just for building
 installpkg $MODULEPATH/packages/boost*.txz || exit 1
 rm $MODULEPATH/packages/boost*.txz
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+rm $MODULEPATH/packages/libdbusmenu*.txz
 installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 rm $MODULEPATH/packages/gtk+2*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
@@ -122,7 +124,7 @@ installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
 # mate packages
-for currentPackage in \
+for package in \
 	mate-desktop \
 	libmatekbd \
 	exempi \
@@ -135,8 +137,8 @@ for currentPackage in \
 	mate-session-manager \
 	mate-menus \
 	mate-terminal \
-	gtk-layer-shell \
 	libmateweather \
+	gtk-layer-shell \
 	mate-panel \
 	mate-themes \
 	mate-notification-daemon \
@@ -154,9 +156,9 @@ for currentPackage in \
 	mozo \
 	pluma \
 ; do
-export currentPackage=${currentPackage}
-cd $SCRIPTPATH/mate/${currentPackage} || exit 1
-sh ${currentPackage}.SlackBuild || exit 1
+cd $SCRIPTPATH/mate/$package || exit 1
+sh ${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/$package-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -169,7 +171,7 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
+CFLAGS="$GCCFLAGS" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
