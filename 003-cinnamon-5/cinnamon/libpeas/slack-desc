@@ -1,13 +1,12 @@
-# HOW TO EDIT THIS FILE:
-# The "handy ruler" below makes it easier to edit a package description.
-# Line up the first '|' above the ':' following the base package name, and
-# the '|' on the right side marks the last column you can put a character in.
-# You must make exactly 11 lines for the formatting to be correct.  It's also
-# customary to leave one space after the ':' except on otherwise blank lines.
-
        |-----handy-ruler------------------------------------------------------|
-libpeas: libpeas
+libpeas: libpeas (GObject Plugin System)
 libpeas:
-libpeas: libpeas is a gobject-based plugins engine, and is targetted at giving
+libpeas: Libpeas is a gobject-based plugins engine, and is targetted at giving
 libpeas: every application the chance to assume its own extensibility.
+libpeas: It also has a set of features including, but not limited to:
+libpeas: - multiple extension points
+libpeas: - on demand (lazy) programming language support for C, Python and JS
+libpeas: - simplicity of the API
+libpeas:
+libpeas: homepage: https://wiki.gnome.org/Projects/Libpeas
 libpeas:
