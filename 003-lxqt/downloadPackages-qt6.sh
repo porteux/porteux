@@ -10,11 +10,13 @@ DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "hunspell" &
 #DownloadPackage "kidletime" &
 #DownloadPackage "kwindowsystem" &
-wait
+#DownloadPackage "layer-shell-qt" &
 DownloadPackage "libcanberra" &
+wait
 DownloadPackage "libdbusmenu-qt" &
 #DownloadPackage "libkscreen" &
 DownloadPackage "libpaper" & # required by xpdf
+#DownloadPackage "libproxy" & # required by ...
 #DownloadPackage "networkmanager-qt" &
 #DownloadPackage "polkit-qt" &
 #DownloadPackage "solid" &
@@ -28,9 +30,6 @@ wait
 
 ### temporary packages for further building
 
-#DownloadPackage "cups" & # to build qpdfview-qt
-#DownloadPackage "libspectre" & # to build qpdfview-qt
-wait
 
 ### script clean up
 

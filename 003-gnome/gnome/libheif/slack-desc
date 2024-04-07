@@ -1,0 +1,20 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+       |-----handy-ruler------------------------------------------------------|
+libheif: libheif (HEIF and AVIF file format decoder and encoder)
+libheif:
+libheif: libheif is an ISO/IEC 23008-12:2017 HEIF and AVIF (AV1 Image File
+libheif: Format) file format decoder and encoder.  HEIF and AVIF are new image
+libheif: file formats employing HEVC (h.265) or AV1 image coding, respectively,
+libheif: for the best compression ratios currently possible. HEIF is the
+libheif: default image file format on Apple devices. libheif makes use of
+libheif: libde265 for HEIF image decoding and x265 for encoding. For AVIF,
+libheif: aom , dav1d, svt-av1, or rav1e are used as codecs.
+libheif:
+libheif: homepage: https://github.com/strukturag/libheif
+

@@ -4,70 +4,38 @@ source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
 
 PRGNAM=cinnamon-screensaver
 
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i586 ;;
-    arm*) ARCH=arm ;;
-       *) ARCH=$( uname -m ) ;;
-  esac
-fi
-
 CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-NUMJOBS="-j$(nproc --all)"
-
-if [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O3 -march=i686 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
-  LIBDIRSUFFIX="64"
-else
-  SLKCFLAGS="-O3"
-  LIBDIRSUFFIX=""
-fi
 
 set -e
 
 rm -rf $PKG
-mkdir -p $TMP $PKG $OUTPUT
+mkdir -p $TMP $PKG
 cd $TMP
 rm -rf $PRGNAM-*
 
 info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM})
 VERSION=${info#* }
-BUILD=${BUILD:-1}
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
-chown -R root:root .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-mkdir -p build
-cd build
-  CFLAGS="$SLKCFLAGS" \
-  CXXFLAGS="$SLKCFLAGS" \
-  meson setup \
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto" \
+meson setup \
     --buildtype=release \
     --infodir=/usr/info \
-    --libdir=/usr/lib${LIBDIRSUFFIX} \
+    --libdir=/usr/lib${SYSTEMBITS} \
     --localstatedir=/var \
     --mandir=/usr/man \
     --prefix=/usr \
     --sysconfdir=/etc \
     -Dlocking=true
 
-  DESTDIR=$PKG ninja $NUMJOBS install
-cd ..
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-# Don't ship .la files:
-rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/etc/pam.d/
 install -m644 $CWD/cinnamon-screensaver.pam $PKG/etc/pam.d/cinnamon-screensaver
@@ -76,4 +44,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

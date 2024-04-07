@@ -142,16 +142,13 @@ rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=audacious
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
 cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
 sh ${currentPackage}-qt.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
 cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
 sh ${currentPackage}-qt.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
@@ -303,7 +300,7 @@ for i in *.patch; do patch -p0 < $i || exit 1; done
 sh build_all_cmake_projects.sh || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-# removing because it's only needed for building
+# only required for building
 rm $MODULEPATH/packages/lxqt-build-tools*.txz
 
 currentPackage=kora
