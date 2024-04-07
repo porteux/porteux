@@ -2,87 +2,50 @@
 
 PRGNAM=gnome-settings-daemon
 
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i586 ;;
-    arm*) ARCH=arm ;;
-       *) ARCH=$( uname -m ) ;;
-  esac
-fi
-
 CWD=$(pwd)
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-NUMJOBS="-j$(nproc --all)"
 
-if [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O3 -march=i686 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
-  LIBDIRSUFFIX="64"
-else
-  SLKCFLAGS="-O3"
-  LIBDIRSUFFIX=""
-fi
+set -e
 
 rm -rf $PKG
-mkdir -p $TMP $PKG $OUTPUT
+mkdir -p $TMP $PKG
 cd $TMP
 rm -rf $PRGNAM-*
 
 wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
 VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 patch -Np1 -i $CWD/disable-systemd.patch
 
-set -e
-
-mkdir -p build
-cd build
-
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
+mkdir -p build && cd build
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
- --prefix=/usr \
- --buildtype=release \
- --libdir=lib${LIBDIRSUFFIX} \
- --libexecdir=/usr/libexec \
- --sysconfdir=/etc \
- --infodir=/usr/info \
- -Dcolord=false \
- --mandir=/usr/man \
- --localstatedir=/var \
- -Ddefault_library=shared \
- -Dsystemd=false \
- -Delogind=true
+    --prefix=/usr \
+    --buildtype=release \
+    --libdir=lib${SYSTEMBITS} \
+    --libexecdir=/usr/libexec \
+    --sysconfdir=/etc \
+    --infodir=/usr/info \
+    -Dcolord=false \
+    --mandir=/usr/man \
+    --localstatedir=/var \
+    -Ddefault_library=shared \
+    -Dsystemd=false \
+    -Delogind=true
 
-DESTDIR=$PKG ninja $NUMJOBS install
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 # Don't auto-suspend by default on AC power (Gentoo)
 cp $CWD/org.gnome.settings-daemon.plugins.power.gschema.override $PKG/usr/share/glib-2.0/schemas
 
-cd ..
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
-cat <<EOT >$PKG/install/slack-desc
-$PRGNAM:
-$PRGNAM: GNOME Settings Daemon
-$PRGNAM:
-$PRGNAM: The GNOME Settings Daemon is responsible for setting various
-$PRGNAM: parameters of a GNOME Session and the applications that run under it.
-$PRGNAM:
-$PRGNAM:
-$PRGNAM:
-$PRGNAM:
-$PRGNAM: https://gitlab.gnome.org/GNOME/gnome-settings-daemon
-$PRGNAM:
-EOT
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

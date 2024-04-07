@@ -1,0 +1,20 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                 |-----handy-ruler------------------------------------------------------|
+libcloudproviders: libcloudproviders (DBus API for cloud sync clients)
+libcloudproviders:
+libcloudproviders: libcloudproviders is a DBus API that allows cloud storage sync clients
+libcloudproviders: to expose their services. Clients such as file managers and desktop 
+libcloudproviders: environments can then provide integrated access to the cloud providers
+libcloudproviders: services.
+libcloudproviders:
+libcloudproviders:
+libcloudproviders:
+libcloudproviders: https://gitlab.gnome.org/World/libcloudproviders
+libcloudproviders:
+

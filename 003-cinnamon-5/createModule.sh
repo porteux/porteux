@@ -23,16 +23,13 @@ DownloadFromSlackware
 
 currentPackage=audacious
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
 cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
 sh ${currentPackage}-gtk.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
 cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
 sh ${currentPackage}-gtk.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
@@ -211,6 +208,10 @@ InstallAdditionalPackages
 ### fix some .desktop files
 
 sed -i "s|image/avif|image/avif;image/jxl|g" $MODULEPATH/packages/usr/share/applications/xviewer.desktop
+
+### disable some services
+
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/cinnamon-settings-daemon-color.desktop
 
 ### add cinnamon session
 
