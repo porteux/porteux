@@ -30,8 +30,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=neofetch
 mkdir -p $MODULEPATH/${currentPackage}/package/usr/bin && cd $MODULEPATH/${currentPackage}
 wget https://github.com/hykilpikonna/hyfetch/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz || exit 1
-unzip ${currentPackage}.tar.gz
-rm ${currentPackage}.tar.gz
+tar xvf ${currentPackage}.tar.gz && rm ${currentPackage}.tar.gz || exit 1
 cp -p */${currentPackage} package/usr/bin
 sed -i "s|has pkginfo && tot pkginfo -i|#has pkginfo && tot pkginfo -i|g" package/usr/bin/${currentPackage}
 chown 755 package/usr/bin/${currentPackage}
