@@ -1,36 +1,26 @@
 #!/bin/bash
 
-cd $(dirname $0) ; CWD=$(pwd)
+PRGNAM=sysvinit
 
-PKGNAM=sysvinit
-VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+CWD=$(pwd)
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
+PKG=$TMP/package-$PRGNAM
 
-# Automatically determine the architecture we're building on:
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) export ARCH=i586 ;;
-    arm*) export ARCH=arm ;;
-    # Unless $ARCH is already set, use uname -m for all other archs:
-       *) export ARCH=$( uname -m ) ;;
-  esac
-fi
+set -e
 
-PKG=$CWD/package-$PKGNAM
+rm -rf $PKG
+mkdir -p $TMP $PKG
+cd $TMP
+rm -rf $PRGNAM-*
 
-rm -rf $PKGNAM-$VERSION
-tar xvf $PKGNAM-$VERSION.tar.?z || exit 1
-cd $PKGNAM-$VERSION
+VERSION="3.08"
+wget https://github.com/slicer69/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz -O ${PRGNAM}-${VERSION}.tar.gz
 
-chown -R root:root .
-find . \
-  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
-  -exec chmod 755 {} \+ -o \
-  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
-  -exec chmod 644 {} \+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
 
 # Fix failure to show program version:
-zcat $CWD/sysvinit.always.define.version.diff.gz | patch -p1 --verbose || exit 1
+zcat $CWD/sysvinit.always.define.version.diff.gz | patch -p1 --verbose
 sed -i "s/define VERSION.*/define VERSION \"$VERSION\"/g" src/init.c
 
 # Use /dev/initctl instead of /run/initctl ; this is a named pipe and probably
@@ -41,8 +31,10 @@ for replace in src/shutdown.c src/Makefile src/initreq.h src/init.c doc/initctl 
 done
 
 cd src
-make clobber || exit 1
-make -j$NUMBERTHREADS || exit 1
+make clobber
+make -j${NUMBERTHREADS}
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/etc/inittab.d
 mkdir -p $PKG/sbin
@@ -64,11 +56,13 @@ mv $PKG/sbin/init $PKG/sbin/init.new
 chmod 755 $PKG/sbin/init.new
 chown root:root $PKG/sbin/init.new
 
-mkdir -p $PKG/install
-zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
-cat $CWD/slack-desc > $PKG/install/slack-desc
-
 # Build the package:
 cd $PKG
-cp $SCRIPTPATH/extras/$PKGNAM/init sbin/init.new
-makepkg -l y -c n $MODULEPATH/packages/sysvinit-$VERSION-$ARCH-$BUILD.txz
+cp $CWD/init sbin/init.new
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
+
+cd $PKG
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

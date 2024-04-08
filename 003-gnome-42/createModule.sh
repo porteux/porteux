@@ -39,7 +39,6 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 	cp $SCRIPTPATH/extras/meson/* .
 	sh ${currentPackage}.SlackBuild || exit 1
-	rm -fr $MODULEPATH/package-${currentPackage}
 	rm -fr $MODULEPATH/${currentPackage}*
 	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
 	rm $MODULEPATH/packages/meson-*.txz
