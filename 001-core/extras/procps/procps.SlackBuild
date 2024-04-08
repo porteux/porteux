@@ -1,101 +1,73 @@
 #!/bin/bash
 
-PKGNAM=procps
-VERSION=${VERSION:-4.0.4}
+PRGNAM=procps
+
+CWD=$(pwd)
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+rm -rf $PKG
+mkdir -p $TMP $PKG
+cd $TMP
+rm -rf $PRGNAM-*
+
+VERSION=$(curl -s https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 PSMISCVER=${PSMISCVER:-v23.3}
 PROCINFONGVER=${PROCINFONGVER:-2.0.304}
 PROCINFOVER=${PROCINFOVER:-18}
-BUILD=${BUILD:-1}
+wget https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i586 ;;
-    arm*) ARCH=arm ;;
-       *) ARCH=$( uname -m ) ;;
-  esac
-fi
+tar xvf $PRGNAM-$VERSION.tar.?z
+tar xvf psmisc-$PSMISCVER.tar.?z
+tar xvf procinfo-ng-$PROCINFONGVER.tar.?z
+tar xvf procinfo-$PROCINFOVER.tar.?z
 
-NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+cd $PRGNAM-$VERSION
 
-CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
-PKG=$TMP/package-$PKGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
-
-if [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O3 -s -march=i686 -mtune=i686 -flto -FPIC"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -flto -fPIC"
-  LIBDIRSUFFIX="64"
-else
-  SLKCFLAGS="-O3 -flto"
-  LIBDIRSUFFIX=""
-fi
-
-rm -rf $PKG
-mkdir -p $TMP $PKG $OUTPUT
-cd $TMP
-rm -rf $PKGNAM-v$VERSION
-cd $PKGNAM
-tar xvf $PKGNAM-v$VERSION.tar.?z || exit 1
-tar xvf psmisc-$PSMISCVER.tar.?z || exit 1
-tar xvf procinfo-ng-$PROCINFONGVER.tar.xz || exit 1
-tar xvf procinfo-$PROCINFOVER.tar.xz || exit 1
-chown -R root:root .
-
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \+ -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \+
-
-cd $PKGNAM-v$VERSION
-
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
+CFLAGS="$GCCFLAGS -flto" \
 ./autogen.sh && ./configure \
-  --prefix=/ \
-  --bindir=/bin \
-  --sbindir=/sbin \
-  --libdir=/usr/lib${LIBDIRSUFFIX} \
-  --includedir=/usr/include \
-  --sysconfdir=/etc \
-  --localstatedir=/var \
-  --mandir=/usr/man \
-  --datarootdir=/usr/share \
-  --docdir=/usr/doc/$PKGNAM-$VERSION \
-  --enable-static=no \
-  --disable-silent-rules \
-  --disable-rpath \
-  --enable-watch8bit \
-  --enable-skill \
-  --enable-sigwinch \
-  --enable-w-from \
-  --disable-kill \
-  --without-systemd \
-  --with-elogind \
-  --disable-modern-top \
-  --build=$ARCH-slackware-linux || exit 1
+    --prefix=/ \
+    --bindir=/bin \
+    --sbindir=/sbin \
+    --libdir=/usr/lib${SYSTEMBITS} \
+    --includedir=/usr/include \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --mandir=/usr/man \
+    --datarootdir=/usr/share \
+    --docdir=/usr/doc/$PRGNAM-$VERSION \
+    --enable-static=no \
+    --disable-silent-rules \
+    --disable-rpath \
+    --enable-watch8bit \
+    --enable-skill \
+    --enable-sigwinch \
+    --enable-w-from \
+    --disable-kill \
+    --without-systemd \
+    --with-elogind \
+    --disable-modern-top \
+    --build=$ARCH-porteux-linux
   
 # fix libproc2.pc having unknown version
 sed -i "s|Version:.*|Version: ${VERSION}|g" library/libproc2.pc
 
-make $NUMJOBS || exit 1
-make install DESTDIR=$PKG || exit 1
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
-# Move the shared library to $PKG/lib${LIBDIRSUFFIX}:
-mkdir -p $PKG/lib${LIBDIRSUFFIX}
-( cd $PKG/usr/lib${LIBDIRSUFFIX}
+# Move the shared library to $PKG/lib${SYSTEMBITS}:
+mkdir -p $PKG/lib${SYSTEMBITS}
+( cd $PKG/usr/lib${SYSTEMBITS}
   for file in lib*.so.?.* ; do
-    mv $file ../../lib${LIBDIRSUFFIX}
-    ln -sf ../../lib${LIBDIRSUFFIX}/$file .
+    mv $file ../../lib${SYSTEMBITS}
+    ln -sf ../../lib${SYSTEMBITS}/$file .
   done
-  cp -a lib*.so.? ../../lib${LIBDIRSUFFIX}
+  cp -a lib*.so.? ../../lib${SYSTEMBITS}
 )
 
 # Remove .la file(s):
-rm -f $PKG/usr/lib${LIBDIRSUFFIX}/*.la
+rm -f $PKG/usr/lib${SYSTEMBITS}/*.la
 
 # It seems that upstream has shuffled the location of many tools with the
 # 3.3.11 release.  To me, this just doesn't make sense to break any existing
@@ -132,7 +104,7 @@ ln -sf /bin/ps $PKG/usr/bin/ps
 # Create /etc/sysctl.d:
 mkdir -p $PKG/etc/sysctl.d
 
-cd ../psmisc-$PSMISCVER || exit 1
+cd ../psmisc-$PSMISCVER
 
 if [ ! -r configure ]; then
   if [ -x ./autogen.sh ]; then
@@ -142,53 +114,48 @@ if [ ! -r configure ]; then
   fi
 fi
 
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
+CFLAGS="$GCCFLAGS -flto" \
 ./configure \
-  --prefix=/usr \
-  --libdir=/usr/lib${LIBDIRSUFFIX} \
-  --sysconfdir=/etc \
-  --localstatedir=/var \
-  --mandir=/usr/man \
-  --docdir=/usr/doc/psmisc-$PSMISCVER \
-  --disable-silent-rules \
-  --disable-rpath \
-  --build=$ARCH-slackware-linux || exit 1
+    --prefix=/usr \
+    --libdir=/usr/lib${SYSTEMBITS} \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --mandir=/usr/man \
+    --docdir=/usr/doc/psmisc-$PSMISCVER \
+    --disable-silent-rules \
+    --disable-rpath \
+    --build=$ARCH-porteux-linux
 
-make $NUMJOBS || exit 1
-make install DESTDIR=$PKG || exit 1
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 # Move "killall" to the traditional location:
 mv $PKG/usr/bin/killall $PKG/bin
 ln -s /bin/killall $PKG/usr/bin/killall
 
-cd ../procinfo-ng-$PROCINFONGVER || exit 1
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
+cd ../procinfo-ng-$PROCINFONGVER
+CXXFLAGS="$GCCFLAGS -flto" \
 ./configure \
-  --prefix=/usr \
-  --libdir=/usr/lib${LIBDIRSUFFIX} \
-  --sysconfdir=/etc \
-  --localstatedir=/var \
-  --mandir=/usr/man \
-  --docdir=/usr/doc/procinfo-ng-$PROCINFONGVER \
-  --enable-maintainer-mode \
-  --build=$ARCH-slackware-linux || exit 1
+    --prefix=/usr \
+    --libdir=/usr/lib${SYSTEMBITS} \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --mandir=/usr/man \
+    --docdir=/usr/doc/procinfo-ng-$PROCINFONGVER \
+    --enable-maintainer-mode \
+    --build=$ARCH-porteux-linux
 
-make $NUMJOBS || exit 1
-make install DESTDIR=$PKG || exit 1
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 # Now install a couple of scripts from the original procinfo package.
-cd ../procinfo-$PROCINFOVER || exit 1
+cd ../procinfo-$PROCINFOVER
 install -m 0755 lsdev.pl $PKG/usr/bin/lsdev
 install -m 0755 socklist.pl $PKG/usr/bin/socklist
 install -m 0644 lsdev.8 socklist.8 $PKG/usr/man/man8
-
-# Back to the procps-ng main source directory...
-cd ..
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1.txz
