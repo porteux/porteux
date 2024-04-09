@@ -1,57 +1,27 @@
 #!/bin/sh
 
 PRGNAM=zenity
-VERSION=${VERSION:-3.41.0}
-BUILD=${BUILD:-1}
+
 CWD=$(pwd)
-PKG=$MODULEPATH/$PRGNAM/package-$PRGNAM
-OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i586 ;;
-    arm*) ARCH=arm ;;
-       *) ARCH=$( uname -m ) ;;
-  esac
-fi
-
-if [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O3 -march=i686 -mtune=i686"
-  SYSTEMBITS=""
-elif [ "$ARCH" = "aarch64" ]; then
-  SLKCFLAGS="-O3 -fPIC"
-  SYSTEMBITS="64"
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
-  SYSTEMBITS="64"
-elif [ "$ARCH" = "arm" ]; then
-  SLKCFLAGS="-O3 -march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=hard"
-  SYSTEMBITS=""
-else
-  SLKCFLAGS="-O3"
-  SYSTEMBITS=""
-fi
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
+PKG=$TMP/package-$PRGNAM
 
 set -e
 
-rm -fr $MODULEPATH/$PRGNAM
-mkdir -p $MODULEPATH/$PRGNAM && cd $MODULEPATH/$PRGNAM
-wget -c https://download.gnome.org/sources/$PRGNAM/3.41/$PRGNAM-$VERSION.tar.xz
+rm -rf $PKG
+mkdir -p $TMP $PKG
+cd $TMP
+rm -rf $PRGNAM-*
+
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+
 tar xvf $PRGNAM-$VERSION.tar.xz || exit 1
 cd $PRGNAM-$VERSION
 
-chown -R root:root .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-mkdir build
-cd build
-  CFLAGS="$SLKCFLAGS" \
-  CXXFLAGS="$SLKCFLAGS" \
-  meson .. \
+mkdir -p build && cd build
+CFLAGS="$GCCFLAGS -flto" \
+meson setup \
     --buildtype=release \
     --infodir=/usr/info \
     --libdir=/usr/lib${SYSTEMBITS} \
@@ -61,13 +31,13 @@ cd build
     --sysconfdir=/etc \
     -Dlibnotify=true \
     -Dwebkitgtk=false
-  ninja -j$(nproc --all)
-  DESTDIR=$PKG ninja install
-cd ..
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}
-/sbin/upgradepkg --install-new --reinstall $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
