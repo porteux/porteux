@@ -7,6 +7,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
+DownloadPackage "ghostscript-fonts-std" &
 DownloadPackage "hunspell" &
 #DownloadPackage "kidletime" &
 #DownloadPackage "kwindowsystem" &

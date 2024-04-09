@@ -55,10 +55,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+cp $SCRIPTPATH/extras/${currentPackage}/* .
 sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -231,6 +228,7 @@ for package in \
 ; do
 cd $SCRIPTPATH/xfce/$package || exit 1
 sh ${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/$package-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

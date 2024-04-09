@@ -59,6 +59,32 @@ cd ${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+# required by xpdf
+currentPackage=ghostscript-fonts-std
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* . || exit 1
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/share/ghostscript/fonts/d050000l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/fonts.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n019003l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n019004l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n019023l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n019024l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n021003l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n021004l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n021023l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n021024l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n022003l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n022004l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n022023l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/n022024l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/ghostscript/fonts/s050000l.* "${currentPackage}-stripped-$version"
+cd ${currentPackage}-stripped-$version
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 ### packages outside Slackware repository
 
 currentPackage=muparser
@@ -110,13 +136,11 @@ cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=qpdfview-qt
-version=0.4.18
+currentPackage=xpdf
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/qpdfview-qt/* .
-mv $MODULEPATH/packages/cups*.txz . || exit 1
-mv $MODULEPATH/packages/libspectre*.txz . || exit 1
-installpkg *.txz
+wget -r -nH --cut-dirs=6 --no-parent --reject="index.html*" http://ftp.slackware.com/pub/slackware/slackware64-current/source/xap/${currentPackage}/ || exit 1
+sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s |g" ${currentPackage}.SlackBuild
+sed -i "s|-DXPDFWIDGET_PRINTING=1|-DMULTITHREADED=ON|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}

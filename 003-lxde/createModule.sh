@@ -55,10 +55,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+cp $SCRIPTPATH/extras/${currentPackage}/* .
 sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
