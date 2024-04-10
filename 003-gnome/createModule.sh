@@ -23,15 +23,15 @@ DownloadFromSlackware
 
 currentPackage=audacious
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
-sh ${currentPackage}-gtk.SlackBuild || exit 1
+cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
+sh ${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
-sh ${currentPackage}-gtk.SlackBuild || exit 1
+cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
+sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on

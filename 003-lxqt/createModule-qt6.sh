@@ -120,7 +120,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxdm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../${currentPackage}/* .
+cp -R $SCRIPTPATH/../extras/${currentPackage}/* .
 GTK3=yes sh ${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -166,15 +166,15 @@ rm -fr $MODULEPATH/${currentPackage,,}
 
 #currentPackage=audacious
 #mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
-#sh ${currentPackage}-qt.SlackBuild || exit 1
+#cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
+#QT=yes sh ${currentPackage}.SlackBuild || exit 1
 #installpkg $MODULEPATH/packages/${currentPackage}*.txz
 #rm -fr $MODULEPATH/${currentPackage}
 
 #currentPackage=audacious-plugins
 #mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
-#sh ${currentPackage}-qt.SlackBuild || exit 1
+#cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
+#QT=yes sh ${currentPackage}.SlackBuild || exit 1
 #rm -fr $MODULEPATH/${currentPackage}
 
 ## required by nm-tray
