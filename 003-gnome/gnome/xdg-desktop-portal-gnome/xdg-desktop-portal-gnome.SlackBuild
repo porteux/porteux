@@ -19,7 +19,7 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xfv $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-mkdir -p build && cd build
+mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --buildtype=release \

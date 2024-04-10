@@ -24,7 +24,7 @@ patch -Np1 -i $CWD/0001-Xsession-Don-t-start-ssh-agent-by-default.patch
 patch -Np1 -i $CWD/0003-add-wayland-session-script.patch
 patch -Np1 -i $CWD/0004-fix-Xsession-language-in-gnome.patch
 
-mkdir -p build && cd build
+mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --buildtype=release \

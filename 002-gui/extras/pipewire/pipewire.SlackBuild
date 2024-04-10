@@ -25,7 +25,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
     for i in *.patch; do patch -p0 < $i; done
 fi
 
-mkdir -p build && cd build
+mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --prefix=/usr \

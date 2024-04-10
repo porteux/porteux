@@ -33,7 +33,7 @@ pipewire="-Dpipewire=disabled" ; [ "${USE_PIPEWIRE:-no}" != "no" ] && pipewire="
 # See `meson configure` to see what's available.
 BUILD_OPTS=${BUILD_OPTS:-""}
 
-mkdir -p build && cd build
+mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --prefix=/usr \

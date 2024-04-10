@@ -31,7 +31,7 @@ CFLAGS="$GCCFLAGS -flto" \
     --enable-introspection=yes \
     --enable-egl-backend \
     --disable-examples \
-    --build=$ARCH-slackware-linux
+    --build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 

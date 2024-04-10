@@ -17,7 +17,7 @@ wait
 DownloadPackage "libdbusmenu-qt" &
 #DownloadPackage "libkscreen" &
 DownloadPackage "libpaper" & # required by xpdf
-#DownloadPackage "libproxy" & # required by ...
+DownloadPackage "libproxy" & # required by ...
 #DownloadPackage "networkmanager-qt" &
 #DownloadPackage "polkit-qt" &
 #DownloadPackage "solid" &

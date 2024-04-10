@@ -19,7 +19,7 @@ wget https://gitlab.freedesktop.org/pipewire/${PRGNAM}/-/archive/${VERSION}/${PR
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-mkdir -p build && cd build
+mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --prefix=/usr \

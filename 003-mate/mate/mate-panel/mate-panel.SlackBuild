@@ -23,7 +23,7 @@ cd $PRGNAM-$VERSION
 
 # Fix panel crash when dconf-editor is not present
 cp $SCRIPTPATH/mate/$PRGNAM/*.patch .
-for i in *.patch; do patch -p0 < $i || exit 1; done
+for i in *.patch; do patch -p0 < $i; done
 
 CFLAGS="$GCCFLAGS" \
 ./autogen.sh \
