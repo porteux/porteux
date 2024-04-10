@@ -29,7 +29,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -65,7 +65,7 @@ git clone https://github.com/stevenhoneyman/${currentPackage}
 cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sh autogen.sh
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug || exit 1
+CFLAGS="$GCCFLAGS -flto" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug || exit 1
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -137,7 +137,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
+CFLAGS="$GCCFLAGS -flto" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -152,7 +152,7 @@ cd ${currentPackage}-$version
 mkdir build && cd build
 sed -i "s|i18n.merge_file('desktop',|i18n.merge_file(|g" ../src/meson.build
 sed -i "s|i18n.merge_file('appdata',|i18n.merge_file(|g" ../src/meson.build
-meson -Dcpp_args="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" --prefix /usr ..
+meson -Dcpp_args="$GCCFLAGS -flto" --prefix /usr ..
 ninja -j${NUMBERTHREADS} || exit 1
 DESTDIR=$MODULEPATH/${currentPackage}/package ninja install
 cd $MODULEPATH/${currentPackage}/package

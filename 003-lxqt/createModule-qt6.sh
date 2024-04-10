@@ -97,7 +97,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_SAMPLES=off ..
+CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_SAMPLES=off ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -112,7 +112,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -132,7 +132,7 @@ version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 cp $SCRIPTPATH/extras/adwaita-qt/adwaitastyle.cpp.patch .
 patch -p0 < adwaitastyle.cpp.patch || exit 1
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DUSE_QT6=true ..
+CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DUSE_QT6=true ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -141,7 +141,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=xpdf
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nH --cut-dirs=6 --no-parent --reject="index.html*" http://ftp.slackware.com/pub/slackware/slackware64-current/source/xap/${currentPackage}/ || exit 1
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
 sed -i "s|-DXPDFWIDGET_PRINTING=1|-DMULTITHREADED=ON|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -158,7 +158,7 @@ filename=${info% *}
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
+CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
@@ -193,7 +193,7 @@ sed -i "s|set(NM_TRAY_VERSION \".*|set(NM_TRAY_VERSION \"${version}\")|g" CMakeL
 cp $SCRIPTPATH/extras/nm-tray/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DBUILD_WITH_QT6=true ..
+CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DBUILD_WITH_QT6=true ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -206,7 +206,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="$GCCFLAGS -flto" CXXFLAGS="$GCCFLAGS -flto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package  || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -221,7 +221,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sh autogen.sh
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="$GCCFLAGS -flto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1

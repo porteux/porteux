@@ -117,7 +117,7 @@ wget https://github.com/tsujan/${currentPackage}/releases/download/V${version}/$
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
+CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
@@ -134,7 +134,7 @@ currentPackage=audacious-plugins
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
 QT=yes sh ${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage
+rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 
