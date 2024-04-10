@@ -16,10 +16,10 @@ rm -rf $PRGNAM-*
 wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
 VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 
-tar xvf $PRGNAM-$VERSION.tar.?z* || exit 1
-cd $PRGNAM-$VERSION || exit 1
+tar xvf $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
 
-mkdir -p build && cd build
+mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --prefix=/usr \

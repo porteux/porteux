@@ -31,7 +31,7 @@ CFLAGS="$GCCFLAGS" \
     --enable-installed-tests=no \
     --enable-introspection=yes \
     --enable-vala=yes \
-    --build=$ARCH-slackware-linux
+    --build=$ARCH-porteux-linux
 
 DESTDIR=$PKG make -j${NUMBERTHREADS} install
 

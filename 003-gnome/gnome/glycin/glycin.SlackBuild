@@ -19,7 +19,7 @@ wget https://gitlab.gnome.org/sophie-h/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-mkdir -p build && cd build
+mkdir build && cd build
 meson setup \
  --prefix=/usr \
  --buildtype=release \

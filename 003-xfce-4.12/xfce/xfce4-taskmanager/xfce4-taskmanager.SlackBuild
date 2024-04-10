@@ -30,7 +30,7 @@ CFLAGS="$SLKCFLAGS" \
     --enable-static=no \
     --enable-debug=no \
     --enable-gtk2 \
-    --build=$ARCH-porteux-linux || exit 1 \
+    --build=$ARCH-porteux-linux \
     --disable-debug
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG

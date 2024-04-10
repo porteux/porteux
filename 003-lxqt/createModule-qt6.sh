@@ -164,6 +164,7 @@ cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
 
+# works with Qt6 if using git-master
 #currentPackage=audacious
 #mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 #cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
@@ -171,6 +172,7 @@ rm -fr $MODULEPATH/${currentPackage,,}
 #installpkg $MODULEPATH/packages/${currentPackage}*.txz
 #rm -fr $MODULEPATH/${currentPackage}
 
+# works with Qt6 if using git-master
 #currentPackage=audacious-plugins
 #mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 #cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .

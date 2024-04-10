@@ -16,10 +16,10 @@ rm -rf $PRGNAM-*
 VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-tar xvf $PRGNAM-$VERSION.tar.xz || exit 1
+tar xvf $PRGNAM-$VERSION.tar.xz
 cd $PRGNAM-$VERSION
 
-mkdir -p build && cd build
+mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --buildtype=release \
