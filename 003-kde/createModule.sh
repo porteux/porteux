@@ -125,16 +125,16 @@ rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=audacious
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
-sh ${currentPackage}-qt.SlackBuild || exit 1
+cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
+QT=yes sh ${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
-sh ${currentPackage}-qt.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
+QT=yes sh ${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage
 
 ### fake root
 
