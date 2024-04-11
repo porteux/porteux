@@ -19,7 +19,8 @@ wget -c https://github.com/linuxmint/${PRGNAM}/archive/refs/tags/${VERSION}.tar.
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-mkdir build && cd build
+[ ! -e build ] && mkdir build
+cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --buildtype=release \

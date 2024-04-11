@@ -14,7 +14,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 rm -rf $SRCNAM
 
-VERSION=2.2.0
+VERSION="2.2.0"
 wget https://snowballstem.org/dist/${SRCNAM}-${VERSION}.tar.gz
 
 tar xfv $SRCNAM-$VERSION.tar.?z*

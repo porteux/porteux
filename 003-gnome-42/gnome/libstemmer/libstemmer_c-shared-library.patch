@@ -1,13 +1,17 @@
---- /home/graaff/Desktop/Makefile	2009-11-06 01:57:50.000000000 +0100
+--- Makefile	2009-11-06 01:57:50.000000000 +0100
 +++ Makefile	2013-07-18 10:57:32.482149252 +0200
-@@ -1,9 +1,13 @@
+@@ -1,13 +1,13 @@
  include mkinc.mak
--CFLAGS=-Iinclude
--all: libstemmer.o stemwords
--libstemmer.o: $(snowball_sources:.c=.o)
+-ifeq ($(OS),Windows_NT)
+-EXEEXT=.exe
+-endif
+-CFLAGS=-O2
+-CPPFLAGS=-Iinclude
+-all: libstemmer.a stemwords$(EXEEXT)
+-libstemmer.a: $(snowball_sources:.c=.o)
 -	$(AR) -cru $@ $^
--stemwords: examples/stemwords.o libstemmer.o
--	$(CC) -o $@ $^
+-stemwords$(EXEEXT): examples/stemwords.o libstemmer.a
+-	$(CC) $(CFLAGS) -o $@ $^
 +CFLAGS+=-Iinclude -fPIC
 +all: libstemmer.so libstemmer.a stemwords
 +libstemmer.so: $(snowball_sources:.c=.o)
@@ -19,5 +23,5 @@
 +stemwords: examples/stemwords.o libstemmer.so
 +	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
  clean:
--	rm -f stemwords *.o src_c/*.o runtime/*.o libstemmer/*.o
+-	rm -f stemwords$(EXEEXT) libstemmer.a *.o src_c/*.o examples/*.o runtime/*.o libstemmer/*.o
 +	rm -f stemwords libstemmer.so* libstemmer.a *.o src_c/*.o runtime/*.o libstemmer/*.o

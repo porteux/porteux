@@ -36,10 +36,8 @@ rm -fr $MODULEPATH/${currentPackage}
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=meson
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	cp $SCRIPTPATH/extras/meson/* .
+	cd $SCRIPTPATH/extras/${currentPackage} || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
-	rm -fr $MODULEPATH/${currentPackage}*
 	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
 	rm $MODULEPATH/packages/meson-*.txz
 fi
@@ -71,6 +69,12 @@ fi
 mkdir -p /usr/local > /dev/null 2>&1
 ln -s /usr/include /usr/local/include > /dev/null 2>&1
 
+export GNOME_LATEST_MAJOR_VERSION="42"
+export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/' )
+[ ! "${GNOME_LATEST_MAJOR_VERSION}" ] || [ ! "${GNOME_LATEST_VERSION}" ] && echo "Couldn't detect GNOME latest version" && exit 1
+
+echo "Building GNOME ${GNOME_LATEST_VERSION}..."
+
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=gsettings-desktop-schemas
 	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
@@ -85,12 +89,6 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
 	currentPackage=libhandy
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-
-	currentPackage=libnma
 	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
@@ -123,7 +121,6 @@ for package in \
 	bubblewrap \
 	geoclue2 \
 	geocode-glib \
-	geocode-glib2 \
 	libgweather \
 	libpeas \
 	gsound \
@@ -132,7 +129,7 @@ for package in \
 	gnome-settings-daemon \
 	libadwaita \
 	gnome-bluetooth \
-	libnma-gtk4 \
+	libnma \
 	gnome-control-center \
 	mutter \
 	gjs \
@@ -154,6 +151,7 @@ for package in \
 	gnome-browser-connector \
 	file-roller \
 	gnome-backgrounds \
+	adwaita-icon-theme \
 	xdg-desktop-portal-gnome \
 ; do
 cd $SCRIPTPATH/gnome/$package || exit 1

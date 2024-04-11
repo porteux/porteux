@@ -1,0 +1,34 @@
+--- shell/cc-panel-loader.c	2024-01-16 20:11:26.365893985 +0100
++++ shell/cc-panel-loader.c.patched	2024-01-16 20:11:16.638895055 +0100
+@@ -36,7 +36,6 @@
+ #ifdef BUILD_BLUETOOTH
+ extern GType cc_bluetooth_panel_get_type (void);
+ #endif /* BUILD_BLUETOOTH */
+-extern GType cc_color_panel_get_type (void);
+ extern GType cc_date_time_panel_get_type (void);
+ extern GType cc_default_apps_panel_get_type (void);
+ extern GType cc_display_panel_get_type (void);
+@@ -49,7 +48,6 @@
+ extern GType cc_wifi_panel_get_type (void);
+ #endif /* BUILD_NETWORK */
+ extern GType cc_notifications_panel_get_type (void);
+-extern GType cc_goa_panel_get_type (void);
+ extern GType cc_power_panel_get_type (void);
+ extern GType cc_printers_panel_get_type (void);
+ extern GType cc_region_panel_get_type (void);
+@@ -93,7 +91,6 @@
+   PANEL_TYPE("bluetooth",        cc_bluetooth_panel_get_type,            NULL),
+ #endif
+   PANEL_TYPE("camera",           cc_camera_panel_get_type,               NULL),
+-  PANEL_TYPE("color",            cc_color_panel_get_type,                NULL),
+   PANEL_TYPE("datetime",         cc_date_time_panel_get_type,            NULL),
+   PANEL_TYPE("default-apps",     cc_default_apps_panel_get_type,         NULL),
+   PANEL_TYPE("diagnostics",      cc_diagnostics_panel_get_type,          cc_diagnostics_panel_static_init_func),
+@@ -106,7 +103,6 @@
+   PANEL_TYPE("wifi",             cc_wifi_panel_get_type,                 cc_wifi_panel_static_init_func),
+ #endif
+   PANEL_TYPE("notifications",    cc_notifications_panel_get_type,        NULL),
+-  PANEL_TYPE("online-accounts",  cc_goa_panel_get_type,                  NULL),
+   PANEL_TYPE("power",            cc_power_panel_get_type,                NULL),
+   PANEL_TYPE("printers",         cc_printers_panel_get_type,             NULL),
+   PANEL_TYPE("region",           cc_region_panel_get_type,               NULL),

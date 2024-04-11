@@ -23,7 +23,7 @@ SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:x86_64} -feliminate-unused-debug-ty
 tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-cp $SCRIPTPATH/../${PRGNAM}/patches/*.patch .
+cp $SCRIPTPATH/../extras/${PRGNAM}/patches/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
 CFLAGS="$SLKCFLAGS" \

@@ -252,10 +252,8 @@ pip install glad2 || exit 1
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=meson
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	cp $SCRIPTPATH/extras/meson/* .
+	cd $SCRIPTPATH/extras/${currentPackage} || exit 1
 	sh ${currentPackage}.SlackBuild || exit 1
-	rm -fr $MODULEPATH/${currentPackage}*
 	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
 	rm $MODULEPATH/packages/meson-*.txz
 fi
