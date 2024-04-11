@@ -24,7 +24,7 @@ patch -Np1 -i $CWD/display-adapter.patch
 
 autoreconf -fiv
 intltoolize
-PYTHON="/usr/bin/python3" \
+
 CFLAGS="$GCCFLAGS -flto" \
 ./configure \
     --prefix=/usr \
