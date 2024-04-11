@@ -16,7 +16,6 @@ rm -rf $PRGNAM-*
 # higher than this will require libadwaita
 VERSION="42.0"
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
-BUILD=${BUILD:-1}
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
