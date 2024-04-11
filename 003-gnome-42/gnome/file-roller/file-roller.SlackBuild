@@ -14,7 +14,7 @@ cd $TMP
 rm -rf $PRGNAM-*
 
 VERSION="3.42.0"
-wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+wget https://download.gnome.org/sources/${PRGNAM}/3.42/${PRGNAM}-${VERSION}.tar.xz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION

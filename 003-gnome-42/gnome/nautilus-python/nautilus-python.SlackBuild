@@ -14,7 +14,7 @@ cd $TMP
 rm -rf $PRGNAM-*
 
 VERSION="1.2.3"
-cp $CWD/$PRGNAM-$VERSION.tar.?z* .
+wget https://download.gnome.org/sources/${PRGNAM}/1.2/${PRGNAM}-${VERSION}.tar.xz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
