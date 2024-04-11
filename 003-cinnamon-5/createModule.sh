@@ -79,6 +79,7 @@ installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
+installpkg $MODULEPATH/packages/mozjs78*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 
 # required only for building
@@ -86,8 +87,6 @@ installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
 rm $MODULEPATH/packages/libgsf*.txz
-installpkg $MODULEPATH/packages/mozjs78*.txz || exit 1
-rm $MODULEPATH/packages/mozjs78*.txz
 installpkg $MODULEPATH/packages/python-pip*.txz || exit 1
 rm $MODULEPATH/packages/python-pip*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
