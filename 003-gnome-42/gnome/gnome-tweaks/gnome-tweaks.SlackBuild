@@ -13,8 +13,8 @@ mkdir -p $TMP $PKG
 cd $TMP
 rm -rf $PRGNAM-*
 
-VERSION="42.beta"
-wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+VERSION="42.0"
+wget https://download.gnome.org/sources/gnome-tweaks/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
