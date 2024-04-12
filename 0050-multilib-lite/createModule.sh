@@ -40,10 +40,10 @@ mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libpulse-simple.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib/libpulse.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib/libpulse-simple.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/lib/pulseaudio/libpulsecommon* ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -67,9 +67,9 @@ rm *.t?z
 ### strip
 
 rm -fr $MODULEPATH/packages/etc
-rm -fr $MODULEPATH/packages/lib${SYSTEMBITS}
 rm -fr $MODULEPATH/packages/lib/e2fsprogs
 rm -fr $MODULEPATH/packages/lib/elogind
+rm -fr $MODULEPATH/packages/lib/security
 rm -fr $MODULEPATH/packages/lib/udev
 rm -fr $MODULEPATH/packages/run
 rm -fr $MODULEPATH/packages/usr/lib/clang
@@ -79,20 +79,16 @@ rm -fr $MODULEPATH/packages/usr/lib/girepository-1.0
 rm -fr $MODULEPATH/packages/usr/lib/glib-2.0
 rm -fr $MODULEPATH/packages/usr/lib/libear
 rm -fr $MODULEPATH/packages/usr/lib/libscanbuild
-rm -fr $MODULEPATH/packages/usr/lib/python2.7
-rm -fr $MODULEPATH/packages/usr/lib/python3.9
+rm -fr $MODULEPATH/packages/usr/lib/python2*
 rm -fr $MODULEPATH/packages/usr/lib/xmms
 rm -fr $MODULEPATH/packages/var/cache
 rm -fr $MODULEPATH/packages/var/cache/fontconfig
 rm -fr $MODULEPATH/packages/var/db
 rm -fr $MODULEPATH/packages/var/kerberos
 rm -fr $MODULEPATH/packages/var/lib/dbus
-rm -fr $MODULEPATH/packages/var/log/pkgtools
-rm -fr $MODULEPATH/packages/var/log/setup
-rm -fr $MODULEPATH/packages/var/run
 
 rm $MODULEPATH/packages/*
-rm $MODULEPATH/packages/bin/cpp
+rm $MODULEPATH/packages/lib/cpp
 rm $MODULEPATH/packages/lib/e2initrd_helper
 rm $MODULEPATH/packages/lib/libacl*
 rm $MODULEPATH/packages/lib/libaio*
@@ -149,12 +145,15 @@ find $MODULEPATH/packages/usr -mindepth 1 -maxdepth 1 -type d ! -name "lib" -exe
 find $MODULEPATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name "en_US.utf8" -exec rm -rf {} +
 
 # move out things that don't support stripping
-mv $MODULEPATH/packages/lib $MODULEPATH/
+mv $MODULEPATH/packages/lib/libc.so* $MODULEPATH/
+mv $MODULEPATH/packages/lib/libc-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib/dri $MODULEPATH/
 GenericStrip
 AggressiveStripAll
-mv $MODULEPATH/lib $MODULEPATH/packages/
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib/
+mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib
+mv $MODULEPATH/libc-* $MODULEPATH/packages/lib
+
 
 ### finalize
 
