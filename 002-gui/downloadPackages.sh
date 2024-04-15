@@ -251,7 +251,9 @@ wait
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libdeflate" & # required by libtiff 
 	DownloadPackage "gcr4" & # required by gvfs 1.54+
+	DownloadPackage "libnvme" & # required by udisks 2.10.0+
 	DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
+	DownloadPackage "volume_key" & # required by udisks 2.10.0+
 	wait
 else
 	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)
@@ -263,6 +265,11 @@ fi
 DownloadPackage "llvm" &
 DownloadPackage "vulkan-sdk" &
 wait
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "cryptsetup" &
+	wait
+fi
 
 ### temporary packages for further building
 
