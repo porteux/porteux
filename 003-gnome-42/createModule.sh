@@ -22,24 +22,19 @@ DownloadFromSlackware
 ### packages outside Slackware repository
 
 currentPackage=audacious
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
-sh ${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
-sh ${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=meson
-	cd $SCRIPTPATH/extras/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
-	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
-	rm $MODULEPATH/packages/meson-*.txz
+	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}-*.txz
+	rm $MODULEPATH/packages/${currentPackage}-*.txz
 fi
 
 # required from now on
@@ -77,33 +72,28 @@ echo "Building GNOME ${GNOME_LATEST_VERSION}..."
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=gsettings-desktop-schemas
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 	
 	currentPackage=gtk4
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
 	currentPackage=libhandy
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
 	currentPackage=libsoup3
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 	rm $MODULEPATH/packages/libsoup3*
 
 	currentPackage=vte
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 fi
@@ -154,9 +144,8 @@ for package in \
 	adwaita-icon-theme \
 	xdg-desktop-portal-gnome \
 ; do
-cd $SCRIPTPATH/gnome/$package || exit 1
-sh ${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/$package-*.txz || exit 1
+sh $SCRIPTPATH/gnome/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
