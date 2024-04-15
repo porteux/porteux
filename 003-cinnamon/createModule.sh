@@ -22,16 +22,12 @@ DownloadFromSlackware
 ### packages outside Slackware repository
 
 currentPackage=audacious
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
-sh ${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
-sh ${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=yaru
@@ -59,9 +55,7 @@ echo "Generating icon package. This may take a while..."
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxdm
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../extras/${currentPackage}/* .
-GTK3=yes sh ${currentPackage}.SlackBuild || exit 1
+GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
@@ -143,9 +137,8 @@ for package in \
 	gnome-screenshot \
 	gnome-system-monitor \
 ; do
-cd $SCRIPTPATH/cinnamon/$package || exit 1
-sh ${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/$package-*.txz || exit 1
+sh $SCRIPTPATH/cinnamon/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

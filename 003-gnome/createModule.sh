@@ -22,16 +22,12 @@ DownloadFromSlackware
 ### packages outside Slackware repository
 
 currentPackage=audacious
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
-sh ${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
-sh ${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
@@ -120,9 +116,8 @@ for package in \
 	adwaita-icon-theme \
 	xdg-desktop-portal-gnome \
 ; do
-cd $SCRIPTPATH/gnome/$package || exit 1
-sh ${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/$package-*.txz || exit 1
+sh $SCRIPTPATH/gnome/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
