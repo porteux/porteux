@@ -18,7 +18,7 @@ rm -rf $PRGNAM-*
 info=$(DownloadLatestFromGithub "mpv-player" ${PRGNAM})
 VERSION=${info#* }
 
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 # Needed for 15.0's older meson but disables RPI
