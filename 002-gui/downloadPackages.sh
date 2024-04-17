@@ -19,6 +19,7 @@ DownloadPackage "cairo" &
 DownloadPackage "cairomm" &
 wait
 DownloadPackage "cdparanoia-III" &
+DownloadPackage "cryptsetup" &
 DownloadPackage "daemon" &
 DownloadPackage "db48" & # required by bluez (obexd)
 DownloadPackage "dejavu-fonts-ttf" &
@@ -30,8 +31,8 @@ DownloadPackage "expat" &
 DownloadPackage "flac" &
 DownloadPackage "fontconfig" &
 DownloadPackage "freeglut" &
-DownloadPackage "freetype" &
 wait
+DownloadPackage "freetype" &
 DownloadPackage "fribidi" &
 DownloadPackage "gcr" &
 DownloadPackage "gdk-pixbuf2" &
@@ -265,11 +266,6 @@ fi
 DownloadPackage "llvm" &
 DownloadPackage "vulkan-sdk" &
 wait
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "cryptsetup" &
-	wait
-fi
 
 ### temporary packages for further building
 

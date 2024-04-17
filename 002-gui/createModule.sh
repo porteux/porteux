@@ -19,7 +19,7 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 DownloadFromSlackware
 
-### packages outside slackware repository ###
+### packages outside slackware repository
 
 currentPackage=archivemount
 version=0.9.1
@@ -186,21 +186,6 @@ cp --parents -P -r usr/include/* $MODULEPATH/../05-devel/packages
 cd ${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	currentPackage=cryptsetup
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	mv ../packages/${currentPackage}*.txz .
-	version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
-	ROOT=./ installpkg ${currentPackage}-*.txz
-	mkdir ${currentPackage}-stripped-$version
-	cp --parents -P usr/lib$SYSTEMBITS/libcryptsetup.so* ${currentPackage}-stripped-$version
-	cp --parents -P -r usr/lib$SYSTEMBITS/pkgconfig/* $MODULEPATH/../05-devel/packages
-	cp --parents -P -r usr/include/* $MODULEPATH/../05-devel/packages
-	cd ${currentPackage}-stripped-$version
-	/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
-	rm -fr $MODULEPATH/${currentPackage}
-fi
 
 ### install poppler so it can be used by the further modules
 
