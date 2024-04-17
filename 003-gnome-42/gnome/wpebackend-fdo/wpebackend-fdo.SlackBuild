@@ -4,7 +4,7 @@ source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
 
 PRGNAM=wpebackend-fdo
 
-CWD=$(pwd)
+CWD=$(dirname "$0")
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 

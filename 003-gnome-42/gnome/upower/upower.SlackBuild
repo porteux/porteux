@@ -2,7 +2,7 @@
 
 PRGNAM=upower
 
-CWD=$(pwd)
+CWD=$(dirname "$0")
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 
