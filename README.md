@@ -25,8 +25,6 @@ PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stabl
 
 PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's simple like that. Please avoid ISO installer applications such as Rufus or Etcher because by default they set the bootable unit to be read-only. More details in `/boot/docs/install.txt` file in the ISO.
 
-Not just the latest Xfce version is available, but also the old 4.12, providing the best balance between performance and flexibility. Many patches have been applied to improve the user experience. For optimal performance, remember to turn off the compositor when running 3D applications such as games and benchmarks (Settings -> Window Manager Tweaks -> Compositor tab).
-
 If you want to have PorteuX in a language different than English, download multilanguage package and use PorteuX Language Switcher application to choose the desired language.
 
 If you want to build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, headers, etc. If you need to build a driver (e.g. VirtualBox or any physical device), you should also download and activate 06-crippled_sources xzm module. It's recommended to have them inside /porteux/optional folder and activate them only when needed.
