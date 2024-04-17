@@ -15,46 +15,46 @@ source "$PWD/../builder-utils/latestfromgithub.sh"
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
-#### download packages from slackware repositories
+### download packages from slackware repositories
 
-#DownloadFromSlackware
+DownloadFromSlackware
 
-#### packages outside Slackware repository
+### packages outside Slackware repository
 
-#currentPackage=audacious
-#sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
-#installpkg $MODULEPATH/packages/${currentPackage}*.txz
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=audacious
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=audacious-plugins
-#sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=audacious-plugins
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
-## required from now on
-#installpkg $MODULEPATH/packages/*.txz || exit 1
+# required from now on
+installpkg $MODULEPATH/packages/*.txz || exit 1
 
-## only required for building not for run-time
-#rm $MODULEPATH/packages/boost*
-#rm $MODULEPATH/packages/cups*
-#rm $MODULEPATH/packages/dbus-python*
-#rm $MODULEPATH/packages/egl-wayland*
-#rm $MODULEPATH/packages/iso-codes*
-#rm $MODULEPATH/packages/krb5*
-#rm $MODULEPATH/packages/libsass*
-#rm $MODULEPATH/packages/libsoup3*
-#rm $MODULEPATH/packages/libwnck3*
-#rm $MODULEPATH/packages/llvm*
-#rm $MODULEPATH/packages/python-pip*
-#rm $MODULEPATH/packages/rust*
-#rm $MODULEPATH/packages/sassc*
-#rm $MODULEPATH/packages/vulkan-sdk*
-#rm $MODULEPATH/packages/xtrans*
+# only required for building not for run-time
+rm $MODULEPATH/packages/boost*
+rm $MODULEPATH/packages/cups*
+rm $MODULEPATH/packages/dbus-python*
+rm $MODULEPATH/packages/egl-wayland*
+rm $MODULEPATH/packages/iso-codes*
+rm $MODULEPATH/packages/krb5*
+rm $MODULEPATH/packages/libsass*
+rm $MODULEPATH/packages/libsoup3*
+rm $MODULEPATH/packages/libwnck3*
+rm $MODULEPATH/packages/llvm*
+rm $MODULEPATH/packages/python-pip*
+rm $MODULEPATH/packages/rust*
+rm $MODULEPATH/packages/sassc*
+rm $MODULEPATH/packages/vulkan-sdk*
+rm $MODULEPATH/packages/xtrans*
 
-## required by mutter 45+
-#cd $MODULEPATH
-#pip install attrs || exit 1
-#pip install jinja2 || exit 1
-#pip install pygments || exit 1
+# required by mutter 45+
+cd $MODULEPATH
+pip install attrs || exit 1
+pip install jinja2 || exit 1
+pip install pygments || exit 1
 
 export GNOME_LATEST_MAJOR_VERSION=$(curl -s https://download.gnome.org/core/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/')
 gnomeLatestVersionTest=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/')
@@ -66,6 +66,40 @@ echo "Building GNOME ${GNOME_LATEST_VERSION}..."
 
 # gnome packages
 for package in \
+	libxmlb \
+	libstemmer \
+	exempi \
+	tracker3 \
+	gtksourceview5 \
+	libwpe \
+	wpebackend-fdo \
+	bubblewrap \
+	geoclue2 \
+	geocode-glib \
+	libgweather \
+	libpeas \
+	gsound \
+	gnome-autoar \
+	gnome-desktop \
+	gnome-settings-daemon \
+	appstream \
+	libadwaita \
+	gnome-bluetooth \
+	libnma-gtk4 \
+	colord-gtk \
+	gnome-online-accounts \
+	gnome-control-center \
+	libei \
+	mutter \
+	gnome-shell \
+	gnome-session \
+	gnome-menus \
+	libportal \
+	libcloudproviders \
+	nautilus \
+	nautilus-python \
+	gdm \
+	gspell \
 	gnome-text-editor \
 	libheif \
 	glycin \
