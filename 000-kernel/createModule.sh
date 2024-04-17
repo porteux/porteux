@@ -165,11 +165,6 @@ blacklist brcmsmac
 blacklist ssb
 EOF
 
-echo "Copying cryptsetup..."
-mkdir ${MODULEPATH}/${MODULENAME}/sbin
-cp $SCRIPTPATH/cryptsetup ${MODULEPATH}/${MODULENAME}/sbin/ || exit 1
-chmod 755 ${MODULEPATH}/${MODULENAME}/sbin/cryptsetup
-
 echo "Creating kernel xzm module..."
 mv lib ${MODULEPATH}/${MODULENAME}
 
