@@ -20,9 +20,9 @@ PROCINFOVER=${PROCINFOVER:-18}
 wget https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
-tar xvf psmisc-$PSMISCVER.tar.?z
-tar xvf procinfo-ng-$PROCINFONGVER.tar.?z
-tar xvf procinfo-$PROCINFOVER.tar.?z
+tar xvf $CWD/psmisc-$PSMISCVER.tar.?z
+tar xvf $CWD/procinfo-ng-$PROCINFONGVER.tar.?z
+tar xvf $CWD/procinfo-$PROCINFOVER.tar.?z
 
 cd $PRGNAM-$VERSION
 
