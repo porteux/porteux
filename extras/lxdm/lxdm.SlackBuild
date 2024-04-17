@@ -5,7 +5,7 @@
 PRGNAM=lxdm
 VERSION=${VERSION:-20220901_2d4ba9}
 
-CWD=$(pwd)
+CWD=$(dirname "$0")
 TMP=${TMP:-$MODULEPATH/$PRGNAM}
 PKG=$TMP/package-$PRGNAM
 
