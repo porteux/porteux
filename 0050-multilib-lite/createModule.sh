@@ -149,11 +149,10 @@ mv $MODULEPATH/packages/lib/libc.so* $MODULEPATH/
 mv $MODULEPATH/packages/lib/libc-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib/dri $MODULEPATH/
 GenericStrip
-AggressiveStripAll
+AggressiveStrip
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib/
 mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib
 mv $MODULEPATH/libc-* $MODULEPATH/packages/lib
-
 
 ### finalize
 
