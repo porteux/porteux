@@ -14,15 +14,16 @@ cd $TMP
 rm -rf $PRGNAM-*
 
 VERSION=$(curl -s https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-PSMISCVER=${PSMISCVER:-v23.3}
-PROCINFONGVER=${PROCINFONGVER:-2.0.304}
-PROCINFOVER=${PROCINFOVER:-18}
 wget https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
+PSMISCVER=$(curl -s https://gitlab.com/psmisc/psmisc/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wget https://gitlab.com/psmisc/psmisc/-/archive/${PSMISCVER}/psmisc-${PSMISCVER}.tar.gz
+
+PROCINFONGVER=${PROCINFONGVER:-2.0.304}
+
 tar xvf $PRGNAM-$VERSION.tar.?z
-tar xvf $CWD/psmisc-$PSMISCVER.tar.?z
+tar xvf psmisc-$PSMISCVER.tar.?z
 tar xvf $CWD/procinfo-ng-$PROCINFONGVER.tar.?z
-tar xvf $CWD/procinfo-$PROCINFOVER.tar.?z
 
 cd $PRGNAM-$VERSION
 
@@ -147,12 +148,6 @@ CXXFLAGS="$GCCFLAGS -flto" \
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-
-# Now install a couple of scripts from the original procinfo package.
-cd ../procinfo-$PROCINFOVER
-install -m 0755 lsdev.pl $PKG/usr/bin/lsdev
-install -m 0755 socklist.pl $PKG/usr/bin/socklist
-install -m 0644 lsdev.8 socklist.8 $PKG/usr/man/man8
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
