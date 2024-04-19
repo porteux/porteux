@@ -27,11 +27,11 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 If you want to have PorteuX in a language different than English, download multilanguage package and use PorteuX Language Switcher application to choose the desired language.
 
-If you want to build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, headers, etc. If you need to build a driver (e.g. VirtualBox or any physical device), you should also download and activate 06-crippled_sources xzm module. It's recommended to have them inside /porteux/optional folder and activate them only when needed.
+To build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, headers, etc. If you need to build a driver (e.g. VirtualBox or any physical device), you should also download and activate 06-crippled_sources xzm module. It's recommended to have them inside /porteux/optional folder and activate them only when needed.
 
-If you want to run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. Just like 05-devel and 06-crippled_sources, it's recommended to have these 2 modules in /porteux/optional.
+To run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. Just like 05-devel and 06-crippled_sources, it's recommended to have these 2 modules in /porteux/optional.
 
-To be able to read Asian characters, please download and activate the module [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/extras/notoserifcjk-regular.xzm).
+In order to read Asian characters, please download and activate the module [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/extras/notoserifcjk-regular.xzm).
 
 ## Default Username and Password
 
