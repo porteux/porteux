@@ -36,7 +36,7 @@ installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxdm
-GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild
+GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious
@@ -248,11 +248,11 @@ mv $MODULEPATH/mate-system-monitor $MODULEPATH/packages/usr/bin
 
 ### copy cache files
 
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### finalize
 

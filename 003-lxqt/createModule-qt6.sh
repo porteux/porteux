@@ -119,9 +119,7 @@ installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxdm
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../extras/${currentPackage}/* .
-GTK3=yes sh ${currentPackage}.SlackBuild || exit 1
+GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=adwaita-qt
@@ -164,19 +162,15 @@ cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
 
-# works with Qt6 if using git-master
+## works with Qt6 if using git-master
 #currentPackage=audacious
-#mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
-#QT=yes sh ${currentPackage}.SlackBuild || exit 1
+#QT=yes sh $SCRIPTPATH/../extras/audacious/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 #installpkg $MODULEPATH/packages/${currentPackage}*.txz
 #rm -fr $MODULEPATH/${currentPackage}
 
-# works with Qt6 if using git-master
+## works with Qt6 if using git-master
 #currentPackage=audacious-plugins
-#mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#cp -R $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild .
-#QT=yes sh ${currentPackage}.SlackBuild || exit 1
+#QT=yes sh $SCRIPTPATH/../extras/audacious/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 #rm -fr $MODULEPATH/${currentPackage}
 
 ## required by nm-tray
@@ -407,11 +401,11 @@ AggressiveStripAll
 
 ### copy cache files
 
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### finalize
 

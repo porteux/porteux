@@ -47,7 +47,7 @@ cd $MODULEPATH/${currentPackage}/package
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxdm
-GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild
+GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
@@ -566,15 +566,11 @@ AggressiveStripAll
 
 ### copy cache files
 
-CopyModuleUtils
-
-### copy cache files
-
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### finalize
 

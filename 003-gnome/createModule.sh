@@ -220,11 +220,11 @@ mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
 
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### finalize
 
