@@ -215,11 +215,11 @@ AggressiveStripAll
 
 ### copy cache files
 
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### kde specific mime cache
 

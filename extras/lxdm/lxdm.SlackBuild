@@ -20,7 +20,7 @@ SLKCFLAGS="$GCCFLAGS -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=
 
 [[ ${GTK3} == "yes" ]] && with_gtk3="--enable-gtk3"
 
-tar xvf $PRGNAM-$VERSION.tar.?z*
+tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 cp $SCRIPTPATH/../extras/${PRGNAM}/patches/*.patch .
