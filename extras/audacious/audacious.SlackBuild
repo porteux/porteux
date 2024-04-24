@@ -18,27 +18,30 @@ rm -rf $PRGNAM-*
 info=$(DownloadLatestFromGithub "audacious-media-player" ${PRGNAM})
 VERSION=${info#* }
 
-[[ ${QT} == "yes" ]] && TOOLKIT="qt" || TOOLKIT="gtk"
-[[ ${TOOLKIT} == "qt" ]] && toolkitFlags="--disable-gtk --enable-qt" || toolkitFlags="--disable-qt --enable-gtk3"
+if [[ ${QT} == "5" ]]; then
+	TOOLKIT="qt5"
+	toolkitFlags="-Dgtk=false -Dgtk3=false -Dqt=true -Dqt6=false"
+elif [[ ${QT} == "6" ]]; then
+	TOOLKIT="qt6"
+	toolkitFlags="-Dgtk=false -Dgtk3=false -Dqt=false -Dqt6=true"
+else
+	TOOLKIT="gtk3"
+	toolkitFlags="-Dgtk=false -Dgtk3=true -Dqt=false -Dqt6=false"
+fi
 
 tar xvf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-${PRGNAM}-$VERSION
 
-CXXFLAGS="$GCCFLAGS -flto" \
-./autogen.sh && ./configure \
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto" \
+meson setup \
     --prefix=/usr \
     --libdir=/usr/lib${SYSTEMBITS} \
     --sysconfdir=/etc \
     --mandir=/usr/man \
-    --docdir=/usr/doc/${PRGNAM}-$VERSION \
-    ${toolkitFlags} \
-    --program-prefix= \
-    --program-suffix= \
-    --with-buildstamp=$ARCH-porteux-linux \
-    --build=$ARCH-porteux-linux
+    ${toolkitFlags}
 
-make -j${NUMBERTHREADS}
-make install DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 rm -f $PKG/{,usr/}lib${SYSTEMBITS}/*.la
 

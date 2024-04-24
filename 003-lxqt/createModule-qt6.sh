@@ -166,16 +166,14 @@ cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
 
-## works with Qt6 if using git-master
-#currentPackage=audacious
-#QT=yes sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
-#installpkg $MODULEPATH/packages/${currentPackage}*.txz
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=audacious
+QT=6 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
 
-## works with Qt6 if using git-master
-#currentPackage=audacious-plugins
-#QT=yes sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=audacious-plugins
+QT=6 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 ## required by nm-tray
 #installpkg $MODULEPATH/packages/networkmanager-qt*.txz || exit 1
