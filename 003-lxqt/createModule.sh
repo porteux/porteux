@@ -66,22 +66,25 @@ mv $MODULEPATH/packages/${currentPackage}-[0-9]* . || exit 1
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/share/ghostscript/fonts/d050000l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/fonts.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n019003l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n019004l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n019023l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n019024l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n021003l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n021004l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n021023l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n021024l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n022003l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n022004l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n022023l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/n022024l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/ghostscript/fonts/s050000l.* "${currentPackage}-stripped-$version"
-cd ${currentPackage}-stripped-$version
+cp --parents -P usr/share/fonts/Type1/d050000l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/fonts.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n019003l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n019004l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n019023l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n019024l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n021003l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n021004l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n021023l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n021024l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n022003l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n022004l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n022023l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/n022024l.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/share/fonts/Type1/s050000l.* "${currentPackage}-stripped-$version"
+cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version/usr/share"
+mkdir ghostscript && cd ghostscript
+ln -s ../fonts .
+cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version"
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -137,7 +140,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=xpdf
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nH --cut-dirs=6 --no-parent --reject="index.html*" http://ftp.slackware.com/pub/slackware/slackware64-current/source/xap/${currentPackage}/ || exit 1
-sed -i "s|-O2 |$GCCFLAGS -flto|g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
 sed -i "s|-DXPDFWIDGET_PRINTING=1|-DMULTITHREADED=ON|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -163,12 +166,12 @@ cd $MODULEPATH/${currentPackage,,}/package
 rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=audacious
-QT=yes sh $SCRIPTPATH/../extras/audacious/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+QT=yes sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-QT=yes sh $SCRIPTPATH/../extras/audacious/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+QT=yes sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by nm-tray
@@ -196,7 +199,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-CFLAGS="$GCCFLAGS -flto" CXXFLAGS="$GCCFLAGS -flto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="$GCCFLAGS" CXXFLAGS="$GCCFLAGS" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package  || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -211,7 +214,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sh autogen.sh
-CFLAGS="$GCCFLAGS -flto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="$GCCFLAGS" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -315,6 +318,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
     cp $SCRIPTPATH/extras/lxqt/stable/*.patch .
 fi
 for i in *.patch; do patch -p0 < $i || exit 1; done
+cp $SCRIPTPATH/extras/lxqt/cmake_repos.list $MODULEPATH/${currentPackage}/ || exit 1
 sh build_all_cmake_projects.sh || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 

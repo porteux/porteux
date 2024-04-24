@@ -1,0 +1,14 @@
+--- obconf-qt/src/margins.cpp	2024-04-24 17:00:43.418471952 +0200
++++ obconf-qt/src/margins.cpp.patched	2024-04-24 17:00:37.008471649 +0200
+@@ -24,7 +24,10 @@
+ #include <obrender/render.h>
+ #include "tree.h"
+ 
+-#include <QX11Info>
++#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
++  #include <QX11Info>
++#endif
++
+ // FIXME: how to support XCB or Wayland?
+ #include <X11/Xlib.h>
+ 

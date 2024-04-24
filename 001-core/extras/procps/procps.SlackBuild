@@ -53,7 +53,7 @@ CFLAGS="$GCCFLAGS -flto" \
     --build=$ARCH-porteux-linux
   
 # fix libproc2.pc having unknown version
-sed -i "s|Version:.*|Version: ${VERSION}|g" library/libproc2.pc
+sed -i "s|Version:.*|Version: ${VERSION//[vV]}|g" library/libproc2.pc
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
