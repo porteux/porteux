@@ -63,7 +63,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=ghostscript-fonts-std
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* . || exit 1
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=`ls * -a | cut -d'-' -f4- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/share/fonts/Type1/d050000l.* "${currentPackage}-stripped-$version"
@@ -83,7 +83,7 @@ cp --parents -P usr/share/fonts/Type1/n022024l.* "${currentPackage}-stripped-$ve
 cp --parents -P usr/share/fonts/Type1/s050000l.* "${currentPackage}-stripped-$version"
 cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version/usr/share"
 mkdir ghostscript && cd ghostscript
-ln -s ../fonts .
+ln -s ../fonts/Type1 fonts
 cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version"
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -142,6 +142,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nH --cut-dirs=6 --no-parent --reject="index.html*" http://ftp.slackware.com/pub/slackware/slackware64-current/source/xap/${currentPackage}/ || exit 1
 sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
 sed -i "s|-DXPDFWIDGET_PRINTING=1|-DMULTITHREADED=ON|g" ${currentPackage}.SlackBuild
+sed -z -i "s|mkdir build\n|sed -i \"s\|initialSidebarState = gTrue\|initialSidebarState = gFalse\|g\" xpdf/GlobalParams.cc\nmkdir build\n|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
