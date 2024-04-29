@@ -13,7 +13,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 rm -rf $PRGNAM-*
 
-VERSION="3.08"
+VERSION="3.09"
 wget https://github.com/slicer69/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz -O ${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
