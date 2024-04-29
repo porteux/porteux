@@ -70,7 +70,7 @@ currentPackage=xvidcore
 version="1.3.7"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/multimedia/${currentPackage}/ -A * || exit 1
-wget https://downloads.xvid.com/downloads/${currentPackage}-$version.tar.gz || exit 1
+wget https://downloads.xvid.com/downloads/${currentPackage}-${version}.tar.gz || exit 1
 sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
@@ -200,6 +200,7 @@ currentPackage=aom
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
 sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-DENABLE_TESTS=0|-DENABLE_TESTS=0 -DENABLE_EXAMPLES=0 -DCONFIG_AV1_DECODER=0|g" ${currentPackage}.SlackBuild || exit 1
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -290,6 +291,7 @@ fi
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc \\\\|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
+sed -i "s|\$libaom|--enable-encoder=libaom --disable-decoder=libaom|g" ${currentPackage}.SlackBuild
 AOM=yes GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -312,7 +314,7 @@ installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
 rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=mpv
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+USE_PIPEWIRE=yes sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
