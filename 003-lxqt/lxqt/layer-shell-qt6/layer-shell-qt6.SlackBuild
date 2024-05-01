@@ -14,10 +14,10 @@ mkdir -p $TMP $PKG
 cd $TMP
 rm -rf $PRGNAM-*
 
-VERSION=$(curl -s https://invent.kde.org/plasma/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
+VERSION=$(curl -s https://invent.kde.org/plasma/${SRCNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
 wget https://invent.kde.org/plasma/${SRCNAM}/-/archive/${VERSION}/${SRCNAM}-${VERSION}.tar.gz
 
-tar xvf $CWD/$SRCNAM-$VERSION.tar.?z
+tar xvf $SRCNAM-$VERSION.tar.?z
 cd $SRCNAM-$VERSION
 
 mkdir build && cd build
