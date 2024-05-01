@@ -188,7 +188,7 @@ for package in \
 	kwindowsystem \
 	kwayland \
 	solid \
-	kidletime \
+	kidletime \	
 	libkscreen \
 	networkmanager-qt \
 ; do
@@ -305,8 +305,10 @@ sh build_all_cmake_projects.sh || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # only required for building
-rm $MODULEPATH/packages/lxqt-build-tools*.txz
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
+rm $MODULEPATH/packages/kwayland*.txz
+rm $MODULEPATH/packages/lxqt-build-tools*.txz
+rm $MODULEPATH/packages/plasma-wayland-protocols*.txz
 
 currentPackage=kora
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
