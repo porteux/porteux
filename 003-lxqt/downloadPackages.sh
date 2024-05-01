@@ -9,22 +9,21 @@ DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "ghostscript-fonts-std" &
 DownloadPackage "hunspell" &
-DownloadPackage "kidletime" &
-DownloadPackage "kwindowsystem" &
 DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libdbusmenu-qt" &
-DownloadPackage "libkscreen" &
 DownloadPackage "libpaper" & # required by xpdf
-DownloadPackage "networkmanager-qt" &
-DownloadPackage "polkit-qt" &
-DownloadPackage "solid" &
+DownloadPackage "libproxy" & # required by ...
+DownloadPackage "xcb-util-cursor" &
 wait
 
 ### packages that require specific striping
 
-DownloadPackage "qt5" &
+DownloadPackage "qt6" &
 wait
+
+### temporary packages for further building
+
 
 ### script clean up
 

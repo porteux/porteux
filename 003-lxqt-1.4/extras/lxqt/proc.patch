@@ -1,0 +1,13 @@
+--- qps/src/proc.cpp	2023-05-20 15:23:46.140091287 +1200
++++ qps/src/proc-patched.cpp	2023-05-20 15:24:34.444085971 +1200
+@@ -1984,8 +1984,8 @@
+     // as well.  (values are now in kB)
+     if ((p = strstr(buf, "MemTotal:")))
+         sscanf(p, "MemTotal: %d kB\n", &mem_total);
+-    if ((p = strstr(buf, "MemFree:")) != nullptr)
+-        sscanf(p, "MemFree: %d kB\n", &mem_free);
++    if ((p = strstr(buf, "MemAvailable:")) != nullptr)
++        sscanf(p, "MemAvailable: %d kB\n", &mem_free);
+     if ((p = strstr(buf, "Buffers:")) != nullptr)
+         sscanf(p, "Buffers: %d kB\n", &mem_buffers);
+     if ((p = strstr(buf, "Cached:")) != nullptr)
