@@ -20,10 +20,10 @@ VERSION=${info#* }
 
 if [[ ${QT} == "5" ]]; then
 	TOOLKIT="qt5"
-	toolkitFlags="-Dgtk3=false -Dqt=true -Dqt6=false"
+	toolkitFlags="-Dgtk=false -Dgtk3=false -Dqt=true -Dqt6=false"
 elif [[ ${QT} == "6" ]]; then
 	TOOLKIT="qt6"
-	toolkitFlags="-Dgtk3=false -Dqt=false -Dqt6=true"
+	toolkitFlags="-Dgtk=false -Dgtk3=false -Dqt=false -Dqt6=true"
 else
 	TOOLKIT="gtk3"
 	toolkitFlags="-Dgtk3=true -Dqt=false -Dqt6=false"
