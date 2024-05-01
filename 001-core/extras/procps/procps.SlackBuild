@@ -67,8 +67,7 @@ mkdir -p $PKG/lib${SYSTEMBITS}
   cp -a lib*.so.? ../../lib${SYSTEMBITS}
 )
 
-# Remove .la file(s):
-rm -f $PKG/usr/lib${SYSTEMBITS}/*.la
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 # It seems that upstream has shuffled the location of many tools with the
 # 3.3.11 release.  To me, this just doesn't make sense to break any existing

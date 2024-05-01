@@ -1,21 +1,19 @@
---- obconf-qt/src/tree.cpp	2024-05-01 16:47:01.440218286 +0200
-+++ obconf-qt/src/tree-obconf-qt.cpp.patched	2024-05-01 16:43:57.845209601 +0200
-@@ -16,7 +16,13 @@
+--- obconf-qt/src/tree.cpp	2024-04-24 17:14:57.498512355 +0200
++++ obconf-qt/src/tree.cpp.patched	2024-04-24 19:09:26.880837311 +0200
+@@ -16,7 +16,11 @@
     See the COPYING file for a copy of the GNU General Public License.
  */
  
 -#include <QX11Info>
 +#include <QtGlobal>
 +
-+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-+  #include <QApplication>
-+#elif
++#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 +  #include <QX11Info>
 +#endif
  #include <QMessageBox>
  
  #include "tree.h"
-@@ -115,12 +121,26 @@
+@@ -115,12 +119,26 @@
      g_free(p);
  
      if (!err) {

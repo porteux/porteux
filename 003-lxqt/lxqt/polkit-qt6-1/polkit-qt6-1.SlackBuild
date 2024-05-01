@@ -1,0 +1,40 @@
+#!/bin/bash
+
+PRGNAM=polkit-qt6-1
+SRCNAM=polkit-qt-1
+
+CWD=$(dirname "$0")
+TMP=${TMP:-$MODULEPATH/$PRGNAM}
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+rm -rf $PKG
+mkdir -p $TMP $PKG
+cd $TMP
+rm -rf $PRGNAM-*
+
+VERSION=$(curl -s https://invent.kde.org/libraries/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
+wget https://invent.kde.org/libraries/${SRCNAM}/-/archive/${VERSION}/${SRCNAM}-${VERSION}.tar.gz
+
+tar xvf $CWD/$SRCNAM-$VERSION.tar.?z
+cd $SRCNAM-$VERSION
+
+mkdir build && cd build
+cmake .. \
+	-DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+	-DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DQT_MAJOR_VERSION=6 \
+	-DMAN_INSTALL_DIR=/usr/man \
+	-DLIB_SUFFIX=${SYSTEMBITS}
+  
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1.txz
