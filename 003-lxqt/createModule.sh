@@ -179,16 +179,18 @@ currentPackage=audacious-plugins
 QT=6 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+# required by libkscreen
+installpkg $MODULEPATH/packages/plasma-wayland-protocols*.txz || exit 1
+
 # lxqt deps
 for package in \
 	polkit-qt6-1 \
 	extra-cmake-modules \
 	layer-shell-qt6 \
-	plasma-wayland-protocols \
 	kwindowsystem \
 	kwayland \
 	solid \
-	kidletime \	
+	kidletime \
 	libkscreen \
 	networkmanager-qt \
 ; do

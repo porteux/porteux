@@ -14,6 +14,7 @@ wait
 DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libpaper" & # required by xpdf
 DownloadPackage "libproxy" & # required by ...
+DownloadPackage "plasma-wayland-protocols" & # required by libkscreen
 DownloadPackage "xcb-util-cursor" &
 wait
 
