@@ -3,15 +3,14 @@
 PRGNAM=libtimezonemap
 
 CWD=$(dirname "$0")
-TMP=${TMP:-$MODULEPATH/$PRGNAM}
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
 
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PRGNAM-*
 
 VERSION="0.4.6"
 wget https://launchpad.net/ubuntu/+archive/primary/+files/${PRGNAM}_${VERSION}.tar.gz

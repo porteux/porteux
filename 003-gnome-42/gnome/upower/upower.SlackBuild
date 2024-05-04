@@ -3,15 +3,14 @@
 PRGNAM=upower
 
 CWD=$(dirname "$0")
-TMP=${TMP:-$MODULEPATH/$PRGNAM}
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
 
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PRGNAM-*
 
 VERSION="0.99.17"
 wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/v${VERSION}/${PRGNAM}-v${VERSION}.tar.gz

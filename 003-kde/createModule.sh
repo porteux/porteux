@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=003-kde
 
 source "$PWD/../builder-utils/setflags.sh"

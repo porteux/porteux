@@ -3,15 +3,14 @@
 PRGNAM=meson
 
 CWD=$(dirname "$0")
-TMP=${TMP:-$MODULEPATH/$PRGNAM}
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
 
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PRGNAM-*
 
 VERSION="1.0.1"
 wget https://github.com/mesonbuild/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
