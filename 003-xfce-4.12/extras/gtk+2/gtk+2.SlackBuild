@@ -3,13 +3,12 @@
 PRGNAM=gtk+2
 
 CWD=$(dirname "$0")
-TMP=${TMP:-$MODULEPATH/$PRGNAM}
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PRGNAM-*
 
 wget -r -nH --cut-dirs=5 --no-parent --reject="*.SlackBuild" $SOURCEREPOSITORY/l/${PRGNAM}/
 VERSION=${VERSION:-$(echo gtk+-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}

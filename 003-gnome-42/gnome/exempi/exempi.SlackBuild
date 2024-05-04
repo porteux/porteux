@@ -3,15 +3,14 @@
 PRGNAM=exempi
 
 CWD=$(dirname "$0")
-TMP=${TMP:-$MODULEPATH/$PRGNAM}
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
 
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PRGNAM-*
 
 VERSION="2.5.2"
 wget https://gitlab.freedesktop.org/libopenraw/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz

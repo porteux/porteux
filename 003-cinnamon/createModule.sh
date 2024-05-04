@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=003-cinnamon
 
 source "$PWD/../builder-utils/setflags.sh"
@@ -100,7 +101,7 @@ for package in \
 	tinycss2 \
 	xdotool \
 	gsound \
-	pyt \
+	pytz \
 	libtimezonemap \
 	setproctitle \
 	ptyprocess \

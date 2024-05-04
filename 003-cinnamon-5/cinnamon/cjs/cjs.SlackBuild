@@ -3,15 +3,14 @@
 PRGNAM=cjs
 
 CWD=$(dirname "$0")
-TMP=${TMP:-$MODULEPATH/$PRGNAM}
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
 
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PRGNAM-*
 
 VERSION="5.6.1"
 wget -c https://github.com/linuxmint/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz -O ${PRGNAM}-${VERSION}.tar.gz

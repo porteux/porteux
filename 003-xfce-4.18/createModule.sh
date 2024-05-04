@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=003-xfce-4.18
 
 source "$PWD/../builder-utils/setflags.sh"

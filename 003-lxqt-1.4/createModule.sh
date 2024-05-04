@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=003-lxqt
 
 source "$PWD/../builder-utils/setflags.sh"

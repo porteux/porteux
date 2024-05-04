@@ -5,15 +5,14 @@ source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
 PRGNAM=xapp
 
 CWD=$(dirname "$0")
-TMP=${TMP:-$MODULEPATH/$PRGNAM}
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
 
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PRGNAM-*
 
 info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM})
 VERSION=${info#* }
@@ -37,7 +36,7 @@ find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/etc/profile.d/
 mv $PKG/etc/X11/xinit/xinitrc.d/80xapp-gtk3-module.sh $PKG/etc/profile.d/
-rm -rf $PKG/etc/X11/
+[ -e $TMP ] && rm -rf $TMP/etc/X11/
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -3,15 +3,14 @@
 PRGNAM=xfce4-cpugraph-plugin
 
 CWD=$(dirname "$0")
-TMP=${TMP:-$MODULEPATH/$PRGNAM}
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
 
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PRGNAM-*
 
 PACKAGES=$(wget -qO- https://archive.xfce.org/src/panel-plugins/$PRGNAM/1.2/ | grep $PRGNAM-)
 VERSIONS=$(echo "$PACKAGES" | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | sort -Vr)
