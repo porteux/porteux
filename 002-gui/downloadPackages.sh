@@ -19,6 +19,7 @@ DownloadPackage "cairo" &
 DownloadPackage "cairomm" &
 wait
 DownloadPackage "cdparanoia-III" &
+DownloadPackage "cryptsetup" &
 DownloadPackage "daemon" &
 DownloadPackage "db48" & # required by bluez (obexd)
 DownloadPackage "dejavu-fonts-ttf" &
@@ -30,8 +31,8 @@ DownloadPackage "expat" &
 DownloadPackage "flac" &
 DownloadPackage "fontconfig" &
 DownloadPackage "freeglut" &
-DownloadPackage "freetype" &
 wait
+DownloadPackage "freetype" &
 DownloadPackage "fribidi" &
 DownloadPackage "gcr" &
 DownloadPackage "gdk-pixbuf2" &
@@ -251,7 +252,9 @@ wait
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libdeflate" & # required by libtiff 
 	DownloadPackage "gcr4" & # required by gvfs 1.54+
+	DownloadPackage "libnvme" & # required by udisks 2.10.0+
 	DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
+	DownloadPackage "volume_key" & # required by udisks 2.10.0+
 	wait
 else
 	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)

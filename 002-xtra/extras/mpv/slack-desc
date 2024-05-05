@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+   |-----handy-ruler------------------------------------------------------|
+mpv: mpv (a movie player based on MPlayer and mplayer2)
+mpv:
+mpv: mpv is a fork of mplayer2 and MPlayer. It shares some features with
+mpv: the former projects while introducing many more. It supports a wide
+mpv: variety of video file formats, audio and video codecs, and subtitle
+mpv: types.
+mpv:
+mpv:
+mpv:
+mpv: mpv homepage: http://mpv.io/
+mpv:

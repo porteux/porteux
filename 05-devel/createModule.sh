@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=05-devel
 
 source "$PWD/../builder-utils/setflags.sh"

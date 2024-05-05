@@ -7,6 +7,12 @@ GenericStrip() {
 	rm -R usr/man
 	rm -R usr/src
 	rm -R usr/info
+	rm -R usr/lib*/cmake
+	rm -R usr/lib*/gnome-keyring
+	rm -R usr/lib*/gtk*/include
+	rm -R usr/lib*/pkgconfig
+	rm -R usr/lib*/python2*
+	rm -R usr/lib*/systemd
 	rm -R usr/share/aclocal
 	rm -R usr/share/bash-completion
 	rm -R usr/share/cmake
@@ -31,14 +37,6 @@ GenericStrip() {
 	rm -R usr/share/themes/HighContrast
 	rm -R usr/share/vala
 	rm -R usr/share/*/translations
-	rm -R usr/lib/pkgconfig
-	rm -R usr/lib64/pkgconfig
-	rm -R usr/lib/cmake
-	rm -R usr/lib/systemd
-	rm -R usr/lib64/cmake
-	rm -R usr/lib64/gnome-keyring
-	rm -R usr/lib64/gtk-2.0/include
-	rm -R usr/lib64/python2*
 	rm -R var/log/pkgtools
 	rm -R var/log/setup
 	rm -R var/lib/pkgtools/douninst.sh/

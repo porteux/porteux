@@ -50,12 +50,13 @@ wait
 
 ### temporary packages for further building
 
+DownloadPackage "boost" & # to build exempi
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
 DownloadPackage "python-build" &
 DownloadPackage "python-flit-core" &
-DownloadPackage "python-installer" &
 wait
+DownloadPackage "python-installer" &
 DownloadPackage "python-pyproject-hooks" &
 DownloadPackage "python-wheel" &
 DownloadPackage "xorg-server-xwayland" &

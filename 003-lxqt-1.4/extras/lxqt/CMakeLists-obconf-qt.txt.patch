@@ -1,0 +1,32 @@
+--- obconf-qt/CMakeLists.txt	2024-04-24 16:45:01.605427400 +0200
++++ obconf-qt/CMakeLists.txt.patched	2024-04-24 16:44:47.631426739 +0200
+@@ -18,7 +18,7 @@
+ 
+ set(OBCONFQT_MAJOR_VERSION 0)
+ set(OBCONFQT_MINOR_VERSION 16)
+-set(OBCONFQT_PATCH_VERSION 4)
++set(OBCONFQT_PATCH_VERSION 5)
+ set(OBCONFQT_VERSION ${OBCONFQT_MAJOR_VERSION}.${OBCONFQT_MINOR_VERSION}.${OBCONFQT_PATCH_VERSION})
+ add_definitions("-DOBCONFQT_VERSION=\"${OBCONFQT_VERSION}\"")
+ 
+@@ -26,10 +26,16 @@
+ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+ set(CMAKE_AUTOMOC ON)
+ 
+-find_package(Qt5Widgets ${QT_MINIMUM_VERSION} REQUIRED)
+-find_package(Qt5X11Extras ${QT_MINIMUM_VERSION} REQUIRED)
+-find_package(Qt5LinguistTools ${QT_MINIMUM_VERSION} REQUIRED)
+-message(STATUS "Building with Qt${Qt5Core_VERSION}")
++if (BUILD_WITH_QT6)
++    find_package(Qt6Widgets ${QT_MINIMUM_VERSION} REQUIRED)
++    find_package(Qt6LinguistTools ${QT_MINIMUM_VERSION} REQUIRED)
++    message(STATUS "Building with Qt${Qt6Core_VERSION}")
++else ()
++    find_package(Qt5Widgets ${QT_MINIMUM_VERSION} REQUIRED)
++    find_package(Qt5X11Extras ${QT_MINIMUM_VERSION} REQUIRED)
++    find_package(Qt5LinguistTools ${QT_MINIMUM_VERSION} REQUIRED)
++    message(STATUS "Building with Qt${Qt5Core_VERSION}")    
++endif ()
+ 
+ find_package(lxqt-build-tools ${LXQTBT_MINIMUM_VERSION} REQUIRED)
+ 

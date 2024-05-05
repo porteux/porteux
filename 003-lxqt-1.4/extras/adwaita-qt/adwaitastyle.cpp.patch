@@ -1,0 +1,24 @@
+# out of focus window now don't get grey out, just the title bar
+--- src/style/adwaitastyle.cpp	2023-01-04 21:35:17.000000000 +1300
++++ src/style/adwaitastyle.cpp.patched	2022-04-18 12:10:54.000000000 +1200
+@@ -4869,15 +4821,13 @@
+ 
+     QStyleOptionViewItem op(*vopt);
+ 
+-    if (_helper->isWindowActive(widget)) {
+-        // No custom text color used, we can do our HACK
+-        QPalette pal = op.palette;
+-        if (!hasCustomTextColors(pal)) {
+-            pal.setColor(QPalette::Inactive, QPalette::Text, pal.color(QPalette::Active, QPalette::Text));
+-            op.palette = pal;
+-        }
++    QPalette palette = op.palette;
++    if ((vopt->state & QStyle::State_Enabled) && !(vopt->state & QStyle::State_Active)) {
++        palette.setColor(QPalette::Inactive, QPalette::Text, palette.color(QPalette::Active, QPalette::Text));
+     }
+ 
++    op.palette = palette;
++
+     ParentStyleClass::drawControl(CE_ItemViewItem, &op, painter, widget);
+ 
+     return true;

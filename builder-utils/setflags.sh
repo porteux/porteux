@@ -14,7 +14,7 @@ SetFlags() {
     fi
 
     export SLACKBUILDVERSION=$SLACKWAREVERSION
-    export KERNELVERSION="6.8.4"
+    export KERNELVERSION="6.8.9"
 
     export SCRIPTPATH="$PWD"
     export PORTEUXBUILDERPATH="/tmp/porteux-builder-$PORTEUXBUILD"
@@ -33,6 +33,7 @@ SetFlags() {
         export SYSTEMBITS=
     fi
 
+    export GCCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64}"
     export NUMBERTHREADS=$(nproc --all)
     export REPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
     export PATCHREPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS/patches"

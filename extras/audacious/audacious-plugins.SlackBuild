@@ -1,0 +1,52 @@
+#!/bin/bash
+
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
+PRGNAM=audacious-plugins
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ $MODULEPATH ] && [ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "audacious-media-player" ${PRGNAM})
+VERSION=${info#* }
+
+if [[ ${QT} == "5" ]]; then
+	TOOLKIT="qt5"
+	toolkitFlags="-Dgtk=false -Dqt=true"
+elif [[ ${QT} == "6" ]]; then
+	TOOLKIT="qt6"
+	toolkitFlags="-Dgtk=false -Dqt6=true"
+else
+	TOOLKIT="gtk3"
+	toolkitFlags="-Dgtk3=true -Dqt=false -Dqt6=false"
+fi
+
+tar xvf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
+cd ${PRGNAM}-${PRGNAM}-$VERSION
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto" \
+meson setup \
+    --prefix=/usr \
+    --libdir=/usr/lib${SYSTEMBITS} \
+    --sysconfdir=/etc \
+    --mandir=/usr/man \
+    -Dneon=false \
+    ${toolkitFlags}
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+rm -f $PKG/{,usr/}lib${SYSTEMBITS}/*.la
+
+mkdir -p $PKG/install
+cat $CWD/${PRGNAM}-slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$TOOLKIT-$ARCH-1.txz
