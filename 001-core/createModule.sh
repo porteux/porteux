@@ -30,11 +30,11 @@ currentPackage=hyfetch
 mkdir -p $MODULEPATH/${currentPackage}/package/usr/bin && cd $MODULEPATH/${currentPackage}
 wget https://github.com/hykilpikonna/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz || exit 1
 tar xvf ${currentPackage}.tar.gz && rm ${currentPackage}.tar.gz || exit 1
-cp -p */${currentPackage} package/usr/bin
-sed -i "s|has pkginfo && tot pkginfo -i|#has pkginfo && tot pkginfo -i|g" package/usr/bin/${currentPackage}
-chown 755 package/usr/bin/${currentPackage}
-chmod +x package/usr/bin/${currentPackage}
-version=$(date -r package/usr/bin/${currentPackage} +%Y%m%d)
+cp -p */neofetch package/usr/bin
+sed -i "s|has pkginfo && tot pkginfo -i|#has pkginfo && tot pkginfo -i|g" package/usr/bin/neofetch
+chown 755 package/usr/bin/neofetch
+chmod +x package/usr/bin/neofetch
+version=$(date -r package/usr/bin/neofetch +%Y%m%d)
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}

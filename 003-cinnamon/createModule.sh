@@ -77,6 +77,8 @@ installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 
 # required only for building
+installpkg $MODULEPATH/packages/boost*.txz || exit 1
+rm $MODULEPATH/packages/boost*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
@@ -131,6 +133,7 @@ for package in \
 	libpeas \
 	libgxps \
 	xreader \
+	exempi \
 	xviewer \
 	xed \
 	file-roller \
