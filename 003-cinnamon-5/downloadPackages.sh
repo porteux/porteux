@@ -42,6 +42,7 @@ wait
 
 ### temporary packages for further building
 
+DownloadPackage "boost" & # to build exempi
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
 DownloadPackage "python-pip" &
