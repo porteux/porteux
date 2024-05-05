@@ -13,7 +13,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 VERSION="42.0"
-wget https://download.gnome.org/sources/gnome-tweaks/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
+wget https://download.gnome.org/sources/gnome-tweaks/42/${PRGNAM}-${VERSION}.tar.xz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION

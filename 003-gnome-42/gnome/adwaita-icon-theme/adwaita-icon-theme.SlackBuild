@@ -18,19 +18,15 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
-meson setup \
-    --buildtype=release \
-    --infodir=/usr/info \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --localstatedir=/var \
-    --mandir=/usr/man \
+CFLAGS="$GCCFLAGS" \
+./configure \
     --prefix=/usr \
+    --libdir=/usr/lib${SYSTEMBITS} \
     --sysconfdir=/etc \
-    -Dstrip=true
+    --localstatedir=/var \
+    --docdir=/usr/doc/$PRGNAM-$VERSION
 
-DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 rm -fr $PKG/usr/share/licenses
 

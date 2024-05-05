@@ -23,7 +23,6 @@ python3 setup.py install --root=$PKG
 mv $PKG/usr/share/man $PKG/usr/
 
 mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

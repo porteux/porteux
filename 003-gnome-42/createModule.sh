@@ -171,6 +171,10 @@ CopyToDevel
 
 CopyToMultiLanguage
 
+### update icon cache
+
+gtk-update-icon-cache $MODULEPATH/packages/usr/share/icons/Adwaita
+
 ### module clean up
 
 cd $MODULEPATH/packages/
@@ -187,6 +191,11 @@ rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/tracker-3.0
 rm -R usr/lib*/python2*
 rm -R usr/lib*/python3*/site-packages/pip*
+rm -R usr/share/Adwaita/8x8
+rm -R usr/share/Adwaita/96x96
+rm -R usr/share/Adwaita/256x256
+rm -R usr/share/Adwaita/512x512
+rm -R usr/share/Adwaita/cursors
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
