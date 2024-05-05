@@ -105,7 +105,6 @@ installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 if [ $SLACKWAREVERSION == "current" ]; then
 	installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
 	installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-	rm $MODULEPATH/packages/libdbusmenu*.txz
 fi
 
 # required just for building
