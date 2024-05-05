@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=003-kde
 
 source "$PWD/../builder-utils/setflags.sh"
@@ -99,7 +100,7 @@ cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWebChannel/* "${currentPackage}-str
 cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWebSockets/* "${currentPackage}-stripped-$version"
 rm "${currentPackage}-stripped-$version"/usr/lib$SYSTEMBITS/*.prl
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside Slackware repository ###
@@ -117,26 +118,19 @@ wget https://github.com/tsujan/${currentPackage}/releases/download/V${version}/$
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
+CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=audacious
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
-sh ${currentPackage}-qt.SlackBuild || exit 1
+QT=5 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
-sh ${currentPackage}-qt.SlackBuild || exit 1
+QT=5 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
@@ -222,11 +216,11 @@ AggressiveStripAll
 
 ### copy cache files
 
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### kde specific mime cache
 

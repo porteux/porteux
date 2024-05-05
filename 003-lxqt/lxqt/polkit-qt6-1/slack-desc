@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':'.
+
+           |-----handy-ruler-----------------------------------------------------|
+polkit-qt6-1: polkit-qt6-1 (Qt polkit API wrapper)
+polkit-qt6-1:
+polkit-qt6-1: polkit-qt6-1 aims to make it easy for Qt developers to take advantage
+polkit-qt6-1: of the polkit API. It is a convenience wrapper around QAction and
+polkit-qt6-1: QAbstractButton that lets you integrate those two components easily
+polkit-qt6-1: with polkit.
+polkit-qt6-1:
+polkit-qt6-1: Homepage: https://projects.kde.org/projects/kdesupport/polkit-qt6-1/
+polkit-qt6-1:
+polkit-qt6-1:
+polkit-qt6-1:

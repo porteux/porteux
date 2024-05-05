@@ -1,0 +1,20 @@
+--- obconf-qt/src/moveresize.cpp	2024-04-24 17:00:54.976472499 +0200
++++ obconf-qt/src/moveresize.cpp.patched	2024-04-24 19:09:12.588836635 +0200
+@@ -20,11 +20,16 @@
+     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+ 
++#include <QtGlobal>
++
+ #include "maindialog.h"
+ #include <obrender/render.h>
+ #include "tree.h"
+ 
+-#include <QX11Info>
++#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
++  #include <QX11Info>
++#endif
++
+ // FIXME: how to support XCB or Wayland?
+ #include <X11/Xlib.h>
+ 

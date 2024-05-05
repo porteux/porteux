@@ -2,91 +2,46 @@
 
 PRGNAM=file-roller
 
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i586 ;;
-    arm*) ARCH=arm ;;
-       *) ARCH=$( uname -m ) ;;
-  esac
-fi
-
-CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH/$PRGNAM}
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-NUMJOBS="-j$(nproc --all)"
-
-if [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O3 -march=i686 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
-  LIBDIRSUFFIX="64"
-else
-  SLKCFLAGS="-O3"
-  LIBDIRSUFFIX=""
-fi
 
 set -e
 
-rm -rf $PKG
-mkdir -p $TMP $PKG $OUTPUT
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PRGNAM-*
 
 VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -V -r | head -1)
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
-BUILD=${BUILD:-1}
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-chown -R root:root .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-mkdir -p build
-cd build
-
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
- --prefix=/usr \
- --buildtype=release \
- --libdir=lib${LIBDIRSUFFIX} \
- --libexecdir=/usr/libexec \
- --sysconfdir=/etc \
- --infodir=/usr/info \
- --mandir=/usr/man \
- --localstatedir=/var \
- -Ddefault_library=shared \
- -Drun-in-place=false \
- -Dnautilus-actions=enabled \
- -Dnotification=enabled \
- -Dpackagekit=false \
- -Dlibarchive=enabled
+    --prefix=/usr \
+    --buildtype=release \
+    --libdir=lib${SYSTEMBITS} \
+    --libexecdir=/usr/libexec \
+    --sysconfdir=/etc \
+    --infodir=/usr/info \
+    --mandir=/usr/man \
+    --localstatedir=/var \
+    -Ddefault_library=shared \
+    -Drun-in-place=false \
+    -Dnautilus-actions=enabled \
+    -Dnotification=enabled \
+    -Dpackagekit=false \
+    -Dlibarchive=enabled
 
-DESTDIR=$PKG ninja $NUMJOBS install
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-cd ..
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
-cat <<EOT >$PKG/install/slack-desc
-$PRGNAM:
-$PRGNAM: File Roller
-$PRGNAM:
-$PRGNAM: File Roller is an archive manager for GNOME with support for tar,
-$PRGNAM: bzip2, gzip, zip, jar, compress, lzop and many other archive formats.
-$PRGNAM:
-$PRGNAM:
-$PRGNAM:
-$PRGNAM:
-$PRGNAM: https://wiki.gnome.org/Apps/FileRoller
-$PRGNAM:
-EOT
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

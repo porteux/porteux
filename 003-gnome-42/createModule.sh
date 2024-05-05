@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=003-gnome
 
 source "$PWD/../builder-utils/setflags.sh"
@@ -22,30 +23,19 @@ DownloadFromSlackware
 ### packages outside Slackware repository
 
 currentPackage=audacious
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
-sh ${currentPackage}-gtk.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
-sh ${currentPackage}-gtk.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=meson
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	cp $SCRIPTPATH/extras/meson/* .
-	sh ${currentPackage}.SlackBuild || exit 1
-	rm -fr $MODULEPATH/package-${currentPackage}
-	rm -fr $MODULEPATH/${currentPackage}*
-	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/meson-*.txz
-	rm $MODULEPATH/packages/meson-*.txz
+	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}-*.txz
+	rm $MODULEPATH/packages/${currentPackage}-*.txz
 fi
 
 # required from now on
@@ -75,41 +65,36 @@ fi
 mkdir -p /usr/local > /dev/null 2>&1
 ln -s /usr/include /usr/local/include > /dev/null 2>&1
 
+export GNOME_LATEST_MAJOR_VERSION="42"
+export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/' )
+[ ! "${GNOME_LATEST_MAJOR_VERSION}" ] || [ ! "${GNOME_LATEST_VERSION}" ] && echo "Couldn't detect GNOME latest version" && exit 1
+
+echo "Building GNOME ${GNOME_LATEST_VERSION}..."
+
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=gsettings-desktop-schemas
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 	
 	currentPackage=gtk4
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
 	currentPackage=libhandy
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-
-	currentPackage=libnma
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
 	currentPackage=libsoup3
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 	rm $MODULEPATH/packages/libsoup3*
 
 	currentPackage=vte
-	cd $SCRIPTPATH/gnome/${currentPackage} || exit 1
-	sh ${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
 	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 fi
@@ -127,7 +112,6 @@ for package in \
 	bubblewrap \
 	geoclue2 \
 	geocode-glib \
-	geocode-glib2 \
 	libgweather \
 	libpeas \
 	gsound \
@@ -136,7 +120,7 @@ for package in \
 	gnome-settings-daemon \
 	libadwaita \
 	gnome-bluetooth \
-	libnma-gtk4 \
+	libnma \
 	gnome-control-center \
 	mutter \
 	gjs \
@@ -158,11 +142,11 @@ for package in \
 	gnome-browser-connector \
 	file-roller \
 	gnome-backgrounds \
+	adwaita-icon-theme \
 	xdg-desktop-portal-gnome \
 ; do
-cd $SCRIPTPATH/gnome/$package || exit 1
-sh ${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/$package-*.txz || exit 1
+sh $SCRIPTPATH/gnome/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -187,6 +171,10 @@ CopyToDevel
 
 CopyToMultiLanguage
 
+### update icon cache
+
+gtk-update-icon-cache $MODULEPATH/packages/usr/share/icons/Adwaita
+
 ### module clean up
 
 cd $MODULEPATH/packages/
@@ -203,6 +191,11 @@ rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/tracker-3.0
 rm -R usr/lib*/python2*
 rm -R usr/lib*/python3*/site-packages/pip*
+rm -R usr/share/Adwaita/8x8
+rm -R usr/share/Adwaita/96x96
+rm -R usr/share/Adwaita/256x256
+rm -R usr/share/Adwaita/512x512
+rm -R usr/share/Adwaita/cursors
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
@@ -263,11 +256,11 @@ mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
 
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### finalize
 

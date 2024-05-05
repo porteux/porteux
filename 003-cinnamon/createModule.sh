@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=003-cinnamon
 
 source "$PWD/../builder-utils/setflags.sh"
@@ -22,19 +23,16 @@ DownloadFromSlackware
 ### packages outside Slackware repository
 
 currentPackage=audacious
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
-sh ${currentPackage}-gtk.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
-sh ${currentPackage}-gtk.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=lxdm
+GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=yaru
@@ -58,13 +56,7 @@ gtk-update-icon-cache -f $mainIconRootFolder || exit 1
 gtk-update-icon-cache -f $blueIconRootFolder || exit 1
 cd ../${currentPackage}-$version-noarch
 echo "Generating icon package. This may take a while..."
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxdm
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../${currentPackage}/* .
-GTK3=yes sh ${currentPackage}.SlackBuild || exit 1
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
@@ -85,6 +77,8 @@ installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 
 # required only for building
+installpkg $MODULEPATH/packages/boost*.txz || exit 1
+rm $MODULEPATH/packages/boost*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
@@ -139,6 +133,7 @@ for package in \
 	libpeas \
 	libgxps \
 	xreader \
+	exempi \
 	xviewer \
 	xed \
 	file-roller \
@@ -146,9 +141,8 @@ for package in \
 	gnome-screenshot \
 	gnome-system-monitor \
 ; do
-cd $SCRIPTPATH/cinnamon/$package || exit 1
-sh ${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/$package-*.txz || exit 1
+sh $SCRIPTPATH/cinnamon/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -164,6 +158,10 @@ InstallAdditionalPackages
 ### fix some .desktop files
 
 sed -i "s|image/avif|image/avif;image/jxl|g" $MODULEPATH/packages/usr/share/applications/xviewer.desktop
+
+### disable some services
+
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/cinnamon-settings-daemon-color.desktop
 
 ### add cinnamon session
 
@@ -240,11 +238,11 @@ mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
 
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### finalize
 

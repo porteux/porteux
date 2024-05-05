@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':'.
+
+                 |-----handy-ruler------------------------------------------------------|
+audacious-plugins: audacious-plugins (Plugins used by the Audacious media player)
+audacious-plugins:
+audacious-plugins: This is a collection of plugins for Audacious to support additional
+audacious-plugins: media formats.
+audacious-plugins:
+audacious-plugins: Homepage: https://www.audacious-media-player.org
+audacious-plugins:
+audacious-plugins:
+audacious-plugins:
+audacious-plugins:
+audacious-plugins:

@@ -7,6 +7,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
+DownloadPackage "cairomm1" & # required by gnome-system-monitor
 DownloadPackage "colord" &
 DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
@@ -17,24 +18,28 @@ wait
 DownloadPackage "gjs" &
 DownloadPackage "hunspell" &
 DownloadPackage "glib-networking" &
+DownloadPackage "glibmm2" & # required by gnome-system-monitor
 DownloadPackage "gperf" &
 DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "gst-plugins-good" &
 DownloadPackage "gst-plugins-libav" &
 wait
 DownloadPackage "gtk4" &
+DownloadPackage "gtkmm4" & # required by gnome-system-monitor
 DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
 DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
 DownloadPackage "libhandy" &
-wait
 DownloadPackage "libnma" &
+wait
 DownloadPackage "libproxy" &
+DownloadPackage "libsigc++3" & # required by gnome-system-monitor
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
 DownloadPackage "mozjs115" &
+DownloadPackage "pango2" & # required by gnome-system-monitor
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait

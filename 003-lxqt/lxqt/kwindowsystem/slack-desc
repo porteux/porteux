@@ -1,0 +1,12 @@
+             |-----handy-ruler------------------------------------------------------|
+kwindowsystem: kwindowsystem (Access to the Windowing System)
+kwindowsystem:
+kwindowsystem: KWindowSystem provides information about the windowing system and
+kwindowsystem: allows interaction with the windowing system. It provides an high
+kwindowsystem: level API which is windowing system independent and has platform
+kwindowsystem: specific implementations. This API is inspired by X11 and thus not
+kwindowsystem: all functionality is available on all windowing systems.
+kwindowsystem:
+kwindowsystem: Homepage: https://community.kde.org/Frameworks
+kwindowsystem:
+kwindowsystem:

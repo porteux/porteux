@@ -1,4 +1,5 @@
 #!/bin/sh
+
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ]; then
 	echo "05-devel module needs to be activated"
 	exit 1
@@ -164,11 +165,6 @@ blacklist bcma
 blacklist brcmsmac
 blacklist ssb
 EOF
-
-echo "Copying cryptsetup..."
-mkdir ${MODULEPATH}/${MODULENAME}/sbin
-cp $SCRIPTPATH/cryptsetup ${MODULEPATH}/${MODULENAME}/sbin/ || exit 1
-chmod 755 ${MODULEPATH}/${MODULENAME}/sbin/cryptsetup
 
 echo "Creating kernel xzm module..."
 mv lib ${MODULEPATH}/${MODULENAME}

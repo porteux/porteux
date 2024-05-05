@@ -1,52 +1,28 @@
 #!/bin/bash
 
-cd $(dirname $0) ; CWD=$(pwd)
+PRGNAM=meson
 
-PKGNAM=meson
-VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
 
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i586 ;;
-    arm*) ARCH=arm ;;
-       *) ARCH=$( uname -m ) ;;
-  esac
-fi
+set -e
 
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
-if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
-  echo "$PKGNAM-$VERSION-$ARCH-$BUILD.txz"
-  exit 0
-fi
-
-TMP=${TMP:-$MODULEPATH}
-PKG=$TMP/package-$PKGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
-
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PKGNAM-$VERSION
-tar xvf $CWD/$PKGNAM-$VERSION.tar.?z || exit 1
-cd $PKGNAM-$VERSION || exit 1
 
-chown -R root:root .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \+ -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \+
+VERSION="1.0.1"
+wget https://github.com/mesonbuild/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-python3 setup.py install --root=$PKG || exit 1
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+python3 setup.py install --root=$PKG
 
 mv $PKG/usr/share/man $PKG/usr/
-rmdir $PKG/usr/share 2> /dev/null
 
 mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

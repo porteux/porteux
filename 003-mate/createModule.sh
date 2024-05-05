@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=003-mate
 
 source "$PWD/../builder-utils/setflags.sh"
@@ -29,32 +30,23 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxdm
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../${currentPackage}/* .
-GTK3=yes sh ${currentPackage}.SlackBuild || exit 1
+GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
-sh ${currentPackage}-gtk.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
-sh ${currentPackage}-gtk.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa and mate-search-tool
@@ -112,6 +104,7 @@ installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
+	installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 fi
 
 # required just for building
@@ -125,7 +118,7 @@ installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
 # mate packages
-for currentPackage in \
+for package in \
 	mate-desktop \
 	libmatekbd \
 	exempi \
@@ -138,8 +131,8 @@ for currentPackage in \
 	mate-session-manager \
 	mate-menus \
 	mate-terminal \
-	gtk-layer-shell \
 	libmateweather \
+	gtk-layer-shell \
 	mate-panel \
 	mate-themes \
 	mate-notification-daemon \
@@ -157,9 +150,8 @@ for currentPackage in \
 	mozo \
 	pluma \
 ; do
-export currentPackage=${currentPackage}
-cd $SCRIPTPATH/mate/${currentPackage} || exit 1
-sh ${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/mate/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -172,7 +164,7 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
+CFLAGS="$GCCFLAGS" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
@@ -256,11 +248,11 @@ mv $MODULEPATH/mate-system-monitor $MODULEPATH/packages/usr/bin
 
 ### copy cache files
 
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### finalize
 

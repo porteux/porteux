@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+          |-----handy-ruler------------------------------------------------------|
+libadwaita: libadwaita (GTK 4 library implementing the GNOME HIG)
+libadwaita:
+libadwaita: Building blocks for modern GNOME applications.
+libadwaita: Libadwaita is a GTK 4 library implementing the GNOME HIG
+libadwaita: complementing GTK. For GTK 3 this role has increasingly been played 
+libadwaita: by Libhandy, and so Libadwaita is a direct Libhandy successor.
+libadwaita:
+libadwaita: 
+libadwaita: https://gitlab.gnome.org/GNOME/libadwaita 
+libadwaita:
+libadwaita:
