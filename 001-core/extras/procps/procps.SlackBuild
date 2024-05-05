@@ -26,6 +26,9 @@ tar xvf $CWD/procinfo-ng-$PROCINFONGVER.tar.?z
 
 cd $PRGNAM-$VERSION
 
+# Fix for wide-only ncurses:
+sed 's:<ncursesw/:<:g' -i src/watch.c
+
 CFLAGS="$GCCFLAGS -flto" \
 ./autogen.sh && ./configure \
     --prefix=/ \
