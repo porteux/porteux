@@ -15,8 +15,8 @@ cd $TMP
 VERSION="42.1"
 wget https://download.gnome.org/sources/${PRGNAM}/42/${PRGNAM}-${VERSION}.tar.xz
 
-tar xfv $PRGNAM-v${VERSION}.tar.?z*
-cd $PRGNAM-v${VERSION}
+tar xfv $PRGNAM-${VERSION}.tar.?z*
+cd $PRGNAM-${VERSION}
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \

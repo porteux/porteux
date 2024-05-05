@@ -104,13 +104,13 @@ installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
+	installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+	rm $MODULEPATH/packages/libdbusmenu*.txz
 fi
 
 # required just for building
 installpkg $MODULEPATH/packages/boost*.txz || exit 1
 rm $MODULEPATH/packages/boost*.txz
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-rm $MODULEPATH/packages/libdbusmenu*.txz
 installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 rm $MODULEPATH/packages/gtk+2*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1

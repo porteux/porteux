@@ -30,8 +30,6 @@ meson setup \
     --sysconfdir=/etc \
     -Dstrip=true \
     -Dprofiler=false \
-    -Dwayland=true \
-    -Dnative_backend=true \
     -Ddefault_driver=auto
   
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install

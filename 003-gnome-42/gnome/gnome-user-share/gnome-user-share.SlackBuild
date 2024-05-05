@@ -19,6 +19,7 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 sed -i "s/'systemd'/'libelogind'/" meson.build
+sed -i 's|desktop,||g' data/meson.build
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \

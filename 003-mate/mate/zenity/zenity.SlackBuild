@@ -12,10 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
+VERSION="3.44.1"
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-tar xvf $PRGNAM-$VERSION.tar.xz
+tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
@@ -28,7 +28,6 @@ meson setup \
     --mandir=/usr/man \
     --prefix=/usr \
     --sysconfdir=/etc \
-    -Dlibnotify=true \
     -Dwebkitgtk=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
