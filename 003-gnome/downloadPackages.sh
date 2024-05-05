@@ -18,6 +18,7 @@ wait
 DownloadPackage "gjs" &
 DownloadPackage "hunspell" &
 DownloadPackage "glib-networking" &
+DownloadPackage "glibmm2" & # required by gnome-system-monitor
 DownloadPackage "gperf" &
 DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "gst-plugins-good" &
@@ -31,13 +32,14 @@ DownloadPackage "libcanberra" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
 DownloadPackage "libhandy" &
-wait
 DownloadPackage "libnma" &
+wait
 DownloadPackage "libproxy" &
+DownloadPackage "libsigc++3" & # required by gnome-system-monitor
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
 DownloadPackage "mozjs115" &
-DownloadPackage "libsigc++3" & # required by gnome-system-monitor
+DownloadPackage "pango2" & # required by gnome-system-monitor
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait

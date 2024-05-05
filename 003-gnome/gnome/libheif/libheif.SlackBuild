@@ -28,6 +28,8 @@ cmake \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
     -DCMAKE_INSTALL_MANDIR=/usr/man \
     -DBUILD_TESTING=OFF \
+    -DWITH_DAV1D=ON \
+    -DWITH_AOM_DECODER=OFF \
     -DCMAKE_BUILD_TYPE=Release ..
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
