@@ -319,7 +319,7 @@ rootcopy=/path/to_folder/with_files
 rootmount
 
    ... Instead of copying files from rootcopy, it mounts them.
-       The advantage is faster boot and less RAM. It's only
+       The advantages are faster boot and less RAM. It's only
        supported in POSIX filesystem and when copy2ram is off.
 
 cfgfile=some_name.cfg
