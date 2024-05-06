@@ -22,6 +22,8 @@ SLKCFLAGS="$GCCFLAGS -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=
 tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+sed -i 's|gint sensors_refresh_time = 60|gint sensors_refresh_time = 1|g' include/sensors-interface-plugin.h
+
 CFLAGS="$SLKCFLAGS" \
 ./configure \
     --prefix=/usr \
