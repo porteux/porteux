@@ -13,7 +13,7 @@ DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libpaper" & # required by xpdf
-DownloadPackage "libproxy" & # required by ...
+DownloadPackage "libproxy" & # required by xpdf
 DownloadPackage "plasma-wayland-protocols" & # required by libkscreen
 DownloadPackage "xcb-util-cursor" &
 wait
