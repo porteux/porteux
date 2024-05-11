@@ -18,6 +18,9 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \

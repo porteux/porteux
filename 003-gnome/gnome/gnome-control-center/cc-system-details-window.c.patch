@@ -1,0 +1,45 @@
+--- panels/system/about/cc-system-details-window.c	2024-05-11 21:56:43.680498397 +0200
++++ panels/system/about/cc-system-details-window.c.patched	2024-05-11 21:56:33.965497938 +0200
+@@ -656,6 +656,24 @@
+     g_string_append (dst_string, " ");
+ }
+ 
++static char* get_gnome_shell_version() {
++    FILE *fp = popen("gnome-shell --version | cut -d \" \" -f 3", "r");
++    if (fp == NULL)
++        return MAJOR_VERSION;
++
++   char *version = NULL;
++   size_t len = 0;
++   ssize_t read;
++
++   if ((read = getline(&version, &len, fp)) != -1) {
++       if (version[read - 1] == '\n')
++           version[read - 1] = '\0';
++   }
++
++   pclose(fp);
++   return version;
++}
++
+ static void
+ on_copy_button_clicked_cb (GtkWidget              *widget,
+                            CcSystemDetailsWindow  *self)
+@@ -762,7 +777,7 @@
+ 
+   g_string_append (result_str, "- ");
+   system_details_window_title_print_padding (_("**GNOME Version:**"), result_str, 0);
+-  g_string_append_printf (result_str, "%s\n", MAJOR_VERSION);
++  g_string_append_printf (result_str, "%s\n", get_gnome_shell_version());
+ 
+   g_string_append (result_str, "- ");
+   system_details_window_title_print_padding (_("**Windowing System:**"), result_str, 0);
+@@ -829,7 +844,7 @@
+   os_type_text = get_os_type ();
+   cc_info_entry_set_value (self->os_type_row, os_type_text);
+ 
+-  cc_info_entry_set_value (self->gnome_version_row, MAJOR_VERSION);
++  cc_info_entry_set_value (self->gnome_version_row, get_gnome_shell_version());
+ 
+   cc_info_entry_set_value (self->windowing_system_row, get_windowing_system ());
+ 

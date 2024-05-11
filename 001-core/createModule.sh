@@ -362,6 +362,7 @@ rm usr/bin/7za
 rm usr/bin/7zr
 rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
+rm usr/lib${SYSTEMBITS}/libduktaped.*
 rm usr/lib${SYSTEMBITS}/libqgpgme.*
 rm usr/lib${SYSTEMBITS}/libslang.so.1*
 rm usr/lib${SYSTEMBITS}/p7zip/7za

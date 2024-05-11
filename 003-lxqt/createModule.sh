@@ -383,7 +383,6 @@ rm -R usr/share/obconf-qt
 rm -R usr/share/pavucontrol-qt
 rm -R usr/share/pcmanfm-qt/translations
 rm -R usr/share/qlogging-categories5
-rm -R usr/share/qpdfview
 rm -R usr/share/qps
 rm -R usr/share/qterminal
 rm -R usr/share/qtermwidget5/translations
