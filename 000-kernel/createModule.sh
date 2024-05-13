@@ -62,8 +62,9 @@ echo "Downloading AUFS..."
 git clone https://github.com/sfjro/aufs-standalone ${MODULEPATH}/aufs_sources > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
 git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
 
-echo "Patching AUFS..."
 cd $MODULEPATH/linux-${KERNELVERSION}
+
+echo "Patching AUFS..."
 rm ../aufs_sources/tmpfs-idr.patch # this patch isn't useful
 cp -r ../aufs_sources/{fs,Documentation} .
 cp ../aufs_sources/include/uapi/linux/aufs_type.h include/uapi/linux
@@ -81,7 +82,7 @@ fi
 
 echo "Building vmlinuz (this may take a while)..."
 CPUTHREADS=$(nproc --all)
-make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fno-tree-vectorize -mpopcnt -fivopts -fmodulo-sched -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fno-tree-vectorize -mpopcnt -fivopts -fmodulo-sched -mrelax-cmpxchg-loop" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 make clean
 
