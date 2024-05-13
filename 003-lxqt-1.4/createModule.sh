@@ -176,6 +176,16 @@ currentPackage=audacious-plugins
 QT=5 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+# lxqt deps
+for package in \
+	extra-cmake-modules \
+	kimageformats \
+; do
+sh $SCRIPTPATH/lxqt/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
 # required by nm-tray
 installpkg $MODULEPATH/packages/networkmanager-qt*.txz || exit 1
 
@@ -325,6 +335,7 @@ sh build_all_cmake_projects.sh || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # only required for building
+rm $MODULEPATH/packages/extra-cmake-modules*.txz
 rm $MODULEPATH/packages/lxqt-build-tools*.txz
 
 currentPackage=kora

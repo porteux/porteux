@@ -194,6 +194,7 @@ for package in \
 	kidletime \
 	libkscreen \
 	networkmanager-qt \
+	kimageformats \
 ; do
 sh $SCRIPTPATH/lxqt/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1

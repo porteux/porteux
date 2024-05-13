@@ -72,7 +72,6 @@ DownloadPackage "ki18n" &
 wait
 DownloadPackage "kiconthemes" &
 DownloadPackage "kidletime" &
-DownloadPackage "kimageformats" &
 DownloadPackage "kinfocenter" &
 DownloadPackage "kinit" &
 DownloadPackage "kio" &

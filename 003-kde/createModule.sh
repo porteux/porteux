@@ -133,6 +133,19 @@ currentPackage=audacious-plugins
 QT=5 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+# kde deps
+for package in \
+	extra-cmake-modules \
+	kimageformats \
+; do
+sh $SCRIPTPATH/kde/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# only required for building
+rm $MODULEPATH/packages/extra-cmake-modules*.txz
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
