@@ -5,9 +5,9 @@
  }
  
 +static char* get_gnome_shell_version() {
-+    FILE *fp = popen("gnome-shell --version | cut -d \" \" -f 3", "r");
-+    if (fp == NULL)
-+        return MAJOR_VERSION;
++   FILE *fp = popen("gnome-shell --version | cut -d \" \" -f 3", "r");
++   if (fp == NULL)
++       return MAJOR_VERSION;
 +
 +   char *version = NULL;
 +   size_t len = 0;
