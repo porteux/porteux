@@ -20,7 +20,6 @@ cd $PRGNAM-$VERSION
 
 mkdir build && cd build
 cmake .. \
-	-DBUILD_QCH=OFF \
 	-DBUILD_TESTING=OFF \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
@@ -32,10 +31,10 @@ cmake .. \
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-find usr/lib${SYSTEMBITS}/qt*/plugins/imageformats/ -mindepth 1 -maxdepth 1 ! \( -name "kimg_jxl*" \) -exec rm '{}' \; 2>/dev/null
+find $PKG/usr/lib${SYSTEMBITS}/qt*/plugins/imageformats/ -mindepth 1 -maxdepth 1 ! \( -name "kimg_jxl*" -o -name "kimg_tga*" \) -exec rm '{}' \; 2>/dev/null
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-jxl-${VERSION//[vV]}-$ARCH-1.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-extra-${VERSION//[vV]}-$ARCH-1.txz
