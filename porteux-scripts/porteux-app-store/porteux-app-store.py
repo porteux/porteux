@@ -171,6 +171,8 @@ class AppWindow(Gtk.ApplicationWindow):
         language_label.set_halign(Gtk.Align.START)
         dialog.vbox.pack_start(language_label, False, False, 5)
         dialog.vbox.add(combobox_language)
+        
+        dialog.vbox.pack_start(Gtk.Separator(), False, False, 5)
 
         button_download = Gtk.Button(label="Download")
         button_close = Gtk.Button(label="Close")
