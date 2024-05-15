@@ -127,6 +127,7 @@ mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
+rm usr/lib${SYSTEMBITS}/libslang.so.1*
 cp --parents -P lib${SYSTEMBITS}/libfuse.* ${currentPackage}-stripped-$version/
 cp --parents -P lib${SYSTEMBITS}/libgssapi_krb5.* ${currentPackage}-stripped-$version/
 cp --parents -P lib${SYSTEMBITS}/libk5crypto.* ${currentPackage}-stripped-$version/
@@ -364,7 +365,6 @@ rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
 rm usr/lib${SYSTEMBITS}/libduktaped.*
 rm usr/lib${SYSTEMBITS}/libqgpgme.*
-rm usr/lib${SYSTEMBITS}/libslang.so.1*
 rm usr/lib${SYSTEMBITS}/p7zip/7za
 rm usr/lib${SYSTEMBITS}/p7zip/7zr
 rm usr/libexec/samba/rpcd_*
