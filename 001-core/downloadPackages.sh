@@ -159,7 +159,7 @@ wait
 DownloadPackage "newt" &
 DownloadPackage "nfs-utils" &
 DownloadPackage "nghttp2" &
-DownloadPackage "ntfs" &
+DownloadPackage "ntfs-3g" &
 DownloadPackage "openssh" &
 DownloadPackage "openssl" &
 DownloadPackage "openvpn" &
