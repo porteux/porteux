@@ -56,7 +56,7 @@ chmod 644 "$MODULEDIR"/home/guest/.local/share/applications/* 2> /dev/null || ex
 MODULEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH.xzm"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEM/ODULE"
+/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
 
 # cleanup
 rm -fr "$BUILDDIR" 2> /dev/null
