@@ -36,7 +36,7 @@ create_application_temp_dir(){
 
 remove_application_temp_dir(){
     rm -rf "${TMP:?}/$1"
-    rm -f "$TMP/${1}-${2}-x86_64-1.txz"
+    rm -f "$TMP/${1}-${2}-x86_64.txz"
     rm -rf "${TMP:?}/package-${1}"
 }
 
@@ -65,9 +65,8 @@ striptease(){
 get_module_name(){
     local pkgver; pkgver="$2"
     local arch; arch="$3"
-    local build; build="$4"
 
-    echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${build}"
+    echo "${APP}-${CHANNEL}-${pkgver}-${arch}"
 }
 
 finisher(){
@@ -91,7 +90,7 @@ make_module_chromium(){
     if [ "$CHANNEL" != "developer" ]; then echo "Non-existent channel. Options: developer" && exit 1; fi
 
     local pkgver; pkgver=$(get_repo_version_chromium "$CHANNEL")
-    local pkg_name; pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64" "1")
+    local pkg_name; pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
     local product_name; product_name="$APP-$CHANNEL"
 
     create_application_temp_dir "$APP" && mkdir -p "$TMP/$APP/$pkg_name" || exit 1
