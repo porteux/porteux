@@ -7,7 +7,6 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "aaa_base" &
 DownloadPackage "aaa_glibc-solibs" &
-DownloadPackage "aaa_libraries" &
 DownloadPackage "aaa_terminfo" &
 DownloadPackage "acl" &
 DownloadPackage "acpid" &
@@ -244,8 +243,11 @@ fi
 
 ### packages that require specific striping
 
+DownloadPackage "aaa_libraries" &
 DownloadPackage "binutils" &
 DownloadPackage "fftw" & # required by pulse plugins
+DownloadPackage "gcc" & # required by aaa_libraries
+DownloadPackage "gcc-g++" & # required by aaa_libraries
 DownloadPackage "ntp" &
 DownloadPackage "openldap" &
 wait
