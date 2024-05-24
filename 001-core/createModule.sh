@@ -125,7 +125,8 @@ currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
+mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
+ROOT=./ installpkg *.txz
 mkdir ${currentPackage}-stripped-$version
 rm usr/lib${SYSTEMBITS}/libslang.so.1*
 cp --parents -P lib${SYSTEMBITS}/libfuse.* ${currentPackage}-stripped-$version/
@@ -144,6 +145,14 @@ cp --parents -P usr/lib${SYSTEMBITS}/libgomp.* ${currentPackage}-stripped-$versi
 cp --parents -P usr/lib${SYSTEMBITS}/libltdl.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib${SYSTEMBITS}/libslang.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.so.6* ${currentPackage}-stripped-$version/
+cd ${currentPackage}-stripped-$version/usr/lib${SYSTEMBITS}
+cp -fs libcares.so* libcares.so
+cp -fs libcares.so libcares.so.2
+cp -fs libcups.so* libcups.so
+cp -fs libgmp.so* libgmp.so
+cp -fs libgmpxx.so* libgmpxx.so
+cp -fs libltdl.so* libltdl.so
+cp -fs libslang.so* libslang.so
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
