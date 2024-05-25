@@ -36,7 +36,7 @@ create_application_temp_dir(){
 
 remove_application_temp_dir(){
     rm -rf "${TMP:?}/$1"
-    rm -f "$TMP/${1}-${2}-x86_64-1.txz"
+    rm -f "$TMP/${1}-${2}-x86_64.txz"
     rm -rf "${TMP:?}/package-${1}"
 }
 
@@ -57,9 +57,8 @@ striptease(){
 get_module_name(){
     local pkgver; pkgver="$2"
     local arch; arch="$3"
-    local build; build="$4"
 
-    echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${build}"
+    echo "${APP}-${CHANNEL}-${pkgver}-${arch}"
 }
 
 finisher(){
@@ -80,7 +79,7 @@ make_module_opera(){
 
     $WGET_WITH_TIME_OUT -P $TMP/"$APP"/ -r -nd --no-parent https://rpm.opera.com/rpm/ -A opera_"$CHANNEL"-*.rpm || exit 1
     pkgver=$(find $TMP/"$APP" -name "opera_*.rpm" -exec basename {} \; | cut -d '-' -f2)
-    pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64" "1")
+    pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 
     mv $TMP/"$APP"/opera_*.rpm $TMP/"$APP"/"$pkg_name".rpm
     mkdir -p "$TMP/$APP/$pkg_name" &&
