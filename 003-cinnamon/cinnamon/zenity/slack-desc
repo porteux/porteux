@@ -1,0 +1,12 @@
+      |-----handy-ruler------------------------------------------------------|
+zenity: zenity (display gtk dialog boxes from cli)
+zenity:
+zenity: Zenity is a tool that allows you to display Gtk+ dialog boxes from
+zenity: the command line and through shell scripts. It is similar to
+zenity: gdialog, but is intended to be saner.
+zenity:
+zenity: Homepage: https://github.com/GNOME/zenity
+zenity:
+zenity:
+zenity:
+zenity:

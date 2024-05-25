@@ -1,0 +1,11 @@
+--- lxqt-panel/panel/CMakeLists.txt	2024-05-01 17:07:22.447294131 +0200
++++ lxqt-panel/panel/CMakeLists.txt.patched	2024-05-01 17:07:49.000000000 +0200
+@@ -91,6 +91,8 @@
+ 
+ lxqt_app_translation_loader(SOURCES ${PROJECT_NAME})
+ 
++set(CMAKE_EXECUTABLE_ENABLE_EXPORTS TRUE)
++
+ add_executable(${PROJECT}
+     ${PUB_HEADERS}
+     ${PRIV_HEADERS}

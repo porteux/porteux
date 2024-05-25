@@ -1,0 +1,12 @@
+         |-----handy-ruler------------------------------------------------------|
+kidletime: kidletime (Reporting of Idle Time of User and System)
+kidletime:
+kidletime: KIdleTime is a singleton reporting information on idle time. It is
+kidletime: useful not only for finding out about the current idle time of the
+kidletime: PC, but also for getting notified upon idle time events, such as
+kidletime: custom timeouts, or user activity.
+kidletime:
+kidletime: Homepage: https://community.kde.org/Frameworks
+kidletime:
+kidletime:
+kidletime:

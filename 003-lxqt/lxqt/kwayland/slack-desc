@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+kwayland: kwayland (Server API for the Wayland Protocol)
+kwayland:
+kwayland: KWayland is a Qt-style API to interact with the wayland-client and
+kwayland: wayland-server API.
+kwayland:
+kwayland: Homepage: https://www.kde.org
+kwayland:
+kwayland:
+kwayland:
+kwayland:
+kwayland:

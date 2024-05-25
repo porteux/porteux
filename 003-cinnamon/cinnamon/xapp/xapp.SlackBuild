@@ -1,0 +1,45 @@
+#!/bin/sh
+
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
+PRGNAM=xapp
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM})
+VERSION=${info#* }
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto" \
+meson setup \
+    --prefix=/usr \
+    --buildtype=release \
+    --libdir=lib${SYSTEMBITS} \
+    --libexecdir=/usr/lib${SYSTEMBITS} \
+    --mandir=/usr/man \
+    -Ddocs=false \
+ 
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/etc/profile.d/
+mv $PKG/etc/X11/xinit/xinitrc.d/80xapp-gtk3-module.sh $PKG/etc/profile.d/
+[ -e $TMP ] && rm -rf $TMP/etc/X11/
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

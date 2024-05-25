@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=003-xfce-4.12
 
 source "$PWD/../builder-utils/setflags.sh"
@@ -29,7 +30,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |$GCCGLAGS -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -39,8 +40,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	# building gtk+2 because new GLib 2.76+ has broken it
 	currentPackage=gtk+2
 	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
-	cp $SCRIPTPATH/extras/gtk+2/${currentPackage}.SlackBuild .
+	cp $SCRIPTPATH/extras/gtk+2/* .
 	sh ${currentPackage}.SlackBuild || exit 1
 	rm -fr $MODULEPATH/${currentPackage}
 fi
@@ -49,46 +49,31 @@ fi
 installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 
 currentPackage=gpicview
-version=0.2.5
+version="0.2.5"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/gpicview || exit 1
+git clone https://github.com/lxde/${currentPackage} || exit 1
 cd ${currentPackage}
-./autogen.sh
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
+./autogen.sh && CFLAGS="$GCCGLAGS -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxdm
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-cp -R $SCRIPTPATH/../${currentPackage}/* .
-GTK3=no sh ${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=atril
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild .
-sed -i "s|-O2 |-O3 -march=${ARCHITECTURELEVEL} -s -flto |g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
+GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
-sh ${currentPackage}-gtk.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious/${currentPackage}-gtk.SlackBuild .
-sh ${currentPackage}-gtk.SlackBuild || exit 1
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=atril
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa and mate-search-tool
@@ -152,7 +137,7 @@ sed -i "s|baobab||g" ./Makefile.am
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|mate-screenshot||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
+CFLAGS="$GCCGLAGS" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
@@ -166,7 +151,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
+CFLAGS="$GCCGLAGS" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -181,13 +166,13 @@ cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
 mkdir ${currentPackage}-package
 mkdir build && cd build
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto" meson .. \
- --prefix=/usr \
- --buildtype=release \
- --libdir=lib${SYSTEMBITS} \
- --libexecdir=/usr/libexec \
- --sysconfdir=/etc \
- -Daccountsservice=false
+CFLAGS="$GCCGLAGS -flto" meson setup \
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	-Daccountsservice=false
 ninja -j${NUMBERTHREADS} && DESTDIR=../${currentPackage}-package ninja install
 cd ../${currentPackage}-package
 sed -i "s|OnlyShowIn=MATE;||g" etc/xdg/autostart/polkit-mate-authentication-agent-1.desktop
@@ -195,12 +180,12 @@ sed -i "s|OnlyShowIn=MATE;||g" etc/xdg/autostart/polkit-mate-authentication-agen
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=gtksourceview
-version=2.10.5
+version="2.10.5"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://download.gnome.org/sources/gtksourceview/2.10/gtksourceview-$version.tar.gz || exit 1
 tar xvf ${currentPackage}-$version.tar.?z || exit 1
 cd ${currentPackage}-$version
-CFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -pipe -fPIC -DNDEBUG" ./configure --prefix=/usr --libdir=/usr/lib64 --sysconfdir=/etc --disable-static --disable-debug
+CFLAGS="$GCCGLAGS -flto" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -252,8 +237,8 @@ for package in \
 	xfce4-whiskermenu-plugin \
 	xfce4-xkb-plugin \
 ; do
-cd $SCRIPTPATH/xfce/$package || exit 1
-sh ${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/xfce/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -274,7 +259,7 @@ patch --no-backup-if-mismatch -d $MODULEPATH/packages/ -p0 < $SCRIPTPATH/extras/
 
 sed -i "s|Graphics;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|Core;||g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
-sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
+sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/Thunar.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/Thunar-bulk-rename.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/xfce4-sensors.desktop
@@ -306,12 +291,11 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
-rm -R usr/lib
-rm -R usr/lib64/gnome-settings-daemon-3.0
-rm -R usr/lib64/python2.7
+rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
+rm -R usr/lib*/python2*
 rm -R usr/share/engrampa
-rm -R usr/share/gnome
 rm -R usr/share/gdm
+rm -R usr/share/gnome
 rm -R usr/share/themes/Daloa
 rm -R usr/share/themes/Default/balou
 rm -R usr/share/themes/Kokodi
@@ -323,9 +307,9 @@ rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
 rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/bin/canberra*
 rm usr/bin/gtk-demo
-rm usr/lib64/girepository-1.0/SoupGNOME*
-rm usr/lib64/libkeybinder.*
-rm usr/lib64/libsoup-gnome*
+rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
+rm usr/lib${SYSTEMBITS}/libkeybinder.*
+rm usr/lib${SYSTEMBITS}/libsoup-gnome*
 rm usr/share/applications/exo*
 rm usr/share/backgrounds/xfce/xfce-stripes.png
 rm usr/share/backgrounds/xfce/xfce-teal.jpg
@@ -334,16 +318,18 @@ rm usr/share/icons/hicolor/scalable/status/computer.svg
 rm usr/share/icons/hicolor/scalable/status/keyboard.svg
 rm usr/share/icons/hicolor/scalable/status/phone.svg
 
+[ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
+
 GenericStrip
 AggressiveStripAll
 
 ### copy cache files
 
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### finalize
 

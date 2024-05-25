@@ -1,69 +1,43 @@
 #!/bin/sh
-source "$PWD/../../../builder-utils/latestfromgithub.sh"
+
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
 
 PRGNAM=gtk-layer-shell
-BUILD=${BUILD:-1}
-CWD=$(pwd)
-PKG=$MODULEPATH/$PRGNAM/package-$PRGNAM
-OUTPUT=${OUTPUT:-$MODULEPATH/packages}
-VERSION=${VERSION:-0.7.0}
 
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i586 ;;
-    arm*) ARCH=arm ;;
-       *) ARCH=$( uname -m ) ;;
-  esac
-fi
-
-if [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O3 -march=i686 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "aarch64" ]; then
-  SLKCFLAGS="-O3 -fPIC"
-  LIBDIRSUFFIX="64"
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
-  LIBDIRSUFFIX="64"
-else
-  SLKCFLAGS="-O3"
-  LIBDIRSUFFIX=""
-fi
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
 
 set -e
 
-rm -fr $MODULEPATH/$PRGNAM
-mkdir -p $MODULEPATH/$PRGNAM && cd $MODULEPATH/$PRGNAM
-wget -c https://github.com/wmww/gtk-layer-shell/archive/v$VERSION/$PRGNAM-$VERSION.tar.gz
-tar xvf $PRGNAM-$VERSION.tar.gz || exit 1
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "wmww" $PRGNAM)
+VERSION=${info#* }
+
+tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-chown -R root:root .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-mkdir build
-cd build
-  CFLAGS="$SLKCFLAGS" \
-  CXXFLAGS="$SLKCFLAGS" \
-  meson .. \
-    --buildtype=release \
-    --infodir=/usr/info \
-    --libdir=/usr/lib${LIBDIRSUFFIX} \
-    --localstatedir=/var \
-    --mandir=/usr/man \
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto" \
+meson setup \
     --prefix=/usr \
-    --sysconfdir=/etc
-  ninja -j$(nproc --all)
-  DESTDIR=$PKG ninja install
-cd ..
+    --buildtype=release \
+    --libdir=lib${SYSTEMBITS} \
+    --libexecdir=/usr/libexec \
+    --sysconfdir=/etc \
+    --infodir=/usr/info \
+    --mandir=/usr/man \
+    --localstatedir=/var \
+    
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}
-/sbin/upgradepkg --install-new --reinstall $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

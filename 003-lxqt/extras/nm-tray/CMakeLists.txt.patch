@@ -1,0 +1,109 @@
+--- CMakeLists.txt	2024-04-06 21:04:05.156242617 +0200
++++ CMakeLists.txt.patched	2024-04-06 21:18:27.242283398 +0200
+@@ -14,15 +14,28 @@
+ set(CMAKE_INCLUDE_CURRENT_DIR ON)
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+ 
+-find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS
+-    Widgets
+-    Gui
+-    Network
+-    DBus
++if (BUILD_WITH_QT6)
++    find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS
++        Widgets
++        Gui
++        Network
++        DBus
++
++        LinguistTools
++    )
++    find_package(KF6NetworkManagerQt ${KF6_MIN_VERSION} REQUIRED)
++else ()
++    find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS
++        Widgets
++        Gui
++        Network
++        DBus
++
++        LinguistTools
++    )
++    find_package(KF5NetworkManagerQt ${KF5_MIN_VERSION} REQUIRED)
++endif ()
+ 
+-    LinguistTools
+-)
+-find_package(KF5NetworkManagerQt ${KF5_MIN_VERSION} REQUIRED)
+ include(GNUInstallDirs)
+ 
+ set(TRANSLATION_DIR "${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}")
+@@ -56,15 +69,30 @@
+ file(GLOB TSS "translations/${PROJECT_NAME}_*.ts")
+ if (UPDATE_TRANSLATIONS)
+     message(WARNING "!! Disable updating translation after make (-DUPDATE_TRANSLATIONS=no) to avoid 'make clean' delete them !!")
+-    qt5_create_translation(QMS "translations/${PROJECT_NAME}.ts" ${TSS} "src")
++    if (BUILD_WITH_QT6)
++        qt6_create_translation(QMS "translations/${PROJECT_NAME}.ts" ${TSS} "src")
++    else ()
++        qt5_create_translation(QMS "translations/${PROJECT_NAME}.ts" ${TSS} "src")
++    endif()
+ else ()
+-    qt5_add_translation(QMS ${TSS})
++    if (BUILD_WITH_QT6)
++        qt6_add_translation(QMS ${TSS})
++    else ()
++        qt5_add_translation(QMS ${TSS})
++    endif()
+ endif()
+ 
+-qt5_add_dbus_interface(SRCS
+-    dbus/org.freedesktop.Notifications.xml
+-    dbus/org.freedesktop.Notifications
+-)
++if (BUILD_WITH_QT6)
++    qt6_add_dbus_interface(SRCS
++        dbus/org.freedesktop.Notifications.xml
++        dbus/org.freedesktop.Notifications
++    )
++else()
++    qt5_add_dbus_interface(SRCS
++        dbus/org.freedesktop.Notifications.xml
++        dbus/org.freedesktop.Notifications
++    )
++endif()
+ 
+ add_executable(nm-tray
+     ${SRCS}
+@@ -75,14 +103,26 @@
+ set_property(TARGET nm-tray PROPERTY CXX_STANDARD 11)
+ set_property(TARGET nm-tray PROPERTY CXX_STANDARD_REQUIRED on)
+ 
+-target_link_libraries(nm-tray
+-    Qt5::Widgets
+-    Qt5::Gui
+-    KF5::NetworkManagerQt
+-)
++if (BUILD_WITH_QT6)
++    target_link_libraries(nm-tray
++        Qt6::Widgets
++        Qt6::Gui
++        KF6::NetworkManagerQt
++    )
++else ()
++    target_link_libraries(nm-tray
++        Qt5::Widgets
++        Qt5::Gui
++        KF5::NetworkManagerQt
++    )
++endif()
+ 
+ if (WITH_MODEMMANAGER_SUPPORT)
+-    find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Xml)
++    if (BUILD_WITH_QT6)
++        find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Xml)
++    else ()
++        find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Xml)
++    endif()
+     find_package(KF5ModemManagerQt ${KF5_MIN_VERSION} REQUIRED)
+     target_link_libraries(nm-tray KF5::ModemManagerQt)
+ endif()

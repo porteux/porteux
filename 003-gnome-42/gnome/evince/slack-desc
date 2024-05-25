@@ -1,0 +1,18 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+              |-----handy-ruler------------------------------------------------------|
+evince: Evince
+evince:
+evince: Evince is a document viewer for multiple document formats. The goal
+evince: of evince is to replace the multiple document viewers that exist on
+evince: the GNOME Desktop with a single simple application.
+evince:
+evince:
+evince:
+evince: https://wiki.gnome.org/Apps/Evince
+evince:

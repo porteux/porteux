@@ -1,74 +1,45 @@
 #!/bin/sh
 
 PRGNAM=gnome-control-center
-VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-1}
 
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i586 ;;
-    arm*) ARCH=arm ;;
-       *) ARCH=$( uname -m ) ;;
-  esac
-fi
-
-CWD=$(pwd)
-TMP=${TMP:-$MODULEPATH}
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
-JOBS="-j$(nproc --all)"
-
-if [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O3 -march=i686 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
-  LIBDIRSUFFIX="64"
-else
-  SLKCFLAGS="-O3"
-  LIBDIRSUFFIX=""
-fi
 
 set -e
 
-rm -rf $PKG
-mkdir -p $TMP $PKG $OUTPUT
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PRGNAM-$VERSION
-tar xfv $CWD/$PRGNAM-$VERSION.tar.?z*
+
+wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-# libgnome-volume-control subproject can be builded with shared library and alsa.
-sed -i "s#'static=true',#'static=false','pkglibdir=/usr/lib${LIBDIRSUFFIX}',#" meson.build
-sed -i 's/alsa=false/alsa=true/' meson.build
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto" \
+meson setup \
+    --prefix=/usr \
+    --buildtype=release \
+    --libdir=lib${SYSTEMBITS} \
+    --libexecdir=/usr/libexec \
+    --sysconfdir=/etc \
+    --infodir=/usr/info \
+    --mandir=/usr/man \
+    --localstatedir=/var \
+    -Ddefault_library=shared \
+    -Dtests=false \
+    -Dmalcontent=false \
+    -Ddocumentation=false
 
-cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
-for i in *.patch; do patch -p0 < $i || exit 1; done
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-mkdir -p build
-cd build
-
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
-meson .. \
- --prefix=/usr \
- --buildtype=release \
- --libdir=lib${LIBDIRSUFFIX} \
- --libexecdir=/usr/libexec \
- --sysconfdir=/etc \
- --infodir=/usr/info \
- --mandir=/usr/man \
- --localstatedir=/var \
- -Ddefault_library=shared \
- -Dtests=false \
- -Dmalcontent=false \
- -Ddocumentation=false
-
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
-cp $CWD/slack-desc $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz}
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

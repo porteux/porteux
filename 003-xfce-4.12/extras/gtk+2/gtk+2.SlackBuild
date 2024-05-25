@@ -1,134 +1,71 @@
 #!/bin/bash
 
-cd $(dirname $0) ; CWD=$(pwd)
+PRGNAM=gtk+2
 
-PKGNAM=gtk+2
-VERSION=${VERSION:-$(echo gtk+-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
-BUILD=${BUILD:-4}
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
 
-NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
-
-# Automatically determine the architecture we're building on:
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) export ARCH=i586 ;;
-    arm*) export ARCH=arm ;;
-    # Unless $ARCH is already set, use uname -m for all other archs:
-       *) export ARCH=$( uname -m ) ;;
-  esac
-fi
-
-TMP=${TMP:-/tmp}
-PKG=$TMP/package-gtk2
-
-if [ "$ARCH" = "i586" ]; then
-  SLKCFLAGS="-O2 -march=i586 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "s390" ]; then
-  SLKCFLAGS="-O2"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
-  LIBDIRSUFFIX="64"
-else
-  SLKCFLAGS="-O2"
-  LIBDIRSUFFIX=""
-fi
-
-rm -rf $PKG
-mkdir -p $TMP $PKG/usr
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
 cd $TMP
-rm -rf gtk+-$VERSION
-tar xvf $CWD/gtk+-$VERSION.tar.?z* || exit 1
-cd gtk+-$VERSION || exit 1
 
-chown -R root:root .
-find . \
-  \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
-  -exec chmod 755 {} \+ -o \
-  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
-  -exec chmod 644 {} \+
+wget -r -nH --cut-dirs=5 --no-parent --reject="*.SlackBuild" $SOURCEREPOSITORY/l/${PRGNAM}/
+VERSION=${VERSION:-$(echo gtk+-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+
+set -e
+
+tar xvf $CWD/gtk+-$VERSION.tar.?z*
+cd gtk+-$VERSION
 
 # Fix build errors
-zcat $CWD/fix_build_issues_on_tutorial_and_faq.diff.gz | patch -p1 --verbose || exit 1
+zcat $CWD/fix_build_issues_on_tutorial_and_faq.diff.gz | patch -p1 --verbose
 
 # Do not flood the console or .xsession-errors with "trouble ahead"
 # warnings (most noticable when using Firefox and Flash):
-zcat $CWD/gtk.xid.nowarningflood.diff.gz | patch -p1 --verbose || exit 1
+zcat $CWD/gtk.xid.nowarningflood.diff.gz | patch -p1 --verbose
 
 # Patch to restore commonly used icon names, otherwise everything breaks.
 # I fail to see the point of this "cleanup"
-zcat $CWD/gtk+-2.24.x.icon-compat.am.diff.gz | patch -p1 --verbose || exit 1
-zcat $CWD/gtk+-2.24.x.icon-compat.diff.gz | patch -p1 --verbose || exit 1
+zcat $CWD/gtk+-2.24.x.icon-compat.am.diff.gz | patch -p1 --verbose
+zcat $CWD/gtk+-2.24.x.icon-compat.diff.gz | patch -p1 --verbose
 
 # Prevents build failures in the docs.  Found online.
 # Only needed if autoreconf is used...  ?
-zcat $CWD/gtk.gtk-faq.diff.gz | patch -p1 --verbose || exit 1
-zcat $CWD/gtk.gtk-tut.diff.gz | patch -p1 --verbose || exit 1
+zcat $CWD/gtk.gtk-faq.diff.gz | patch -p1 --verbose
+zcat $CWD/gtk.gtk-tut.diff.gz | patch -p1 --verbose
 
-cp $SCRIPTPATH/extras/gtk+2/*.patch . || exit 1
-for i in *.patch; do patch -p0 < $i; done || exit 1
+cp $CWD/*.patch .
+for i in *.patch; do patch -p0 < $i; done
 
 # Regenerate ./configure:
 libtoolize --force
 autoreconf -vif
 
-CFLAGS="$SLKCFLAGS" \
+CFLAGS="$GCCFLAGS" \
 ./configure \
-  --prefix=/usr \
-  --libdir=/usr/lib${LIBDIRSUFFIX} \
-  --sysconfdir=/etc \
-  --mandir=/usr/man \
-  --with-xinput=yes \
-  --enable-xkb \
-  --enable-introspection \
-  --enable-gtk-doc-html=false \
-  --enable-man=false \
-  --build=$ARCH-slackware-linux-gnu || exit 1
+    --prefix=/usr \
+    --libdir=/usr/lib${SYSTEMBITS} \
+    --sysconfdir=/etc \
+    --mandir=/usr/man \
+    --with-xinput=yes \
+    --enable-xkb \
+    --enable-introspection \
+    --enable-gtk-doc-html=false \
+    --enable-man=false \
+    --build=$ARCH-porteux-linux-gnu
 
-make $NUMJOBS || exit 1
+make -j${NUMBERTHREADS} install RUN_QUERY_IMMODULES_TEST=false RUN_QUERY_LOADER_TEST=false DESTDIR=$PKG
 
-# Check the host value that is passed to the compile to the one in this script:
-host="$ARCH-slackware-linux-gnu"
-compile_host=$(grep 'host_triplet =' gtk/Makefile | sed -e "s/.* = //")
-if [ "x$compile_host" != "x$host" ]; then
-  echo "Host mismatch: compile='$compile_host', SlackBuild='$host'" && exit 1
-fi
-
-make install \
-  RUN_QUERY_IMMODULES_TEST=false RUN_QUERY_LOADER_TEST=false \
-  DESTDIR=$PKG \
-  || exit 1
-
-# Don't ship .la files:
-rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 # Don't clobber im-multipress.conf
-mv $PKG/etc/gtk-2.0/im-multipress.conf $PKG/etc/gtk-2.0/im-multipress.conf.new || exit 1
+mv $PKG/etc/gtk-2.0/im-multipress.conf $PKG/etc/gtk-2.0/im-multipress.conf.new
 
-# Install a "starter" gtkrc
-# /etc/gtk-2.0/gtkrc overrides this  --rworkman
+# Install a "starter" gtkrc /etc/gtk-2.0/gtkrc overrides this
 echo 'gtk-theme-name="GTK+"' > $PKG/usr/share/gtk-2.0/gtkrc
 echo 'gtk-icon-theme-name="Adwaita"' >> $PKG/usr/share/gtk-2.0/gtkrc
 echo 'gtk-fallback-icon-theme = "Tango"' >> $PKG/usr/share/gtk-2.0/gtkrc
-
-# We need to have separate 32-bit and 64-bit binaries
-# for places where we have two copies of the GTK+ package installed.
-# (we might have x86_64 and i486 packages on the same system, for example.)
-case "$host" in
-  s390x*|x86_64*)
-   mv $PKG/usr/bin/gtk-query-immodules-2.0{,-64}
-   ( cd $PKG/usr/bin
-     ln -sf gtk-query-immodules-2.0-64 gtk-query-immodules-2.0
-   )
-   ;;
-  *)
-   mv $PKG/usr/bin/gtk-query-immodules-2.0{,-32}
-   ( cd $PKG/usr/bin
-     ln -sf gtk-query-immodules-2.0-32 gtk-query-immodules-2.0
-   )
-   ;;
-esac
 
 # Install wrappers for the binaries:
 cp -a $CWD/update-gtk-immodules* $PKG/usr/bin
@@ -142,10 +79,9 @@ chmod 0755 $PKG/etc/profile.d/*
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
-zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
 
+echo $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-4.txz
+read -p "1"
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PKGNAM-$VERSION-$ARCH-$BUILD.txz
-
-rm -fr $PKG
-rm -fr $TMP/gtk+-$VERSION
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-4.txz
+read -p "2"

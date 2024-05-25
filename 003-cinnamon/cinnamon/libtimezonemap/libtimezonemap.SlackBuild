@@ -1,0 +1,41 @@
+#!/bin/sh
+
+PRGNAM=libtimezonemap
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION="0.4.6"
+wget https://launchpad.net/ubuntu/+archive/primary/+files/${PRGNAM}_${VERSION}.tar.gz
+
+tar xfv ${PRGNAM}_${VERSION}.tar.?z*
+cd $PRGNAM-$VERSION
+
+autoreconf -vfi
+CFLAGS="$GCCFLAGS" \
+./configure \
+    --prefix=/usr \
+    --libdir=/usr/lib${SYSTEMBITS} \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --mandir=/usr/man \
+    --docdir=/usr/doc/$PRGNAM-$VERSION \
+    --enable-introspection \
+    --build=$ARCH-porteux-linux
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

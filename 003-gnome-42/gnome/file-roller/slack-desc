@@ -1,0 +1,20 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+           |-----handy-ruler------------------------------------------------------|
+file-roller: file-roller (a GTK archive manager)
+file-roller:
+file-roller: File-roller is an archive manager for the GNOME environment. It allows
+file-roller: you to:
+file-roller: * Create and modify archives
+file-roller: * View and search the content of an archive
+file-roller: * View a file contained in an archive
+file-roller: * Extract files from the archive
+file-roller:
+file-roller: Homepage: https://github.com/GNOME/file-roller
+file-roller:
+

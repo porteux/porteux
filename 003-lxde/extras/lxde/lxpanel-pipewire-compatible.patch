@@ -1,0 +1,53 @@
+--- plugins/volumealsa/volumealsa.c	2024-04-01 15:09:45.357033200 +0200
++++ plugins/volumealsa/volumealsa-patched.c	2024-04-01 15:11:39.391695400 +0200
+@@ -69,6 +69,7 @@
+ #include <poll.h>
+ #endif
+ #include <math.h>
++#include <threads.h>
+ #include <libfm/fm-gtk.h>
+ 
+ #include "plugin.h"
+@@ -920,6 +921,26 @@
+     vol->mute_check_handler = g_signal_connect(vol->mute_check, "toggled", G_CALLBACK(volumealsa_popup_mute_toggled), vol);
+ }
+ 
++static int *wait_for_pipewire(void *arg)
++{
++    VolumeALSAPlugin *vol = (VolumeALSAPlugin *)arg;
++    asound_initialize(vol);
++
++    int number_attempts = 50;
++    while (number_attempts > 0 &&  0 != system("lsof | grep libwireplumber-module-logind > /dev/null"))
++    {
++        number_attempts--;
++        usleep(200 * 1000);
++    }
++
++    if ( ! asound_initialize(vol))
++    {
++        volumealsa_destructor(vol);
++    }
++
++    return 0;
++}
++
+ /* Plugin constructor. */
+ static GtkWidget *volumealsa_constructor(LXPanel *panel, config_setting_t *settings)
+ {
+@@ -962,12 +983,9 @@
+     if (config_setting_lookup_string(settings, "VolumeMuteKey", &tmp_str))
+         lxpanel_apply_hotkey(&vol->hotkey_mute, tmp_str, volume_mute, vol, FALSE);
+ 
+-    /* Initialize ALSA.  If that fails, present nothing. */
+-    if ( ! asound_initialize(vol))
+-    {
+-        volumealsa_destructor(vol);
+-        return NULL;
+-    }
++    thrd_t tid;
++    thrd_create(&tid, wait_for_pipewire, (void *)vol);
++    thrd_detach(tid);
+ 
+     /* Allocate top level widget and set into Plugin widget pointer. */
+     vol->panel = panel;

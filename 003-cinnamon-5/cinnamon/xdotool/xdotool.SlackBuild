@@ -1,0 +1,36 @@
+#!/bin/bash
+
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
+PRGNAM=xdotool
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "jordansissel" ${PRGNAM})
+VERSION=${info#* }
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+mkdir -p $PKG/usr/lib$SYSTEMBITS
+
+make -j${NUMBERTHREADS} install \
+  WARNFLAGS="$GCCFLAGS" \
+  PREFIX=/usr \
+  INSTALLLIB=/usr/lib$SYSTEMBITS \
+  DESTDIR=$PKG \
+  WITHOUT_RPATH_FIX=1
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

@@ -1,73 +1,28 @@
 #!/bin/bash
 
-cd $(dirname $0) ; CWD=$(pwd)
-
 PRGNAM=x265
-VERSION=${VERSION:-3.5}
-BUILD=${BUILD:-1}
-TAG=${TAG:-_SBo}
-PKGTYPE=${PKGTYPE:-tgz}
 
-if [ -z "$ARCH" ]; then
-  case "$( uname -m )" in
-    i?86) ARCH=i586 ;;
-    arm*) ARCH=arm ;;
-       *) ARCH=$( uname -m ) ;;
-  esac
-fi
-
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
-if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
-  echo "$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE"
-  exit 0
-fi
-
-TMP=${TMP:-/tmp/SBo}
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
-OUTPUT=${OUTPUT:-/tmp}
-
-if [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O3 -march=i686 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
-  LIBDIRSUFFIX="64"
-else
-  SLKCFLAGS="-O3"
-  LIBDIRSUFFIX=""
-fi
 
 set -e
 
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
-rm -rf ${PRGNAM}_${VERSION}
-tar xvf $CWD/${PRGNAM}_${VERSION}.tar.gz
-cd ${PRGNAM}_${VERSION}
-chown -R root:root .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-for d in 8 $([ "$ARCH" = "x86_64" ] && echo "10 12"); do
-  if [[ -d build-$d ]]; then
-    rm -rf build-$d
-  fi
-  mkdir build-$d
-done
+wget https://bitbucket.org/multicoreware/${PRGNAM}_git/get/HEAD.tar.gz
+tar xvf HEAD.tar.gz && rm HEAD.tar.gz
+cd multicoreware-${PRGNAM}*
+VERSION=$(date -r . +%Y%m%d)
 
-if [ "$ARCH" = "x86_64" ]; then
-
-  cd build-12
-
-  cmake \
+mkdir build-12 && cd build-12
+cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    -DLIB_INSTALL_DIR=lib${LIBDIRSUFFIX} \
+    -DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
+    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -flto" \
+    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
     -DHIGH_BIT_DEPTH=ON \
     -DMAIN12=ON \
     -DEXPORT_C_API=OFF \
@@ -75,29 +30,34 @@ if [ "$ARCH" = "x86_64" ]; then
     -DENABLE_SHARED=OFF \
     -DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
     -DCMAKE_BUILD_TYPE=Release ../source
-  make
 
-  cd ../build-10
+make -j${NUMBERTHREADS}
 
-  cmake \
+mkdir ../build-10 && cd ../build-10
+cmake \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    -DLIB_INSTALL_DIR=lib${LIBDIRSUFFIX} \
+    -DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
+    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -flto" \
+    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
     -DHIGH_BIT_DEPTH=ON \
     -DEXPORT_C_API=OFF \
     -DENABLE_CLI=OFF \
     -DENABLE_SHARED=OFF \
     -DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
     -DCMAKE_BUILD_TYPE=Release ../source
-  make
 
-  cd ../build-8
+make -j${NUMBERTHREADS}
 
-  ln -s ../build-10/libx265.a libx265_main10.a
-  ln -s ../build-12/libx265.a libx265_main12.a
+mkdir ../build-8 && cd ../build-8
 
-  cmake \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DLIB_INSTALL_DIR=lib${LIBDIRSUFFIX} \
+ln -s ../build-10/libx265.a libx265_main10.a
+ln -s ../build-12/libx265.a libx265_main12.a
+
+cmake \
+-DCMAKE_INSTALL_PREFIX=/usr \
+    -DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
+    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -flto" \
+    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
     -DENABLE_SHARED=ON \
     -DEXTRA_LIB="x265_main10.a;x265_main12.a" \
     -DEXTRA_LINK_FLAGS="-L." \
@@ -106,30 +66,14 @@ if [ "$ARCH" = "x86_64" ]; then
     -DENABLE_CLI=OFF \
     -DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
     -DCMAKE_BUILD_TYPE=Release ../source
-  make
 
-else
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
-  cd build-8
-
-  cmake \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DLIB_INSTALL_DIR=lib${LIBDIRSUFFIX} \
-    -DENABLE_SHARED=ON \
-    -DCMAKE_BUILD_TYPE=Release ../source
-  make
-
-fi
-
-make install DESTDIR=$PKG
-
-cd ..
-
-# Remove static library
-rm -f $PKG/usr/lib${LIBDIRSUFFIX}/libx265.a
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -f $PKG/usr/lib${SYSTEMBITS}/libx265.a
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
