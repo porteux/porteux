@@ -126,9 +126,11 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
-ROOT=./ installpkg *.txz
-mkdir ${currentPackage}-stripped-$version
+ROOT=./ installpkg ${currentPackage}*.txz
 rm usr/lib${SYSTEMBITS}/libslang.so.1*
+rm usr/lib${SYSTEMBITS}/libstdc++.so*
+ROOT=./ installpkg gcc-*.txz
+mkdir ${currentPackage}-stripped-$version
 cp --parents -P lib${SYSTEMBITS}/libfuse.* ${currentPackage}-stripped-$version/
 cp --parents -P lib${SYSTEMBITS}/libgssapi_krb5.* ${currentPackage}-stripped-$version/
 cp --parents -P lib${SYSTEMBITS}/libk5crypto.* ${currentPackage}-stripped-$version/
@@ -144,7 +146,7 @@ cp --parents -P usr/lib${SYSTEMBITS}/libgmpxx.* ${currentPackage}-stripped-$vers
 cp --parents -P usr/lib${SYSTEMBITS}/libgomp.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib${SYSTEMBITS}/libltdl.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib${SYSTEMBITS}/libslang.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.so.6* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.* ${currentPackage}-stripped-$version/
 cd ${currentPackage}-stripped-$version/usr/lib${SYSTEMBITS}
 cp -fs libcares.so* libcares.so
 cp -fs libcares.so libcares.so.2

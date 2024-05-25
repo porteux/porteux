@@ -15,7 +15,6 @@ DownloadPackage "libnma" &
 DownloadPackage "libwnck" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
-DownloadPackage "pavucontrol" &
 wait
 
 ### slackware current only packages
