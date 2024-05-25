@@ -124,6 +124,10 @@ installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 rm $MODULEPATH/packages/libgtop*.txz
 
+currentPackage=pavucontrol
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=mate-utils
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})

@@ -55,6 +55,13 @@ currentPackage=atril
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+# required from now on
+installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
+
+currentPackage=pavucontrol
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=l3afpad
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/stevenhoneyman/${currentPackage}
@@ -118,9 +125,6 @@ mkdir build && cd build
 meson --prefix /usr ..
 ninja -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
-
-# required from now on
-installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 
 currentPackage=engrampa
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
