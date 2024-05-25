@@ -1,80 +1,42 @@
 #!/bin/bash
 
-cd $(dirname $0) ; CWD=$(pwd)
+PRGNAM=upower
 
-PKGNAM=upower
-VERSION=${VERSION:-$(echo $PKGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d- | rev)}
-BUILD=${BUILD:-1}
-NUMJOBS="-j$(nproc --all)"
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
 
-# Automatically determine the architecture we're building on:
-MARCH=$( uname -m )
-if [ -z "$ARCH" ]; then
-  case "$MARCH" in
-    i?86)    export ARCH=i586 ;;
-    armv7hl) export ARCH=$MARCH ;;
-    arm*)    export ARCH=arm ;;
-    # Unless $ARCH is already set, use uname -m for all other archs:
-    *)       export ARCH=$MARCH ;;
-  esac
-fi
+set -e
 
-if [ "$ARCH" = "i686" ]; then
-  SLKCFLAGS="-O3 -march=i686 -mtune=i686"
-  LIBDIRSUFFIX=""
-elif [ "$ARCH" = "x86_64" ]; then
-  SLKCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -fPIC"
-  LIBDIRSUFFIX="64"
-elif [ "$ARCH" = "armv7hl" ]; then
-  SLKCFLAGS="-O3 -march=armv7-a -mfpu=vfpv3-d16"
-  LIBDIRSUFFIX=""
-else
-  SLKCFLAGS="-O3"
-  LIBDIRSUFFIX=""
-fi
-
-case "$ARCH" in
-    arm*) TARGET=$ARCH-slackware-linux-gnueabi ;;
-    *)    TARGET=$ARCH-slackware-linux ;;
-esac
-
-TMP=${TMP:-$MODULEPATH}
-PKG=$TMP/package-$PKGNAM
-OUTPUT=${OUTPUT:-$TMP/packages}
-
-rm -rf $PKG
+[ -e $TMP ] && rm -rf $TMP
 mkdir -p $TMP $PKG
 cd $TMP
-rm -rf $PKGNAM-$VERSION
-tar xvf $CWD/$PKGNAM-$VERSION.tar.?z || exit 1
-cd $PKGNAM-$VERSION || exit 1
-chown -R root:root .
-find . \
- \( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) \
- -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
- -exec chmod 644 {} \;
 
-mkdir -p build
-cd build
+VERSION="0.99.17"
+wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/v${VERSION}/${PRGNAM}-v${VERSION}.tar.gz
 
-CFLAGS="$SLKCFLAGS" \
-CXXFLAGS="$SLKCFLAGS" \
-meson .. \
- --prefix=/usr \
- --mandir=/usr/man \
- --datadir=/usr/share \
- --includedir=/usr/include \
- --libdir=lib${LIBDIRSUFFIX} \
- --libexecdir=/usr/libexec \
- --sysconfdir=/etc \
- --localstatedir=/var \
- --buildtype=release \
- -Dman=false \
- -Dsystemdsystemunitdir=no
+tar xvf $PRGNAM-v${VERSION}.tar.?z*
+cd $PRGNAM-v${VERSION}
 
-ninja $JOBS || ninja
-DESTDIR=$PKG ninja install
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+    --prefix=/usr \
+    --mandir=/usr/man \
+    --datadir=/usr/share \
+    --includedir=/usr/include \
+    --libdir=lib${SYSTEMBITS} \
+    --libexecdir=/usr/libexec \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --buildtype=release \
+    -Dman=false \
+    -Dgtk-doc=false \
+    -Dsystemdsystemunitdir=no
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 # Add upower policy allowing users in the 'power' group
 # to suspend/hibernate the computer:
@@ -83,16 +45,12 @@ install -m 0644 -o root \
   $CWD/10-enable-upower-suspend.rules \
   $PKG/usr/share/polkit-1/rules.d/10-enable-upower-suspend.rules.new
 
-# Don't ship .la files:
-rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
-
 # Don't clobber the config file on upgrades
 mv $PKG/etc/UPower/UPower.conf $PKG/etc/UPower/UPower.conf.new
 
-
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
-zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
 
 cd $PKG
-/sbin/makepkg -l y -c n $OUTPUT/$PKGNAM-$VERSION-$ARCH-$BUILD.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+

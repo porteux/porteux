@@ -1,0 +1,12 @@
+                   |-----handy-ruler------------------------------------------------------|
+extra-cmake-modules: extra-cmake-modules (Extra Cmake Modules)
+extra-cmake-modules:
+extra-cmake-modules: The Extra CMake Modules package, or ECM, adds to the modules provided
+extra-cmake-modules: by CMake, including ones used by "find_package()" to find common
+extra-cmake-modules: software, ones that can be used directly in "CMakeLists.txt" files
+extra-cmake-modules: to perform common tasks and toolchain files that must be specified on
+extra-cmake-modules: the commandline by the user.
+extra-cmake-modules:
+extra-cmake-modules:
+extra-cmake-modules:
+extra-cmake-modules:

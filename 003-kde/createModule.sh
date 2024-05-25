@@ -1,4 +1,5 @@
 #!/bin/sh
+
 MODULENAME=003-kde
 
 source "$PWD/../builder-utils/setflags.sh"
@@ -99,7 +100,7 @@ cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWebChannel/* "${currentPackage}-str
 cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWebSockets/* "${currentPackage}-stripped-$version"
 rm "${currentPackage}-stripped-$version"/usr/lib$SYSTEMBITS/*.prl
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside Slackware repository ###
@@ -117,26 +118,19 @@ wget https://github.com/tsujan/${currentPackage}/releases/download/V${version}/$
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-CXXFLAGS="-O3 -march=${ARCHITECTURELEVEL} -s -flto -fPIC" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib64 ..
+CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=audacious
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
-sh ${currentPackage}-qt.SlackBuild || exit 1
+QT=5 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "audacious-media-player" ${currentPackage})
-version=${info#* }
-cp $SCRIPTPATH/extras/audacious-qt/${currentPackage}-qt.SlackBuild .
-sh ${currentPackage}-qt.SlackBuild || exit 1
+QT=5 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
@@ -155,6 +149,7 @@ mv $MODULEPATH/packages/usr/share/kf5/infopage/body-background.png $MODULEPATH/p
 ### fix some .desktop files
 
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
+sed -i "s|image/x-xcf|image/x-xcf;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.kde.gwenview.desktop
 
 ### copy build files to 05-devel
 
@@ -168,8 +163,9 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
-em usr/share/applications/org.kde.plasma.emojier.desktop
+rm usr/bin/systemmonitor
 rm usr/share/applications/org.kde.dolphinsu.desktop
+rm usr/share/applications/org.kde.plasma.emojier.desktop
 rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
 rm usr/share/plasma/avatars/*
@@ -177,7 +173,6 @@ rm usr/share/plasma/avatars/*
 rm -R etc/kde/xdg/autostart/baloo_file.desktop
 rm -R etc/kde/xdg/autostart/kaccess.desktop
 rm -R etc/kde/xdg/autostart/xembedsniproxy.desktop
-rm -R usr/lib
 rm -R usr/share/chromium
 rm -R usr/share/emoticons/EmojiOne
 rm -R usr/share/featherpad
@@ -198,21 +193,22 @@ rm -R usr/share/kde4
 rm -R usr/share/kf5/kdoctools
 rm -R usr/share/kf5/locale
 rm -R usr/share/ksplash/Themes/Classic
+rm -R usr/share/phonon4qt5
 rm -R usr/share/plasma/desktoptheme/air
 rm -R usr/share/plasma/desktoptheme/oxygen
 rm -R usr/share/plasma/emoji
 rm -R usr/share/plasma/look-and-feel/org.kde.oxygen
 rm -R usr/share/plasma/nightcolor
-rm -R usr/share/sddm/translations
+rm -R usr/share/sddm/themes/breeze/preview*
 rm -R usr/share/sddm/themes/elarun
 rm -R usr/share/sddm/themes/maldives
 rm -R usr/share/sddm/themes/maya
-rm -R usr/share/sddm/themes/breeze/preview*
-rm -R usr/share/themes/Breeze/gtk-4.0
+rm -R usr/share/sddm/translations
 rm -R usr/share/themes/Breeze-Dark/gtk-4.0
-rm -R usr/share/phonon4qt5
+rm -R usr/share/themes/Breeze/gtk-4.0
 rm -R usr/share/wallpapers/Next
 
+[ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o -name "Air Balloon.png.license" -o -name "Astronaut.png" -o -name "Astronaut.png.license" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
@@ -220,11 +216,11 @@ AggressiveStripAll
 
 ### copy cache files
 
-PrepareFilesForCache
+PrepareFilesForCacheDE
 
 ### generate cache files
 
-GenerateCaches
+GenerateCachesDE
 
 ### kde specific mime cache
 

@@ -1,0 +1,20 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                    |-----handy-ruler------------------------------------------------------|
+gnome-system-monitor: gnome-system-monitor (GNOME System Monitor)
+gnome-system-monitor:
+gnome-system-monitor: GNOME System Monitor is a GNOME process viewer and system monitor 
+gnome-system-monitor: with an attractive,easy-to-use interface, It has features, 
+gnome-system-monitor: such as a tree view for process dependencies,icons for processes
+gnome-system-monitor: the ability to hide processes that you don't want to see,graphical 
+gnome-system-monitor: time histories of CPU/memory/swap usage,the ability to kill/renice.
+gnome-system-monitor:
+gnome-system-monitor: 
+gnome-system-monitor: https://gitlab.gnome.org/GNOME/gnome-system-monitor
+gnome-system-monitor:
+

@@ -1,0 +1,10 @@
+--- meson.build	2024-04-11 15:23:55.639001818 +0200
++++ meson.build.patched	2024-04-11 15:24:06.605002337 +0200
+@@ -190,7 +190,6 @@
+   # would like to require the icon theme at compile-time. But, because
+   # the hicolor-icon-theme does not have a pkgconfig file, on gnome we
+   # require the gnome icon theme instead.
+-  adwaita_icon_theme_dep = dependency('adwaita-icon-theme', version: '>= 2.17.1')
+ 
+   # *** Nautilus property page build ***
+   enable_nautilus = get_option('nautilus')

@@ -6,15 +6,15 @@ SetFlags() {
     systemFullVersion=$(cat /etc/slackware-version)
 
     if [[ ${systemFullVersion//* } != *"+" ]]; then
-	    export SLACKWAREVERSION=15.0
-	    export PORTEUXBUILD=stable
-	else
-		export SLACKWAREVERSION=current
-		export PORTEUXBUILD=current
-	fi
+        export SLACKWAREVERSION=15.0
+        export PORTEUXBUILD=stable
+    else
+        export SLACKWAREVERSION=current
+        export PORTEUXBUILD=current
+    fi
 
     export SLACKBUILDVERSION=$SLACKWAREVERSION
-	export KERNELVERSION="6.7.8"
+    export KERNELVERSION="6.8.9"
 
     export SCRIPTPATH="$PWD"
     export PORTEUXBUILDERPATH="/tmp/porteux-builder-$PORTEUXBUILD"
@@ -30,11 +30,11 @@ SetFlags() {
     if [ ! $SYSTEMBITS ] && [ `getconf LONG_BIT` == "64" ]; then
         export SYSTEMBITS="64"
     else
-		export SYSTEMBITS=
+        export SYSTEMBITS=
     fi
 
-	export NUMBERTHREADS=$(nproc --all)
-
+    export GCCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64}"
+    export NUMBERTHREADS=$(nproc --all)
     export REPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
     export PATCHREPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS/patches"
     export SOURCEREPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/source"

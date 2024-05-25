@@ -35,11 +35,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	wait
 fi
 
-### packages that require specific striping
-
-DownloadPackage "gtk+3" &
-wait
-
 ### temporary packages for further building
 
 DownloadPackage "boost" &

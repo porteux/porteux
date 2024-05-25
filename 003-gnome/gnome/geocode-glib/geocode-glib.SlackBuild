@@ -1,0 +1,45 @@
+#!/bin/bash
+
+PRGNAM=geocode-glib
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+
+tar xvf $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto" \
+meson setup \
+    --buildtype=release \
+    --infodir=/usr/info \
+    --libdir=/usr/lib${SYSTEMBITS} \
+    --localstatedir=/var \
+    --mandir=/usr/man \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    -Dstrip=true \
+    -Denable-introspection=true \
+    -Denable-gtk-doc=false \
+    -Denable-installed-tests=false \
+    -Dsoup2=false
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

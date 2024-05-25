@@ -1,0 +1,20 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+       |-----handy-ruler------------------------------------------------------|
+tracker: tracker (semantic data storage search engine)
+tracker:
+tracker: Tracker is a search engine and that allows the user to find their
+tracker: data as fast as possible. Users can search for their files and search
+tracker: for content in their files too.  Tracker is a semantic data storage
+tracker: for desktop and mobile devices.  Tracker uses W3C standards for RDF
+tracker: ontologies using Nepomuk with SPARQL to query and update the data.
+tracker: Tracker is a central repository of user information, that provides
+tracker: two big benefits for the desktop; shared data between applications
+tracker: and information which is relational to other information (e.g. mixing
+tracker: contacts with files, locations, activities and etcetera).
+

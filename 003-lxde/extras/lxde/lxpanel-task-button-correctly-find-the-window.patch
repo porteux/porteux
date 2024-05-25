@@ -1,0 +1,42 @@
+From f813fc8a551c7c8e514a61451d4c19f641030851 Mon Sep 17 00:00:00 2001
+From: Mamoru TASAKA <mtasaka@fedoraproject.org>
+Date: Sat, 13 Jan 2018 10:25:33 +0900
+Subject: [PATCH] [SF:894] task-button: correctly find the window currently visible and use it
+
+When same_monitor_only mode, the last_focused details may not the one currently visible
+(as last_focused details may be on other monitor). So even if n_visible is one,
+find out details currently visible anyway.
+---
+ plugins/task-button.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/plugins/task-button.c b/plugins/task-button.c
+index 6aa2d05..b306c45 100644
+--- plugins/task-button.c
++++ plugins/task-button.c
+@@ -1343,7 +1343,21 @@ static gboolean task_button_button_release_event(GtkWidget *widget, GdkEventButt
+     else
+     {
+         /* Not a grouped-task representative, or entered from the grouped-task popup menu. */
+-        task_button_window_do_release_event(widget, tb->last_focused, event);
++        /* [SF:894] Find the details currently visible, it should exists here.
++           Note that with same_monitor_only mode, the last_focused details may not the one
++           currently visible (as last_focused details may be on other monitor).
++          */
++        task = NULL;
++        for (l = tb->details; l; l = l->next)
++        {
++            task = l->data;
++            if (task->visible)
++            {
++                break;
++            }
++        }
++        task_button_window_do_release_event(widget, task, event);
++
+     }
+ 
+     /* As a matter of policy, avoid showing selected or prelight states on flat buttons. */
+-- 
+2.15.1
+

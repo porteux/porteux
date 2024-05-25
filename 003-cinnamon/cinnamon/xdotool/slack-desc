@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+xdotool: xdotool (fake X11 keyboard/mouse input)
+xdotool:
+xdotool: This tool lets you programatically (or manually) simulate keyboard
+xdotool: input and mouse activity, move and resize windows, etc. It does this
+xdotool: using X11's XTEST extension and other Xlib functions.
+xdotool:
+xdotool:
+xdotool:
+xdotool:
+xdotool:
+xdotool:

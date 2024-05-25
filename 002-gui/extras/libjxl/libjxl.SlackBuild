@@ -1,0 +1,75 @@
+#!/bin/bash
+
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
+PRGNAM=libjxl
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "${PRGNAM}" ${PRGNAM})
+VERSION=${info#* }
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+# skipping not used deps download
+sed -i "s|download_github testdata libjxl/testdata||g" deps.sh
+sed -i "s|download_github third_party/brotli google/brotli||g" deps.sh
+sed -i "s|download_github third_party/sjpeg webmproject/sjpeg||g" deps.sh
+sed -i "s|download_github third_party/zlib madler/zlib||g" deps.sh
+sed -i "s|download_github third_party/libpng glennrp/libpng||g" deps.sh
+sed -i "s|download_github third_party/libjpeg-turbo libjpeg-turbo/libjpeg-turbo||g" deps.sh
+
+sh deps.sh
+
+cmake -B build -S $TMP/$PRGNAM-$VERSION \
+    -DBUILD_TESTING:BOOL='false' \
+    -DENABLE_FUZZERS_DEFAULT:BOOL='false' \
+    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -flto" \
+    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
+    -DBUNDLE_LIBPNG_DEFAULT='NO' \
+    -DCMAKE_BUILD_TYPE:STRING='Release' \
+    -DCMAKE_INSTALL_PREFIX:PATH='/usr' \
+    -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib${SYSTEMBITS} \
+    -DCMAKE_INSTALL_BINDIR:PATH=/usr/bin \
+    -DCMAKE_INSTALL_MANDIR:PATH=/usr/man \
+    -DBUILD_SHARED_LIBS:BOOL='true' \
+    -DJPEGXL_ENABLE_JNI:BOOL='false' \
+    -DJPEGXL_ENABLE_JPEGLI:BOOL='false' \
+    -DJPEGXL_ENABLE_DEVTOOLS:BOOL='false' \
+    -DJPEGXL_ENABLE_DOXYGEN:BOOL='false' \
+    -DJPEGXL_ENABLE_MANPAGES:BOOL='false' \
+    -DJPEGXL_ENABLE_SKCMS:BOOL='false' \
+    -DJPEGXL_ENABLE_BENCHMARK:BOOL='false' \
+    -DJPEGXL_ENABLE_EXAMPLES:BOOL='false' \
+    -DJPEGXL_ENABLE_FUZZERS:BOOL='false' \
+    -DJPEGXL_ENABLE_PLUGINS:BOOL='true' \
+    -DJPEGXL_ENABLE_VIEWERS:BOOL='false' \
+    -DJPEGXL_ENABLE_TOOLS:BOOL='true' \
+    -DJPEGXL_ENABLE_SIZELESS_VECTORS:BOOL='false' \
+    -DJPEGXL_ENABLE_TCMALLOC:BOOL='false' \
+    -DJPEGXL_WARNINGS_AS_ERRORS:BOOL='false' \
+    -DJPEGXL_FORCE_SYSTEM_BROTLI:BOOL='true' \
+    -DJPEGXL_FORCE_SYSTEM_HWY:BOOL='false' \
+    -DJPEGXL_FORCE_SYSTEM_LCMS2:BOOL='true' \
+    -DJPEGXL_ENABLE_SJPEG:BOOL='false' \
+    -DJPEGXL_STATIC:BOOL='false'
+
+make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -name perllocal.pod -o -name ".packlist" -o -name "*.bs" | xargs rm -f || true
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

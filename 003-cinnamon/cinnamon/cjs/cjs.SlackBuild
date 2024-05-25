@@ -1,0 +1,46 @@
+#!/bin/sh
+
+PRGNAM=cjs
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://github.com/linuxmint/${PRGNAM}/tags/ | grep "/linuxmint/${PRGNAM}/releases/tag/" | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | uniq | sort -V -r | head -n 1)
+wget -c https://github.com/linuxmint/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz -O ${PRGNAM}-${VERSION}.tar.gz
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+patch -Np1 -i $CWD/mozjs115-compatible.patch
+
+[ ! -e build ] && mkdir build
+cd build
+CFLAGS="$GCCFLAGS -flto" \
+meson setup \
+    --buildtype=release \
+    --infodir=/usr/info \
+    --libdir=/usr/lib${SYSTEMBITS} \
+    --localstatedir=/var \
+    --mandir=/usr/man \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    -Dinstalled_tests=false \
+    -Dskip_dbus_tests=true \
+    -Dskip_gtk_tests=true
+ 
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

@@ -1,0 +1,20 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+               |-----handy-ruler------------------------------------------------------|
+nautilus-python: nautilus-python (extension for Nautilus )
+nautilus-python:
+nautilus-python: This is an extension for Nautilus that allows further extending it 
+nautilus-python: with Python scripts with the help of Nautilusâ€™s GObject API.
+nautilus-python: Documentation, including an API reference, is available through
+nautilus-python: Devhelp app, if you have nautilus-python package installed
+nautilus-python: or on-line
+nautilus-python:
+nautilus-python: 
+nautilus-python: https://github.com/GNOME/nautilus-python
+nautilus-python:
+

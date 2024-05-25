@@ -1,5 +1,10 @@
 #!/bin/sh
 
+PrepareFilesForCacheDE() {
+    cp -r $PORTEUXBUILDERPATH/caches/ $PORTEUXBUILDERPATH/caches-bkp
+    PrepareFilesForCache
+}
+
 PrepareFilesForCache() {
 	# ldconfig to fix/update broken symlinks
 	ldconfig -r $MODULEPATH/packages/
@@ -19,6 +24,12 @@ PrepareFilesForCache() {
 	# copy gdkpixbuf files to build /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders.cache
 	mkdir -p $PORTEUXBUILDERPATH/caches/gdk-pixbuf-2.0/2.10.0/loaders > /dev/null 2>&1
 	cp $MODULEPATH/packages/usr/lib$SYSTEMBITS/gdk-pixbuf-2.0/2.10.0/loaders/*.so $PORTEUXBUILDERPATH/caches/gdk-pixbuf-2.0/2.10.0/loaders > /dev/null 2>&1
+}
+
+GenerateCachesDE() {
+    GenerateCaches
+    rm -r $PORTEUXBUILDERPATH/caches
+    mv $PORTEUXBUILDERPATH/caches-bkp $PORTEUXBUILDERPATH/caches
 }
 
 GenerateCaches() {

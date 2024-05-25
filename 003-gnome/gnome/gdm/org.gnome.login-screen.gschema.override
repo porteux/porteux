@@ -1,3 +1,0 @@
-[org.gnome.login-screen]
-logo='/usr/share/pixmaps/slackware_whitelogo_med.png'
-enable-smartcard-authentication=false

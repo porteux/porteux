@@ -6,7 +6,7 @@ Latest release direct link: https://github.com/porteux/porteux/releases/latest
 
 PorteuX is a Linux distro based on Slackware, inspired by Slax and Porteus and available to the public for free. Its main goal is to be super fast, small, portable, modular and immutable (if the user wants so).
 
-It's already pre-configured for basic usage, including lightweight applications for each one of the 6 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, Nvidia drivers, office suite, multilib, messengers, emulators, etc.
+It's already pre-configured for basic usage, including lightweight applications for each one of the 7 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, Nvidia drivers, office suite, multilib, messengers, emulators, etc.
 
 Out of the box PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or Nvidia cards (for Nvidia cards it's required to download Nvidia driver from the app store).
 
@@ -15,6 +15,7 @@ Out of the box PorteuX can open basically any multimedia file. Hardware accelera
 If you're new to PorteuX and have never used Slax or Porteus, it's recommended to read this [in-depth review of Porteus](https://medium.com/@fulalas/porteus-5-review-a-different-and-powerful-linux-distro-33df8789a758).
 
 PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable (safer) and current/rolling (bleeding edge). After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases/latest): <br />
+. Cinnamon<br />
 . GNOME<br />
 . KDE<br />
 . LXDE<br />
@@ -24,15 +25,13 @@ PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stabl
 
 PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's simple like that. Please avoid ISO installer applications such as Rufus or Etcher because by default they set the bootable unit to be read-only. More details in `/boot/docs/install.txt` file in the ISO.
 
-On top of the latest version, old Xfce 4.12 is also provided for the best balance between performance and flexibility. Many patches have been applied to improve the user experience. For optimal performance, remember to turn off the compositor when running 3D applications such as games and benchmarks (Settings -> Window Manager Tweaks -> Compositor tab).
+In order to have PorteuX in a language different than English, download multilanguage package and use PorteuX Language Switcher application to choose the desired language.
 
-If you want to have PorteuX working on a language different than English, download multilanguage package and use PorteuX Language Switcher application to configure the language.
+To build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, headers, etc. To build a driver (e.g. VirtualBox or any physical device), download and activate 06-crippled_sources xzm module. It's recommended to have them inside /porteux/optional folder and activate them only when needed.
 
-If you want to build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, headers, etc. If you need to build a driver (e.g. VirtualBox or any physical device), you should also download and activate 06-crippled_sources xzm module. It's recommended to have them inside /porteux/optional folder and activate them only when needed.
+To run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. Just like 05-devel and 06-crippled_sources, it's recommended to have these 2 modules in /porteux/optional.
 
-If you want to run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. Just like 05-devel and 06-crippled_sources, it's recommended to have these 2 modules in /porteux/optional.
-
-To be able to read Asian characters, please download and activate the module [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/extras/notoserifcjk-regular.xzm).
+In order to read Asian characters, please download and activate the module [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/extras/notoserifcjk-regular.xzm).
 
 ## Default Username and Password
 
@@ -44,7 +43,7 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have the average size of 425 MB and after boot the whole system takes about 1 GB of RAM, even considering that the system is running in RAM.
+PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have less than 500 MB and after boot the whole system takes about 1 GB of RAM, even considering that the system is running in RAM.
 
 Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
@@ -90,8 +89,8 @@ theUtopian (core team)<br />
 blaze (@porteus)<br />
 brokenman (@porteus)<br />
 frank honolka (@snuk)<br />
-neko (@porteus)<br />
 ncmprhnsbl (@porteus)<br />
+neko (@porteus)<br />
 patrick volkerding (@slackware)<br />
 phantom (@porteus)<br />
 ponce (@slackware)<br />
