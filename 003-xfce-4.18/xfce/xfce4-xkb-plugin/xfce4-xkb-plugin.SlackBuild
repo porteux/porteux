@@ -17,7 +17,7 @@ VERSIONS=$(echo "$PACKAGES" | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | sort -Vr)
 VERSION=$(echo "$VERSIONS" | head -n 1)
 wget https://archive.xfce.org/src/panel-plugins/$PRGNAM/0.8/$PRGNAM-$VERSION.tar.bz2
 
-SLKCFLAGS="$GCCFLAGS -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -flto -fuse-linker-plugin -fwhole-program"
+SLKCFLAGS="$GCCFLAGS -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -ffat-lto-objects -flto -fuse-linker-plugin -fwhole-program"
 
 tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
