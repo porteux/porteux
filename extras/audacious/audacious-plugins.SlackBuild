@@ -31,6 +31,8 @@ fi
 tar xvf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-${PRGNAM}-$VERSION
 
+for i in $CWD/*.patch; do patch -p0 < $i || exit 1; done
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
 meson setup \
