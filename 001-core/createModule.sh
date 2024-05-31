@@ -67,7 +67,7 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=unrar
-version="7.0.7"
+version="7.0.9"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
