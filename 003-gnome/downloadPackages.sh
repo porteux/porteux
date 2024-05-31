@@ -39,7 +39,7 @@ DownloadPackage "libsigc++3" & # required by gnome-system-monitor
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
 DownloadPackage "mozjs115" &
-DownloadPackage "pango2" & # required by gnome-system-monitor
+DownloadPackage "pangomm2" & # required by gnome-system-monitor
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait
