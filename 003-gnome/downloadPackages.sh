@@ -58,7 +58,6 @@ DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
 DownloadPackage "llvm" & # required by glycin
 DownloadPackage "python-pip" &
-DownloadPackage "rust" & # required by loupe
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "vulkan-sdk" & # required by gtksourceview
 DownloadPackage "xtrans" &

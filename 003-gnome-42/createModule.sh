@@ -70,6 +70,7 @@ export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LA
 [ ! "${GNOME_LATEST_MAJOR_VERSION}" ] || [ ! "${GNOME_LATEST_VERSION}" ] && echo "Couldn't detect GNOME latest version" && exit 1
 
 echo "Building GNOME ${GNOME_LATEST_VERSION}..."
+MODULENAME=$MODULENAME-${GNOME_LATEST_VERSION}
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=gsettings-desktop-schemas
