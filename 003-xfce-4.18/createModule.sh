@@ -227,6 +227,9 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+# only required for building not for run-time
+rm $MODULEPATH/packages/xfce4-dev-tools*
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
