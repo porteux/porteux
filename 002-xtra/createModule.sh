@@ -24,9 +24,12 @@ DownloadFromSlackware
 
 currentPackage=transmission
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "${currentPackage}" ${currentPackage})
-version=${info#* }
-filename=${info% *}
+#info=$(DownloadLatestFromGithub "${currentPackage}" ${currentPackage})
+#version=${info#* }
+#filename=${info% *}
+version="4.0.5"
+filename="${currentPackage}-${version}.tar.xz"
+wget https://github.com/${currentPackage}/${currentPackage}/releases/download/${version}/${currentPackage}-${version}.tar.xz
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
@@ -208,6 +211,8 @@ cmake -DCMAKE_C_FLAGS:STRING="$GCCFLAGS" -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" -D
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-${version//[vV]}-$ARCH-1.txz
+installpkg $MODULEPATH/packages/${currentPackage,,}-${version//[vV]}-$ARCH-1.txz
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=dav1d
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -302,16 +307,14 @@ rm -fr $MODULEPATH/${currentPackage}
 # required by mpv
 currentPackage=LuaJIT
 mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/development/${currentPackage,,}/ -A * || exit 1
-version=2.0.5
-wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/tags/v${version}.tar.gz -O ${currentPackage}-${version}.tar.gz
-sed -z -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage,,}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage,,}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage,,}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage,,}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
-sh ${currentPackage,,}.SlackBuild || exit 1
-mv /tmp/${currentPackage,,}*.t?z $MODULEPATH/packages
+git clone https://github.com/${currentPackage}/${currentPackage}
+cd LuaJIT
+version=`git --git-dir=.git log -1 --date=format:"%Y%m%d" --format="%ad"`
+sed -i -e '/-DLUAJIT_ENABLE_LUA52COMPAT/s/^#//' src/Makefile
+CFLAGS="$GCCFLAGS" CXXFLAGS="$GCCFLAGS" make -j${NUMBERTHREADS} Q= PREFIX=/usr INSTALL_LIB=/usr/lib$SYSTEMBITS || exit 1
+make Q= PREFIX=/usr INSTALL_LIB=$MODULEPATH/${currentPackage,,}/package/usr/lib$SYSTEMBITS install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
+cd $MODULEPATH/${currentPackage,,}/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
 rm -fr $MODULEPATH/${currentPackage,,}
 
