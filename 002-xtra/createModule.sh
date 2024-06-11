@@ -24,14 +24,13 @@ DownloadFromSlackware
 
 currentPackage=transmission
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#info=$(DownloadLatestFromGithub "${currentPackage}" ${currentPackage})
-#version=${info#* }
-#filename=${info% *}
-version="4.0.5"
-filename="${currentPackage}-${version}.tar.xz"
-wget https://github.com/${currentPackage}/${currentPackage}/releases/download/${version}/${currentPackage}-${version}.tar.xz
+info=$(DownloadLatestFromGithub "${currentPackage}" ${currentPackage})
+version=${info#* }
+filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
+cp $SCRIPTPATH/extras/transmission/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done # only for version 4.0.6 which is broken
 mkdir build && cd build
 CXXFLAGS="$GCCFLAGS" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
