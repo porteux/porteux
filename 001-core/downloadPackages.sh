@@ -64,7 +64,6 @@ DownloadPackage "gettext" &
 DownloadPackage "glib2" &
 DownloadPackage "glibc" &
 DownloadPackage "glibc-zoneinfo" &
-DownloadPackage "gnome-keyring" &
 DownloadPackage "gnupg" &
 DownloadPackage "gnutls" &
 DownloadPackage "gpgme" &
@@ -133,8 +132,8 @@ DownloadPackage "libusb-compat" &
 DownloadPackage "libusbmuxd" &
 DownloadPackage "libxml2" &
 DownloadPackage "libzip" &
-DownloadPackage "lmdb" &
 wait
+DownloadPackage "lmdb" &
 DownloadPackage "lm_sensors" &
 DownloadPackage "lsof" &
 DownloadPackage "lvm2" &
