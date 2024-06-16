@@ -7,7 +7,6 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "aaa_base" &
 DownloadPackage "aaa_glibc-solibs" &
-DownloadPackage "aaa_libraries" &
 DownloadPackage "aaa_terminfo" &
 DownloadPackage "acl" &
 DownloadPackage "acpid" &
@@ -65,7 +64,6 @@ DownloadPackage "gettext" &
 DownloadPackage "glib2" &
 DownloadPackage "glibc" &
 DownloadPackage "glibc-zoneinfo" &
-DownloadPackage "gnome-keyring" &
 DownloadPackage "gnupg" &
 DownloadPackage "gnutls" &
 DownloadPackage "gpgme" &
@@ -134,8 +132,8 @@ DownloadPackage "libusb-compat" &
 DownloadPackage "libusbmuxd" &
 DownloadPackage "libxml2" &
 DownloadPackage "libzip" &
-DownloadPackage "lmdb" &
 wait
+DownloadPackage "lmdb" &
 DownloadPackage "lm_sensors" &
 DownloadPackage "lsof" &
 DownloadPackage "lvm2" &
@@ -159,7 +157,7 @@ wait
 DownloadPackage "newt" &
 DownloadPackage "nfs-utils" &
 DownloadPackage "nghttp2" &
-DownloadPackage "ntfs" &
+DownloadPackage "ntfs-3g" &
 DownloadPackage "openssh" &
 DownloadPackage "openssl" &
 DownloadPackage "openvpn" &
@@ -244,8 +242,11 @@ fi
 
 ### packages that require specific striping
 
+DownloadPackage "aaa_libraries" &
 DownloadPackage "binutils" &
 DownloadPackage "fftw" & # required by pulse plugins
+DownloadPackage "gcc" & # required by aaa_libraries
+DownloadPackage "gcc-g++" & # required by aaa_libraries
 DownloadPackage "ntp" &
 DownloadPackage "openldap" &
 wait

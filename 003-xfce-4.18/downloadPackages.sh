@@ -11,14 +11,13 @@ DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gtksourceview3" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
-DownloadPackage "libdbusmenu" &
 wait
+DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
-DownloadPackage "pavucontrol" &
 wait
 
 ### slackware current only packages
