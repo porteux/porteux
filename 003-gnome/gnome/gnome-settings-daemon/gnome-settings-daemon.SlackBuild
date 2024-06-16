@@ -21,7 +21,7 @@ cd $PRGNAM-$VERSION
 patch -Np1 -i $CWD/disable-systemd.patch
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
 meson setup \
     --prefix=/usr \
     --buildtype=release \

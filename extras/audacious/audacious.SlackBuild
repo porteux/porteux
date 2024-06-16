@@ -19,20 +19,20 @@ VERSION=${info#* }
 
 if [[ ${QT} == "5" ]]; then
 	TOOLKIT="qt5"
-	toolkitFlags="-Dgtk=false -Dqt=true"
+	toolkitFlags="-Dgtk=false -Dqt5=true"
 elif [[ ${QT} == "6" ]]; then
 	TOOLKIT="qt6"
-	toolkitFlags="-Dgtk=false -Dqt6=true"
+	toolkitFlags="-Dgtk=false -Dqt=true"
 else
 	TOOLKIT="gtk3"
-	toolkitFlags="-Dgtk3=true -Dqt=false -Dqt6=false"
+	toolkitFlags="-Dgtk=true -Dqt5=false -Dqt=false"
 fi
 
 tar xvf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-${PRGNAM}-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
 meson setup \
     --prefix=/usr \
     --libdir=/usr/lib${SYSTEMBITS} \

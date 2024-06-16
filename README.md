@@ -27,9 +27,9 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 In order to have PorteuX in a language different than English, download multilanguage package and use PorteuX Language Switcher application to choose the desired language.
 
-To build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, headers, etc. To build a driver (e.g. VirtualBox or any physical device), download and activate 06-crippled_sources xzm module. It's recommended to have them inside /porteux/optional folder and activate them only when needed.
+To build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), download and activate 06-crippled_sources xzm module.
 
-To run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. Just like 05-devel and 06-crippled_sources, it's recommended to have these 2 modules in /porteux/optional.
+To run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. It's recommended to have these 2 modules in /porteux/optional and activate them only when needed.
 
 In order to read Asian characters, please download and activate the module [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/extras/notoserifcjk-regular.xzm).
 
@@ -43,7 +43,7 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have less than 500 MB and after boot the whole system takes about 1 GB of RAM, even considering that the system is running in RAM.
+PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have less than 600 MB and after boot the whole system takes about 1 GB of RAM, even considering that the system is running in RAM.
 
 Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
@@ -56,7 +56,7 @@ Sources:
 [ClearLinux40520](https://browser.geekbench.com/v6/cpu/4073056)
 [PorteuX0.9](https://browser.geekbench.com/v6/cpu/4087178)
 
-All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and all applications are usually as new as possible.
+All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and all applications are usually as new as possible in the current/rolling release.
 
 ## Compatibility with Porteus 5
 

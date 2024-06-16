@@ -46,7 +46,6 @@ rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/python-pip*
-rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/vulkan-sdk*
 rm $MODULEPATH/packages/xtrans*
@@ -57,6 +56,11 @@ pip install attrs || exit 1
 pip install jinja2 || exit 1
 pip install pygments || exit 1
 
+# rust nightly required by glycin and loupe
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+PATH=/root/.cargo/bin/:$PATH
+rustup component add rust-src --toolchain nightly
+
 export GNOME_LATEST_MAJOR_VERSION=$(curl -s https://download.gnome.org/core/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/')
 gnomeLatestVersionTest=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | grep -oP '\d+(\.\d+)?' | sort -V | tail -n 1 | tr -d '/')
 [ ! "${gnomeLatestVersionTest}" ] && ((GNOME_LATEST_MAJOR_VERSION--))
@@ -64,6 +68,7 @@ export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LA
 [ ! "${GNOME_LATEST_MAJOR_VERSION}" ] || [ ! "${GNOME_LATEST_VERSION}" ] && echo "Couldn't detect GNOME latest version" && exit 1
 
 echo "Building GNOME ${GNOME_LATEST_VERSION}..."
+MODULENAME=$MODULENAME-${GNOME_LATEST_VERSION}
 
 # gnome packages
 for package in \
@@ -161,10 +166,10 @@ rm -R usr/lib${SYSTEMBITS}/graphene-1.0
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/lib${SYSTEMBITS}/python*/site-packages/pip*
-rm -R usr/share/Adwaita/8x8
-rm -R usr/share/Adwaita/96x96
-rm -R usr/share/Adwaita/256x256
-rm -R usr/share/Adwaita/512x512
+rm -R usr/share/icons/Adwaita/8x8
+rm -R usr/share/icons/Adwaita/96x96
+rm -R usr/share/icons/Adwaita/256x256
+rm -R usr/share/icons/Adwaita/512x512
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service

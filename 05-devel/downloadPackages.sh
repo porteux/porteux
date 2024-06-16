@@ -14,9 +14,9 @@ DownloadPackage "cmake" &
 DownloadPackage "gc" &
 DownloadPackage "gcc" &
 DownloadPackage "gcc-g++" &
+wait
 DownloadPackage "gd" &
 DownloadPackage "gettext-tools" &
-wait
 DownloadPackage "git" &
 DownloadPackage "gmp" &
 DownloadPackage "guile" &
@@ -24,10 +24,9 @@ DownloadPackage "intltool" &
 DownloadPackage "isl" &
 DownloadPackage "itstool" &
 DownloadPackage "libmpc" &
-DownloadPackage "libpthread-stubs" &
 wait
+DownloadPackage "libpthread-stubs" &
 DownloadPackage "libtool" &
-DownloadPackage "libunistring" &
 DownloadPackage "linuxdoc-tools" &
 DownloadPackage "m4" &
 DownloadPackage "make" &
@@ -35,8 +34,8 @@ DownloadPackage "makedepend" &
 DownloadPackage "meson" &
 DownloadPackage "nasm" &
 DownloadPackage "ninja" &
-wait
 DownloadPackage "perl" &
+wait
 DownloadPackage "pkg-config" &
 DownloadPackage "python-packaging" &
 DownloadPackage "python-setuptools" &

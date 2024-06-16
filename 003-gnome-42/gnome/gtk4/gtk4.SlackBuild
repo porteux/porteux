@@ -20,7 +20,7 @@ tar xfv $SRCNAM-$VERSION.tar.?z*
 cd $SRCNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
 meson setup \
   --prefix=/usr \
   --libdir=lib${SYSTEMBITS} \

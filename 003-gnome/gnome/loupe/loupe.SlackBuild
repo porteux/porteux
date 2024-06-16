@@ -18,6 +18,8 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+export RUSTFLAGS="-C panic=abort -C strip=debuginfo -Clto=true -Cembed-bitcode=yes -Zdylib-lto -Ccodegen-units=1 -Zlocation-detail=none"
+
 mkdir build && cd build
 meson setup \
     --prefix=/usr \
@@ -29,7 +31,7 @@ meson setup \
     --mandir=/usr/man \
     --localstatedir=/var
 
-RUSTFLAGS="-C panic=abort -C strip=debuginfo" DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

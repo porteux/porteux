@@ -30,7 +30,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2 |$GCCFLAGS -ffat-lto-objects -flto |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -41,7 +41,7 @@ version="0.2.5"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/${currentPackage} || exit 1
 cd ${currentPackage}
-./autogen.sh && CFLAGS="$GCCFLAGS -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -Wa,-mbranches-within-32B-boundaries -flto -fuse-linker-plugin" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
+./autogen.sh && CFLAGS="$GCCFLAGS -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -Wa,-mbranches-within-32B-boundaries -ffat-lto-objects -flto -fuse-linker-plugin" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -111,6 +111,10 @@ rm -fr $MODULEPATH/${currentPackage}
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 
+currentPackage=pavucontrol
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=mate-utils
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
@@ -153,7 +157,7 @@ cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
 mkdir ${currentPackage}-package
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" meson setup \
+CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" meson setup \
 	--prefix=/usr \
 	--buildtype=release \
 	--libdir=lib${SYSTEMBITS} \
@@ -222,6 +226,9 @@ sh $SCRIPTPATH/xfce/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+# only required for building not for run-time
+rm $MODULEPATH/packages/xfce4-dev-tools*
 
 ### fake root
 
