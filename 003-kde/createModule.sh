@@ -162,7 +162,7 @@ mv $MODULEPATH/packages/usr/share/kf5/infopage/body-background.png $MODULEPATH/p
 ### fix some .desktop files
 
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
-sed -i "s|image/x-xcf|image/x-xcf;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.kde.gwenview.desktop
+sed -i "s|image/png|image/png;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.kde.gwenview.desktop
 
 ### copy build files to 05-devel
 
@@ -225,7 +225,11 @@ rm -R usr/share/wallpapers/Next
 find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o -name "Air Balloon.png.license" -o -name "Astronaut.png" -o -name "Astronaut.png.license" \) -exec rm -rf '{}' \; 2>/dev/null
 
 GenericStrip
+
+# move out things that don't support aggressive stripping
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libgwenviewlib.so* $MODULEPATH/
 AggressiveStripAll
+mv $MODULEPATH/libgwenviewlib.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
 

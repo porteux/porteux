@@ -348,6 +348,7 @@ InstallAdditionalPackages
 ### fix some .desktop files
 
 sed -i "s|image/x-tga|image/x-tga;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/lximage-qt.desktop
+sed -i "s|Icon=pcmanfm-qt|image/Icon=system-file-manager|g" $MODULEPATH/packages/usr/share/applications/pcmanfm-qt.desktop
 
 ### add session
 
@@ -394,6 +395,7 @@ rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
+rm usr/share/icons/hicolor/scalable/apps/pcmanfm-qt.svg
 rm usr/share/lxqt/wallpapers/after-the-rain.jpg
 rm usr/share/lxqt/wallpapers/appleflower.png
 rm usr/share/lxqt/wallpapers/beam.png

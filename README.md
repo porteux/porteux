@@ -43,7 +43,7 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have less than 500 MB and after boot the whole system takes about 1 GB of RAM, even considering that the system is running in RAM.
+PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have less than 600 MB and after boot the whole system takes about 1 GB of RAM, even considering that the system is running in RAM.
 
 Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
@@ -56,7 +56,7 @@ Sources:
 [ClearLinux40520](https://browser.geekbench.com/v6/cpu/4073056)
 [PorteuX0.9](https://browser.geekbench.com/v6/cpu/4087178)
 
-All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and all applications are usually as new as possible.
+All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and all applications are usually as new as possible in the current/rolling release.
 
 ## Compatibility with Porteus 5
 

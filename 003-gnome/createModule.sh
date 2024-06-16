@@ -166,10 +166,10 @@ rm -R usr/lib${SYSTEMBITS}/graphene-1.0
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/lib${SYSTEMBITS}/python*/site-packages/pip*
-rm -R usr/share/Adwaita/8x8
-rm -R usr/share/Adwaita/96x96
-rm -R usr/share/Adwaita/256x256
-rm -R usr/share/Adwaita/512x512
+rm -R usr/share/icons/Adwaita/8x8
+rm -R usr/share/icons/Adwaita/96x96
+rm -R usr/share/icons/Adwaita/256x256
+rm -R usr/share/icons/Adwaita/512x512
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
