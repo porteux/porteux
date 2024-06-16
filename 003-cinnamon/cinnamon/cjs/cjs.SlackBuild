@@ -18,8 +18,6 @@ wget -c https://github.com/linuxmint/${PRGNAM}/archive/refs/tags/${VERSION}.tar.
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-patch -Np1 -i $CWD/mozjs115-compatible.patch
-
 [ ! -e build ] && mkdir build
 cd build
 CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
