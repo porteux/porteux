@@ -30,6 +30,7 @@ GenericStrip() {
 	rm -R usr/share/icons/hicolor/192x192
 	rm -R usr/share/icons/hicolor/256x256
 	rm -R usr/share/icons/hicolor/512x512
+	rm -R usr/share/info
 	rm -R usr/share/locale
 	rm -R usr/share/man
 	rm -R usr/share/pkgconfig
