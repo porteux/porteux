@@ -25,7 +25,7 @@ DownloadFromSlackware
 currentPackage=qt5
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg qt5*.txz || exit 1
+installpkg ${currentPackage}*.txz || exit 1
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
@@ -35,7 +35,6 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt5DBus.* "${currentPackage}-stripped-$ver
 cp --parents -P usr/lib$SYSTEMBITS/libQt5Gui.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt5Network.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt5PrintSupport.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt5Sql.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt5Svg.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt5Widgets.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt5X11Extras.* "${currentPackage}-stripped-$version"
@@ -249,8 +248,8 @@ sed -i "s|g_file_info_get_size(info)|g_file_info_get_attribute_uint64 (info, G_F
     --localstatedir=/var \
     --enable-static=no \
     --enable-udisks \
-    --with-extra-only 
-	
+    --with-extra-only
+
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -326,9 +325,7 @@ cd $MODULEPATH/${currentPackage}/screengrab && git checkout 09264f734146d6929751
 cd $MODULEPATH/${currentPackage}
 cp $SCRIPTPATH/extras/lxqt/build_all_cmake_projects.sh .
 cp $SCRIPTPATH/extras/lxqt/*.patch .
-if [ $SLACKWAREVERSION != "current" ]; then
-    cp $SCRIPTPATH/extras/lxqt/stable/*.patch .
-fi
+cp $SCRIPTPATH/extras/lxqt/stable/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
 cp $SCRIPTPATH/extras/lxqt/cmake_repos.list $MODULEPATH/${currentPackage}/ || exit 1
 sh build_all_cmake_projects.sh || exit 1
@@ -393,16 +390,13 @@ rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0/
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0/
 rm -R usr/lib${SYSTEMBITS}/qt5/mkspecs
 rm -R usr/share/featherpad
+rm -R usr/share/gdm
+rm -R usr/share/gnome
 rm -R usr/share/libfm-qt/translations
 rm -R usr/share/lximage-qt
 rm -R usr/share/lxqt-archiver
 rm -R usr/share/lxqt/graphics
 rm -R usr/share/lxqt/panel
-rm -R usr/share/lxqt/themes/Arch-Colors
-rm -R usr/share/lxqt/themes/KDE-Plasma
-rm -R usr/share/lxqt/themes/light
-rm -R usr/share/lxqt/themes/silver
-rm -R usr/share/lxqt/themes/Valendas
 rm -R usr/share/lxqt/translations
 rm -R usr/share/obconf-qt
 rm -R usr/share/pavucontrol-qt
@@ -418,25 +412,10 @@ rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
-rm usr/share/lxqt/wallpapers/after-the-rain.jpg
-rm usr/share/lxqt/wallpapers/appleflower.png
-rm usr/share/lxqt/wallpapers/beam.png
-rm usr/share/lxqt/wallpapers/butterfly.png
-rm usr/share/lxqt/wallpapers/cloud.png
-rm usr/share/lxqt/wallpapers/drop.png
-rm usr/share/lxqt/wallpapers/flowers.png
-rm usr/share/lxqt/wallpapers/fog.jpg
-rm usr/share/lxqt/wallpapers/kde-plasma.png
-rm usr/share/lxqt/wallpapers/License
-rm usr/share/lxqt/wallpapers/lxqt-origami-green.png
-rm usr/share/lxqt/wallpapers/origami-light.png
-rm usr/share/lxqt/wallpapers/plasma_arch.png
-rm usr/share/lxqt/wallpapers/plasma-logo-bright.png
-rm usr/share/lxqt/wallpapers/this-is-not-windows.jpg
-rm usr/share/lxqt/wallpapers/triangles-logo.png
-rm usr/share/lxqt/wallpapers/Valendas.png
-rm usr/share/lxqt/wallpapers/waves-purple-logo.jpg
 rm usr/share/nm-tray/nm-tray*.qm
+
+find usr/share/lxqt/wallpapers -mindepth 1 -maxdepth 1 ! \( -name "simple_blue_widescreen*" \) -exec rm -rf '{}' \; 2>/dev/null
+find usr/share/lxqt/themes -mindepth 1 -maxdepth 1 ! \( -name "Porteux-dark" -o -name "Clearlooks" \) -exec rm -rf '{}' \; 2>/dev/null
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 
