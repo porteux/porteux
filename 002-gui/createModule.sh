@@ -209,7 +209,7 @@ cp -fs xinitrc.openbox-session xinitrc
 
 ### add xzm to freedesktop.org.xml
 
-patch --no-backup-if-mismatch -d $MODULEPATH/packages -p0 < $SCRIPTPATH/extras/freedesktop/freedesktop.org.xml.patch
+patch --no-backup-if-mismatch -d $MODULEPATH/packages -p0 < $SCRIPTPATH/extras/freedesktop/freedesktop.org.xml.patch || exit 1
 
 ### fix gtk2 adwaita theme cursor click on text box having wrong offset
 
