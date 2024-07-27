@@ -20,6 +20,9 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+# fix make looking for hard-coded versions of aclocal and automake
+sed -i "s|-\${am__api_version}||g" configure
+
 CFLAGS="$GCCFLAGS" \
 ./configure \
     --prefix=/usr \
