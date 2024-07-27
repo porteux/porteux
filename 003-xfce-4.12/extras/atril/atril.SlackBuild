@@ -23,6 +23,9 @@ cd ${PRGNAM}-$VERSION
 cp $CWD/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
+# fix make looking for hard-coded versions of aclocal and automake
+sed -i "s|-\${am__api_version}||g" configure
+
 CFLAGS="$GCCFLAGS" \
 ./configure \
     --prefix=/usr \
