@@ -236,6 +236,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "avahi" &
 	DownloadPackage "lua" &
 	DownloadPackage "lzlib" &
+	DownloadPackage "nghttp3" &
 	DownloadPackage "userspace-rcu" &
 	wait
 fi

@@ -12,10 +12,9 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-PACKAGES=$(wget -qO- https://archive.xfce.org/src/panel-plugins/$PRGNAM/0.8/ | grep $PRGNAM-)
-VERSIONS=$(echo "$PACKAGES" | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | sort -Vr)
-VERSION=$(echo "$VERSIONS" | head -n 1)
-wget https://archive.xfce.org/src/panel-plugins/$PRGNAM/0.8/$PRGNAM-$VERSION.tar.bz2
+MAJORVERSION=$(wget -qO- https://archive.xfce.org/src/panel-plugins/$PRGNAM | grep -oP '(?<=<a href=")[0-9]+\.[0-9]+(?=/")' | sort -V | tail -n 1)
+VERSION=$(wget -qO- https://archive.xfce.org/src/panel-plugins/$PRGNAM/$MAJORVERSION/ | grep $PRGNAM- | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' | sort -Vr | head -n 1)
+wget https://archive.xfce.org/src/panel-plugins/$PRGNAM/$MAJORVERSION/$PRGNAM-$VERSION.tar.bz2
 
 SLKCFLAGS="$GCCFLAGS -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -ffat-lto-objects -flto -fuse-linker-plugin -fwhole-program"
 
