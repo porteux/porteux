@@ -34,10 +34,8 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt6Core.* "${currentPackage}-stripped-$ver
 cp --parents -P usr/lib$SYSTEMBITS/libQt6DBus.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Gui.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Network.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6OpenGL.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Pdf.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6PrintSupport.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Sql.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Svg.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6SvgWidgets.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandClient.* "${currentPackage}-stripped-$version"
@@ -263,8 +261,8 @@ sed -i "s|g_file_info_get_size(info)|g_file_info_get_attribute_uint64 (info, G_F
     --localstatedir=/var \
     --enable-static=no \
     --enable-udisks \
-    --with-extra-only 
-	
+    --with-extra-only
+
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -348,7 +346,8 @@ InstallAdditionalPackages
 ### fix some .desktop files
 
 sed -i "s|image/x-tga|image/x-tga;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/lximage-qt.desktop
-sed -i "s|Icon=pcmanfm-qt|image/Icon=system-file-manager|g" $MODULEPATH/packages/usr/share/applications/pcmanfm-qt.desktop
+sed -i "s|Icon=pcmanfm-qt|Icon=system-file-manager|g" $MODULEPATH/packages/usr/share/applications/pcmanfm-qt.desktop
+sed -i "s|Icon=xpdfIcon|Icon=xpdf|g" $MODULEPATH/packages/usr/share/applications/xpdf.desktop
 
 ### add session
 
@@ -370,16 +369,13 @@ rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0/
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0/
 rm -R usr/lib${SYSTEMBITS}/qt6/mkspecs
 rm -R usr/share/featherpad
+rm -R usr/share/gdm
+rm -R usr/share/gnome
 rm -R usr/share/libfm-qt/translations
 rm -R usr/share/lximage-qt
 rm -R usr/share/lxqt-archiver
 rm -R usr/share/lxqt/graphics
 rm -R usr/share/lxqt/panel
-rm -R usr/share/lxqt/themes/Arch-Colors
-rm -R usr/share/lxqt/themes/KDE-Plasma
-rm -R usr/share/lxqt/themes/light
-rm -R usr/share/lxqt/themes/silver
-rm -R usr/share/lxqt/themes/Valendas
 rm -R usr/share/lxqt/translations
 rm -R usr/share/obconf-qt
 rm -R usr/share/pavucontrol-qt
@@ -396,25 +392,10 @@ rm usr/bin/canberra*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/share/icons/hicolor/scalable/apps/pcmanfm-qt.svg
-rm usr/share/lxqt/wallpapers/after-the-rain.jpg
-rm usr/share/lxqt/wallpapers/appleflower.png
-rm usr/share/lxqt/wallpapers/beam.png
-rm usr/share/lxqt/wallpapers/butterfly.png
-rm usr/share/lxqt/wallpapers/cloud.png
-rm usr/share/lxqt/wallpapers/drop.png
-rm usr/share/lxqt/wallpapers/flowers.png
-rm usr/share/lxqt/wallpapers/fog.jpg
-rm usr/share/lxqt/wallpapers/kde-plasma.png
-rm usr/share/lxqt/wallpapers/License
-rm usr/share/lxqt/wallpapers/lxqt-origami-green.png
-rm usr/share/lxqt/wallpapers/origami-light.png
-rm usr/share/lxqt/wallpapers/plasma_arch.png
-rm usr/share/lxqt/wallpapers/plasma-logo-bright.png
-rm usr/share/lxqt/wallpapers/this-is-not-windows.jpg
-rm usr/share/lxqt/wallpapers/triangles-logo.png
-rm usr/share/lxqt/wallpapers/Valendas.png
-rm usr/share/lxqt/wallpapers/waves-purple-logo.jpg
 rm usr/share/nm-tray/nm-tray*.qm
+
+find usr/share/lxqt/wallpapers -mindepth 1 -maxdepth 1 ! \( -name "simple_blue_widescreen*" \) -exec rm -rf '{}' \; 2>/dev/null
+find usr/share/lxqt/themes -mindepth 1 -maxdepth 1 ! \( -name "Porteux-dark" -o -name "Clearlooks" \) -exec rm -rf '{}' \; 2>/dev/null
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 
