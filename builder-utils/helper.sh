@@ -24,7 +24,6 @@ CopyToMultiLanguage() {
 	[ -e usr/share/screengrab/translations ] && cp -r --parents usr/share/screengrab/translations $PORTEUXBUILDERPATH/08-multilanguage/packages
 	[ -e usr/share/sddm/translations ] && cp -r --parents usr/share/sddm/translations $PORTEUXBUILDERPATH/08-multilanguage/packages
 	[ -e usr/share/nm-tray ] && cp -r --parents usr/share/nm-tray/*.qm $PORTEUXBUILDERPATH/08-multilanguage/packages
-	[ -e usr/share/qpdfview ] && cp -r --parents usr/share/qpdfview/*.qm $PORTEUXBUILDERPATH/08-multilanguage/packages
 	[ -e usr/share/X11/locale ] && cp -r --parents usr/share/X11/locale $PORTEUXBUILDERPATH/08-multilanguage/packages
 }
 

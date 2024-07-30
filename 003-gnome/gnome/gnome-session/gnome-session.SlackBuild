@@ -21,7 +21,7 @@ cd $PRGNAM-$VERSION
 patch -p1 -i $CWD/meson-add-elogind-support.patch
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
 meson setup \
     --prefix=/usr \
     --buildtype=release \

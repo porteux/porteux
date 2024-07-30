@@ -1,0 +1,25 @@
+--- CMakeLists.txt	2024-05-29 03:38:35.000000000 +0200
++++ CMakeLists-patched.txt	2024-06-11 21:36:00.072173140 +0200
+@@ -502,7 +502,13 @@
+             NATPMP_STATICLIB)
+ endif()
+ 
+-tr_add_external_auto_library(MINIUPNPC miniupnpc miniupnpc
++if(WIN32)
++    # https://github.com/miniupnp/miniupnp/pull/304
++    set(TR_MINIUPNPC_LIBNAME libminiupnpc)
++else()
++    set(TR_MINIUPNPC_LIBNAME miniupnpc)
++endif()
++tr_add_external_auto_library(MINIUPNPC miniupnp/miniupnpc ${TR_MINIUPNPC_LIBNAME}
+     TARGET miniupnpc::libminiupnpc
+     CMAKE_ARGS
+         -DUPNPC_BUILD_STATIC=ON
+@@ -516,6 +522,7 @@
+     set(MINIUPNPC_VERSION 1.9)
+     set(MINIUPNPC_API_VERSION 12)
+ endif()
++unset(TR_MINIUPNPC_LIBNAME)
+ 
+ target_compile_definitions(miniupnpc::libminiupnpc
+     INTERFACE

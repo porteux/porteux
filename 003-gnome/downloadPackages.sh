@@ -39,7 +39,7 @@ DownloadPackage "libsigc++3" & # required by gnome-system-monitor
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
 DownloadPackage "mozjs115" &
-DownloadPackage "pango2" & # required by gnome-system-monitor
+DownloadPackage "pangomm2" & # required by gnome-system-monitor
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait
@@ -47,6 +47,7 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "boost" &
+DownloadPackage "c-ares" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
@@ -58,7 +59,6 @@ DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
 DownloadPackage "llvm" & # required by glycin
 DownloadPackage "python-pip" &
-DownloadPackage "rust" & # required by loupe
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "vulkan-sdk" & # required by gtksourceview
 DownloadPackage "xtrans" &

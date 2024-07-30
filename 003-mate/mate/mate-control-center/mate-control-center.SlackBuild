@@ -20,22 +20,16 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-# make systemd compatible just for building
-sed -i '/if test -n "\$SYSTEMD_CFLAGS/,/pkg_failed=no/d' configure
-
-CFLAGS="$GCCFLAGS" \
-./configure \
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+meson setup \
     --prefix=/usr \
     --libdir=/usr/lib${SYSTEMBITS} \
     --sysconfdir=/etc \
     --localstatedir=/var \
-    --mandir=/usr/man \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --disable-static \
-    --disable-schemas-compile \
-    --build=$ARCH-porteux-linux
+    --buildtype=release
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

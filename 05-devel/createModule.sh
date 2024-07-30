@@ -55,6 +55,15 @@ rm -R usr/x86_64-slackware-linux
 rm -R var/log/pkgtools
 rm -R var/log/setup
 
+# already included in aaa_libraries - keeping them will prevent 05-devel to be deactivated
+rm usr/lib${SYSTEMBITS}/libatomic.so*
+rm usr/lib${SYSTEMBITS}/libgcc_s.so*
+rm usr/lib${SYSTEMBITS}/libgmp.so*
+rm usr/lib${SYSTEMBITS}/libgmpxx.so*
+rm usr/lib${SYSTEMBITS}/libgomp.so*
+rm usr/lib${SYSTEMBITS}/libltdl.so*
+rm usr/lib${SYSTEMBITS}/libstdc++.so*
+
 AggressiveStrip
 
 ### add symlink from /usr/include to /usr/local/include required by some packages

@@ -18,19 +18,21 @@ wget https://gitlab.gnome.org/sophie-h/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+export RUSTFLAGS="-C panic=abort -C strip=debuginfo -Clto=true -Cembed-bitcode=yes -Zdylib-lto -Ccodegen-units=1 -Zlocation-detail=none"
+
 mkdir build && cd build
 meson setup \
- --prefix=/usr \
- --buildtype=release \
- --libdir=lib${SYSTEMBITS} \
- --libexecdir=/usr/libexec \
- --sysconfdir=/etc \
- --infodir=/usr/info \
- --mandir=/usr/man \
- --localstatedir=/var \
- -Dtest_skip_install=true
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	--infodir=/usr/info \
+	--mandir=/usr/man \
+	--localstatedir=/var \
+	-Dtest_skip_install=true
 
-RUSTFLAGS="-C panic=abort -C strip=debuginfo" DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
