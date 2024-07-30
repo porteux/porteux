@@ -62,8 +62,9 @@ echo "Downloading AUFS..."
 git clone https://github.com/sfjro/aufs-standalone ${MODULEPATH}/aufs_sources > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
 git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
 
-echo "Patching AUFS..."
 cd $MODULEPATH/linux-${KERNELVERSION}
+
+echo "Patching AUFS..."
 rm ../aufs_sources/tmpfs-idr.patch # this patch isn't useful
 cp -r ../aufs_sources/{fs,Documentation} .
 cp ../aufs_sources/include/uapi/linux/aufs_type.h include/uapi/linux
@@ -72,23 +73,19 @@ for i in ../aufs_sources/*.patch; do
 done
 rm -fr ../aufs_sources
 
-echo "Downloading firmware in the background..."
-(
-if [ ! -f kernel-firmware-*.txz ]; then
-	wget -r -nd --no-parent http://slackware.uk/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz -P ${MODULEPATH} > /dev/null 2>&1 || { echo "Fail to download firmware."; exit 1; }
+if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
+	echo "Downloading firmware in the background..."
+	DOWNLOADINGFIRMWARE=true
+	(
+		wget -r -nd --no-parent -w 2 http://slackware.uk/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz -P ${MODULEPATH} > /dev/null 2>&1 || { echo "Fail to download firmware."; exit 1; }
+	) &
 fi
-) &
 
 echo "Building vmlinuz (this may take a while)..."
-CPUTHREADS=$(nproc --all)
-make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -ffat-lto-objects -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fno-tree-vectorize -mpopcnt -fivopts -fmodulo-sched -flto -fwhole-program" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fno-tree-vectorize -mpopcnt -fivopts -fmodulo-sched" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
-make clean
-
-echo "Building modules (this may take a while)..."
-make olddefconfig > /dev/null 2>&1 && make -j$CPUTHREADS "KCFLAGS=-O3 -march=${ARCHITECTURELEVEL} -s" || { echo "Fail to build kernel."; exit 1; }
-make -j$CPUTHREADS INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
-make -j$CPUTHREADS INSTALL_MOD_PATH=../ firmware_install > /dev/null 2>&1
+make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
+make -j${NUMBERTHREADS} INSTALL_MOD_PATH=../ firmware_install > /dev/null 2>&1
 
 cd ..
 
@@ -98,8 +95,10 @@ rm lib/modules/$dir/build lib/modules/$dir/source > /dev/null 2>&1
 ln -sf /usr/src/linux lib/modules/$dir/build
 ln -sf /usr/src/linux lib/modules/$dir/source
 
-# wait for firmware download to finish
-wait
+if [ $DOWNLOADINGFIRMWARE ]; then
+	# wait for firmware download to finish
+	wait
+fi
 
 echo "Extracting firmware..."
 mkdir firmware && tar xf kernel-firmware-*.txz -C firmware > /dev/null 2>&1

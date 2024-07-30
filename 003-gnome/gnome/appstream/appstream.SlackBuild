@@ -22,7 +22,7 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
 meson setup \
     --buildtype=release \
     --libdir=/usr/lib${SYSTEMBITS} \

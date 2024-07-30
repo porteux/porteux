@@ -33,7 +33,7 @@ sh deps.sh
 cmake -B build -S $TMP/$PRGNAM-$VERSION \
     -DBUILD_TESTING:BOOL='false' \
     -DENABLE_FUZZERS_DEFAULT:BOOL='false' \
-    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -flto" \
+    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -ffat-lto-objects -flto" \
     -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
     -DBUNDLE_LIBPNG_DEFAULT='NO' \
     -DCMAKE_BUILD_TYPE:STRING='Release' \

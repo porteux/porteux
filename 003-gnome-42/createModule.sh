@@ -70,6 +70,7 @@ export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LA
 [ ! "${GNOME_LATEST_MAJOR_VERSION}" ] || [ ! "${GNOME_LATEST_VERSION}" ] && echo "Couldn't detect GNOME latest version" && exit 1
 
 echo "Building GNOME ${GNOME_LATEST_VERSION}..."
+MODULENAME=$MODULENAME-${GNOME_LATEST_VERSION}
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=gsettings-desktop-schemas
@@ -191,11 +192,11 @@ rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/tracker-3.0
 rm -R usr/lib*/python2*
 rm -R usr/lib*/python3*/site-packages/pip*
-rm -R usr/share/Adwaita/8x8
-rm -R usr/share/Adwaita/96x96
-rm -R usr/share/Adwaita/256x256
-rm -R usr/share/Adwaita/512x512
-rm -R usr/share/Adwaita/cursors
+rm -R usr/share/icons/Adwaita/8x8
+rm -R usr/share/icons/Adwaita/96x96
+rm -R usr/share/icons/Adwaita/256x256
+rm -R usr/share/icons/Adwaita/512x512
+rm -R usr/share/icons/Adwaita/cursors
 rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service

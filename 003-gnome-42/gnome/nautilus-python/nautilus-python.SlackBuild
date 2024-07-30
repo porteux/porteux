@@ -20,7 +20,7 @@ cd $PRGNAM-$VERSION
 
 patch -Np1 -i $CWD/gcc10.patch
 
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
 ./configure \
     --prefix=/usr \
     --libdir=/usr/lib${SYSTEMBITS} \

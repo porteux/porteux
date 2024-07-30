@@ -163,6 +163,7 @@ version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped-$version
+cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -208,7 +209,7 @@ cp -fs xinitrc.openbox-session xinitrc
 
 ### add xzm to freedesktop.org.xml
 
-patch --no-backup-if-mismatch -d $MODULEPATH/packages -p0 < $SCRIPTPATH/extras/freedesktop/freedesktop.org.xml.patch
+patch --no-backup-if-mismatch -d $MODULEPATH/packages -p0 < $SCRIPTPATH/extras/freedesktop/freedesktop.org.xml.patch || exit 1
 
 ### fix gtk2 adwaita theme cursor click on text box having wrong offset
 

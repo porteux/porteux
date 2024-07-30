@@ -1,0 +1,11 @@
+--- panels/system/about/cc-system-details-window.ui	2024-05-11 22:03:47.255518434 +0200
++++ panels/system/about/cc-system-details-window.ui.patched	2024-05-11 22:03:56.943518893 +0200
+@@ -162,7 +162,7 @@
+                         <!-- GNOME Version -->
+                         <child>
+                           <object class="CcInfoEntry" id="gnome_version_row">
+-                            <property name="label" translatable="yes">GNOME Version</property>
++                            <property name="label" translatable="yes">GNOME Shell Version</property>
+                           </object>
+                         </child>
+ 

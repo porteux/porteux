@@ -67,7 +67,7 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=unrar
-version="7.0.7"
+version="7.0.9"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
@@ -125,7 +125,11 @@ currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
+mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
+ROOT=./ installpkg ${currentPackage}*.txz
+rm usr/lib${SYSTEMBITS}/libslang.so.1*
+rm usr/lib${SYSTEMBITS}/libstdc++.so*
+ROOT=./ installpkg gcc-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P lib${SYSTEMBITS}/libfuse.* ${currentPackage}-stripped-$version/
 cp --parents -P lib${SYSTEMBITS}/libgssapi_krb5.* ${currentPackage}-stripped-$version/
@@ -142,7 +146,15 @@ cp --parents -P usr/lib${SYSTEMBITS}/libgmpxx.* ${currentPackage}-stripped-$vers
 cp --parents -P usr/lib${SYSTEMBITS}/libgomp.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib${SYSTEMBITS}/libltdl.* ${currentPackage}-stripped-$version/
 cp --parents -P usr/lib${SYSTEMBITS}/libslang.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.so.6* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.* ${currentPackage}-stripped-$version/
+cd ${currentPackage}-stripped-$version/usr/lib${SYSTEMBITS}
+cp -fs libcares.so* libcares.so
+cp -fs libcares.so libcares.so.2
+cp -fs libcups.so* libcups.so
+cp -fs libgmp.so* libgmp.so
+cp -fs libgmpxx.so* libgmpxx.so
+cp -fs libltdl.so* libltdl.so
+cp -fs libslang.so* libslang.so
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -362,8 +374,8 @@ rm usr/bin/7za
 rm usr/bin/7zr
 rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
+rm usr/lib${SYSTEMBITS}/libduktaped.*
 rm usr/lib${SYSTEMBITS}/libqgpgme.*
-rm usr/lib${SYSTEMBITS}/libslang.so.1*
 rm usr/lib${SYSTEMBITS}/p7zip/7za
 rm usr/lib${SYSTEMBITS}/p7zip/7zr
 rm usr/libexec/samba/rpcd_*
