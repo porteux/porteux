@@ -23,7 +23,7 @@ mkdir -p "$MODULEDIR/usr/share/pixmaps"
 
 cat > "$MODULEDIR/usr/share/applications/$CURRENTPACKAGE.desktop" << EOF
 [Desktop Entry]
-Version=$VERSION
+Version=1.0
 Name=$FRIENDLYNAME
 Exec=sh -c /opt/$CURRENTPACKAGE/$APPIMAGEFILENAME %u
 Terminal=false
