@@ -269,6 +269,13 @@ cp -s fusermount3 fusermount
 cd $MODULEPATH/packages/usr/bin
 cp -s python3 python
 
+### set CPU governor to performance -- only in stable because current is already doing it
+
+if [ $SLACKWAREVERSION != "current" ]; then
+	cd $MODULEPATH/packages
+	patch -p0 < $SCRIPTPATH/extras/rc.cpufreq.patch
+fi
+
 ### fix permissions
 
 cd $MODULEPATH/packages
