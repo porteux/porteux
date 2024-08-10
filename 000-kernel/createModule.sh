@@ -168,9 +168,6 @@ EOF
 echo "Creating kernel xzm module..."
 mv lib ${MODULEPATH}/${MODULENAME}
 
-# strip kernel module
-find ${MODULEPATH}/${MODULENAME} | xargs strip -S --strip-unneeded -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
-
 # create kernel module xzm module
 dir2xzm ${MODULEPATH}/${MODULENAME} -o=${MODULENAME}-${KERNELVERSION}.xzm -q > /dev/null 2>&1
 
