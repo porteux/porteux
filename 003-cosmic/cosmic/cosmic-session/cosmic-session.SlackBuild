@@ -1,0 +1,30 @@
+#!/bin/sh
+
+PRGNAM=cosmic-session
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+git clone https://github.com/pop-os/$PRGNAM
+cd $PRGNAM
+VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
+
+export RUSTFLAGS="-Cpanic=abort -Cstrip=debuginfo -Copt-level=z -Clto=true -Cembed-bitcode=yes -Zdylib-lto -Ccodegen-units=1 -Zlocation-detail=none"
+
+cp $SCRIPTPATH/cosmic/${PRGNAM}/*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
+[ -e rust-toolchain* ] && rm rust-toolchain*
+just build
+rsync -r ./target/release ./target/
+just rootdir=$MODULEPATH/$PRGNAM/package install || exit 1
+
+cd $MODULEPATH/$PRGNAM/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz

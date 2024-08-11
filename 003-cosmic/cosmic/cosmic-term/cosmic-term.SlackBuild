@@ -1,0 +1,27 @@
+#!/bin/sh
+
+PRGNAM=cosmic-term
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+git clone https://github.com/pop-os/$PRGNAM
+cd $PRGNAM
+VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
+
+export RUSTFLAGS="-Cpanic=abort -Cstrip=debuginfo -Copt-level=z -Clto=true -Cembed-bitcode=yes -Zdylib-lto -Ccodegen-units=1 -Zlocation-detail=none"
+
+[ -e rust-toolchain* ] && rm rust-toolchain*
+just build-release -Z build-std=std,panic_abort --target x86_64-unknown-linux-gnu
+rsync -r ./target/x86_64-unknown-linux-gnu/release ./target/ --remove-source-files
+just rootdir=$MODULEPATH/$PRGNAM/package install || exit 1
+
+cd $MODULEPATH/$PRGNAM/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz
