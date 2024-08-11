@@ -53,23 +53,7 @@ cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-
 export PATH=$MODULEPATH/just/target/x86_64-unknown-linux-gnu/release/:$PATH
 
 currentPackage=greetd
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://git.sr.ht/~kennylevinsen/greetd
-cd greetd
-VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
-cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-gnu || exit 1
-mkdir $MODULEPATH/${currentPackage}/package
-install -Dm0755 -t "$MODULEPATH/${currentPackage}/package/usr/bin/" "target/x86_64-unknown-linux-gnu/release/agreety"
-install -Dm0755 -t "$MODULEPATH/${currentPackage}/package/usr/bin/" "target/x86_64-unknown-linux-gnu/release/fakegreet"
-install -Dm0755 -t "$MODULEPATH/${currentPackage}/package/usr/bin/" "target/x86_64-unknown-linux-gnu/release/${currentPackage}"
-mkdir -p $MODULEPATH/${currentPackage}/package/etc/rc.d
-cp $SCRIPTPATH/extras/greetd/rc.4 $MODULEPATH/${currentPackage}/package/etc/rc.d/
-chmod 0755 $MODULEPATH/${currentPackage}/package/etc/rc.d/rc.4
-mkdir -p $MODULEPATH/${currentPackage}/package/etc/${currentPackage}
-cp $SCRIPTPATH/extras/${currentPackage}/config.toml $MODULEPATH/${currentPackage}/package/etc/${currentPackage}
-chmod 0644 $MODULEPATH/${currentPackage}/package/etc/${currentPackage}/config.toml
-cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$VERSION-${ARCH}-1.txz
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 installpkg $MODULEPATH/packages/llvm*.txz || exit 1
