@@ -31,6 +31,10 @@ DownloadFromSlackware
 #sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 #rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=xdg-desktop-portal-gtk
+sh $SCRIPTPATH/extras/xdg-desktop-portal-gtk/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 # required from now on
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
 export PATH=$HOME/.cargo/bin/:$PATH
@@ -47,6 +51,26 @@ git clone https://github.com/casey/${currentPackage}
 cd ${currentPackage}
 cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-gnu || exit 1
 export PATH=$MODULEPATH/just/target/x86_64-unknown-linux-gnu/release/:$PATH
+
+currentPackage=greetd
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+git clone https://git.sr.ht/~kennylevinsen/greetd
+cd greetd
+VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
+cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-gnu || exit 1
+mkdir $MODULEPATH/${currentPackage}/package
+install -Dm0755 -t "$MODULEPATH/${currentPackage}/package/usr/bin/" "target/x86_64-unknown-linux-gnu/release/agreety"
+install -Dm0755 -t "$MODULEPATH/${currentPackage}/package/usr/bin/" "target/x86_64-unknown-linux-gnu/release/fakegreet"
+install -Dm0755 -t "$MODULEPATH/${currentPackage}/package/usr/bin/" "target/x86_64-unknown-linux-gnu/release/${currentPackage}"
+mkdir -p $MODULEPATH/${currentPackage}/package/etc/rc.d
+cp $SCRIPTPATH/extras/greetd/rc.4 $MODULEPATH/${currentPackage}/package/etc/rc.d/
+chmod 0755 $MODULEPATH/${currentPackage}/package/etc/rc.d/rc.4
+mkdir -p $MODULEPATH/${currentPackage}/package/etc/${currentPackage}
+cp $SCRIPTPATH/extras/${currentPackage}/config.toml $MODULEPATH/${currentPackage}/package/etc/${currentPackage}
+chmod 0644 $MODULEPATH/${currentPackage}/package/etc/${currentPackage}/config.toml
+cd $MODULEPATH/${currentPackage}/package
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$VERSION-${ARCH}-1.txz
+rm -fr $MODULEPATH/${currentPackage}
 
 installpkg $MODULEPATH/packages/llvm*.txz || exit 1
 rm $MODULEPATH/packages/llvm*.txz
@@ -87,6 +111,10 @@ rm -fr $MODULEPATH/just
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
 rm *.t?z
+
+### patch nm-applet to not show up in COSMIC
+
+sed -i 's|NotShowIn=KDE;GNOME;|NotShowIn=KDE;GNOME;COSMIC;|g' $MODULEPATH/packages/usr/share/applications/nm-applet.desktop
 
 ### install additional packages, including porteux utils
 
