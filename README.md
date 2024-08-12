@@ -66,6 +66,7 @@ In the terminal, run the following commands: <br />
 `cd /tmp/opencl-support` <br />
 `getpkg libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk` <br />
 `txz2xzm *.txz` (this is going to take a while) <br />
+`activate *.xzm` <br />
 `mv *.xzm $PORTDIR/modules` <br />
 `rm -fr /tmp/opencl-support` <br />
 
