@@ -12,6 +12,7 @@ GenericStrip() {
 	rm -R usr/lib*/gtk*/include
 	rm -R usr/lib*/pkgconfig
 	rm -R usr/lib*/python2*
+	rm -R usr/lib/python*/site-packages/*-info
 	rm -R usr/lib*/systemd
 	rm -R usr/share/aclocal
 	rm -R usr/share/bash-completion
