@@ -327,10 +327,6 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### copy wallpaper
-
-mv $MODULEPATH/packages/usr/share/kf6/infopage/body-background.png $MODULEPATH/packages/usr/share/wallpapers
-
 ### fix some .desktop files
 
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
