@@ -260,6 +260,7 @@ find $KDE6PACKAGES -type f -name "ktexteditor-6*" -exec cp {} $MODULEPATH/packag
 find $KDE6PACKAGES -type f -name "ktextwidgets-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kunitconversion-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kuserfeedback*" -exec cp {} $MODULEPATH/packages/ \;
+find $KDE6PACKAGES -type f -name "kwallet-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kwayland-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kwayland-integration*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kwidgetsaddons-6*" -exec cp {} $MODULEPATH/packages/ \;
@@ -357,7 +358,7 @@ rm usr/lib${SYSTEMBITS}/libpolkit-qt5*
 rm usr/lib${SYSTEMBITS}/libqca-qt5*
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/applications/org.kde.kuserfeedback-console
-rm usr/share/applications/org.kde.kwalletmanager*.desktop
+rm usr/share/applications/org.kde.kwalletd*.desktop
 rm usr/share/applications/org.kde.plasma.emojier.desktop
 rm usr/share/icons/breeze/breeze-icons.rcc
 rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
