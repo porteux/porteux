@@ -21,7 +21,7 @@ export RUSTFLAGS="-Cpanic=abort -Cstrip=debuginfo -Copt-level=z -Clto=true -Cemb
 cp $SCRIPTPATH/cosmic/${PRGNAM}/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
-[ -e rust-toolchain* ] && rm rust-toolchain*
+ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 just build-release -Z build-std=std,panic_abort --target x86_64-unknown-linux-gnu
 rsync -r ./target/x86_64-unknown-linux-gnu/release ./target/ --remove-source-files
 just rootdir=$MODULEPATH/$PRGNAM/package install || exit 1
