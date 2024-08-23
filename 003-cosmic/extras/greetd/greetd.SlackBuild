@@ -23,11 +23,11 @@ install -Dm0755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/fake
 install -Dm0755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/$PRGNAM"
 
 mkdir -p $PKG/etc/rc.d
-cp $CWD/extras/greetd/rc.4 $PKG/etc/rc.d/
+cp $CWD/rc.4 $PKG/etc/rc.d/
 chmod 0755 $PKG/etc/rc.d/rc.4
 
 mkdir -p $PKG/etc/$PRGNAM
-cp $CWD/extras/$PRGNAM/config.toml $PKG/etc/$PRGNAM
+cp $CWD/config.toml $PKG/etc/$PRGNAM
 chmod 0644 $PKG/etc/$PRGNAM/config.toml
 
 mkdir -p $PKG/install
