@@ -18,23 +18,21 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-[ ! -d build ] && mkdir build
-cd build
 CFLAGS="$GCCFLAGS" \
-meson setup \
+./autogen.sh \
     --prefix=/usr \
-    --buildtype=release \
-    --libdir=lib${SYSTEMBITS} \
+    --libdir=/usr/lib${SYSTEMBITS} \
     --libexecdir=/usr/libexec \
     --sysconfdir=/etc \
-    --infodir=/usr/info \
-    --mandir=/usr/man \
     --localstatedir=/var \
-    -Ddefault_library=shared \
-    -Dgtk_doc=false \
-    -Dtests=false
+    --mandir=/usr/man \
+    --enable-compile-warnings=no \
+    --enable-installed-tests=no \
+    --enable-introspection=yes \
+    --enable-vala=yes \
+    --build=$ARCH-porteux-linux
 
-DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+DESTDIR=$PKG make -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
