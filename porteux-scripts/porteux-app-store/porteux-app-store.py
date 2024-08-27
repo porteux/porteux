@@ -247,8 +247,8 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_section_button_clicked(self, section_name, application_name):
         application = self.db_json[section_name][application_name]
 
-        if "info_dialog" in application:
-            subprocess.call([ GTK_DIALOG_SCRIPT, "-p", application["info_dialog"]])
+        if "infoDialog" in application:
+            subprocess.call([ GTK_DIALOG_SCRIPT, "-p", application["infoDialog"]])
 
         if "channels" in application:
             self.show_dialog_options(application_name, application)
