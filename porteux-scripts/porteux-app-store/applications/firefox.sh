@@ -14,9 +14,9 @@ fi
 if [ "$#" -lt 1 ]; then
     echo "Usage:   $0 [channel] [language] [optional: --activate-module]"
     echo "If no language is specified, en-US will be set"
-    echo "Channels available: beta-latest | latest | esr-latest"
+    echo "Channels available: stable | esr | beta"
     echo ""
-    echo "Example: $0 esr-latest en-US"
+    echo "Example: $0 esr en-US"
     exit 1
 fi
 
@@ -44,7 +44,7 @@ get_module_name(){
     local pkgver; pkgver="$2"
     local arch; arch="$3"
 
-    echo "${APP}-${CHANNEL}-${pkgver}-${arch}"
+    echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}"
 }
 
 finisher(){
@@ -53,21 +53,27 @@ finisher(){
 }
 
 get_repo_version_firefox(){
-    local temp; temp=$(curl -s "https://download.mozilla.org/?product=firefox-${CHANNEL}-ssl&os=linux64&lang=${LANGUAGE}") || exit 1
-    local ver; ver=$(echo "$temp" | grep -oP "releases/\K[^/]*")
+	local ver;
+	if [ $CHANNEL = "stable" ]; then
+		ver=$(curl -s "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=${LANGUAGE}" | grep -oP 'releases/\K[^/]*')
+	elif [ $CHANNEL = "esr" ]; then
+		ver=$(curl -s https://ftp.mozilla.org/pub/firefox/releases/ | grep -oP '(?<=releases/)\d[^/]+(?=/")' | grep 'esr' | sort -V -r | head -1)
+	elif [ $CHANNEL = "beta" ]; then
+		ver=$(curl -s https://ftp.mozilla.org/pub/firefox/releases/ | grep -oP '(?<=releases/)\d[^/]+(?=/")' | grep 'b[0-9]$' | sort -V -r | head -1)
+    fi
 
     echo "$ver"
 }
 
 make_module_firefox(){
-    if [ "$CHANNEL" != "beta-latest" ] && [ "$CHANNEL" != "latest" ] && [ "$CHANNEL" != "esr-latest" ]; then echo "Non-existent channel. Options: beta-latest | latest | esr-latest" && exit 1; fi
+    if [ "$CHANNEL" != "stable" ] && [ "$CHANNEL" != "esr" ] && [ "$CHANNEL" != "beta" ]; then echo "Non-existent channel. Options: stable | esr | beta" && exit 1; fi
 
     local pkgver; pkgver=$(get_repo_version_firefox "$CHANNEL")
     local pkg_name; pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 
     create_application_temp_dir "$APP"
 
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.bz2" "https://download.mozilla.org/?product=firefox-${CHANNEL}-ssl&os=linux64&lang=${LANGUAGE}" &&
+    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.bz2" "https://ftp.mozilla.org/pub/firefox/releases/${pkgver}/linux-x86_64/${LANGUAGE}/firefox-${pkgver}.tar.bz2" &&
     $WGET_WITH_TIME_OUT -P $TMP/"$APP" "http://ftp.slackware.com/pub/slackware/slackware64-current/source/xap/mozilla-firefox/firefox.desktop" &&
     mkdir -p "$TMP/$APP/$pkg_name" &&
     tar -xvf "$TMP/$APP/${pkg_name}.tar.bz2" -C "$TMP/$APP/$pkg_name" &&

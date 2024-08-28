@@ -1,7 +1,7 @@
 {
     "Web Browsers": {
         "Brave": {
-            "script": "brave-browser",
+            "script": "brave",
             "icon": "brave-browser.png",
             "channels": [
                 "stable"
@@ -132,9 +132,9 @@
             "script": "firefox",
             "icon": "firefox.svg",
             "channels": [
-                "latest",
-                "beta-latest",
-                "esr-latest"
+                "stable",
+                "esr",
+                "beta"
             ],
             "locales": [
                 "ach",
@@ -238,7 +238,7 @@
             ]
         },
         "Chrome": {
-            "script": "google-chrome",
+            "script": "chrome",
             "icon": "chrome.svg",
             "channels": [
                 "stable",
