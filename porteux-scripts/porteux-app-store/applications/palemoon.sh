@@ -87,7 +87,7 @@ EOF
 finisher(){
     striptease "$APP" "$1"
 
-    /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+    /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}-${LANGUAGE}.xzm" "$ACTIVATEMODULE" || exit 1
     remove_application_temp_dir "$APP" "$2"
 }
 
