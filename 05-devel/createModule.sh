@@ -22,6 +22,12 @@ if [ ! -f $MODULEPATH/packages/kernel-headers*.txz ]; then
 	wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNELVERSION-x86-1.txz -P $MODULEPATH/packages || exit 1
 fi
 
+if [ $SLACKWAREVERSION != "current" ]; then
+	currentPackage=meson
+	sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
+fi
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
