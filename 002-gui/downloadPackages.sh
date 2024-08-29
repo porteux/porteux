@@ -194,7 +194,6 @@ DownloadPackage "udisks2" &
 DownloadPackage "upower" &
 DownloadPackage "v4l-utils" &
 DownloadPackage "vorbis-tools" &
-DownloadPackage "vte" &
 DownloadPackage "wavpack" &
 DownloadPackage "wayland" &
 DownloadPackage "x11-skel" &

@@ -309,6 +309,7 @@ rm -R usr/share/themes/Kokodi
 rm -R usr/share/themes/Moheli
 rm -R usr/share/Thunar
 
+rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
 rm etc/xdg/autostart/xscreensaver.desktop
@@ -317,6 +318,7 @@ rm usr/bin/gtk-demo
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libsoup-gnome*
+rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/share/applications/exo*
 rm usr/share/backgrounds/xfce/xfce-stripes.png
 rm usr/share/backgrounds/xfce/xfce-teal.jpg

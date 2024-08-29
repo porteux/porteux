@@ -18,9 +18,6 @@ VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
 export RUSTFLAGS="-Cpanic=abort -Cstrip=debuginfo -Copt-level=z -Clto=true -Cembed-bitcode=yes -Zdylib-lto -Ccodegen-units=1 -Zlocation-detail=none"
 
-cp $SCRIPTPATH/cosmic/${PRGNAM}/*.patch .
-for i in *.patch; do patch -p0 < $i; done
-
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 just build
 rsync -r ./target/release ./target/

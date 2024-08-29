@@ -38,6 +38,7 @@ DownloadPackage "python-idna" &
 DownloadPackage "python-pillow" &
 DownloadPackage "python-requests" &
 DownloadPackage "python-six" &
+DownloadPackage "vte" &
 wait
 
 ### temporary packages for further building

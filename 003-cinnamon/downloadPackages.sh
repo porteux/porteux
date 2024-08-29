@@ -46,6 +46,7 @@ DownloadPackage "python-psutil" &
 DownloadPackage "python-requests" &
 DownloadPackage "python-six" &
 DownloadPackage "python-webencodings" &
+DownloadPackage "vte" &
 wait
 
 ### temporary packages for further building

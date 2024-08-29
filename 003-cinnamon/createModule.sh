@@ -208,6 +208,7 @@ rm -R usr/share/xviewer/gir-1.0
 rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
+rm usr/bin/vte-*-gtk4
 rm etc/profile.d/80xapp-gtk3-module.sh
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/caribou-autostart.desktop
@@ -220,6 +221,7 @@ rm usr/lib${SYSTEMBITS}/libappindicator.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
+rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py
 rm usr/libexec/indicator-loader
 rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
