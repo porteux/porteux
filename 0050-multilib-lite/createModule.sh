@@ -148,8 +148,10 @@ find $MODULEPATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name
 mv $MODULEPATH/packages/lib/libc.so* $MODULEPATH/
 mv $MODULEPATH/packages/lib/libc-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib/dri $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib/libgallium* $MODULEPATH/
 GenericStrip
 AggressiveStrip
+mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib/
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib/
 mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib
 mv $MODULEPATH/libc-* $MODULEPATH/packages/lib
