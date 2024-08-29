@@ -64,6 +64,8 @@ rm usr/lib${SYSTEMBITS}/libgomp.so*
 rm usr/lib${SYSTEMBITS}/libltdl.so*
 rm usr/lib${SYSTEMBITS}/libstdc++.so*
 
+find . -name '*.la' -delete
+
 AggressiveStrip
 
 ### add symlink from /usr/include to /usr/local/include required by some packages

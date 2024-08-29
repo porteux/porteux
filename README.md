@@ -58,6 +58,18 @@ Sources:
 
 All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and all applications are usually as new as possible in the current/rolling release.
 
+## Enable OpenCL support (required by applications like DaVinci Resolve)
+
+In the terminal, run the following commands: <br />
+`su` (password: toor) <br />
+`mkdir -p /tmp/opencl-support` <br />
+`cd /tmp/opencl-support` <br />
+`getpkg libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk` <br />
+`txz2xzm *.txz` (this is going to take a while) <br />
+`activate *.xzm` <br />
+`mv *.xzm $PORTDIR/modules` <br />
+`rm -fr /tmp/opencl-support` <br />
+
 ## Compatibility with Porteus 5
 
 PorteuX and Porteus follow the same basic structure, so a given module built in Porteus 5 should work in PorteuX current, and modules built in PorteuX stable should work in Porteus 5. However, this does not apply to the base modules (000-kernel, 001-core, 002-gui, 002-xtra and 003-desktopenvironment).

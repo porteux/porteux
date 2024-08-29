@@ -44,6 +44,9 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 rm -f $PKG/{,usr/}lib${SYSTEMBITS}/*.la
 
+# remove invalid entry
+sed -i "s|SingleMainWindow=true||g" $PKG/usr/share/applications/audacious.desktop
+
 mkdir -p $PKG/install
 cat $CWD/${PRGNAM}-slack-desc > $PKG/install/slack-desc
 

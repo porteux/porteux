@@ -39,7 +39,6 @@ wait
 DownloadPackage "pkg-config" &
 DownloadPackage "python-packaging" &
 DownloadPackage "python-setuptools" &
-DownloadPackage "texinfo" &
 DownloadPackage "util-macros" &
 DownloadPackage "vala" &
 DownloadPackage "wayland-protocols" &
