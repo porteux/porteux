@@ -1,0 +1,37 @@
+#!/bin/sh
+
+PRGNAM=greetd
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+git clone https://git.sr.ht/~kennylevinsen/$PRGNAM
+cd $PRGNAM
+VERSION=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
+
+cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-gnu || exit 1
+
+install -Dm0755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/agreety"
+install -Dm0755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/fakegreet"
+install -Dm0755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/$PRGNAM"
+
+mkdir -p $PKG/etc/rc.d
+cp $CWD/rc.4 $PKG/etc/rc.d/
+chmod 0755 $PKG/etc/rc.d/rc.4
+
+mkdir -p $PKG/etc/$PRGNAM
+cp $CWD/config.toml $PKG/etc/$PRGNAM
+chmod 0644 $PKG/etc/$PRGNAM/config.toml
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz

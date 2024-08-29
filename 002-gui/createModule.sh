@@ -37,6 +37,14 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
+if [ $SLACKWAREVERSION != "current" ]; then
+	currentPackage=meson
+	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
+	rm -fr $MODULEPATH/${currentPackage}
+	rm $MODULEPATH/packages/meson-*.txz
+fi
+
 currentPackage=gtk+3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/lah7/gtk3-classic/archive/refs/heads/master.tar.gz || exit 1
@@ -340,10 +348,12 @@ find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
 # move out things that don't support stripping
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/dri $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libgallium* $MODULEPATH/
 mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 GenericStrip
 AggressiveStrip
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
+mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
 
 ### copy cache files

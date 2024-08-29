@@ -18,21 +18,23 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+[ ! -d build ] && mkdir build
+cd build
 CFLAGS="$GCCFLAGS" \
-./autogen.sh \
+meson setup \
     --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
+    --buildtype=release \
+    --libdir=lib${SYSTEMBITS} \
     --libexecdir=/usr/libexec \
     --sysconfdir=/etc \
-    --localstatedir=/var \
+    --infodir=/usr/info \
     --mandir=/usr/man \
-    --enable-compile-warnings=no \
-    --enable-installed-tests=no \
-    --enable-introspection=yes \
-    --enable-vala=yes \
-    --build=$ARCH-porteux-linux
+    --localstatedir=/var \
+    -Ddefault_library=shared \
+    -Dgtk_doc=false \
+    -Dtests=false
 
-DESTDIR=$PKG make -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
