@@ -14,7 +14,7 @@ SetFlags() {
     fi
 
     export SLACKBUILDVERSION=$SLACKWAREVERSION
-    export KERNELVERSION="6.10.2"
+    export KERNELVERSION="6.10.6"
 
     export SCRIPTPATH="$PWD"
     export PORTEUXBUILDERPATH="/tmp/porteux-builder-$PORTEUXBUILD"
