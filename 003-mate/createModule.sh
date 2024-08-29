@@ -223,6 +223,7 @@ rm -R usr/share/mate-power-manager/icons
 rm -R usr/share/Thunar
 rm -R var/lib/AccountsService
 
+rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
@@ -233,6 +234,7 @@ rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libsoup-gnome*
+rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null

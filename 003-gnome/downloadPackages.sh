@@ -40,6 +40,7 @@ DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
 DownloadPackage "mozjs115" &
 DownloadPackage "pangomm2" & # required by gnome-system-monitor
+DownloadPackage "vte" &
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait

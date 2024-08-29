@@ -16,8 +16,8 @@ DownloadPackage "glib-networking" &
 DownloadPackage "hunspell" &
 DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
-wait
 DownloadPackage "libcanberra" &
+wait
 DownloadPackage "libgtop" &
 DownloadPackage "libproxy" &
 DownloadPackage "libxklavier" &

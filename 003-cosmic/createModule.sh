@@ -22,14 +22,14 @@ DownloadFromSlackware
 
 ### packages outside Slackware repository
 
-#currentPackage=audacious
-#sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
-#installpkg $MODULEPATH/packages/${currentPackage}*.txz
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=audacious
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=audacious-plugins
-#sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=audacious-plugins
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=xdg-desktop-portal-gtk
 sh $SCRIPTPATH/extras/xdg-desktop-portal-gtk/${currentPackage}.SlackBuild || exit 1
@@ -84,7 +84,6 @@ for package in \
 	xdg-desktop-portal-cosmic \
 ; do
 sh $SCRIPTPATH/cosmic/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

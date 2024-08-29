@@ -15,6 +15,7 @@ DownloadPackage "libnma" &
 DownloadPackage "libwnck" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
+DownloadPackage "vte" &
 wait
 
 ### slackware current only packages
