@@ -32,7 +32,7 @@ cd ${currentPackage}*
 cp $SCRIPTPATH/extras/transmission/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done # only for version 4.0.6 which is broken
 mkdir build && cd build
-CXXFLAGS="$GCCFLAGS" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF ..
+CXXFLAGS="$GCCFLAGS -fpermissive" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1

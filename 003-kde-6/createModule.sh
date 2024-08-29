@@ -171,7 +171,7 @@ done
 # only required for building
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
 
-KDE6PACKAGES=/home/guest/Downloads/packages/
+KDE6PACKAGES=/tmp/packages
 
 find $KDE6PACKAGES -type f -name "ark*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "attica-6*" -exec cp {} $MODULEPATH/packages/ \;
@@ -247,7 +247,7 @@ find $KDE6PACKAGES -type f -name "kplotting-6*" -exec cp {} $MODULEPATH/packages
 find $KDE6PACKAGES -type f -name "kpmcore*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kpty-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kqtquickcharts-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kquickcharts-5*" -exec cp {} $MODULEPATH/packages/ \;
+find $KDE6PACKAGES -type f -name "kquickcharts-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "krunner-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kscreen*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kscreenlocker*" -exec cp {} $MODULEPATH/packages/ \;
@@ -357,7 +357,7 @@ rm usr/lib${SYSTEMBITS}/libphonon4qt5*
 rm usr/lib${SYSTEMBITS}/libpolkit-qt5*
 rm usr/lib${SYSTEMBITS}/libqca-qt5*
 rm usr/share/applications/org.kde.dolphinsu.desktop
-rm usr/share/applications/org.kde.kuserfeedback-console
+rm usr/share/applications/org.kde.kuserfeedback-console.desktop
 rm usr/share/applications/org.kde.kwalletd*.desktop
 rm usr/share/applications/org.kde.plasma.emojier.desktop
 rm usr/share/icons/breeze/breeze-icons.rcc
@@ -369,6 +369,7 @@ rm -R lib/
 rm -R lib64/
 rm -R usr/lib${SYSTEMBITS}/qt5
 rm -R usr/lib${SYSTEMBITS}/qt6/qml/QtTest
+rm -R usr/lib${SYSTEMBITS}/qt6/mkspecs
 rm -R usr/share/chromium
 rm -R usr/share/emoticons/EmojiOne
 rm -R usr/share/featherpad
@@ -381,6 +382,7 @@ rm -R usr/share/katepart6
 rm -R usr/share/kde4
 rm -R usr/share/kf6/kdoctools
 rm -R usr/share/kf6/locale
+rm -R usr/share/konqueror
 rm -R usr/share/ksplash/Themes/Classic
 rm -R usr/share/phonon4qt6
 rm -R usr/share/plasma/desktoptheme/air
@@ -395,7 +397,7 @@ rm -R usr/share/sddm/themes/maya
 rm -R usr/share/sddm/translations
 rm -R usr/share/themes/Breeze-Dark/gtk-4.0
 rm -R usr/share/themes/Breeze/gtk-4.0
-rm -R usr/share/wallpapers/Next
+rm -R usr/share/wallpapers/*
 
 find usr/share/icons -mindepth 1 -maxdepth 1 ! \( -name "breeze" -o -name "breeze-dark" -o -name "hicolor" \) -exec rm -rf '{}' \; 2>/dev/null
 
