@@ -54,6 +54,7 @@ rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
+rm $MODULEPATH/packages/texinfo*
 rm $MODULEPATH/packages/xtrans*
 
 # slackware current only removal -- these are already in base
