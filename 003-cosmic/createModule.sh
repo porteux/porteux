@@ -115,6 +115,8 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+rm etc/xdg/autostart/nm-applet.desktop
+
 GenericStrip
 AggressiveStripAll
 
