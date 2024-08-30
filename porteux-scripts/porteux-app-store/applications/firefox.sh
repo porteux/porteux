@@ -84,6 +84,15 @@ make_module_firefox(){
     cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "firefox-${CHANNEL}/" firefox &&
     cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/firefox/firefox" firefox &&
     mv -f "$TMP/$APP/firefox.desktop" "$TMP/$APP/$pkg_name/usr/share/applications" &&
+    if [ "$CHANNEL" != "stable" ]; then
+        if [ "$CHANNEL" = "esr" ]; then
+            sed -i "s/^Name.*/& ${CHANNEL^^}/" "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop"
+        else
+            sed -i "s/^Name.*/& ${CHANNEL^}/" "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop"
+        fi
+        mv "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop" "$TMP/$APP/$pkg_name/usr/share/applications/firefox-${CHANNEL}.desktop"
+    fi
+    
     mkdir -p "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution" 2> /dev/null
     cat > "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution/policies.json" << EOF
 {
