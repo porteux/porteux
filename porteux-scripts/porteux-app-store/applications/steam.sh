@@ -9,6 +9,7 @@ TEMPDIR="/tmp/$CURRENTPACKAGE-builder"
 MODULEDIR="$TEMPDIR/$CURRENTPACKAGE-module"
 INSTALLDIR="$1"
 CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
+CURRENTGROUP=$(id -gn "$CURRENTUSER")
 [ ! $CURRENTUSER ] && CURRENTUSER=guest
 [[ $INSTALLDIR = --* ]] && echo "Installation path can't be empty." && exit 1
 
@@ -26,7 +27,7 @@ touch "$INSTALLDIR/ubuntu12_32/steam-runtime/pinned_libs_32/done"
 mkdir -p "$INSTALLDIR/ubuntu12_32/steam-runtime/pinned_libs_64"
 touch "$INSTALLDIR/ubuntu12_32/steam-runtime/pinned_libs_64/done"
 
-echo "$CURRENTUSER" | sudo -S chown -R "$CURRENTUSER":users "$INSTALLDIR"
+chown -R "$CURRENTUSER":"$CURRENTGROUP" "$INSTALLDIR"
 
 # handle xzm module
 FULLVERSION=$(cat $INSTALLDIR/ubuntu12_32/steam-runtime/version.txt)
