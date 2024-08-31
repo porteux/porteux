@@ -13,6 +13,7 @@ MODULEFILENAME=$PRGNAM-$VERSION-$CHANNEL-$ARCH-$LOLANG.xzm
 MODULEPATH=$OUTPUTDIR/$MODULEFILENAME
 
 CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
+CURRENTGROUP=$(id -gn "$CURRENTUSER")
 [ ! $CURRENTUSER ] && CURRENTUSER=guest
 USERHOMEFOLDER=$(getent passwd ${CURRENTUSER} | cut -d: -f6)
 [ ! -e $USERHOMEFOLDER ] && USERHOMEFOLDER=home/guest
@@ -55,7 +56,7 @@ EOF
     mkdir -p "$MODULEDIR/${USERHOMEFOLDER}/.config/libreoffice/4/user"
     cp "$MODULEDIR/root/.config/libreoffice/4/user/registrymodifications.xcu" "$MODULEDIR/${USERHOMEFOLDER}/.config/libreoffice/4/user"
 
-    echo ${CURRENTUSER} | sudo -S chown -R ${CURRENTUSER}:users "$MODULEDIR/${USERHOMEFOLDER}"
+    chown -R "$CURRENTUSER":"$CURRENTGROUP" "$MODULEDIR/${USERHOMEFOLDER}"
 fi
 
 # extract all rpm
