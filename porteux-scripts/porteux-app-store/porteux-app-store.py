@@ -146,7 +146,7 @@ class AppWindow(Gtk.ApplicationWindow):
             for locale in application["locales"]:
                 combobox_language.append_text(locale)
                 index += 1
-                if "en-US" in locale:
+                if "en-US" in locale or "all" in locale:
                     combobox_language.set_active(index)
         else:
             combobox_language.append_text("en-US")
