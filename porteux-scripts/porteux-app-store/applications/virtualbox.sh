@@ -16,6 +16,7 @@ MODULEDIR="$BUILDDIR/$CURRENTPACKAGE-module"
 mkdir "$MODULEDIR"
 
 CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
+CURRENTGROUP=$(id -gn "$CURRENTUSER")
 [ ! $CURRENTUSER ] && CURRENTUSER=guest
 USERHOMEFOLDER=$(getent passwd ${CURRENTUSER} | cut -d: -f6)
 [ ! -e $USERHOMEFOLDER ] && USERHOMEFOLDER=home/guest
@@ -66,7 +67,7 @@ cat > $MODULEDIR/${USERHOMEFOLDER}/.config/VirtualBox/VirtualBox.xml << EOF
   </Global>
 </VirtualBox>
 EOF
-echo "$CURRENTUSER" | sudo -S chown -R "$CURRENTUSER":users "$MODULEDIR/${USERHOMEFOLDER}"
+chown -R "$CURRENTUSER":"$CURRENTGROUP" "$MODULEDIR/${USERHOMEFOLDER}"
 
 # strip
 rm -fr $MODULEDIR/opt/VirtualBox/additions
