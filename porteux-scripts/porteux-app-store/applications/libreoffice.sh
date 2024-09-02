@@ -25,7 +25,7 @@ cd $TMP
 # download LibreOffice
 wget -T 15 -q --show-progress http://download.documentfoundation.org/libreoffice/$CHANNEL/"$VERSION"/rpm/'x86_64'/LibreOffice\_"$VERSION"'_Linux_x86-64_'rpm.tar.gz
 tar -xf LibreOffice_"$VERSION"'_Linux_x86-64_'rpm.tar.gz
-rm -f $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_'rpm/RPMS/libreoffice?.?-dict-{es,fr}-*.rpm
+rm -f $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_'rpm/RPMS/libreoffice*-dict-{es,fr}-*.rpm
 mv $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_'rpm/RPMS/* $PKG
 rm -rf $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_'rpm
 rm -f $TMP/LibreOffice_"$VERSION"'_Linux_x86-64_'rpm.tar.gz
@@ -66,11 +66,11 @@ rm -f *.rpm
 
 # strip
 rm -rf $PKG/var
-rm -rf $PKG/opt/libreoffice?.?/{readmes,CREDITS.fodt,LICENSE,LICENSE.fodt,LICENSE.html,NOTICE}
+rm -rf $PKG/opt/libreoffice*/{readmes,CREDITS.fodt,LICENSE,LICENSE.fodt,LICENSE.html,NOTICE}
 
 # fix double menu entries
 find $PKG/usr/share/applications/ -name *.desktop -delete
-mv -f $PKG/opt/libreoffice?.?/share/xdg/*.desktop $PKG/usr/share/applications
+mv -f $PKG/opt/libreoffice*/share/xdg/*.desktop $PKG/usr/share/applications
 
 # set SAL_USE_VCLPLUGIN=gtk
 LO=$(find $PKG/opt/libreoffice*/program -name soffice | awk 'NR==1 {print $0}')
