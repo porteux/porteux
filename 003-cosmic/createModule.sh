@@ -95,10 +95,6 @@ rm -fr $MODULEPATH/just
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
 rm *.t?z
 
-### patch nm-applet to not show up in COSMIC
-
-sed -i 's|NotShowIn=KDE;GNOME;|NotShowIn=KDE;GNOME;COSMIC;|g' $MODULEPATH/packages/usr/share/applications/nm-applet.desktop
-
 ### install additional packages, including porteux utils
 
 InstallAdditionalPackages
@@ -116,6 +112,7 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 rm etc/xdg/autostart/nm-applet.desktop
+rm usr/share/applications/nm-applet.desktop
 
 GenericStrip
 AggressiveStripAll
