@@ -158,7 +158,6 @@ cd $MODULEPATH/packages/
 
 rm -R etc/dbus-1/system.d
 rm -R etc/dconf
-rm -R etc/geoclue
 rm -R etc/opt
 rm -R usr/lib${SYSTEMBITS}/aspell
 rm -R usr/lib${SYSTEMBITS}/glade
