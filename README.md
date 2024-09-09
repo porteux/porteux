@@ -43,7 +43,7 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have less than 600 MB and after boot the whole system takes about 1 GB of RAM, even considering that the system is running in RAM.
+PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have less than 600 MB, and memory RAM consumption is minimal.
 
 Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
@@ -61,14 +61,14 @@ All this performance benefit is achieved without providing ancient software. It 
 ## Enable OpenCL support (required by applications like DaVinci Resolve)
 
 In the terminal, run the following commands: <br />
-`su` (password: toor) <br />
-`mkdir -p /tmp/opencl-support` <br />
-`cd /tmp/opencl-support` <br />
-`getpkg libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk` <br />
-`txz2xzm *.txz` (this is going to take a while) <br />
-`activate *.xzm` <br />
-`mv *.xzm $PORTDIR/modules` <br />
-`rm -fr /tmp/opencl-support` <br />
+1. `su` (password: toor) <br />
+2. `mkdir -p /tmp/opencl-support` <br />
+3. `cd /tmp/opencl-support` <br />
+4. `getpkg libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk` <br />
+5. `txz2xzm *.txz` (this is going to take a while) <br />
+6. `activate *.xzm` <br />
+7. `mv *.xzm $PORTDIR/modules` <br />
+8. `rm -fr /tmp/opencl-support` <br />
 
 ## Compatibility with Porteus 5
 
@@ -78,15 +78,15 @@ PorteuX and Porteus follow the same basic structure, so a given module built in 
 
 PorteuX can be built in a live session of Slackware 64-bit, Porteus 64-bit or PorteuX 64-bit. At the moment the main scripts are not generating ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-gui, 002-xtra, 003-desktop-environment, etc).
 
-To build PorteuX, run the commands below as root in the exact order as described: <br />
-1. in 000-kernel folder run `createModule.sh`<br />
-2. in 001-core folder run `createModule.sh`<br />
-3. in 002-gui folder run `createModule.sh`<br />
-4. in 002-xtra folder run `createModule.sh`<br />
-5. in 003-desktopenvironment folder run `createModule.sh` (where 'desktopenvironment' is the one of your preference)<br />
-6. in 05-devel folder run `createModule.sh`<br />
-7. (optional) in 08-multilanguage folder run `createModule.sh`<br />
-8. (optional) in 0050-multilib-lite folder run `createModule.sh`<br />
+To build PorteuX, run as root the script `createModule.sh` in the exact folder order as described: <br />
+1. 000-kernel<br />
+2. 001-core<br />
+3. 002-gui<br />
+4. 002-xtra<br />
+5. 003-desktopenvironment (where 'desktopenvironment' is the one of your preference)<br />
+6. 05-devel<br />
+7. (optional) 08-multilanguage<br />
+8. (optional) 0050-multilib-lite<br />
 
 In the end all modules will be in their respective subfolders inside /tmp/porteux-builder-[version].
 
