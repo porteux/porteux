@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PRGNAM=mutter
+PRGNAM=tinysparql
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -21,26 +21,16 @@ cd $PRGNAM-$VERSION
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
 meson setup \
-    --prefix=/usr \
-    --buildtype=release \
-    --libdir=lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --infodir=/usr/info \
-    --mandir=/usr/man \
-    --localstatedir=/var \
-    -Dclutter_tests=false \
-    -Dcogl_tests=false \
-    -Ddefault_library=shared \
-    -Ddocs=false \
-    -Dinstalled_tests=false \
-    -Dintrospection=true \
-    -Dnative_backend=true \
-    -Dprofiler=false \
-    -Dstartup_notification=true \
-    -Dsystemd=false \
-    -Dtests=disabled \
-    -Dudev=true \
-    -Dwayland_eglstream=true
+	--buildtype=release \
+	--infodir=/usr/info \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	-Ddocs=false \
+	-Dsystemd_user_services=false \
+	-Dstrip=true
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

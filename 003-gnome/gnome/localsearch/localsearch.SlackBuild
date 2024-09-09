@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PRGNAM=tracker
+PRGNAM=localsearch
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -13,30 +13,26 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
-rm tracker-miners*
 VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 
-tar xvf $PRGNAM-$VERSION.tar.?z*
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
 meson setup \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --buildtype=release \
-    -Ddocs=false \
-    -Dman=false \
-    -Dstemmer=enabled \
-    -Dunicode_support=icu \
-    -Dbash_completion=true \
-    -Dsystemd_user_services=false \
-    -Dtest_utils=false \
-    -Dsoup=soup3 \
-    -Dtests_tap_protocol=false
+	--buildtype=release \
+	--infodir=/usr/info \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	-Dstrip=true \
+	-Dman=false \
+	-Dminer_rss=false \
+	-Dlandlock=disabled \
+	-Dsystemd_user_services=false 
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
@@ -46,4 +42,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}3-$VERSION-$ARCH-1.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

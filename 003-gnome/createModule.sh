@@ -73,10 +73,8 @@ MODULENAME=$MODULENAME-${GNOME_LATEST_VERSION}
 
 # gnome packages
 for package in \
-	libxmlb \
 	libstemmer \
 	exempi \
-	tracker3 \
 	gtksourceview5 \
 	libwpe \
 	wpebackend-fdo \
@@ -97,12 +95,15 @@ for package in \
 	gnome-online-accounts \
 	gnome-control-center \
 	libei \
+	libdisplay-info \
 	mutter \
 	gnome-shell \
 	gnome-session \
 	gnome-menus \
 	libportal \
 	libcloudproviders \
+	localsearch \
+	tinysparql \
 	nautilus \
 	nautilus-python \
 	gdm \
