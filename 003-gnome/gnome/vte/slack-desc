@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':'.
+
+   |-----handy-ruler------------------------------------------------------|
+vte: vte (terminal emulator widget)
+vte:
+vte: VTE is a terminal emulator widget for use with GTK+. This package
+vte: contains the VTE library and development files and a sample
+vte: implementation (vte).
+vte:
+vte: VTE is used by XFce.
+vte:
+vte:
+vte:
+vte:

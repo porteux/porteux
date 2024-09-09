@@ -114,6 +114,7 @@ for package in \
 	loupe \
 	evince \
 	gnome-system-monitor \
+	vte \
 	gnome-console \
 	gnome-tweaks \
 	gnome-user-share \
@@ -197,6 +198,7 @@ rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/ibus*.desktop
+rm etc/xdg/autostart/localsearch-3.desktop
 rm usr/bin/canberra*
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
@@ -218,6 +220,7 @@ rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
+rm usr/libexec/localsearch-*
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
