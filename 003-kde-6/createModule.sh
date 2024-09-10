@@ -218,7 +218,6 @@ find $KDE6PACKAGES -type f -name "kfilemetadata-6*" -exec cp {} $MODULEPATH/pack
 find $KDE6PACKAGES -type f -name "kglobalaccel-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kglobalacceld*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kguiaddons-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kholidays-5*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "ki18n-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kiconthemes-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kidletime-6*" -exec cp {} $MODULEPATH/packages/ \;
@@ -244,7 +243,6 @@ find $KDE6PACKAGES -type f -name "kpeople-6*" -exec cp {} $MODULEPATH/packages/ 
 find $KDE6PACKAGES -type f -name "kpeoplevcard*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kpipewire*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kplotting-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kpmcore*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kpty-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kqtquickcharts-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kquickcharts-6*" -exec cp {} $MODULEPATH/packages/ \;

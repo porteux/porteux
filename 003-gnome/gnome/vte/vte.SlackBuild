@@ -33,7 +33,8 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Dgtk3=false \
-	-D_systemd=false
+	-D_systemd=false \
+	-Dicu=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
