@@ -228,6 +228,7 @@ rm usr/bin/canberra*
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
+rm usr/bin/gtk4-encode-symbolic-svg
 rm usr/bin/gtk4-icon-browser
 rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
