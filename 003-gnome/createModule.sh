@@ -168,6 +168,7 @@ rm -R usr/lib${SYSTEMBITS}/graphene-1.0
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/lib${SYSTEMBITS}/python*/site-packages/pip*
+rm -R usr/libexec/installed-tests
 rm -R usr/share/icons/Adwaita/8x8
 rm -R usr/share/icons/Adwaita/96x96
 rm -R usr/share/icons/Adwaita/256x256
@@ -203,6 +204,7 @@ rm usr/bin/canberra*
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
+rm usr/bin/gtk4-encode-symbolic-svg
 rm usr/bin/gtk4-icon-browser
 rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
