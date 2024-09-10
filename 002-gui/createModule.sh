@@ -246,7 +246,6 @@ rm -R etc/xdg/Xwayland-session.d
 rm -R usr/lib${SYSTEMBITS}/atkmm-*
 rm -R usr/lib${SYSTEMBITS}/cairomm-*
 rm -R usr/lib${SYSTEMBITS}/clang
-rm -R usr/lib${SYSTEMBITS}/dri/*.la
 rm -R usr/lib${SYSTEMBITS}/gdkmm-*
 rm -R usr/lib${SYSTEMBITS}/giomm-*
 rm -R usr/lib${SYSTEMBITS}/glibmm-*
@@ -343,6 +342,8 @@ rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 rm usr/share/xsessions/openbox-gnome.desktop
 rm usr/share/xsessions/openbox-kde.desktop
+
+[ $SLACKWAREVERSION == "current" ] && rm usr/lib64/libpoppler-qt5*
 
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 

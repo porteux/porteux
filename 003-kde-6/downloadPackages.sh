@@ -23,7 +23,6 @@ DownloadPackage "libqaccessibilityclient" &
 DownloadPackage "LibRaw" &
 wait
 DownloadPackage "qrencode" &
-DownloadPackage "taglib" &
 DownloadPackage "wayland-protocols" &
 DownloadPackage "xcb-util-cursor" &
 DownloadPackage "xdpyinfo" &

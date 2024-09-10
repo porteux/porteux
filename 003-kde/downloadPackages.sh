@@ -65,7 +65,6 @@ DownloadPackage "kfilemetadata" &
 DownloadPackage "kgamma5" &
 DownloadPackage "kglobalaccel" &
 DownloadPackage "kguiaddons" &
-DownloadPackage "kholidays" &
 DownloadPackage "khotkeys" &
 DownloadPackage "khtml" &
 DownloadPackage "ki18n" &
@@ -95,7 +94,6 @@ DownloadPackage "kparts" &
 DownloadPackage "kpeople" &
 DownloadPackage "kpipewire" &
 DownloadPackage "kplotting" &
-DownloadPackage "kpmcore" &
 DownloadPackage "kpty" &
 DownloadPackage "kqtquickcharts" &
 DownloadPackage "kquickcharts" &
@@ -168,7 +166,6 @@ DownloadPackage "syndication" &
 wait
 DownloadPackage "syntax-highlighting" &
 DownloadPackage "systemsettings" &
-DownloadPackage "taglib" &
 DownloadPackage "threadweaver" &
 DownloadPackage "wayland-protocols" &
 DownloadPackage "xcb-util-cursor" &
