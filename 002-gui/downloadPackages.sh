@@ -201,6 +201,7 @@ DownloadPackage "xauth" &
 wait
 DownloadPackage "xbacklight" &
 DownloadPackage "xcb-util" &
+DownloadPackage "xcb-util-cursor" & # required by VirtualBox
 DownloadPackage "xcb-util-image" &
 DownloadPackage "xcb-util-keysyms" &
 DownloadPackage "xcb-util-renderutil" &
