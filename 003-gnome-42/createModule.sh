@@ -129,7 +129,6 @@ for package in \
 	gjs \
 	gnome-shell \
 	gnome-session \
-	gnome-menus \
 	nautilus \
 	nautilus-python \
 	gdm \

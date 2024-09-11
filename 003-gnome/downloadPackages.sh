@@ -13,13 +13,12 @@ DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
-DownloadPackage "gexiv2" &
 wait
+DownloadPackage "gexiv2" &
 DownloadPackage "gjs" &
 DownloadPackage "hunspell" &
 DownloadPackage "glib-networking" &
 DownloadPackage "glibmm2" & # required by gnome-system-monitor
-DownloadPackage "gperf" &
 DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "gst-plugins-good" &
 DownloadPackage "gst-plugins-libav" &

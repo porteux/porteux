@@ -99,11 +99,10 @@ for package in \
 	mutter \
 	gnome-shell \
 	gnome-session \
-	gnome-menus \
 	libportal \
 	libcloudproviders \
-	localsearch \
 	tinysparql \
+	localsearch \
 	nautilus \
 	nautilus-python \
 	gdm \
