@@ -235,7 +235,6 @@ rm -R usr/lib${SYSTEMBITS}/glade
 rm -R usr/lib${SYSTEMBITS}/graphene-1.0
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/python2*
-rm -R usr/lib*/python*/site-packages/*-info
 rm -R usr/lib*/python*/site-packages/pip*
 rm -R usr/lib*/python*/site-packages/psutil/tests
 rm -R usr/share/cjs-1.0

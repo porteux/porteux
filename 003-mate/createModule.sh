@@ -209,7 +209,6 @@ cd $MODULEPATH/packages/
 
 rm -R run/
 rm -R usr/lib*/python2*
-rm -R usr/lib*/python*/site-packages/*-info
 rm -R usr/lib*/python*/site-packages/pip*
 rm -R usr/share/accountsservice
 rm -R usr/share/engrampa

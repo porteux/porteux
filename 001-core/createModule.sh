@@ -347,7 +347,6 @@ rm -R usr/lib*/python*/lib2to3
 rm -R usr/lib*/python*/site-packages/demo
 rm -R usr/lib*/python*/site-packages/msi
 rm -R usr/lib*/python*/site-packages/peg_generator
-rm -R usr/lib*/python*/site-packages/*-info
 rm -R usr/lib*/python*/turtledemo
 rm -R usr/lib/udev
 rm -R usr/local/etc

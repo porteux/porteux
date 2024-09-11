@@ -61,6 +61,8 @@ rm -R usr/x86_64-slackware-linux
 rm -R var/log/pkgtools
 rm -R var/log/setup
 
+rm usr/lib/python*/site-packages/setuptools/_distutils/command/*.exe
+
 # already included in aaa_libraries - keeping them will prevent 05-devel to be deactivated
 rm usr/lib${SYSTEMBITS}/libatomic.so*
 rm usr/lib${SYSTEMBITS}/libgcc_s.so*
@@ -69,6 +71,12 @@ rm usr/lib${SYSTEMBITS}/libgmpxx.so*
 rm usr/lib${SYSTEMBITS}/libgomp.so*
 rm usr/lib${SYSTEMBITS}/libltdl.so*
 rm usr/lib${SYSTEMBITS}/libstdc++.so*
+
+# remove 32-bit files
+rm -R usr/include/c++/*/x86_64-slackware-linux/32
+rm -R usr/lib/pkgconfig
+rm -R usr/lib${SYSTEMBITS}/gcc/x86_64-slackware-linux/*/32
+rm usr/lib/*
 
 find . -name '*.la' -delete
 
