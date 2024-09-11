@@ -106,6 +106,9 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm $MODULEPATH/packages/meson-*.txz
 fi
 
+installpkg $MODULEPATH/packages/python-setuptools*.txz || exit 1
+rm -fr $MODULEPATH/python-setuptools*.txz
+
 currentPackage=polkit
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
@@ -289,6 +292,7 @@ fi
 cd $MODULEPATH/packages
 
 chmod 644 etc/rc.d/rc.bluetooth
+chmod 644 etc/rc.d/rc.inet1
 chmod 755 etc/rc.d/rc.networkmanager
 chmod 644 etc/rc.d/rc.fuse3
 chmod 644 etc/rc.d/rc.loop

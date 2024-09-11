@@ -269,6 +269,7 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "fuse" & # to build archivemount
+DownloadPackage "python-setuptools" &
 wait
 
 ### script clean up
