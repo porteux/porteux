@@ -141,6 +141,11 @@ rm *.t?z
 
 InstallAdditionalPackages
 
+### removed some useless services
+
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
+
 ### copy build files to 05-devel
 
 CopyToDevel
