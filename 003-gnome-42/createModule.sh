@@ -161,6 +161,11 @@ rm *.t?z
 
 InstallAdditionalPackages
 
+### removed some useless services
+
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
+
 ### fix some .desktop files
 
 sed -i "s|image/x-icns|image/x-icns;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.gnome.eog.desktop
