@@ -22,6 +22,24 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
+if [ $SLACKWAREVERSION != "current" ]; then
+	# required by new wireplumber
+	currentPackage=lua
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+	wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/d/${currentPackage}/ || exit 1
+	sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
+	sh ${currentPackage}.SlackBuild || exit 1
+	mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+	installpkg $MODULEPATH/packages/lua*.txz
+	rm -fr $MODULEPATH/${currentPackage}
+	
+	currentPackage=meson
+	sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
+	rm -fr $MODULEPATH/${currentPackage}
+	rm $MODULEPATH/packages/meson-*.txz
+fi
+
 currentPackage=sysvinit
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
@@ -98,14 +116,6 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=meson
-	sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
-	rm -fr $MODULEPATH/${currentPackage}
-	rm $MODULEPATH/packages/meson-*.txz
-fi
-
 installpkg $MODULEPATH/packages/python-setuptools*.txz || exit 1
 rm -fr $MODULEPATH/python-setuptools*.txz
 
@@ -118,26 +128,46 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-# required by new wireplumber
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=lua
+### packages that require specific stripping
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	currentPackage=avahi
 	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/d/${currentPackage}/ || exit 1
-	sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
-	sh ${currentPackage}.SlackBuild || exit 1
-	mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-	installpkg $MODULEPATH/packages/lua*.txz
+	mv ../packages/${currentPackage}-[0-9]* .
+	version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+	mkdir ${currentPackage}-stripped-$version
+	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped-$version/
+	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped-$version/
+	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped-$version/
+	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+	/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+	rm -fr $MODULEPATH/${currentPackage}
+
+	currentPackage=glibc
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+	mv ../packages/${currentPackage}-[0-9]* .
+	version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+	rm -fr var/lib/pkgtools
+	rm -fr var/log
+	rm -fr lib/
+	rm -fr usr/lib/
+	rm usr/include/gnu/*-32.h
+	rm usr/libexec/getconf/*ILP32*
+	mkdir ${currentPackage}-stripped-$version
+	rsync -av --exclude=${currentPackage}-stripped-$version/ * ${currentPackage}-stripped-$version/
+	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+	/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 	rm -fr $MODULEPATH/${currentPackage}
 fi
-
-### packages that require specific stripping
 
 currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
-ROOT=./ installpkg ${currentPackage}*.txz
+ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}-*.txz
 rm usr/lib${SYSTEMBITS}/libslang.so.1*
 rm usr/lib${SYSTEMBITS}/libstdc++.so*
 ROOT=./ installpkg gcc-*.txz
@@ -170,26 +200,11 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-if [ $SLACKWAREVERSION == "current" ]; then
-	currentPackage=avahi
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	mv ../packages/${currentPackage}-[0-9]* .
-	version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-	ROOT=./ installpkg ${currentPackage}-*.txz
-	mkdir ${currentPackage}-stripped-$version
-	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped-$version/
-	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped-$version/
-	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped-$version/
-	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-	/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
-	rm -fr $MODULEPATH/${currentPackage}
-fi
-
 currentPackage=binutils
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents usr/bin/ar ${currentPackage}-stripped-$version/
 cp --parents usr/bin/strip ${currentPackage}-stripped-$version/
@@ -203,7 +218,7 @@ currentPackage=fftw
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib${SYSTEMBITS}/libfftw3f.* ${currentPackage}-stripped-$version/
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
@@ -214,7 +229,7 @@ currentPackage=ntp
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/bin/ntpdate ${currentPackage}-stripped-$version/
 cp --parents -P usr/sbin/ntpdate ${currentPackage}-stripped-$version/
@@ -227,7 +242,7 @@ currentPackage=openldap
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents etc/openldap/ldap.conf.new ${currentPackage}-stripped-$version/
 mv ${currentPackage}-stripped-$version/etc/openldap/ldap.conf.new ${currentPackage}-stripped-$version/etc/openldap/ldap.conf
@@ -236,25 +251,6 @@ cp --parents -P usr/lib$SYSTEMBITS/libl* ${currentPackage}-stripped-$version/
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	currentPackage=glibc
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	mv ../packages/${currentPackage}-[0-9]* .
-	version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
-	rm -fr var/lib/pkgtools
-	rm -fr var/log
-	rm -fr lib/
-	rm -fr usr/lib/
-	rm usr/include/gnu/*-32.h
-	rm usr/libexec/getconf/*ILP32*
-	mkdir ${currentPackage}-stripped-$version
-	rsync -av --exclude=${currentPackage}-stripped-$version/ * ${currentPackage}-stripped-$version/
-	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-	/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
-	rm -fr $MODULEPATH/${currentPackage}
-fi
 
 ### fake root
 
