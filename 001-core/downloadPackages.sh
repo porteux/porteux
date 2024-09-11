@@ -252,6 +252,11 @@ DownloadPackage "ntp" &
 DownloadPackage "openldap" &
 wait
 
+### temporary packages for further building
+
+DownloadPackage "python-setuptools" &
+wait
+
 ### script clean up
 
 rm FILE_LIST

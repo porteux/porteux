@@ -45,6 +45,10 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm $MODULEPATH/packages/meson-*.txz
 fi
 
+# required from now on
+installpkg $MODULEPATH/packages/python-setuptools*.txz || exit 1
+rm -fr $MODULEPATH/python-setuptools*.txz
+
 currentPackage=gtk+3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/lah7/gtk3-classic/archive/refs/heads/master.tar.gz || exit 1
