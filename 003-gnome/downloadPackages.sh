@@ -19,6 +19,7 @@ DownloadPackage "gjs" &
 DownloadPackage "hunspell" &
 DownloadPackage "glib-networking" &
 DownloadPackage "glibmm2" & # required by gnome-system-monitor
+DownloadPackage "gperf" & # required by libadwaita (appstream sub-project)
 DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "gst-plugins-good" &
 DownloadPackage "gst-plugins-libav" &
@@ -37,7 +38,7 @@ DownloadPackage "libproxy" &
 DownloadPackage "libsigc++3" & # required by gnome-system-monitor
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
-DownloadPackage "mozjs115" &
+DownloadPackage "mozjs128" &
 DownloadPackage "pangomm2" & # required by gnome-system-monitor
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &

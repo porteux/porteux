@@ -116,9 +116,6 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-installpkg $MODULEPATH/packages/python-setuptools*.txz || exit 1
-rm -fr $MODULEPATH/python-setuptools*.txz
-
 currentPackage=polkit
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1

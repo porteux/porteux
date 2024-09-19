@@ -242,6 +242,8 @@ cd $MODULEPATH/${currentPackage}/package
 installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
+installpkg $MODULEPATH/packages/vte*.txz || exit 1
+
 currentPackage=lxterminal
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/${currentPackage}
@@ -568,8 +570,10 @@ rm usr/share/lxde/wallpapers/lxde_red.jpg
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/
 GenericStrip
 AggressiveStripAll
+mv $MODULEPATH/libvte-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
 

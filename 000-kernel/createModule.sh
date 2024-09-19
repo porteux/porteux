@@ -77,7 +77,7 @@ if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
 	echo "Downloading firmware in the background..."
 	DOWNLOADINGFIRMWARE=true
 	(
-		wget -r -nd --no-parent -w 2 http://slackware.uk/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz -P ${MODULEPATH} > /dev/null 2>&1 || { echo "Fail to download firmware."; exit 1; }
+		wget -r -nd --no-parent -w 2 http://slackware.uk/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz -P ${MODULEPATH} > /dev/null 2>&1 & PID1=$! || { echo "Fail to download firmware."; exit 1; }
 	) &
 fi
 
@@ -97,7 +97,7 @@ ln -sf /usr/src/linux lib/modules/$dir/source
 
 if [ $DOWNLOADINGFIRMWARE ]; then
 	# wait for firmware download to finish
-	wait
+	wait $PID1
 fi
 
 echo "Extracting firmware..."
