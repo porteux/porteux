@@ -202,6 +202,9 @@ installpkg $MODULEPATH/packages/libwnck-*.txz || exit 1
 # required by xfce4-pulseaudio-plugin
 installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 
+# required by xfce4-terminal
+installpkg $MODULEPATH/packages/vte-*.txz || exit 1
+
 # required by xfce4-xkb-plugin
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
@@ -329,8 +332,10 @@ rm usr/share/icons/hicolor/scalable/status/phone.svg
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/
 GenericStrip
 AggressiveStripAll
+mv $MODULEPATH/libvte-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
 

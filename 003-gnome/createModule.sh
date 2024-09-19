@@ -87,7 +87,6 @@ for package in \
 	gnome-autoar \
 	gnome-desktop \
 	gnome-settings-daemon \
-	appstream \
 	libadwaita \
 	gnome-bluetooth \
 	libnma-gtk4 \
@@ -107,6 +106,7 @@ for package in \
 	nautilus-python \
 	gdm \
 	gspell \
+	libspelling \
 	gnome-text-editor \
 	libheif \
 	glycin \
@@ -130,6 +130,7 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # only required for building not for run-time
+rm $MODULEPATH/packages/gperf*
 rm $MODULEPATH/packages/libheif*
 
 ### fake root

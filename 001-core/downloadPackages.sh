@@ -6,7 +6,6 @@ REPOSITORY="$1"
 GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "aaa_base" &
-DownloadPackage "aaa_glibc-solibs" &
 DownloadPackage "aaa_terminfo" &
 DownloadPackage "acl" &
 DownloadPackage "acpid" &
@@ -250,11 +249,6 @@ DownloadPackage "gcc" & # required by aaa_libraries
 DownloadPackage "gcc-g++" & # required by aaa_libraries
 DownloadPackage "ntp" &
 DownloadPackage "openldap" &
-wait
-
-### temporary packages for further building
-
-DownloadPackage "python-setuptools" &
 wait
 
 ### script clean up
