@@ -145,26 +145,6 @@ mv sof ${MODULEPATH}/lib/firmware/intel
 mv sof-tplg ${MODULEPATH}/lib/firmware/intel
 cd ..
 
-echo "Blacklisting..."
-mkdir -p ${MODULEPATH}/${MODULENAME}/etc/modprobe.d
-cat > ${MODULEPATH}/${MODULENAME}/etc/modprobe.d/b43_blacklist.conf <<EOF
-blacklist b43
-blacklist b43legacy
-blacklist b44
-blacklist bcma
-blacklist brcm80211
-blacklist brcmfmac
-blacklist brcmsmac
-blacklist ssb
-EOF
-
-cat > ${MODULEPATH}/${MODULENAME}/etc/modprobe.d/broadcom_blacklist.conf <<EOF
-blacklist b43
-blacklist bcma
-blacklist brcmsmac
-blacklist ssb
-EOF
-
 echo "Creating kernel xzm module..."
 mv lib ${MODULEPATH}/${MODULENAME}
 
