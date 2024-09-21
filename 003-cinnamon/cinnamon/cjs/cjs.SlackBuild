@@ -18,6 +18,9 @@ wget -c https://github.com/linuxmint/${PRGNAM}/archive/refs/tags/${VERSION}.tar.
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+sed -i "s|meson.build_root|meson.project_build_root|g" meson.build
+sed -i "s|extra_args: '--warn-error'|fatal_warnings: get_option('werror')|g" meson.build
+
 [ ! -e build ] && mkdir build
 cd build
 CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
@@ -29,6 +32,7 @@ meson setup \
     --mandir=/usr/man \
     --prefix=/usr \
     --sysconfdir=/etc \
+    -Dprofiler=disabled \
     -Dinstalled_tests=false \
     -Dskip_dbus_tests=true \
     -Dskip_gtk_tests=true

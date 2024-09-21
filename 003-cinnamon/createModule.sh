@@ -122,7 +122,7 @@ for package in \
 	caribou \
 	pexpect \
 	polib \
-	python3-xapp
+	python3-xapp \
 	gspell \
 	gtksourceview4 \
 	libpeas \
