@@ -80,11 +80,7 @@ for package in \
 	bubblewrap \
 	geoclue2 \
 	libpeas \
-	nautilus-python \
-	gnome-tweaks \
 	libwnck4 \
-	gnome-browser-connector \
-	file-roller \
 ; do
 sh $SCRIPTPATH/gnome/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
@@ -107,6 +103,7 @@ for package in \
 	gnome-desktop \
 	gnome-settings-daemon \
 	libadwaita \
+	gnome-tweaks \
 	gnome-bluetooth \
 	libnma \
 	gnome-control-center \
@@ -115,6 +112,7 @@ for package in \
 	gnome-shell \
 	gnome-session \
 	nautilus \
+	nautilus-python \
 	gdm \
 	gspell \
 	gnome-text-editor \
@@ -124,6 +122,8 @@ for package in \
 	gnome-console \
 	gnome-user-share \
 	gnome-backgrounds \
+	gnome-browser-connector \
+	file-roller \
 	adwaita-icon-theme \
 	xdg-desktop-portal-gnome \
 ; do

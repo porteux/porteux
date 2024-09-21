@@ -51,10 +51,11 @@ DownloadPackage "c-ares" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
+DownloadPackage "hwdata" & # required by libdisplay-info
 DownloadPackage "iso-codes" &
 DownloadPackage "krb5" &
-DownloadPackage "libsass" & # required by gnome-console
 wait
+DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
 DownloadPackage "llvm" & # required by glycin

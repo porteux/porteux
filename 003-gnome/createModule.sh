@@ -42,6 +42,7 @@ rm $MODULEPATH/packages/c-ares*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
+rm $MODULEPATH/packages/hwdata*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
@@ -87,14 +88,9 @@ for package in \
 	libdisplay-info \
 	libportal \
 	libcloudproviders \
-	nautilus-python \
-	libspelling \
 	libheif \
 	glycin \
-	gnome-tweaks \
 	libwnck4 \
-	gnome-browser-connector \
-	file-roller \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
@@ -111,6 +107,7 @@ for package in \
 	gnome-desktop \
 	gnome-settings-daemon \
 	libadwaita \
+	gnome-tweaks \
 	gnome-bluetooth \
 	libnma-gtk4 \
 	gnome-online-accounts \
@@ -121,8 +118,10 @@ for package in \
 	tinysparql \
 	localsearch \
 	nautilus \
+	nautilus-python \
 	gdm \
 	gspell \
+	libspelling \
 	gnome-text-editor \
 	loupe \
 	evince \
@@ -131,6 +130,8 @@ for package in \
 	gnome-console \
 	gnome-user-share \
 	gnome-backgrounds \
+	gnome-browser-connector \
+	file-roller \
 	adwaita-icon-theme \
 	xdg-desktop-portal-gnome \
 ; do
