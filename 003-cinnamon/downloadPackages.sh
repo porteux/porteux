@@ -35,7 +35,6 @@ DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "mozjs115" &
 DownloadPackage "network-manager-applet" &
-DownloadPackage "polkit-gnome" & # consider using mate-polkit instead
 DownloadPackage "python-certifi" &
 DownloadPackage "python-charset-normalizer" &
 wait

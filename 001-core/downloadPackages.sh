@@ -11,10 +11,9 @@ DownloadPackage "acl" &
 DownloadPackage "acpid" &
 DownloadPackage "attr" &
 DownloadPackage "bash" &
-DownloadPackage "bc" &
 DownloadPackage "bin" &
-wait
 DownloadPackage "bluez" &
+wait
 DownloadPackage "bluez-firmware" &
 DownloadPackage "bridge-utils" &
 DownloadPackage "brotli" &
@@ -73,7 +72,6 @@ DownloadPackage "grep" &
 DownloadPackage "gzip" &
 DownloadPackage "hdparm" &
 DownloadPackage "hostname" &
-DownloadPackage "hwdata" &
 DownloadPackage "icu4c" &
 DownloadPackage "infozip" &
 DownloadPackage "inih" &
@@ -183,12 +181,10 @@ wait
 DownloadPackage "rp-pppoe" &
 DownloadPackage "rsync" &
 DownloadPackage "samba" &
-DownloadPackage "screen" &
 DownloadPackage "sdparm" &
 DownloadPackage "sed" &
 DownloadPackage "sg3_utils" &
 DownloadPackage "shadow" &
-DownloadPackage "sharutils" &
 DownloadPackage "slackpkg" &
 DownloadPackage "smartmontools" &
 wait

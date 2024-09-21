@@ -12,6 +12,8 @@ source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
 
+[ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -35,6 +37,10 @@ currentPackage=lxdm
 GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=mate-polkit
+sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=yaru
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/ubuntu/${currentPackage}/archive/refs/heads/master.tar.gz || exit 1
@@ -50,8 +56,8 @@ cp -r icons/Yaru-blue/* $blueIconRootFolder || exit 1
 rm -fr $mainIconRootFolder/cursor*
 rm -fr $mainIconRootFolder/*@2x
 rm -fr $blueIconRootFolder/*@2x
-cp $SCRIPTPATH/extras/${currentPackage}/index.theme $mainIconRootFolder
-cp $SCRIPTPATH/extras/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
+cp $SCRIPTPATH/deps/${currentPackage}/index.theme $mainIconRootFolder
+cp $SCRIPTPATH/deps/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
 gtk-update-icon-cache -f $mainIconRootFolder || exit 1
 gtk-update-icon-cache -f $blueIconRootFolder || exit 1
 cd ../${currentPackage}-$version-noarch
@@ -99,7 +105,7 @@ rm $MODULEPATH/packages/xorg-server-xwayland*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
-# cinnamon packages
+# cinnamon deps
 for package in \
 	tinycss2 \
 	xdotool \
@@ -108,39 +114,47 @@ for package in \
 	libtimezonemap \
 	setproctitle \
 	ptyprocess \
-	cjs \
 	python-pam \
-	cinnamon-desktop \
 	libgnomekbd \
+	zenity \
+	cogl \
+	clutter \
+	caribou \
+	pexpect \
+	polib \
+	python3-xapp
+	gspell \
+	gtksourceview4 \
+	libpeas \
+	libgxps \
+	exempi \
+	file-roller \
+	gnome-terminal \
+	gnome-screenshot \
+	gnome-system-monitor \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# cinnamon packages
+for package in \
+	cjs \
+	cinnamon-desktop \
 	xapp \
 	cinnamon-session \
 	cinnamon-settings-daemon \
 	cinnamon-menus \
 	cinnamon-control-center \
-	zenity \
-	cogl \
-	clutter \
 	muffin \
-	caribou \
-	pexpect \
-	polib \
 	nemo \
 	nemo-extensions \
-	python3-xapp \
 	cinnamon-screensaver \
 	cinnamon \
-	gspell \
-	gtksourceview4 \
-	libpeas \
-	libgxps \
 	xreader \
-	exempi \
 	xviewer \
 	xed \
-	file-roller \
-	gnome-terminal \
-	gnome-screenshot \
-	gnome-system-monitor \
 ; do
 sh $SCRIPTPATH/cinnamon/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1

@@ -39,4 +39,8 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
+
+# fix application menu not opening correctly using shortcut
+patch -p0 < $CWD/xfce4-popup-applicationsmenu.patch
+
 /sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

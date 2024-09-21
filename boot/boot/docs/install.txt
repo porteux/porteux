@@ -64,6 +64,5 @@ automatically saved.
 
 2) If your media storage is formatted with a Windows filesystem
 (e.g. FAT or NTFS), the changes you make to your system will not be 
-automatically saved; PorteuX will default to 'Always Fresh' mode.
-In this case, you can create a '.dat' file container using
-PorteuX Save Session application after the system boots.
+automatically saved. In this case, you can create a '.dat' file
+container using PorteuX Save Session application after the boot.

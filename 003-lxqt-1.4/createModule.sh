@@ -12,6 +12,8 @@ source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
 
+[ $SLACKWAREVERSION == "current" ] && echo "This module should be built in stable only" && exit 1
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -128,7 +130,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/FedoraQt/${currentPackage} || exit 1
 cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
-cp $SCRIPTPATH/extras/adwaita-qt/adwaitastyle.cpp.patch .
+cp $SCRIPTPATH/deps/adwaita-qt/adwaitastyle.cpp.patch .
 patch -p0 < adwaitastyle.cpp.patch || exit 1
 mkdir build && cd build
 CXXFLAGS="$GCCFLAGS -ffat-lto-objects -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
@@ -152,10 +154,7 @@ installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
 currentPackage=FeatherPad
 mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-#info=$(DownloadLatestFromGithub "tsujan" ${currentPackage})
-#version=${info#* }
-#filename=${info% *}
-version="1.4.1"
+version="1.4.1" # higher than this requires Qt6
 wget https://github.com/tsujan/${currentPackage}/releases/download/V${version}/${currentPackage}-${version}.tar.xz
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
@@ -180,7 +179,7 @@ for package in \
 	extra-cmake-modules \
 	kimageformats \
 ; do
-sh $SCRIPTPATH/lxqt/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -323,11 +322,10 @@ cd $MODULEPATH/${currentPackage}/qterminal && git checkout 05a0b64daa41c52b6aed4
 cd $MODULEPATH/${currentPackage}/qps && git checkout 2f6f14de5b46d42cf8c18b09c62a66d0ba9c3f2d
 cd $MODULEPATH/${currentPackage}/screengrab && git checkout 09264f734146d6929751b5c80e7d777c76479216
 cd $MODULEPATH/${currentPackage}
-cp $SCRIPTPATH/extras/lxqt/build_all_cmake_projects.sh .
-cp $SCRIPTPATH/extras/lxqt/*.patch .
-cp $SCRIPTPATH/extras/lxqt/stable/*.patch .
+cp $SCRIPTPATH/lxqt/build_all_cmake_projects.sh .
+cp $SCRIPTPATH/lxqt/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
-cp $SCRIPTPATH/extras/lxqt/cmake_repos.list $MODULEPATH/${currentPackage}/ || exit 1
+cp $SCRIPTPATH/lxqt/cmake_repos.list $MODULEPATH/${currentPackage}/ || exit 1
 sh build_all_cmake_projects.sh || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 

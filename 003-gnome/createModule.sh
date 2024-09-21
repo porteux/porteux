@@ -12,6 +12,8 @@ source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
 
+[ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -71,18 +73,39 @@ export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LA
 echo "Building GNOME ${GNOME_LATEST_VERSION}..."
 MODULENAME=$MODULENAME-${GNOME_LATEST_VERSION}
 
-# gnome packages
+# gnome deps
 for package in \
 	libstemmer \
 	exempi \
-	gtksourceview5 \
 	libwpe \
 	wpebackend-fdo \
 	bubblewrap \
 	geoclue2 \
+	libpeas \
+	colord-gtk \
+	libei \
+	libdisplay-info \
+	libportal \
+	libcloudproviders \
+	nautilus-python \
+	libspelling \
+	libheif \
+	glycin \
+	gnome-tweaks \
+	libwnck4 \
+	gnome-browser-connector \
+	file-roller \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# gnome packages
+for package in \
+	gtksourceview5 \
 	geocode-glib \
 	libgweather \
-	libpeas \
 	gsound \
 	gnome-autoar \
 	gnome-desktop \
@@ -90,36 +113,23 @@ for package in \
 	libadwaita \
 	gnome-bluetooth \
 	libnma-gtk4 \
-	colord-gtk \
 	gnome-online-accounts \
 	gnome-control-center \
-	libei \
-	libdisplay-info \
 	mutter \
 	gnome-shell \
 	gnome-session \
-	libportal \
-	libcloudproviders \
 	tinysparql \
 	localsearch \
 	nautilus \
-	nautilus-python \
 	gdm \
 	gspell \
-	libspelling \
 	gnome-text-editor \
-	libheif \
-	glycin \
 	loupe \
 	evince \
 	gnome-system-monitor \
 	vte \
 	gnome-console \
-	gnome-tweaks \
 	gnome-user-share \
-	libwnck4 \
-	gnome-browser-connector \
-	file-roller \
 	gnome-backgrounds \
 	adwaita-icon-theme \
 	xdg-desktop-portal-gnome \

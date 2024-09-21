@@ -12,6 +12,8 @@ source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
 
+[ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -129,7 +131,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/FedoraQt/${currentPackage} || exit 1
 cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
-cp $SCRIPTPATH/extras/adwaita-qt/adwaitastyle.cpp.patch .
+cp $SCRIPTPATH/deps/adwaita-qt/adwaitastyle.cpp.patch .
 patch -p0 < adwaitastyle.cpp.patch || exit 1
 mkdir build && cd build
 CXXFLAGS="$GCCFLAGS -ffat-lto-objects -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DUSE_QT6=true ..
@@ -194,7 +196,7 @@ for package in \
 	networkmanager-qt \
 	kimageformats \
 ; do
-sh $SCRIPTPATH/lxqt/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -207,7 +209,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sed -i "s|set(NM_TRAY_VERSION \".*|set(NM_TRAY_VERSION \"${version}\")|g" CMakeLists.txt
-cp $SCRIPTPATH/extras/nm-tray/*.patch .
+cp $SCRIPTPATH/deps/nm-tray/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
 mkdir build && cd build
 CXXFLAGS="$GCCFLAGS -ffat-lto-objects -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DBUILD_WITH_QT6=true ..
@@ -300,9 +302,10 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/${currentPackage}/${currentPackage} $MODULEPATH/${currentPackage}
 git submodule init || exit 1
 git submodule update --remote --rebase || exit 1
-cp $SCRIPTPATH/extras/lxqt/build_all_cmake_projects.sh .
-cp $SCRIPTPATH/extras/lxqt/*.patch .
+cp $SCRIPTPATH/lxqt/build_all_cmake_projects.sh .
+cp $SCRIPTPATH/lxqt/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
+cp $SCRIPTPATH/lxqt/cmake_repos.list $MODULEPATH/${currentPackage}/ || exit 1
 sh build_all_cmake_projects.sh || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
