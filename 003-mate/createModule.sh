@@ -134,9 +134,6 @@ done
 
 # mate packages
 for package in \
-	mate-desktop \
-	libmatekbd \
-	caja \
 	mate-polkit \
 	marco \
 	libmatemixer \

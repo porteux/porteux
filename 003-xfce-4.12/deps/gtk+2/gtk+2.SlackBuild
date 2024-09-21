@@ -10,8 +10,7 @@ PKG=$TMP/package-$PRGNAM
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget -r -nH --cut-dirs=5 --no-parent --reject="*.SlackBuild" $SOURCEREPOSITORY/l/${PRGNAM}/
-cd ${PRGNAM}*
+wget -r -nH --cut-dirs=6 --no-parent --reject="*.SlackBuild" $SOURCEREPOSITORY/l/${PRGNAM}/
 VERSION=${VERSION:-$(echo gtk+-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 
 set -e
