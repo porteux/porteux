@@ -37,7 +37,7 @@ installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=gpicview
-version="0.2.5"
+version="0.2.6"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/${currentPackage} || exit 1
 cd ${currentPackage}
@@ -61,7 +61,11 @@ sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=mate-polkit
+sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa and mate-search-tool
@@ -112,7 +116,7 @@ installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 
 currentPackage=pavucontrol
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mate-utils
@@ -122,7 +126,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
+cp $SCRIPTPATH/deps/${currentPackage}/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
 sed -i "s|baobab||g" ./Makefile.am
 sed -i "s|mate-dictionary||g" ./Makefile.am
@@ -145,28 +149,6 @@ cd ${currentPackage}*
 CFLAGS="$GCCFLAGS" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=mate-polkit
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-version=${info#* }
-tar xfv ${currentPackage}-${version}.tar.xz && cd ${currentPackage}-${version} || exit 1
-cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
-for i in *.patch; do patch -p0 < $i || exit 1; done
-mkdir ${currentPackage}-package
-mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" meson setup \
-	--prefix=/usr \
-	--buildtype=release \
-	--libdir=lib${SYSTEMBITS} \
-	--libexecdir=/usr/libexec \
-	--sysconfdir=/etc \
-	-Daccountsservice=false
-ninja -j${NUMBERTHREADS} && DESTDIR=../${currentPackage}-package ninja install
-cd ../${currentPackage}-package
-sed -i "s|OnlyShowIn=MATE;||g" etc/xdg/autostart/polkit-mate-authentication-agent-1.desktop
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -241,14 +223,6 @@ rm *.t?z
 ### install additional packages, including porteux utils
 
 InstallAdditionalPackages
-
-### make main menu more beautiful
-
-patch --no-backup-if-mismatch -d $MODULEPATH/packages/ -p0 < $SCRIPTPATH/extras/xfce/xfce-applications.menu.patch
-
-### fix ctrl + escape not opening main menu properly
-
-patch --no-backup-if-mismatch -d $MODULEPATH/packages/ -p0 < $SCRIPTPATH/extras/xfce/xfce4-popup-applicationsmenu.patch
 
 ### fix some .desktop files
 

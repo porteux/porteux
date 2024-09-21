@@ -118,14 +118,26 @@ rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
+# mate deps
+for package in \
+	exempi \
+	zenity \
+	gtk-layer-shell \
+	libpeas \
+	libgxps \
+	gtksourceview4 \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
 # mate packages
 for package in \
 	mate-desktop \
 	libmatekbd \
-	exempi \
 	caja \
 	mate-polkit \
-	zenity \
 	marco \
 	libmatemixer \
 	mate-settings-daemon \
@@ -133,19 +145,15 @@ for package in \
 	mate-menus \
 	mate-terminal \
 	libmateweather \
-	gtk-layer-shell \
 	mate-panel \
 	mate-themes \
 	mate-notification-daemon \
-	libpeas \
 	eom \
 	mate-control-center \
 	engrampa \
 	mate-media \
 	mate-power-manager \
 	mate-system-monitor \
-	libgxps \
-	gtksourceview4 \
 	caja-extensions \
 	atril \
 	mozo \

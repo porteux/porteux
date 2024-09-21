@@ -6,7 +6,6 @@ REPOSITORY="$1"
 GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "a52dec" &
-DownloadPackage "aalib" &
 DownloadPackage "alsa-lib" &
 DownloadPackage "alsa-plugins" &
 DownloadPackage "alsa-utils" &
@@ -20,7 +19,6 @@ DownloadPackage "cairomm" &
 wait
 DownloadPackage "cdparanoia-III" &
 DownloadPackage "cryptsetup" &
-DownloadPackage "daemon" &
 DownloadPackage "db48" & # required by bluez (obexd)
 DownloadPackage "dejavu-fonts-ttf" &
 DownloadPackage "desktop-file-utils" &

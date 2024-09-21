@@ -29,10 +29,9 @@ DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "mozjs78" &
 DownloadPackage "network-manager-applet" &
-DownloadPackage "polkit-gnome" & # consider using mate-polkit instead
 DownloadPackage "python-certifi" &
-wait
 DownloadPackage "python-charset-normalizer" &
+wait
 DownloadPackage "python-distro" &
 DownloadPackage "python-idna" &
 DownloadPackage "python-pillow" &

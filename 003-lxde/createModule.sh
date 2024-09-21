@@ -37,7 +37,7 @@ installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=gpicview
-version="0.2.5"
+version="0.2.6"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/${currentPackage} || exit 1
 cd ${currentPackage}
@@ -52,14 +52,14 @@ GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 
 currentPackage=pavucontrol
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=l3afpad
@@ -278,7 +278,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-static=no
 
-cp $SCRIPTPATH/extras/lxde/lxtask*.patch .
+cp $SCRIPTPATH/lxde/lxtask*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
@@ -490,7 +490,7 @@ version=`git describe | cut -d- -f1`
     --disable-silent-rules \
 	--enable-static=no
 
-cp $SCRIPTPATH/extras/lxde/lxpanel*.patch .
+cp $SCRIPTPATH/lxde/lxpanel*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
 
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
