@@ -556,7 +556,7 @@
         "OnlyOffice":{
             "script": "onlyoffice",
             "icon": "onlyoffice.png",
-            "tooltip": "Office suite for Linux"
+            "tooltip": "OnlyOffice suite for Linux"
         },
         "LibreOffice":{
             "script": "libreoffice",
@@ -741,7 +741,7 @@
         "Etcher": {
             "script": "etcher",
             "icon": "etcher.png",
-            "tooltip": "Flash OS images to SD cards and USB drives"
+            "tooltip": "Flash OS images to USB drives and SD cards"
         },
         "Multilib Lite":{
             "script": "multilib",
@@ -763,7 +763,7 @@
         "KeePassXC":{
             "script": "keepassxc",
             "icon": "keepassxc.png",
-            "tooltip": "Password Manager"
+            "tooltip": "Password manager"
         }
     }
 }
