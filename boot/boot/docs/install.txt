@@ -7,13 +7,18 @@ without requiring your personal data to be erased. Partitions supported:
 ext2, ext3, ext4, FAT, exFAT, NTFS and XFS.
 
 The simplest way to do that is copying the ISO content to your media
-storage and running the installer, which will just make the media
-bootable (instructions below), not touching or removing your existing data.
+storage and running the installer, which will make the media bootable
+(instructions below) and will set the correct permissions, not touching
+or removing your existing data.
 
 It's not recommended to use any third-party ISO installer application,
 such as Rufus or Etcher because the media storage will be set to
 read-only mode, making it impossible to write any data, including
 automatic save changes.
+
+First you need to choose between EFI or legacy boot process. Although
+legacy is easier to set as it requires less steps, it's not supported
+by all modern system. If you're in doubt, choose EFI.
 
 ~~~~~~~~~~~~~~~
 | EFI System: |
@@ -29,6 +34,11 @@ contain /porteux folder.
 ~~~~~~~~~~~~~~~~~~
 
 1) Copy /boot, /EFI and /porteux folders onto the desired partition.
+
+-----
+
+After completing the steps above, continue to the ones below
+depending on the system you're setting the media storage.
 
 ~~~~~~~~~~~~~~~~~
 | From Windows: |
