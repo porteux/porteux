@@ -33,7 +33,7 @@ SetFlags() {
         export SYSTEMBITS=
     fi
 
-    export GCCFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic -s -Wl,--as-needed -Wl,-O1 -Wl,--strip-all"
+    export GCCFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic -s -fuse-linker-plugin -Wl,--as-needed -Wl,-O1 -Wl,--strip-all"
     export CLANGFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic"
     export NUMBERTHREADS=$(nproc --all)
     #export SLACKWAREDOMAIN="http://ftp.slackware.com/pub"
