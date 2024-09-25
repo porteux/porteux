@@ -22,7 +22,7 @@ cd $PRGNAM-$VERSION
 zcat $CWD/gsettings-desktop-schemas.font.defaults.diff.gz | patch -p1 --verbose
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
   --prefix=/usr \
   --libdir=lib${SYSTEMBITS} \

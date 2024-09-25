@@ -38,7 +38,7 @@ pipewire="-Dpipewire=disabled" ; [ "${USE_PIPEWIRE:-no}" != "no" ] && pipewire="
 BUILD_OPTS=${BUILD_OPTS:-""}
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --prefix=/usr \
     --libdir=/usr/lib${SYSTEMBITS} \

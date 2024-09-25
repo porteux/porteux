@@ -22,7 +22,7 @@ cd $PRGNAM-$VERSION
 sed -i -e "/'test-.*'/d" libgnome-desktop/meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --prefix=/usr \
     --mandir=/usr/man \
