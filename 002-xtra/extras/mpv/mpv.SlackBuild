@@ -14,8 +14,13 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "mpv-player" ${PRGNAM})
-VERSION=${info#* }
+if [ $SLACKWAREVERSION == "current" ]; then
+	info=$(DownloadLatestFromGithub "mpv-player" ${PRGNAM})
+	VERSION=${info#* }
+else
+	VERSION="0.38.0"
+	wget --content-disposition https://github.com/mpv-player/${PRGNAM}/archive/refs/tags/v${VERSION}.tar.gz
+fi
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION

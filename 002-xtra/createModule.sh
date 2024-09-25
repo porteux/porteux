@@ -22,6 +22,9 @@ DownloadFromSlackware
 
 ### packages outside Slackware repository
 
+installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+
 currentPackage=transmission
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 info=$(DownloadLatestFromGithub "${currentPackage}" ${currentPackage})
@@ -32,7 +35,7 @@ cd ${currentPackage}*
 cp $SCRIPTPATH/extras/transmission/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done # only for version 4.0.6 which is broken
 mkdir build && cd build
-CXXFLAGS="$GCCFLAGS -fpermissive" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF ..
+CFLAGS="$GCCFLAGS -fPIC" CXXFLAGS="$CLANGFLAGS -flto" cmake -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -99,7 +102,7 @@ wget https://code.videolan.org/videolan/${currentPackage}/-/archive/master/${cur
 tar xvf ${currentPackage}-master.tar.gz && rm ${currentPackage}-master.tar.gz || exit 1
 cd ${currentPackage}-master
 version=$(date -r . +%Y%m%d)
-CFLAGS="$GCCFLAGS -flto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --enable-shared --enable-pic --enable-strip --enable-lto --disable-cli
+CC=clang CFLAGS="$CLANGFLAGS -flto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --enable-shared --enable-pic --enable-strip --enable-lto --disable-cli
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -161,7 +164,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libass
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/libass/${currentPackage}.SlackBuild  || exit 1
+wget ${SLACKWAREDOMAIN}/pub/slackware/slackware64-current/source/l/libass/${currentPackage}.SlackBuild  || exit 1
 info=$(DownloadLatestFromGithub "libass" ${currentPackage})
 version=${info#* }
 sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
@@ -230,7 +233,7 @@ rm -fr $MODULEPATH/${currentPackage}
 # temporary just to build ffmpeg and mpv
 currentPackage=nv-codec-headers
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/d/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/d/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 if [ $SLACKWAREVERSION == "current" ]; then
 	info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
 	version=${info#* }
@@ -268,7 +271,7 @@ currentPackage=libplacebo
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 version=$(curl -s https://code.videolan.org/videolan/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 version=${version//[vV]}
-wget http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
 cp $SCRIPTPATH/extras/${currentPackage}/meson.build.patch . || exit 1
 sed -i "s|chown -R.*|patch -p0 < \${CWD}/meson\.build\.patch \|\| exit 1\nchown -R root:root \.|g" ${currentPackage}.SlackBuild
@@ -296,7 +299,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	wget https://ffmpeg.org/releases/ffmpeg-4.4.4.tar.xz
 fi
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -357,9 +360,7 @@ rm usr/share/applications/mimeinfo.cache
 GenericStrip
 
 # move out things that don't support aggressive stripping
-mv $MODULEPATH/packages/usr/bin/transmission-gtk $MODULEPATH/
 AggressiveStrip
-mv $MODULEPATH/transmission-gtk $MODULEPATH/packages/usr/bin/
 
 ### copy cache files
 

@@ -10,10 +10,16 @@ DownloadPackage "vid.stab" &
 DownloadPackage "openal-soft" &
 wait
 
+### slackware specific version packages
+
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libvpx" &
 	wait
 fi
+
+### only download if not present
+
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm"
 
 ### temporary packages for further building
 

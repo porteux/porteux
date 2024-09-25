@@ -45,6 +45,8 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm $MODULEPATH/packages/meson-*.txz
 fi
 
+installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+
 currentPackage=gtk+3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/lah7/gtk3-classic/archive/refs/heads/master.tar.gz || exit 1
@@ -60,7 +62,8 @@ sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
 sed -i "s|-\${VERSION}-\$ARCH-\${BUILD}|-classic-\${VERSION}-\$ARCH-\${BUILD}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$CLANGFLAGS -flto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|meson setup|export CC=clang; meson setup|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
