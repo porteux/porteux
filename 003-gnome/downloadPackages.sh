@@ -44,6 +44,10 @@ DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait
 
+### only download if not present
+
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" # required by glycin
+
 ### temporary packages for further building
 
 DownloadPackage "boost" &
@@ -58,7 +62,6 @@ wait
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
-DownloadPackage "llvm" & # required by glycin
 DownloadPackage "python-pip" &
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "vulkan-sdk" & # required by gtksourceview

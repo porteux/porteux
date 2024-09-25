@@ -103,7 +103,7 @@ pip install wheel || exit 1
 
 currentPackage=libhandy
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
 sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
@@ -113,7 +113,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libgusb
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
 sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
@@ -123,7 +123,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=colord
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
 sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|-Dsane=true|-Dsane=false|g" ${currentPackage}.SlackBuild
@@ -134,7 +134,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=python-psutil
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
 sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
@@ -144,7 +144,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=python-webencodings
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
 sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
