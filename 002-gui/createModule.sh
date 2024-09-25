@@ -360,6 +360,14 @@ mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
 
+# specific strip
+mkdir $MODULEPATH/tostrip
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libLLVM* $MODULEPATH/tostrip
+cd $MODULEPATH/tostrip
+AggressiveStripAll
+mv $MODULEPATH/tostrip/libLLVM* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
+rm -fr $MODULEPATH/tostrip
+
 ### copy cache files
 
 PrepareFilesForCache
