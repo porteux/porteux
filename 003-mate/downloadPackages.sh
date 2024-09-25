@@ -31,7 +31,7 @@ DownloadPackage "vte" &
 DownloadPackage "xtrans" &
 wait
 
-### slackware current only packages
+### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &

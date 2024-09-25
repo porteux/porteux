@@ -46,7 +46,7 @@ DownloadPackage "xorgproto" &
 DownloadPackage "yasm" &
 wait
 
-### slackware current only packages
+### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "meson" & # for stable we're building since slackware repo has an ancient version

@@ -173,7 +173,7 @@ DownloadPackage "xdg-desktop-portal-kde" &
 DownloadPackage "xorg-server-xwayland" &
 wait
 
-### slackware current only packages
+### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "kColorPicker" &
