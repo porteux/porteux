@@ -225,7 +225,11 @@ DownloadPackage "zlib" &
 DownloadPackage "zstd" &
 wait
 
-### slackware current only packages
+### only download if not present
+
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm"
+
+### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "avahi" &
