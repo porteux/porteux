@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 [ ! -e configure ] && ./autogen.sh
 ./configure \
     --prefix=/usr \

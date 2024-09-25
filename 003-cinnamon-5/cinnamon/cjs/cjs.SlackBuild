@@ -20,7 +20,7 @@ cd $PRGNAM-$VERSION
 
 [ ! -e build ] && mkdir build
 cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --buildtype=release \
     --infodir=/usr/info \

@@ -20,7 +20,7 @@ cd $PRGNAM-$VERSION
 
 cd nemo-fileroller
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
     --prefix=/usr \
     --buildtype=release \
