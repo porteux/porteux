@@ -16,7 +16,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 rm -rf $PRGNAM-*/
 
-SLKCFLAGS="$GCCFLAGS -feliminate-unused-debug-types -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fvisibility-inlines-hidden -flto -fuse-linker-plugin"
+SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fvisibility-inlines-hidden -flto"
 
 [[ ${GTK3} == "yes" ]] && with_gtk3="--enable-gtk3"
 
