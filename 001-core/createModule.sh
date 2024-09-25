@@ -27,7 +27,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=lua
 	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 	wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/d/${currentPackage}/ || exit 1
-	sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
+	sed -i "s|-O2.*|$GCCFLAGS -fPIC\"|g" ${currentPackage}.SlackBuild
 	sh ${currentPackage}.SlackBuild || exit 1
 	mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 	installpkg $MODULEPATH/packages/lua*.txz
