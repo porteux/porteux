@@ -33,11 +33,14 @@ SetFlags() {
         export SYSTEMBITS=
     fi
 
-    export GCCFLAGS="-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic -Wl,--as-needed -Wl,-O1 -Wl,--strip-all"
+    export GCCFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic -s -Wl,--as-needed -Wl,-O1 -Wl,--strip-all"
+    export CLANGFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic"
     export NUMBERTHREADS=$(nproc --all)
-    export REPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
-    export PATCHREPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS/patches"
-    export SOURCEREPOSITORY="http://slackware.uk/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/source"
+    #export SLACKWAREDOMAIN="http://ftp.slackware.com/pub"
+    export SLACKWAREDOMAIN="http://slackware.uk"
+    export REPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
+    export PATCHREPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS/patches"
+    export SOURCEREPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/source"
 
     if [ "$SLACKWAREVERSION" != "current" ]; then
         export SLACKBUILDREPOSITORY="ftp://ftp.slackbuilds.org/pub/slackbuilds/$SLACKBUILDVERSION"
