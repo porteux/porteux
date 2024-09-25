@@ -25,6 +25,10 @@ DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "woff2" &
 wait
 
+### only download if not present
+
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" # required by mozjs
+
 ### temporary packages for further building
 
 DownloadPackage "boost" &
@@ -37,7 +41,6 @@ DownloadPackage "krb5" &
 wait
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
-DownloadPackage "llvm" & # required by mozjs
 DownloadPackage "rust" &
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "texinfo" & # required by mozjs91
