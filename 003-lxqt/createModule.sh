@@ -255,12 +255,12 @@ sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FIL
 sed -i "s|g_file_info_get_size(info)|g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/modules/vfs-search.c || exit 1
 ./autogen.sh --prefix=/usr --without-gtk --disable-demo && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -Wa,-mbranches-within-32B-boundaries" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib$SYSTEMBITS \
-    --localstatedir=/var \
-    --enable-static=no \
-    --enable-udisks \
-    --with-extra-only
+	--prefix=/usr \
+	--libdir=/usr/lib$SYSTEMBITS \
+	--localstatedir=/var \
+	--enable-static=no \
+	--enable-udisks \
+	--with-extra-only
 
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
@@ -275,14 +275,14 @@ cd ${currentPackage}
 version=`git describe | cut -d- -f1`
 sh ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -Wa,-mbranches-within-32B-boundaries" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib$SYSTEMBITS \
-    --localstatedir=/var \
-    --sysconfdir=/etc \
-    --mandir=/usr/man \
-    --enable-static=no \
-    --program-prefix= \
-    --program-suffix= 
+	--prefix=/usr \
+	--libdir=/usr/lib$SYSTEMBITS \
+	--localstatedir=/var \
+	--sysconfdir=/etc \
+	--mandir=/usr/man \
+	--enable-static=no \
+	--program-prefix= \
+	--program-suffix= 
 
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package

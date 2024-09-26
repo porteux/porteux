@@ -487,7 +487,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--with-plugins=all \
 	--program-prefix= \
-    --disable-silent-rules \
+	--disable-silent-rules \
 	--enable-static=no
 
 cp $SCRIPTPATH/lxde/lxpanel*.patch .
