@@ -57,7 +57,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
+sh autogen.sh --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc
 make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -134,6 +134,8 @@ done
 
 # mate packages
 for package in \
+	libmatekbd \
+	mate-desktop \
 	mate-polkit \
 	marco \
 	libmatemixer \
@@ -147,11 +149,12 @@ for package in \
 	mate-notification-daemon \
 	eom \
 	mate-control-center \
+	caja \
+	caja-extensions \
 	engrampa \
 	mate-media \
 	mate-power-manager \
 	mate-system-monitor \
-	caja-extensions \
 	atril \
 	mozo \
 	pluma \
