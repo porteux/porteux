@@ -21,7 +21,8 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CXXFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto" \
+CXXFLAGS="$CFLAGS" \
 meson setup \
     --prefix=/usr \
     --libdir=/usr/lib${SYSTEMBITS} \

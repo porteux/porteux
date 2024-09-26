@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PRGNAM=gnome-console
+PRGNAM=console
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -30,7 +30,6 @@ meson setup \
     --mandir=/usr/man \
     --localstatedir=/var \
     -Dtests=false \
-    -Dsassc=disabled \
     -Ddevel=false 
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install

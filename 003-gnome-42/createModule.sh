@@ -119,7 +119,7 @@ for package in \
 	eog \
 	evince \
 	gnome-system-monitor \
-	gnome-console \
+	console \
 	gnome-user-share \
 	gnome-backgrounds \
 	gnome-browser-connector \

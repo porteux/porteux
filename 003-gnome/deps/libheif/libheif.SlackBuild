@@ -20,19 +20,18 @@ VERSION=${info#* }
 tar xvf $PRGNAM-${VERSION}.tar.?z*
 cd $PRGNAM-${VERSION}
 
-mkdir build && cd build
-cmake \
+cmake -B build -S $TMP/$PRGNAM-$VERSION \
     -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -flto" \
-    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto" \
+	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto" \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
     -DCMAKE_INSTALL_MANDIR=/usr/man \
     -DBUILD_TESTING=OFF \
     -DWITH_DAV1D=ON \
     -DWITH_AOM_DECODER=OFF \
-    -DCMAKE_BUILD_TYPE=Release ..
+    -DCMAKE_BUILD_TYPE=Release
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
