@@ -3,7 +3,7 @@
 # various options for cmake based builds:
 # CMAKE_BUILD_TYPE can specify a build (debug|release|...) build type
 # LIB_SUFFIX can set the ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}
-#     useful for 64 bit distros
+#	 useful for 64 bit distros
 # LXQT_PREFIX changes default /usr/local prefix
 # LXQT_JOB_NUM Number of jobs to run in parallel while building. Defauts to
 #   whatever nproc returns.
@@ -23,9 +23,9 @@ LIB_SUFFIX=$ARCH
 source "./cmake_repos.list"
 
 if [[ -n "$LXQT_JOB_NUM" ]]; then
-    JOB_NUM="$LXQT_JOB_NUM"
+	JOB_NUM="$LXQT_JOB_NUM"
 else
-    JOB_NUM=`nproc`
+	JOB_NUM=`nproc`
 fi
 echo "Make job number: $JOB_NUM"
 
