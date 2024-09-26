@@ -60,22 +60,22 @@ export RUSTFLAGS="-C embed-bitcode"
 CFLAGS+="$SLKCFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing -fno-tree-vrp " \
 CXXFLAGS+="$SLKCFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing -fno-tree-vrp " \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --without-system-icu \
-    --with-system-zlib \
-    --disable-tests \
-    --enable-strip \
-    --with-intl-api \
-    --enable-readline \
-    --enable-optimize \
-    --enable-pie \
-    --enable-shared-js \
-    --disable-jemalloc \
-    --build=$ARCH-slackware-linux
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--without-system-icu \
+	--with-system-zlib \
+	--disable-tests \
+	--enable-strip \
+	--with-intl-api \
+	--enable-readline \
+	--enable-optimize \
+	--enable-pie \
+	--enable-shared-js \
+	--disable-jemalloc \
+	--build=$ARCH-slackware-linux
 
 make -j${NUMBERTHREADS}
 make install DESTDIR=$PKG

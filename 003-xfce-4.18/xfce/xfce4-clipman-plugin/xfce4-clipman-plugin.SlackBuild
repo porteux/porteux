@@ -22,15 +22,15 @@ cd $PRGNAM-$VERSION
 
 CFLAGS="$SLKCFLAGS" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --enable-shared=yes \
-    --enable-static=no \
-    --enable-debug=no \
-    --enable-lto \
-    --build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--enable-shared=yes \
+	--enable-static=no \
+	--enable-debug=no \
+	--enable-lto \
+	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 

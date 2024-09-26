@@ -24,17 +24,17 @@ mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
-    --buildtype=release \
-    --infodir=/usr/info \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    -Dbackend-gtk3=auto \
-    -Dbackend-gtk4=auto \
-    -Ddocs=false \
-    -Dtests=false
+	--buildtype=release \
+	--infodir=/usr/info \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	-Dbackend-gtk3=auto \
+	-Dbackend-gtk4=auto \
+	-Ddocs=false \
+	-Dtests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

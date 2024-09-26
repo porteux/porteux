@@ -27,8 +27,8 @@ cd $PRGNAM-$VERSION
 
 # Needed for 15.0's older meson but disables RPI
 if [ "$(meson --version)" = "0.59.4" ]; then
-    echo "Using meson-0.59.4 for 15.0"
-    patch -p0 < $CWD/use_older_meson.diff
+	echo "Using meson-0.59.4 for 15.0"
+	patch -p0 < $CWD/use_older_meson.diff
 fi
 
 pipewire="-Dpipewire=disabled" ; [ "${USE_PIPEWIRE:-no}" != "no" ] && pipewire="-Dpipewire=auto"
@@ -40,29 +40,29 @@ BUILD_OPTS=${BUILD_OPTS:-""}
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --mandir=/usr/man \
-    -Dbuildtype=release \
-    -Dmanpage-build=disabled \
-    -Dlibmpv=false \
-    -Dhtml-build=disabled \
-    -Dcdda=enabled \
-    -Ddvdnav=enabled \
-    -Ddvbin=enabled \
-    -Dvulkan=disabled \
-    -Dshaderc=disabled \
-    -Dlua=luajit \
-    $pipewire \
-    $BUILD_OPTS
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--mandir=/usr/man \
+	-Dbuildtype=release \
+	-Dmanpage-build=disabled \
+	-Dlibmpv=false \
+	-Dhtml-build=disabled \
+	-Dcdda=enabled \
+	-Ddvdnav=enabled \
+	-Ddvbin=enabled \
+	-Dvulkan=disabled \
+	-Dshaderc=disabled \
+	-Dlua=luajit \
+	$pipewire \
+	$BUILD_OPTS
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 for f in $PKG/etc/mpv/*.conf ; do
-    mv $f{,.new}
+	mv $f{,.new}
 done
 
 mkdir -p $PKG/install

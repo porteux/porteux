@@ -24,28 +24,28 @@ for i in *.patch; do patch -p0 < $i; done
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --buildtype=release \
-    --libdir=lib${SYSTEMBITS} \
-    --libexecdir=/usr/libexec \
-    --sysconfdir=/etc \
-    --infodir=/usr/info \
-    --mandir=/usr/man \
-    --localstatedir=/var \
-    -Ddefault_library=shared \
-    -Dgtk_doc=false \
-    -Duser_doc=false \
-    -Dintrospection=true \
-    -Ddbus=true \
-    -Dpdf=enabled \
-    -Dthumbnailer=true \
-    -Dthumbnail_cache=enabled \
-    -Dpreviewer=true \
-    -Dviewer=true \
-    -Dnautilus=true \
-    -Dmultimedia=enabled \
-    -Dgspell=enabled \
-    -Dsystemduserunitdir=no
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	--infodir=/usr/info \
+	--mandir=/usr/man \
+	--localstatedir=/var \
+	-Ddefault_library=shared \
+	-Dgtk_doc=false \
+	-Duser_doc=false \
+	-Dintrospection=true \
+	-Ddbus=true \
+	-Dpdf=enabled \
+	-Dthumbnailer=true \
+	-Dthumbnail_cache=enabled \
+	-Dpreviewer=true \
+	-Dviewer=true \
+	-Dnautilus=true \
+	-Dmultimedia=enabled \
+	-Dgspell=enabled \
+	-Dsystemduserunitdir=no
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

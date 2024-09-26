@@ -22,11 +22,11 @@ patch -Np1 -i $CWD/gcc10.patch
 
 CFLAGS="$GCCFLAGS -flto" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --disable-gtk-doc
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--disable-gtk-doc
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 

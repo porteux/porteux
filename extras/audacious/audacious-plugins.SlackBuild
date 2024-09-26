@@ -34,12 +34,12 @@ cd ${PRGNAM}-${PRGNAM}-$VERSION
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --mandir=/usr/man \
-    -Dneon=false \
-    ${toolkitFlags}
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--mandir=/usr/man \
+	-Dneon=false \
+	${toolkitFlags}
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

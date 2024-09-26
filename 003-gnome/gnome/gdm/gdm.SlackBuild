@@ -26,26 +26,26 @@ patch -Np1 -i $CWD/0004-fix-Xsession-language-in-gnome.patch
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --buildtype=release \
-    --infodir=/usr/info \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    --libexecdir=/usr/libexec \
-    -Dstrip=true \
-    -Ddbus-sys="/usr/share/dbus-1/system.d" \
-    -Ddefault-pam-config=none \
-    -Dpam-mod-dir="/lib${SYSTEMBITS}/security" \
-    -Dgdm-xsession=true \
-    -Drun-dir=/run/gdm \
-    -Dlogind-provider=elogind \
-    -Dsystemd-journal=false \
-    -Dsystemdsystemunitdir=no \
-    -Dsystemduserunitdir=no \
-    -Dsysconfsubdir=/etc/gdm \
-    -Dinitial-vt=7
+	--buildtype=release \
+	--infodir=/usr/info \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--libexecdir=/usr/libexec \
+	-Dstrip=true \
+	-Ddbus-sys="/usr/share/dbus-1/system.d" \
+	-Ddefault-pam-config=none \
+	-Dpam-mod-dir="/lib${SYSTEMBITS}/security" \
+	-Dgdm-xsession=true \
+	-Drun-dir=/run/gdm \
+	-Dlogind-provider=elogind \
+	-Dsystemd-journal=false \
+	-Dsystemdsystemunitdir=no \
+	-Dsystemduserunitdir=no \
+	-Dsysconfsubdir=/etc/gdm \
+	-Dinitial-vt=7
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

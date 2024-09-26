@@ -24,11 +24,11 @@ mkdir build && cd build
 CXXFLAGS="$GCCFLAGS -flto" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    -Dbuild_docs=false
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	-Dbuild_docs=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

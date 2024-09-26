@@ -22,15 +22,15 @@ cd $PRGNAM-$VERSION
 
 CFLAGS="$SLKCFLAGS" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc/xfce \
-    --enable-shared=yes \
-    --enable-static=no \
-    --enable-debug=no \
-    --enable-gtk2 \
-    --build=$ARCH-porteux-linux \
-    --disable-debug
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc/xfce \
+	--enable-shared=yes \
+	--enable-static=no \
+	--enable-debug=no \
+	--enable-gtk2 \
+	--build=$ARCH-porteux-linux \
+	--disable-debug
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 

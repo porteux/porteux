@@ -24,23 +24,23 @@ sed -i -e "/'test-.*'/d" libgnome-desktop/meson.build
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --mandir=/usr/man \
-    --datadir=/usr/share \
-    --includedir=/usr/include \
-    --libdir=lib${SYSTEMBITS} \
-    --libexecdir=/usr/libexec \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --buildtype=release \
-    -Ddate_in_gnome_version=true \
-    -Ddesktop_docs=false \
-    -Ddebug_tools=false \
-    -Dudev=enabled \
-    -Dsystemd=disabled \
-    -Dgtk_doc=false \
-    -Dinstalled_tests=false \
-    -Dgnome_distributor="PorteuX"
+	--prefix=/usr \
+	--mandir=/usr/man \
+	--datadir=/usr/share \
+	--includedir=/usr/include \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	-Ddate_in_gnome_version=true \
+	-Ddesktop_docs=false \
+	-Ddebug_tools=false \
+	-Dudev=enabled \
+	-Dsystemd=disabled \
+	-Dgtk_doc=false \
+	-Dinstalled_tests=false \
+	-Dgnome_distributor="PorteuX"
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

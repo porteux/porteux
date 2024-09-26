@@ -23,12 +23,12 @@ sed -i "s/dependency('gudev-1.0', version: '>= 238')/dependency('gudev-1.0', ver
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --buildtype=release
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--buildtype=release
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
