@@ -296,7 +296,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
-	wget https://ffmpeg.org/releases/ffmpeg-4.4.4.tar.xz
+	wget https://ffmpeg.org/releases/ffmpeg-4.4.5.tar.xz
 fi
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild

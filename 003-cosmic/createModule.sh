@@ -69,7 +69,6 @@ done
 
 # cosmic packages
 for package in \
-	launcher \
 	cosmic-applets \
 	cosmic-applibrary \
 	cosmic-bg \
