@@ -62,8 +62,10 @@ for d in $CMAKE_REPOS $OPTIONAL_CMAKE_REPOS
 do
 	echo $'\n'$'\n'"Building: $d using externally specified options: $ALL_CMAKE_FLAGS"$'\n'
 	mkdir -p "$MODULEPATH/lxqt/$d/build" && cd "$MODULEPATH/lxqt/$d/build" || exit 1
-
-	CXXFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fvisibility-inlines-hidden -Wl,--enable-new-dtags -flto" cmake $ALL_CMAKE_FLAGS -DBUILD_WITH_QT6=true .. && "$CMAKE_MAKE_PROGRAM" -j$JOB_NUM || exit 1
+	
+	[ "$d" != "lxqt-config" ] && [ "$d" != "lxqt-panel" ] && [ "$d" != "screengrab" ] && FLTO="-flto"
+	
+	CXXFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -fvisibility-inlines-hidden -Wl,--enable-new-dtags ${FLTO}" cmake $ALL_CMAKE_FLAGS -DBUILD_WITH_QT6=true .. && "$CMAKE_MAKE_PROGRAM" -j$JOB_NUM || exit 1
 	version=`git describe | cut -d- -f1`
 
 	"$CMAKE_MAKE_PROGRAM" install DESTDIR=$MODULEPATH/lxqt/$d/package/$d-$version-$ARCH-1
