@@ -23,21 +23,21 @@ patch -p1 -i $CWD/meson-add-elogind-support.patch
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --buildtype=release \
-    --libdir=lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --infodir=/usr/info \
-    --mandir=/usr/man \
-    --localstatedir=/var \
-    -Dsystemd=false \
-    -Delogind=true \
-    -Dsystemd_journal=false \
-    -Dsystemd_session=disable \
-    -Ddefault_library=shared \
-    -Dsession_selector=true \
-    -Ddocbook=false \
-    -Dman=false
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--infodir=/usr/info \
+	--mandir=/usr/man \
+	--localstatedir=/var \
+	-Dsystemd=false \
+	-Delogind=true \
+	-Dsystemd_journal=false \
+	-Dsystemd_session=disable \
+	-Ddefault_library=shared \
+	-Dsession_selector=true \
+	-Ddocbook=false \
+	-Dman=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

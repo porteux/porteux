@@ -26,16 +26,16 @@ sed -i 's/gtk_entry_completion_set_popup_single_match (completion, FALSE);/gtk_e
 
 CFLAGS="$SLKCFLAGS" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --infodir=/usr/info \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --build=$ARCH-porteux-linux \
-    --disable-debug \
-    --disable-gtk3
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--build=$ARCH-porteux-linux \
+	--disable-debug \
+	--disable-gtk3
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 

@@ -22,16 +22,16 @@ cd $PRGNAM-$VERSION
 
 CFLAGS="$SLKCFLAGS" \
 ./autogen.sh \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --infodir=/usr/info \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --build=$ARCH-porteux-linux \
-    --disable-gtk3 \
-    --disable-debug
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--build=$ARCH-porteux-linux \
+	--disable-gtk3 \
+	--disable-debug
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 

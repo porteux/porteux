@@ -23,15 +23,15 @@ sed -i "s/'systemd'/'libelogind'/" meson.build
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --buildtype=release \
-    -Dsystemduserunitdir=/usr/lib/systemd/user \
-    -Dhttpd=/usr/sbin/httpd \
-    -Dmodules_path=/usr/lib${SYSTEMBITS}/httpd/modules
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--buildtype=release \
+	-Dsystemduserunitdir=/usr/lib/systemd/user \
+	-Dhttpd=/usr/sbin/httpd \
+	-Dmodules_path=/usr/lib${SYSTEMBITS}/httpd/modules
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

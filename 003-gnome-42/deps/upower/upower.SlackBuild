@@ -21,18 +21,18 @@ cd $PRGNAM-v${VERSION}
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
-    --prefix=/usr \
-    --mandir=/usr/man \
-    --datadir=/usr/share \
-    --includedir=/usr/include \
-    --libdir=lib${SYSTEMBITS} \
-    --libexecdir=/usr/libexec \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --buildtype=release \
-    -Dman=false \
-    -Dgtk-doc=false \
-    -Dsystemdsystemunitdir=no
+	--prefix=/usr \
+	--mandir=/usr/man \
+	--datadir=/usr/share \
+	--includedir=/usr/include \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	-Dman=false \
+	-Dgtk-doc=false \
+	-Dsystemdsystemunitdir=no
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

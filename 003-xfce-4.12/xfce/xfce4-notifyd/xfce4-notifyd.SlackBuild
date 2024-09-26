@@ -22,17 +22,17 @@ cd $PRGNAM-$VERSION
 
 CFLAGS="$SLKCFLAGS" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --infodir=/usr/info \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --build=$ARCH-porteux-linux \
-    --disable-gtk3 \
-    --enable-dbus-start-daemon \
-    --disable-debug
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--build=$ARCH-porteux-linux \
+	--disable-gtk3 \
+	--enable-dbus-start-daemon \
+	--disable-debug
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 

@@ -19,19 +19,19 @@ VERSION=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --buildtype=release \
-    --infodir=/usr/info \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    -Dstrip=true \
-    -Dlibseat-logind=elogind \
-    -Dlibseat-seatd=enabled \
-    -Dlibseat-builtin=disabled \
-    -Dserver=disabled \
-    -Dman-pages=disabled
+	--buildtype=release \
+	--infodir=/usr/info \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	-Dstrip=true \
+	-Dlibseat-logind=elogind \
+	-Dlibseat-seatd=enabled \
+	-Dlibseat-builtin=disabled \
+	-Dserver=disabled \
+	-Dman-pages=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

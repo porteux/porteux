@@ -44,16 +44,16 @@ autoreconf -vif
 
 CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types -Wno-implicit-int" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --mandir=/usr/man \
-    --with-xinput=yes \
-    --enable-xkb \
-    --enable-introspection \
-    --enable-gtk-doc-html=false \
-    --enable-man=false \
-    --build=$ARCH-porteux-linux-gnu
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--mandir=/usr/man \
+	--with-xinput=yes \
+	--enable-xkb \
+	--enable-introspection \
+	--enable-gtk-doc-html=false \
+	--enable-man=false \
+	--build=$ARCH-porteux-linux-gnu
 
 make -j${NUMBERTHREADS}
 make install RUN_QUERY_IMMODULES_TEST=false RUN_QUERY_LOADER_TEST=false DESTDIR=$PKG

@@ -22,16 +22,16 @@ cd $PRGNAM-$VERSION
 cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --buildtype=release \
-    --infodir=/usr/info \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    -Dinstalled_tests=false \
-    -Dskip_dbus_tests=true \
-    -Dskip_gtk_tests=true
+	--buildtype=release \
+	--infodir=/usr/info \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	-Dinstalled_tests=false \
+	-Dskip_dbus_tests=true \
+	-Dskip_gtk_tests=true
  
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

@@ -21,16 +21,16 @@ cd $PRGNAM-$VERSION
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    -Dzoneinfo_dir=/usr/share/zoneinfo \
-    -Denable_vala=true \
-    -Dgtk_doc=false \
-    -Dintrospection=true \
-    -Dtests=false
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	-Dzoneinfo_dir=/usr/share/zoneinfo \
+	-Denable_vala=true \
+	-Dgtk_doc=false \
+	-Dintrospection=true \
+	-Dtests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

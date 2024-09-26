@@ -21,24 +21,24 @@ cd $PRGNAM-$VERSION
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --buildtype=release \
-    --libdir=lib${SYSTEMBITS} \
-    --libexecdir=/usr/libexec \
-    --sysconfdir=/etc \
-    --infodir=/usr/info \
-    --mandir=/usr/man \
-    --localstatedir=/var \
-    -Ddefault_library=shared \
-    -Dlibgeoclue=true \
-    -Dintrospection=true \
-    -Dgtk-doc=false \
-    -D3g-source=true \
-    -Dcdma-source=true \
-    -Dmodem-gps-source=true \
-    -Dnmea-source=false \
-    -Denable-backend=true \
-    -Ddemo-agent=false
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	--infodir=/usr/info \
+	--mandir=/usr/man \
+	--localstatedir=/var \
+	-Ddefault_library=shared \
+	-Dlibgeoclue=true \
+	-Dintrospection=true \
+	-Dgtk-doc=false \
+	-D3g-source=true \
+	-Dcdma-source=true \
+	-Dmodem-gps-source=true \
+	-Dnmea-source=false \
+	-Denable-backend=true \
+	-Ddemo-agent=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

@@ -23,18 +23,18 @@ cd $PRGNAM-$VERSION
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto -Wno-incompatible-pointer-types" \
 meson setup \
-    --buildtype=release \
-    --infodir=/usr/info \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --prefix=/usr \
-    --sysconfdir=/etc \
-    -Dstrip=true \
-    -Dprofiler=false \
-    -Dwayland=true \
-    -Dnative_backend=true \
-    -Ddefault_driver=auto
+	--buildtype=release \
+	--infodir=/usr/info \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	-Dstrip=true \
+	-Dprofiler=false \
+	-Dwayland=true \
+	-Dnative_backend=true \
+	-Ddefault_driver=auto
   
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

@@ -26,17 +26,17 @@ intltoolize
 
 CFLAGS="$GCCFLAGS -flto" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --enable-static=no \
-    --enable-gtk2-module=no \
-    --enable-docs=no \
-    --disable-schemas-compile \
-    --build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--enable-static=no \
+	--enable-gtk2-module=no \
+	--enable-docs=no \
+	--disable-schemas-compile \
+	--build=$ARCH-porteux-linux
 
 sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 make -j${NUMBERTHREADS} install DESTDIR=$PKG

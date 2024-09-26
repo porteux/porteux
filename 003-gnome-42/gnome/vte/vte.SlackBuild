@@ -22,20 +22,20 @@ mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
-    --prefix=/usr \
-    --libdir=lib${SYSTEMBITS} \
-    --libexecdir=/usr/libexec \
-    --bindir=/usr/bin \
-    --sbindir=/usr/sbin \
-    --includedir=/usr/include \
-    --datadir=/usr/share \
-    --mandir=/usr/man \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --buildtype=release \
-    -Dgtk3=false \
-    -D_systemd=false \
-    -Dicu=false
+	--prefix=/usr \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
+	--mandir=/usr/man \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	-Dgtk3=false \
+	-D_systemd=false \
+	-Dicu=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

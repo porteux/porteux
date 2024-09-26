@@ -24,18 +24,18 @@ for i in *.patch; do patch -p0 < $i; done
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --buildtype=release \
-    -Ddocs=false \
-    -Dextensions=true \
-    -Dintrospection=true \
-    -Dpackagekit=false \
-    -Dselinux=false \
-    -Dtests=none
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--buildtype=release \
+	-Ddocs=false \
+	-Dextensions=true \
+	-Dintrospection=true \
+	-Dpackagekit=false \
+	-Dselinux=false \
+	-Dtests=none
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

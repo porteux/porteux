@@ -28,16 +28,16 @@ for i in *.patch; do patch -p0 < $i; done
 
 CFLAGS="$SLKCFLAGS" \
 ./autogen.sh && ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --with-pam \
-    --disable-consolekit \
-    $with_gtk3 \
-    --build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--with-pam \
+	--disable-consolekit \
+	$with_gtk3 \
+	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
@@ -52,7 +52,7 @@ install -m 0755 -D $CWD/xinitrc $PKG/etc/lxdm/xinitrc
 
 # Don't clobber configs on upgrade, but clobber Xsession
 for file in LoginReady PostLogin PostLogout PreLogin PreReboot PreShutdown lxdm.conf xinitrc ; do
-    mv $PKG/etc/lxdm/$file $PKG/etc/lxdm/$file.new ;
+	mv $PKG/etc/lxdm/$file $PKG/etc/lxdm/$file.new ;
 done
 
 # use our own pam module

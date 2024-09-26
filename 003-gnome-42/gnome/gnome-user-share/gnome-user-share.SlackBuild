@@ -24,18 +24,18 @@ sed -i 's|desktop,||g' data/meson.build
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --buildtype=release \
-    --libdir=lib${SYSTEMBITS} \
-    --libexecdir=/usr/libexec \
-    --sysconfdir=/etc \
-    --infodir=/usr/info \
-    --mandir=/usr/man \
-    --localstatedir=/var \
-    -Ddefault_library=shared \
-    -Dsystemduserunitdir=/usr/lib/systemd/user/ \
-    -Dnautilus_extension=true \
-    -Dmodules_path=/usr/lib${SYSTEMBITS}/modules
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	--infodir=/usr/info \
+	--mandir=/usr/man \
+	--localstatedir=/var \
+	-Ddefault_library=shared \
+	-Dsystemduserunitdir=/usr/lib/systemd/user/ \
+	-Dnautilus_extension=true \
+	-Dmodules_path=/usr/lib${SYSTEMBITS}/modules
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
