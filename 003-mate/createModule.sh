@@ -134,8 +134,10 @@ done
 
 # mate packages
 for package in \
-	libmatekbd \
 	mate-desktop \
+	libmatekbd \
+	caja \
+	caja-extensions \
 	mate-polkit \
 	marco \
 	libmatemixer \
@@ -149,8 +151,6 @@ for package in \
 	mate-notification-daemon \
 	eom \
 	mate-control-center \
-	caja \
-	caja-extensions \
 	engrampa \
 	mate-media \
 	mate-power-manager \
