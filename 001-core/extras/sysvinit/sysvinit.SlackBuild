@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="3.09"
+VERSION="3.10"
 wget https://github.com/slicer69/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz -O ${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
