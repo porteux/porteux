@@ -398,6 +398,7 @@ rm -R usr/share/terminfo/u
 rm -R usr/share/terminfo/w
 rm -R usr/share/terminfo/z
 rm -R usr/x86_64-slackware-linux
+rm -R var/mail
 rm -R var/spool/mail
 
 rm etc/init.d

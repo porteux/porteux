@@ -19,6 +19,7 @@ git checkout c330506815f78f77f6685cb40749679eae789d63
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
+CXXFLAGS="$CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

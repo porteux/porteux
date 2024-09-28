@@ -24,6 +24,7 @@ cd $PRGNAM-$VERSION
 sed -i "s|-\${am__api_version}||g" configure
 
 CFLAGS="$GCCFLAGS" \
+CXXFLAGS="$CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
