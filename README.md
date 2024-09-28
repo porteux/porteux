@@ -83,7 +83,7 @@ To build PorteuX, run as root the script `createModule.sh` in the exact folder o
 2. 001-core<br />
 3. 002-gui<br />
 4. 002-xtra<br />
-5. 003-desktopenvironment (where 'desktopenvironment' is the one of your preference)<br />
+5. 003-desktopenvironment (where 'desktopenvironment' is the one of your preference, like 003-lxde)<br />
 6. 05-devel<br />
 7. (optional) 08-multilanguage<br />
 8. (optional) 0050-multilib-lite<br />
