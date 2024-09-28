@@ -92,7 +92,7 @@ currentPackage=l-smash
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/${currentPackage}/${currentPackage}/ || exit 1
 cd ${currentPackage}
-CFLAGS="$GCCFLAGS -flto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --disable-static
+CFLAGS="$GCCFLAGS -flto" CXXFLAGS="$CFLAGS" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --disable-static
 make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -156,8 +156,8 @@ sed -i "s|PRGNAM=libmp4v2|PRGNAM=mp4v2|g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
+sed -i "s|-O2.*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
+CC=clang CXX=clang++ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
@@ -223,7 +223,7 @@ tar xvf ${currentPackage}-master.tar.gz && rm ${currentPackage}-master.tar.gz ||
 cd ${currentPackage}-master
 version=$(date -r . +%Y%m%d)
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" meson -Denable_tests=false -Denable_tools=false --prefix /usr ..
+CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto" meson -Denable_tests=false -Denable_tools=false --prefix /usr ..
 DESTDIR=$MODULEPATH/${currentPackage}/package ninja -j${NUMBERTHREADS} install || exit 1
 cd $MODULEPATH/${currentPackage}/package
 /sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz

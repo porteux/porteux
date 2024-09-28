@@ -22,6 +22,7 @@ cd $PRGNAM-$VERSION
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
+CXXFLAGS="$CFLAGS" \
 meson setup \
 	--buildtype=release \
 	--infodir=/usr/info \

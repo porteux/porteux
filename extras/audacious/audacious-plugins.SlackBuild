@@ -33,6 +33,7 @@ cd ${PRGNAM}-${PRGNAM}-$VERSION
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto" \
+CXXFLAGS="$CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

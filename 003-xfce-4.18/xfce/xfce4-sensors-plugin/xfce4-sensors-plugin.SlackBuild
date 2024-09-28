@@ -24,6 +24,7 @@ cd $PRGNAM-$VERSION
 sed -i 's|gint sensors_refresh_time = 60|gint sensors_refresh_time = 1|g' include/sensors-interface-plugin.h
 
 CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$CFLAGS"
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

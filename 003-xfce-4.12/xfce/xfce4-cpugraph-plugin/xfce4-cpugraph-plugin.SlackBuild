@@ -21,6 +21,7 @@ tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$CFLAGS"
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
