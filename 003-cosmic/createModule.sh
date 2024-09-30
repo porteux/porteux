@@ -56,8 +56,8 @@ currentPackage=greetd
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-installpkg $MODULEPATH/packages/llvm*.txz || exit 1
-rm $MODULEPATH/packages/llvm*.txz
+installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 # cosmic deps
 for package in \
