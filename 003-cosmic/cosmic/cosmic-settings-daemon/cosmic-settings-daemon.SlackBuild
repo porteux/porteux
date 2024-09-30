@@ -18,6 +18,9 @@ VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
 export RUSTFLAGS="-Cpanic=abort -Cstrip=debuginfo -Copt-level=z -Clto=true -Cembed-bitcode=yes -Zdylib-lto -Ccodegen-units=1 -Zlocation-detail=none"
 
+# fix non-official Adwaita theme detection
+sed -i "s|adw-gtk3|Adwaita|g" src/theme.rs
+
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
 make -j${NUMBERTHREADS}
