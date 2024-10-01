@@ -174,7 +174,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 fi
 
 # we want to build from current sources regardless
-export SOURCEREPOSITORY="${SLACKWAREDOMAIN}/slackware/slackware$SYSTEMBITS-current/source"
+export SOURCEREPOSITORY="${SLACKWAREDOMAIN}/slackware/slackware${SYSTEMBITS}-current/source"
 
 # xfce packages
 for package in \
