@@ -25,4 +25,4 @@ mv $PKG/usr/share/man $PKG/usr/
 mkdir -p $PKG/install
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

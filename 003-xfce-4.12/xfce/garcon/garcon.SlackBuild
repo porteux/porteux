@@ -44,4 +44,4 @@ cd $PKG
 # make main menu more beautiful
 patch -p0 < $CWD/xfce-applications.menu.patch
 
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
