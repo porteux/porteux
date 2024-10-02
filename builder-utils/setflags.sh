@@ -29,6 +29,7 @@ SetFlags() {
 		export SYSTEMBITS="64"
 	fi
 
+	export MAKEPKGFLAGS="-l y -c n --compress -0"	
 	export ARCHITECTURELEVEL="x86-64-v2"
 	export GCCFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic -s -fuse-linker-plugin -Wl,--as-needed -Wl,-O1"
 	export CLANGFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic"

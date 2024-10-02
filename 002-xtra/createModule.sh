@@ -38,7 +38,7 @@ mkdir build && cd build
 CFLAGS="$CLANGFLAGS -fPIC" CXXFLAGS="$CLANGFLAGS -flto" cmake -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=rtmpdump
@@ -105,7 +105,7 @@ version=$(date -r . +%Y%m%d)
 CC=clang CFLAGS="$CLANGFLAGS -flto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --enable-shared --enable-pic --enable-strip --enable-lto --disable-cli
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -184,7 +184,7 @@ mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -flto" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} ..  || exit 1
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-${version}-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}-$ARCH-1.txz
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -212,7 +212,7 @@ mkdir build && cd build
 cmake -DCMAKE_C_FLAGS:STRING="$GCCFLAGS" -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib${SYSTEMBITS} -Wno-dev -DBUILD_DEC=OFF ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package
 cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-${version//[vV]}-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-${version//[vV]}-$ARCH-1.txz
 installpkg $MODULEPATH/packages/${currentPackage,,}-${version//[vV]}-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -226,7 +226,7 @@ mkdir build && cd build
 CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto" meson -Denable_tests=false -Denable_tools=false --prefix /usr ..
 DESTDIR=$MODULEPATH/${currentPackage}/package ninja -j${NUMBERTHREADS} install || exit 1
 cd $MODULEPATH/${currentPackage}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -318,7 +318,7 @@ CFLAGS="$GCCFLAGS" CXXFLAGS="$GCCFLAGS" make -j${NUMBERTHREADS} Q= PREFIX=/usr I
 make Q= PREFIX=/usr INSTALL_LIB=$MODULEPATH/${currentPackage,,}/package/usr/lib$SYSTEMBITS install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 rm -fr $MODULEPATH/${currentPackage,,}/package/usr/bin
 cd $MODULEPATH/${currentPackage,,}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
 rm -fr $MODULEPATH/${currentPackage,,}
 

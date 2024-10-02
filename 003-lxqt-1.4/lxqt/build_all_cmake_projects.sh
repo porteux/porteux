@@ -70,6 +70,6 @@ do
 
 	"$CMAKE_MAKE_PROGRAM" install DESTDIR=$MODULEPATH/lxqt/$d/package/$d-$version-$ARCH-1
 	cd $MODULEPATH/lxqt/$d/package/$d-$version-$ARCH-1
-	/sbin/makepkg -l y -c n $MODULEPATH/packages/$d-$version-$ARCH-1.txz
+	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$d-$version-$ARCH-1.txz
 	installpkg $MODULEPATH/packages/$d-$version-$ARCH-1.txz
 done

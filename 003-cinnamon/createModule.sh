@@ -62,7 +62,7 @@ gtk-update-icon-cache -f $mainIconRootFolder || exit 1
 gtk-update-icon-cache -f $blueIconRootFolder || exit 1
 cd ../${currentPackage}-$version-noarch
 echo "Generating icon package. This may take a while..."
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on

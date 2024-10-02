@@ -151,7 +151,7 @@ mkdir -p $iconRootFolder
 cp -r Paper/cursors $iconRootFolder
 cp -r Paper/cursor.theme $iconRootFolder
 cd ../${currentPackage}-$version-noarch
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages that require specific stripping
@@ -164,7 +164,7 @@ ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=vulkan-sdk
@@ -176,7 +176,7 @@ mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped-$version
 cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pulseaudio
@@ -193,7 +193,7 @@ cp --parents -P -r usr/lib$SYSTEMBITS/cmake/* $MODULEPATH/../05-devel/packages
 cp --parents -P -r usr/lib$SYSTEMBITS/pkgconfig/* $MODULEPATH/../05-devel/packages
 cp --parents -P -r usr/include/* $MODULEPATH/../05-devel/packages
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### install poppler so it can be used by the further modules
