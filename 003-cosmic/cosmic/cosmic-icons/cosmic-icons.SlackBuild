@@ -19,4 +19,4 @@ VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 just rootdir=$MODULEPATH/$PRGNAM/package install || exit 1
 
 cd $MODULEPATH/$PRGNAM/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz
