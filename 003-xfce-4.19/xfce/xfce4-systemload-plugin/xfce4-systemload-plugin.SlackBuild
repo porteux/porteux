@@ -1,0 +1,42 @@
+#!/bin/bash
+
+PRGNAM=xfce4-systemload-plugin
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://gitlab.xfce.org/panel-plugins/${PRGNAM}/-/archive/master/${PRGNAM}-master.tar.bz2
+
+SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common"
+
+tar xvf $PRGNAM-master.tar.?z* || exit 1
+cd $PRGNAM-master && VERSION=$(date -r . +%Y%m%d) || exit 1
+
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$CFLAGS"
+./autogen.sh \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--enable-shared=yes \
+	--enable-static=no \
+	--enable-debug=no \
+	--enable-lto \
+	--build=$ARCH-porteux-linux
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

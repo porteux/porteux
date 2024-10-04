@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':'.
+
+                    |-----handy-ruler------------------------------------------------------|
+xfce4-clipman-plugin: xfce4-clipman-plugin (clipman plugin for the Xfce panel)
+xfce4-clipman-plugin:
+xfce4-clipman-plugin: Clipman allows you to keep several clipboard selections in memory
+xfce4-clipman-plugin: which you can then use to toggle. It can pull the clips from both
+xfce4-clipman-plugin: the selection and the copy buffer, restore your clipboard on login,
+xfce4-clipman-plugin: and prevent an empty clipboard.
+xfce4-clipman-plugin:
+xfce4-clipman-plugin:
+xfce4-clipman-plugin:
+xfce4-clipman-plugin:
+xfce4-clipman-plugin:
