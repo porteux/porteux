@@ -27,4 +27,4 @@ make -j${NUMBERTHREADS}
 make install DESTDIR=$MODULEPATH/$PRGNAM/package || exit 1
 
 cd $MODULEPATH/$PRGNAM/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz
