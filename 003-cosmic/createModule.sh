@@ -31,19 +31,10 @@ currentPackage=audacious-plugins
 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=xdg-desktop-portal-gtk
-sh $SCRIPTPATH/deps/xdg-desktop-portal-gtk/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 # required from now on
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
 export PATH=$HOME/.cargo/bin/:$PATH
 rustup component add rust-src --toolchain nightly
-
-currentPackage=seatd
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=just
 cd $MODULEPATH
@@ -52,18 +43,18 @@ cd ${currentPackage}
 cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-gnu || exit 1
 export PATH=$MODULEPATH/just/target/x86_64-unknown-linux-gnu/release/:$PATH
 
-currentPackage=greetd
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 # cosmic deps
 for package in \
+	seatd \
+	greetd \
 	launcher \
+	xdg-desktop-portal-gtk \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
