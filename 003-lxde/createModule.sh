@@ -216,6 +216,9 @@ version=`git describe | cut -d- -f1`
 	--with-gtk=3 \
 	--enable-static=no
 
+cp $SCRIPTPATH/lxde/${currentPackage}*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -278,7 +281,7 @@ version=`git describe | cut -d- -f1`
 	--enable-gtk3 \
 	--enable-static=no
 
-cp $SCRIPTPATH/lxde/lxtask*.patch .
+cp $SCRIPTPATH/lxde/${currentPackage}*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
@@ -490,7 +493,7 @@ version=`git describe | cut -d- -f1`
 	--disable-silent-rules \
 	--enable-static=no
 
-cp $SCRIPTPATH/lxde/lxpanel*.patch .
+cp $SCRIPTPATH/lxde/${currentPackage}*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
 
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
