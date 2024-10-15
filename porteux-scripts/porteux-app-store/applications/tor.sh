@@ -57,6 +57,18 @@ striptease(){
 
     echo 'user_pref("app.update.enabled", false);' | sudo -u "$CURRENTUSER" tee -a "$prefs_file" > /dev/null
     echo 'user_pref("app.update.auto", false);' | sudo -u "$CURRENTUSER" tee -a "$prefs_file" > /dev/null
+    echo 'user_pref("intl.language_notification.shown", true);' | sudo -u "$CURRENTUSER" tee -a "$prefs_file" > /dev/null
+    
+    cat > "$TMP/$APP/$pkg_name/opt/${tor_folder}/Browser/distribution/policies.json" << EOF
+{
+"policies":
+{
+"DisableAppUpdate": true,
+"DisableTelemetry": true,
+"DisablePocket": true
+}
+}
+EOF
 }
 
 finisher(){
