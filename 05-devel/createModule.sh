@@ -63,7 +63,7 @@ rm -R var/log/setup
 
 rm usr/lib/python*/site-packages/setuptools/_distutils/command/*.exe
 
-# already included in aaa_libraries - keeping them will prevent 05-devel to be deactivated
+# already included in aaa_libraries - keeping them will prevent 05-devel from being deactivated
 rm usr/lib${SYSTEMBITS}/libatomic.so*
 rm usr/lib${SYSTEMBITS}/libgcc_s.so*
 rm usr/lib${SYSTEMBITS}/libgmp.so*
