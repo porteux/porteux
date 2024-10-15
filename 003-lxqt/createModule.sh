@@ -131,8 +131,8 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/FedoraQt/${currentPackage} || exit 1
 cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
-cp $SCRIPTPATH/deps/adwaita-qt/adwaitastyle.cpp.patch .
-patch -p0 < adwaitastyle.cpp.patch || exit 1
+cp $SCRIPTPATH/deps/adwaita-qt/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
 mkdir build && cd build
 CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DUSE_QT6=true ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
@@ -143,6 +143,9 @@ rm -fr $MODULEPATH/${currentPackage}
 # required by xpdf
 installpkg $MODULEPATH/packages/libpaper*.txz || exit 1
 installpkg $MODULEPATH/packages/libproxy*.txz || exit 1
+
+installpkg $MODULEPATH/packages/cups*.txz || exit 1
+rm $MODULEPATH/packages/cups*.txz
 
 currentPackage=xpdf
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}

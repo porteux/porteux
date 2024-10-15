@@ -36,6 +36,11 @@ DownloadPackage "opencv" &
 DownloadPackage "qt6" &
 wait
 
+### temporary packages for further building
+
+DownloadPackage "cups" & # required by qt6
+wait
+
 ### script clean up
 
 rm FILE_LIST

@@ -137,6 +137,9 @@ rm -fr $MODULEPATH/${currentPackage}
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
+installpkg $MODULEPATH/packages/cups*.txz || exit 1
+rm $MODULEPATH/packages/cups*.txz
+
 currentPackage=FeatherPad
 mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
 info=$(DownloadLatestFromGithub "tsujan" ${currentPackage})
@@ -173,7 +176,9 @@ done
 # only required for building
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
 
+# extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/page57.html#post6532418
 KDE6PACKAGES=/tmp/packages
+[ ! -d $KDE6PACKAGES ] && exit 1
 
 find $KDE6PACKAGES -type f -name "ark*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "attica-6*" -exec cp {} $MODULEPATH/packages/ \;
@@ -399,6 +404,7 @@ rm -R usr/share/themes/Breeze-Dark/gtk-4.0
 rm -R usr/share/themes/Breeze/gtk-4.0
 rm -R usr/share/wallpapers/*
 
+find usr/share/wallpapers -mindepth 1 -maxdepth 1 ! \( -name "body-background.png" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/icons -mindepth 1 -maxdepth 1 ! \( -name "breeze" -o -name "breeze-dark" -o -name "hicolor" \) -exec rm -rf '{}' \; 2>/dev/null
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
