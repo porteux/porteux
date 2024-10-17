@@ -33,7 +33,7 @@ wait
 DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-DownloadPackage "mozjs128" &
+#DownloadPackage "mozjs128" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "python-certifi" &
 DownloadPackage "python-charset-normalizer" &
