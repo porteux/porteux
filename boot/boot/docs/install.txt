@@ -11,6 +11,12 @@ storage and running the installer, which will make the media bootable
 (instructions below) and will set the correct permissions, not touching
 or removing your existing data.
 
+For better performance, it's recommended to have PorteuX installed on a
+SSD/NVMe storage unit instead of a USB flash drive, or to select
+'Copy To RAM' option in the boot menu. The later will have a slower
+boot time, but after booting the system will be running 100% in RAM, 
+which is the fastest way possible.
+
 It's not recommended to use any third-party ISO installer application,
 such as Rufus or Etcher because the media storage will be set to
 read-only mode, making it impossible to write any data, including
@@ -69,8 +75,8 @@ that your BIOS is set to boot from the media storage where PorteuX is.
 
 1) If your media storage is formatted with a Linux filesystem
 (e.g. EXT4 or XFS), before the first boot make sure the folder
-/porteux has guest ownership otherwise changes will not be
-automatically saved.
+/porteux has 'guest' ownership (i.e. non-root) otherwise changes
+will not be automatically saved.
 
 2) If your media storage is formatted with a Windows filesystem
 (e.g. FAT or NTFS), the changes you make to your system will not be 

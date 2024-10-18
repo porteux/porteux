@@ -43,7 +43,9 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs have less than 600 MB, and memory RAM consumption is minimal.
+PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small and memory RAM consumption is highly optimized.
+
+For better performance, it's recommended to have PorteuX installed on a SSD/NVMe storage unit instead of a USB flash drive, or to select 'Copy To RAM' option in the boot menu. The latter will result in a slower boot time, but after booting the system will run 100% in RAM, which is the fastest way possible.
 
 Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
