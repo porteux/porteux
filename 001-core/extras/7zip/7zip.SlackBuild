@@ -14,7 +14,12 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-UASMVERSION="257"
+if [ $SLACKWAREVERSION != "current" ]; then
+	UASMVERSION="255"
+else
+	UASMVERSION="257"
+fi
+
 wget https://www.terraspace.co.uk/uasm${UASMVERSION}_linux64.zip
 unzip uasm${UASMVERSION}_linux64.zip
 chmod +x uasm
@@ -30,7 +35,7 @@ cp $CWD/meson.build.template meson.build
 meson rewrite kwargs set project / version ${VERSION}
 
 mkdir build && cd build
-CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto" \
+CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto -pthread" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
 	--prefix=/usr \
