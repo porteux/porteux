@@ -78,11 +78,12 @@ for package in \
 	libwpe \
 	wpebackend-fdo \
 	bubblewrap \
+	libsoup3 \
 	geoclue2 \
 	libpeas \
 	libwnck4 \
 ; do
-sh $SCRIPTPATH/gnome/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -92,7 +93,6 @@ for package in \
 	gsettings-desktop-schemas \
 	gtk4 \
 	libhandy \
-	libsoup3 \
 	vte \
 	tracker3 \
 	gtksourceview5 \
@@ -119,7 +119,7 @@ for package in \
 	eog \
 	evince \
 	gnome-system-monitor \
-	console \
+	gnome-console \
 	gnome-user-share \
 	gnome-backgrounds \
 	gnome-browser-connector \

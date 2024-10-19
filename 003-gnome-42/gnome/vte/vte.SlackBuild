@@ -33,7 +33,6 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
-	-Dgtk3=false \
 	-D_systemd=false \
 	-Dicu=false
 
