@@ -20,10 +20,6 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-# Fix panel crash when dconf-editor is not present
-cp $SCRIPTPATH/mate/$PRGNAM/*.patch .
-for i in *.patch; do patch -p0 < $i; done
-
 CFLAGS="$GCCFLAGS" \
 ./autogen.sh \
 	--prefix=/usr \
