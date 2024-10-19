@@ -25,8 +25,10 @@ SetFlags() {
 		export ARCH=$(uname -m)
 	fi
 
-	if [ `getconf LONG_BIT` == "64" ]; then
+	if [ ! $SYSTEMBITS ] && [ `getconf LONG_BIT` == "64" ]; then
 		export SYSTEMBITS="64"
+ 	else
+        export SYSTEMBITS=
 	fi
 
 	export MAKEPKGFLAGS="-l y -c n --compress -0"	
