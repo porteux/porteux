@@ -32,18 +32,20 @@ installpkg fuse-*.txz || exit 1
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$GCCFLAGS -flto\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=meson
-	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
 	rm -fr $MODULEPATH/${currentPackage}
 	rm $MODULEPATH/packages/meson-*.txz
 fi
+
+installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 currentPackage=gtk+3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -54,13 +56,14 @@ rm gtk3-classic*/gtk+-atk-bridge-meson_options.txt.patch
 rm gtk3-classic*/appearance__disable-backdrop.patch
 sed -i "s|+++ .*/gtk/|+++ gtk/|g" gtk3-classic*/*.patch
 sed -i "s|+++ .*/gdk/|+++ gdk/|g" gtk3-classic*/*.patch
-wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
-sed -i "s|# Configure, build, and install:|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\n# Configure, build, and install:|g" ${currentPackage}.SlackBuild
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware${SYSTEMBITS}-current/source/l/${currentPackage}/ || exit 1
+sed -i "s|mkdir meson-build|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\nmkdir meson-build|g" ${currentPackage}.SlackBuild
 sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
 sed -i "s|-\${VERSION}-\$ARCH-\${BUILD}|-classic-\${VERSION}-\$ARCH-\${BUILD}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$CLANGFLAGS -flto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|meson setup|export CC=clang; meson setup|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
@@ -73,7 +76,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$GCCFLAGS -flto\"|g" ${currentPackage}.SlackBuild
 sed -i "s|--prefix=/usr |--prefix=/usr --disable-quadmath |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -87,7 +90,7 @@ wget https://sourceforge.net/projects/enlightenment/files/${currentPackage}-src/
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$GCCFLAGS -flto\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
@@ -102,7 +105,7 @@ sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sed -i "s|patch -p1 < \$CWD/py2-to-py3.patch|cp \$CWD/*.patch .|g" ${currentPackage}.SlackBuild
 sed -i "s|\$CWD/patches/\*|\*.patch|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$GCCFLAGS -flto\"|g" ${currentPackage}.SlackBuild
 sed -z -i "s|make\n|make -j${NUMBERTHREADS}\n|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -116,7 +119,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$GCCFLAGS -flto\"|g" ${currentPackage}.SlackBuild
 sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -148,7 +151,7 @@ mkdir -p $iconRootFolder
 cp -r Paper/cursors $iconRootFolder
 cp -r Paper/cursor.theme $iconRootFolder
 cd ../${currentPackage}-$version-noarch
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages that require specific stripping
@@ -161,7 +164,7 @@ ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=vulkan-sdk
@@ -173,7 +176,7 @@ mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped-$version
 cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pulseaudio
@@ -190,7 +193,7 @@ cp --parents -P -r usr/lib$SYSTEMBITS/cmake/* $MODULEPATH/../05-devel/packages
 cp --parents -P -r usr/lib$SYSTEMBITS/pkgconfig/* $MODULEPATH/../05-devel/packages
 cp --parents -P -r usr/include/* $MODULEPATH/../05-devel/packages
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### install poppler so it can be used by the further modules
@@ -246,7 +249,6 @@ rm -R etc/xdg/Xwayland-session.d
 rm -R usr/lib${SYSTEMBITS}/atkmm-*
 rm -R usr/lib${SYSTEMBITS}/cairomm-*
 rm -R usr/lib${SYSTEMBITS}/clang
-rm -R usr/lib${SYSTEMBITS}/dri/*.la
 rm -R usr/lib${SYSTEMBITS}/gdkmm-*
 rm -R usr/lib${SYSTEMBITS}/giomm-*
 rm -R usr/lib${SYSTEMBITS}/glibmm-*
@@ -344,6 +346,8 @@ rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 rm usr/share/xsessions/openbox-gnome.desktop
 rm usr/share/xsessions/openbox-kde.desktop
 
+[ $SLACKWAREVERSION == "current" ] && rm usr/lib64/libpoppler-qt5*
+
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
 # move out things that don't support stripping
@@ -355,6 +359,14 @@ AggressiveStrip
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
+
+# specific strip
+mkdir $MODULEPATH/tostrip
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libLLVM* $MODULEPATH/tostrip
+cd $MODULEPATH/tostrip
+AggressiveStripAll
+mv $MODULEPATH/tostrip/libLLVM* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
+rm -fr $MODULEPATH/tostrip
 
 ### copy cache files
 

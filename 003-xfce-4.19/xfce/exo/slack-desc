@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':'.
+
+   |-----handy-ruler------------------------------------------------------|
+exo: exo (libexo extension library)
+exo:
+exo: This is libexo, an extension library to Xfce, developed by
+exo: os-cillation. While Xfce comes with quite a few libraries that are
+exo: targeted at desktop development, libexo is targeted at application
+exo: development. It also has some helper applications that are used
+exo: throughout the entire desktop.
+exo:
+exo: 
+exo:
+exo:

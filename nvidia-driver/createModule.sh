@@ -94,17 +94,17 @@ echo "Creating driver module..."
 MODULEFILENAME=08-nvidia-$DRIVERVERSION-k.$(uname -r)-$(arch).xzm
 
 if [ ! -w "$OUTPUTDIR" ]; then
-    dir2xzm -q ${MODULEDIR} -o=/tmp/${MODULEFILENAME} || exit 1
-    sync
-    echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
+	dir2xzm -q ${MODULEDIR} -o=/tmp/${MODULEFILENAME} || exit 1
+	sync
+	echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
 elif [ ! -f "$OUTPUTDIR"/"$MODULEFILENAME" ]; then
 	dir2xzm -q ${MODULEDIR} -o="$OUTPUTDIR"/${MODULEFILENAME} || exit 1
 	sync
-    echo "Module placed in $OUTPUTDIR"
+	echo "Module placed in $OUTPUTDIR"
 else
-    dir2xzm -q ${MODULEDIR} -o=/tmp/${MODULEFILENAME} || exit 1
-    sync
-    echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
+	dir2xzm -q ${MODULEDIR} -o=/tmp/${MODULEFILENAME} || exit 1
+	sync
+	echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
 fi
 
 # clean up

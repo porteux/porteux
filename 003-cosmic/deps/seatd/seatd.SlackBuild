@@ -1,0 +1,44 @@
+#!/bin/sh
+
+PRGNAM=seatd
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+git clone https://git.sr.ht/~kennylevinsen/$PRGNAM
+cd $PRGNAM
+VERSION=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto" \
+meson setup \
+	--buildtype=release \
+	--infodir=/usr/info \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	-Dstrip=true \
+	-Dlibseat-logind=elogind \
+	-Dlibseat-seatd=enabled \
+	-Dlibseat-builtin=disabled \
+	-Dserver=disabled \
+	-Dman-pages=disabled
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

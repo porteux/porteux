@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':'.
+
+               |-----handy-ruler------------------------------------------------------|
+xfce4-appfinder: xfce4-appfinder (Application finder)
+xfce4-appfinder:
+xfce4-appfinder: The Xfce application finder is a tool to find and launch installed
+xfce4-appfinder: applications on your system and execute commands. It can also be used
+xfce4-appfinder: to quickly add launchers to the Xfce Panel by dragging an item from
+xfce4-appfinder: the view and dropping it on the panel.
+xfce4-appfinder:
+xfce4-appfinder:
+xfce4-appfinder:
+xfce4-appfinder:
+xfce4-appfinder:

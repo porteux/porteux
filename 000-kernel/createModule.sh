@@ -18,6 +18,7 @@ MODULENAME="000-kernel"
 
 SetFlags "${MODULENAME}"
 
+source "$PWD/../builder-utils/downloadfromslackware.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
 
 if [ ! -f ${SYSTEMBITS}bit.config ]; then
@@ -33,11 +34,20 @@ echo "Initial setup..."
 
 KERNELMAJORVERSION=${KERNELVERSION:0:1}
 KERNELMINORVERSION=$(echo ${KERNELVERSION} | cut -d. -f2)
+KERNELPATCHVERSION=$(echo ${KERNELVERSION} | cut -d. -f3)
 CRIPPLEDMODULENAME="06-crippled_sources-${KERNELVERSION}"
 
 rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.xz ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH} 2>/dev/null
+
+### create module folder
+
+mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+
+### download packages from slackware repositories
+
+DownloadFromSlackware
 
 echo "Downloading kernel source code..."
 if [ ! -f linux-${KERNELVERSION}.tar.xz ]; then
@@ -53,14 +63,14 @@ cp ${SCRIPTPATH}/${SYSTEMBITS}bit.config ${MODULEPATH}/linux-${KERNELVERSION}/.c
 
 echo "Building kernel headers..."
 mkdir -p ${MODULEPATH}/../05-devel/packages
-wget -P $MODULEPATH http://ftp.slackware.com/pub/slackware/slackware-current/source/k/kernel-headers.SlackBuild > /dev/null 2>&1 || exit 1
+wget -P $MODULEPATH ${SLACKWAREDOMAIN}/slackware/slackware-current/source/k/kernel-headers.SlackBuild > /dev/null 2>&1 || exit 1
 KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${MODULEPATH}/kernel-headers.SlackBuild > /dev/null 2>&1
 mv /tmp/kernel-headers-*.txz ${MODULEPATH}/../05-devel/packages
 rm ${MODULEPATH}/kernel-headers.SlackBuild
 
 echo "Downloading AUFS..."
 git clone https://github.com/sfjro/aufs-standalone ${MODULEPATH}/aufs_sources > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
-git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
+git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION}.${KERNELPATCHVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
 
 cd $MODULEPATH/linux-${KERNELVERSION}
 
@@ -77,12 +87,21 @@ if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
 	echo "Downloading firmware in the background..."
 	DOWNLOADINGFIRMWARE=true
 	(
-		wget -r -nd --no-parent -w 2 http://slackware.uk/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz -P ${MODULEPATH} > /dev/null 2>&1 || { echo "Fail to download firmware."; exit 1; }
+		wget -r -nd --no-parent -w 2 ${SLACKWAREDOMAIN}/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz -P ${MODULEPATH} > /dev/null 2>&1 & PID1=$! || { echo "Fail to download firmware."; exit 1; }
 	) &
 fi
 
+installpkg $MODULEPATH/packages/bc*.txz || exit 1
+rm $MODULEPATH/packages/bc*.txz || exit 1
+#installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+#rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+
+# this allows CONFIG_DEBUG_KERNEL=n
+sed -i "s|select DEBUG_KERNEL||g" init/Kconfig
+
 echo "Building vmlinuz (this may take a while)..."
-make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} "KCFLAGS=-O3 -s -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -fivopts -fmodulo-sched  -Wl,--as-needed -Wl,-O1 -Wl,--strip-all" || { echo "Fail to build kernel."; exit 1; }
+#make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} LLVM=1 CC=clang "KCFLAGS=$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} "KCFLAGS=$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -fivopts -fmodulo-sched" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
 make -j${NUMBERTHREADS} INSTALL_MOD_PATH=../ firmware_install > /dev/null 2>&1
@@ -97,7 +116,7 @@ ln -sf /usr/src/linux lib/modules/$dir/source
 
 if [ $DOWNLOADINGFIRMWARE ]; then
 	# wait for firmware download to finish
-	wait
+	wait $PID1
 fi
 
 echo "Extracting firmware..."
@@ -145,27 +164,8 @@ mv sof ${MODULEPATH}/lib/firmware/intel
 mv sof-tplg ${MODULEPATH}/lib/firmware/intel
 cd ..
 
-echo "Blacklisting..."
-mkdir -p ${MODULEPATH}/${MODULENAME}/etc/modprobe.d
-cat > ${MODULEPATH}/${MODULENAME}/etc/modprobe.d/b43_blacklist.conf <<EOF
-blacklist b43
-blacklist b43legacy
-blacklist b44
-blacklist bcma
-blacklist brcm80211
-blacklist brcmfmac
-blacklist brcmsmac
-blacklist ssb
-EOF
-
-cat > ${MODULEPATH}/${MODULENAME}/etc/modprobe.d/broadcom_blacklist.conf <<EOF
-blacklist b43
-blacklist bcma
-blacklist brcmsmac
-blacklist ssb
-EOF
-
 echo "Creating kernel xzm module..."
+mkdir -p ${MODULEPATH}/${MODULENAME}
 mv lib ${MODULEPATH}/${MODULENAME}
 
 # create kernel module xzm module
@@ -194,13 +194,13 @@ rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.tmp_versions > /dev/null 2>
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/tools/testing/ > /dev/null 2>&1
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/vmlinux* > /dev/null 2>&1
 
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -regex '.*\.\(bin\|elf\|exe\|o\|patch\|txt\|xsl\|xz\|ko\|zst\|json\|py\)$' -delete
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name ".*" -delete -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "COPYING" -delete -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "CREDITS" -delete -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name 'LICENSE*' -delete -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name 'MAINTAINERS*' -delete -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -type f -name "README*" -delete -print > /dev/null 2>&1
+find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -regex '.*\.\(a\|bin\|elf\|exe\|o\|patch\|txt\|xsl\|xz\|ko\|zst\|json\|py\)$' -delete
+find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name ".*" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "COPYING" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "CREDITS" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "LICENSE*" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "MAINTAINERS*" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "README*" -exec rm -fr {} \; -print > /dev/null 2>&1
 
 find ${CRIPPLEDSOURCEPATH} | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 
@@ -214,6 +214,7 @@ echo "Cleaning up..."
 rm -r ${MODULEPATH}/${MODULENAME}
 rm -r ${MODULEPATH}/${CRIPPLEDMODULENAME}
 rm -r ${MODULEPATH}/firmware
+rm -r ${MODULEPATH}/packages
 rm -r ${MODULEPATH}/sof*
 
 echo "Finished successfully."

@@ -20,32 +20,32 @@ cd $PRGNAM-$VERSION
 
 # only required in Slackware 15.0
 if [ $SLACKWAREVERSION != "current" ]; then
-    cp $SCRIPTPATH/extras/$PRGNAM/*.patch .
-    for i in *.patch; do patch -p0 < $i; done
+	cp $SCRIPTPATH/extras/$PRGNAM/*.patch .
+	for i in *.patch; do patch -p0 < $i; done
 fi
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --libdir=lib${SYSTEMBITS} \
-    --libexecdir=/usr/libexec \
-    --bindir=/usr/bin \
-    --sbindir=/usr/sbin \
-    --includedir=/usr/include \
-    --datadir=/usr/share \
-    --mandir=/usr/man \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --buildtype=release \
-    -Dman=disabled \
-    -Dtests=disabled \
-    -Dexamples=disabled \
-    -Dffmpeg=enabled \
-    -Dvulkan=disabled \
-    -Djack=disabled \
-    -Dpipewire-jack=disabled \
-    -Dsession-managers=[]
+	--prefix=/usr \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
+	--mandir=/usr/man \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	-Dman=disabled \
+	-Dtests=disabled \
+	-Dexamples=disabled \
+	-Dffmpeg=enabled \
+	-Dvulkan=disabled \
+	-Djack=disabled \
+	-Dpipewire-jack=disabled \
+	-Dsession-managers=[]
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
@@ -61,20 +61,20 @@ chmod 644 $PKG/etc/xdg/autostart/pipewire.desktop
 
 # only required in Slackware 15.0
 if [ $SLACKWAREVERSION != "current" ]; then
-    cd $PKG/usr/bin
-    ln -sf pipewire pipewire-aes67
-    ln -sf pipewire pipewire-avb
-    ln -sf pipewire pipewire-pulse
-    ln -sf pw-cat pw-dsdplay
-    ln -sf pw-cat pw-encplay
-    ln -sf pw-cat pw-midiplay
-    ln -sf pw-cat pw-midirecord
-    ln -sf pw-cat pw-play
-    ln -sf pw-cat pw-record
+	cd $PKG/usr/bin
+	ln -sf pipewire pipewire-aes67
+	ln -sf pipewire pipewire-avb
+	ln -sf pipewire pipewire-pulse
+	ln -sf pw-cat pw-dsdplay
+	ln -sf pw-cat pw-encplay
+	ln -sf pw-cat pw-midiplay
+	ln -sf pw-cat pw-midirecord
+	ln -sf pw-cat pw-play
+	ln -sf pw-cat pw-record
 fi
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

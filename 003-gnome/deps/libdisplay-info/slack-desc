@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+               |-----handy-ruler------------------------------------------------------|
+libdisplay-info: libdisplay-info (EDID and DisplayID library)
+libdisplay-info:
+libdisplay-info: Provide a set of high-level, easy-to-use, opinionated functions as
+libdisplay-info: well as low-level functions to access detailed information.
+libdisplay-info: Simplicity and correctness over performance and resource usage.
+libdisplay-info: Well-tested and fuzzed.
+libdisplay-info:
+libdisplay-info: Homepage: https://emersion.pages.freedesktop.org/libdisplay-info/
+libdisplay-info:
+libdisplay-info:
+libdisplay-info:

@@ -12,6 +12,8 @@ source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
 
+[ $SLACKWAREVERSION == "current" ] && echo "This module should be built in stable only" && exit 1
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -31,12 +33,11 @@ currentPackage=audacious-plugins
 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=meson
-	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz
-	rm $MODULEPATH/packages/${currentPackage}-*.txz
-fi
+currentPackage=meson
+sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
+rm -fr $MODULEPATH/${currentPackage}
+rm $MODULEPATH/packages/${currentPackage}-*.txz
 
 # required from now on
 installpkg $MODULEPATH/packages/*.txz || exit 1
@@ -57,11 +58,6 @@ rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/texinfo*
 rm $MODULEPATH/packages/xtrans*
 
-# slackware current only removal -- these are already in base
-if [ $SLACKWAREVERSION == "current" ]; then
-	rm $MODULEPATH/packages/libnma*
-fi
-
 # some packages (e.g nautilus and vte) require this folder
 mkdir -p /usr/local > /dev/null 2>&1
 ln -s /usr/include /usr/local/include > /dev/null 2>&1
@@ -73,54 +69,41 @@ export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LA
 echo "Building GNOME ${GNOME_LATEST_VERSION}..."
 MODULENAME=$MODULENAME-${GNOME_LATEST_VERSION}
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=gsettings-desktop-schemas
-	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-	
-	currentPackage=gtk4
-	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-
-	currentPackage=libhandy
-	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-
-	currentPackage=libsoup3
-	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-	rm $MODULEPATH/packages/libsoup3*
-
-	currentPackage=vte
-	sh $SCRIPTPATH/gnome/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
-	find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-fi
-
-# gnome packages
+# gnome deps
 for package in \
 	mozjs91 \
 	upower \
 	libstemmer \
 	exempi \
-	tracker3 \
-	gtksourceview5 \
 	libwpe \
 	wpebackend-fdo \
 	bubblewrap \
+	libsoup3 \
 	geoclue2 \
+	libpeas \
+	libwnck4 \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# gnome packages
+for package in \
+	gsettings-desktop-schemas \
+	gtk4 \
+	libhandy \
+	vte \
+	tracker3 \
+	gtksourceview5 \
 	geocode-glib \
 	libgweather \
-	libpeas \
 	gsound \
 	gnome-autoar \
 	gnome-desktop \
 	gnome-settings-daemon \
 	libadwaita \
+	gnome-tweaks \
 	gnome-bluetooth \
 	libnma \
 	gnome-control-center \
@@ -128,7 +111,6 @@ for package in \
 	gjs \
 	gnome-shell \
 	gnome-session \
-	gnome-menus \
 	nautilus \
 	nautilus-python \
 	gdm \
@@ -138,12 +120,10 @@ for package in \
 	evince \
 	gnome-system-monitor \
 	gnome-console \
-	gnome-tweaks \
 	gnome-user-share \
-	libwnck4 \
+	gnome-backgrounds \
 	gnome-browser-connector \
 	file-roller \
-	gnome-backgrounds \
 	adwaita-icon-theme \
 	xdg-desktop-portal-gnome \
 ; do
@@ -160,6 +140,11 @@ rm *.t?z
 ### install additional packages, including porteux utils
 
 InstallAdditionalPackages
+
+### removed some useless services
+
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
 
 ### fix some .desktop files
 
@@ -183,7 +168,6 @@ cd $MODULEPATH/packages/
 
 rm -R etc/dbus-1/system.d
 rm -R etc/dconf
-rm -R etc/geoclue
 rm -R etc/opt
 rm -R usr/lib${SYSTEMBITS}/aspell
 rm -R usr/lib${SYSTEMBITS}/glade
@@ -228,6 +212,7 @@ rm usr/bin/canberra*
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
+rm usr/bin/gtk4-encode-symbolic-svg
 rm usr/bin/gtk4-icon-browser
 rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
