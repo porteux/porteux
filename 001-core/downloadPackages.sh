@@ -6,16 +6,14 @@ REPOSITORY="$1"
 GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "aaa_base" &
-DownloadPackage "aaa_glibc-solibs" &
 DownloadPackage "aaa_terminfo" &
 DownloadPackage "acl" &
 DownloadPackage "acpid" &
 DownloadPackage "attr" &
 DownloadPackage "bash" &
-DownloadPackage "bc" &
 DownloadPackage "bin" &
-wait
 DownloadPackage "bluez" &
+wait
 DownloadPackage "bluez-firmware" &
 DownloadPackage "bridge-utils" &
 DownloadPackage "brotli" &
@@ -74,7 +72,6 @@ DownloadPackage "grep" &
 DownloadPackage "gzip" &
 DownloadPackage "hdparm" &
 DownloadPackage "hostname" &
-DownloadPackage "hwdata" &
 DownloadPackage "icu4c" &
 DownloadPackage "infozip" &
 DownloadPackage "inih" &
@@ -184,12 +181,10 @@ wait
 DownloadPackage "rp-pppoe" &
 DownloadPackage "rsync" &
 DownloadPackage "samba" &
-DownloadPackage "screen" &
 DownloadPackage "sdparm" &
 DownloadPackage "sed" &
 DownloadPackage "sg3_utils" &
 DownloadPackage "shadow" &
-DownloadPackage "sharutils" &
 DownloadPackage "slackpkg" &
 DownloadPackage "smartmontools" &
 wait
@@ -230,7 +225,11 @@ DownloadPackage "zlib" &
 DownloadPackage "zstd" &
 wait
 
-### slackware current only packages
+### only download if not present
+
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm"
+
+### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "avahi" &

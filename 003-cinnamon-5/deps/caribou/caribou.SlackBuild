@@ -1,0 +1,50 @@
+#!/bin/sh
+
+PRGNAM=caribou
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION="0.4.21"
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+patch -Np1 -i $CWD/unicode_to_keyval-symbol-check.patch
+patch -Np1 -i $CWD/display-adapter.patch
+
+autoreconf -fiv
+intltoolize
+
+CFLAGS="$GCCFLAGS -flto" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--enable-static=no \
+	--enable-gtk2-module=no \
+	--enable-docs=no \
+	--disable-schemas-compile \
+	--build=$ARCH-porteux-linux
+
+sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

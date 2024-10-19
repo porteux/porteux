@@ -1,0 +1,13 @@
+--- src/gtk/fm-places-view.c    2024-10-14 15:43:41.175374415 +0200
++++ src/gtk/fm-places-view.c.patched    2024-10-14 15:43:34.074374079 +0200
+@@ -251,6 +251,10 @@
+     gboolean ret = FALSE;
+     GdkDragAction action = 0;
+ 
++    GtkWidget* source_widget = gtk_drag_get_source_widget (drag_context);
++    if (source_widget == NULL)
++        return FALSE;
++
+     target = gtk_drag_dest_find_target(dest_widget, drag_context, NULL);
+     if(target == GDK_NONE)
+         return FALSE;

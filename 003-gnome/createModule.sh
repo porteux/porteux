@@ -12,6 +12,8 @@ source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
 
+[ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -40,6 +42,7 @@ rm $MODULEPATH/packages/c-ares*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
+rm $MODULEPATH/packages/hwdata*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
@@ -71,55 +74,64 @@ export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LA
 echo "Building GNOME ${GNOME_LATEST_VERSION}..."
 MODULENAME=$MODULENAME-${GNOME_LATEST_VERSION}
 
-# gnome packages
+# gnome deps
 for package in \
-	libxmlb \
 	libstemmer \
 	exempi \
-	tracker3 \
-	gtksourceview5 \
 	libwpe \
 	wpebackend-fdo \
 	bubblewrap \
 	geoclue2 \
+	libpeas \
+	colord-gtk \
+	libei \
+	libdisplay-info \
+	libportal \
+	libcloudproviders \
+	libheif \
+	glycin \
+	libwnck4 \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# gnome packages
+for package in \
+	gtksourceview5 \
 	geocode-glib \
 	libgweather \
-	libpeas \
 	gsound \
 	gnome-autoar \
 	gnome-desktop \
 	gnome-settings-daemon \
-	appstream \
 	libadwaita \
+	gnome-tweaks \
 	gnome-bluetooth \
 	libnma-gtk4 \
-	colord-gtk \
 	gnome-online-accounts \
 	gnome-control-center \
-	libei \
 	mutter \
 	gnome-shell \
 	gnome-session \
-	gnome-menus \
-	libportal \
-	libcloudproviders \
+	tinysparql \
+	localsearch \
 	nautilus \
 	nautilus-python \
 	gdm \
 	gspell \
+	libspelling \
 	gnome-text-editor \
-	libheif \
-	glycin \
 	loupe \
 	evince \
 	gnome-system-monitor \
+	vte \
 	gnome-console \
-	gnome-tweaks \
 	gnome-user-share \
-	libwnck4 \
+	gnome-backgrounds \
 	gnome-browser-connector \
 	file-roller \
-	gnome-backgrounds \
 	adwaita-icon-theme \
 	xdg-desktop-portal-gnome \
 ; do
@@ -129,6 +141,7 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # only required for building not for run-time
+rm $MODULEPATH/packages/gperf*
 rm $MODULEPATH/packages/libheif*
 
 ### fake root
@@ -139,6 +152,11 @@ rm *.t?z
 ### install additional packages, including porteux utils
 
 InstallAdditionalPackages
+
+### removed some useless services
+
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
 
 ### copy build files to 05-devel
 
@@ -158,7 +176,6 @@ cd $MODULEPATH/packages/
 
 rm -R etc/dbus-1/system.d
 rm -R etc/dconf
-rm -R etc/geoclue
 rm -R etc/opt
 rm -R usr/lib${SYSTEMBITS}/aspell
 rm -R usr/lib${SYSTEMBITS}/glade
@@ -167,6 +184,7 @@ rm -R usr/lib${SYSTEMBITS}/graphene-1.0
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/lib${SYSTEMBITS}/python*/site-packages/pip*
+rm -R usr/libexec/installed-tests
 rm -R usr/share/icons/Adwaita/8x8
 rm -R usr/share/icons/Adwaita/96x96
 rm -R usr/share/icons/Adwaita/256x256
@@ -197,10 +215,12 @@ rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/ibus*.desktop
+rm etc/xdg/autostart/localsearch-3.desktop
 rm usr/bin/canberra*
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
+rm usr/bin/gtk4-encode-symbolic-svg
 rm usr/bin/gtk4-icon-browser
 rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
@@ -218,6 +238,7 @@ rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
+rm usr/libexec/localsearch-*
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
@@ -225,8 +246,10 @@ find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" 
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/
 GenericStrip
 AggressiveStripAll
+mv $MODULEPATH/libvte-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files

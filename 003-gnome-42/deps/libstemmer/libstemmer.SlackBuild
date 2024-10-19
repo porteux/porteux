@@ -1,0 +1,37 @@
+#!/bin/sh
+
+PRGNAM=libstemmer
+SRCNAM=libstemmer_c
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+rm -rf $SRCNAM
+
+VERSION="2.2.0"
+wget https://snowballstem.org/dist/${SRCNAM}-${VERSION}.tar.gz
+
+tar xfv $SRCNAM-$VERSION.tar.?z*
+cd $SRCNAM-$VERSION
+
+patch -Np0 -i $CWD/libstemmer_c-shared-library.patch
+
+CFLAGS="$GCCFLAGS -flto" make -j${NUMBERTHREADS} libstemmer.so stemwords
+
+mkdir -p $PKG/usr/lib${SYSTEMBITS}
+mv libstemmer.so* $PKG/usr/lib${SYSTEMBITS}
+mv include $PKG/usr
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

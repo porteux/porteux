@@ -12,6 +12,8 @@ source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
 
+[ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -113,7 +115,7 @@ cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWayland/* "${currentPackage}-stripp
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWebChannel/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWebSockets/* "${currentPackage}-stripped-$version"
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by spectacle
@@ -127,13 +129,16 @@ mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libopencv_imgproc.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libopencv_core.* "${currentPackage}-stripped-$version"
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside Slackware repository ###
 
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
+
+installpkg $MODULEPATH/packages/cups*.txz || exit 1
+rm $MODULEPATH/packages/cups*.txz
 
 currentPackage=FeatherPad
 mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
@@ -146,7 +151,7 @@ mkdir build && cd build
 CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=audacious
@@ -163,7 +168,7 @@ for package in \
 	extra-cmake-modules \
 	kimageformats \
 ; do
-sh $SCRIPTPATH/kde/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -171,7 +176,9 @@ done
 # only required for building
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
 
+# extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/page57.html#post6532418
 KDE6PACKAGES=/tmp/packages
+[ ! -d $KDE6PACKAGES ] && exit 1
 
 find $KDE6PACKAGES -type f -name "ark*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "attica-6*" -exec cp {} $MODULEPATH/packages/ \;
@@ -218,7 +225,6 @@ find $KDE6PACKAGES -type f -name "kfilemetadata-6*" -exec cp {} $MODULEPATH/pack
 find $KDE6PACKAGES -type f -name "kglobalaccel-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kglobalacceld*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kguiaddons-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kholidays-5*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "ki18n-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kiconthemes-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kidletime-6*" -exec cp {} $MODULEPATH/packages/ \;
@@ -244,7 +250,6 @@ find $KDE6PACKAGES -type f -name "kpeople-6*" -exec cp {} $MODULEPATH/packages/ 
 find $KDE6PACKAGES -type f -name "kpeoplevcard*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kpipewire*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kplotting-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kpmcore*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kpty-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kqtquickcharts-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kquickcharts-6*" -exec cp {} $MODULEPATH/packages/ \;
@@ -397,8 +402,8 @@ rm -R usr/share/sddm/themes/maya
 rm -R usr/share/sddm/translations
 rm -R usr/share/themes/Breeze-Dark/gtk-4.0
 rm -R usr/share/themes/Breeze/gtk-4.0
-rm -R usr/share/wallpapers/*
 
+find usr/share/wallpapers -mindepth 1 -maxdepth 1 ! \( -name "body-background.png" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/icons -mindepth 1 -maxdepth 1 ! \( -name "breeze" -o -name "breeze-dark" -o -name "hicolor" \) -exec rm -rf '{}' \; 2>/dev/null
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null

@@ -1,0 +1,48 @@
+--- src/appfinder-window.c	2024-10-02 22:39:03.609708876 +0200
++++ src/appfinder-window.c.patched	2024-10-02 23:00:46.984868492 +0200
+@@ -55,7 +55,7 @@
+ 
+ #define XFCE_APPFINDER_LOCAL_PREFIX "file://"
+ 
+-
++gboolean force_execute;
+ static void       xfce_appfinder_window_finalize                      (GObject                     *object);
+ static void       xfce_appfinder_window_focus_out                     (GtkWidget                   *widget);
+ static void       xfce_appfinder_window_unmap                         (GtkWidget                   *widget);
+@@ -1516,6 +1516,12 @@
+       return TRUE;
+     }
+ 
++  if (force_execute == TRUE && (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter))
++    {
++      xfce_appfinder_window_execute (window, TRUE);
++      return FALSE;
++    }
++
+   navigation_key = xfce_appfinder_get_navigation_key(event);
+ 
+   if (navigation_key == XFCE_APPFINDER_KEY_NONE)
+@@ -2355,11 +2361,18 @@
+ static guint
+ xfce_appfinder_get_navigation_key (GdkEventKey *event)
+ {
+-  if (event->keyval == GDK_KEY_Down)
+-    return XFCE_APPFINDER_KEY_NEXT;
+-
+-  if (event->keyval == GDK_KEY_Up)
+-    return XFCE_APPFINDER_KEY_PREVIOUS;
++  if (event->keyval == GDK_KEY_Down || event->keyval == GDK_KEY_Up)
++    {
++      force_execute = FALSE;
++      if (event->keyval == GDK_KEY_Down)
++        return XFCE_APPFINDER_KEY_NEXT;
++      if (event->keyval == GDK_KEY_Up)
++        return XFCE_APPFINDER_KEY_PREVIOUS;
++    }
++  else
++    {
++      force_execute = TRUE;
++    }
+ 
+   if ((event->state & GDK_CONTROL_MASK) != 0)
+     {

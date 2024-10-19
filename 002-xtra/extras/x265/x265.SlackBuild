@@ -19,32 +19,32 @@ VERSION=$(date -r . +%Y%m%d)
 
 mkdir build-12 && cd build-12
 cmake \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
-    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -ffat-lto-objects -flto" \
-    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
-    -DHIGH_BIT_DEPTH=ON \
-    -DMAIN12=ON \
-    -DEXPORT_C_API=OFF \
-    -DENABLE_CLI=OFF \
-    -DENABLE_SHARED=OFF \
-    -DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
-    -DCMAKE_BUILD_TYPE=Release ../source
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
+	-DCMAKE_CXX_FLAGS:STRING="$CLANGFLAGS" \
+	-DHIGH_BIT_DEPTH=ON \
+	-DMAIN12=ON \
+	-DEXPORT_C_API=OFF \
+	-DENABLE_CLI=OFF \
+	-DENABLE_SHARED=OFF \
+	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
+	-DCMAKE_BUILD_TYPE=Release ../source \
+	-DCMAKE_CC_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
 make -j${NUMBERTHREADS}
 
 mkdir ../build-10 && cd ../build-10
 cmake \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
-    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -ffat-lto-objects -flto" \
-    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
-    -DHIGH_BIT_DEPTH=ON \
-    -DEXPORT_C_API=OFF \
-    -DENABLE_CLI=OFF \
-    -DENABLE_SHARED=OFF \
-    -DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
-    -DCMAKE_BUILD_TYPE=Release ../source
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
+	-DCMAKE_CXX_FLAGS:STRING="$CLANGFLAGS" \
+	-DHIGH_BIT_DEPTH=ON \
+	-DEXPORT_C_API=OFF \
+	-DENABLE_CLI=OFF \
+	-DENABLE_SHARED=OFF \
+	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
+	-DCMAKE_BUILD_TYPE=Release ../source \
+	-DCMAKE_CC_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
 make -j${NUMBERTHREADS}
 
@@ -55,17 +55,17 @@ ln -s ../build-12/libx265.a libx265_main12.a
 
 cmake \
 -DCMAKE_INSTALL_PREFIX=/usr \
-    -DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
-    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -ffat-lto-objects -flto" \
-    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
-    -DENABLE_SHARED=ON \
-    -DEXTRA_LIB="x265_main10.a;x265_main12.a" \
-    -DEXTRA_LINK_FLAGS="-L." \
-    -DLINKED_10BIT=ON \
-    -DLINKED_12BIT=ON \
-    -DENABLE_CLI=OFF \
-    -DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
-    -DCMAKE_BUILD_TYPE=Release ../source
+	-DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
+	-DCMAKE_CXX_FLAGS:STRING="$CLANGFLAGS" \
+	-DENABLE_SHARED=ON \
+	-DEXTRA_LIB="x265_main10.a;x265_main12.a" \
+	-DEXTRA_LINK_FLAGS="-L." \
+	-DLINKED_10BIT=ON \
+	-DLINKED_12BIT=ON \
+	-DENABLE_CLI=OFF \
+	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
+	-DCMAKE_BUILD_TYPE=Release ../source \
+	-DCMAKE_CC_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
@@ -76,4 +76,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

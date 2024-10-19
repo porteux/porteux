@@ -19,22 +19,22 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --buildtype=release \
-    -Ddocs=false \
-    -Dextensions=true \
-    -Dintrospection=true \
-    -Dlibportal=false \
-    -Dpackagekit=false \
-    -Dselinux=false \
-    -Dprofiling=false \
-    -Dtests=none
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--buildtype=release \
+	-Ddocs=false \
+	-Dextensions=true \
+	-Dintrospection=true \
+	-Dlibportal=false \
+	-Dpackagekit=false \
+	-Dselinux=false \
+	-Dprofiling=false \
+	-Dtests=none
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
@@ -44,4 +44,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

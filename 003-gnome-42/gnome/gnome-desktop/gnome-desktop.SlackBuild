@@ -22,25 +22,25 @@ cd $PRGNAM-$VERSION
 sed -i -e "/'test-.*'/d" libgnome-desktop/meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --mandir=/usr/man \
-    --datadir=/usr/share \
-    --includedir=/usr/include \
-    --libdir=lib${SYSTEMBITS} \
-    --libexecdir=/usr/libexec \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --buildtype=release \
-    -Ddate_in_gnome_version=true \
-    -Ddesktop_docs=false \
-    -Ddebug_tools=false \
-    -Dudev=enabled \
-    -Dsystemd=disabled \
-    -Dgtk_doc=false \
-    -Dinstalled_tests=false \
-    -Dgnome_distributor="PorteuX"
+	--prefix=/usr \
+	--mandir=/usr/man \
+	--datadir=/usr/share \
+	--includedir=/usr/include \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	-Ddate_in_gnome_version=true \
+	-Ddesktop_docs=false \
+	-Ddebug_tools=false \
+	-Dudev=enabled \
+	-Dsystemd=disabled \
+	-Dgtk_doc=false \
+	-Dinstalled_tests=false \
+	-Dgnome_distributor="PorteuX"
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
@@ -50,4 +50,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

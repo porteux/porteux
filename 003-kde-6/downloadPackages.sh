@@ -23,7 +23,6 @@ DownloadPackage "libqaccessibilityclient" &
 DownloadPackage "LibRaw" &
 wait
 DownloadPackage "qrencode" &
-DownloadPackage "taglib" &
 DownloadPackage "wayland-protocols" &
 DownloadPackage "xcb-util-cursor" &
 DownloadPackage "xdpyinfo" &
@@ -35,6 +34,11 @@ wait
 
 DownloadPackage "opencv" &
 DownloadPackage "qt6" &
+wait
+
+### temporary packages for further building
+
+DownloadPackage "cups" & # required by qt6
 wait
 
 ### script clean up
