@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PRGNAM=console
+PRGNAM=gnome-console
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM

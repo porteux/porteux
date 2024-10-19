@@ -127,7 +127,7 @@ for package in \
 	evince \
 	gnome-system-monitor \
 	vte \
-	console \
+	gnome-console \
 	gnome-user-share \
 	gnome-backgrounds \
 	gnome-browser-connector \
