@@ -402,7 +402,6 @@ rm -R usr/share/sddm/themes/maya
 rm -R usr/share/sddm/translations
 rm -R usr/share/themes/Breeze-Dark/gtk-4.0
 rm -R usr/share/themes/Breeze/gtk-4.0
-rm -R usr/share/wallpapers/*
 
 find usr/share/wallpapers -mindepth 1 -maxdepth 1 ! \( -name "body-background.png" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/icons -mindepth 1 -maxdepth 1 ! \( -name "breeze" -o -name "breeze-dark" -o -name "hicolor" \) -exec rm -rf '{}' \; 2>/dev/null
