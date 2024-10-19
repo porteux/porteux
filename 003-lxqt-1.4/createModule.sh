@@ -130,8 +130,8 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/FedoraQt/${currentPackage} || exit 1
 cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
-cp $SCRIPTPATH/deps/adwaita-qt/adwaitastyle.cpp.patch .
-patch -p0 < adwaitastyle.cpp.patch || exit 1
+cp $SCRIPTPATH/deps/adwaita-qt/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
 mkdir build && cd build
 CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
@@ -189,11 +189,11 @@ installpkg $MODULEPATH/packages/networkmanager-qt*.txz || exit 1
 
 currentPackage=nm-tray
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "palinek" ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
+version="0.5.0"
+wget https://github.com/palinek/${currentPackage}/archive/refs/tags/${version}.tar.gz 
+tar xvf ${version}.tar.gz && rm ${version}.tar.gz || exit 1
 cd ${currentPackage}*
+sed -i "s|set(NM_TRAY_VERSION \".*|set(NM_TRAY_VERSION \"${version}\")|g" CMakeLists.txt
 mkdir build && cd build
 CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1

@@ -63,6 +63,7 @@ do
 	echo $'\n'$'\n'"Building: $d using externally specified options: $ALL_CMAKE_FLAGS"$'\n'
 	mkdir -p "$MODULEPATH/lxqt/$d/build" && cd "$MODULEPATH/lxqt/$d/build" || exit 1
 	
+	FLTO=""
 	[ "$d" != "lxqt-config" ] && [ "$d" != "lxqt-panel" ] && [ "$d" != "screengrab" ] && FLTO="-flto"
 	
 	CXXFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -fvisibility-inlines-hidden ${FLTO}" cmake $ALL_CMAKE_FLAGS -DBUILD_WITH_QT6=true .. && "$CMAKE_MAKE_PROGRAM" -j$JOB_NUM || exit 1
