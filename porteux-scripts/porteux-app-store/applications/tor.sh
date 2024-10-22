@@ -81,7 +81,7 @@ get_repo_version_tor(){
     local url="https://archive.torproject.org/tor-package-archive/torbrowser/"
 
     if [ "$CHANNEL" = "stable" ]; then
-        ver=$(curl -s "$url" | grep -oP '(?<=<a href=")[0-9]+\.[0-9]+\.[0-9]+(?=/)' | sort -Vr | head -n 1)
+        ver=$(curl -s "$url" | grep -oP '(?<=<a href=")(\d+\.\d+(\.\d+)?(a\d)*/)(?=")' | tr -d '/' | grep -v '[a-zA-Z]' | sort -Vr)
     elif [ "$CHANNEL" = "alpha" ]; then
         ver=$(curl -s "$url" | grep -oP '(?<=<a href=")[^"]*a[0-9]+(?=/")' | sort -Vr | head -n 1)
     fi
