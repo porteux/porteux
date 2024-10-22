@@ -43,7 +43,6 @@ rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
 rm $MODULEPATH/packages/hwdata*
-rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libsoup3*
