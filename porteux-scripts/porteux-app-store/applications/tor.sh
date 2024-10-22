@@ -81,7 +81,7 @@ get_repo_version_tor(){
     local url="https://archive.torproject.org/tor-package-archive/torbrowser/"
 
     if [ "$CHANNEL" = "stable" ]; then
-        ver=$(curl -s "$url" | grep -oP '(?<=<a href=")[0-9]+\.[0-9]+\.[0-9]+(?=/)' | sort -Vr | head -n 1)
+        ver=$(curl -s "$url" | grep -oP '(?<=<a href=")(\d+\.\d+(\.\d+)?(a\d)*/)(?=")' | tr -d '/' | grep -v '[a-zA-Z]' | sort -Vr | head -n 1)
     elif [ "$CHANNEL" = "alpha" ]; then
         ver=$(curl -s "$url" | grep -oP '(?<=<a href=")[^"]*a[0-9]+(?=/")' | sort -Vr | head -n 1)
     fi
@@ -95,7 +95,7 @@ make_module_tor(){
     local pkgver; pkgver=$(get_repo_version_tor "$CHANNEL")
     local pkg_name; pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
     local tor_folder; tor_folder="tor-browser-${CHANNEL}"
-
+	
     create_application_temp_dir "$APP"
 
     $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.xz" "https://archive.torproject.org/tor-package-archive/torbrowser/${pkgver}/tor-browser-linux-x86_64-${pkgver}.tar.xz" &&
