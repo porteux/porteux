@@ -56,6 +56,7 @@ DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
 DownloadPackage "hwdata" & # required by libdisplay-info
+DownloadPackage "iso-codes" & # required by gnome-desktop
 DownloadPackage "krb5" &
 wait
 DownloadPackage "libsass" & # required by gnome-console
