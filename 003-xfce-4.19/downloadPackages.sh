@@ -7,7 +7,9 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "blueman" &
 DownloadPackage "dconf" &
+DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
+DownloadPackage "gspell" &
 DownloadPackage "gtksourceview3" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libcanberra" &
@@ -21,12 +23,12 @@ DownloadPackage "network-manager-applet" &
 DownloadPackage "vte" &
 wait
 
-### slackware current only packages
+### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &
 	DownloadPackage "libindicator" &
-	DownloadPackage "libsoup" & # for stable this libsoup2 will be in 002-xorg
+	DownloadPackage "libsoup" & # for stable this libsoup2 will be in 002-gui
 	wait
 fi
 
