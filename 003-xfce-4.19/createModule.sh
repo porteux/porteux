@@ -172,6 +172,8 @@ rm -fr $MODULEPATH/${currentPackage}
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
 
 # required by mousepad
+installpkg $MODULEPATH/packages/enchant*.txz || exit 1
+installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 
 # required by xfce4-panel

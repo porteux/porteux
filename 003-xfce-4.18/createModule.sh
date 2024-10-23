@@ -154,6 +154,8 @@ makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by mousepad
+installpkg $MODULEPATH/packages/enchant*.txz || exit 1
+installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 
 # required by xfce4-panel
