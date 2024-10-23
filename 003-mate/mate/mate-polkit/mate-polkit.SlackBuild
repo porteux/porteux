@@ -24,7 +24,7 @@ cp $SCRIPTPATH/../extras/${PRGNAM}/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

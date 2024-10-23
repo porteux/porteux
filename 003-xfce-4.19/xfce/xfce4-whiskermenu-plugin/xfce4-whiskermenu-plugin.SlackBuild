@@ -14,7 +14,7 @@ cd $TMP
 
 wget https://gitlab.xfce.org/panel-plugins/${PRGNAM}/-/archive/main/${PRGNAM}-main.tar.bz2
 
-SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -flto -fPIC"
+SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -flto=auto -fPIC"
 
 tar xvf $PRGNAM-main.tar.?z* || exit 1
 cd $PRGNAM-main && VERSION=$(date -r . +%Y%m%d) || exit 1
