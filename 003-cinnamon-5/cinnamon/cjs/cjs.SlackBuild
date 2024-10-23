@@ -20,7 +20,7 @@ cd $PRGNAM-$VERSION
 
 [ ! -e build ] && mkdir build
 cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
 	--buildtype=release \

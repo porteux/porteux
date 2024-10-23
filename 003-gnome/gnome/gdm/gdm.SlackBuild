@@ -24,7 +24,7 @@ patch -Np1 -i $CWD/0003-add-wayland-session-script.patch
 patch -Np1 -i $CWD/0004-fix-Xsession-language-in-gnome.patch
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--buildtype=release \
 	--infodir=/usr/info \
