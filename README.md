@@ -96,6 +96,10 @@ In the end all modules will be in their respective subfolders inside /tmp/porteu
 
 Feel free to report any issues or request changes. Any constructive feedback is welcome.
 
+## Donate
+
+Please, consider donating to PorteuX project: https://buymeacoffee.com/porteux
+
 ## Thanks
 
 arleson (core team)<br />
