@@ -1,35 +1,26 @@
---- meson.build
-+++ meson.build
-@@ -3,21 +3,28 @@ project(
-   version: '47.0.1',
-   license: 'GPL2+',
-   default_options: 'buildtype=debugoptimized',
--  meson_version: '>= 0.60.0'
-+  meson_version: '>= 0.53.0'
- )
- 
-+prefix = get_option('prefix')
+--- meson.build	2024-10-24 22:04:57.709070016 +0200
++++ meson.build.patched	2024-10-24 22:06:14.104073629 +0200
+@@ -9,20 +9,14 @@
  session_version = meson.project_version()
  session_api_name = '@0@-@1@'.format(meson.project_name(), session_version.split('.')[0])
  
+-prefix = get_option('prefix')
  session_prefix = get_option('prefix')
  session_bindir = join_paths(session_prefix, get_option('bindir'))
  session_datadir = join_paths(session_prefix, get_option('datadir'))
-+session_libdir = join_paths(session_prefix, get_option('libdir'))
+-session_libdir = join_paths(session_prefix, get_option('libdir'))
  session_libexecdir = join_paths(session_prefix, get_option('libexecdir'))
  session_localedir = join_paths(session_prefix, get_option('localedir'))
-+session_localstatedir = join_paths(session_prefix, get_option('localstatedir'))
-+session_mandir = join_paths(session_prefix, get_option('mandir'))
-+session_sbindir = join_paths(session_prefix, get_option('sbindir'))
+-session_localstatedir = join_paths(session_prefix, get_option('localstatedir'))
+-session_mandir = join_paths(session_prefix, get_option('mandir'))
+-session_sbindir = join_paths(session_prefix, get_option('sbindir'))
  session_sysconfdir = join_paths(session_prefix, get_option('sysconfdir'))
  
  session_pkgdatadir = join_paths(session_datadir, meson.project_name())
+-session_debug = get_option('buildtype').contains('debug')
  
-+session_debug = get_option('buildtype').contains('debug')
-+
  cc = meson.get_compiler('c')
  
- config_h = configuration_data()
 @@ -39,7 +46,8 @@ endforeach
  # compiler flags
  common_flags = ['-DHAVE_CONFIG_H']
