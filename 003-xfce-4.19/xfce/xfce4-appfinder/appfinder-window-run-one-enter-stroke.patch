@@ -16,7 +16,7 @@
 +  if (force_execute == TRUE && (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter))
 +    {
 +      xfce_appfinder_window_execute (window, TRUE);
-+      return FALSE;
++      return TRUE;
 +    }
 +
    navigation_key = xfce_appfinder_get_navigation_key(event);
