@@ -48,6 +48,11 @@ DownloadPackage "python-webencodings" &
 DownloadPackage "vte" &
 wait
 
+### packages that require specific striping
+
+DownloadPackage "gettext-tools" & # required by extensions
+wait
+
 ### temporary packages for further building
 
 DownloadPackage "boost" & # to build exempi
