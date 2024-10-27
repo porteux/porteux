@@ -27,6 +27,8 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 In order to have PorteuX in a language different than English, download the multilanguage package and use PorteuX Language Switcher application to choose the desired language.
 
+To download a Slackware package that is not present in PorteuX, run the command `getpkg [packageName]`. A .txz file will be downloaded, so it will require to run `txz2xzm [packageFilename]` to convert it to a module. After the conversion it's recommended to move the .xzm module to the porteux/modules folder to ensure it is automatically loaded after boot.
+
 To build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate 06-crippled_sources xzm module.
 
 To run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. It's recommended to have these 2 modules in /porteux/optional and activate them only when needed.
