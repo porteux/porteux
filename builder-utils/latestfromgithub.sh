@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DownloadLatestFromGithub() {
 	repository="$1"

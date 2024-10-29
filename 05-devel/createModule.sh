@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 MODULENAME=05-devel
 

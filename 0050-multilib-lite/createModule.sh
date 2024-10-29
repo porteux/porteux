@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 MODULENAME="0050-multilib-lite"
 

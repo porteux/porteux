@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ]; then
 	echo "05-devel module needs to be activated"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 GenericStrip() {
 	rm -R etc/logrotate.d
