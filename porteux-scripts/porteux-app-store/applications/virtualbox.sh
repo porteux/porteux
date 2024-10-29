@@ -41,7 +41,7 @@ sh "$INSTALLERPATH" --nox11 || exit 1
 # set configuration
 mkdir -p $MODULEDIR/etc/rc.d/init.d $MODULEDIR/etc/rc.d/rc4.d
 cat > $MODULEDIR/etc/rc.d/init.d/rc.virtualbox << EOF
-#!/bin/bash
+#!/bin/sh
 # VirtualBox Linux kernel modules init script
 /sbin/depmod -a
 /sbin/modprobe vboxdrv
