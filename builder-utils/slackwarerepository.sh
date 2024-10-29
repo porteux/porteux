@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 GenerateRepositoryUrls() {
 	rm -f $MODULEPATH/packages/FILE_LIST

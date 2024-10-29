@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 MODULENAME=003-xfce-4.18
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 SetFlags() {
 	MODULENAME="$1"
