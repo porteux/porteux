@@ -67,6 +67,7 @@ for package in \
 	cosmic-edit \
 	cosmic-files \
 	cosmic-greeter \
+	cosmic-idle \
 	cosmic-icons \
 	cosmic-launcher \
 	cosmic-notifications \
