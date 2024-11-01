@@ -22,8 +22,9 @@ rm -fr "$BUILDDIR" &>/dev/null
 mkdir "$BUILDDIR" &>/dev/null
 
 wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
-MODULEFILENAME=$(unzip -Z1 $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip) || exit 1
-unzip $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip -d "$BUILDDIR" &>/dev/null || exit 1
+MODULEFILENAME=$(unzip -Z1 $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip | cut -d '/' -f2) || exit 1
+echo "$MODULEFILENAME"
+unzip $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip -d "$BUILDDIR" &>/dev/null
 
 if [ ! -w "$OUTPUTDIR" ]; then
     mv "$BUILDDIR"/"$MODULEFILENAME" /tmp &>/dev/null
