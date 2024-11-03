@@ -23,7 +23,7 @@ rm -fr "$BUILDDIR" &>/dev/null
 mkdir "$BUILDDIR" &>/dev/null
 
 wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
-MODULEFILENAME=$(unzip -Z1 $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip | cut -d '/' -f2) || exit 1
+MODULEFILENAME=$(unzip -Z1 $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip | rev | cut -d "/" -f 1 | rev) || exit 1
 unzip $BUILDDIR/$CURRENTPACKAGE-$SLACKWAREVERSION.zip -d "$BUILDDIR" &>/dev/null
 
 MODULEDIR=$(basename -s .xzm ${BUILDDIR}/${MODULEFILENAME})
