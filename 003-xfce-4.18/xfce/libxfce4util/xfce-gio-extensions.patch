@@ -1,0 +1,11 @@
+--- libxfce4util/xfce-gio-extensions.c	2023-07-05 19:19:58.000000000 +0200
++++ libxfce4util/xfce-gio-extensions.c.patched	2024-11-01 18:23:24.520004376 +0100
+@@ -284,7 +284,7 @@
+ 
+   g_object_unref (file_info);
+ 
+-  return is_trusted;
++  return TRUE;
+ }
+ 
+ #define __XFCE_GIO_EXTENSIONS_C__
