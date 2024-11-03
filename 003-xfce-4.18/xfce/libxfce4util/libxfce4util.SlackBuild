@@ -20,6 +20,9 @@ SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_R
 tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+cp $CWD/*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
 CFLAGS="$SLKCFLAGS" \
 ./configure \
 	--prefix=/usr \
