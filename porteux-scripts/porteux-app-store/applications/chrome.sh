@@ -82,9 +82,9 @@ get_repo_version_google_chrome(){
     if [ "$1" == "beta" ]; then
         echo "${ver[0]}"
     elif [ "$1" == "stable" ]; then
-        echo "${ver[1]}"
-    elif [ "$1" == "unstable" ]; then
         echo "${ver[2]}"
+    elif [ "$1" == "unstable" ]; then
+        echo "${ver[3]}"
     else
         exit 1
     fi
@@ -107,7 +107,7 @@ make_module_google_chrome(){
     create_application_temp_dir "$APP"
 
     mkdir -p "$TMP/$APP/$pkg_name" &&
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/$pkg_name.deb" "https://dl.google.com/linux/chrome/deb/pool/main/g/${APP}-${CHANNEL}/${APP}-${CHANNEL}_${pkgver}-1_amd64.deb" &&
+    $WGET_WITH_TIME_OUT -O "$TMP/$APP/$pkg_name.deb" "https://dl.google.com/linux/direct/${APP}-${CHANNEL}_current_amd64.deb" &&
     ar p "$TMP/$APP/$pkg_name.deb" data.tar.xz | tar xJv -C "$TMP/$APP/$pkg_name" || exit 1
     sed -i "s|TryExec=.*||g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" &&
     sed -i "s|Exec=/usr/bin/|Exec=|g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" &&
