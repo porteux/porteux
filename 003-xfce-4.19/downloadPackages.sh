@@ -5,6 +5,7 @@ REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "aspell" & # required by mousepad
 DownloadPackage "blueman" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
@@ -12,8 +13,8 @@ DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gspell" &
 DownloadPackage "gtksourceview3" &
 DownloadPackage "keybinder3" &
-DownloadPackage "libcanberra" &
 wait
+DownloadPackage "libcanberra" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
 DownloadPackage "libnma" &
