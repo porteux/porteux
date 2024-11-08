@@ -167,13 +167,12 @@ DownloadPackage "opus" &
 DownloadPackage "opusfile" &
 DownloadPackage "opus-tools" &
 DownloadPackage "orc" &
-DownloadPackage "pamixer" &
 DownloadPackage "pango" &
 DownloadPackage "pangomm" &
 DownloadPackage "pixman" &
 DownloadPackage "poppler" &
-wait
 DownloadPackage "pulseaudio" &
+wait
 DownloadPackage "pycairo" &
 DownloadPackage "pygobject3" &
 DownloadPackage "pyxdg" &
