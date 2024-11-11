@@ -12,6 +12,8 @@ source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
 
+[ $SLACKWAREVERSION == "current" ] && echo "This module should be built in stable only" && exit 1
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -35,6 +37,10 @@ currentPackage=lxdm
 GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=mate-polkit
+sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=yaru
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/ubuntu/${currentPackage}/archive/refs/heads/master.tar.gz || exit 1
@@ -50,13 +56,13 @@ cp -r icons/Yaru-blue/* $blueIconRootFolder || exit 1
 rm -fr $mainIconRootFolder/cursor*
 rm -fr $mainIconRootFolder/*@2x
 rm -fr $blueIconRootFolder/*@2x
-cp $SCRIPTPATH/extras/${currentPackage}/index.theme $mainIconRootFolder
-cp $SCRIPTPATH/extras/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
+cp $SCRIPTPATH/deps/${currentPackage}/index.theme $mainIconRootFolder
+cp $SCRIPTPATH/deps/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
 gtk-update-icon-cache -f $mainIconRootFolder || exit 1
 gtk-update-icon-cache -f $blueIconRootFolder || exit 1
 cd ../${currentPackage}-$version-noarch
 echo "Generating icon package. This may take a while..."
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
@@ -73,6 +79,7 @@ installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/mozjs78*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
+installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required only for building
 installpkg $MODULEPATH/packages/boost*.txz || exit 1
@@ -96,8 +103,8 @@ pip install wheel || exit 1
 
 currentPackage=libhandy
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -106,8 +113,8 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libgusb
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -116,8 +123,8 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=colord
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|-Dsane=true|-Dsane=false|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
@@ -127,8 +134,8 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=python-psutil
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -137,15 +144,15 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=python-webencodings
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 http://ftp.slackware.com/pub/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O2 |$GCCFLAGS |g" ${currentPackage}.SlackBuild
+wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
+sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-# cinnamon packages
+# cinnamon deps
 for package in \
 	tinycss2 \
 	xdotool \
@@ -154,39 +161,47 @@ for package in \
 	libtimezonemap \
 	setproctitle \
 	ptyprocess \
-	cjs \
 	python-pam \
-	cinnamon-desktop \
 	libgnomekbd \
+	zenity \
+	cogl \
+	clutter \
+	caribou \
+	pexpect \
+	polib \
+	python3-xapp \
+	gspell \
+	gtksourceview4 \
+	libpeas \
+	libgxps \
+	exempi \
+	file-roller \
+	gnome-terminal \
+	gnome-screenshot \
+	gnome-system-monitor \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# cinnamon packages
+for package in \
+	cjs \
+	cinnamon-desktop \
 	xapp \
 	cinnamon-session \
 	cinnamon-settings-daemon \
 	cinnamon-menus \
 	cinnamon-control-center \
-	zenity \
-	cogl \
-	clutter \
 	muffin \
-	caribou \
-	pexpect \
-	polib \
 	nemo \
 	nemo-extensions \
-	python3-xapp \
 	cinnamon-screensaver \
 	cinnamon \
-	gspell \
-	gtksourceview4 \
-	libpeas \
-	libgxps \
 	xreader \
-	exempi \
 	xviewer \
 	xed \
-	file-roller \
-	gnome-terminal \
-	gnome-screenshot \
-	gnome-system-monitor \
 ; do
 sh $SCRIPTPATH/cinnamon/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
@@ -235,7 +250,6 @@ rm -R usr/lib${SYSTEMBITS}/glade
 rm -R usr/lib${SYSTEMBITS}/graphene-1.0
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/python2*
-rm -R usr/lib*/python*/site-packages/*-info
 rm -R usr/lib*/python*/site-packages/pip*
 rm -R usr/lib*/python*/site-packages/psutil/tests
 rm -R usr/share/cjs-1.0
@@ -255,6 +269,7 @@ rm -R usr/share/xviewer/gir-1.0
 rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
+rm usr/bin/vte-*-gtk4
 rm etc/profile.d/80xapp-gtk3-module.sh
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/caribou-autostart.desktop
@@ -265,6 +280,7 @@ rm usr/bin/pastebin
 rm usr/bin/xfce4-set-wallpaper
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
+rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py
 rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
 rm usr/share/dbus-1/services/org.gnome.Caribou.Daemon.service
@@ -276,8 +292,10 @@ find usr/share/cinnamon/faces -mindepth 1 -maxdepth 1 ! \( -name "user-generic*"
 find usr/share/cinnamon/thumbnails/cursors -mindepth 1 -maxdepth 1 ! \( -name "Adwaita*" -o -name "Paper*" -o -name "unknown*" -o -name "Yaru*" \) -exec rm -rf '{}' \; 2>/dev/null
 
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/
 GenericStrip
 AggressiveStripAll
+mv $MODULEPATH/libvte-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files

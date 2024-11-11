@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="3.09"
+VERSION="3.10"
 wget https://github.com/slicer69/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz -O ${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
@@ -30,8 +30,8 @@ for replace in src/shutdown.c src/Makefile src/initreq.h src/init.c doc/initctl 
 done
 
 cd src
-make clobber
-make -j${NUMBERTHREADS}
+CFLAGS="$GCCFLAGS -flto" make clobber
+CFLAGS="$GCCFLAGS -flto" make -j${NUMBERTHREADS}
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -64,4 +64,4 @@ cat $CWD/slack-desc > $PKG/install/slack-desc
 zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

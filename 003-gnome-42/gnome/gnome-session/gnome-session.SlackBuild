@@ -21,24 +21,24 @@ cd $PRGNAM-$VERSION
 patch -p1 -i $CWD/gnome-session-3.38.0-meson-Support-elogind.patch
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --buildtype=release \
-    --libdir=lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --infodir=/usr/info \
-    --mandir=/usr/man \
-    --localstatedir=/var \
-    -Dsystemd=false \
-    -Delogind=true \
-    -Dsystemd_journal=false \
-    -Dsystemd_session=disable \
-    -Ddefault_library=shared \
-    -Dsession_selector=true \
-    -Dconsolekit=false \
-    -Ddocbook=false \
-    -Dman=false
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--infodir=/usr/info \
+	--mandir=/usr/man \
+	--localstatedir=/var \
+	-Dsystemd=false \
+	-Delogind=true \
+	-Dsystemd_journal=false \
+	-Dsystemd_session=disable \
+	-Ddefault_library=shared \
+	-Dsession_selector=true \
+	-Dconsolekit=false \
+	-Ddocbook=false \
+	-Dman=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
@@ -48,4 +48,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

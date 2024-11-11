@@ -1,0 +1,28 @@
+#!/bin/sh
+
+PRGNAM=pytz
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION="2023.3"
+wget -c https://files.pythonhosted.org/packages/5e/32/12032aa8c673ee16707a9b6cdda2b09c0089131f35af55d443b6a9c69c1d/${PRGNAM}-${VERSION}.tar.gz
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+python setup.py install --root=$PKG
+python3 setup.py install --root=$PKG
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

@@ -31,7 +31,6 @@ DownloadPackage "linuxdoc-tools" &
 DownloadPackage "m4" &
 DownloadPackage "make" &
 DownloadPackage "makedepend" &
-DownloadPackage "meson" &
 DownloadPackage "nasm" &
 DownloadPackage "ninja" &
 DownloadPackage "perl" &
@@ -39,7 +38,6 @@ wait
 DownloadPackage "pkg-config" &
 DownloadPackage "python-packaging" &
 DownloadPackage "python-setuptools" &
-DownloadPackage "texinfo" &
 DownloadPackage "util-macros" &
 DownloadPackage "vala" &
 DownloadPackage "wayland-protocols" &
@@ -47,6 +45,13 @@ DownloadPackage "xcb-proto" &
 DownloadPackage "xorgproto" &
 DownloadPackage "yasm" &
 wait
+
+### slackware specific version packages
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "meson" & # for stable we're building since slackware repo has an ancient version
+	wait
+fi
 
 ### script clean up
 

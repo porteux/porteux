@@ -1,13 +1,20 @@
 #!/bin/sh
 
-pipewire &
+if ! pgrep -x "pipewire" > /dev/null; then
+	pipewire &
+fi
 
 # Wait for pipewire to load
 sleepTimes=50
 while [ $sleepTimes -gt 0 ] && ! pgrep -x "pipewire" > /dev/null; do
 	sleep 0.2
-	let sleepTimes=sleepTimes-1
+	sleepTimes=$((sleepTimes - 1))
 done
 
-wireplumber &
-pipewire-pulse &
+if ! pgrep -x "wireplumber" > /dev/null; then
+	wireplumber &
+fi
+
+if ! pgrep -x "pipewire-pulse" > /dev/null; then
+	pipewire-pulse &
+fi

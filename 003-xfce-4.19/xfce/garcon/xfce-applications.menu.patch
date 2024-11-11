@@ -1,0 +1,24 @@
+--- etc/xdg/menus/xfce-applications.menu	2024-10-02 19:27:14.223041167 +0200
++++ etc/xdg/menus/xfce-applications.menu.patched	2024-10-02 19:29:08.851046589 +0200
+@@ -11,18 +11,11 @@
+         <Category>X-Xfce-Toplevel</Category>
+     </Include>
+ 
+-    <Layout>
+-        <Filename>xfce4-run.desktop</Filename>
+-        <Separator/>
+-        <Filename>xfce4-terminal-emulator.desktop</Filename>
+-        <Filename>xfce4-file-manager.desktop</Filename>
+-        <Filename>xfce4-mail-reader.desktop</Filename>
+-        <Filename>xfce4-web-browser.desktop</Filename>
+-        <Separator/>
+-        <Menuname>Settings</Menuname>
+-        <Separator/>
++    <Layout>        
+         <Merge type="all"/>
++        <Menuname>Settings</Menuname>
+         <Separator/>
++        <Filename>xfce4-run.desktop</Filename>
+         <Filename>xfce4-about.desktop</Filename>
+         <Filename>xfce4-session-logout.desktop</Filename>
+     </Layout>

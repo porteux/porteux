@@ -13,13 +13,13 @@ DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
-DownloadPackage "gexiv2" &
 wait
+DownloadPackage "gexiv2" &
 DownloadPackage "gjs" &
 DownloadPackage "hunspell" &
 DownloadPackage "glib-networking" &
 DownloadPackage "glibmm2" & # required by gnome-system-monitor
-DownloadPackage "gperf" &
+DownloadPackage "gperf" & # required by libadwaita (appstream sub-project)
 DownloadPackage "gst-plugins-bad-free" &
 DownloadPackage "gst-plugins-good" &
 DownloadPackage "gst-plugins-libav" &
@@ -38,11 +38,15 @@ DownloadPackage "libproxy" &
 DownloadPackage "libsigc++3" & # required by gnome-system-monitor
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
-DownloadPackage "mozjs115" &
+DownloadPackage "mozjs128" &
 DownloadPackage "pangomm2" & # required by gnome-system-monitor
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait
+
+### only download if not present
+
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" # required by glycin
 
 ### temporary packages for further building
 
@@ -51,13 +55,13 @@ DownloadPackage "c-ares" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
+DownloadPackage "hwdata" & # required by libdisplay-info
 DownloadPackage "iso-codes" &
 DownloadPackage "krb5" &
-DownloadPackage "libsass" & # required by gnome-console
 wait
+DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
-DownloadPackage "llvm" & # required by glycin
 DownloadPackage "python-pip" &
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "vulkan-sdk" & # required by gtksourceview

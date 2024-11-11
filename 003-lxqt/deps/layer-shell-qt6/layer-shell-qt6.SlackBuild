@@ -1,0 +1,37 @@
+#!/bin/bash
+
+PRGNAM=layer-shell-qt6		
+SRCNAM=layer-shell-qt
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://invent.kde.org/plasma/${SRCNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
+wget https://invent.kde.org/plasma/${SRCNAM}/-/archive/${VERSION}/${SRCNAM}-${VERSION}.tar.gz
+
+tar xvf $SRCNAM-$VERSION.tar.?z
+cd $SRCNAM-$VERSION
+
+mkdir build && cd build
+cmake .. \
+	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
+	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_BUILD_TYPE=Release ..
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1.txz

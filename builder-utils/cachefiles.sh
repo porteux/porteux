@@ -1,8 +1,8 @@
 #!/bin/sh
 
 PrepareFilesForCacheDE() {
-    cp -r $PORTEUXBUILDERPATH/caches/ $PORTEUXBUILDERPATH/caches-bkp
-    PrepareFilesForCache
+	cp -r $PORTEUXBUILDERPATH/caches/ $PORTEUXBUILDERPATH/caches-bkp
+	PrepareFilesForCache
 }
 
 PrepareFilesForCache() {
@@ -27,9 +27,9 @@ PrepareFilesForCache() {
 }
 
 GenerateCachesDE() {
-    GenerateCaches
-    rm -r $PORTEUXBUILDERPATH/caches
-    mv $PORTEUXBUILDERPATH/caches-bkp $PORTEUXBUILDERPATH/caches
+	GenerateCaches
+	rm -r $PORTEUXBUILDERPATH/caches
+	mv $PORTEUXBUILDERPATH/caches-bkp $PORTEUXBUILDERPATH/caches
 }
 
 GenerateCaches() {

@@ -20,13 +20,13 @@ cd $PRGNAM-$VERSION
 
 patch -Np1 -i $CWD/gcc10.patch
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --disable-gtk-doc
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--disable-gtk-doc
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
@@ -36,4 +36,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

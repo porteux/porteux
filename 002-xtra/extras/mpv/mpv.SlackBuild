@@ -14,16 +14,21 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "mpv-player" ${PRGNAM})
-VERSION=${info#* }
+if [ $SLACKWAREVERSION == "current" ]; then
+	info=$(DownloadLatestFromGithub "mpv-player" ${PRGNAM})
+	VERSION=${info#* }
+else
+	VERSION="0.38.0"
+	wget --content-disposition https://github.com/mpv-player/${PRGNAM}/archive/refs/tags/v${VERSION}.tar.gz
+fi
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 # Needed for 15.0's older meson but disables RPI
 if [ "$(meson --version)" = "0.59.4" ]; then
-    echo "Using meson-0.59.4 for 15.0"
-    patch -p0 < $CWD/use_older_meson.diff
+	echo "Using meson-0.59.4 for 15.0"
+	patch -p0 < $CWD/use_older_meson.diff
 fi
 
 pipewire="-Dpipewire=disabled" ; [ "${USE_PIPEWIRE:-no}" != "no" ] && pipewire="-Dpipewire=auto"
@@ -33,35 +38,35 @@ pipewire="-Dpipewire=disabled" ; [ "${USE_PIPEWIRE:-no}" != "no" ] && pipewire="
 BUILD_OPTS=${BUILD_OPTS:-""}
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --mandir=/usr/man \
-    -Dbuildtype=release \
-    -Dmanpage-build=disabled \
-    -Dlibmpv=false \
-    -Dhtml-build=disabled \
-    -Dcdda=enabled \
-    -Ddvdnav=enabled \
-    -Ddvbin=enabled \
-    -Dvulkan=disabled \
-    -Dshaderc=disabled \
-    -Dlua=luajit \
-    $pipewire \
-    $BUILD_OPTS
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--mandir=/usr/man \
+	-Dbuildtype=release \
+	-Dmanpage-build=disabled \
+	-Dlibmpv=false \
+	-Dhtml-build=disabled \
+	-Dcdda=enabled \
+	-Ddvdnav=enabled \
+	-Ddvbin=enabled \
+	-Dvulkan=disabled \
+	-Dshaderc=disabled \
+	-Dlua=luajit \
+	$pipewire \
+	$BUILD_OPTS
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 for f in $PKG/etc/mpv/*.conf ; do
-    mv $f{,.new}
+	mv $f{,.new}
 done
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

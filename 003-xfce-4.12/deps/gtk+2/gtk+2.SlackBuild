@@ -1,0 +1,85 @@
+#!/bin/bash
+
+PRGNAM=gtk+2
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget -r -nH --cut-dirs=6 --no-parent --reject="*.SlackBuild" $SOURCEREPOSITORY/l/${PRGNAM}/
+VERSION=${VERSION:-$(echo gtk+-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+
+set -e
+
+tar xvf gtk+-$VERSION.tar.?z*
+cd gtk+-$VERSION
+
+# Fix build errors
+zcat ../fix_build_issues_on_tutorial_and_faq.diff.gz | patch -p1 --verbose
+
+# Do not flood the console or .xsession-errors with "trouble ahead"
+# warnings (most noticable when using Firefox and Flash):
+zcat ../gtk.xid.nowarningflood.diff.gz | patch -p1 --verbose
+
+# Patch to restore commonly used icon names, otherwise everything breaks.
+# I fail to see the point of this "cleanup"
+zcat ../gtk+-2.24.x.icon-compat.am.diff.gz | patch -p1 --verbose
+zcat ../gtk+-2.24.x.icon-compat.diff.gz | patch -p1 --verbose
+
+# Prevents build failures in the docs.  Found online.
+# Only needed if autoreconf is used...  ?
+zcat ../gtk.gtk-faq.diff.gz | patch -p1 --verbose
+zcat ../gtk.gtk-tut.diff.gz | patch -p1 --verbose
+
+cp $CWD/*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
+# Regenerate ./configure:
+libtoolize --force
+autoreconf -vif
+
+CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types -Wno-implicit-int" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--mandir=/usr/man \
+	--with-xinput=yes \
+	--enable-xkb \
+	--enable-introspection \
+	--enable-gtk-doc-html=false \
+	--enable-man=false \
+	--build=$ARCH-porteux-linux-gnu
+
+make -j${NUMBERTHREADS}
+make install RUN_QUERY_IMMODULES_TEST=false RUN_QUERY_LOADER_TEST=false DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+# Don't clobber im-multipress.conf
+mv $PKG/etc/gtk-2.0/im-multipress.conf $PKG/etc/gtk-2.0/im-multipress.conf.new
+
+# Install a "starter" gtkrc /etc/gtk-2.0/gtkrc overrides this
+echo 'gtk-theme-name="GTK+"' > $PKG/usr/share/gtk-2.0/gtkrc
+echo 'gtk-icon-theme-name="Adwaita"' >> $PKG/usr/share/gtk-2.0/gtkrc
+echo 'gtk-fallback-icon-theme = "Tango"' >> $PKG/usr/share/gtk-2.0/gtkrc
+
+# Install wrappers for the binaries:
+cp -a ../update-gtk-immodules* $PKG/usr/bin
+chown root:root $PKG/usr/bin/update-*
+chmod 0755 $PKG/usr/bin/update-*
+
+# Add profile scripts to set up GTK+ environment:
+mkdir -p $PKG/etc/profile.d
+cp -a ../profile.d/* $PKG/etc/profile.d
+chmod 0755 $PKG/etc/profile.d/*
+
+mkdir -p $PKG/install
+cat ../slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-4.txz

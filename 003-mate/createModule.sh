@@ -30,7 +30,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2 |$GCCFLAGS -flto |g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$GCCFLAGS -flto\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -57,7 +57,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
+sh autogen.sh --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc
 make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -101,6 +101,7 @@ installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
+installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
@@ -117,14 +118,27 @@ rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
+# mate deps
+for package in \
+	exempi \
+	zenity \
+	gtk-layer-shell \
+	libpeas \
+	libgxps \
+	gtksourceview4 \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
 # mate packages
 for package in \
 	mate-desktop \
 	libmatekbd \
-	exempi \
 	caja \
+	caja-extensions \
 	mate-polkit \
-	zenity \
 	marco \
 	libmatemixer \
 	mate-settings-daemon \
@@ -132,20 +146,15 @@ for package in \
 	mate-menus \
 	mate-terminal \
 	libmateweather \
-	gtk-layer-shell \
 	mate-panel \
 	mate-themes \
 	mate-notification-daemon \
-	libpeas \
 	eom \
 	mate-control-center \
 	engrampa \
 	mate-media \
 	mate-power-manager \
 	mate-system-monitor \
-	libgxps \
-	gtksourceview4 \
-	caja-extensions \
 	atril \
 	mozo \
 	pluma \
@@ -168,7 +177,7 @@ CFLAGS="$GCCFLAGS" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sys
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
-/sbin/makepkg -l y -c n $MODULEPATH/packages/mate-utils-$version-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/mate-utils-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
@@ -209,7 +218,6 @@ cd $MODULEPATH/packages/
 
 rm -R run/
 rm -R usr/lib*/python2*
-rm -R usr/lib*/python*/site-packages/*-info
 rm -R usr/lib*/python*/site-packages/pip*
 rm -R usr/share/accountsservice
 rm -R usr/share/engrampa
@@ -223,6 +231,7 @@ rm -R usr/share/mate-power-manager/icons
 rm -R usr/share/Thunar
 rm -R var/lib/AccountsService
 
+rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/canberra*
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
@@ -233,6 +242,7 @@ rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libsoup-gnome*
+rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
@@ -243,8 +253,10 @@ GenericStrip
 
 # move out things that don't support aggressive stripping
 mv $MODULEPATH/packages/usr/bin/mate-system-monitor $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/
 AggressiveStripAll
 mv $MODULEPATH/mate-system-monitor $MODULEPATH/packages/usr/bin
+mv $MODULEPATH/libvte-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
 

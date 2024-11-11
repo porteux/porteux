@@ -1,0 +1,64 @@
+#!/bin/bash
+
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
+PRGNAM=7zip
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+if [ $SLACKWAREVERSION != "current" ]; then
+	UASMVERSION="255"
+else
+	UASMVERSION="257"
+fi
+
+wget https://www.terraspace.co.uk/uasm${UASMVERSION}_linux64.zip
+unzip uasm${UASMVERSION}_linux64.zip
+chmod +x uasm
+PATH=$PATH:$TMP
+
+info=$(DownloadLatestFromGithub "ip7z" ${PRGNAM})
+VERSION=${info#* }
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+cp $CWD/meson.build.template meson.build
+meson rewrite kwargs set project / version ${VERSION}
+
+mkdir build && cd build
+CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto -pthread" \
+CXXFLAGS="$CFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
+	--mandir=/usr/man \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG/usr/bin
+cp -s 7zz 7z
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

@@ -12,6 +12,8 @@ source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
 
+[ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -35,6 +37,10 @@ currentPackage=lxdm
 GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=mate-polkit
+sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=yaru
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/ubuntu/${currentPackage}/archive/refs/heads/master.tar.gz || exit 1
@@ -50,14 +56,17 @@ cp -r icons/Yaru-blue/* $blueIconRootFolder || exit 1
 rm -fr $mainIconRootFolder/cursor*
 rm -fr $mainIconRootFolder/*@2x
 rm -fr $blueIconRootFolder/*@2x
-cp $SCRIPTPATH/extras/${currentPackage}/index.theme $mainIconRootFolder
-cp $SCRIPTPATH/extras/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
+cp $SCRIPTPATH/deps/${currentPackage}/index.theme $mainIconRootFolder
+cp $SCRIPTPATH/deps/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
 gtk-update-icon-cache -f $mainIconRootFolder || exit 1
 gtk-update-icon-cache -f $blueIconRootFolder || exit 1
 cd ../${currentPackage}-$version-noarch
 echo "Generating icon package. This may take a while..."
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
+
+# Remove this when cjs gets updated to work with mozjs128
+wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/mozjs115-115.15.0esr-x86_64-1.txz -P $MODULEPATH/packages
 
 # required from now on
 installpkg $MODULEPATH/packages/aspell*.txz || exit 1
@@ -75,6 +84,7 @@ installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
+installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required only for building
 installpkg $MODULEPATH/packages/boost*.txz || exit 1
@@ -98,7 +108,7 @@ rm $MODULEPATH/packages/xorg-server-xwayland*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
-# cinnamon packages
+# cinnamon deps
 for package in \
 	tinycss2 \
 	xdotool \
@@ -107,39 +117,47 @@ for package in \
 	libtimezonemap \
 	setproctitle \
 	ptyprocess \
-	cjs \
 	python-pam \
-	cinnamon-desktop \
 	libgnomekbd \
+	zenity \
+	cogl \
+	clutter \
+	caribou \
+	pexpect \
+	polib \
+	python3-xapp \
+	gspell \
+	gtksourceview4 \
+	libpeas \
+	libgxps \
+	exempi \
+	file-roller \
+	gnome-terminal \
+	gnome-screenshot \
+	gnome-system-monitor \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# cinnamon packages
+for package in \
+	cjs \
+	cinnamon-desktop \
 	xapp \
 	cinnamon-session \
 	cinnamon-settings-daemon \
 	cinnamon-menus \
 	cinnamon-control-center \
-	zenity \
-	cogl \
-	clutter \
 	muffin \
-	caribou \
-	pexpect \
-	polib \
 	nemo \
 	nemo-extensions \
-	python3-xapp \
 	cinnamon-screensaver \
 	cinnamon \
-	gspell \
-	gtksourceview4 \
-	libpeas \
-	libgxps \
 	xreader \
-	exempi \
 	xviewer \
 	xed \
-	file-roller \
-	gnome-terminal \
-	gnome-screenshot \
-	gnome-system-monitor \
 ; do
 sh $SCRIPTPATH/cinnamon/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
@@ -188,7 +206,6 @@ rm -R usr/lib${SYSTEMBITS}/glade
 rm -R usr/lib${SYSTEMBITS}/graphene-1.0
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/python2*
-rm -R usr/lib*/python*/site-packages/*-info
 rm -R usr/lib*/python*/site-packages/pip*
 rm -R usr/lib*/python*/site-packages/psutil/tests
 rm -R usr/share/cjs-1.0
@@ -208,6 +225,7 @@ rm -R usr/share/xviewer/gir-1.0
 rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
+rm usr/bin/vte-*-gtk4
 rm etc/profile.d/80xapp-gtk3-module.sh
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/caribou-autostart.desktop
@@ -220,6 +238,7 @@ rm usr/lib${SYSTEMBITS}/libappindicator.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
+rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py
 rm usr/libexec/indicator-loader
 rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
@@ -232,8 +251,10 @@ find usr/share/cinnamon/faces -mindepth 1 -maxdepth 1 ! \( -name "user-generic*"
 find usr/share/cinnamon/thumbnails/cursors -mindepth 1 -maxdepth 1 ! \( -name "Adwaita*" -o -name "Paper*" -o -name "unknown*" -o -name "Yaru*" \) -exec rm -rf '{}' \; 2>/dev/null
 
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/
 GenericStrip
 AggressiveStripAll
+mv $MODULEPATH/libvte-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files

@@ -15,21 +15,26 @@ cd $TMP
 wget -r -nd --no-parent $SOURCEREPOSITORY/xfce/$PRGNAM/ -A $PRGNAM-*
 VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 
-SLKCFLAGS="$GCCFLAGS -feliminate-unused-debug-types -pipe -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -fasynchronous-unwind-tables -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wl,--enable-new-dtags -ffat-lto-objects -flto -fuse-linker-plugin -fwhole-program"
+SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common"
 
 tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+# show desktop files with size in KiB/MiB/GiB ('binary format')
+sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS)|g" src/xfdesktop-regular-file-icon.c
+sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS)|g" src/xfdesktop-special-file-icon.c
+sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS)|g" src/xfdesktop-volume-icon.c
+
 CFLAGS="$SLKCFLAGS" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --mandir=/usr/man \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --disable-static \
-    --disable-debug \
-    --build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--mandir=/usr/man \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--disable-static \
+	--disable-debug \
+	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
@@ -39,4 +44,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

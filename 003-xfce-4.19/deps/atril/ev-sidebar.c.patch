@@ -1,0 +1,20 @@
+--- shell/ev-sidebar.c	2024-02-18 14:50:31.977835412 +0100
++++ shell/ev-sidebar.c.patched	2024-02-18 14:53:26.680843676 +0100
+@@ -31,8 +31,6 @@
+ #include <gtk/gtk.h>
+ #include <gdk/gdkkeysyms.h>
+ 
+-#include <libmate-desktop/mate-image-menu-item.h>
+-
+ #include "ev-sidebar.h"
+ #include "ev-sidebar-page.h"
+ 
+@@ -429,7 +427,7 @@
+ 	index = gtk_notebook_append_page (GTK_NOTEBOOK (ev_sidebar->priv->notebook),
+ 					  main_widget, NULL);
+ 
+-	menu_item = mate_image_menu_item_new_with_label (title);
++	menu_item = gtk_image_menu_item_new_with_label (title);
+ 	g_signal_connect (menu_item, "activate",
+ 			  G_CALLBACK (ev_sidebar_menu_item_activate_cb),
+ 			  ev_sidebar);
