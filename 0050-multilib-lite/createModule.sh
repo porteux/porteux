@@ -31,7 +31,7 @@ tar xvf ${currentPackage}-*.txz
 mkdir -p ${currentPackage}-stripped-$version/usr/lib
 cp usr/lib/libLLVM*.so* ${currentPackage}-stripped-$version/usr/lib
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pulseaudio
@@ -45,7 +45,7 @@ cp --parents -P usr/lib/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$v
 cp --parents -P usr/lib/libpulse-simple.so* ${currentPackage}-stripped-$version
 cp --parents -P usr/lib/pulseaudio/libpulsecommon* ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=vulkan-sdk
@@ -56,7 +56,7 @@ tar xvf ${currentPackage}-*.txz
 mkdir -p ${currentPackage}-stripped-$version/usr/lib
 cp usr/lib/libvulkan.so* ${currentPackage}-stripped-$version/usr/lib
 cd ${currentPackage}-stripped-$version
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
@@ -148,8 +148,10 @@ find $MODULEPATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name
 mv $MODULEPATH/packages/lib/libc.so* $MODULEPATH/
 mv $MODULEPATH/packages/lib/libc-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib/dri $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib/libgallium* $MODULEPATH/
 GenericStrip
 AggressiveStrip
+mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib/
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib/
 mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib
 mv $MODULEPATH/libc-* $MODULEPATH/packages/lib

@@ -6,7 +6,6 @@ REPOSITORY="$1"
 GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "a52dec" &
-DownloadPackage "aalib" &
 DownloadPackage "alsa-lib" &
 DownloadPackage "alsa-plugins" &
 DownloadPackage "alsa-utils" &
@@ -20,7 +19,6 @@ DownloadPackage "cairomm" &
 wait
 DownloadPackage "cdparanoia-III" &
 DownloadPackage "cryptsetup" &
-DownloadPackage "daemon" &
 DownloadPackage "db48" & # required by bluez (obexd)
 DownloadPackage "dejavu-fonts-ttf" &
 DownloadPackage "desktop-file-utils" &
@@ -194,7 +192,6 @@ DownloadPackage "udisks2" &
 DownloadPackage "upower" &
 DownloadPackage "v4l-utils" &
 DownloadPackage "vorbis-tools" &
-DownloadPackage "vte" &
 DownloadPackage "wavpack" &
 DownloadPackage "wayland" &
 DownloadPackage "x11-skel" &
@@ -202,6 +199,7 @@ DownloadPackage "xauth" &
 wait
 DownloadPackage "xbacklight" &
 DownloadPackage "xcb-util" &
+DownloadPackage "xcb-util-cursor" & # required by VirtualBox
 DownloadPackage "xcb-util-image" &
 DownloadPackage "xcb-util-keysyms" &
 DownloadPackage "xcb-util-renderutil" &

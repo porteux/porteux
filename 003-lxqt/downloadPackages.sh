@@ -25,6 +25,8 @@ wait
 
 ### temporary packages for further building
 
+DownloadPackage "cups" & # required by qt6
+wait
 
 ### script clean up
 

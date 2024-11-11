@@ -22,14 +22,14 @@ cd $PRGNAM-$VERSION
 
 CFLAGS="$GCCFLAGS" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --disable-static \
-    --build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--disable-static \
+	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
@@ -39,4 +39,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

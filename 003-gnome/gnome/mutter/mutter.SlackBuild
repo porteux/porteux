@@ -19,40 +19,28 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 meson setup \
-    --prefix=/usr \
-    --buildtype=release \
-    --libdir=lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --infodir=/usr/info \
-    --mandir=/usr/man \
-    --localstatedir=/var \
-    -Dclutter_tests=false \
-    -Dcogl_tests=false \
-    -Dcore_tests=false \
-    -Ddefault_library=shared \
-    -Ddocs=false \
-    -Degl=true \
-    -Degl_device=true \
-    -Dgles2=true \
-    -Dglx=true \
-    -Dinstalled_tests=false \
-    -Dintrospection=true \
-    -Dlibwacom=true \
-    -Dnative_backend=true \
-    -Dnative_tests=false \
-    -Dopengl=true \
-    -Dpango_ft2=true \
-    -Dprofiler=false \
-    -Dremote_desktop=true \
-    -Dsm=true \
-    -Dstartup_notification=true \
-    -Dsystemd=false \
-    -Dtests=false \
-    -Dudev=true \
-    -Dwayland=true \
-    -Dwayland_eglstream=true
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--infodir=/usr/info \
+	--mandir=/usr/man \
+	--localstatedir=/var \
+	-Dclutter_tests=false \
+	-Dcogl_tests=false \
+	-Ddefault_library=shared \
+	-Ddocs=false \
+	-Dinstalled_tests=false \
+	-Dintrospection=true \
+	-Dnative_backend=true \
+	-Dprofiler=false \
+	-Dstartup_notification=true \
+	-Dsystemd=false \
+	-Dtests=disabled \
+	-Dudev=true \
+	-Dwayland_eglstream=true
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
@@ -62,4 +50,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz

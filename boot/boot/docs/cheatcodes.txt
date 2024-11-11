@@ -412,7 +412,7 @@ from=UUID:STrING-0F-ChARACtERS/path/folder
 rootcopy=LABEL:YourLabelName/path/to_folder/with_files
 
 
-SPECIAL NOTE FOR USING CHANGES CHEATCODE WITH 'EXIT:' extension:
+SPECIAL NOTE FOR CHANGES CHEATCODE WITH 'EXIT:', WHICH IS THE DEFAULT:
 The 'EXIT:' extension tells the 'changes=' cheatcode to keep all
 of the files that have been added/deleted/modified during the
 live session stored in memory until you reboot/shutdown. Your
@@ -426,11 +426,10 @@ when the session is finished.
 The only disadvantage of the 'EXIT:' extension is that the session
 does not get saved in cases where you experience a hang (kernel crash)
 or power interrupt.
-Please use with caution!
 
 While you are running a session with changes=EXIT:, you can use the
 'dump-session' command (run as root from the command line) to move all 
-of your changes from RAM to your storage media.  This will reduce the 
+of your changes from RAM to your storage media. This will reduce the 
 risk of data loss and free up your RAM.
 
 Examples:

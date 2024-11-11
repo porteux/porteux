@@ -27,10 +27,11 @@ DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
+DownloadPackage "vte" &
 DownloadPackage "xtrans" &
 wait
 
-### slackware current only packages
+### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &

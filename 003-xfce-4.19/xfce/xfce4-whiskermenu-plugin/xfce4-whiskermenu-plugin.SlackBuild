@@ -1,0 +1,41 @@
+#!/bin/bash
+
+PRGNAM=xfce4-whiskermenu-plugin
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://gitlab.xfce.org/panel-plugins/${PRGNAM}/-/archive/main/${PRGNAM}-main.tar.bz2
+
+SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -flto -fPIC"
+
+tar xvf $PRGNAM-main.tar.?z* || exit 1
+cd $PRGNAM-main && VERSION=$(date -r . +%Y%m%d) || exit 1
+
+mkdir build && cd build
+cmake \
+	-DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+	-DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_MANDIR=/usr/man \
+	-DENABLE_ACCOUNTS_SERVICE=OFF \
+	-DENABLE_GTK_LAYER_SHELL=OFF \
+	-DCMAKE_BUILD_TYPE=Release ..
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

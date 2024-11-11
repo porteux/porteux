@@ -29,30 +29,30 @@ cd $PRGNAM-$VERSION
 # Fix for wide-only ncurses:
 sed 's:<ncursesw/:<:g' -i src/watch.c
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 ./autogen.sh && ./configure \
-    --prefix=/ \
-    --bindir=/bin \
-    --sbindir=/sbin \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --includedir=/usr/include \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --datarootdir=/usr/share \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --enable-static=no \
-    --disable-silent-rules \
-    --disable-rpath \
-    --enable-watch8bit \
-    --enable-skill \
-    --enable-sigwinch \
-    --enable-w-from \
-    --disable-kill \
-    --without-systemd \
-    --with-elogind \
-    --disable-modern-top \
-    --build=$ARCH-porteux-linux
+	--prefix=/ \
+	--bindir=/bin \
+	--sbindir=/sbin \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--includedir=/usr/include \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--datarootdir=/usr/share \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--enable-static=no \
+	--disable-silent-rules \
+	--disable-rpath \
+	--enable-watch8bit \
+	--enable-skill \
+	--enable-sigwinch \
+	--enable-w-from \
+	--disable-kill \
+	--without-systemd \
+	--with-elogind \
+	--disable-modern-top \
+	--build=$ARCH-porteux-linux
   
 # fix libproc2.pc having unknown version
 sed -i "s|Version:.*|Version: ${VERSION//[vV]}|g" library/libproc2.pc
@@ -63,8 +63,8 @@ make -j${NUMBERTHREADS} install DESTDIR=$PKG
 mkdir -p $PKG/lib${SYSTEMBITS}
 ( cd $PKG/usr/lib${SYSTEMBITS}
   for file in lib*.so.?.* ; do
-    mv $file ../../lib${SYSTEMBITS}
-    ln -sf ../../lib${SYSTEMBITS}/$file .
+	mv $file ../../lib${SYSTEMBITS}
+	ln -sf ../../lib${SYSTEMBITS}/$file .
   done
   cp -a lib*.so.? ../../lib${SYSTEMBITS}
 )
@@ -110,23 +110,23 @@ cd ../psmisc-$PSMISCVER
 
 if [ ! -r configure ]; then
   if [ -x ./autogen.sh ]; then
-    NOCONFIGURE=1 ./autogen.sh
+	NOCONFIGURE=1 ./autogen.sh
   else
-    autoreconf -vif
+	autoreconf -vif
   fi
 fi
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects -flto" \
+CFLAGS="$GCCFLAGS -flto" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --docdir=/usr/doc/psmisc-$PSMISCVER \
-    --disable-silent-rules \
-    --disable-rpath \
-    --build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--docdir=/usr/doc/psmisc-$PSMISCVER \
+	--disable-silent-rules \
+	--disable-rpath \
+	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
@@ -137,14 +137,14 @@ ln -s /bin/killall $PKG/usr/bin/killall
 cd ../procinfo-ng-$PROCINFONGVER
 CXXFLAGS="$GCCFLAGS -flto" \
 ./configure \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc \
-    --localstatedir=/var \
-    --mandir=/usr/man \
-    --docdir=/usr/doc/procinfo-ng-$PROCINFONGVER \
-    --enable-maintainer-mode \
-    --build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--docdir=/usr/doc/procinfo-ng-$PROCINFONGVER \
+	--enable-maintainer-mode \
+	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
@@ -154,4 +154,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1.txz
