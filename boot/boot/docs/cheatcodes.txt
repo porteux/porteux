@@ -45,11 +45,10 @@ changes=/dev/device
 changes=/path/
 changes=/path/file.dat
 
-   ... All changes made in PorteuX are kept in memory until you reboot.
-       With this boot parameter, you tell PorteuX to use a device
+   ... With this boot parameter, you tell PorteuX to use a device
        (or a file or directory) other than your memory for storing
        changes. You can, for example, format your disk partition
-       /dev/sdb2 with some Linux filesystem (eg. xfs) and then use
+       /dev/sdb2 with some Linux filesystem (eg. ext4) and then use
        'changes=/dev/sdb2' to store all changes to that partition.
        This way you won't lose your changes after reboot.
    ... If you use a file image instead of a device, and the image
@@ -59,6 +58,30 @@ changes=/path/file.dat
        will make a 'changes' subdirectory there). This should only
        be used for linux filesystems, if changes need to be saved to
        a FAT or NTFS partition, a savefile container has to be used.
+   ... It's not recommended to use this option if the path points to
+       a slow device, such as a USB stick. In this case, use this
+       cheatcode in conjuction with 'EXIT:', as described below.
+
+changes=EXIT:/dev/device
+changes=EXIT:/path/
+changes=EXIT:/path/file.dat
+
+   ... Same as above, but all changes made in PorteuX are kept in
+       memory until you reboot/shutdown. Your RAM works as a buffer,
+       which gets dumped into the specified path only when the
+       session is finished.
+   ... It works as fast as 'Always Fresh' mode as all modifications
+       to files and folders are performed in RAM.
+   ... It reduces the number of read/write cycles, which should
+       extend the lifespan of the storage device.
+   ... The only disadvantage is that the session is not saved in
+       cases where you experience a freeze or power interrupt.
+       
+       NOTE: this is the default option.
+       NOTE: while you are running a session with changes=EXIT:, you
+       can use the '/opt/porteux-scripts/dump-session' command to move
+       all of your changes from RAM to your storage media, reducing
+       the risk of data loss and freeing up your RAM.
 
 changes-ro
 
@@ -67,9 +90,12 @@ changes-ro
        want to save any other changes you might make during a live
        session. This cheatcode should be used in conjunction with the
        'changes=' or 'changes=EXIT:' cheatcodes.
-       Example: 'changes=/path/file.dat changes-ro'
+       
        NOTE: remove the 'changes-ro' cheatcode from the bootloader config
        to start saving changes as normal (effective after a reboot).
+       
+       Example:
+       changes=/path/file.dat changes-ro
 
 cliexec=my_script
 cliexec=my_script;reboot
@@ -80,6 +106,7 @@ cliexec=my_script;reboot
    ... If you need to use spaces in the command line, replace them
        with '~'. For example, 'cliexec=echo~Shutting~power;poweroff'
        will echo your text with spaces instead of '~'.
+       
        NOTE: to start graphical applications please use 'guiexec='
        cheatcode instead.
 
@@ -87,16 +114,16 @@ copy2ram
 
    ... Copy all modules to RAM. You'll need at least 1.5 GB of RAM
        to boot PorteuX properly. Copy2ram slows down the boot phase
-       a bit but speeds up PorteuX!
+       a bit but speeds up PorteuX experience.
 
-       You can use the 'rammod' cheatcode to selectively load modules
+       NOTE: You can use 'rammod' cheatcode to selectively load modules
        to RAM - see the 'rammod' description below.
 
 delay=some_value
 
    ... To be used for devices which need extra time to settle up.
        Example: 'delay=5' will cause a 5 second delay before PorteuX
-       starts booting.
+       starts the boot process.
 
 extramod=/path/folder_with_modules
 extramod=/path/folder_with_modules;/path2/folder_with_modules
@@ -105,9 +132,10 @@ extramod=/path/folder_with_modules;/path2/folder_with_modules
        folders that are located outside of the /porteux directory.
        Multiple folders can be specified, with full paths separated by
        a semicolon without any spaces.
+       
        Examples:
-       'extramod=/mnt/sdb3/porteux-modules'
-       'extramod=/mnt/sdb3/porteux-modules;/mnt/sdc4/inkscape_modules'
+       extramod=/mnt/sdb3/porteux-modules
+       extramod=/mnt/sdb3/porteux-modules;/mnt/sdc4/inkscape_modules
 
 from=/mnt/partition
 from=/path/folder
@@ -121,18 +149,19 @@ from=/path/porteux.iso
        from the 'linux-testing' folder placed on the second partition.
        'from=/mnt/sda1/porteux-test.iso' will attempt to load the PorteuX
        data from 'porteux-test.iso'.
-
-       If the destination partition is not provided with this
+       
+       NOTE: if the destination partition is not provided with this
        cheatcode, the booting script will search through all available
        devices for your data.
 
 fsck
 
-   ... Enables a filesystem check for ext(2,3,4), fat and ntfs
+   ... Enables a filesystem check for ext(2,3,4), FAT and NTFS
        partitions during boot time before anything is mounted.
        XFS does not need fsck as a check is performed automatically
        when it's mounted. A log file will be shown after boot.
-       NOTE: On some systems, you will need to use the 'delay='
+       
+       NOTE: on some systems, you will need to use the 'delay='
        cheatcode in order to allow your devices to settle up.
 
 fscknolog
@@ -163,28 +192,30 @@ kmap=keyboardmap:variant
        with possibility of switching to 'us' by 'alt+shift' key
        combination.
        Keyboard layout variants are also supported.
-       Example: 'kmap=pl:qwertz' will set the polish keyboard layout
-       with 'qwertz' as a variant.
-       Please notice that changing the keyboard layout using the desktop
-       environment settings may overwrite this cheatcode. Also, it will
-       not work in Wayland sessions.
+       
+       NOTE: changing the keyboard layout using the desktop environment
+       settings may overwrite this cheatcode. Also, it will not work in
+       Wayland sessions.
+       
+       Example (to set Polish keyboard layout with 'qwertz' as a variant):
+       kmap=pl:qwertz
 
 load=module
-load=module[1];module[n]
+load=module1;module2
 
-   ... Load optional modules from /optional/ directory on the booting
-       media. Additional modules can be listed, separated
-       by semicolons, without spaces.
-       Example: 'load=gimp;inkscape' would search for and load any
-       modules in the /porteux/optional folder that contain the strings
-       'gimp' or 'inkscape'.
+   ... Load optional modules from /optional directory on the booting
+       media that contain the strings specified. Additional modules can
+       be listed, separated by semicolons, without spaces.
+       
+       Example:
+       load=gimp;inkscape;firefox
 
 login=user_name
 
    ... Lets you specify the name of the user (could be also 'root')
-       which will be autologged into GUI session.
-       If username is not provided then booting stops on the lxdm/kdm
-       login screen.
+       which will be autologged into the desktop environment session.
+       If username is not provided or doesn't exist, then booting
+       stops on the login manager screen.
 
 mopt
 
@@ -193,8 +224,9 @@ mopt
        filesystems in PorteuX are: "noatime,nodiratime,suid,dev,exec,async".
        Each option must be separated with a comma "," with no spaces
        between any characters.
-       Example: 'mopt=realtime,sync,users,nosuid,noexec'
-       See 'man mount' for more information on specific mount options.
+       
+       Example:
+       mopt=realtime,sync,users,nosuid,noexec
 
 noauto
 
@@ -222,17 +254,18 @@ nohotplug
        text mode and load all needed drivers manually.
 
 noload=module
-noload=module[1];module[n]
+noload=module1;module2
 
-   ... Disable loading of any modules specified. This affects all the
-       modules on the PorteuX booting media, including /base and /modules
-       folders, so using noload=kde will disable loading of all modules
-       with 'kde' in the name. It is useful with the copy2ram cheatcode,
-       because any un-used module is not copied to RAM.  Multiple modules
-       can be listed, but they must be separated by semicolons, with no
-       spaces.
-       Example: 'noload=lxde;devel' will prevent the loading of any
-       modules with a name containing the strings 'lxde' or 'devel'.
+   ... Disable loading of any modules with a name containing the strings
+       specified. This affects all the modules on the PorteuX booting
+       media, including /base and /modules folders, so using noload=kde
+       will disable loading of all modules with 'kde' in the name. It's
+       useful with the copy2ram cheatcode, because any un-used module is
+       not copied to RAM.  Multiple modules can be listed, but they must
+       be separated by semicolons, with no spaces.
+       
+       Example:
+       noload=lxde;devel
 
 nologin
 
@@ -279,11 +312,13 @@ ramsize=some_value%
        when changes are not saved on a real filesystem
        (i.e., Always Fresh mode). The default value is 85% of
        available RAM memory.
-       Example: 'ramsize=50%'
+       
+       Example:
+       ramsize=50%
 
 rammod=module
 rammod=folder
-rammod=module[1];module[n];folder[1];folder[2]
+rammod=module1;module2;folder1;folder2
 
    ... Specify module(s) or folder(s) containing modules which should
        be copied to RAM when using the 'copy2ram' cheatcode.  This
@@ -306,14 +341,15 @@ rammod=module[1];module[n];folder[1];folder[2]
        'load=' or 'extramod=' cheatcodes.
 
        Examples:
-       'rammod=001;002;004;firefox'
-       'extramod=/mnt/sdb3/porteux/gimp rammod=001;002;gimp'
+       rammod=001;002;004;firefox
+       extramod=/mnt/sdb3/porteux/gimp rammod=001;002;gimp
 
 rootcopy=/path/to_folder/with_files
 
    ... Copy files from specified directory directly to the live
        filesystem. This directory will be used instead of the
        traditional /porteux/rootcopy.
+       
        Example: 'rootcopy=/mnt/sda5/porteux-files'
        
 rootmount
@@ -327,7 +363,9 @@ cfgfile=some_name.cfg
    ... This cheatcode specifies the *.cfg file which PorteuX will
        search for.  This is useful when you want to store several
        PorteuX editions on one disk/disc.
-       Example: 'cfgfile=porteux-usb.cfg'
+       
+       Example:
+       cfgfile=porteux-usb.cfg
 
 storage=/path/folder
 storage=/path/file.dat
@@ -341,7 +379,9 @@ storage=/path/file.dat
        '/path/folder/client-xxxx' where xxxx is the last 4 characters
        of the clients' NIC MAC address.
        This cheatcode should be used on the server side.
-       Example: 'storage=/mnt/sda3/pxe-clients'
+       
+       Example:
+       storage=/mnt/sda3/pxe-clients
 
 timezone=region/zone
 
@@ -351,8 +391,10 @@ timezone=region/zone
        add the 'utc' cheatcode.
        A full listing of available timezones can be found in the file
        /usr/sbin/timeconfig.
-       Example: 'timezone=Europe/Warsaw'
-       Example: 'timezone=Factory'
+       
+       Examples
+       timezone=Europe/Warsaw
+       timezone=Factory
 
 utc
 
@@ -361,7 +403,9 @@ utc
        them use localtime instead of UTC time, but many UNIX machines
        use UTC instead.  This cheatcode is normally used together with
        the 'timezone' cheatcode.
-       Example: 'timezone=Europe/Warsaw utc'
+       
+       Example:
+       timezone=Europe/Warsaw utc
 
 vga_detect
 
@@ -375,11 +419,14 @@ vga_detect
 
 volume=some_value%
 
-   ... This parameter sets the system's Master Volume channel to
-       the value specified (as a percentage).  You will be able to raise
+   ... This parameter sets the system's master volume channel to
+       the value specified (as a percentage). You will be able to raise
        or lower the volume after you boot up as normal.
-       The default value is 75%.
-       Example: 'volume=0%' will boot into your chosen GUI silently.
+       
+       NOTE: the default value is 75%.
+       
+       Example:
+       volume=10%
 
 zram=some_value%
 
@@ -389,9 +436,11 @@ zram=some_value%
        (virtual) memory than using RAM alone because the data inside
        is compressed. This will provide a performance boost on
        systems with low RAM, but it uses more processor cycles (to
-       compress and decompress the data) than regular swap.
-       Example: 'zram=33%' will set aside 33% of your RAM as a zram
-       device.
+       compress and decompress the data) than regular swap. The value
+       specified is the percentage of your system total RAM.
+       
+       Example:
+       zram=33%
 
 
 SPECIAL NOTE FOR USING CHEATCODES WITH 'LABEL' AND 'UUID':
@@ -410,32 +459,6 @@ changes=UUID:STrING-0F-ChARACtERS/path/file.dat
 extramod=LABEL:YourLabelName/path/to_folder/with_modules
 from=UUID:STrING-0F-ChARACtERS/path/folder
 rootcopy=LABEL:YourLabelName/path/to_folder/with_files
-
-
-SPECIAL NOTE FOR CHANGES CHEATCODE WITH 'EXIT:', WHICH IS THE DEFAULT:
-The 'EXIT:' extension tells the 'changes=' cheatcode to keep all
-of the files that have been added/deleted/modified during the
-live session stored in memory until you reboot/shutdown. Your
-RAM works as a buffer which gets dumped on the drive only once,
-when the session is finished.
-'changes=EXIT:' cheatcode has following advantages:
-- PorteuX works as fast as in 'Always Fresh' mode as all modifications
-  to files and folders are performed in RAM.
-- reduced number of read/write cycles should extend the life of the
-  media storage.
-The only disadvantage of the 'EXIT:' extension is that the session
-does not get saved in cases where you experience a hang (kernel crash)
-or power interrupt.
-
-While you are running a session with changes=EXIT:, you can use the
-'dump-session' command (run as root from the command line) to move all 
-of your changes from RAM to your storage media. This will reduce the 
-risk of data loss and free up your RAM.
-
-Examples:
-changes=EXIT:/dev/device
-changes=EXIT:/path/
-changes=EXIT:UUID:STrING-0F-ChARACtERS/path/file.dat
 
 
 FINAL NOTE:
