@@ -392,7 +392,7 @@ timezone=region/zone
        A full listing of available timezones can be found in the file
        /usr/sbin/timeconfig.
        
-       Examples
+       Examples:
        timezone=Europe/Warsaw
        timezone=Factory
 
