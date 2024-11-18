@@ -34,7 +34,9 @@ echo "Initial setup..."
 
 KERNELMAJORVERSION=${KERNELVERSION:0:1}
 KERNELMINORVERSION=$(echo ${KERNELVERSION} | cut -d. -f2)
+[ ${KERNELMINORVERSION} ] && KERNELMINORVERSION=.${KERNELMINORVERSION}
 KERNELPATCHVERSION=$(echo ${KERNELVERSION} | cut -d. -f3)
+[ ${KERNELPATCHVERSION} ] && KERNELPATCHVERSION=.${KERNELPATCHVERSION}
 CRIPPLEDMODULENAME="06-crippled_sources-${KERNELVERSION}"
 
 rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
@@ -70,7 +72,7 @@ rm ${MODULEPATH}/kernel-headers.SlackBuild
 
 echo "Downloading AUFS..."
 git clone https://github.com/sfjro/aufs-standalone ${MODULEPATH}/aufs_sources > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
-git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION}.2 > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
+git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}${KERNELMINORVERSION}${KERNELPATCHVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
 
 cd $MODULEPATH/linux-${KERNELVERSION}
 

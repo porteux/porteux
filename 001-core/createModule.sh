@@ -316,6 +316,7 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+rm -R boot
 rm -R lib${SYSTEMBITS}/pkgconfig
 rm -R lib/systemd
 rm -R mnt/*
@@ -392,6 +393,7 @@ rm -R var/spool/mail
 
 rm etc/init.d
 rm etc/motd
+rm etc/termcap
 rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
 rm usr/bin/7za
