@@ -18,7 +18,7 @@ Here's an example of what the boot line would look like, adding the
 noauto and copy2ram cheatcodes to a standard PorteuX boot option
 (which already has some other cheatcodes by default):
 
-APPEND initrd=initrd.xz changes=/porteux/ noauto copy2ram
+APPEND changes=EXIT:/porteux noauto copy2ram
 
 These cheatcodes can also be added to the APPEND line of your
 /boot/syslinux/porteux.cfg entries (or other bootloader config files)
@@ -465,4 +465,4 @@ FINAL NOTE:
 The cheatcodes listed above are those that are unique to PorteuX.
 There are literally hundreds of other kernel boot parameters
 that can be used.  For more information on these parameters visit:
-http://www.kernel.org/doc/Documentation/kernel-parameters.txt
+https://docs.kernel.org/admin-guide/kernel-parameters.html
