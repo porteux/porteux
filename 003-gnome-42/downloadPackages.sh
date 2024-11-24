@@ -44,7 +44,6 @@ DownloadPackage "libwnck3" &
 DownloadPackage "llvm" &
 DownloadPackage "rust" &
 DownloadPackage "sassc" & # required by gnome-console
-DownloadPackage "texinfo" & # required by mozjs91
 DownloadPackage "xtrans" &
 wait
 
