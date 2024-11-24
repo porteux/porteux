@@ -80,9 +80,6 @@ echo "Generating icon package. This may take a while..."
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-# Remove this when cjs gets updated to work with mozjs128
-wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/mozjs115-115.15.0esr-x86_64-1.txz -P $MODULEPATH/packages
-
 # required from now on
 installpkg $MODULEPATH/packages/aspell*.txz || exit 1
 installpkg $MODULEPATH/packages/colord*.txz || exit 1
@@ -150,6 +147,7 @@ for package in \
 	gnome-terminal \
 	gnome-screenshot \
 	gnome-system-monitor \
+	mozjs115 \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
