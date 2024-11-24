@@ -1,0 +1,98 @@
+#!/bin/bash
+
+PRGNAM=mozjs115
+SRCNAME=firefox
+VERSION="115.17.0"
+SHORTVER="115"
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+rm -rf $SRCNAME-$VERSION ; rm -rf $SRCNAME-$(echo $VERSION | cut -f 1 -d e)
+
+# Unpack this in a subdirectory to prevent changing permissions on /tmp:
+rm -rf firefox-unpack
+mkdir firefox-unpack
+cd firefox-unpack
+wget https://ftp.mozilla.org/pub/${SRCNAME}/releases/${VERSION}esr/source/${SRCNAME}-${VERSION}esr.source.tar.xz
+tar xvf $SRCNAME-${VERSION}esr.source.tar.?z
+mv * ..
+cd ..
+rm -rf firefox-unpack
+cd $SRCNAME-$(echo $VERSION | cut -f 1 -d e) || cd $SRCNAME-$VERSION
+
+# Patches from Fedora:
+zcat $CWD/patches/fix-soname.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/copy-headers.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/tests-increase-timeout.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/icu_sources_data.py-Decouple-from-Mozilla-build-system.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/icu_sources_data-Write-command-output-to-our-stderr.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/emitter.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/init_patch.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/0001-Skip-failing-tests-on-ppc64-and-s390x.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/remove-sloppy-m4-detection-from-bundled-autoconf.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/spidermonkey_checks_disable.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/clang19.patch.gz | patch -p1 --verbose || exit 1
+
+# Remove bundled zlib directory and use system version:
+rm -rf modules/zlib
+
+sed -i 's|"icu-i18n >= 73.1"|"icu-i18n >= 73.1 icu-uc"|g' js/moz.configure
+
+cd js/src
+
+export RUSTFLAGS="-C embed-bitcode"
+
+CFLAGS+="$CLANGFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing " \
+CXXFLAGS+="$CLANGFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing " \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--with-system-icu \
+	--with-system-zlib \
+	--disable-tests \
+	--disable-strip \
+	--with-intl-api \
+	--enable-readline \
+	--enable-shared-js \
+	--enable-optimize \
+	--disable-debug \
+	--enable-pie \
+	--disable-jemalloc \
+	--build=$ARCH-slackware-linux
+
+make -j${NUMBERTHREADS}
+make install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+# No need for the huge static library:
+rm -f $PKG/usr/lib${SYSTEMBITS}/libjs_static.*
+
+# Don't ship -config:
+rm -f $PKG/usr/bin/js*-config
+
+# Rename shared library to have a proper soname:
+mv $PKG/usr/lib${SYSTEMBITS}/libmozjs-${SHORTVER}.so $PKG/usr/lib${SYSTEMBITS}/libmozjs-${SHORTVER}.so.0.0.0
+( cd $PKG/usr/lib${SYSTEMBITS}
+  ln -sf libmozjs-${SHORTVER}.so.0.0.0 libmozjs-${SHORTVER}.so.0
+  ln -sf libmozjs-${SHORTVER}.so.0 libmozjs-${SHORTVER}.so
+)
+
+find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF \
+  | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
