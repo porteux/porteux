@@ -37,6 +37,7 @@ CFLAGS="$SLKCFLAGS" \
 	--enable-desktop-icons \
 	--enable-file-icons \
 	--enable-wayland \
+	--with-default-backdrop-filename=/usr/share/backgrounds/xfce/xfce-blue.jpg \
 	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
