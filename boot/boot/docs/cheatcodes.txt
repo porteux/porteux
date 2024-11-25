@@ -271,12 +271,6 @@ nologin
 
    ... Do not auto login after the desktop environment is loaded.
 
-nomagic
-
-   ... Do not bind "magic folders" during boot time. Useful when
-       something went wrong with your PorteuX configuration and you
-       want to boot into true 'Always Fresh' mode.
-
 nonetwork
 
    ... This boot parameter will prevent PorteuX from automatically
@@ -293,9 +287,8 @@ nonetwork
 norootcopy
 
    ... Do not copy files from your rootcopy directory at boot-up.
-       Like the 'nomagic' cheatcode, this is useful if something went
-       wrong with your PorteuX configuration and you want to boot into
-       true 'Always Fresh' mode.
+       Useful if something went wrong with your PorteuX configuration
+       and you want to boot without loading any file from rootcopy.
 
 noswap
 
@@ -415,7 +408,7 @@ vga_detect
        /porteux/optional/ directory. The driver module is available in
        the PorteuX App Store. If you want to compile your own driver,
        please note that the module's name must contain nvidia-[number],
-       where [number] is the number of the driver version.
+       where [number] is the number of the driver version for example 08-nvidia-560.35.03-k.6.11.4-porteux-x86_64.xzm).
 
 volume=some_value%
 
