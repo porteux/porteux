@@ -209,7 +209,7 @@ DownloadPackage "usbmuxd" &
 DownloadPackage "usbutils" &
 DownloadPackage "utempter" &
 DownloadPackage "util-linux" &
-DownloadPackage "wget" &
+DownloadPackage "wget2" &
 DownloadPackage "which" &
 DownloadPackage "whois" &
 wait
