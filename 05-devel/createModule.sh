@@ -45,6 +45,7 @@ rm -R usr/doc
 rm -R usr/etc
 rm -R usr/info
 rm -R usr/lib${SYSTEMBITS}/bash
+rm -R usr/lib*/python*/site-packages/*-info
 rm -R usr/lib*/python2*
 rm -R usr/local
 rm -R usr/man
