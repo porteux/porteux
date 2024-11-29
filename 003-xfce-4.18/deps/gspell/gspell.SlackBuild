@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=gspell
 
@@ -20,19 +20,22 @@ cd $PRGNAM-$VERSION
 
 [ ! -d build ] && mkdir build
 cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCCFLAGS -flto=auto" \
+CXXFLAGS="$CFLAGS" \
 meson setup \
 	--prefix=/usr \
-	--buildtype=release \
 	--libdir=lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
-	--sysconfdir=/etc \
-	--infodir=/usr/info \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
 	--mandir=/usr/man \
+	--sysconfdir=/etc \
 	--localstatedir=/var \
-	-Ddefault_library=shared \
+	--buildtype=release \
 	-Dgtk_doc=false \
-	-Dtests=false
+	-Dinstall_tests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
