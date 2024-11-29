@@ -22,6 +22,7 @@ GenericStrip() {
 	rm -R usr/share/gdb
 	rm -R usr/share/gir-1.0
 	rm -R usr/share/gnome-control-center
+	rm -R usr/share/gobject-introspection-1.0
 	rm -R usr/share/gtk-doc
 	rm -R usr/share/help
 	rm -R usr/share/icons/HighContrast
@@ -32,6 +33,7 @@ GenericStrip() {
 	rm -R usr/share/icons/hicolor/256x256
 	rm -R usr/share/icons/hicolor/512x512
 	rm -R usr/share/info
+	rm -R usr/share/installed-tests
 	rm -R usr/share/locale
 	rm -R usr/share/man
 	rm -R usr/share/pkgconfig
