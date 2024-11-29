@@ -153,10 +153,17 @@ cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
-# required by mousepad
+# required by gspell and mousepad
+installpkg $MODULEPATH/packages/aspell*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
-installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
+
+if [ $SLACKWAREVERSION != "current" ]; then
+	currentPackage=gspell
+	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	installpkg $MODULEPATH/packages/gspell*.txz || exit 1
+	rm -fr $MODULEPATH/${currentPackage}
+fi
 
 # required by xfce4-panel
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1

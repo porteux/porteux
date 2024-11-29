@@ -10,7 +10,6 @@ DownloadPackage "blueman" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
-DownloadPackage "gspell" &
 DownloadPackage "gtksourceview3" &
 DownloadPackage "keybinder3" &
 wait
@@ -28,6 +27,7 @@ wait
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &
+	DownloadPackage "gspell" &
 	DownloadPackage "libindicator" &
 	DownloadPackage "libsoup" & # for stable this libsoup2 will be in 002-gui
 	wait
