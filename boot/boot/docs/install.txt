@@ -39,7 +39,7 @@ contain /porteux folder.
 | Legacy System: |
 ~~~~~~~~~~~~~~~~~~
 
-1) Copy /boot, /EFI and /porteux folders onto the desired partition.
+1) Copy /boot and /porteux folders onto the desired partition.
 
 -----
 
