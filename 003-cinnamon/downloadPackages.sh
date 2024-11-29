@@ -14,6 +14,7 @@ DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 wait
 DownloadPackage "ffmpegthumbnailer" &
+DownloadPackage "gspell" &
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
@@ -58,12 +59,15 @@ wait
 DownloadPackage "boost" & # to build exempi
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
+DownloadPackage "llvm" &
 DownloadPackage "python-build" &
 DownloadPackage "python-flit-core" &
 wait
 DownloadPackage "python-installer" &
+DownloadPackage "python-pip" &
 DownloadPackage "python-pyproject-hooks" &
 DownloadPackage "python-wheel" &
+DownloadPackage "rust" &
 DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "xtrans" &
 wait
