@@ -27,7 +27,7 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 In order to have PorteuX in a language different than English, download the multilanguage package and use PorteuX Language Switcher application to choose the desired language.
 
-To download a Slackware package that is not present in PorteuX and convert it to .xzm module, run the command `getpkg -m [packageName]`. It's recommended to move the module to porteux/modules folder to ensure it is automatically loaded after boot.
+To download a Slackware package that is not present in PorteuX and convert it to .xzm module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). It's recommended to move the module to porteux/modules folder to ensure it is automatically loaded after boot.
 
 To build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate 06-crippled_sources xzm module.
 
