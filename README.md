@@ -27,7 +27,7 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 In order to have PorteuX in a language different than English, download the multilanguage package and use PorteuX Language Switcher application to choose the desired language.
 
-To download a Slackware package that is not present in PorteuX, run the command `getpkg [packageName]`. A .txz file will be downloaded, so it will require to run `txz2xzm [packageFilename]` to convert it to a module. After the conversion it's recommended to move the .xzm module to the porteux/modules folder to ensure it is automatically loaded after boot.
+To download a Slackware package that is not present in PorteuX and convert it to .xzm module, run the command `getpkg -m [packageName]`. It's recommended to move the module to porteux/modules folder to ensure it is automatically loaded after boot.
 
 To build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate 06-crippled_sources xzm module.
 
@@ -68,11 +68,10 @@ In the terminal, run the following commands: <br />
 1. `su` (password: toor) <br />
 2. `mkdir -p /tmp/opencl-support` <br />
 3. `cd /tmp/opencl-support` <br />
-4. `getpkg libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk` <br />
-5. `txz2xzm *.txz` (this is going to take a while) <br />
-6. `activate *.xzm` <br />
-7. `mv *.xzm $PORTDIR/modules` <br />
-8. `rm -fr /tmp/opencl-support` <br />
+4. `getpkg -m libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk` (this may take a while) <br />
+5. `activate *.xzm` <br />
+6. `mv *.xzm $PORTDIR/modules` <br />
+7. `rm -fr /tmp/opencl-support` <br />
 
 ## Compatibility with Porteus 5
 
