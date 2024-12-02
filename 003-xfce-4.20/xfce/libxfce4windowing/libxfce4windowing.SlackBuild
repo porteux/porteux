@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 PRGNAM=libxfce4windowing
 
@@ -19,19 +19,19 @@ SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_R
 tar xvf $PRGNAM-main.tar.?z* || exit 1
 cd $PRGNAM-main && VERSION=$(date -r . +%Y%m%d) || exit 1
 
-CFLAGS="$SLKCFLAGS" \
-./autogen.sh \
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto=auto" \
+meson setup \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
+	--infodir=/usr/info \
 	--mandir=/usr/man \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
-	--disable-static \
-	--disable-debug \
-	--enable-x11 \
-	--build=$ARCH-porteux-linux || exit 1
+	--localstatedir=/var 
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -39,4 +39,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
