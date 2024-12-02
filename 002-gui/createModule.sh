@@ -137,20 +137,6 @@ sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=paper-icon-theme
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget https://github.com/snwh/${currentPackage}/archive/refs/heads/master.tar.gz || exit 1
-tar xvf master.tar.gz && rm master.tar.gz || exit 1
-cd ${currentPackage}-master
-version=$(date -r . +%Y%m%d)
-iconRootFolder=../${currentPackage}-$version-noarch/usr/share/icons/Paper
-mkdir -p $iconRootFolder
-cp -r Paper/cursors $iconRootFolder
-cp -r Paper/cursor.theme $iconRootFolder
-cd ../${currentPackage}-$version-noarch
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
 ### packages that require specific stripping
 
 currentPackage=llvm
@@ -193,7 +179,7 @@ cd ${currentPackage}-stripped-$version
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-### install poppler so it can be used by the further modules
+### install poppler so it can be used by next modules
 
 installpkg $MODULEPATH/packages/poppler*.txz
 
