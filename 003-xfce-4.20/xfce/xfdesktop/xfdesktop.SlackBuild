@@ -24,25 +24,21 @@ sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(siz
 sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS)|g" src/xfdesktop-special-file-icon.c
 sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS)|g" src/xfdesktop-volume-icon.c
 
-CFLAGS="$SLKCFLAGS" \
-./autogen.sh \
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto=auto" \
+meson setup \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
+	--infodir=/usr/info \
 	--mandir=/usr/man \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
-	--disable-static \
-	--disable-debug \
-	--disable-tests \
-	--enable-desktop-icons \
-	--enable-file-icons \
-	--enable-wayland \
-	--with-default-backdrop-filename=/usr/share/backgrounds/xfce/xfce-blue.jpg \
-	--build=$ARCH-porteux-linux
+	--localstatedir=/var \
+	-Dtests=false \
+	-Ddefault-backdrop-filename=/usr/share/backgrounds/xfce/xfce-blue.jpg 
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
-
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
