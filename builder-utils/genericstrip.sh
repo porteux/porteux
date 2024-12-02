@@ -22,7 +22,6 @@ GenericStrip() {
 	rm -R usr/share/gdb
 	rm -R usr/share/gir-1.0
 	rm -R usr/share/gnome-control-center
-	rm -R usr/share/gobject-introspection-1.0
 	rm -R usr/share/gtk-doc
 	rm -R usr/share/help
 	rm -R usr/share/icons/HighContrast
