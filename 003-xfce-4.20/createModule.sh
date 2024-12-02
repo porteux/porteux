@@ -16,189 +16,189 @@ source "$PWD/../builder-utils/latestfromgithub.sh"
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
-#### download packages from slackware repositories
+### download packages from slackware repositories
 
-#DownloadFromSlackware
+DownloadFromSlackware
 
-#### packages outside Slackware repository
+### packages outside Slackware repository
 
-#currentPackage=xcape
-#mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#wget -r -nd --no-parent $SLACKBUILDREPOSITORY/misc/${currentPackage}/ -A * || exit 1
-#info=$(DownloadLatestFromGithub "alols" ${currentPackage})
-#version=${info#* }
-#sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-#sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-#sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-#sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
-#sh ${currentPackage}.SlackBuild || exit 1
-#mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-#installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=xcape
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget -r -nd --no-parent $SLACKBUILDREPOSITORY/misc/${currentPackage}/ -A * || exit 1
+info=$(DownloadLatestFromGithub "alols" ${currentPackage})
+version=${info#* }
+sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
+sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
+sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sh ${currentPackage}.SlackBuild || exit 1
+mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+installpkg $MODULEPATH/packages/${currentPackage}*.t?z
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=gpicview
-#version="0.2.6"
-#mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#git clone https://github.com/lxde/${currentPackage} || exit 1
-#cd ${currentPackage}
-#./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
-#make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-#cd $MODULEPATH/${currentPackage}/package
-#makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=gpicview
+version="0.2.6"
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+git clone https://github.com/lxde/${currentPackage} || exit 1
+cd ${currentPackage}
+./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
+make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+cd $MODULEPATH/${currentPackage}/package
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=lxdm
-#GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=lxdm
+GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=audacious
-#sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
-#installpkg $MODULEPATH/packages/${currentPackage}*.txz
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=audacious
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=audacious-plugins
-#sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=audacious-plugins
+sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=atril
-#sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=atril
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=mate-polkit
-#sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=mate-polkit
+sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=wlr-protocols
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-#installpkg $MODULEPATH/packages/hwdata*.txz || exit 1
-#rm $MODULEPATH/packages/hwdata*.txz
+installpkg $MODULEPATH/packages/hwdata*.txz || exit 1
+rm $MODULEPATH/packages/hwdata*.txz
 
-#currentPackage=libdisplay-info
-#sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=libdisplay-info
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=gtk-layer-shell
-#sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=gtk-layer-shell
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
-## temporary just to build engrampa and mate-search-tool
-#currentPackage=mate-common
-#mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-#version=${info#* }
-#filename=${info% *}
-#tar xvf $filename && rm $filename || exit 1
-#cd ${currentPackage}*
-#sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-#make -j${NUMBERTHREADS} install || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+# temporary just to build engrampa and mate-search-tool
+currentPackage=mate-common
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+version=${info#* }
+filename=${info% *}
+tar xvf $filename && rm $filename || exit 1
+cd ${currentPackage}*
+sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
+make -j${NUMBERTHREADS} install || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
-## temporary to build yelp-tools
-#installpkg $MODULEPATH/packages/python-pip*.txz || exit 1
-#rm $MODULEPATH/packages/python-pip*.txz
+# temporary to build yelp-tools
+installpkg $MODULEPATH/packages/python-pip*.txz || exit 1
+rm $MODULEPATH/packages/python-pip*.txz
 
-#cd $MODULEPATH
-#pip install lxml || exit 1
+cd $MODULEPATH
+pip install lxml || exit 1
 
-## temporary to build yelp-tools
-#currentPackage=yelp-xsl
-#mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#info=$(DownloadLatestFromGithub "GNOME" ${currentPackage})
-#version=${info#* }
-#filename=${info% *}
-#tar xvf $filename && rm $filename || exit 1
-#cd ${currentPackage}*
-#sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-#make -j${NUMBERTHREADS} install || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+# temporary to build yelp-tools
+currentPackage=yelp-xsl
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "GNOME" ${currentPackage})
+version=${info#* }
+filename=${info% *}
+tar xvf $filename && rm $filename || exit 1
+cd ${currentPackage}*
+sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
+make -j${NUMBERTHREADS} install || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
-## temporary to build engrampa and mate-search-tool
-#currentPackage=yelp-tools
-#mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#info=$(DownloadLatestFromGithub "GNOME" ${currentPackage})
-#version=${info#* }
-#filename=${info% *}
-#tar xvf $filename && rm $filename || exit 1
-#cd ${currentPackage}*
-#mkdir build && cd build
-#meson --prefix /usr ..
-#ninja -j${NUMBERTHREADS} install || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+# temporary to build engrampa and mate-search-tool
+currentPackage=yelp-tools
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "GNOME" ${currentPackage})
+version=${info#* }
+filename=${info% *}
+tar xvf $filename && rm $filename || exit 1
+cd ${currentPackage}*
+mkdir build && cd build
+meson --prefix /usr ..
+ninja -j${NUMBERTHREADS} install || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
-## required from now on
-#installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
-#installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
+# required from now on
+installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
+installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 
-#currentPackage=pavucontrol
-#sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=pavucontrol
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=mate-utils
-#mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-#version=${info#* }
-#filename=${info% *}
-#tar xvf $filename && rm $filename || exit 1
-#cd ${currentPackage}*
-#cp $SCRIPTPATH/deps/${currentPackage}/*.patch .
-#for i in *.patch; do patch -p0 < $i || exit 1; done
-#sed -i "s|baobab||g" ./Makefile.am
-#sed -i "s|mate-dictionary||g" ./Makefile.am
-#sed -i "s|mate-screenshot||g" ./Makefile.am
-#sed -i "s|logview||g" ./Makefile.am
-#CFLAGS="$GCCFLAGS" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
-#make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-#cd $MODULEPATH/${currentPackage}/package
-#wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
-#makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/mate-search-tool-$version-$ARCH-1.txz
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=mate-utils
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+version=${info#* }
+filename=${info% *}
+tar xvf $filename && rm $filename || exit 1
+cd ${currentPackage}*
+cp $SCRIPTPATH/deps/${currentPackage}/*.patch .
+for i in *.patch; do patch -p0 < $i || exit 1; done
+sed -i "s|baobab||g" ./Makefile.am
+sed -i "s|mate-dictionary||g" ./Makefile.am
+sed -i "s|mate-screenshot||g" ./Makefile.am
+sed -i "s|logview||g" ./Makefile.am
+CFLAGS="$GCCFLAGS" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
+make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+cd $MODULEPATH/${currentPackage}/package
+wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/mate-search-tool-$version-$ARCH-1.txz
+rm -fr $MODULEPATH/${currentPackage}
 
-#currentPackage=engrampa
-#mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-#info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
-#version=${info#* }
-#filename=${info% *}
-#tar xvf $filename && rm $filename || exit 1
-#cd ${currentPackage}*
-#CFLAGS="$GCCFLAGS" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
-#make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-#cd $MODULEPATH/${currentPackage}/package
-#makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-#rm -fr $MODULEPATH/${currentPackage}
+currentPackage=engrampa
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+version=${info#* }
+filename=${info% *}
+tar xvf $filename && rm $filename || exit 1
+cd ${currentPackage}*
+CFLAGS="$GCCFLAGS" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
+make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+cd $MODULEPATH/${currentPackage}/package
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
+rm -fr $MODULEPATH/${currentPackage}
 
-## required by xfdesktop
-#installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
+# required by xfdesktop
+installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
 
-## required by mousepad
-#installpkg $MODULEPATH/packages/enchant*.txz || exit 1
-#installpkg $MODULEPATH/packages/gspell*.txz || exit 1
-#installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
+# required by mousepad
+installpkg $MODULEPATH/packages/enchant*.txz || exit 1
+installpkg $MODULEPATH/packages/gspell*.txz || exit 1
+installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 
-## required by xfce4-panel
-#installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-#installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
+# required by xfce4-panel
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
 
-## required by xfce4-pulseaudio-plugin
-#installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
+# required by xfce4-pulseaudio-plugin
+installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 
-## required by xfce4-terminal
-#installpkg $MODULEPATH/packages/vte-*.txz || exit 1
+# required by xfce4-terminal
+installpkg $MODULEPATH/packages/vte-*.txz || exit 1
 
-## required by xfce4-xkb-plugin
-#installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+# required by xfce4-xkb-plugin
+installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
-#if [ $SLACKWAREVERSION == "current" ]; then
-	## required by xfce4-screenshooter in current
-	#installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
-#fi
-
-read -p "vai"
+if [ $SLACKWAREVERSION == "current" ]; then
+	# required by xfce4-screenshooter in current
+	installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
+fi
 
 # xfce packages
 for package in \
 	xfce4-dev-tools \
+	libxfce4windowing \
+	libxfce4util \
 	xfconf \
 	libxfce4ui \
 	exo \
