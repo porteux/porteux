@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=libstemmer
 SRCNAM=libstemmer_c
