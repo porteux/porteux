@@ -25,10 +25,8 @@ unzip uasm${UASMVERSION}_linux64.zip
 chmod +x uasm
 PATH=$PATH:$TMP
 
-#info=$(DownloadLatestFromGithub "ip7z" ${PRGNAM})
-#VERSION=${info#* }
-wget https://github.com/ip7z/7zip/archive/refs/tags/24.08.tar.gz -O 7zip-24.08.tar.gz
-VERSION=24.08
+info=$(DownloadLatestFromGithub "ip7z" ${PRGNAM})
+VERSION=${info#* }
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
