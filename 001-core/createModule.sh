@@ -273,10 +273,9 @@ mv -f "$TEMPBUNDLE" ca-certificates.crt
 cd $MODULEPATH/packages
 find usr/share/kbd -type f -name "*.gz" -exec gunzip {} \;
 
-### change some inittab defaults
+### set ctrl+alt+del to now show any error in the terminal
 
 sed -i '/^ca::ctrlaltdel/c\ca::ctrlaltdel:/sbin/shutdown -r now 2>/dev/null' $MODULEPATH/packages/etc/inittab
-sed -i '/^id:3:initdefault:/id:4:initdefault:' $MODULEPATH/packages/etc/inittab
 
 ### set NetworkManager to use internal dhcp
 
