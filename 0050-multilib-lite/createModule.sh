@@ -55,6 +55,9 @@ version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
 tar xvf ${currentPackage}-*.txz
 mkdir -p ${currentPackage}-stripped-$version/usr/lib
 cp usr/lib/libvulkan.so* ${currentPackage}-stripped-$version/usr/lib
+if [ $SLACKWAREVERSION == "current" ]; then
+	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped-$version
+fi
 cd ${currentPackage}-stripped-$version
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}

@@ -90,7 +90,6 @@ DownloadPackage "libinput" &
 DownloadPackage "libICE" &
 DownloadPackage "libjpeg-turbo" &
 DownloadPackage "libmad" &
-DownloadPackage "libmng" &
 DownloadPackage "libmtp" &
 DownloadPackage "libnotify" &
 DownloadPackage "libogg" &

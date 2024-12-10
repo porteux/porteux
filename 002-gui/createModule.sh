@@ -157,6 +157,9 @@ version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped-$version
+if [ $SLACKWAREVERSION == "current" ]; then
+	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped-$version
+fi
 cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
