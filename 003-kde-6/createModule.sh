@@ -363,9 +363,13 @@ rm usr/bin/UserFeedbackConsole
 rm etc/kde/xdg/autostart/baloo_file.desktop
 rm etc/kde/xdg/autostart/kaccess.desktop
 rm etc/kde/xdg/autostart/xembedsniproxy.desktop
+rm usr/lib${SYSTEMBITS}/libKF5*.so
+rm usr/lib${SYSTEMBITS}/liboxygenstyle5.so
+rm usr/lib${SYSTEMBITS}/liboxygenstyleconfig5.so
 rm usr/lib${SYSTEMBITS}/libphonon4qt5*
 rm usr/lib${SYSTEMBITS}/libpolkit-qt5*
 rm usr/lib${SYSTEMBITS}/libqca-qt5*
+rm usr/lib${SYSTEMBITS}/libQCoro5*
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/applications/org.kde.kuserfeedback-console.desktop
 rm usr/share/applications/org.kde.kwalletd*.desktop
