@@ -1,27 +1,6 @@
---- meson.build	2024-10-24 22:04:57.709070016 +0200
-+++ meson.build.patched	2024-10-24 22:06:14.104073629 +0200
-@@ -9,20 +9,14 @@
- session_version = meson.project_version()
- session_api_name = '@0@-@1@'.format(meson.project_name(), session_version.split('.')[0])
- 
--prefix = get_option('prefix')
- session_prefix = get_option('prefix')
- session_bindir = join_paths(session_prefix, get_option('bindir'))
- session_datadir = join_paths(session_prefix, get_option('datadir'))
--session_libdir = join_paths(session_prefix, get_option('libdir'))
- session_libexecdir = join_paths(session_prefix, get_option('libexecdir'))
- session_localedir = join_paths(session_prefix, get_option('localedir'))
--session_localstatedir = join_paths(session_prefix, get_option('localstatedir'))
--session_mandir = join_paths(session_prefix, get_option('mandir'))
--session_sbindir = join_paths(session_prefix, get_option('sbindir'))
- session_sysconfdir = join_paths(session_prefix, get_option('sysconfdir'))
- 
- session_pkgdatadir = join_paths(session_datadir, meson.project_name())
--session_debug = get_option('buildtype').contains('debug')
- 
- cc = meson.get_compiler('c')
- 
-@@ -39,7 +46,8 @@ endforeach
+--- meson.build	2024-12-10 23:02:57.120873427 +0100
++++ meson.build.patched	2024-12-10 23:02:45.487872876 +0100
+@@ -41,7 +40,8 @@
  # compiler flags
  common_flags = ['-DHAVE_CONFIG_H']
  
@@ -31,30 +10,20 @@
    common_flags += [
      '-DBONOBO_DISABLE_DEPRECATED',
      '-DBONOBO_DISABLE_SINGLE_INCLUDES',
-@@ -59,7 +67,7 @@ if get_option('deprecation_flags')
- endif
- 
- compiler_flags = []
--if get_option('debug')
-+if session_debug
-   test_cflags = [
-     '-Werror=format=2',
-     '-Werror=implicit-function-declaration',
-@@ -103,18 +111,69 @@ session_bin_deps = session_deps + [
+@@ -111,18 +111,70 @@
  # Check for session selector GTK+ UI
  enable_session_selector = get_option('session_selector')
  
 -session_bin_deps += dependency('gio-unix-2.0', version: glib_req_version)
--
++# Check for session tracking backend
++session_tracking = 'null backend'
+ 
 -# Check for systemd
 -systemd_userunitdir = get_option('systemduserunitdir')
 -if systemd_userunitdir == ''
 -  systemd_dep = dependency('systemd', version: '>= 242', required: true)
 -  systemd_userunitdir = systemd_dep.get_variable(pkgconfig: 'systemduserunitdir',
 -                                                 pkgconfig_define: ['prefix', session_prefix])
-+# Check for session tracking backend
-+session_tracking = 'null backend'
-+
 +enable_systemd = get_option('systemd')
 +enable_systemd_session = get_option('systemd_session') != 'disable'
 +use_systemd_session = get_option('systemd_session') == 'default'
@@ -110,7 +79,7 @@
 +if enable_systemd_session
 +  assert(enable_systemd or enable_elogind, 'Systemd or elogind support must be enabled when using systemd session management')
  endif
--
+ 
 -libsystemd_dep = dependency('libsystemd', version: '>= 209', required: true)
 -session_bin_deps += libsystemd_dep
 +config_h.set('HAVE_SYSTEMD', enable_systemd)
@@ -121,7 +90,7 @@
  
  configure_file(
    output: 'config.h',
-@@ -125,14 +184,20 @@ gnome = import('gnome')
+@@ -133,14 +185,18 @@
  i18n = import('i18n')
  pkg = import('pkgconfig')
  
@@ -134,18 +103,16 @@
  subdir('tools')
  subdir('data')
 -subdir('doc')
-+
 +enable_docbook = get_option('docbook')
 +enable_man = get_option('man')
 +if enable_docbook or enable_man
 +  subdir('doc')
 +endif
-+
  subdir('po')
  
  meson.add_install_script(
-@@ -140,29 +205,22 @@ meson.add_install_script(
-   session_datadir
+@@ -148,29 +204,19 @@
+   [session_datadir, have_x11 ? 'true' : 'false'],
  )
  
 -gnome.post_install(
@@ -178,16 +145,13 @@
 +output += '                ====================\n\n'
 +output += '        prefix:                   ' + session_prefix + '\n'
 +output += '        exec_prefix:              ' + session_libexecdir + '\n'
-+output += '        libdir:                   ' + session_libdir + '\n'
 +output += '        bindir:                   ' + session_bindir + '\n'
-+output += '        sbindir:                  ' + session_sbindir + '\n'
 +output += '        sysconfdir:               ' + session_sysconfdir + '\n'
-+output += '        localstatedir:            ' + session_localstatedir + '\n'
 +output += '        datadir:                  ' + session_datadir + '\n'
-+output += '        source code location:     ' + meson.source_root() + '\n'
++output += '        source code location:     ' + meson.project_source_root() + '\n'
 +output += '        compiler:                 ' + cc.get_id() + '\n'
 +output += '        cflags:                   ' + ' '.join(compiler_flags) + '\n'
-+output += '        Debug mode:               ' + session_debug.to_string() + '\n'
++output += '        Debug mode:               ' + get_option('debug').to_string() + '\n'
 +output += '        Use *_DISABLE_DEPRECATED: ' + enable_deprecation_flags.to_string() + '\n\n'
 +output += '        Session tracking:         ' + session_tracking + ' \n'
 +output += '        Build Docbook:            ' + enable_docbook.to_string() + '\n'

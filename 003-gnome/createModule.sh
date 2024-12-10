@@ -49,6 +49,7 @@ rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
+rm $MODULEPATH/packages/openldap*
 rm $MODULEPATH/packages/python-pip*
 rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/vulkan-sdk*
