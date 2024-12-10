@@ -4,16 +4,16 @@ GenericStrip() {
 	rm -R etc/logrotate.d
 	rm -R usr/doc
 	rm -R usr/include
-	rm -R usr/man
-	rm -R usr/src
 	rm -R usr/info
 	rm -R usr/lib*/cmake
 	rm -R usr/lib*/gnome-keyring
 	rm -R usr/lib*/gtk*/include
 	rm -R usr/lib*/pkgconfig
 	rm -R usr/lib*/python2*
-	rm -R usr/lib/python*/site-packages/*-info
 	rm -R usr/lib*/systemd
+	rm -R usr/lib/python*/site-packages/*-info
+	rm -R usr/man
+	rm -R usr/share/*/translations
 	rm -R usr/share/aclocal
 	rm -R usr/share/bash-completion
 	rm -R usr/share/cmake
@@ -25,12 +25,12 @@ GenericStrip() {
 	rm -R usr/share/gtk-doc
 	rm -R usr/share/help
 	rm -R usr/share/icons/HighContrast
-	rm -R usr/share/icons/hicolor/64x64
-	rm -R usr/share/icons/hicolor/72x72
-	rm -R usr/share/icons/hicolor/96x96
 	rm -R usr/share/icons/hicolor/192x192
 	rm -R usr/share/icons/hicolor/256x256
 	rm -R usr/share/icons/hicolor/512x512
+	rm -R usr/share/icons/hicolor/64x64
+	rm -R usr/share/icons/hicolor/72x72
+	rm -R usr/share/icons/hicolor/96x96
 	rm -R usr/share/info
 	rm -R usr/share/installed-tests
 	rm -R usr/share/locale
@@ -39,21 +39,17 @@ GenericStrip() {
 	rm -R usr/share/sounds
 	rm -R usr/share/themes/HighContrast
 	rm -R usr/share/vala
-	rm -R usr/share/*/translations
-	rm -R var/log/pkgtools
-	rm -R var/log/setup
+	rm -R usr/src
 	rm -R var/lib/pkgtools/douninst.sh/
 	rm -R var/lib/pkgtools/setup
+	rm -R var/log/pkgtools
+	rm -R var/log/setup
 	
 	rm usr/share/pixmaps/*.xpm
 	rm var/log/removed_packages
 	rm var/log/removed_scripts
 	rm var/log/removed_uninstall_scripts
 
-	find . -name 'AUTHORS*' -delete
-	find . -name 'COPYING*' -delete
-	find . -name 'README*' -delete
-	find . -name 'LICENSE*' -delete
 	find . -name '*.a' -delete
 	find . -name '*.c' -delete
 	find . -name '*.cmake' -delete
@@ -66,6 +62,10 @@ GenericStrip() {
 	find . -name '*.pc' -delete
 	find . -name '*.prl' -delete
 	find . -name '*.vapi' -delete
+	find . -name 'AUTHORS*' -delete
+	find . -name 'COPYING*' -delete
+	find . -name 'LICENSE*' -delete
+	find . -name 'README*' -delete
 	
 	find usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
 	
