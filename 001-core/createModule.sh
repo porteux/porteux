@@ -323,6 +323,7 @@ rm -R lib${SYSTEMBITS}/pkgconfig
 rm -R lib/systemd
 rm -R mnt/*
 rm -R usr/etc
+rm -R usr/include/qgpgme-qt*
 rm -R usr/lib${SYSTEMBITS}/guile
 rm -R usr/lib${SYSTEMBITS}/krb5/plugins
 rm -R usr/lib${SYSTEMBITS}/locale/C.utf8
@@ -404,7 +405,7 @@ rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
 rm usr/lib${SYSTEMBITS}/libduktaped.*
 rm usr/lib${SYSTEMBITS}/libicutest.*
-rm usr/lib${SYSTEMBITS}/libqgpgme.*
+rm usr/lib${SYSTEMBITS}/libqgpgme*
 rm usr/libexec/samba/rpcd_*
 rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
