@@ -36,7 +36,7 @@ meson setup \
 	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Dtests=false \
-	-Ddefault-backdrop-filename=/usr/share/backgrounds/xfce/xfce-blue.jpg 
+	-Ddefault-backdrop-filename=/usr/share/backgrounds/xfce/xfce-x.svg
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
