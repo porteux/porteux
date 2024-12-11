@@ -1,12 +1,134 @@
---- meson_options.txt
-+++ meson_options.txt
-@@ -1,5 +1,9 @@
- option('deprecation_flags', type: 'boolean', value: false, description: 'use *_DISABLE_DEPRECATED flags')
- option('session_selector', type: 'boolean', value: false, description: 'enable building a custom session selector dialog')
-+option('systemd', type: 'boolean', value: true, description: 'Use systemd')
-+option('systemd_session', type: 'combo', choices: ['disable', 'enable', 'default'], value: 'default', description: 'Whether to include systemd session support and use it by default')
-+option('systemd_journal', type: 'boolean', value:'true', description: 'Send log to systemd-journal')
- option('systemduserunitdir', type: 'string', description: 'Directory for systemd user service files')
-+option('elogind', type: 'boolean', value: false, description: 'Use elogind')
- option('docbook', type: 'boolean', value: true, description: 'build documentation')
- option('man', type: 'boolean', value: true, description: 'build documentation (requires xmlto)')
+--- data/meson.build
++++ data/meson.build
+@@ -108,72 +108,69 @@ install_data(
+   install_dir: join_paths(session_datadir, 'glib-2.0', 'schemas'),
+ )
+ 
+-unit_conf = configuration_data()
+-unit_conf.set('libexecdir', session_libexecdir)
+-
+-systemd_service = ['gnome-session-manager@.service',
+-                    'gnome-session-signal-init.service',
+-                    'gnome-session-restart-dbus.service',
+-                    'gnome-session-monitor.service',
+-                    'gnome-session-failed.service']
+-
+-foreach service: systemd_service
+-  configure_file(
+-    input: service + '.in',
+-    output: service,
+-    install: true,
+-    install_dir: systemd_userunitdir,
+-    configuration: unit_conf
+-  )
+-endforeach
+-
+-systemd_target = files('gnome-session-wayland@.target',
+-                        'gnome-session-wayland.target',
+-                        'gnome-session@.target',
+-                        'gnome-session.target',
+-                        'gnome-session-pre.target',
+-                        'gnome-session-manager.target',
+-                        'gnome-session-initialized.target',
+-                        'gnome-session-shutdown.target',
+-                        'gnome-session-failed.target',
+-                        )
+-if have_x11
+-  systemd_target += [
+-    'gnome-session-x11@.target',
+-    'gnome-session-x11.target',
+-    'gnome-session-x11-services.target',
+-    'gnome-session-x11-services-ready.target',
+-  ]
+-endif
+-
+-install_data(
+-  systemd_target,
+-  install_dir: systemd_userunitdir
+-)
+-
+-install_data(
+-  'gnome-launched-override.scope.conf',
+-  rename: 'override.conf',
+-  install_dir : join_paths(systemd_userunitdir, 'gnome-launched-.scope.d')
+-)
+-
+-foreach session, req_components: required_components
+-  wanted_targets = []
+-  foreach component: req_components
+-    wanted_targets += 'Wants=@0@.target'.format(component)
++if enable_systemd_session
++  unit_conf = configuration_data()
++  unit_conf.set('libexecdir', session_libexecdir)
++
++  systemd_service = ['gnome-session-manager@.service',
++                     'gnome-session-signal-init.service',
++                     'gnome-session-restart-dbus.service',
++                     'gnome-session-monitor.service',
++                     'gnome-session-failed.service']
++
++  foreach service: systemd_service
++    configure_file(
++      input: service + '.in',
++      output: service,
++      install: true,
++      install_dir: systemd_userunitdir,
++      configuration: unit_conf
++    )
+   endforeach
+ 
+-  configure_file(
+-    input: session + '.session.conf.in',
+-    output: session + '.session.conf',
+-    configuration: {
+-      'requires_component': shell_component[session],
+-      'wants_required_components': '\n'.join(wanted_targets),
+-    },
+-    install_dir: systemd_userunitdir / 'gnome-session@@0@.target.d'.format(
+-      session),
++  systemd_target = files('gnome-session-wayland@.target',
++                         'gnome-session-wayland.target',
++                         'gnome-session-x11@.target',
++                         'gnome-session-x11.target',
++                         'gnome-session-x11-services.target',
++                         'gnome-session-x11-services-ready.target',
++                         'gnome-session@.target',
++                         'gnome-session.target',
++                         'gnome-session-pre.target',
++                         'gnome-session-manager.target',
++                         'gnome-session-initialized.target',
++                         'gnome-session-shutdown.target',
++                         'gnome-session-failed.target',
++                         )
++
++  install_data(
++    systemd_target,
++    install_dir: systemd_userunitdir
+   )
+-endforeach
++  install_data(
++    'gnome-launched-override.scope.conf',
++    rename: 'override.conf',
++    install_dir : join_paths(systemd_userunitdir, 'gnome-launched-.scope.d')
++  )
++
++  foreach session, req_components: required_components
++    wanted_targets = []
++    foreach component: req_components
++      wanted_targets += 'Wants=@0@.target'.format(component)
++    endforeach
++
++    configure_file(
++      input: session + '.session.conf.in',
++      output: session + '.session.conf',
++      configuration: {
++        'requires_component': shell_component[session],
++        'wants_required_components': '\n'.join(wanted_targets),
++      },
++      install_dir: systemd_userunitdir / 'gnome-session@@0@.target.d'.format(
++        session),
++    )
++   endforeach
++endif
+ 
+ data = files('hardware-compatibility')
