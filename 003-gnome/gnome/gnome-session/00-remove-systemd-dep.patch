@@ -1,159 +1,31 @@
---- meson.build	2024-12-10 23:02:57.120873427 +0100
-+++ meson.build.patched	2024-12-10 23:02:45.487872876 +0100
-@@ -41,7 +40,8 @@
- # compiler flags
- common_flags = ['-DHAVE_CONFIG_H']
+diff --git a/meson.build b/meson.build
+index e5f0a5e3..8fe1659f 100644
+--- meson.build
++++ meson.build.patched
+@@ -114,16 +114,22 @@ enable_session_selector = get_option('session_selector')
+ session_bin_deps += dependency('gio-unix-2.0', version: glib_req_version)
  
--if get_option('deprecation_flags')
-+enable_deprecation_flags = get_option('deprecation_flags')
-+if enable_deprecation_flags
-   common_flags += [
-     '-DBONOBO_DISABLE_DEPRECATED',
-     '-DBONOBO_DISABLE_SINGLE_INCLUDES',
-@@ -111,18 +111,70 @@
- # Check for session selector GTK+ UI
- enable_session_selector = get_option('session_selector')
- 
--session_bin_deps += dependency('gio-unix-2.0', version: glib_req_version)
-+# Check for session tracking backend
-+session_tracking = 'null backend'
- 
--# Check for systemd
--systemd_userunitdir = get_option('systemduserunitdir')
+ # Check for systemd
++use_systemd = get_option('logind_provider') == 'systemd'
++if use_systemd
++  libsystemd_dep = dependency('libsystemd', version: '>= 209', required: true)
++  session_bin_deps += libsystemd_dep
++elif get_option('logind_provider') == 'elogind'
++  libelogind_dep = dependency('libelogind', version: '>= 209', required: true)
++  session_bin_deps += libelogind_dep
++endif
++
+ systemd_userunitdir = get_option('systemduserunitdir')
 -if systemd_userunitdir == ''
--  systemd_dep = dependency('systemd', version: '>= 242', required: true)
--  systemd_userunitdir = systemd_dep.get_variable(pkgconfig: 'systemduserunitdir',
--                                                 pkgconfig_define: ['prefix', session_prefix])
-+enable_systemd = get_option('systemd')
-+enable_systemd_session = get_option('systemd_session') != 'disable'
-+use_systemd_session = get_option('systemd_session') == 'default'
-+enable_systemd_journal = get_option('systemd_journal')
-+enable_elogind = get_option('elogind')
-+if enable_systemd or enable_elogind
-+  session_bin_deps += dependency('gio-unix-2.0', version: glib_req_version)
-+
-+  # Check for systemd
-+if enable_systemd
-+    systemd_userunitdir = get_option('systemduserunitdir')
-+    if systemd_userunitdir == ''
-+      systemd_dep = dependency('systemd', version: '>= 242', required: true)
-+      systemd_userunitdir = systemd_dep.get_pkgconfig_variable('systemduserunitdir',
-+                                                               define_variable: ['prefix', prefix])
-+    endif
-+
-+    libsystemd_dep = dependency('libsystemd', version: '>= 209', required: false)
-+    session_bin_deps += libsystemd_dep
-+
-+    if not libsystemd_dep.found()
-+      libsystemd_login_dep = dependency('libsystemd-login', version: '>= 183', required: false)
-+      libsystemd_daemon_dep = dependency('libsystemd-daemon', required: false)
-+      libsystemd_journal_dep = dependency('libsystemd-journal', required: false)
-+      assert(libsystemd_login_dep.found() and libsystemd_daemon_dep.found() and libsystemd_journal_dep.found(),
-+             'Systemd support explicitly required, but systemd not found')
-+
-+      session_bin_deps += [
-+        libsystemd_login_dep,
-+        libsystemd_daemon_dep,
-+        libsystemd_journal_dep
-+      ]
-+    endif
-+
-+    session_tracking = 'systemd'
-+  endif
-+
-+    if enable_systemd
-+      session_tracking += ' (with fallback to ConsoleKit)'
-+    else
-+      session_tracking = 'ConsoleKit'
-+    endif
-+
-+  # Check for elogind
-+    if enable_elogind
-+      elogind_dep = dependency('libelogind', version: '>= 209')
-+      session_bin_deps += elogind_dep
-+
-+      session_tracking = 'elogind'
-+    endif
-+
-+  endif
-+if enable_systemd_session
-+  assert(enable_systemd or enable_elogind, 'Systemd or elogind support must be enabled when using systemd session management')
++if systemd_userunitdir == '' and use_systemd
+   systemd_dep = dependency('systemd', version: '>= 242', required: true)
+   systemd_userunitdir = systemd_dep.get_variable(pkgconfig: 'systemduserunitdir',
+                                                  pkgconfig_define: ['prefix', session_prefix])
  endif
  
 -libsystemd_dep = dependency('libsystemd', version: '>= 209', required: true)
 -session_bin_deps += libsystemd_dep
-+config_h.set('HAVE_SYSTEMD', enable_systemd)
-+config_h.set('ENABLE_SYSTEMD_SESSION', enable_systemd_session)
-+config_h.set('ENABLE_SYSTEMD_JOURNAL', enable_systemd_journal)
-+config_h.set('HAVE_ELOGIND', enable_elogind)
-+config_h.set10('USE_SYSTEMD_SESSION', use_systemd_session)
- 
+-
  configure_file(
    output: 'config.h',
-@@ -133,14 +185,18 @@
- i18n = import('i18n')
- pkg = import('pkgconfig')
- 
--po_dir = join_paths(meson.project_source_root(), 'po')
-+po_dir = join_paths(meson.source_root(), 'po')
- 
- top_inc = include_directories('.')
- 
- subdir('gnome-session')
- subdir('tools')
- subdir('data')
--subdir('doc')
-+enable_docbook = get_option('docbook')
-+enable_man = get_option('man')
-+if enable_docbook or enable_man
-+  subdir('doc')
-+endif
- subdir('po')
- 
- meson.add_install_script(
-@@ -148,29 +204,19 @@
-   [session_datadir, have_x11 ? 'true' : 'false'],
- )
- 
--gnome.post_install(
--  glib_compile_schemas: true,
--)
--
--summary_options = {
-- 'Debug mode': get_option('debug'),
-- 'Use *_DISABLE_DEPRECATED': get_option('deprecation_flags'),
-- 'Build Docbook': get_option('docbook'),
-- 'Build manpages': get_option('man'),
-- 'Systemd Units Directory': systemd_userunitdir,
-- 'Session Selector Enabled': enable_session_selector,
--}
--
--summary_dirs = {
--  'prefix': get_option('prefix'),
--  'datadir': session_datadir,
--  'bindir': session_bindir,
--  'libexecdir': session_libexecdir,
--  'localedir': session_localedir,
--  'mandir': get_option('mandir'),
--  'sysconfdir': session_sysconfdir,
--  'pkgdatadir': session_pkgdatadir,
--}
--
--summary(summary_dirs, section: 'Directories')
--summary(summary_options, section: 'Build Options')
-+output = '\n                gnome-session ' + session_version + '\n'
-+output += '                ====================\n\n'
-+output += '        prefix:                   ' + session_prefix + '\n'
-+output += '        exec_prefix:              ' + session_libexecdir + '\n'
-+output += '        bindir:                   ' + session_bindir + '\n'
-+output += '        sysconfdir:               ' + session_sysconfdir + '\n'
-+output += '        datadir:                  ' + session_datadir + '\n'
-+output += '        source code location:     ' + meson.project_source_root() + '\n'
-+output += '        compiler:                 ' + cc.get_id() + '\n'
-+output += '        cflags:                   ' + ' '.join(compiler_flags) + '\n'
-+output += '        Debug mode:               ' + get_option('debug').to_string() + '\n'
-+output += '        Use *_DISABLE_DEPRECATED: ' + enable_deprecation_flags.to_string() + '\n\n'
-+output += '        Session tracking:         ' + session_tracking + ' \n'
-+output += '        Build Docbook:            ' + enable_docbook.to_string() + '\n'
-+output += '        Build manpages:           ' + enable_man.to_string()
-+message(output)
+   configuration: config_h
