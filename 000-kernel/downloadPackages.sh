@@ -5,9 +5,6 @@ REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
-DownloadPackage "bc" &
-wait
-
 ### only download if not present
 
 #[ ! -f /usr/bin/clang ] && DownloadPackage "llvm"
