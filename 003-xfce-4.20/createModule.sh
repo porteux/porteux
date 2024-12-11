@@ -72,9 +72,6 @@ currentPackage=wlr-protocols
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-installpkg $MODULEPATH/packages/hwdata*.txz || exit 1
-rm $MODULEPATH/packages/hwdata*.txz
-
 currentPackage=libdisplay-info
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
@@ -307,6 +304,8 @@ rm usr/share/applications/xfce4-mail-reader.desktop
 rm usr/share/applications/xfce4-terminal-emulator.desktop
 rm usr/share/applications/xfce4-web-browser.desktop
 rm usr/share/backgrounds/xfce/xfce-leaves.svg
+rm usr/share/backgrounds/xfce/xfce-light.svg
+rm usr/share/backgrounds/xfce/xfce-mouserace.svg
 rm usr/share/backgrounds/xfce/xfce-shapes.svg
 rm usr/share/icons/hicolor/scalable/status/computer.svg
 rm usr/share/icons/hicolor/scalable/status/keyboard.svg

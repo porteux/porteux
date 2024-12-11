@@ -35,7 +35,6 @@ fi
 
 ### temporary packages
 
-DownloadPackage "hwdata" & # to build libdisplay-info
 DownloadPackage "libyaml" & # to build xfdesktop with desktop icons
 DownloadPackage "python-pip" & # to install lxml
 wait
