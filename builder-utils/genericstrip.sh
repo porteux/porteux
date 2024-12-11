@@ -44,6 +44,7 @@ GenericStrip() {
 	rm -R var/lib/pkgtools/setup
 	rm -R var/log/pkgtools
 	rm -R var/log/setup
+	rm -R var/man
 	
 	rm usr/share/pixmaps/*.xpm
 	rm var/log/removed_packages
