@@ -93,8 +93,6 @@ if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
 	) &
 fi
 
-installpkg $MODULEPATH/packages/bc*.txz || exit 1
-rm $MODULEPATH/packages/bc*.txz || exit 1
 #installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 #rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
