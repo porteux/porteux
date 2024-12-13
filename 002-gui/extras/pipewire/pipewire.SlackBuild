@@ -18,12 +18,6 @@ wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/${VERSION}/${P
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-# only required in Slackware 15.0
-if [ $SLACKWAREVERSION != "current" ]; then
-	cp $SCRIPTPATH/extras/$PRGNAM/*.patch .
-	for i in *.patch; do patch -p0 < $i; done
-fi
-
 mkdir build && cd build
 CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto" \
 meson setup \
@@ -58,20 +52,6 @@ chmod 755 $PKG/etc/pipewire/run-pipewire
 mkdir -p $PKG/etc/xdg/autostart
 cp $CWD/pipewire.desktop $PKG/etc/xdg/autostart
 chmod 644 $PKG/etc/xdg/autostart/pipewire.desktop
-
-# only required in Slackware 15.0
-if [ $SLACKWAREVERSION != "current" ]; then
-	cd $PKG/usr/bin
-	ln -sf pipewire pipewire-aes67
-	ln -sf pipewire pipewire-avb
-	ln -sf pipewire pipewire-pulse
-	ln -sf pw-cat pw-dsdplay
-	ln -sf pw-cat pw-encplay
-	ln -sf pw-cat pw-midiplay
-	ln -sf pw-cat pw-midirecord
-	ln -sf pw-cat pw-play
-	ln -sf pw-cat pw-record
-fi
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
