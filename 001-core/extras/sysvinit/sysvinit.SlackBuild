@@ -19,8 +19,8 @@ tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 # Fix failure to show program version:
-zcat $CWD/sysvinit.always.define.version.diff.gz | patch -p1 --verbose
-sed -i "s/define VERSION.*/define VERSION \"$VERSION\"/g" src/init.c
+sed -i '/^#define VERSION/d' src/init.c
+sed -i "1s|^|#define VERSION \"$VERSION\"\n|" src/init.c
 
 # Use /dev/initctl instead of /run/initctl ; this is a named pipe and probably
 # should be in /dev anyway, but more importantly, having the upgraded package

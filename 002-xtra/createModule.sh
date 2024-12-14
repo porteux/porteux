@@ -90,8 +90,9 @@ rm -fr $MODULEPATH/${currentPackage}
 # temporary just to build x264 with mp4 support
 currentPackage=l-smash
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/${currentPackage}/${currentPackage}/ || exit 1
-cd ${currentPackage}
+wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 CFLAGS="$GCCFLAGS -flto=auto" CXXFLAGS="$CFLAGS" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --disable-static
 make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
@@ -274,8 +275,6 @@ version=$(curl -s https://code.videolan.org/videolan/${currentPackage}/-/tags?fo
 version=${version//[vV]}
 wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
-cp $SCRIPTPATH/extras/${currentPackage}/meson.build.patch . || exit 1
-sed -i "s|chown -R.*|patch -p0 < \${CWD}/meson\.build\.patch \|\| exit 1\nchown -R root:root \.|g" ${currentPackage}.SlackBuild
 sed -i "s|\$PKGNAM-\$VERSION-\$ARCH|\$PKGNAM-\${VERSION//[vV]}-\$ARCH|g" ${currentPackage}.SlackBuild
 sed -i "s|glslang=enabled|glslang=disabled -Dvulkan=disabled -Dshaderc=disabled |g" ${currentPackage}.SlackBuild
 sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
@@ -311,8 +310,9 @@ rm -fr $MODULEPATH/${currentPackage}
 # required by mpv
 currentPackage=LuaJIT
 mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-git clone https://github.com/${currentPackage}/${currentPackage}
-cd LuaJIT
+wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git --git-dir=.git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sed -i -e '/-DLUAJIT_ENABLE_LUA52COMPAT/s/^#//' src/Makefile
 CFLAGS="$GCCFLAGS" CXXFLAGS="$GCCFLAGS" make -j${NUMBERTHREADS} Q= PREFIX=/usr INSTALL_LIB=/usr/lib$SYSTEMBITS || exit 1
