@@ -39,8 +39,9 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=gpicview
 version="0.2.6"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage} || exit 1
-cd ${currentPackage}
+wget https://github.com/casey/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 ./autogen.sh && CFLAGS="$GCCGLAGS -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
@@ -64,8 +65,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=l3afpad
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/stevenhoneyman/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/stevenhoneyman/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sh autogen.sh
 CFLAGS="$GCCFLAGS -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug || exit 1
@@ -158,8 +160,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libfm-extra
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/libfm ${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/base/fm-file-info.c || exit 1
 sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/job/fm-deep-count-job.c || exit 1
@@ -183,8 +186,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=menu-cache
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 sh ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries" \
 ./configure \
@@ -205,8 +209,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libfm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh --prefix=/usr --without-gtk --disable-demo && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -Wno-error=incompatible-pointer-types" \
 ./configure \
@@ -227,8 +232,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pcmanfm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto -Wno-error=incompatible-pointer-types" \
 ./configure \
@@ -249,8 +255,9 @@ installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 currentPackage=lxterminal
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto -Wno-error=incompatible-pointer-types" \
 ./configure \
@@ -269,8 +276,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxtask
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" \
 ./configure \
@@ -292,8 +300,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxrandr
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" \
 ./configure \
@@ -312,8 +321,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxsession
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto -Wno-error=incompatible-pointer-types" \
 ./configure \
@@ -332,8 +342,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxmenu-data
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" \
 ./configure \
@@ -352,8 +363,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxlauncher
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" \
 ./configure \
@@ -372,8 +384,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxinput
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" \
 ./configure \
@@ -392,8 +405,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxhotkey
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" \
 ./configure \
@@ -412,8 +426,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxde-common
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" \
 ./configure \
@@ -432,8 +447,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxappearance
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" \
 ./configure \
@@ -454,8 +470,9 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lxappearance-obconf
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries" \
 ./configure \
@@ -478,8 +495,9 @@ installpkg $MODULEPATH/packages/keybinder3*.txz
 
 currentPackage=lxpanel
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 version=`git describe | cut -d- -f1`
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -Wno-error=incompatible-pointer-types" \
 ./configure \

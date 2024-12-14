@@ -38,8 +38,9 @@ rustup component add rust-src --toolchain nightly
 
 currentPackage=just
 cd $MODULEPATH
-git clone https://github.com/casey/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/casey/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-gnu || exit 1
 export PATH=$MODULEPATH/just/target/x86_64-unknown-linux-gnu/release/:$PATH
 

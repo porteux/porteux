@@ -291,6 +291,8 @@ sed -i "s|#dhcp=internal|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManage
 
 cd $MODULEPATH/packages/bin
 cp -s fusermount3 fusermount
+cd $MODULEPATH/packages/usr/bin
+cp -s python3 python
 
 ### set CPU governor to performance -- only in stable because current is already doing it
 

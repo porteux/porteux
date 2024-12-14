@@ -39,8 +39,9 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=gpicview
 version="0.2.6"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage} || exit 1
-cd ${currentPackage}
+wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 ./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
