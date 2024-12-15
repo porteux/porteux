@@ -181,7 +181,7 @@ done
 # only required for building
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
 
-# extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/page57.html#post6532418
+# extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/
 KDE6PACKAGES=/tmp/packages
 [ ! -d $KDE6PACKAGES ] && exit 1
 
