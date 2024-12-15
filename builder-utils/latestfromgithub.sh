@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DownloadLatestFromGithub() {
 	repository="$1"
@@ -11,9 +11,9 @@ DownloadLatestFromGithub() {
 	tagUrl="https://github.com/${repository}/${project}/archive/refs/tags/${version}.tar.gz"
 	validUrl=
 
-	if wget --spider "${releaseUrl}.xz" 2>/dev/null; then
+	if wget --spider "${releaseUrl}.xz" > /dev/null 2>&1; then
 		validUrl="${releaseUrl}.xz"
-	elif wget --spider "${releaseUrl}.gz" 2>/dev/null; then
+	elif wget --spider "${releaseUrl}.gz" > /dev/null 2>&1; then
 		validUrl="${releaseUrl}.gz"
 	else
 		validUrl=${tagUrl}

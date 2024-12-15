@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+pamixer: pamixer (pulseaudio command line mixer)
+pamixer:
+pamixer: pamixer is a console based mixer for pulseaudio. It can adjust the
+pamixer: volume levels of the audio sinks.
+pamixer:
+pamixer: Homepage: https://github.com/cdemoulins/pamixer
+pamixer:
+pamixer:
+pamixer:
+pamixer:
+pamixer:

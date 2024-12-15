@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|' on
+# the right side marks the last column you can put a character in. You must make
+# exactly 11 lines for the formatting to be correct. It's also customary to
+# leave one space after the ':'.
+
+     |-----handy-ruler------------------------------------------------------|
+pango: pango (library for layout and rendering of text)
+pango:
+pango: Pango is a library for layout and rendering of text, with an emphasis
+pango: on internationalization. Pango can be used anywhere that text layout
+pango: is needed; however, most of the work on Pango was done using the GTK+
+pango: widget toolkit as a test platform. Pango forms the core of text and
+pango: font handling for GTK.
+pango:
+pango: Homepage: https://pango.gnome.org
+pango:
+pango:

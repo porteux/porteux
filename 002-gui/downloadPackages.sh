@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"
@@ -90,7 +90,6 @@ DownloadPackage "libinput" &
 DownloadPackage "libICE" &
 DownloadPackage "libjpeg-turbo" &
 DownloadPackage "libmad" &
-DownloadPackage "libmng" &
 DownloadPackage "libmtp" &
 DownloadPackage "libnotify" &
 DownloadPackage "libogg" &
@@ -167,13 +166,12 @@ DownloadPackage "opus" &
 DownloadPackage "opusfile" &
 DownloadPackage "opus-tools" &
 DownloadPackage "orc" &
-DownloadPackage "pamixer" &
 DownloadPackage "pango" &
 DownloadPackage "pangomm" &
 DownloadPackage "pixman" &
 DownloadPackage "poppler" &
-wait
 DownloadPackage "pulseaudio" &
+wait
 DownloadPackage "pycairo" &
 DownloadPackage "pygobject3" &
 DownloadPackage "pyxdg" &

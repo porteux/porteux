@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 MODULENAME=003-cinnamon
 
@@ -21,6 +21,21 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 ### download packages from slackware repositories
 
 DownloadFromSlackware
+
+### packages that require specific stripping
+
+currentPackage=gettext-tools
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+version=`ls *.txz -a | rev | cut -d '-' -f 3 | rev`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/bin/msgfmt "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libgettextlib* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libgettextsrc* "${currentPackage}-stripped-$version"
+cd ${currentPackage}-stripped-$version
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-$ARCH-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside Slackware repository
 
@@ -65,14 +80,12 @@ echo "Generating icon package. This may take a while..."
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-# Remove this when cjs gets updated to work with mozjs128
-wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/mozjs115-115.15.0esr-x86_64-1.txz -P $MODULEPATH/packages
-
 # required from now on
 installpkg $MODULEPATH/packages/aspell*.txz || exit 1
 installpkg $MODULEPATH/packages/colord*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
+installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgee*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
@@ -82,7 +95,6 @@ installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
-installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
@@ -93,16 +105,22 @@ installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
 rm $MODULEPATH/packages/libgsf*.txz
+installpkg $MODULEPATH/packages/llvm*.txz || exit 1
+rm $MODULEPATH/packages/llvm*.txz
 installpkg $MODULEPATH/packages/python-build*.txz || exit 1
 rm $MODULEPATH/packages/python-build*.txz
 installpkg $MODULEPATH/packages/python-flit-core*.txz || exit 1
 rm $MODULEPATH/packages/python-flit-core*.txz
 installpkg $MODULEPATH/packages/python-installer*.txz || exit 1
 rm $MODULEPATH/packages/python-installer*.txz
+installpkg $MODULEPATH/packages/python-pip*.txz || exit 1
+rm $MODULEPATH/packages/python-pip*.txz
 installpkg $MODULEPATH/packages/python-pyproject-hooks*.txz || exit 1
 rm $MODULEPATH/packages/python-pyproject-hooks*.txz
 installpkg $MODULEPATH/packages/python-wheel*.txz || exit 1
 rm $MODULEPATH/packages/python-wheel*.txz
+installpkg $MODULEPATH/packages/rust*.txz || exit 1
+rm $MODULEPATH/packages/rust*.txz
 installpkg $MODULEPATH/packages/xorg-server-xwayland*.txz || exit 1
 rm $MODULEPATH/packages/xorg-server-xwayland*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
@@ -126,7 +144,6 @@ for package in \
 	pexpect \
 	polib \
 	python3-xapp \
-	gspell \
 	gtksourceview4 \
 	libpeas \
 	libgxps \
@@ -135,11 +152,15 @@ for package in \
 	gnome-terminal \
 	gnome-screenshot \
 	gnome-system-monitor \
+	mozjs115 \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+cd $MODULEPATH
+pip install pysass # required by cinnamon project
 
 # cinnamon packages
 for package in \

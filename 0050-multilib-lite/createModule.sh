@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 MODULENAME="0050-multilib-lite"
 
@@ -55,6 +55,9 @@ version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
 tar xvf ${currentPackage}-*.txz
 mkdir -p ${currentPackage}-stripped-$version/usr/lib
 cp usr/lib/libvulkan.so* ${currentPackage}-stripped-$version/usr/lib
+if [ $SLACKWAREVERSION == "current" ]; then
+	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped-$version
+fi
 cd ${currentPackage}-stripped-$version
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -86,6 +89,7 @@ rm -fr $MODULEPATH/packages/var/cache/fontconfig
 rm -fr $MODULEPATH/packages/var/db
 rm -fr $MODULEPATH/packages/var/kerberos
 rm -fr $MODULEPATH/packages/var/lib/dbus
+rm -fr $MODULEPATH/packages/var/run
 
 rm $MODULEPATH/packages/*
 rm $MODULEPATH/packages/lib/cpp
@@ -105,6 +109,7 @@ rm $MODULEPATH/packages/lib/libtermcap*
 rm $MODULEPATH/packages/lib/libudev*
 rm $MODULEPATH/packages/usr/lib/libadm*
 rm $MODULEPATH/packages/usr/lib/libargon*
+rm $MODULEPATH/packages/usr/lib/libboost*
 rm $MODULEPATH/packages/usr/lib/libcares.*
 rm $MODULEPATH/packages/usr/lib/libcc1.*
 rm $MODULEPATH/packages/usr/lib/libclang*
@@ -114,6 +119,7 @@ rm $MODULEPATH/packages/usr/lib/libglslang.*
 rm $MODULEPATH/packages/usr/lib/libgmp*
 rm $MODULEPATH/packages/usr/lib/libhistoy*
 rm $MODULEPATH/packages/usr/lib/libhsail-rt.*
+rm $MODULEPATH/packages/usr/lib/libicu*
 rm $MODULEPATH/packages/usr/lib/libidn*
 rm $MODULEPATH/packages/usr/lib/libisl*
 rm $MODULEPATH/packages/usr/lib/libkdb*

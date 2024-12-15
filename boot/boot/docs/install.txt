@@ -39,7 +39,7 @@ contain /porteux folder.
 | Legacy System: |
 ~~~~~~~~~~~~~~~~~~
 
-1) Copy /boot, /EFI and /porteux folders onto the desired partition.
+1) Copy /boot and /porteux folders onto the desired partition.
 
 -----
 
@@ -57,8 +57,9 @@ depending on the system you're setting the media storage.
 | From Linux: |
 ~~~~~~~~~~~~~~~
 
-1) Navigate into the /boot folder that you have just copied.
-2) From the terminal, run 'porteux-installer-for-linux.run' and follow
+1) Make sure the system has zstd installed.
+2) Navigate into the /boot folder that you have just copied.
+3) From the terminal, run 'sh porteux-installer-for-linux.run' and follow
 the instructions.
 
 ~~~~~~~~~~~~~~~

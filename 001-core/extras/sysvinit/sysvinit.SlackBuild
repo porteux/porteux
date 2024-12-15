@@ -12,15 +12,15 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="3.10"
+VERSION="3.11"
 wget https://github.com/slicer69/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz -O ${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 # Fix failure to show program version:
-zcat $CWD/sysvinit.always.define.version.diff.gz | patch -p1 --verbose
-sed -i "s/define VERSION.*/define VERSION \"$VERSION\"/g" src/init.c
+sed -i '/^#define VERSION/d' src/init.c
+sed -i "1s|^|#define VERSION \"$VERSION\"\n|" src/init.c
 
 # Use /dev/initctl instead of /run/initctl ; this is a named pipe and probably
 # should be in /dev anyway, but more importantly, having the upgraded package
@@ -30,8 +30,8 @@ for replace in src/shutdown.c src/Makefile src/initreq.h src/init.c doc/initctl 
 done
 
 cd src
-CFLAGS="$GCCFLAGS -flto" make clobber
-CFLAGS="$GCCFLAGS -flto" make -j${NUMBERTHREADS}
+CFLAGS="$GCCFLAGS -flto=auto" make clobber
+CFLAGS="$GCCFLAGS -flto=auto" make -j${NUMBERTHREADS}
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=gnome-shell
 
@@ -23,7 +23,7 @@ cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
