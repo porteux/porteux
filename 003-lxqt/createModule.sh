@@ -250,9 +250,8 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libfm-extra
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
-tar xfv ${currentPackage}.tar.gz
-cd ${currentPackage}-master
+git clone https://github.com/lxde/libfm ${currentPackage}
+cd ${currentPackage}
 version=`git describe | cut -d- -f1`
 sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/base/fm-file-info.c || exit 1
 sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/job/fm-deep-count-job.c || exit 1
