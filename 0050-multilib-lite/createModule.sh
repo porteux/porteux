@@ -89,6 +89,7 @@ rm -fr $MODULEPATH/packages/var/cache/fontconfig
 rm -fr $MODULEPATH/packages/var/db
 rm -fr $MODULEPATH/packages/var/kerberos
 rm -fr $MODULEPATH/packages/var/lib/dbus
+rm -fr $MODULEPATH/packages/var/run
 
 rm $MODULEPATH/packages/*
 rm $MODULEPATH/packages/lib/cpp
@@ -108,6 +109,7 @@ rm $MODULEPATH/packages/lib/libtermcap*
 rm $MODULEPATH/packages/lib/libudev*
 rm $MODULEPATH/packages/usr/lib/libadm*
 rm $MODULEPATH/packages/usr/lib/libargon*
+rm $MODULEPATH/packages/usr/lib/libboost*
 rm $MODULEPATH/packages/usr/lib/libcares.*
 rm $MODULEPATH/packages/usr/lib/libcc1.*
 rm $MODULEPATH/packages/usr/lib/libclang*
