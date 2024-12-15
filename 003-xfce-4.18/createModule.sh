@@ -162,9 +162,10 @@ installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=gspell
 	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 	rm -fr $MODULEPATH/${currentPackage}
 fi
+
+installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 
 # required by xfce4-panel
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
@@ -183,9 +184,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	# required by xfce4-screenshooter in current
 	installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
 fi
-
-# we want to build from current sources regardless
-export SOURCEREPOSITORY="${SLACKWAREDOMAIN}/slackware/slackware${SYSTEMBITS}-current/source"
 
 # xfce packages
 for package in \
