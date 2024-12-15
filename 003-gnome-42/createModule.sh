@@ -82,6 +82,7 @@ for package in \
 	geoclue2 \
 	libpeas \
 	libwnck4 \
+	pango \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
