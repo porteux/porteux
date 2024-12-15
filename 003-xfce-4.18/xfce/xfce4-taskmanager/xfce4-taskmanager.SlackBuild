@@ -12,16 +12,17 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget -r -nd --no-parent $SOURCEREPOSITORY/xfce/$PRGNAM/ -A $PRGNAM-*
-VERSION=${VERSION:-$(echo $PRGNAM-*.tar.?z* | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/apps/${PRGNAM}/-/tags?format=atom | grep ' <title>' | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+VERSION=$(echo $DOWNLOADVERSION | rev | cut -d '-' -f 1 | rev)
+wget https://gitlab.xfce.org/apps/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNAM}-${DOWNLOADVERSION}.tar.gz
 
 SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -flto=auto"
 
-tar xvf $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
+tar xvf $PRGNAM-$DOWNLOADVERSION.tar.?z*
+cd $PRGNAM-$DOWNLOADVERSION
 
 CFLAGS="$SLKCFLAGS" \
-./configure \
+./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
