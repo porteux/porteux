@@ -2,12 +2,19 @@ diff --git a/meson.build b/meson.build
 index e5f0a5e3..8fe1659f 100644
 --- meson.build
 +++ meson.build.patched
-@@ -114,16 +114,22 @@ enable_session_selector = get_option('session_selector')
+@@ -114,16 +114,29 @@ enable_session_selector = get_option('session_selector')
  session_bin_deps += dependency('gio-unix-2.0', version: glib_req_version)
  
  # Check for systemd
++use_systemd_session = get_option('logind_provider') == 'systemd'
++enable_systemd_session = get_option('logind_provider') == 'systemd'
++config_h.set('HAVE_SYSTEMD', enable_systemd_session)
++config_h.set('ENABLE_SYSTEMD_SESSION', enable_systemd_session)
++config_h.set('ENABLE_SYSTEMD_JOURNAL', enable_systemd_session)
++config_h.set('HAVE_ELOGIND', get_option('logind_provider') == 'elogind')
++config_h.set10('USE_SYSTEMD_SESSION', enable_systemd_session)
 +use_systemd = get_option('logind_provider') == 'systemd'
-+if use_systemd
++if use_systemd_session
 +  libsystemd_dep = dependency('libsystemd', version: '>= 209', required: true)
 +  session_bin_deps += libsystemd_dep
 +elif get_option('logind_provider') == 'elogind'
