@@ -119,6 +119,7 @@ rm $MODULEPATH/packages/usr/lib/libglslang.*
 rm $MODULEPATH/packages/usr/lib/libgmp*
 rm $MODULEPATH/packages/usr/lib/libhistoy*
 rm $MODULEPATH/packages/usr/lib/libhsail-rt.*
+rm $MODULEPATH/packages/usr/lib/libicu*
 rm $MODULEPATH/packages/usr/lib/libidn*
 rm $MODULEPATH/packages/usr/lib/libisl*
 rm $MODULEPATH/packages/usr/lib/libkdb*
