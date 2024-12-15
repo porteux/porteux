@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"
@@ -8,6 +8,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 DownloadPackage "automake" &
 DownloadPackage "autoconf" &
 DownloadPackage "autoconf-archive" &
+DownloadPackage "bc" &
 DownloadPackage "binutils" &
 DownloadPackage "bison" &
 DownloadPackage "cmake" &
@@ -20,6 +21,7 @@ DownloadPackage "gettext-tools" &
 DownloadPackage "git" &
 DownloadPackage "gmp" &
 DownloadPackage "guile" &
+DownloadPackage "hwdata" &
 DownloadPackage "intltool" &
 DownloadPackage "isl" &
 DownloadPackage "itstool" &

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"

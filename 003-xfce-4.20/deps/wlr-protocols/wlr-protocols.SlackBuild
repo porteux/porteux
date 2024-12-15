@@ -1,0 +1,19 @@
+#!/bin/bash
+
+PRGNAM=wlr-protocols
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://gitlab.freedesktop.org/wlroots/${PRGNAM}/-/archive/master/${PRGNAM}-master.tar.gz
+tar xfv $PRGNAM-master.tar.?z*
+cd $PRGNAM-master
+
+make install

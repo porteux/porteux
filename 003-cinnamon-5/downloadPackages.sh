@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"
@@ -38,6 +38,11 @@ DownloadPackage "python-pillow" &
 DownloadPackage "python-requests" &
 DownloadPackage "python-six" &
 DownloadPackage "vte" &
+wait
+
+### packages that require specific striping
+
+DownloadPackage "gettext-tools" & # required by extensions
 wait
 
 ### temporary packages for further building

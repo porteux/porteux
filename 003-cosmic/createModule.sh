@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 MODULENAME=003-cosmic
 
@@ -38,8 +38,9 @@ rustup component add rust-src --toolchain nightly
 
 currentPackage=just
 cd $MODULEPATH
-git clone https://github.com/casey/${currentPackage}
-cd ${currentPackage}
+wget https://github.com/casey/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
+tar xfv ${currentPackage}.tar.gz
+cd ${currentPackage}-master
 cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-gnu || exit 1
 export PATH=$MODULEPATH/just/target/x86_64-unknown-linux-gnu/release/:$PATH
 
@@ -58,6 +59,14 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+# cosmic extras
+for package in \
+	observatory \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
 # cosmic packages
 for package in \
 	cosmic-applets \
@@ -67,6 +76,7 @@ for package in \
 	cosmic-edit \
 	cosmic-files \
 	cosmic-greeter \
+	cosmic-idle \
 	cosmic-icons \
 	cosmic-launcher \
 	cosmic-notifications \

@@ -29,7 +29,7 @@ cd $PRGNAM-$VERSION
 # Fix for wide-only ncurses:
 sed 's:<ncursesw/:<:g' -i src/watch.c
 
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 ./autogen.sh && ./configure \
 	--prefix=/ \
 	--bindir=/bin \
@@ -116,7 +116,7 @@ if [ ! -r configure ]; then
   fi
 fi
 
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -135,7 +135,7 @@ mv $PKG/usr/bin/killall $PKG/bin
 ln -s /bin/killall $PKG/usr/bin/killall
 
 cd ../procinfo-ng-$PROCINFONGVER
-CXXFLAGS="$GCCFLAGS -flto" \
+CXXFLAGS="$GCCFLAGS -flto=auto" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

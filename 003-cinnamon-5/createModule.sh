@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 MODULENAME=003-cinnamon
 
@@ -21,6 +21,21 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 ### download packages from slackware repositories
 
 DownloadFromSlackware
+
+### packages that require specific stripping
+
+currentPackage=gettext-tools
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+version=`ls *.txz -a | rev | cut -d '-' -f 3 | rev`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/bin/msgfmt "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libgettextlib* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libgettextsrc* "${currentPackage}-stripped-$version"
+cd ${currentPackage}-stripped-$version
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-$ARCH-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside Slackware repository
 

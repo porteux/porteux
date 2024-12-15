@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"
@@ -9,6 +9,7 @@ DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
 DownloadPackage "cairomm1" & # required by gnome-system-monitor
 DownloadPackage "colord" &
+DownloadPackage "cracklib" # required by gnome-control-center
 DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
@@ -40,6 +41,7 @@ DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
 DownloadPackage "mozjs128" &
 DownloadPackage "pangomm2" & # required by gnome-system-monitor
+DownloadPackage "libpwquality" & # required by gnome-control-center
 DownloadPackage "woff2" &
 DownloadPackage "xorg-server-xwayland" &
 wait
@@ -55,13 +57,13 @@ DownloadPackage "c-ares" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
-DownloadPackage "hwdata" & # required by libdisplay-info
-DownloadPackage "iso-codes" &
+DownloadPackage "iso-codes" & # required by gnome-desktop
 DownloadPackage "krb5" &
 wait
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
+DownloadPackage "openldap" & # required by libadwaita (appstream)
 DownloadPackage "python-pip" &
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "vulkan-sdk" & # required by gtksourceview
