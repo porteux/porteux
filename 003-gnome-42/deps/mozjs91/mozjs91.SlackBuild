@@ -26,6 +26,10 @@ cd ..
 rm -rf firefox-unpack
 cd $SRCNAME-$(echo $VERSION | cut -f 1 -d e) || cd $SRCNAME-$VERSION
 
+# We need to use the incredibly ancient autoconf-2.13 for this
+( cd $CWD/autoconf ; ./autoconf.build )
+PATH=$MODULEPATH/autoconf/autoconf-tmp/usr/bin:$PATH
+
 # Patches from Fedora:
 zcat $CWD/patches/fix-soname.patch.gz | patch -p1 --verbose
 zcat $CWD/patches/copy-headers.patch.gz | patch -p1 --verbose
@@ -44,6 +48,9 @@ zcat $CWD/patches/0001-Skip-failing-tests-on-ppc64-and-s390x.patch.gz | patch -p
 rm -rf modules/zlib
 
 cd js/src
+
+# We need to do this because patches above touch configure.in:
+autoconf-2.13
 
 export RUSTFLAGS="-C embed-bitcode"
 

@@ -7,6 +7,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
+DownloadPackage "cracklib" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
@@ -20,6 +21,7 @@ DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libgtop" &
 DownloadPackage "libproxy" &
+DownloadPackage "libpwquality" &
 DownloadPackage "libxklavier" &
 DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "woff2" &
@@ -44,6 +46,7 @@ DownloadPackage "libwnck3" &
 DownloadPackage "llvm" &
 DownloadPackage "rust" &
 DownloadPackage "sassc" & # required by gnome-console
+DownloadPackage "texinfo" & # required by mozjs91
 DownloadPackage "xtrans" &
 wait
 
