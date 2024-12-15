@@ -14,7 +14,7 @@ SetFlags() {
 	fi
 
 	export SLACKBUILDVERSION=$SLACKWAREVERSION
-	export KERNELVERSION="6.11.4"
+	export KERNELVERSION="6.12.5"
 
 	export SCRIPTPATH="$PWD"
 	export PORTEUXBUILDERPATH="/tmp/porteux-builder-$PORTEUXBUILD"
@@ -31,7 +31,7 @@ SetFlags() {
         export SYSTEMBITS=
 	fi
 
-	export MAKEPKGFLAGS="-l y -c n --compress -0"	
+	export MAKEPKGFLAGS="-l y -c n --compress -0"
 	export ARCHITECTURELEVEL="x86-64-v2"
 	export GCCFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic -s -fuse-linker-plugin -Wl,--as-needed -Wl,-O1"
 	export CLANGFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic"
