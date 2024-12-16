@@ -23,6 +23,45 @@ DownloadFromSlackware
 
 ### packages that require specific stripping
 
+currentPackage=aaa_libraries
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
+ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}-*.txz
+rm usr/lib/libslang.so.1*
+rm usr/lib/libstdc++.so*
+ROOT=./ installpkg gcc-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P lib/libfuse.* ${currentPackage}-stripped-$version/
+cp --parents -P lib/libgssapi_krb5.* ${currentPackage}-stripped-$version/
+cp --parents -P lib/libk5crypto.* ${currentPackage}-stripped-$version/
+cp --parents -P lib/libkrb5.* ${currentPackage}-stripped-$version/
+cp --parents -P lib/libkrb5support.* ${currentPackage}-stripped-$version/
+cp --parents -P lib/libpcre2* ${currentPackage}-stripped-$version/
+cp --parents -P lib/libsigsegv.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib/libatomic.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib/libcares.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib/libcups.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib/libgcc_s.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib/libgmp.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib/libgmpxx.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib/libgomp.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib/libltdl.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib/libslang.* ${currentPackage}-stripped-$version/
+cp --parents -P usr/lib/libstdc++.* ${currentPackage}-stripped-$version/
+cd ${currentPackage}-stripped-$version/usr/lib
+cp -fs libcares.so* libcares.so
+cp -fs libcares.so libcares.so.2
+cp -fs libcups.so* libcups.so
+cp -fs libgmp.so* libgmp.so
+cp -fs libgmpxx.so* libgmpxx.so
+cp -fs libltdl.so* libltdl.so
+cp -fs libslang.so* libslang.so
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
