@@ -25,18 +25,6 @@ fi
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-# Needed for 15.0's older meson but disables RPI
-if [ "$(meson --version)" = "0.59.4" ]; then
-	echo "Using meson-0.59.4 for 15.0"
-	patch -p0 < $CWD/use_older_meson.diff
-fi
-
-pipewire="-Dpipewire=disabled" ; [ "${USE_PIPEWIRE:-no}" != "no" ] && pipewire="-Dpipewire=auto"
-
-# This leaves an opening for additional build options.
-# See `meson configure` to see what's available.
-BUILD_OPTS=${BUILD_OPTS:-""}
-
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
@@ -54,8 +42,7 @@ meson setup \
 	-Dvulkan=disabled \
 	-Dshaderc=disabled \
 	-Dlua=luajit \
-	$pipewire \
-	$BUILD_OPTS
+	-Dpipewire=auto
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
