@@ -28,7 +28,7 @@ meson setup \
     --infodir=/usr/info \
     --mandir=/usr/man \
     --localstatedir=/var \
-    -Dlynx=false \
+    -Dlynx=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

@@ -324,7 +324,7 @@ installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
 rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=mpv
-USE_PIPEWIRE=yes sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
