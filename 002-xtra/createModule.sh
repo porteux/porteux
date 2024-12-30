@@ -308,20 +308,19 @@ installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by mpv
-currentPackage=LuaJIT
-mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
-tar xfv ${currentPackage}.tar.gz
-cd ${currentPackage}-master
+currentPackage=luajit
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+git clone https://${currentPackage}.org/git/${currentPackage}.git
+cd ${currentPackage}
 version=`git --git-dir=.git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sed -i -e '/-DLUAJIT_ENABLE_LUA52COMPAT/s/^#//' src/Makefile
 CFLAGS="$GCCFLAGS" CXXFLAGS="$GCCFLAGS" make -j${NUMBERTHREADS} Q= PREFIX=/usr INSTALL_LIB=/usr/lib$SYSTEMBITS || exit 1
-make Q= PREFIX=/usr INSTALL_LIB=$MODULEPATH/${currentPackage,,}/package/usr/lib$SYSTEMBITS install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
-rm -fr $MODULEPATH/${currentPackage,,}/package/usr/bin
-cd $MODULEPATH/${currentPackage,,}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
-rm -fr $MODULEPATH/${currentPackage,,}
+make Q= PREFIX=/usr INSTALL_LIB=$MODULEPATH/${currentPackage}/package/usr/lib$SYSTEMBITS install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+rm -fr $MODULEPATH/${currentPackage}/package/usr/bin
+cd $MODULEPATH/${currentPackage}/package
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
+installpkg $MODULEPATH/packages/${currentPackage}*.t?z
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mpv
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1

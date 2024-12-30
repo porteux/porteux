@@ -6,7 +6,7 @@ Latest release direct link: https://github.com/porteux/porteux/releases/latest
 
 PorteuX is a Linux distro based on Slackware, inspired by Slax and Porteus and available to the public for free. Its main goal is to be super fast, small, portable, modular and immutable (if the user wants so).
 
-It's already pre-configured for basic usage, including lightweight applications for each one of the 7 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, Nvidia drivers, office suite, multilib, messengers, emulators, etc.
+It's already pre-configured for basic usage, including lightweight applications for each one of the 7 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, Nvidia drivers, Wine, office suite, multilib (32-bit compat), messengers, emulators, etc.
 
 Out of the box PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or Nvidia cards (for Nvidia cards it's required to download Nvidia driver from the app store).
 
