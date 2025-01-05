@@ -128,9 +128,8 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=adwaita-qt
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget https://github.com/FedoraQt/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
-tar xfv ${currentPackage}.tar.gz
-cd ${currentPackage}-master
+git clone https://github.com/FedoraQt/${currentPackage} || exit 1
+cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 cp $SCRIPTPATH/deps/adwaita-qt/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
