@@ -51,14 +51,13 @@ for program in last ; do
 	chown root:root $PKG/usr/bin/$program
 done
 ( cd $PKG/usr/bin ; ln -sf last lastb )
-mv $PKG/sbin/init $PKG/sbin/init.new
-chmod 755 $PKG/sbin/init.new
-chown root:root $PKG/sbin/init.new
+
+cp $CWD/init $PKG/sbin/
+chmod 755 $PKG/sbin/init
+chown root:root $PKG/sbin/init
 
 # Build the package:
 cd $PKG
-cp $CWD/init sbin/init.new
-
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
