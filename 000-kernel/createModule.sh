@@ -173,7 +173,10 @@ dir2xzm ${MODULEPATH}/${MODULENAME} -o=${MODULENAME}-${KERNELVERSION}.xzm -q > /
 
 echo "Creating crippled xzm module..."
 CRIPPLEDSOURCEPATH=${MODULEPATH}/${CRIPPLEDMODULENAME}/usr/src
-mkdir -p ${CRIPPLEDSOURCEPATH} && mv ${MODULEPATH}/linux-${KERNELVERSION} ${CRIPPLEDSOURCEPATH}
+mkdir -p ${CRIPPLEDSOURCEPATH}
+mv ${MODULEPATH}/linux-${KERNELVERSION} ${CRIPPLEDSOURCEPATH}
+mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/
+mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/config
 ln -sf linux-${KERNELVERSION} ${CRIPPLEDSOURCEPATH}/linux
 
 # strip crippled
@@ -202,10 +205,9 @@ find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "LICENSE*" -exec rm -fr 
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "MAINTAINERS*" -exec rm -fr {} \; -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "README*" -exec rm -fr {} \; -print > /dev/null 2>&1
 
-find ${CRIPPLEDSOURCEPATH} | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/.config
 
-mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build
-cp ${SCRIPTPATH}/${SYSTEMBITS}bit.config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/.config
+find ${CRIPPLEDSOURCEPATH} | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 
 # create crippled xzm module
 dir2xzm ${MODULEPATH}/${CRIPPLEDMODULENAME} -q > /dev/null 2>&1
