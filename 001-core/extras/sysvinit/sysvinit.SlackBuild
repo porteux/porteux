@@ -51,6 +51,12 @@ for program in last ; do
 	chown root:root $PKG/usr/bin/$program
 done
 ( cd $PKG/usr/bin ; ln -sf last lastb )
+( cd $PKG/sbin ; rm -rf telinit )
+( cd $PKG/sbin ; ln -sf  init telinit )
+( cd $PKG/sbin ; rm -rf reboot )
+( cd $PKG/sbin ; ln -sf  halt reboot )
+( cd $PKG/sbin ; rm -rf poweroff )
+( cd $PKG/sbin ; ln -sf halt poweroff )
 
 cp $CWD/init $PKG/sbin/
 chmod 755 $PKG/sbin/init
