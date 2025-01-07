@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="3.11"
+VERSION="3.13"
 wget https://github.com/slicer69/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz -O ${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
@@ -62,8 +62,6 @@ cp $CWD/init $PKG/sbin/
 chmod 755 $PKG/sbin/init
 chown root:root $PKG/sbin/init
 
-# Build the package:
-cd $PKG
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
