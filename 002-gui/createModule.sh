@@ -32,6 +32,9 @@ fi
 
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
+installpkg $MODULEPATH/packages/cups*.txz || exit 1
+rm $MODULEPATH/packages/cups*.txz
+
 currentPackage=gtk+3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/lah7/gtk3-classic/archive/refs/heads/master.tar.gz || exit 1
