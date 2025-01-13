@@ -25,7 +25,6 @@ DownloadPackage "desktop-file-utils" &
 DownloadPackage "djvulibre" &
 DownloadPackage "esound" &
 DownloadPackage "exiv2" &
-DownloadPackage "expat" &
 DownloadPackage "flac" &
 DownloadPackage "fontconfig" &
 DownloadPackage "freeglut" &
@@ -265,6 +264,7 @@ wait
 
 ### temporary packages for further building
 
+DownloadPackage "cups" & # to build gtk+3
 DownloadPackage "fuse" & # to build archivemount
 wait
 
