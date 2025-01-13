@@ -148,13 +148,21 @@ for package in \
 	libpeas \
 	libgxps \
 	exempi \
+	mozjs115 \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# cinnamon extras
+for package in \
 	file-roller \
 	gnome-terminal \
 	gnome-screenshot \
 	gnome-system-monitor \
-	mozjs115 \
 ; do
-sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
