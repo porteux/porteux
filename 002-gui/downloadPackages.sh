@@ -265,7 +265,6 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "cups" & # to build gtk+3
-DownloadPackage "fuse" & # to build archivemount
 wait
 
 ### script clean up
