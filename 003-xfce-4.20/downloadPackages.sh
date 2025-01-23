@@ -14,8 +14,9 @@ DownloadPackage "gspell" &
 DownloadPackage "gtksourceview3" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
-wait
 DownloadPackage "libcanberra" &
+wait
+DownloadPackage "libdisplay-info" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
 DownloadPackage "libindicator" &

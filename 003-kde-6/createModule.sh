@@ -279,7 +279,6 @@ find $KDE6PACKAGES -type f -name "kwindowsystem-6*" -exec cp {} $MODULEPATH/pack
 find $KDE6PACKAGES -type f -name "kwrited*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kxmlgui-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "layer-shell-qt*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "libdisplay-info*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "libkdcraw*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "libkexiv2*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "libkipi*" -exec cp {} $MODULEPATH/packages/ \;
