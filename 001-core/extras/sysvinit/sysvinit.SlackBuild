@@ -62,6 +62,9 @@ cp $CWD/init $PKG/sbin/
 chmod 755 $PKG/sbin/init
 chown root:root $PKG/sbin/init
 
+# already included in util-linux
+rm $PKG/usr/bin/last
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
