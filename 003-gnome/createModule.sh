@@ -65,11 +65,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-t
 PATH=/root/.cargo/bin/:$PATH
 rustup component add rust-src --toolchain nightly
 
-export GNOME_LATEST_MAJOR_VERSION=$(curl -s https://download.gnome.org/core/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1 | tr -d '/')
-gnomeLatestVersionTest=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | grep -oP '\d+(\.\d+)?' | sort -V | tail -n 1 | tr -d '/')
-[ ! "${gnomeLatestVersionTest}" ] && ((GNOME_LATEST_MAJOR_VERSION--))
-export GNOME_LATEST_VERSION=$(curl -s https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/ | grep -oP '(?<=<a href=")[^"]+(?=" title)' | grep -v rc | grep -v alpha | grep -v beta | grep -oP '\d+(\.\d+)?' | sort -V | tail -n 1 | tr -d '/')
-[ ! "${GNOME_LATEST_MAJOR_VERSION}" ] || [ ! "${GNOME_LATEST_VERSION}" ] && echo "Couldn't detect GNOME latest version" && exit 1
+export GNOME_LATEST_VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
 
 echo "Building GNOME ${GNOME_LATEST_VERSION}..."
 MODULENAME=$MODULENAME-${GNOME_LATEST_VERSION}
@@ -85,7 +81,6 @@ for package in \
 	libpeas \
 	colord-gtk \
 	libei \
-	libdisplay-info \
 	libportal \
 	libcloudproviders \
 	libheif \
@@ -240,6 +235,7 @@ rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
 rm usr/libexec/localsearch-*
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
+rm usr/share/applications/vte-gtk4.desktop
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null

@@ -30,6 +30,7 @@ DownloadPackage "gtkmm4" & # required by gnome-system-monitor
 DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
 DownloadPackage "libcanberra" &
+DownloadPackage "libdisplay-info" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
 DownloadPackage "libhandy" &
