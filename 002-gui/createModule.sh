@@ -45,7 +45,7 @@ rm gtk3-classic*/appearance__disable-backdrop.patch
 sed -i "s|+++ .*/gtk/|+++ gtk/|g" gtk3-classic*/*.patch
 sed -i "s|+++ .*/gdk/|+++ gdk/|g" gtk3-classic*/*.patch
 wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware${SYSTEMBITS}-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|mkdir meson-build|cp -r $PWD/gtk3-classic*/* /tmp/gtk+-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\nmkdir meson-build|g" ${currentPackage}.SlackBuild
+sed -i "s|mkdir meson-build|cp -r $PWD/gtk3-classic*/* /tmp/gtk-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\nmkdir meson-build|g" ${currentPackage}.SlackBuild
 sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
