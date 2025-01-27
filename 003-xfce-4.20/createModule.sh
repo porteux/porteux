@@ -163,6 +163,7 @@ makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by xfdesktop
+installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
 
 # required by mousepad
