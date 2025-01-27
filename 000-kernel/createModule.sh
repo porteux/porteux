@@ -101,7 +101,7 @@ sed -i "s|select DEBUG_KERNEL||g" init/Kconfig
 
 echo "Building vmlinuz (this may take a while)..."
 #make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} LLVM=1 CC=clang "KCFLAGS=$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" || { echo "Fail to build kernel."; exit 1; }
-make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} "KCFLAGS=$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -fivopts -fmodulo-sched" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} "KCFLAGS=$GCCFLAGS" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
 make -j${NUMBERTHREADS} INSTALL_MOD_PATH=../ firmware_install > /dev/null 2>&1
