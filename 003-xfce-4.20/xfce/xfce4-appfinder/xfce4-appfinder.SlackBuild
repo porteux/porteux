@@ -16,8 +16,6 @@ DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=a
 VERSION=$(echo $DOWNLOADVERSION | rev | cut -d '-' -f 1 | rev)
 wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNAM}-${DOWNLOADVERSION}.tar.gz
 
-SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -flto=auto"
-
 tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
@@ -29,7 +27,7 @@ for i in *.patch; do patch -p0 < $i; done
 sed -i 's/xfce_appfinder_model_fuzzy_match (item->command, string);/strcasestr(item->command, string) != 0;/g' src/appfinder-model.c
 sed -i 's/xfce_appfinder_model_fuzzy_match (item->key, string_casefold);/strcasestr(item->key, string_casefold) != 0;/g' src/appfinder-model.c
 
-CFLAGS="$SLKCFLAGS" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

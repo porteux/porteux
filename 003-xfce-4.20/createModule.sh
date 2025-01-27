@@ -42,7 +42,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
 tar xfv ${currentPackage}.tar.gz
 cd ${currentPackage}-master
-./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
+./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
