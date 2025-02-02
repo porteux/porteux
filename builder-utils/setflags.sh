@@ -37,8 +37,8 @@ SetFlags() {
 	export GCCFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic -s -fuse-linker-plugin -Wl,--as-needed -Wl,-O1 -ftree-loop-distribute-patterns -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -fivopts -fmodulo-sched"
 	export CLANGFLAGS="-O3 -march=${ARCHITECTURELEVEL:-x86_64} -mtune=generic"
 	export NUMBERTHREADS=$(nproc --all)
-	#export SLACKWAREDOMAIN="http://ftp.slackware.com/pub"
-	export SLACKWAREDOMAIN="http://slackware.uk"
+	export SLACKWAREDOMAIN="http://ftp.slackware.com/pub"
+	#export SLACKWAREDOMAIN="http://slackware.uk"
 	export REPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
 	export PATCHREPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS/patches"
 	export SOURCEREPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/source"
