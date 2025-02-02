@@ -1,6 +1,7 @@
 #!/bin/bash
 
 PRGNAM=gnome-console
+downloadName=console
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -12,11 +13,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${downloadName}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
+wget https://gitlab.gnome.org/GNOME/${downloadName}/-/archive/${VERSION}/${downloadName}-${VERSION}.tar.gz
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
+tar xfv $downloadName-$VERSION.tar.?z*
+cd $downloadName-$VERSION
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \

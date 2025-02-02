@@ -145,24 +145,6 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=mp4v2
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/lib${currentPackage}/ -A * || exit 1
-mv lib${currentPackage}.SlackBuild ${currentPackage}.SlackBuild
-info=$(DownloadLatestFromGithub "enzo1982" ${currentPackage})
-version=${info#* }
-sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
-sed -i "s|patch |#patch |g" ${currentPackage}.SlackBuild
-sed -i "s|PRGNAM=libmp4v2|PRGNAM=mp4v2|g" ${currentPackage}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
-CC=clang CXX=clang++ sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=libass
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/libass/${currentPackage}.SlackBuild  || exit 1
@@ -298,7 +280,11 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
 	wget https://ffmpeg.org/releases/ffmpeg-4.4.5.tar.xz
 fi
-sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+if [ $SLACKWAREVERSION != "current" ]; then
+	sed -i "s|\./configure \\\\| \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+else
+	sed -i "s|\./configure \\\\|patch -p0 < $SCRIPTPATH/extras/${currentPackage}/fix-x265-encode.patch; \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+fi
 sed -i "s|-O2.*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|\make |make CC=clang CXX=clang++ |g" ${currentPackage}.SlackBuild
@@ -308,23 +294,22 @@ installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by mpv
-currentPackage=LuaJIT
-mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
-tar xfv ${currentPackage}.tar.gz
-cd ${currentPackage}-master
+currentPackage=luajit
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+git clone https://${currentPackage}.org/git/${currentPackage}.git
+cd ${currentPackage}
 version=`git --git-dir=.git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sed -i -e '/-DLUAJIT_ENABLE_LUA52COMPAT/s/^#//' src/Makefile
 CFLAGS="$GCCFLAGS" CXXFLAGS="$GCCFLAGS" make -j${NUMBERTHREADS} Q= PREFIX=/usr INSTALL_LIB=/usr/lib$SYSTEMBITS || exit 1
-make Q= PREFIX=/usr INSTALL_LIB=$MODULEPATH/${currentPackage,,}/package/usr/lib$SYSTEMBITS install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
-rm -fr $MODULEPATH/${currentPackage,,}/package/usr/bin
-cd $MODULEPATH/${currentPackage,,}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage,,}*.t?z
-rm -fr $MODULEPATH/${currentPackage,,}
+make Q= PREFIX=/usr INSTALL_LIB=$MODULEPATH/${currentPackage}/package/usr/lib$SYSTEMBITS install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+rm -fr $MODULEPATH/${currentPackage}/package/usr/bin
+cd $MODULEPATH/${currentPackage}/package
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
+installpkg $MODULEPATH/packages/${currentPackage}*.t?z
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mpv
-USE_PIPEWIRE=yes sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root

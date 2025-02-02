@@ -42,7 +42,7 @@ wget https://github.com/casey/${currentPackage}/archive/refs/heads/master.tar.gz
 tar xfv ${currentPackage}.tar.gz
 cd ${currentPackage}-master
 cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-gnu || exit 1
-export PATH=$MODULEPATH/just/target/x86_64-unknown-linux-gnu/release/:$PATH
+export PATH=$MODULEPATH/just-master/target/x86_64-unknown-linux-gnu/release/:$PATH
 
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
@@ -56,15 +56,18 @@ for package in \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just" \) -exec rm -rf '{}' \; 2>/dev/null
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+# required by observatory
+installpkg $MODULEPATH/packages/libdisplay-info*.txz > /dev/null 2>&1
 
 # cosmic extras
 for package in \
 	observatory \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just" \) -exec rm -rf '{}' \; 2>/dev/null
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
 # cosmic packages
@@ -92,11 +95,11 @@ for package in \
 	xdg-desktop-portal-cosmic \
 ; do
 sh $SCRIPTPATH/cosmic/${package}/${package}.SlackBuild || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just" \) -exec rm -rf '{}' \; 2>/dev/null
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
 # only required for building not for run-time
-rm -fr $MODULEPATH/just
+rm -fr $MODULEPATH/just-master
 
 ### fake root
 

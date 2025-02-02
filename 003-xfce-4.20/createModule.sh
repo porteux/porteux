@@ -42,7 +42,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/lxde/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
 tar xfv ${currentPackage}.tar.gz
 cd ${currentPackage}-master
-./autogen.sh && CFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=32 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -Wa,-mbranches-within-32B-boundaries -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
+./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -62,7 +62,7 @@ sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mate-polkit
@@ -70,10 +70,6 @@ sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=wlr-protocols
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=libdisplay-info
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -130,7 +126,7 @@ installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 
 currentPackage=pavucontrol
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mate-utils
@@ -140,7 +136,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-cp $SCRIPTPATH/deps/${currentPackage}/*.patch .
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
 sed -i "s|baobab||g" ./Makefile.am
 sed -i "s|mate-dictionary||g" ./Makefile.am
@@ -167,6 +163,7 @@ makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by xfdesktop
+installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
 
 # required by mousepad

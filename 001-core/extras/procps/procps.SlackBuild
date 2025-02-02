@@ -12,22 +12,27 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-wget https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+downloadedVersion=$(curl -s https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+VERSION=${downloadedVersion//[vV]}
+wget https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/archive/${downloadedVersion}/${PRGNAM}-${downloadedVersion}.tar.gz
 
 PSMISCVER=$(curl -s https://gitlab.com/psmisc/psmisc/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 wget https://gitlab.com/psmisc/psmisc/-/archive/${PSMISCVER}/psmisc-${PSMISCVER}.tar.gz
 
 PROCINFONGVER=${PROCINFONGVER:-2.0.304}
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xvf $PRGNAM-${downloadedVersion}.tar.?z
 tar xvf psmisc-$PSMISCVER.tar.?z
 tar xvf $CWD/procinfo-ng-$PROCINFONGVER.tar.?z
 
-cd $PRGNAM-$VERSION
+cd $PRGNAM-${downloadedVersion}
 
 # Fix for wide-only ncurses:
 sed 's:<ncursesw/:<:g' -i src/watch.c
+
+# Fix Gitlab tar not containing version files
+echo $VERSION > .version
+echo $VERSION > .tarball-version
 
 CFLAGS="$GCCFLAGS -flto=auto" \
 ./autogen.sh && ./configure \
@@ -40,7 +45,7 @@ CFLAGS="$GCCFLAGS -flto=auto" \
 	--localstatedir=/var \
 	--mandir=/usr/man \
 	--datarootdir=/usr/share \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--docdir=/usr/doc/$PRGNAM-$downloadedVersion \
 	--enable-static=no \
 	--disable-silent-rules \
 	--disable-rpath \
@@ -53,9 +58,6 @@ CFLAGS="$GCCFLAGS -flto=auto" \
 	--with-elogind \
 	--disable-modern-top \
 	--build=$ARCH-porteux-linux
-  
-# fix libproc2.pc having unknown version
-sed -i "s|Version:.*|Version: ${VERSION//[vV]}|g" library/libproc2.pc
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
@@ -154,4 +156,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION}-$ARCH-1.txz

@@ -47,6 +47,7 @@ DownloadPackage "ethtool" &
 wait
 DownloadPackage "eudev" &
 DownloadPackage "exfatprogs" &
+DownloadPackage "expat" &
 DownloadPackage "f2fs-tools" &
 DownloadPackage "file" &
 DownloadPackage "findutils" &
