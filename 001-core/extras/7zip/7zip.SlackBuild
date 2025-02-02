@@ -14,16 +14,17 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	UASMVERSION="255"
-else
-	UASMVERSION="257"
-fi
+uasmVersion=2.57
+wget https://github.com/Terraspace/UASM/archive/refs/tags/v${uasmVersion}r.tar.gz -O UASM-${uasmVersion}r.tar.gz
 
-wget https://www.terraspace.co.uk/uasm${UASMVERSION}_linux64.zip
-unzip uasm${UASMVERSION}_linux64.zip
-chmod +x uasm
-PATH=$PATH:$TMP
+tar xfv UASM-${uasmVersion}r.tar.?z*
+cd UASM-${uasmVersion}r
+
+make -j${NUMBERTHREADS} CC="gcc -fcommon -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion" -f Makefile-Linux-GCC-64.mak
+
+chmod +x $PWD/GccUnixR/uasm
+PATH=$PATH:$PWD/GccUnixR
+cd ..
 
 info=$(DownloadLatestFromGithub "ip7z" ${PRGNAM})
 VERSION=${info#* }

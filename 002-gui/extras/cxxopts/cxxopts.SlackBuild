@@ -34,8 +34,5 @@ make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

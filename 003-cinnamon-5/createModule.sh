@@ -71,8 +71,8 @@ cp -r icons/Yaru-blue/* $blueIconRootFolder || exit 1
 rm -fr $mainIconRootFolder/cursor*
 rm -fr $mainIconRootFolder/*@2x
 rm -fr $blueIconRootFolder/*@2x
-cp $SCRIPTPATH/deps/${currentPackage}/index.theme $mainIconRootFolder
-cp $SCRIPTPATH/deps/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
+cp $SCRIPTPATH/extras/${currentPackage}/index.theme $mainIconRootFolder
+cp $SCRIPTPATH/extras/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
 gtk-update-icon-cache -f $mainIconRootFolder || exit 1
 gtk-update-icon-cache -f $blueIconRootFolder || exit 1
 cd ../${currentPackage}-$version-noarch
@@ -190,12 +190,20 @@ for package in \
 	libpeas \
 	libgxps \
 	exempi \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# cinnamon extras
+for package in \
 	file-roller \
 	gnome-terminal \
 	gnome-screenshot \
 	gnome-system-monitor \
 ; do
-sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
