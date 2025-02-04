@@ -279,8 +279,6 @@ wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
 	wget https://ffmpeg.org/releases/ffmpeg-4.4.5.tar.xz
-fi
-if [ $SLACKWAREVERSION != "current" ]; then
 	sed -i "s|\./configure \\\\| \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 else
 	sed -i "s|\./configure \\\\|patch -p0 < $SCRIPTPATH/extras/${currentPackage}/fix-x265-encode.patch; \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
@@ -288,7 +286,7 @@ fi
 sed -i "s|-O2.*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|\make |make CC=clang CXX=clang++ |g" ${currentPackage}.SlackBuild
-AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1
+AMF=no AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
