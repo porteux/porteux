@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULENAME=003-lxde
+MODULENAME=003-lxde-0.10.1
 
 source "$PWD/../builder-utils/setflags.sh"
 
