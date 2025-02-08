@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULENAME=003-cinnamon
+MODULENAME=003-cinnamon-5.6.8
 
 source "$PWD/../builder-utils/setflags.sh"
 

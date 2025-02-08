@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULENAME=003-kde
+MODULENAME=003-kde-5.23.5
 
 source "$PWD/../builder-utils/setflags.sh"
 
