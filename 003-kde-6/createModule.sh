@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 MODULENAME=003-kde
 
@@ -40,14 +40,18 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt6EglFSDeviceIntegration.* "${currentPack
 cp --parents -P usr/lib$SYSTEMBITS/libQt6EglFsKmsSupport.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Gui.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6LabsQmlModels.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6LabsPlatform.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Multimedia.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6MultimediaQuick.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Network.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6OpenGL.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6OpenGLWidgets.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Positioning.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6PositioningQuick.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6PrintSupport.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Qml.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlCore.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlMeta.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlModels.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlWorkerScript.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Quick.* "${currentPackage}-stripped-$version"
@@ -106,6 +110,7 @@ cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/Qt/labs/* "${currentPackage}-stripped
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/Qt5Compat/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtCore/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtMultimedia/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtPositioning/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtQml/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtQuick/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtQuick3D/* "${currentPackage}-stripped-$version"
@@ -148,7 +153,7 @@ filename=${info% *}
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-CXXFLAGS="$GCCFLAGS -flto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
+CXXFLAGS="$GCCFLAGS -flto=auto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
 cd $MODULEPATH/${currentPackage,,}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
@@ -176,7 +181,7 @@ done
 # only required for building
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
 
-# extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/page57.html#post6532418
+# extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/
 KDE6PACKAGES=/tmp/packages
 [ ! -d $KDE6PACKAGES ] && exit 1
 
@@ -274,7 +279,6 @@ find $KDE6PACKAGES -type f -name "kwindowsystem-6*" -exec cp {} $MODULEPATH/pack
 find $KDE6PACKAGES -type f -name "kwrited*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "kxmlgui-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "layer-shell-qt*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "libdisplay-info*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "libkdcraw*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "libkexiv2*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "libkipi*" -exec cp {} $MODULEPATH/packages/ \;
@@ -358,9 +362,13 @@ rm usr/bin/UserFeedbackConsole
 rm etc/kde/xdg/autostart/baloo_file.desktop
 rm etc/kde/xdg/autostart/kaccess.desktop
 rm etc/kde/xdg/autostart/xembedsniproxy.desktop
+rm usr/lib${SYSTEMBITS}/libKF5*.so
+rm usr/lib${SYSTEMBITS}/liboxygenstyle5.so
+rm usr/lib${SYSTEMBITS}/liboxygenstyleconfig5.so
 rm usr/lib${SYSTEMBITS}/libphonon4qt5*
 rm usr/lib${SYSTEMBITS}/libpolkit-qt5*
 rm usr/lib${SYSTEMBITS}/libqca-qt5*
+rm usr/lib${SYSTEMBITS}/libQCoro5*
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/applications/org.kde.kuserfeedback-console.desktop
 rm usr/share/applications/org.kde.kwalletd*.desktop

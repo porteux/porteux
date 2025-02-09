@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 CopyToDevel() {
 	mkdir -p $PORTEUXBUILDERPATH/05-devel/packages > /dev/null 2>&1

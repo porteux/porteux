@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=gnome-tweaks
 
@@ -21,7 +21,7 @@ cd $PRGNAM-$VERSION
 sed -i "s/dependency('gudev-1.0', version: '>= 238')/dependency('gudev-1.0', version: '>= 237')/" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

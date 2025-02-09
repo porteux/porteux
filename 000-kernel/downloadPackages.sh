@@ -1,12 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
-
-DownloadPackage "bc" &
-wait
 
 ### only download if not present
 

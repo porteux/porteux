@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if ! pgrep -x "pipewire" > /dev/null; then
 	pipewire &

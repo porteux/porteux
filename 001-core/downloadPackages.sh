@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"
@@ -22,9 +22,8 @@ DownloadPackage "ca-certificates" &
 DownloadPackage "cdrtools" &
 DownloadPackage "cifs-utils" &
 DownloadPackage "coreutils" &
-DownloadPackage "cpio" &
 wait
-DownloadPackage "cracklib" &
+DownloadPackage "cpio" &
 DownloadPackage "curl" &
 DownloadPackage "cyrus-sasl" &
 DownloadPackage "dbus" &
@@ -48,6 +47,7 @@ DownloadPackage "ethtool" &
 wait
 DownloadPackage "eudev" &
 DownloadPackage "exfatprogs" &
+DownloadPackage "expat" &
 DownloadPackage "f2fs-tools" &
 DownloadPackage "file" &
 DownloadPackage "findutils" &
@@ -107,14 +107,13 @@ DownloadPackage "libndp" &
 DownloadPackage "libnetfilter_conntrack" &
 DownloadPackage "libnfnetlink" &
 DownloadPackage "libnftnl" &
-DownloadPackage "libnih" &
 wait
+DownloadPackage "libnih" &
 DownloadPackage "libnl3" &
 DownloadPackage "libnsl" &
 DownloadPackage "libpcap" &
 DownloadPackage "libplist" &
 DownloadPackage "libpsl" &
-DownloadPackage "libpwquality" &
 DownloadPackage "libqmi" &
 DownloadPackage "libraw1394" &
 DownloadPackage "libseccomp" &

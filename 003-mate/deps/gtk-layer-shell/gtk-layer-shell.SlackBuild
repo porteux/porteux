@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
 
@@ -21,7 +21,7 @@ tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
@@ -30,8 +30,8 @@ meson setup \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
 	--mandir=/usr/man \
-	--localstatedir=/var \
-	
+	--localstatedir=/var
+
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;

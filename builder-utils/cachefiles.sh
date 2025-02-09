@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PrepareFilesForCacheDE() {
 	cp -r $PORTEUXBUILDERPATH/caches/ $PORTEUXBUILDERPATH/caches-bkp

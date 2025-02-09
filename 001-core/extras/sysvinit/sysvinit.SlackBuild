@@ -12,56 +12,61 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="3.10"
+VERSION="3.13"
 wget https://github.com/slicer69/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz -O ${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 # Fix failure to show program version:
-zcat $CWD/sysvinit.always.define.version.diff.gz | patch -p1 --verbose
-sed -i "s/define VERSION.*/define VERSION \"$VERSION\"/g" src/init.c
+sed -i '/^#define VERSION/d' src/init.c
+sed -i "1s|^|#define VERSION \"$VERSION\"\n|" src/init.c
 
 # Use /dev/initctl instead of /run/initctl ; this is a named pipe and probably
 # should be in /dev anyway, but more importantly, having the upgraded package
 # expect it in /run breaks shutdown/reboot without manual intervention:
 for replace in src/shutdown.c src/Makefile src/initreq.h src/init.c doc/initctl doc/Install man/init.8 man/initctl.5 man/po/* ; do
-  sed -i "s|run/initctl|dev/initctl|g" $replace
+	sed -i "s|run/initctl|dev/initctl|g" $replace
 done
 
 cd src
-CFLAGS="$GCCFLAGS -flto" make clobber
-CFLAGS="$GCCFLAGS -flto" make -j${NUMBERTHREADS}
+CFLAGS="$GCCFLAGS -flto=auto" make clobber
+CFLAGS="$GCCFLAGS -flto=auto" make -j${NUMBERTHREADS}
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/etc/inittab.d
 mkdir -p $PKG/sbin
 for program in halt init killall5 shutdown runlevel ; do
-  strip --strip-unneeded $program
-  cat $program > $PKG/sbin/$program
-  chmod 755 $PKG/sbin/$program
-  chown root:root $PKG/sbin/$program
+	strip --strip-unneeded $program
+	cat $program > $PKG/sbin/$program
+	chmod 755 $PKG/sbin/$program
+	chown root:root $PKG/sbin/$program
 done
 mkdir -p $PKG/usr/bin
 for program in last ; do
-  strip --strip-unneeded $program
-  cat $program > $PKG/usr/bin/$program
-  chmod 755 $PKG/usr/bin/$program
-  chown root:root $PKG/usr/bin/$program
+	strip --strip-unneeded $program
+	cat $program > $PKG/usr/bin/$program
+	chmod 755 $PKG/usr/bin/$program
+	chown root:root $PKG/usr/bin/$program
 done
 ( cd $PKG/usr/bin ; ln -sf last lastb )
-mv $PKG/sbin/init $PKG/sbin/init.new
-chmod 755 $PKG/sbin/init.new
-chown root:root $PKG/sbin/init.new
+( cd $PKG/sbin ; rm -rf telinit )
+( cd $PKG/sbin ; ln -sf  init telinit )
+( cd $PKG/sbin ; rm -rf reboot )
+( cd $PKG/sbin ; ln -sf  halt reboot )
+( cd $PKG/sbin ; rm -rf poweroff )
+( cd $PKG/sbin ; ln -sf halt poweroff )
 
-# Build the package:
-cd $PKG
-cp $CWD/init sbin/init.new
+cp $CWD/init $PKG/sbin/
+chmod 755 $PKG/sbin/init
+chown root:root $PKG/sbin/init
+
+# already included in util-linux
+rm $PKG/usr/bin/last
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
-zcat $CWD/doinst.sh.gz > $PKG/install/doinst.sh
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

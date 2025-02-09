@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=exempi
 
@@ -18,7 +18,7 @@ wget https://gitlab.freedesktop.org/libopenraw/${PRGNAM}/-/archive/${VERSION}/${
 tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 CXXFLAGS="$CFLAGS" \
 ./autogen.sh && ./configure \
   --prefix=/usr \

@@ -1,0 +1,38 @@
+#!/bin/bash
+
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
+PRGNAM=cxxopts
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "jarro2783" ${PRGNAM})
+VERSION=${info#* }
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+cmake -B build -S $TMP/$PRGNAM-$VERSION \
+	-DCMAKE_C_FLAGS="$GCCFLAGS -flto=auto" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -flto=auto" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_LIBDIR="lib${SYSTEMBITS}" \
+	-DDOC_INSTALL_DIR="doc" \
+	-DMAN_INSTALL_DIR=/usr/man \
+	-DCXXOPTS_BUILD_EXAMPLES=OFF \
+	-DCXXOPTS_BUILD_TESTS=OFF
+  
+make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

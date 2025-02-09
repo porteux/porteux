@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=gnome-session
 
@@ -12,8 +12,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget -nd -r -l1 --no-parent -A "${PRGNAM}*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
-VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
@@ -31,10 +31,7 @@ meson setup \
 	--infodir=/usr/info \
 	--mandir=/usr/man \
 	--localstatedir=/var \
-	-Dsystemd=false \
-	-Delogind=true \
-	-Dsystemd_journal=false \
-	-Dsystemd_session=disable \
+	-Dlogind_provider=elogind \
 	-Ddefault_library=shared \
 	-Dsession_selector=true \
 	-Ddocbook=false \

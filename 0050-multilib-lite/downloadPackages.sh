@@ -1,11 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
-DownloadPackage "aaa_libraries" &
 DownloadPackage "alsa-lib" &
 DownloadPackage "brotli" &
 DownloadPackage "alsa-plugins" &
@@ -19,8 +18,6 @@ DownloadPackage "flac" &
 wait
 DownloadPackage "fontconfig" &
 DownloadPackage "freetype" &
-DownloadPackage "gcc" &
-DownloadPackage "gcc-brig" &
 DownloadPackage "glib2" &
 DownloadPackage "glibc" &
 DownloadPackage "glibc-i18n" &
@@ -69,25 +66,40 @@ DownloadPackage "libxml2" &
 DownloadPackage "libxshmfence" &
 DownloadPackage "libXtst" &
 DownloadPackage "libXxf86vm" &
-DownloadPackage "llvm" &
 DownloadPackage "lm_sensors" &
 DownloadPackage "mesa" &
 DownloadPackage "mpg123" &
-DownloadPackage "ncurses" &
 wait
+DownloadPackage "ncurses" &
 DownloadPackage "openal-soft" &
 DownloadPackage "opus" &
 DownloadPackage "pcre" &
-DownloadPackage "pulseaudio" &
 DownloadPackage "util-linux" &
-DownloadPackage "vulkan-sdk" &
+DownloadPackage "wayland" &
 DownloadPackage "xz" &
 DownloadPackage "zlib" &
 DownloadPackage "zstd" &
+wait
+
+### packages that require specific striping
+
+DownloadPackage "aaa_libraries" &
+DownloadPackage "gcc" &
+DownloadPackage "gcc-brig" &
+DownloadPackage "gcc-g++" &
+DownloadPackage "llvm" &
+DownloadPackage "pulseaudio" &
+DownloadPackage "vulkan-sdk" &
 wait
 
 ### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libedit" &
+	wait
 fi
+
+### script clean up
+
+rm FILE_LIST
+rm serverPackages.txt

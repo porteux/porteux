@@ -15,7 +15,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-SLKCFLAGS="$GCCFLAGS -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Wformat-security -Wp,-D_REENTRANT -ftree-loop-distribute-patterns -Wl,-z -Wl,now -Wl,-z -Wl,relro -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -fvisibility-inlines-hidden -flto"
+SLKCFLAGS="$GCCFLAGS -flto=auto"
 
 [[ ${GTK3} == "yes" ]] && with_gtk3="--enable-gtk3"
 

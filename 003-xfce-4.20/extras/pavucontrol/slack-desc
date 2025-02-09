@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+pavucontrol: pavucontrol (PulseAudio Volume Controller)
+pavucontrol:
+pavucontrol: It is a simple GTK based volume control tool ("mixer") for PulseAudio
+pavucontrol: sound server. In contrast to classic mixer tools, this one allows you
+pavucontrol: to control both the volume of hardware devices and of each playback
+pavucontrol: stream separately.
+pavucontrol:
+pavucontrol: Homepage: https://freedesktop.org/software/pulseaudio/pavucontrol
+pavucontrol:
+pavucontrol:
+pavucontrol:
