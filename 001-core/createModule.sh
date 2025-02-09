@@ -340,7 +340,8 @@ rm -R usr/lib${SYSTEMBITS}/systemd
 rm -R usr/lib/ldscripts
 rm -R usr/lib/modprobe.d
 rm -R usr/lib*/python2*
-rm -R usr/lib*/python*/config-3.11-x86_64-linux-gnu
+rm -R usr/lib*/python*/__phello__
+rm -R usr/lib*/python*/config-*-x86_64-linux-gnu
 rm -R usr/lib*/python*/ensurepip
 rm -R usr/lib*/python*/idlelib
 rm -R usr/lib*/python*/lib2to3
@@ -348,6 +349,7 @@ rm -R usr/lib*/python*/site-packages/demo
 rm -R usr/lib*/python*/site-packages/msi
 rm -R usr/lib*/python*/site-packages/peg_generator
 rm -R usr/lib*/python*/turtledemo
+rm -R usr/lib*/python*/unittest/__pycache__/
 rm -R usr/lib/udev
 rm -R usr/local/etc
 rm -R usr/local/games
@@ -406,14 +408,13 @@ rm etc/motd
 rm etc/termcap
 rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
-rm usr/bin/7za
-rm usr/bin/7zr
 rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
 rm usr/lib${SYSTEMBITS}/libduktaped.*
 rm usr/lib${SYSTEMBITS}/libicutest.*
 rm usr/lib${SYSTEMBITS}/libqgpgme*
 rm usr/libexec/samba/rpcd_*
+rm usr/share/i18n/locales/C
 rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
 
