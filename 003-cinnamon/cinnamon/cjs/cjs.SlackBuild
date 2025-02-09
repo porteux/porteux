@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=cjs
 
@@ -23,7 +23,7 @@ sed -i "s|extra_args: '--warn-error'|fatal_warnings: get_option('werror')|g" mes
 
 [ ! -e build ] && mkdir build
 cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
 	--buildtype=release \

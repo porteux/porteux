@@ -36,14 +36,11 @@ zcat $CWD/patches/copy-headers.patch.gz | patch -p1 --verbose
 zcat $CWD/patches/tests-increase-timeout.patch.gz | patch -p1 --verbose
 zcat $CWD/patches/icu_sources_data.py-Decouple-from-Mozilla-build-system.patch.gz | patch -p1 --verbose
 zcat $CWD/patches/icu_sources_data-Write-command-output-to-our-stderr.patch.gz | patch -p1 --verbose
-
 zcat $CWD/patches/emitter.patch.gz | patch -p1 --verbose
 zcat $CWD/patches/tests-Use-native-TemporaryDirectory.patch.gz | patch -p1 --verbose 
-
 zcat $CWD/patches/init_patch.patch.gz | patch -p1 --verbose
 zcat $CWD/patches/remove-sloppy-m4-detection-from-bundled-autoconf.patch.gz | patch -p1 --verbose
 zcat $CWD/patches/0001-Python-Build-Use-r-instead-of-rU-file-read-modes.patch.gz | patch -p1 --verbose
-
 zcat $CWD/patches/spidermonkey_checks_disable.patch.gz | patch -p1 --verbose
 zcat $CWD/patches/0001-Skip-failing-tests-on-ppc64-and-s390x.patch.gz | patch -p1 --verbose
 
@@ -57,8 +54,8 @@ autoconf-2.13
 
 export RUSTFLAGS="-C embed-bitcode"
 
-CFLAGS+="$SLKCFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing -fno-tree-vrp " \
-CXXFLAGS+="$SLKCFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing -fno-tree-vrp " \
+CFLAGS+="$CLANGFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing " \
+CXXFLAGS+="$CLANGFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing " \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -94,6 +91,9 @@ mv $PKG/usr/lib${SYSTEMBITS}/libmozjs-91.so $PKG/usr/lib${SYSTEMBITS}/libmozjs-9
   ln -sf libmozjs-91.so.0.0.0 libmozjs-91.so.0
   ln -sf libmozjs-91.so.0 libmozjs-91.so
 )
+
+find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF \
+  | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

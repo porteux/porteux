@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
 
@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 [ ! -e configure ] && ./autogen.sh
 ./configure \
 	--prefix=/usr \

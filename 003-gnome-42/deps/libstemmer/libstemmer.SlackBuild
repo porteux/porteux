@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=libstemmer
 SRCNAM=libstemmer_c
@@ -22,7 +22,7 @@ cd $SRCNAM-$VERSION
 
 patch -Np0 -i $CWD/libstemmer_c-shared-library.patch
 
-CFLAGS="$GCCFLAGS -flto" make -j${NUMBERTHREADS} libstemmer.so stemwords
+CFLAGS="$GCCFLAGS -flto=auto" make -j${NUMBERTHREADS} libstemmer.so stemwords
 
 mkdir -p $PKG/usr/lib${SYSTEMBITS}
 mv libstemmer.so* $PKG/usr/lib${SYSTEMBITS}

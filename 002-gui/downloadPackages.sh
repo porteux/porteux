@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"
@@ -25,7 +25,6 @@ DownloadPackage "desktop-file-utils" &
 DownloadPackage "djvulibre" &
 DownloadPackage "esound" &
 DownloadPackage "exiv2" &
-DownloadPackage "expat" &
 DownloadPackage "flac" &
 DownloadPackage "fontconfig" &
 DownloadPackage "freeglut" &
@@ -90,7 +89,6 @@ DownloadPackage "libinput" &
 DownloadPackage "libICE" &
 DownloadPackage "libjpeg-turbo" &
 DownloadPackage "libmad" &
-DownloadPackage "libmng" &
 DownloadPackage "libmtp" &
 DownloadPackage "libnotify" &
 DownloadPackage "libogg" &
@@ -167,13 +165,12 @@ DownloadPackage "opus" &
 DownloadPackage "opusfile" &
 DownloadPackage "opus-tools" &
 DownloadPackage "orc" &
-DownloadPackage "pamixer" &
 DownloadPackage "pango" &
 DownloadPackage "pangomm" &
 DownloadPackage "pixman" &
 DownloadPackage "poppler" &
-wait
 DownloadPackage "pulseaudio" &
+wait
 DownloadPackage "pycairo" &
 DownloadPackage "pygobject3" &
 DownloadPackage "pyxdg" &
@@ -267,7 +264,7 @@ wait
 
 ### temporary packages for further building
 
-DownloadPackage "fuse" & # to build archivemount
+DownloadPackage "cups" & # to build gtk+3
 wait
 
 ### script clean up

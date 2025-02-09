@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"
@@ -7,6 +7,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
+DownloadPackage "cracklib" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
@@ -20,6 +21,7 @@ DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libgtop" &
 DownloadPackage "libproxy" &
+DownloadPackage "libpwquality" &
 DownloadPackage "libxklavier" &
 DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "woff2" &

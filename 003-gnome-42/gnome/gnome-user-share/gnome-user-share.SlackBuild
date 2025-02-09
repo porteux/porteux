@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=gnome-user-share
 
@@ -22,7 +22,7 @@ sed -i "s/'systemd'/'libelogind'/" meson.build
 sed -i 's|desktop,||g' data/meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

@@ -1,10 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 source "$PWD/../builder-utils/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "libdisplay-info" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libnma" &
 DownloadPackage "network-manager-applet" &

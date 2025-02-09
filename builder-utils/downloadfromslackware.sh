@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DownloadFromSlackware() {
 	echo -e "Building based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"

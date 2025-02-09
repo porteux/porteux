@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=caribou
 
@@ -24,7 +24,7 @@ patch -Np1 -i $CWD/display-adapter.patch
 autoreconf -fiv
 intltoolize
 
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

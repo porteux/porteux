@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PRGNAM=nemo-extensions
 
@@ -20,7 +20,7 @@ cd $PRGNAM-$VERSION
 
 cd nemo-fileroller
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto" \
+CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
