@@ -7,7 +7,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 ### only download if not present
 
-#[ ! -f /usr/bin/clang ] && DownloadPackage "llvm"
+DownloadPackage "llvm"
 
 ### script clean up
 
