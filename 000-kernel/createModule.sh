@@ -40,25 +40,23 @@ KERNELPATCHVERSION=$(echo ${KERNELVERSION} | cut -d. -f3)
 CRIPPLEDMODULENAME="06-crippled_sources-${KERNELVERSION}"
 
 rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
-cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.xz ${MODULEPATH} 2>/dev/null
+cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH} 2>/dev/null
 
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
-### download packages from slackware repositories
-
-#DownloadFromSlackware
+### download packages from slackware repositoriesg
 
 echo "Downloading kernel source code..."
-if [ ! -f linux-${KERNELVERSION}.tar.xz ]; then
+if [ ! -f linux-${KERNELVERSION}.tar.?z ]; then
 	wget -P ${MODULEPATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNELMAJORVERSION}.x/linux-${KERNELVERSION}.tar.xz > /dev/null 2>&1 || { echo "Fail to download kernel source code."; exit 1; }
 fi
 
 echo "Extracting kernel source code..."
-tar xf ${MODULEPATH}/linux-${KERNELVERSION}.tar.xz -C ${MODULEPATH}
-rm ${MODULEPATH}/linux-${KERNELVERSION}.tar.xz
+tar xf ${MODULEPATH}/linux-${KERNELVERSION}.tar.?z -C ${MODULEPATH}
+rm ${MODULEPATH}/linux-${KERNELVERSION}.tar.?z
 
 echo "Copying .config file..."
 cp ${SCRIPTPATH}/${SYSTEMBITS}bit.config ${MODULEPATH}/linux-${KERNELVERSION}/.config || exit 1
@@ -93,18 +91,30 @@ if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
 	) &
 fi
 
-#installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-#rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+if [ ${CLANG:-no} = "yes" ]; then
+	if [ ! -f /usr/bin/clang ]; then
+		DownloadFromSlackware
+		installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+		rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+	fi
+	EXTRAFLAGS="LLVM=1 CC=clang"
+	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
+else
+	BUILDPARAMS="$GCCFLAGS"
+fi
 
 # this allows CONFIG_DEBUG_KERNEL=n
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig
 
 echo "Building vmlinuz (this may take a while)..."
-#make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} LLVM=1 CC=clang "KCFLAGS=$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" || { echo "Fail to build kernel."; exit 1; }
-make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} "KCFLAGS=$GCCFLAGS" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} KCFLAGS="$BUILDPARAMS" "${EXTRAFLAGS}" || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
+
+echo "Installing modules..."
 make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
-make -j${NUMBERTHREADS} INSTALL_MOD_PATH=../ firmware_install > /dev/null 2>&1
+
+echo "Installing firmwares..."
+make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ firmware_install > /dev/null 2>&1
 
 cd ..
 
