@@ -107,7 +107,7 @@ fi
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig
 
 echo "Building kernel (this may take a while)..."
-make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} KCFLAGS="$BUILDPARAMS" "${EXTRAFLAGS}" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 
 echo "Installing modules..."
