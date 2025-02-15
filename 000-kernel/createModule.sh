@@ -29,7 +29,6 @@ if [ "$1" ]; then
 	export KERNELVERSION="$1"
 fi
 
-echo "Building kernel version ${KERNELVERSION}..."
 echo "Initial setup..."
 
 KERNELMAJORVERSION=${KERNELVERSION:0:1}
@@ -38,6 +37,20 @@ KERNELMINORVERSION=$(echo ${KERNELVERSION} | cut -d. -f2)
 KERNELPATCHVERSION=$(echo ${KERNELVERSION} | cut -d. -f3)
 [ ${KERNELPATCHVERSION} ] && KERNELPATCHVERSION=.${KERNELPATCHVERSION}
 CRIPPLEDMODULENAME="06-crippled_sources-${KERNELVERSION}"
+
+if [ ${CLANG:-no} = "yes" ]; then
+	if [ ! -f /usr/bin/clang ]; then
+		DownloadFromSlackware
+		installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+		rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+	fi
+	EXTRAFLAGS="LLVM=1 CC=clang"
+	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
+	COMPILER="Clang"
+else
+	BUILDPARAMS="$GCCFLAGS"
+	COMPILER="GCC"
+fi
 
 rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
@@ -91,22 +104,10 @@ if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
 	) &
 fi
 
-if [ ${CLANG:-no} = "yes" ]; then
-	if [ ! -f /usr/bin/clang ]; then
-		DownloadFromSlackware
-		installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-		rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-	fi
-	EXTRAFLAGS="LLVM=1 CC=clang"
-	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
-else
-	BUILDPARAMS="$GCCFLAGS"
-fi
-
 # this allows CONFIG_DEBUG_KERNEL=n
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig
 
-echo "Building kernel (this may take a while)..."
+echo "Building kernel ${KERNELVERSION} using ${COMPILER} (this may take a while)..."
 make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 
