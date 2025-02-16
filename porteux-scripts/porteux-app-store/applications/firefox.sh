@@ -70,13 +70,19 @@ make_module_firefox(){
 
     local pkgver; pkgver=$(get_repo_version_firefox "$CHANNEL")
     local pkg_name; pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+    local package_extension="tar.xz"
+    local major_version=$(echo $pkgver | cut -f 1 -d .)
+    
+    if [ "$major_version" -le 128 ]; then
+        package_extension="tar.bz2"
+    fi
 
     create_application_temp_dir "$APP"
 
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.bz2" "https://ftp.mozilla.org/pub/firefox/releases/${pkgver}/linux-x86_64/${LANGUAGE}/firefox-${pkgver}.tar.bz2" &&
+    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://ftp.mozilla.org/pub/firefox/releases/${pkgver}/linux-x86_64/${LANGUAGE}/firefox-${pkgver}.${package_extension}" &&
     $WGET_WITH_TIME_OUT -P $TMP/"$APP" "http://ftp.slackware.com/pub/slackware/slackware64-current/source/xap/mozilla-firefox/firefox.desktop" &&
     mkdir -p "$TMP/$APP/$pkg_name" &&
-    tar -xvf "$TMP/$APP/${pkg_name}.tar.bz2" -C "$TMP/$APP/$pkg_name" &&
+    tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name" &&
     mkdir -p "$TMP/$APP/$pkg_name/usr/bin" && mkdir -p "$TMP/$APP/$pkg_name/usr/lib64" && mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications" &&
 
     mv -f "$TMP/$APP/$pkg_name/firefox" "$TMP/$APP/$pkg_name/firefox-${CHANNEL}" &&
