@@ -1,10 +1,12 @@
 #!/bin/bash
 
 PRGNAM=libreoffice
+ARCH=$(uname -m)
 CHANNEL=$([ "$1" ] && echo "$1" || echo "stable")
 LOLANG=$([ "$2" ] && echo "$2" || echo "en-US")
-VERSION=$(curl -sv http://download.documentfoundation.org/libreoffice/$CHANNEL/ 2>/dev/null | grep [0-9].[0-9].[0-9] | sort -u | tail -1 | cut -d'"' -f4 | tr -d /)
-ARCH=$(uname -m)
+MAJORVERSION=$(curl -s http://download.documentfoundation.org/libreoffice/$CHANNEL/ | grep -oP 'a href="[0-9].*' | cut -d '"' -f 2 | cut -d / -f 1 | sort -V -r | head -1)
+LATESTPACKAGE=$(curl -s https://download.documentfoundation.org/libreoffice/"$CHANNEL"/"$MAJORVERSION"/rpm/"$ARCH"/ | grep -oP 'LibreOffice_.*' | cut -d '"' -f 1 | grep -oP ".*_Linux_x86-64_rpm.tar.gz$")
+VERSION=$(echo $LATESTPACKAGE | cut -d _ -f 2)
 
 TMP=/tmp/$PRGNAM-builder
 PKG=$TMP/$PRGNAM-module
@@ -23,27 +25,25 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 # download LibreOffice
-wget -T 15 -q --show-progress http://download.documentfoundation.org/libreoffice/$CHANNEL/"$VERSION"/rpm/'x86_64'/LibreOffice\_"$VERSION"'_Linux_x86-64_'rpm.tar.gz
-tar -xf LibreOffice_"$VERSION"'_Linux_x86-64_'rpm.tar.gz
-rm -f $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_'rpm/RPMS/libreoffice*-dict-{es,fr}-*.rpm
-mv $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_'rpm/RPMS/* $PKG
-rm -rf $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_'rpm
-rm -f $TMP/LibreOffice_"$VERSION"'_Linux_x86-64_'rpm.tar.gz
+wget -T 15 -q --show-progress http://download.documentfoundation.org/libreoffice/$CHANNEL/"$MAJORVERSION"/rpm/"$ARCH"/"$LATESTPACKAGE"
+tar -xf LibreOffice_"$VERSION"*_Linux_x86-64_rpm.tar.gz
+mv $TMP/LibreOffice_"$VERSION"*_Linux_x86-64_rpm/RPMS/* $PKG
+rm -f $TMP/LibreOffice_"$VERSION"*_Linux_x86-64_rpm.tar.gz
 
 # download helppack
-wget -T 15 -q --show-progress http://download.documentfoundation.org/libreoffice/$CHANNEL/"$VERSION"/rpm/'x86_64'/LibreOffice\_"$VERSION"'_Linux_x86-64_rpm_helppack_'"$LOLANG".tar.gz
-tar -xf LibreOffice_"$VERSION"'_Linux_x86-64_rpm_helppack_'"$LOLANG".tar.gz
-mv $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_rpm_helppack_'"$LOLANG"/RPMS/* $PKG
-rm -rf $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_rpm_helppack_'"$LOLANG"
-rm -f $TMP/LibreOffice_"$VERSION"'_Linux_x86-64_rpm_helppack_'"$LOLANG".tar.gz
+wget -T 15 -q --show-progress http://download.documentfoundation.org/libreoffice/$CHANNEL/"$MAJORVERSION"/rpm/"$ARCH"/LibreOffice\_"$VERSION"_Linux_x86-64_rpm_helppack_"$LOLANG".tar.gz
+tar -xf LibreOffice_"$VERSION"*_Linux_x86-64_rpm_helppack_"$LOLANG".tar.gz
+mv $TMP/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_helppack_"$LOLANG"/RPMS/* $PKG
+rm -rf $TMP/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_helppack_"$LOLANG"
+rm -f $TMP/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_helppack_"$LOLANG".tar.gz
 
 if [[ "$LOLANG" != 'en-US' ]]; then
     # download langpack
-    wget -T 15 -q --show-progress http://download.documentfoundation.org/libreoffice/$CHANNEL/"$VERSION"/rpm/'x86_64'/LibreOffice\_"$VERSION"'_Linux_x86-64_rpm_langpack_'"$LOLANG".tar.gz
-    tar -xf LibreOffice_"$VERSION"'_Linux_x86-64_rpm_langpack_'"$LOLANG".tar.gz
-    mv $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_rpm_langpack_'"$LOLANG"/RPMS/* $PKG
-    rm -rf $TMP/LibreOffice_"$VERSION".*'_Linux_x86-64_rpm_langpack_'"$LOLANG"
-    rm -f $TMP/LibreOffice_"$VERSION"'_Linux_x86-64_rpm_langpack_'"$LOLANG".tar.gz
+    wget -T 15 -q --show-progress http://download.documentfoundation.org/libreoffice/$CHANNEL/"$MAJORVERSION"/rpm/"$ARCH"/LibreOffice\_"$VERSION"_Linux_x86-64_rpm_langpack_"$LOLANG".tar.gz
+    tar -xf LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LOLANG".tar.gz
+    mv $TMP/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LOLANG"/RPMS/* $PKG
+    rm -rf $TMP/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LOLANG"
+    rm -f $TMP/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LOLANG".tar.gz
 
     mkdir -p "$MODULEDIR/root/.config/libreoffice/4/user/"
     cat > "$MODULEDIR/root/.config/libreoffice/4/user/registrymodifications.xcu" << EOF
@@ -83,4 +83,4 @@ ln -s ./libabplo.so libavahi-common.so.3
 
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$PKG" "$MODULEPATH" "$ACTIVATEMODULE"
-rm -rf $PKG 2> /dev/null
+rm -rf $TMP 2> /dev/null
