@@ -60,7 +60,7 @@ Sources:
 [ClearLinux40520](https://browser.geekbench.com/v6/cpu/4073056)
 [PorteuX0.9](https://browser.geekbench.com/v6/cpu/4087178)
 
-All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and all applications are usually as new as possible in the current/rolling release.
+All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and packages are usually as new as possible in the current/rolling release.
 
 ## Enable OpenCL support (required by applications like DaVinci Resolve)
 
@@ -87,7 +87,7 @@ To build PorteuX, run as root the script `createModule.sh` in the exact folder o
 3. 002-gui<br />
 4. 002-xtra<br />
 5. 003-desktopenvironment (where 'desktopenvironment' is the one of your preference, like 003-lxde)<br />
-6. 05-devel<br />
+6. (optional) 05-devel<br />
 7. (optional) 08-multilanguage<br />
 8. (optional) 0050-multilib-lite<br />
 
@@ -108,6 +108,7 @@ theUtopian (core team)<br />
 blaze (@porteus)<br />
 brokenman (@porteus)<br />
 frank honolka (@snuk)<br />
+luckyCyborg (@slackware)<br />
 ncmprhnsbl (@porteus)<br />
 neko (@porteus)<br />
 patrick volkerding (@slackware)<br />
