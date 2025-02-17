@@ -14,6 +14,12 @@ source "$PWD/../builder-utils/latestfromgithub.sh"
 
 [ $SLACKWAREVERSION == "current" ] && echo "This module should be built in stable only" && exit 1
 
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
