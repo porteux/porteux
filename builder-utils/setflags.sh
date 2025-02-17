@@ -15,7 +15,7 @@ SetFlags() {
 	fi
 
 	export SLACKBUILDVERSION=$SLACKWAREVERSION
-	export KERNELVERSION="6.13.1"
+	export KERNELVERSION="6.14-rc3"
 
 	export SCRIPTPATH="$PWD"
 	export PORTEUXBUILDERPATH="/tmp/porteux-builder-$PORTEUXBUILD"
@@ -26,7 +26,7 @@ SetFlags() {
 		export ARCH=$(uname -m)
 	fi
 
-	if [ ! $SYSTEMBITS ] && [ `getconf LONG_BIT` == "64" ]; then
+	if [ `getconf LONG_BIT` == "64" ]; then
 		export SYSTEMBITS="64"
  	else
         export SYSTEMBITS=

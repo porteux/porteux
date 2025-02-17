@@ -5,13 +5,6 @@ if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ]; then
 	exit 1
 fi
 
-# switch to root
-if [ $(whoami) != root ]; then
-	echo "Please enter root's password below:"
-	su -c "$0 $1"
-	exit
-fi
-
 source "$PWD/../builder-utils/setflags.sh"
 
 MODULENAME="000-kernel"
@@ -19,7 +12,14 @@ MODULENAME="000-kernel"
 SetFlags "${MODULENAME}"
 
 source "$PWD/../builder-utils/downloadfromslackware.sh"
+source "$PWD/../builder-utils/helper.sh"
 source "$PWD/../builder-utils/latestfromgithub.sh"
+
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
 
 if [ ! -f ${SYSTEMBITS}bit.config ]; then
 	echo "File ${SYSTEMBITS}bit.config is required in this folder." && exit 1

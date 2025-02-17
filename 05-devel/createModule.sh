@@ -10,6 +10,12 @@ source "$PWD/../builder-utils/downloadfromslackware.sh"
 source "$PWD/../builder-utils/genericstrip.sh"
 source "$PWD/../builder-utils/helper.sh"
 
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
