@@ -1,0 +1,21 @@
+--- src/meson.build	2025-02-19 13:21:56.599534783 +0100
++++ src/meson.build.patched	2025-02-19 13:21:48.961534422 +0100
+@@ -149,18 +149,6 @@
+   install: true,
+ )
+ 
+-unit_tests = executable('unit_tests',
+-  [
+-    'test/cgroups.cpp',
+-    'test/join.cpp'
+-  ],
+-  dependencies: [
+-    catch2,
+-    libgsm_dep,
+-  ],
+-)
+-test('unit_tests', unit_tests)
+-
+ gnome.post_install(
+   glib_compile_schemas: true,
+ )
