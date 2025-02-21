@@ -195,7 +195,8 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=SVT-AV1
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mkdir package
-version=$(curl -s https://gitlab.com/AOMediaCodec/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+##version=$(curl -s https://gitlab.com/AOMediaCodec/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+version=v2.3.0
 wget https://gitlab.com/AOMediaCodec/${currentPackage}/-/archive/${version}/${currentPackage}-${version}.tar.gz
 tar xvf ${currentPackage}-${version}.tar.gz && cd ${currentPackage}-${version}
 mkdir build && cd build
