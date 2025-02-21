@@ -165,8 +165,14 @@ mv ../packages/${currentPackage}*.txz .
 version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
+cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped-$version
+cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped-$version > /dev/null 2>&1
+cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped-$version
 if [ $SLACKWAREVERSION == "current" ]; then
+	cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped-$version
+	cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped-$version
 	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped-$version
 fi
 cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped-$version
