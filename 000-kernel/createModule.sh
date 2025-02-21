@@ -52,6 +52,8 @@ else
 	COMPILER="GCC"
 fi
 
+echo "Building kernel ${KERNELVERSION} using ${COMPILER}..."
+
 rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH} 2>/dev/null
@@ -107,7 +109,7 @@ fi
 # this allows CONFIG_DEBUG_KERNEL=n
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig
 
-echo "Building kernel ${KERNELVERSION} using ${COMPILER} (this may take a while)..."
+echo "Building vmlinuz (this may take a while)..."
 make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
 
