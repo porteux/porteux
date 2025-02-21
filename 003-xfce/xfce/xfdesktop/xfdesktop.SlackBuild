@@ -19,9 +19,6 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-cp $CWD/*.patch .
-for i in *.patch; do patch -p0 < $i; done
-
 # show desktop files with size in KiB/MiB/GiB ('binary format')
 sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS)|g" src/xfdesktop-regular-file-icon.c
 sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS)|g" src/xfdesktop-special-file-icon.c
