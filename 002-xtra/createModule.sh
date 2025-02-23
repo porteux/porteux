@@ -195,8 +195,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=SVT-AV1
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mkdir package
-##version=$(curl -s https://gitlab.com/AOMediaCodec/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
-version=v2.3.0
+version=$(curl -s https://gitlab.com/AOMediaCodec/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 wget https://gitlab.com/AOMediaCodec/${currentPackage}/-/archive/${version}/${currentPackage}-${version}.tar.gz
 tar xvf ${currentPackage}-${version}.tar.gz && cd ${currentPackage}-${version}
 mkdir build && cd build
@@ -286,9 +285,9 @@ wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
 	wget https://ffmpeg.org/releases/ffmpeg-4.4.5.tar.xz
-	sed -i "s|\./configure \\\\| \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+	sed -i "s|\./configure \\\\|patch -p0 < $SCRIPTPATH/extras/${currentPackage}/svt-av1-3.0-build-fix.patch;  \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 else
-	sed -i "s|\./configure \\\\|patch -p0 < $SCRIPTPATH/extras/${currentPackage}/fix-x265-encode.patch; \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+	sed -i "s|\./configure \\\\|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 fi
 sed -i "s|-O2.*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
