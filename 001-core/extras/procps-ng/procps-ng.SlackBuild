@@ -1,6 +1,7 @@
 #!/bin/bash
 
 PRGNAM=procps-ng
+PRGNAMDOWNLOAD=procps
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -12,20 +13,20 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-downloadedVersion=$(curl -s https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+downloadedVersion=$(curl -s https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 VERSION=${downloadedVersion//[vV]}
-wget https://gitlab.com/${PRGNAM}-ng/${PRGNAM}/-/archive/${downloadedVersion}/${PRGNAM}-${downloadedVersion}.tar.gz
+wget https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/archive/${downloadedVersion}/${PRGNAMDOWNLOAD}-${downloadedVersion}.tar.gz
 
 PSMISCVER=$(curl -s https://gitlab.com/psmisc/psmisc/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 wget https://gitlab.com/psmisc/psmisc/-/archive/${PSMISCVER}/psmisc-${PSMISCVER}.tar.gz
 
 PROCINFONGVER=${PROCINFONGVER:-2.0.304}
 
-tar xvf $PRGNAM-${downloadedVersion}.tar.?z
+tar xvf $PRGNAMDOWNLOAD-${downloadedVersion}.tar.?z
 tar xvf psmisc-$PSMISCVER.tar.?z
 tar xvf $CWD/procinfo-ng-$PROCINFONGVER.tar.?z
 
-cd $PRGNAM-${downloadedVersion}
+cd $PRGNAMDOWNLOAD-${downloadedVersion}
 
 # Fix for wide-only ncurses:
 sed 's:<ncursesw/:<:g' -i src/watch.c
