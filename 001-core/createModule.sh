@@ -99,10 +99,10 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-# temporary to build procps
+# temporary to build procps-ng
 installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
 
-currentPackage=procps
+currentPackage=procps-ng
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}

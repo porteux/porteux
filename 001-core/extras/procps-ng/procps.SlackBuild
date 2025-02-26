@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PRGNAM=procps
+PRGNAM=procps-ng
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
