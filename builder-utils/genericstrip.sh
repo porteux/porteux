@@ -68,6 +68,8 @@ GenericStrip() {
 	find . -name 'LICENSE*' -delete
 	find . -name 'README*' -delete
 	
+	find usr/ -type d -empty -delete
+	
 	find usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
 	
 	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .comment -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
