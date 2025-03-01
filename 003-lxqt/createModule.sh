@@ -156,6 +156,7 @@ rm $MODULEPATH/packages/cups*.txz
 currentPackage=xpdf
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nH --cut-dirs=6 --no-parent --reject="index.html*" ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/xap/${currentPackage}/ || exit 1
+sed -i "s|/lang/|/|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|-DXPDFWIDGET_PRINTING=1|-DMULTITHREADED=ON|g" ${currentPackage}.SlackBuild
 sed -z -i "s|mkdir build\n|sed -i \"s\|initialSidebarState = gTrue\|initialSidebarState = gFalse\|g\" xpdf/GlobalParams.cc\nmkdir build\n|g" ${currentPackage}.SlackBuild
