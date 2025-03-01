@@ -182,6 +182,9 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/audio/${currentPackage}/ -A * || exit 1
 info=$(DownloadLatestFromGithub "knik0" ${currentPackage})
 version=${info#* }
+sed -i "s|tar xvf \$CWD/\$PRGNAM-\$SRCVER.tar.gz|tar xvf \$CWD/\$PRGNAM-\$PRGNAM-\$SRCVER.tar.gz|g" ${currentPackage}.SlackBuild
+sed -i "s|cd \$PRGNAM-\$SRCVER|cd \$PRGNAM-\$PRGNAM-\$SRCVER|g" ${currentPackage}.SlackBuild
+sed -i "s|SRCVER=\${VERSION/./_}|SRCVER=\${VERSION}|g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|\$PRGNAM-\$VERSION|\$PRGNAM-${version//_/.}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
