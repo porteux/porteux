@@ -3,7 +3,7 @@
 SetFlags() {
 	MODULENAME="$1"
 
-	export KERNELVERSION="6.14-rc3"
+	export KERNELVERSION="6.14-rc5"
 	export ARCHITECTURELEVEL="x86-64-v2"
 	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -s -fuse-linker-plugin -Wl,--as-needed -Wl,-O1 -ftree-loop-distribute-patterns -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -fivopts -fmodulo-sched"
 	export CLANGFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math"
@@ -28,8 +28,10 @@ SetFlags() {
 	export NUMBERTHREADS=$(nproc --all)
 	export MAKEPKGFLAGS="-l y -c n --compress -0"
 
-	if [ `getconf LONG_BIT` == "64" ]; then
+	if [ ! $SYSTEMBITS ] && [ `getconf LONG_BIT` == "64" ]; then
 		export SYSTEMBITS="64"
+	else
+		export SYSTEMBITS=
 	fi
 
 	export SLACKWAREDOMAIN="http://ftp.slackware.com/pub"
