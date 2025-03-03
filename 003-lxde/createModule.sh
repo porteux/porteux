@@ -129,7 +129,7 @@ filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 mkdir build && cd build
-meson --prefix /usr ..
+meson setup --prefix /usr ..
 ninja -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -155,7 +155,7 @@ cd ${currentPackage}-$version
 mkdir build && cd build
 sed -i "s|i18n.merge_file('desktop',|i18n.merge_file(|g" ../src/meson.build
 sed -i "s|i18n.merge_file('appdata',|i18n.merge_file(|g" ../src/meson.build
-meson -Dcpp_args="$GCCFLAGS -flto=auto" --prefix /usr ..
+meson setup -Dcpp_args="$GCCFLAGS -flto=auto" --prefix /usr ..
 ninja -j${NUMBERTHREADS} || exit 1
 DESTDIR=$MODULEPATH/${currentPackage}/package ninja install
 cd $MODULEPATH/${currentPackage}/package
