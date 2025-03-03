@@ -4,6 +4,8 @@ MODULENAME="0050-multilib-lite"
 
 source "$PWD/../builder-utils/setflags.sh"
 
+export SYSTEMBITS=32
+
 SetFlags "$MODULENAME"
 
 source "$PWD/../builder-utils/downloadfromslackware.sh"
@@ -16,8 +18,6 @@ if ! isRoot; then
 	su -c "$0 $1"
 	exit
 fi
-
-export SYSTEMBITS=32
 
 ### create module folder
 
