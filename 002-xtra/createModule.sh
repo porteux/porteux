@@ -216,7 +216,7 @@ tar xvf ${currentPackage}-master.tar.gz && rm ${currentPackage}-master.tar.gz ||
 cd ${currentPackage}-master
 version=$(date -r . +%Y%m%d)
 mkdir build && cd build
-CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto" meson -Denable_tests=false -Denable_tools=false --prefix /usr ..
+CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto" meson setup -Denable_tests=false -Denable_tools=false --prefix /usr ..
 DESTDIR=$MODULEPATH/${currentPackage}/package ninja -j${NUMBERTHREADS} install || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
