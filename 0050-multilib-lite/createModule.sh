@@ -2,9 +2,9 @@
 
 MODULENAME="0050-multilib-lite"
 
-source "$PWD/../builder-utils/setflags.sh"
+export SYSTEMBITS=
 
-export SYSTEMBITS=32
+source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
