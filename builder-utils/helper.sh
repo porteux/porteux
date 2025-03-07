@@ -34,7 +34,6 @@ InstallAdditionalPackages() {
 Finalize() {
 	# generate module version file
 	mkdir -p $MODULEPATH/packages/etc/porteux
-	touch $MODULEPATH/packages/etc/porteux/$MODULENAME.ver
 	echo $MODULENAME.xzm:$(date +%Y%m%d) > $MODULEPATH/packages/etc/porteux/$MODULENAME.ver
 
 	# create module

@@ -15,7 +15,7 @@ cd $TMP
 if [ $SLACKWAREVERSION != "current" ]; then
 	VERSION=1.2.7
 else
-	VERSION=$(curl -s https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/tags | grep "/releases" | cut -d '>' -f 2 | cut -d '<' -f 1 | grep -v RC | grep -v alpha | grep -v beta | sort -V -r | head -1)
+	VERSION=$(curl -s https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/tags | grep "/releases" | cut -d '>' -f 2 | cut -d '<' -f 1 | grep -v RC | grep -v alpha | grep -v beta | cut -d ' ' -f 1 | sort -V -r | head -1)
 fi
 
 wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz

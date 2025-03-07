@@ -28,10 +28,8 @@ SetFlags() {
 	export NUMBERTHREADS=$(nproc --all)
 	export MAKEPKGFLAGS="-l y -c n --compress -0"
 
-	if [ ! $SYSTEMBITS ] && [ `getconf LONG_BIT` == "64" ]; then
+	if [ -z ${SYSTEMBITS+x} ] && [ `getconf LONG_BIT` == "64" ]; then
 		export SYSTEMBITS="64"
-	else
-		export SYSTEMBITS=
 	fi
 
 	export SLACKWAREDOMAIN="http://ftp.slackware.com/pub"

@@ -50,7 +50,7 @@ else
 	COMPILER="GCC"
 fi
 
-echo "Building kernel ${KERNELVERSION} using ${COMPILER}..."
+echo "Building kernel ${KERNELVERSION} $ARCH using ${COMPILER}..."
 
 rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
