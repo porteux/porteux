@@ -416,6 +416,7 @@ rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
 rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
+rm usr/dict
 rm usr/lib${SYSTEMBITS}/libduktaped.*
 rm usr/lib${SYSTEMBITS}/libicutest.*
 rm usr/lib${SYSTEMBITS}/libqgpgme*
