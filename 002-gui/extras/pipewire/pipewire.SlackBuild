@@ -23,6 +23,9 @@ wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/${VERSION}/${P
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+cp $CWD/*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
 mkdir build && cd build
 CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto" CXFLAGS="$CLANGFLAGS -flto=auto" \
 meson setup \
