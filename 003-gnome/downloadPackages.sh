@@ -21,9 +21,6 @@ DownloadPackage "hunspell" &
 DownloadPackage "glib-networking" &
 DownloadPackage "glibmm2" & # required by gnome-system-monitor
 DownloadPackage "gperf" & # required by libadwaita (appstream sub-project)
-#DownloadPackage "gst-plugins-bad-free" &
-#DownloadPackage "gst-plugins-good" &
-#DownloadPackage "gst-plugins-libav" &
 wait
 DownloadPackage "gtk4" &
 DownloadPackage "gtkmm4" & # required by gnome-system-monitor
