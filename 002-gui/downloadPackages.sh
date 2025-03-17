@@ -202,7 +202,6 @@ DownloadPackage "xcb-util-keysyms" &
 DownloadPackage "xcb-util-renderutil" &
 DownloadPackage "xcb-util-wm" &
 DownloadPackage "xclipboard" &
-DownloadPackage "xdg-desktop-portal" &
 DownloadPackage "xdg-user-dirs" &
 DownloadPackage "xdg-utils" &
 wait
