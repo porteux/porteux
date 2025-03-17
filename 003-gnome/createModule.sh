@@ -160,14 +160,6 @@ InstallAdditionalPackages
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
 
-### use jxl backgrounds instead
-
-sed -i "s|adwaita-l.jpg|adwaita-l.jxl|g" $MODULEPATH/packages/usr/share/gnome-background-properties/adwaita.xml
-sed -i "s|adwaita-d.jpg|adwaita-d.jxl|g" $MODULEPATH/packages/usr/share/gnome-background-properties/adwaita.xml
-
-sed -i "s|adwaita-l.jpg|adwaita-l.jxl|g" $MODULEPATH/packages/usr/share/glib-2.0/schemas/org.gnome.desktop.background.gschema.xml
-sed -i "s|adwaita-d.jpg|adwaita-d.jxl|g" $MODULEPATH/packages/usr/share/glib-2.0/schemas/org.gnome.desktop.background.gschema.xml
-
 ### copy build files to 05-devel
 
 CopyToDevel
