@@ -62,6 +62,7 @@ rm $MODULEPATH/packages/xtrans*
 
 # required by mutter 45+
 cd $MODULEPATH
+pip install argcomplete || exit 1
 pip install attrs || exit 1
 pip install jinja2 || exit 1
 pip install pygments || exit 1
@@ -159,6 +160,14 @@ InstallAdditionalPackages
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
 
+### use jxl backgrounds instead
+
+sed -i "s|adwaita-l.jpg|adwaita-l.jxl|g" $MODULEPATH/packages/usr/share/gnome-background-properties/adwaita.xml
+sed -i "s|adwaita-d.jpg|adwaita-d.jxl|g" $MODULEPATH/packages/usr/share/gnome-background-properties/adwaita.xml
+
+sed -i "s|adwaita-l.jpg|adwaita-l.jxl|g" $MODULEPATH/packages/usr/share/glib-2.0/schemas/org.gnome.desktop.background.gschema.xml
+sed -i "s|adwaita-d.jpg|adwaita-d.jxl|g" $MODULEPATH/packages/usr/share/glib-2.0/schemas/org.gnome.desktop.background.gschema.xml
+
 ### copy build files to 05-devel
 
 CopyToDevel
@@ -227,15 +236,15 @@ rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
 rm usr/bin/gtk4-widget-factory
 rm usr/bin/js[0-9]*
-rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstfluidsynthmidi.*
-rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstneonhttpsrc.*
-rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstopencv.*
-rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstopenexr.*
-rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqmlgl.*
-rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqroverlay.*
-rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgsttaglib.*
-rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstwebrtc.*
-rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
+#rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstfluidsynthmidi.*
+#rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstneonhttpsrc.*
+#rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstopencv.*
+#rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstopenexr.*
+#rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqmlgl.*
+#rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqroverlay.*
+#rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgsttaglib.*
+#rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstwebrtc.*
+#rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
