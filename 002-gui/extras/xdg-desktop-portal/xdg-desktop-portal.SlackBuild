@@ -34,11 +34,14 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
-	-Dlibportal=disabled \
 	-Dflatpak-interfaces=disabled \
+	-Dtests=disabled \
 	-Dgeoclue=disabled \
 	-Dsystemd=disabled \
-	-Dsandboxed-image-validation=false
+	-Ddocumentation=disabled \
+	-Dman-pages=disabled \
+	-Dsandboxed-image-validation=disabled \
+	-Dsandboxed-sound-validation=disabled
   
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
