@@ -146,6 +146,11 @@ sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=xdg-desktop-portal
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
 ### packages that require specific stripping
 
 currentPackage=llvm
