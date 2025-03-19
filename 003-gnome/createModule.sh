@@ -155,6 +155,11 @@ rm *.t?z
 
 InstallAdditionalPackages
 
+### renamed background images to jpg
+
+mv $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-d.jxl $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-d.jpg
+mv $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-l.jxl $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-l.jpg
+
 ### removed some useless services
 
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
