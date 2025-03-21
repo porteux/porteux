@@ -46,6 +46,7 @@ GenericStrip() {
 	rm -R var/log/setup
 	rm -R var/man
 	
+	rm usr/share/applications/org.gnome.Vte*.desktop
 	rm usr/share/pixmaps/*.xpm
 	rm var/log/removed_packages
 	rm var/log/removed_scripts
