@@ -220,6 +220,15 @@ echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/cinnamon-settings-d
 
 sed -i "s|SESSIONTEMPLATE|/usr/bin/cinnamon-session|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
 
+### TEMPORARY: remove some xed plugins that doesn't work with new pygobject 3.52.x
+
+rm -fr $MODULEPATH/packages/usr/lib64/xed/joinlines
+rm -fr $MODULEPATH/packages/usr/lib64/xed/open-uri-context-menu
+rm -fr $MODULEPATH/packages/usr/lib64/xed/textsize
+rm $MODULEPATH/packages/usr/lib64/xed/joinlines.plugin
+rm $MODULEPATH/packages/usr/lib64/xed/sort.plugin
+rm $MODULEPATH/packages/usr/lib64/xed/textsize.plugin
+
 ### copy build files to 05-devel
 
 CopyToDevel
