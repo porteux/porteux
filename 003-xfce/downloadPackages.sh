@@ -11,7 +11,7 @@ DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gspell" &
-DownloadPackage "gtksourceview3" &
+DownloadPackage "gtksourceview4" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libcanberra" &
