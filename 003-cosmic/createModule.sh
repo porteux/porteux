@@ -65,9 +65,6 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# required by observatory
-installpkg $MODULEPATH/packages/libdisplay-info*.txz > /dev/null 2>&1
-
 # cosmic extras
 for package in \
 	observatory \

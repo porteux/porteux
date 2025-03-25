@@ -16,7 +16,6 @@ DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libcanberra" &
 wait
-DownloadPackage "libdisplay-info" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
 DownloadPackage "libindicator" &

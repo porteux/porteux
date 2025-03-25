@@ -245,6 +245,7 @@ wait
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libdeflate" & # required by libtiff 
+	DownloadPackage "libdisplay-info" & # required by some DEs and mpv to have vaapi
 	DownloadPackage "gcr4" & # required by gvfs 1.54+
 	DownloadPackage "libnvme" & # required by udisks 2.10.0+
 	DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
