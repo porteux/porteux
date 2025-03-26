@@ -34,7 +34,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
 	rm -fr $MODULEPATH/${currentPackage}
 	rm $MODULEPATH/packages/meson-*.txz
-	
+else
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 fi
 
