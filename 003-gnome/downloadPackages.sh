@@ -58,7 +58,6 @@ DownloadPackage "iso-codes" & # required by gnome-desktop
 DownloadPackage "krb5" &
 wait
 DownloadPackage "libsass" & # required by gnome-console
-DownloadPackage "libsoup3" &
 DownloadPackage "libwnck3" &
 DownloadPackage "openldap" & # required by libadwaita (appstream)
 DownloadPackage "python-pip" &
