@@ -190,7 +190,6 @@ installpkg $MODULEPATH/packages/vte-*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
 
-
 # xfce packages
 for package in \
 	xfce4-dev-tools \
