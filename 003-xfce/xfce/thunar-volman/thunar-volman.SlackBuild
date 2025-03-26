@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v pre | sort -V -r | cut -d '>' -f 2 | cut -d '<' -f 1 | grep -v '^xfce-' | head -1)
+DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | cut -d '>' -f 2 | cut -d '<' -f 1 | grep -v '^xfce-' | head -1)
 VERSION=$(echo $DOWNLOADVERSION | rev | cut -d '-' -f 1 | rev)
 wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNAM}-${DOWNLOADVERSION}.tar.gz
 
