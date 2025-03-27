@@ -5,14 +5,15 @@ REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "accountsservice" &
 DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "ghostscript-fonts-std" &
 DownloadPackage "hunspell" &
 DownloadPackage "kidletime" &
 DownloadPackage "kwindowsystem" &
-DownloadPackage "libcanberra" &
 wait
+DownloadPackage "libcanberra" &
 DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libkscreen" &
 DownloadPackage "libpaper" & # required by xpdf

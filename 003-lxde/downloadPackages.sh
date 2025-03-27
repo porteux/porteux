@@ -5,6 +5,7 @@ REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "accountsservice" & # required by lightdm
 DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "keybinder3" &
