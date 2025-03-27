@@ -15,6 +15,7 @@ DownloadPackage "enchant" &
 wait
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gspell" &
+DownloadPackage "gtksourceview4" &
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
