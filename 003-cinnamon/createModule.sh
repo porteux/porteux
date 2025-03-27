@@ -60,7 +60,7 @@ installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lightdm-gtk-greeter
-sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+ICONTHEME=Yaru-blue sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mate-polkit

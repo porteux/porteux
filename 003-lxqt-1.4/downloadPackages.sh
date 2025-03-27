@@ -12,11 +12,12 @@ DownloadPackage "ghostscript-fonts-std" &
 DownloadPackage "hunspell" &
 DownloadPackage "kidletime" &
 DownloadPackage "kwindowsystem" &
-wait
 DownloadPackage "libcanberra" &
+wait
 DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libkscreen" &
 DownloadPackage "libpaper" & # required by xpdf
+DownloadPackage "libxklavier" & # required by lightdm-gtk-greeter
 DownloadPackage "networkmanager-qt" &
 DownloadPackage "polkit-qt" &
 DownloadPackage "solid" &
