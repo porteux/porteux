@@ -1,0 +1,12 @@
+--- data/themes/Industrial/gtk.css	2024-03-21 21:59:40.000000000 +0100
++++ data/themes/Industrial/gtk.css.patched	2024-01-28 18:43:03.000000000 +0100
+@@ -1,6 +1,8 @@
+ #lxdm {
+ 	background-image: url("wave.svg");
+-	background-repeat: round;
++	background-position: center;
++	background-repeat: no-repeat;
++	background-size: cover;
+ }
+ 
+ #bottom_pane {

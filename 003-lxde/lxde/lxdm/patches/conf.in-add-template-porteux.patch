@@ -1,0 +1,36 @@
+--- data/lxdm.conf.in	2024-02-24 16:35:14.049440839 +0100
++++ data/lxdm.conf.in.patched	2024-02-24 16:35:22.084441219 +0100
+@@ -7,7 +7,7 @@
+ # timeout=10
+ 
+ ## default session or desktop used when no systemwide config
+-# session=/usr/bin/startlxde
++session=/usr/bin/lxsession
+ 
+ ## uncomment and set to set numlock on your keyboard
+ # numlock=0
+@@ -33,9 +33,6 @@
+ ## gtk theme used by greeter
+ gtk_theme=Clearlooks
+ 
+-## background of the greeter
+-bg=/usr/share/backgrounds/default.png
+-
+ ## if show bottom pane
+ bottom_pane=1
+ 
+@@ -45,12 +42,11 @@
+ ## if show keyboard layout select control
+ keyboard=0
+ 
+-## if set show onscreen-keyboard button and run content on click
+-#onscreenkeyboard=onboard
+-
+ ## the theme of greeter
+ theme=Industrial
+ 
++transparent_pane=1
++
+ [input]
+ 
+ [userlist]
