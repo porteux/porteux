@@ -37,7 +37,6 @@ CXXFLAGS="$GCCFLAGS" \
 	--with-user-session="$SESSIONTEMPLATE" \
 	--disable-static \
 	--disable-tests \
-	--disable-liblightdm-qt \
 	--disable-liblightdm-qt5 \
 	--enable-gtk-doc-html=false
 
@@ -56,6 +55,11 @@ chown $LIGHTDM_USER:$LIGHTDM_GROUP $PKG/var/lib/$LIGHTDM_USER
 
 # enable root login
 sed -i '/uid >= 1000/ s/^/#/' $PKG/etc/pam.d/lightdm
+
+# change from systemd to elogind
+sed -i 's|pam_systemd|pam_elogind|g' $PKG/etc/pam.d/lightdm
+sed -i 's|pam_systemd|pam_elogind|g' $PKG/etc/pam.d/lightdm-autologin
+sed -i 's|pam_systemd|pam_elogind|g' $PKG/etc/pam.d/lightdm-greeter
 
 # apply default settings
 cp $CWD/lightdm.conf $PKG/etc/lightdm

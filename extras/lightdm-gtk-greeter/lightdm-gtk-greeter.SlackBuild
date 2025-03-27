@@ -63,6 +63,7 @@ CXXFLAGS="$GCCFLAGS" \
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 cp $CWD/lightdm-gtk-greeter.conf $PKG/etc/lightdm/
+sed -i "s|ICONTHEMETEMPLATE|$ICONTHEME|g" $PKG/etc/lightdm/lightdm-gtk-greeter.conf
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
