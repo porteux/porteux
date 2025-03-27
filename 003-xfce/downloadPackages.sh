@@ -5,6 +5,7 @@ REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "accountsservice" & # required by lightdm
 DownloadPackage "aspell" & # required by mousepad
 DownloadPackage "blueman" &
 DownloadPackage "dconf" &
@@ -14,8 +15,8 @@ DownloadPackage "gspell" &
 DownloadPackage "gtksourceview4" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
-DownloadPackage "libcanberra" &
 wait
+DownloadPackage "libcanberra" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
 DownloadPackage "libindicator" &

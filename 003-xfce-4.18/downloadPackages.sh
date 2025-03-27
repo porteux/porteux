@@ -5,6 +5,7 @@ REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "accountsservice" & # required by lightdm
 DownloadPackage "aspell" & # required by mousepad
 DownloadPackage "blueman" &
 DownloadPackage "dconf" &

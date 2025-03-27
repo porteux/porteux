@@ -54,8 +54,13 @@ currentPackage=audacious-plugins
 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=lxdm
-GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+currentPackage=lightdm
+SESSIONTEMPLATE=cinnamon sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=lightdm-gtk-greeter
+sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mate-polkit

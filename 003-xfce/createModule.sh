@@ -54,10 +54,6 @@ cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=lxdm
-GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=audacious
 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
@@ -187,8 +183,8 @@ installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 installpkg $MODULEPATH/packages/vte-*.txz || exit 1
 
 # required by xfce4-xkb-plugin
-installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
+installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
 # xfce packages
 for package in \
@@ -230,6 +226,15 @@ done
 # only required for building not for run-time
 rm $MODULEPATH/packages/xfce4-dev-tools*
 
+currentPackage=lightdm
+SESSIONTEMPLATE=xfce sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=lightdm-gtk-greeter
+sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
@@ -252,10 +257,6 @@ sed -i "s|Categories=System;|Categories=|g" $MODULEPATH/packages/usr/share/appli
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/thunar-bulk-rename.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/xfce4-sensors.desktop
 sed -i "s|Utility;||g" $MODULEPATH/packages/usr/share/applications/xfce4-taskmanager.desktop
-
-### add xfce session
-
-sed -i "s|SESSIONTEMPLATE|/usr/bin/startxfce4|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
 
 ### copy xinitrc
 

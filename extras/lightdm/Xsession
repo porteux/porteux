@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# LightDM wrapper to run around X sessions in Salix
+
+[ -f /etc/profile ] && . /etc/profile
+[ -f ~/.profile ] && . ~/.profile
+[ -f /etc/xprofile ] && . /etc/xprofile
+[ -f ~/.xprofile ] && . ~/.xprofile
+
+userresources=$HOME/.Xresources
+usermodmap=$HOME/.Xmodmap
+sysresources=/etc/X11/xinit/.Xresources
+sysmodmap=/etc/X11/xinit/.Xmodmap
+
+# merge in defaults and keymaps
+[ -f $sysresources ] && xrdb -merge $sysresources
+[ -f $sysmodmap ] && xmodmap $sysmodmap
+[ -f $userresources ] && xrdb -merge $userresources
+[ -f $usermodmap ] && xmodmap $usermodmap
+
+# Load the keymap from /etc/X11/xorg.conf.d/10-keymap.conf
+Layout=$(grep XkbLayout /etc/X11/xorg.conf.d/10-keymap.conf|sed 's/.*"\([^"]*\)"[[:space:]]*$/\1/')
+Variant=$(grep XkbVariant /etc/X11/xorg.conf.d/10-keymap.conf|sed 's/.*"\([^"]*\)"[[:space:]]*$/\1/')
+Options=$(grep XkbOptions /etc/X11/xorg.conf.d/10-keymap.conf|sed 's/.*"\([^"]*\)"[[:space:]]*$/\1/')
+VARIANT=" "
+OPTION=" "
+[ ! "$Variant" = "" ] && VARIANT="-variant $Variant"
+[ ! "$Options" = "" ] && OPTION="-option $Options"
+setxkbmap -layout $Layout $VARIANT $OPTION
+
+# $@ is the session requested by the greeter, that in Slint we also set
+# when running xwmconfig as regular user, with this command:
+# user_xsession.py --user-name $USER set <SESSION>. For this reason
+# accountsservice is among lightdm deps in Slint: it ships
+# user_xsession.py and the accountsservices app is a run-time dep of it.
+
+exec $@

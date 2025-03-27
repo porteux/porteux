@@ -1,0 +1,64 @@
+#!/bin/bash
+
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
+PRGNAM=lightdm
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "canonical" ${PRGNAM})
+VERSION=${info#* }
+
+tar xvf ${PRGNAM}-$VERSION.tar.?z
+cd ${PRGNAM}-$VERSION
+
+sed -i 's|doc help||g' Makefile.am
+
+export LIGHTDM_USER=gdm
+export LIGHTDM_GROUP=gdm
+
+CFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--sysconfdir=/etc \
+	--with-greeter-session=lightdm-gtk-greeter \
+	--with-greeter-user=$LIGHTDM_USER \
+	--with-user-session="$SESSIONTEMPLATE" \
+	--disable-static \
+	--disable-tests \
+	--disable-liblightdm-qt \
+	--disable-liblightdm-qt5 \
+	--enable-gtk-doc-html=false
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+install -m 755 $CWD/Xsession $PKG/etc/lightdm/
+rm -rf $PKG/etc/init
+
+mkdir -p -m=755 $PKG/var/cache/lightdm
+mkdir -p -m=770 $PKG/var/lib/lightdm{,-data}
+mkdir -p -m=711 $PKG/var/log/lightdm
+
+# needed for the .Xauthority file
+mkdir -p $PKG/var/lib/$LIGHTDM_USER
+chown $LIGHTDM_USER:$LIGHTDM_GROUP $PKG/var/lib/$LIGHTDM_USER
+
+# enable root login
+sed -i '/uid >= 1000/ s/^/#/' $PKG/etc/pam.d/lightdm
+
+# apply default settings
+cp $CWD/lightdm.conf $PKG/etc/lightdm
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

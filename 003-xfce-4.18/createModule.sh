@@ -54,10 +54,6 @@ cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=lxdm
-GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=audacious
 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
@@ -229,6 +225,15 @@ done
 
 # only required for building not for run-time
 rm $MODULEPATH/packages/xfce4-dev-tools*
+
+currentPackage=lightdm
+SESSIONTEMPLATE=xfce sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=lightdm-gtk-greeter
+sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 
