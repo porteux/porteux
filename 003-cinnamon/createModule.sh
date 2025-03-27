@@ -155,7 +155,6 @@ for package in \
 	pexpect \
 	polib \
 	python3-xapp \
-	gtksourceview4 \
 	libpeas \
 	libgxps \
 	exempi \
