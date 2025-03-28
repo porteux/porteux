@@ -26,7 +26,6 @@ DownloadPackage "qrencode" &
 DownloadPackage "wayland-protocols" &
 DownloadPackage "xcb-util-cursor" &
 DownloadPackage "xdpyinfo" &
-DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "zxing-cpp" &
 wait
 

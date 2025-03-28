@@ -40,7 +40,6 @@ DownloadPackage "mozjs128" &
 DownloadPackage "pangomm2" & # required by gnome-system-monitor
 DownloadPackage "libpwquality" & # required by gnome-control-center
 DownloadPackage "woff2" &
-DownloadPackage "xorg-server-xwayland" &
 wait
 
 ### only download if not present

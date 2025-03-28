@@ -170,7 +170,6 @@ DownloadPackage "threadweaver" &
 DownloadPackage "wayland-protocols" &
 DownloadPackage "xcb-util-cursor" &
 DownloadPackage "xdg-desktop-portal-kde" &
-DownloadPackage "xorg-server-xwayland" &
 wait
 
 ### slackware specific version packages
