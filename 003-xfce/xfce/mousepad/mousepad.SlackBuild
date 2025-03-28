@@ -23,19 +23,19 @@ cd $PRGNAM-$DOWNLOADVERSION
 sed -i "s/g_warning\ (\"Failed\ to\ open\ plugin\ directory\ '%s':\ %s\",//g" mousepad/mousepad-application.c
 sed -i 's/MOUSEPAD_PLUGIN_DIRECTORY,\ error->message);//g' mousepad/mousepad-application.c
 
+mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \
-./autogen.sh \
+meson setup \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
-	--localstatedir=/var \
+	--infodir=/usr/info \
 	--mandir=/usr/man \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
-	--disable-debug \
-	--disable-static \
-	--build=$ARCH-porteux-linux
+	--localstatedir=/var 
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
