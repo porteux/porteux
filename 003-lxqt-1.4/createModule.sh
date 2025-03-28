@@ -127,6 +127,9 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
+# required by lightdm
+installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+
 currentPackage=lightdm
 SESSIONTEMPLATE=lxqt sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
