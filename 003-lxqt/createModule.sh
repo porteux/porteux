@@ -128,6 +128,9 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
+# required by lightdm
+installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+
 currentPackage=lightdm
 SESSIONTEMPLATE=lxqt sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
@@ -163,7 +166,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nH --cut-dirs=6 --no-parent --reject="index.html*" ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/xap/${currentPackage}/ || exit 1
 sed -i "s|/lang/|/|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sed -i "s|-DXPDFWIDGET_PRINTING=1|-DMULTITHREADED=ON|g" ${currentPackage}.SlackBuild
+sed -i "s|-DXPDFWIDGET_PRINTING=1|-DMULTITHREADED=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5|g" ${currentPackage}.SlackBuild
 sed -z -i "s|mkdir build\n|sed -i \"s\|initialSidebarState = gTrue\|initialSidebarState = gFalse\|g\" xpdf/GlobalParams.cc\nmkdir build\n|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
