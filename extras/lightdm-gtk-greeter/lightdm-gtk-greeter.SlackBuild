@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
-
 PRGNAM=lightdm-gtk-greeter
 
 CWD=$(dirname "$0")
@@ -39,15 +37,14 @@ if ! which xdt-csource > /dev/null 2>&1; then
 	cd $TMP
 fi
 
-info=$(DownloadLatestFromGithub "Xubuntu" ${PRGNAM})
-VERSION=${info#* }
-
-tar xvf ${PRGNAM}-$VERSION.tar.?z
-cd ${PRGNAM}-$VERSION
+wget https://github.com/Xubuntu/${PRGNAM}/archive/refs/heads/master.tar.gz
+tar xvf master.tar.?z
+cd ${PRGNAM}-master
+VERSION=$(date -r . +%Y%m%d)
 
 CFLAGS="$GCCFLAGS -Wno-declaration-after-statement" \
 CXXFLAGS="$GCCFLAGS" \
-./configure \
+./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
@@ -61,6 +58,10 @@ CXXFLAGS="$GCCFLAGS" \
 	--disable-static
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+mkdir -p $PKG/usr/share/backgrounds
+cp $CWD/wave.svg $PKG/usr/share/backgrounds
+chmod 644 $PKG/usr/share/backgrounds/wave.svg
 
 cp $CWD/lightdm-gtk-greeter.conf $PKG/etc/lightdm/
 sed -i "s|ICONTHEMETEMPLATE|$ICONTHEME|g" $PKG/etc/lightdm/lightdm-gtk-greeter.conf
