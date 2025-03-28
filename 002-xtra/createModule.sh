@@ -40,6 +40,11 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 cp $SCRIPTPATH/extras/transmission/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done # only for version 4.0.6 which is broken
+if [ $SLACKWAREVERSION == "current" ]; then
+	sed -i 's|cmake_minimum_required(VERSION 3.12 FATAL_ERROR)|cmake_minimum_required(VERSION 3.5)|g' third-party/miniupnp/miniupnpc/CMakeLists.txt
+	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/libnatpmp/CMakeLists.txt
+	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/dht/CMakeLists.txt
+fi
 mkdir build && cd build
 CFLAGS="$CLANGFLAGS -fPIC" CXXFLAGS="$CLANGFLAGS -flto=auto" cmake -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
