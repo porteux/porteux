@@ -23,7 +23,6 @@ DownloadPackage "libgtop" &
 DownloadPackage "libproxy" &
 DownloadPackage "libpwquality" &
 DownloadPackage "libxklavier" &
-DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "woff2" &
 wait
 
