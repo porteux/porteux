@@ -55,7 +55,6 @@ rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 # cosmic deps
 for package in \
-	seatd \
 	greetd \
 	launcher \
 	xdg-desktop-portal-gtk \
