@@ -24,8 +24,6 @@ fi
 
 ### temporary packages for further building
 
-DownloadPackage "xorg-server-xwayland" &
-wait
 
 ### script clean up
 
