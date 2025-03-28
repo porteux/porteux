@@ -50,6 +50,7 @@ wait
 DownloadPackage "boost" & # to build exempi
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
+DownloadPackage "libxklavier" &
 DownloadPackage "python-pip" &
 DownloadPackage "xtrans" &
 wait

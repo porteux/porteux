@@ -54,6 +54,9 @@ currentPackage=audacious-plugins
 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+# required by lightdm
+installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+
 currentPackage=lightdm
 SESSIONTEMPLATE=cinnamon sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
@@ -112,6 +115,8 @@ installpkg $MODULEPATH/packages/vte*.txz || exit 1
 # required only for building
 installpkg $MODULEPATH/packages/boost*.txz || exit 1
 rm $MODULEPATH/packages/boost*.txz
+installpkg $MODULEPATH/packages/gtksourceview4*.txz || exit 1
+rm $MODULEPATH/packages/gtksourceview4*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
@@ -132,8 +137,6 @@ installpkg $MODULEPATH/packages/python-wheel*.txz || exit 1
 rm $MODULEPATH/packages/python-wheel*.txz
 installpkg $MODULEPATH/packages/rust*.txz || exit 1
 rm $MODULEPATH/packages/rust*.txz
-installpkg $MODULEPATH/packages/xorg-server-xwayland*.txz || exit 1
-rm $MODULEPATH/packages/xorg-server-xwayland*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
