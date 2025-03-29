@@ -99,6 +99,7 @@ installpkg $MODULEPATH/packages/aspell*.txz || exit 1
 installpkg $MODULEPATH/packages/colord*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
+installpkg $MODULEPATH/packages/gtksourceview4*.txz || exit 1
 installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgee*.txz || exit 1
@@ -108,21 +109,17 @@ installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
-installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
+installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required only for building
 installpkg $MODULEPATH/packages/boost*.txz || exit 1
 rm $MODULEPATH/packages/boost*.txz
-installpkg $MODULEPATH/packages/gtksourceview4*.txz || exit 1
-rm $MODULEPATH/packages/gtksourceview4*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
 rm $MODULEPATH/packages/libgsf*.txz
-installpkg $MODULEPATH/packages/llvm*.txz || exit 1
-rm $MODULEPATH/packages/llvm*.txz
 installpkg $MODULEPATH/packages/python-build*.txz || exit 1
 rm $MODULEPATH/packages/python-build*.txz
 installpkg $MODULEPATH/packages/python-flit-core*.txz || exit 1
@@ -135,8 +132,6 @@ installpkg $MODULEPATH/packages/python-pyproject-hooks*.txz || exit 1
 rm $MODULEPATH/packages/python-pyproject-hooks*.txz
 installpkg $MODULEPATH/packages/python-wheel*.txz || exit 1
 rm $MODULEPATH/packages/python-wheel*.txz
-installpkg $MODULEPATH/packages/rust*.txz || exit 1
-rm $MODULEPATH/packages/rust*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
@@ -161,7 +156,6 @@ for package in \
 	libpeas \
 	libgxps \
 	exempi \
-	mozjs115 \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
@@ -229,12 +223,13 @@ sed -i "s|SESSIONTEMPLATE|/usr/bin/cinnamon-session|g" $MODULEPATH/packages/etc/
 
 ### TEMPORARY: remove some xed plugins that doesn't work with new pygobject 3.52.x
 
-rm -fr $MODULEPATH/packages/usr/lib64/xed/joinlines
-rm -fr $MODULEPATH/packages/usr/lib64/xed/open-uri-context-menu
-rm -fr $MODULEPATH/packages/usr/lib64/xed/textsize
-rm $MODULEPATH/packages/usr/lib64/xed/joinlines.plugin
-rm $MODULEPATH/packages/usr/lib64/xed/sort.plugin
-rm $MODULEPATH/packages/usr/lib64/xed/textsize.plugin
+rm -fr $MODULEPATH/packages/usr/lib${SYSTEMBITS}/xed/plugins/bracket-complete
+rm -fr $MODULEPATH/packages/usr/lib${SYSTEMBITS}/xed/plugins/joinlines
+rm -fr $MODULEPATH/packages/usr/lib${SYSTEMBITS}/xed/plugins/open-uri-context-menu
+rm -fr $MODULEPATH/packages/usr/lib${SYSTEMBITS}/xed/plugins/textsize
+rm $MODULEPATH/packages/usr/lib${SYSTEMBITS}/xed/plugins/joinlines.plugin
+rm $MODULEPATH/packages/usr/lib${SYSTEMBITS}/xed/plugins/sort.plugin
+rm $MODULEPATH/packages/usr/lib${SYSTEMBITS}/xed/plugins/textsize.plugin
 
 ### copy build files to 05-devel
 

@@ -35,7 +35,7 @@ wait
 DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-#DownloadPackage "mozjs128" &
+DownloadPackage "mozjs128" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "python-certifi" &
 DownloadPackage "python-charset-normalizer" &
@@ -61,15 +61,13 @@ DownloadPackage "boost" & # to build exempi
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
 DownloadPackage "libxklavier" &
-DownloadPackage "llvm" &
 DownloadPackage "python-build" &
-wait
 DownloadPackage "python-flit-core" &
+wait
 DownloadPackage "python-installer" &
 DownloadPackage "python-pip" &
 DownloadPackage "python-pyproject-hooks" &
 DownloadPackage "python-wheel" &
-DownloadPackage "rust" &
 DownloadPackage "xtrans" &
 wait
 
