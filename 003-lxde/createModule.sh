@@ -54,8 +54,16 @@ cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=lxdm
-sh $SCRIPTPATH/lxde/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+# required by lightdm
+installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+
+currentPackage=lightdm
+SESSIONTEMPLATE=LXDE sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=lightdm-gtk-greeter
+ICONTHEME=kora sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril

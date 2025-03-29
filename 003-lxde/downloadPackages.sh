@@ -13,6 +13,7 @@ DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
+DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "vte" &
 wait
