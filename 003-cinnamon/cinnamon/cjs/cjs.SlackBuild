@@ -42,6 +42,8 @@ meson setup \
  
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
+rm -fr $PKG/usr/libexec/installed-tests
+
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install

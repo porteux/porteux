@@ -203,12 +203,15 @@ for package in \
 	gtksourceview4 \
 	libpeas \
 	libgxps \
-	exempi \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+# required only for building
+rm $MODULEPATH/packages/cogl*.txz
+rm $MODULEPATH/packages/clutter*.txz
 
 # cinnamon extras
 for package in \
