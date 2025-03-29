@@ -35,6 +35,7 @@ GenericStrip() {
 	rm -R usr/share/installed-tests
 	rm -R usr/share/locale
 	rm -R usr/share/man
+	rm -R usr/share/metainfo/
 	rm -R usr/share/pkgconfig
 	rm -R usr/share/sounds
 	rm -R usr/share/themes/HighContrast
