@@ -48,7 +48,6 @@ wait
 
 ### temporary packages for further building
 
-DownloadPackage "boost" &
 DownloadPackage "c-ares" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &

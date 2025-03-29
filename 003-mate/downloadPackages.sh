@@ -43,7 +43,6 @@ fi
 
 ### temporary packages for further building
 
-DownloadPackage "boost" & # to build exempi
 DownloadPackage "gtk+2" & # to build mate-themes
 DownloadPackage "python-pip" & # to install lxml
 wait
