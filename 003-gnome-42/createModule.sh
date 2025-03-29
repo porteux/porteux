@@ -49,7 +49,6 @@ rm $MODULEPATH/packages/${currentPackage}-*.txz
 installpkg $MODULEPATH/packages/*.txz || exit 1
 
 # only required for building not for run-time
-rm $MODULEPATH/packages/boost*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
@@ -80,7 +79,6 @@ for package in \
 	mozjs91 \
 	upower \
 	libstemmer \
-	exempi \
 	libwpe \
 	wpebackend-fdo \
 	bubblewrap \

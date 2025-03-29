@@ -32,7 +32,6 @@ wait
 
 ### temporary packages for further building
 
-DownloadPackage "boost" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
