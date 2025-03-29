@@ -1,6 +1,6 @@
 #!/bin/bash
 
-killall -ew pipewire > /dev/null 2>&1
+pkill -u "${USER}" -x pipewire > /dev/null 2>&1
 pipewire &
 
 # Wait for pipewire to load
@@ -10,8 +10,8 @@ while [ $sleepTimes -gt 0 ] && ! pgrep -x "pipewire" > /dev/null; do
 	sleepTimes=$((sleepTimes - 1))
 done
 
-killall -ew wireplumber > /dev/null 2>&1
+pkill -u "${USER}" -x wireplumber > /dev/null 2>&1
 wireplumber &
 
-killall -ew pipewire-pulse > /dev/null 2>&1
+pkill -u "${USER}" -x pipewire-pulse > /dev/null 2>&1
 pipewire-pulse &

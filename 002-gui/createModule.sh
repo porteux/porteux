@@ -354,7 +354,7 @@ rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 rm usr/share/xsessions/openbox-gnome.desktop
 rm usr/share/xsessions/openbox-kde.desktop
 
-[ $SLACKWAREVERSION == "current" ] && rm usr/lib64/libpoppler-qt5*
+[ $SLACKWAREVERSION == "current" ] && rm usr/lib${SYSTEMBITS}/libpoppler-qt5*
 
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
