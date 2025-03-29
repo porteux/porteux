@@ -155,12 +155,15 @@ for package in \
 	python3-xapp \
 	libpeas \
 	libgxps \
-	exempi \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+# required only for building
+rm $MODULEPATH/packages/cogl*.txz
+rm $MODULEPATH/packages/clutter*.txz
 
 # cinnamon extras
 for package in \
@@ -261,6 +264,8 @@ rm -R usr/share/cogl
 rm -R usr/share/gdm
 rm -R usr/share/glade/pixmaps
 rm -R usr/share/gnome
+rm -R usr/share/gtksourceview-2.0
+rm -R usr/share/gtksourceview-3.0
 rm -R usr/share/installed-tests
 rm -R usr/share/libdbusmenu
 rm -R usr/share/mate-panel
