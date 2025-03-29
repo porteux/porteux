@@ -12,8 +12,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="2023.3"
-wget -c https://files.pythonhosted.org/packages/5e/32/12032aa8c673ee16707a9b6cdda2b09c0089131f35af55d443b6a9c69c1d/${PRGNAM}-${VERSION}.tar.gz
+VERSION="2025.2"
+wget -c https://files.pythonhosted.org/packages/f8/bf/abbd3cdfb8fbc7fb3d4d38d320f2441b1e7cbe29be4f23797b4a2b5d8aac/${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
