@@ -69,9 +69,6 @@ currentPackage=atril
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-# required from now on
-installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
-
 currentPackage=pavucontrol
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
@@ -573,11 +570,8 @@ rm -R usr/share/gnome
 rm -R usr/share/Thunar
 
 rm etc/xdg/autostart/blueman.desktop
-rm usr/bin/canberra*
 rm usr/bin/vte-*-gtk4
-rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libappindicator.*
-rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*

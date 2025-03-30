@@ -10,7 +10,6 @@ DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "ghostscript-fonts-std" &
 DownloadPackage "hunspell" &
-DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libpaper" & # required by xpdf

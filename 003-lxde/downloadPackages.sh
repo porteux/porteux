@@ -9,7 +9,6 @@ DownloadPackage "accountsservice" & # required by lightdm
 DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "keybinder3" &
-DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &

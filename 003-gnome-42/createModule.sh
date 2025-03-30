@@ -146,7 +146,7 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### removed some useless services
+### remove some useless services
 
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
@@ -213,7 +213,6 @@ rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/ibus*.desktop
-rm usr/bin/canberra*
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
@@ -232,7 +231,6 @@ rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqroverlay.*
 rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgsttaglib.*
 rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstwebrtc.*
 rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
-rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop

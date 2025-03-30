@@ -38,6 +38,7 @@ else
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 fi
 
+installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 installpkg $MODULEPATH/packages/cups*.txz || exit 1
@@ -306,6 +307,7 @@ rm etc/xdg/autostart/at-spi-dbus-bus.desktop
 rm usr/bin/cacaclock
 rm usr/bin/cacademo
 rm usr/bin/cacafire
+rm usr/bin/canberra*
 rm usr/bin/gdm-control
 rm usr/bin/gnome-panel-control
 rm usr/bin/gtk3-demo
@@ -314,7 +316,9 @@ rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
+rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libLLVMExtensions*
 rm usr/lib${SYSTEMBITS}/libLLVMLTO*
 rm usr/lib${SYSTEMBITS}/libMesaOpenCL*

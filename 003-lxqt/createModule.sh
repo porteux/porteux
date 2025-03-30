@@ -406,8 +406,6 @@ rm -R usr/share/screengrab/translations
 rm -R usr/share/Thunar
 
 rm etc/xdg/autostart/blueman.desktop
-rm usr/bin/canberra*
-rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/share/icons/hicolor/scalable/apps/pcmanfm-qt.svg
 rm usr/share/nm-tray/nm-tray*.qm
