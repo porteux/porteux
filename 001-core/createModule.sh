@@ -70,22 +70,9 @@ currentPackage=7zip
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=pptp
-version="1.10.0"
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/network/${currentPackage}/ -A * || exit 1
-wget http://downloads.sourceforge.net/pptpclient/pptp-$version.tar.gz || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=unrar
-version="7.1.5"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+version=$(curl -s https://www.rarlab.com/rar_add.htm | grep "source" | grep -o 'unrarsrc-[0-9.]\+\.tar\.gz' | cut -d "-" -f 2 | sed 's/\.tar\.gz$//')
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
 wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
 sed -i "s|-j1 ||g" ${currentPackage}.SlackBuild
