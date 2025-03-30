@@ -16,7 +16,6 @@ DownloadPackage "hunspell" &
 wait
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
-DownloadPackage "libcanberra" &
 DownloadPackage "libdmtx" &
 DownloadPackage "libproxy" &
 DownloadPackage "libqaccessibilityclient" &

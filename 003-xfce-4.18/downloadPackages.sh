@@ -14,7 +14,6 @@ DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gtksourceview3" &
 DownloadPackage "keybinder3" &
 wait
-DownloadPackage "libcanberra" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
 DownloadPackage "libnma" &

@@ -16,7 +16,6 @@ DownloadPackage "gtksourceview4" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 wait
-DownloadPackage "libcanberra" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
 DownloadPackage "libindicator" &

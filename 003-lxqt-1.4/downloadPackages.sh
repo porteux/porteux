@@ -12,7 +12,6 @@ DownloadPackage "ghostscript-fonts-std" &
 DownloadPackage "hunspell" &
 DownloadPackage "kidletime" &
 DownloadPackage "kwindowsystem" &
-DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libkscreen" &

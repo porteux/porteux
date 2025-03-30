@@ -19,7 +19,6 @@ DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
-DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libgtop" &
 DownloadPackage "libindicator" &
@@ -34,9 +33,7 @@ wait
 ### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "libappindicator" &
 	DownloadPackage "libdbusmenu" &
-	DownloadPackage "libindicator" &
 	DownloadPackage "libsoup" & # in stable this libsoup2 will be in base
 	wait
 fi

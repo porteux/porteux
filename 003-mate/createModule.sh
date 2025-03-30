@@ -105,7 +105,6 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
 installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
@@ -241,11 +240,8 @@ rm -R var/lib/AccountsService
 
 rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
-rm usr/bin/canberra*
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
-rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libappindicator.*
-rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*

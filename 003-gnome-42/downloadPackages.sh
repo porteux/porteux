@@ -17,13 +17,13 @@ DownloadPackage "glib-networking" &
 DownloadPackage "hunspell" &
 DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
-DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libgtop" &
 DownloadPackage "libproxy" &
 DownloadPackage "libpwquality" &
 DownloadPackage "libxklavier" &
 DownloadPackage "woff2" &
+DownloadPackage "xorg-server-xwayland" & # required by mutter
 wait
 
 ### only download if not present

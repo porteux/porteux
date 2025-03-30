@@ -18,7 +18,6 @@ DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libdbusmenu" &
 wait
-DownloadPackage "libcanberra" &
 DownloadPackage "libgee" &
 DownloadPackage "libgpod" &
 DownloadPackage "libgtop" &

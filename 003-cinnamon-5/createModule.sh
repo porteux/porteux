@@ -99,7 +99,6 @@ installpkg $MODULEPATH/packages/aspell*.txz || exit 1
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
-installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgee*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libnma*.txz || exit 1
@@ -312,11 +311,9 @@ rm etc/profile.d/80xapp-gtk3-module.sh
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/caribou-autostart.desktop
 rm etc/xdg/autostart/xapp-sn-watcher.desktop
-rm usr/bin/canberra*
 rm usr/bin/js[0-9]*
 rm usr/bin/pastebin
 rm usr/bin/xfce4-set-wallpaper
-rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py

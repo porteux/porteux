@@ -66,6 +66,11 @@ currentPackage=lightdm-gtk-greeter
 ICONTHEME=Yaru-blue sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+# required by mate-polkit
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
+
 currentPackage=mate-polkit
 sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
@@ -101,7 +106,6 @@ installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/gtksourceview4*.txz || exit 1
 installpkg $MODULEPATH/packages/gspell*.txz || exit 1
-installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgee*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libhandy*.txz || exit 1
@@ -280,12 +284,10 @@ rm etc/profile.d/80xapp-gtk3-module.sh
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/caribou-autostart.desktop
 rm etc/xdg/autostart/xapp-sn-watcher.desktop
-rm usr/bin/canberra*
 rm usr/bin/js[0-9]*
 rm usr/bin/pastebin
 rm usr/bin/xfce4-set-wallpaper
 rm usr/lib${SYSTEMBITS}/libappindicator.*
-rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*

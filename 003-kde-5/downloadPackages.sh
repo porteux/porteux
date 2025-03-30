@@ -122,7 +122,6 @@ DownloadPackage "kwrited" &
 DownloadPackage "kxmlgui" &
 DownloadPackage "kxmlrpcclient" &
 DownloadPackage "layer-shell-qt" &
-DownloadPackage "libcanberra" &
 DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libdmtx" &
 DownloadPackage "libkdcraw" &
