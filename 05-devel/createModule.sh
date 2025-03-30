@@ -78,6 +78,13 @@ rm usr/lib${SYSTEMBITS}/libgomp.so*
 rm usr/lib${SYSTEMBITS}/libltdl.so*
 rm usr/lib${SYSTEMBITS}/libstdc++.so*
 
+# already included in binutils-stripped
+rm usr/bin/ar
+rm usr/bin/strip
+rm usr/lib${SYSTEMBITS}/libbfd.so
+rm usr/lib${SYSTEMBITS}/libbfd-*.so
+rm usr/lib${SYSTEMBITS}/libsframe*.so
+
 # remove 32-bit files
 rm -R usr/include/c++/*/x86_64-slackware-linux/32
 rm -R usr/lib/pkgconfig

@@ -16,7 +16,6 @@ DownloadPackage "gc" &
 DownloadPackage "gcc" &
 DownloadPackage "gcc-g++" &
 wait
-DownloadPackage "gd" &
 DownloadPackage "gettext-tools" &
 DownloadPackage "git" &
 DownloadPackage "gmp" &
