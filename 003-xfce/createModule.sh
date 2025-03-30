@@ -186,7 +186,6 @@ installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 installpkg $MODULEPATH/packages/vte-*.txz || exit 1
 
 # required by xfce4-xkb-plugin
-installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
 # xfce packages

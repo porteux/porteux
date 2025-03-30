@@ -187,11 +187,6 @@ installpkg $MODULEPATH/packages/vte-*.txz || exit 1
 # required by xfce4-xkb-plugin
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
-if [ $SLACKWAREVERSION == "current" ]; then
-	# required by xfce4-screenshooter in current
-	installpkg $MODULEPATH/packages/libsoup-*.txz || exit 1
-fi
-
 # xfce packages
 for package in \
 	xfce4-dev-tools \

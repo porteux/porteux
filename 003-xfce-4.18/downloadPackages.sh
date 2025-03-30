@@ -29,7 +29,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &
 	DownloadPackage "gspell" &
 	DownloadPackage "libindicator" &
-	DownloadPackage "libsoup" & # for stable this libsoup2 will be in 002-gui
 	wait
 fi
 
