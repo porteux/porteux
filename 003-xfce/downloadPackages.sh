@@ -20,7 +20,6 @@ DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
 DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
-DownloadPackage "libsoup" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
