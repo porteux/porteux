@@ -344,16 +344,7 @@ rm -R usr/lib*/python*/site-packages/peg_generator
 rm -R usr/lib*/python*/turtledemo
 rm -R usr/lib*/python*/unittest/__pycache__/
 rm -R usr/lib/udev
-rm -R usr/local/etc
-rm -R usr/local/games
-rm -R usr/local/include
-rm -R usr/local/info
-rm -R usr/local/lib
-rm -R usr/local/lib${SYSTEMBITS}
-rm -R usr/local/man
-rm -R usr/local/sbin
-rm -R usr/local/share
-rm -R usr/local/src
+rm -R usr/local
 rm -R usr/share/applications
 rm -R usr/share/common-lisp
 rm -R usr/share/glib-2.0/gdb
