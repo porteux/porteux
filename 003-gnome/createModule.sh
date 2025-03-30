@@ -50,7 +50,6 @@ rm $MODULEPATH/packages/egl-wayland*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
-rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/openldap*
