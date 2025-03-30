@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
 PRGNAM=lightdm
 
 CWD=$(dirname "$0")
@@ -12,10 +14,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget https://github.com/canonical/${PRGNAM}/archive/refs/heads/main.tar.gz
-tar xvf main.tar.?z
-cd ${PRGNAM}-main
-VERSION=$(date -r . +%Y%m%d)
+info=$(DownloadLatestFromGithub "canonical" ${PRGNAM})
+VERSION=${info#* }
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
 
 sed -i 's|which yelp-build|which ls|g' autogen.sh
 sed -i 's|doc help||g' Makefile.am

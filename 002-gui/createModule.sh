@@ -257,6 +257,7 @@ rm -R usr/lib${SYSTEMBITS}/pangomm-*
 rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/lib${SYSTEMBITS}/sigc++-*
 rm -R usr/lib${SYSTEMBITS}/xmms
+rm -R usr/share/gdm
 rm -R usr/share/gnome
 rm -R usr/share/gnome-session
 rm -R usr/share/gobject-introspection-1.0/tests
