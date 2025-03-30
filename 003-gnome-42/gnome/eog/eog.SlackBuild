@@ -32,7 +32,7 @@ meson setup \
 	-Ddefault_library=shared \
 	-Dlibexif=true \
 	-Dcms=true \
-	-Dxmp=true \
+	-Dxmp=false \
 	-Dlibjpeg=true \
 	-Dlibrsvg=true \
 	-Dgtk_doc=false \
