@@ -95,11 +95,6 @@ find . -name '*.la' -delete
 
 AggressiveStrip
 
-### add symlink from /usr/include to /usr/local/include required by some packages
-
-mkdir -p $MODULEPATH/packages/usr/local > /dev/null 2>&1
-ln -s /usr/include $MODULEPATH/packages/usr/local/include > /dev/null 2>&1
-
 ### finalize
 
 Finalize
