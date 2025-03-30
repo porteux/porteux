@@ -14,7 +14,13 @@ cd $TMP
 
 if ! which xdt-csource > /dev/null 2>&1; then
 	DEVTOOLS=xfce4-dev-tools
-	DEVTOOLSVERSION=$(curl -s https://gitlab.xfce.org/xfce/${DEVTOOLS}/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+
+	if [ $SLACKWAREVERSION != "current" ]; then
+		DEVTOOLSVERSION="xfce4-dev-tools-4.18.0"
+	else
+		DEVTOOLSVERSION=$(curl -s https://gitlab.xfce.org/xfce/${DEVTOOLS}/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+	fi
+	
 	VERSION=$(echo $DEVTOOLSVERSION | rev | cut -d '-' -f 1 | rev)
 	wget https://gitlab.xfce.org/xfce/${DEVTOOLS}/-/archive/${DEVTOOLSVERSION}/${DEVTOOLS}-${DEVTOOLSVERSION}.tar.gz
 
