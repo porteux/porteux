@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+
 PRGNAM=setproctitle
 
 CWD=$(dirname "$0")
@@ -12,11 +14,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="1.3.5"
-wget -c https://files.pythonhosted.org/packages/c4/4d/6a840c8d2baa07b57329490e7094f90aac177a1d5226bc919046f1106860/${PRGNAM}-${VERSION}.tar.gz
+info=$(DownloadLatestFromGithub "dvarrazzo" py-${PRGNAM})
+VERSION=${info#* }
 
-tar xvf $PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+tar xvf py-$PRGNAM-version-$VERSION.tar.?z
+cd py-$PRGNAM-version-$VERSION
 
 python3 setup.py install --root=$PKG
 
