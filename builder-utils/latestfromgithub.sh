@@ -4,7 +4,7 @@ DownloadLatestFromGithub() {
 	repository="$1"
 	project="$2"
 	filename=
-	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep "/${repository}/${project}/releases/tag/" | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "master." | grep -v "clutter-keyring-dialog")
+	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep "/${repository}/${project}/releases/tag/" | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]")
 	[ -n "$3" ] && versions=$(echo "$versions" | grep -v "$3")	
 	versionNormalized=$(echo "${versions//_/.}" | sort -V -r | head -n 1)
 	[[ ${versions} == *"${versionNormalized}"* ]] && version=${versionNormalized} || version=${versionNormalized//./_}
