@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "mate-desktop" ${PRGNAM})
+info=$(DownloadLatestFromGithub "mate-desktop" ${PRGNAM} "1.29")
 VERSION=${info#* }
 
 tar xvf $PRGNAM-$VERSION.tar.?z
