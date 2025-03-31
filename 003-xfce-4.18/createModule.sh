@@ -80,7 +80,7 @@ rm -fr $MODULEPATH/${currentPackage}
 # temporary just to build engrampa and mate-search-tool
 currentPackage=mate-common
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage} "1.29")
 version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
@@ -98,7 +98,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mate-utils
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage} "1.29")
 version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
@@ -122,7 +122,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=engrampa
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage} "1.29")
 version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
