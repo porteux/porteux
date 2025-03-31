@@ -18,7 +18,7 @@ wget https://github.com/mesonbuild/${PRGNAM}/releases/download/${VERSION}/${PRGN
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-python3 setup.py install --root=$PKG
+python setup.py install --root=$PKG
 
 mv $PKG/usr/share/man $PKG/usr/
 

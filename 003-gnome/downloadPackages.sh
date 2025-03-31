@@ -13,8 +13,8 @@ DownloadPackage "cracklib" # required by gnome-control-center
 DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
-DownloadPackage "ffmpegthumbnailer" &
 wait
+DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gexiv2" &
 DownloadPackage "gjs" &
 DownloadPackage "hunspell" &

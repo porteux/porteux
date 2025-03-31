@@ -22,7 +22,7 @@ wget -c https://github.com/$repository/$project/releases/download/release_$VERSI
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-python3 setup.py install --root=$PKG
+python setup.py install --root=$PKG
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
