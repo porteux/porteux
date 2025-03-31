@@ -44,7 +44,6 @@ installpkg $MODULEPATH/packages/*.txz || exit 1
 
 # only required for building not for run-time
 rm $MODULEPATH/packages/c-ares*
-rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
 rm $MODULEPATH/packages/iso-codes*

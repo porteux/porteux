@@ -48,13 +48,12 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "c-ares" &
-DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
 DownloadPackage "iso-codes" & # required by gnome-desktop
 DownloadPackage "krb5" &
-wait
 DownloadPackage "libsass" & # required by gnome-console
+wait
 DownloadPackage "libwnck3" &
 DownloadPackage "openldap" & # required by libadwaita (appstream)
 DownloadPackage "python-pip" &
