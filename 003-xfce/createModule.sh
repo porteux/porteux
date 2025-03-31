@@ -6,11 +6,11 @@ source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$PWD/../builder-utils/cachefiles.sh"
-source "$PWD/../builder-utils/downloadfromslackware.sh"
-source "$PWD/../builder-utils/genericstrip.sh"
-source "$PWD/../builder-utils/helper.sh"
-source "$PWD/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/cachefiles.sh"
+source "$BUILDERUTILSPATH/downloadfromslackware.sh"
+source "$BUILDERUTILSPATH/genericstrip.sh"
+source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
@@ -95,38 +95,6 @@ sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
 make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-# temporary to build yelp-tools
-installpkg $MODULEPATH/packages/python-pip*.txz || exit 1
-rm $MODULEPATH/packages/python-pip*.txz
-
-cd $MODULEPATH
-pip install lxml || exit 1
-
-# temporary to build yelp-tools
-currentPackage=yelp-xsl
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "GNOME" ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-make -j${NUMBERTHREADS} install || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# temporary to build engrampa and mate-search-tool
-currentPackage=yelp-tools
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "GNOME" ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-mkdir build && cd build
-meson setup --prefix /usr ..
-ninja -j${NUMBERTHREADS} install || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 # required from now on
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 
@@ -143,10 +111,14 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
-sed -i "s|baobab||g" ./Makefile.am
-sed -i "s|mate-dictionary||g" ./Makefile.am
-sed -i "s|mate-screenshot||g" ./Makefile.am
-sed -i "s|logview||g" ./Makefile.am
+sed -i 's|baobab||g' ./Makefile.am
+sed -i 's|mate-dictionary||g' ./Makefile.am
+sed -i 's|mate-screenshot||g' ./Makefile.am
+sed -i 's|logview||g' ./Makefile.am
+sed -i 's|yelp-build|ls|g' autogen.sh
+sed -i 's|dnl yelp-tools stuff||g' configure.ac
+sed -i 's|YELP_HELP_INIT||g' configure.ac
+sed -i 's| help||g' gsearchtool/Makefile.am
 CFLAGS="$GCCFLAGS" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
@@ -161,8 +133,11 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
+sed -i 's|YELP_HELP_INIT||g' configure.ac
+sed -i 's|yelp-build|ls|g' autogen.sh
+sed -i 's|help.*|\\|g' Makefile.am
 CFLAGS="$GCCFLAGS" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
-make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}

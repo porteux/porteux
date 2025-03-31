@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -41,7 +41,6 @@ fi
 ### temporary packages for further building
 
 DownloadPackage "gtk+2" & # to build mate-themes
-DownloadPackage "python-pip" & # to install lxml
 wait
 
 ### script clean up

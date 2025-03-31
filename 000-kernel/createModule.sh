@@ -11,9 +11,9 @@ MODULENAME="000-kernel"
 
 SetFlags "${MODULENAME}"
 
-source "$PWD/../builder-utils/downloadfromslackware.sh"
-source "$PWD/../builder-utils/helper.sh"
-source "$PWD/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/downloadfromslackware.sh"
+source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
