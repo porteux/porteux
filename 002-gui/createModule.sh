@@ -39,6 +39,7 @@ else
 fi
 
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
+installpkg $MODULEPATH/packages/libtheora*.txz || exit 1
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 installpkg $MODULEPATH/packages/cups*.txz || exit 1
