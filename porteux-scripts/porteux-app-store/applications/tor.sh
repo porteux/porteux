@@ -81,10 +81,17 @@ get_repo_version_tor(){
     local url="https://archive.torproject.org/tor-package-archive/torbrowser/"
 
     if [ "$CHANNEL" = "stable" ]; then
-        ver=$(curl -s "$url" | grep -oP '(?<=<a href=")(\d+\.\d+(\.\d+)?(a\d)*/)(?=")' | tr -d '/' | grep -v '[a-zA-Z]' | sort -Vr | head -n 1)
+        versions=$(curl -s "$url" | grep -oP '(?<=<a href=")(\d+\.\d+(\.\d+)?(a\d)*/)(?=")' | tr -d '/' | grep -v '[a-zA-Z]' | sort -Vr | head -n 5)
     elif [ "$CHANNEL" = "alpha" ]; then
-        ver=$(curl -s "$url" | grep -oP '(?<=<a href=")[^"]*a[0-9]+(?=/")' | sort -Vr | head -n 1)
+        versions=$(curl -s "$url" | grep -oP '(?<=<a href=")[^"]*a[0-9]+(?=/")' | sort -Vr | head -n 5)
     fi
+    
+	for version in $versions; do
+		if wget --spider -q "$url/${version}/tor-browser-linux-x86_64-${version}.tar.xz"; then
+			ver="$version"
+			break
+		fi
+	done
 
     echo "$ver"
 }
