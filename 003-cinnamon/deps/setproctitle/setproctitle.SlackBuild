@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 PRGNAM=setproctitle
 
@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xvf py-$PRGNAM-version-$VERSION.tar.?z
 cd py-$PRGNAM-version-$VERSION
 
-python3 setup.py install --root=$PKG
+python setup.py install --root=$PKG
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -18,7 +18,7 @@ wget -c https://files.pythonhosted.org/packages/ff/e1/b16b16a1aa12174349d15b73fd
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-python3 setup.py install --root=$PKG
+python setup.py install --root=$PKG
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
