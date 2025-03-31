@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -31,11 +31,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libindicator" &
 	wait
 fi
-
-### temporary packages
-
-DownloadPackage "python-pip" & # to install lxml
-wait
 
 ### script clean up
 

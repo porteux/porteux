@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -29,7 +29,6 @@ wait
 ### temporary packages
 
 DownloadPackage "libyaml" & # to build xfdesktop with desktop icons
-DownloadPackage "python-pip" & # to install lxml
 wait
 
 ### script clean up
