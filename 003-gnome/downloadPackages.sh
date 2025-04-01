@@ -21,6 +21,9 @@ DownloadPackage "hunspell" &
 DownloadPackage "glib-networking" &
 DownloadPackage "glibmm2" & # required by gnome-system-monitor
 DownloadPackage "gperf" & # required by libadwaita (appstream sub-project)
+DownloadPackage "gst-plugins-bad-free" & # required by gtk4 plugin
+DownloadPackage "gst-plugins-good" & # required by nautilus media properties
+DownloadPackage "gst-plugins-libav" & # required by nautilus media properties
 wait
 DownloadPackage "gtk4" &
 DownloadPackage "gtkmm4" & # required by gnome-system-monitor
