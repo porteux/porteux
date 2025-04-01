@@ -1,18 +1,24 @@
 #!/bin/bash
 
-MODULENAME=003-lxqt
+MODULENAME=003-lxqt-1.4.0
 
 source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$PWD/../builder-utils/cachefiles.sh"
-source "$PWD/../builder-utils/downloadfromslackware.sh"
-source "$PWD/../builder-utils/genericstrip.sh"
-source "$PWD/../builder-utils/helper.sh"
-source "$PWD/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/cachefiles.sh"
+source "$BUILDERUTILSPATH/downloadfromslackware.sh"
+source "$BUILDERUTILSPATH/genericstrip.sh"
+source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 [ $SLACKWAREVERSION == "current" ] && echo "This module should be built in stable only" && exit 1
+
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
 
 ### create module folder
 
@@ -121,8 +127,16 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=lxdm
-GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+# required by lightdm
+installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+
+currentPackage=lightdm
+SESSIONTEMPLATE=lxqt sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=lightdm-gtk-greeter
+ICONTHEME=kora sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=adwaita-qt
@@ -407,8 +421,6 @@ rm -R usr/share/screengrab/translations
 rm -R usr/share/Thunar
 
 rm etc/xdg/autostart/blueman.desktop
-rm usr/bin/canberra*
-rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/share/nm-tray/nm-tray*.qm
 

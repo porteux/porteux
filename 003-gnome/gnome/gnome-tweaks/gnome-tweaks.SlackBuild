@@ -18,8 +18,6 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-sed -i "s/dependency('gudev-1.0', version: '>= 238')/dependency('gudev-1.0', version: '>= 237')/" meson.build
-
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \

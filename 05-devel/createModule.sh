@@ -6,9 +6,15 @@ source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$PWD/../builder-utils/downloadfromslackware.sh"
-source "$PWD/../builder-utils/genericstrip.sh"
-source "$PWD/../builder-utils/helper.sh"
+source "$BUILDERUTILSPATH/downloadfromslackware.sh"
+source "$BUILDERUTILSPATH/genericstrip.sh"
+source "$BUILDERUTILSPATH/helper.sh"
+
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
 
 ### create module folder
 
@@ -72,6 +78,13 @@ rm usr/lib${SYSTEMBITS}/libgomp.so*
 rm usr/lib${SYSTEMBITS}/libltdl.so*
 rm usr/lib${SYSTEMBITS}/libstdc++.so*
 
+# already included in binutils-stripped
+rm usr/bin/ar
+rm usr/bin/strip
+rm usr/lib${SYSTEMBITS}/libbfd.so
+rm usr/lib${SYSTEMBITS}/libbfd-*.so
+rm usr/lib${SYSTEMBITS}/libsframe*.so
+
 # remove 32-bit files
 rm -R usr/include/c++/*/x86_64-slackware-linux/32
 rm -R usr/lib/pkgconfig
@@ -81,11 +94,6 @@ rm usr/lib/*
 find . -name '*.la' -delete
 
 AggressiveStrip
-
-### add symlink from /usr/include to /usr/local/include required by some packages
-
-mkdir -p $MODULEPATH/packages/usr/local > /dev/null 2>&1
-ln -s /usr/include $MODULEPATH/packages/usr/local/include > /dev/null 2>&1
 
 ### finalize
 

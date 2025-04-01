@@ -1,0 +1,49 @@
+#!/bin/bash
+
+PRGNAM=xfce4-appfinder
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+VERSION=$(echo $DOWNLOADVERSION | rev | cut -d '-' -f 1 | rev)
+wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNAM}-${DOWNLOADVERSION}.tar.gz
+
+tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
+cd $PRGNAM-$DOWNLOADVERSION
+
+# fix runner not executing apps with single Enter stroke
+cp $CWD/*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
+# add case insensitive and contains features
+sed -i 's/xfce_appfinder_model_fuzzy_match (item->command, string);/strcasestr(item->command, string) != 0;/g' src/appfinder-model.c
+sed -i 's/xfce_appfinder_model_fuzzy_match (item->key, string_casefold);/strcasestr(item->key, string_casefold) != 0;/g' src/appfinder-model.c
+
+CFLAGS="$GCCFLAGS -flto=auto" \
+./autogen.sh \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--mandir=/usr/man \
+	--docdir=/usr/doc/$PRGNAM-$DOWNLOADVERSION \
+	--disable-static \
+	--disable-debug \
+	--build=$ARCH-porteux-linux
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

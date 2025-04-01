@@ -35,6 +35,7 @@ GenericStrip() {
 	rm -R usr/share/installed-tests
 	rm -R usr/share/locale
 	rm -R usr/share/man
+	rm -R usr/share/metainfo/
 	rm -R usr/share/pkgconfig
 	rm -R usr/share/sounds
 	rm -R usr/share/themes/HighContrast
@@ -46,6 +47,7 @@ GenericStrip() {
 	rm -R var/log/setup
 	rm -R var/man
 	
+	rm usr/share/applications/org.gnome.Vte*.desktop
 	rm usr/share/pixmaps/*.xpm
 	rm var/log/removed_packages
 	rm var/log/removed_scripts
@@ -67,6 +69,8 @@ GenericStrip() {
 	find . -name 'COPYING*' -delete
 	find . -name 'LICENSE*' -delete
 	find . -name 'README*' -delete
+	
+	find usr/ -type d -empty -delete
 	
 	find usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
 	

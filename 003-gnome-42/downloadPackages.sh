@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -17,14 +17,13 @@ DownloadPackage "glib-networking" &
 DownloadPackage "hunspell" &
 DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
-DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libgtop" &
 DownloadPackage "libproxy" &
 DownloadPackage "libpwquality" &
 DownloadPackage "libxklavier" &
-DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "woff2" &
+DownloadPackage "xorg-server-xwayland" & # required by mutter
 wait
 
 ### only download if not present
@@ -33,7 +32,6 @@ wait
 
 ### temporary packages for further building
 
-DownloadPackage "boost" &
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &

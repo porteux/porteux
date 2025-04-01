@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -13,24 +13,22 @@ DownloadPackage "cracklib" # required by gnome-control-center
 DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
-DownloadPackage "ffmpegthumbnailer" &
 wait
+DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gexiv2" &
 DownloadPackage "gjs" &
 DownloadPackage "hunspell" &
 DownloadPackage "glib-networking" &
 DownloadPackage "glibmm2" & # required by gnome-system-monitor
 DownloadPackage "gperf" & # required by libadwaita (appstream sub-project)
-DownloadPackage "gst-plugins-bad-free" &
-DownloadPackage "gst-plugins-good" &
-DownloadPackage "gst-plugins-libav" &
+DownloadPackage "gst-plugins-bad-free" & # required by gtk4 plugin
+DownloadPackage "gst-plugins-good" & # required by nautilus media properties
+DownloadPackage "gst-plugins-libav" & # required by nautilus media properties
 wait
 DownloadPackage "gtk4" &
 DownloadPackage "gtkmm4" & # required by gnome-system-monitor
 DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
-DownloadPackage "libcanberra" &
-DownloadPackage "libdisplay-info" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
 DownloadPackage "libhandy" &
@@ -44,7 +42,6 @@ DownloadPackage "mozjs128" &
 DownloadPackage "pangomm2" & # required by gnome-system-monitor
 DownloadPackage "libpwquality" & # required by gnome-control-center
 DownloadPackage "woff2" &
-DownloadPackage "xorg-server-xwayland" &
 wait
 
 ### only download if not present
@@ -53,16 +50,13 @@ wait
 
 ### temporary packages for further building
 
-DownloadPackage "boost" &
 DownloadPackage "c-ares" &
-DownloadPackage "cups" &
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
 DownloadPackage "iso-codes" & # required by gnome-desktop
 DownloadPackage "krb5" &
-wait
 DownloadPackage "libsass" & # required by gnome-console
-DownloadPackage "libsoup3" &
+wait
 DownloadPackage "libwnck3" &
 DownloadPackage "openldap" & # required by libadwaita (appstream)
 DownloadPackage "python-pip" &

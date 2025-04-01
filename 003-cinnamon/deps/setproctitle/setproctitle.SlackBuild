@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
 PRGNAM=setproctitle
 
 CWD=$(dirname "$0")
@@ -12,13 +14,13 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="1.3.3"
-wget -c https://files.pythonhosted.org/packages/ff/e1/b16b16a1aa12174349d15b73fd4b87e641a8ae3fb1163e80938dbbf6ae98/${PRGNAM}-${VERSION}.tar.gz
+info=$(DownloadLatestFromGithub "dvarrazzo" py-${PRGNAM})
+VERSION=${info#* }
 
-tar xvf $PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+tar xvf py-$PRGNAM-version-$VERSION.tar.?z
+cd py-$PRGNAM-version-$VERSION
 
-python3 setup.py install --root=$PKG
+python setup.py install --root=$PKG
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

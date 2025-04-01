@@ -1,0 +1,82 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=xdg-desktop-portal
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+if [ $SLACKWAREVERSION != "current" ]; then
+	VERSION="1.18.4"
+	wget https://github.com/flatpak/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
+
+	tar xfv $PRGNAM-$VERSION.tar.?z*
+	cd $PRGNAM-$VERSION
+
+	mkdir build && cd build
+	CFLAGS="$GCCFLAGS -flto=auto" \
+	meson setup \
+		--prefix=/usr \
+		--libdir=lib${SYSTEMBITS} \
+		--libexecdir=/usr/libexec \
+		--bindir=/usr/bin \
+		--sbindir=/usr/sbin \
+		--includedir=/usr/include \
+		--datadir=/usr/share \
+		--mandir=/usr/man \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--buildtype=release \
+		-Dflatpak-interfaces=disabled \
+		-Dgeoclue=disabled \
+		-Dsystemd=disabled \
+		-Dman-pages=disabled \
+		-Dsandboxed-image-validation=false
+else
+	info=$(DownloadLatestFromGithub "flatpak" ${PRGNAM})
+	VERSION=${info#* }
+
+	tar xfv $PRGNAM-$VERSION.tar.?z*
+	cd $PRGNAM-$VERSION
+
+	mkdir build && cd build
+	CFLAGS="$GCCFLAGS -flto=auto" \
+	meson setup \
+		--prefix=/usr \
+		--libdir=lib${SYSTEMBITS} \
+		--libexecdir=/usr/libexec \
+		--bindir=/usr/bin \
+		--sbindir=/usr/sbin \
+		--includedir=/usr/include \
+		--datadir=/usr/share \
+		--mandir=/usr/man \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--buildtype=release \
+		-Dflatpak-interfaces=disabled \
+		-Dtests=disabled \
+		-Dgeoclue=disabled \
+		-Dsystemd=disabled \
+		-Ddocumentation=disabled \
+		-Dman-pages=disabled \
+		-Dsandboxed-image-validation=disabled \
+		-Dsandboxed-sound-validation=disabled
+fi
+  
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
