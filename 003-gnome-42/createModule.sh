@@ -6,13 +6,19 @@ source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$PWD/../builder-utils/cachefiles.sh"
-source "$PWD/../builder-utils/downloadfromslackware.sh"
-source "$PWD/../builder-utils/genericstrip.sh"
-source "$PWD/../builder-utils/helper.sh"
-source "$PWD/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/cachefiles.sh"
+source "$BUILDERUTILSPATH/downloadfromslackware.sh"
+source "$BUILDERUTILSPATH/genericstrip.sh"
+source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 [ $SLACKWAREVERSION == "current" ] && echo "This module should be built in stable only" && exit 1
+
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
 
 ### create module folder
 
@@ -43,7 +49,6 @@ rm $MODULEPATH/packages/${currentPackage}-*.txz
 installpkg $MODULEPATH/packages/*.txz || exit 1
 
 # only required for building not for run-time
-rm $MODULEPATH/packages/boost*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
@@ -74,7 +79,6 @@ for package in \
 	mozjs91 \
 	upower \
 	libstemmer \
-	exempi \
 	libwpe \
 	wpebackend-fdo \
 	bubblewrap \
@@ -142,7 +146,7 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### removed some useless services
+### remove some useless services
 
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
@@ -209,7 +213,6 @@ rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/ibus*.desktop
-rm usr/bin/canberra*
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
@@ -228,7 +231,6 @@ rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqroverlay.*
 rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgsttaglib.*
 rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstwebrtc.*
 rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
-rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop

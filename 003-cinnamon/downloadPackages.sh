@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -15,12 +15,12 @@ DownloadPackage "enchant" &
 wait
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gspell" &
+DownloadPackage "gtksourceview4" &
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
-DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libgee" &
 DownloadPackage "libgpod" &
@@ -34,7 +34,7 @@ wait
 DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-#DownloadPackage "mozjs128" &
+DownloadPackage "mozjs128" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "python-certifi" &
 DownloadPackage "python-charset-normalizer" &
@@ -56,10 +56,9 @@ wait
 
 ### temporary packages for further building
 
-DownloadPackage "boost" & # to build exempi
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
-DownloadPackage "llvm" &
+DownloadPackage "libxklavier" &
 DownloadPackage "python-build" &
 DownloadPackage "python-flit-core" &
 wait
@@ -67,8 +66,6 @@ DownloadPackage "python-installer" &
 DownloadPackage "python-pip" &
 DownloadPackage "python-pyproject-hooks" &
 DownloadPackage "python-wheel" &
-DownloadPackage "rust" &
-DownloadPackage "xorg-server-xwayland" &
 DownloadPackage "xtrans" &
 wait
 

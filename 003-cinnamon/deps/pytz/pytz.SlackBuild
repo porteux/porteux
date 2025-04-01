@@ -12,14 +12,17 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="2023.3"
-wget -c https://files.pythonhosted.org/packages/5e/32/12032aa8c673ee16707a9b6cdda2b09c0089131f35af55d443b6a9c69c1d/${PRGNAM}-${VERSION}.tar.gz
+repository="stub42"
+project="$PRGNAM"
+
+VERSION=$(curl -s https://github.com/${repository}/${project}/tags/ | grep "/${repository}/${project}/releases/tag/" | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | cut -d "_" -f 2 | sort -V -r | head -n 1)
+
+wget -c https://github.com/$repository/$project/releases/download/release_$VERSION/$PRGNAM-$VERSION.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 python setup.py install --root=$PKG
-python3 setup.py install --root=$PKG
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

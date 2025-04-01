@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 PRGNAM=xviewer
 
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM})
+info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
 VERSION=${info#* }
 
 tar xvf $PRGNAM-$VERSION.tar.?z

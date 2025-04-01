@@ -1,4 +1,4 @@
-source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 PRGNAM=xdg-desktop-portal-gtk
 

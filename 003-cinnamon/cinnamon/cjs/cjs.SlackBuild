@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
 PRGNAM=cjs
 
 CWD=$(dirname "$0")
@@ -12,8 +14,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://github.com/linuxmint/${PRGNAM}/tags/ | grep "/linuxmint/${PRGNAM}/releases/tag/" | grep -oE "[0-9]+\.[0-9]+\.[0-9]+" | uniq | sort -V -r | head -n 1)
-wget -c https://github.com/linuxmint/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz -O ${PRGNAM}-${VERSION}.tar.gz
+info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
+VERSION=${info#* }
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
@@ -39,6 +41,8 @@ meson setup \
 	-Dskip_gtk_tests=true
  
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+rm -fr $PKG/usr/libexec/installed-tests
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

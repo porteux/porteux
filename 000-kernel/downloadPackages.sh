@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -7,7 +7,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 ### only download if not present
 
-#[ ! -f /usr/bin/clang ] && DownloadPackage "llvm"
+DownloadPackage "llvm"
 
 ### script clean up
 

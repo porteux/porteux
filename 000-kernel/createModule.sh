@@ -5,21 +5,21 @@ if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ]; then
 	exit 1
 fi
 
-# switch to root
-if [ $(whoami) != root ]; then
-	echo "Please enter root's password below:"
-	su -c "$0 $1"
-	exit
-fi
-
 source "$PWD/../builder-utils/setflags.sh"
 
 MODULENAME="000-kernel"
 
 SetFlags "${MODULENAME}"
 
-source "$PWD/../builder-utils/downloadfromslackware.sh"
-source "$PWD/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/downloadfromslackware.sh"
+source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
 
 if [ ! -f ${SYSTEMBITS}bit.config ]; then
 	echo "File ${SYSTEMBITS}bit.config is required in this folder." && exit 1
@@ -29,9 +29,6 @@ if [ "$1" ]; then
 	export KERNELVERSION="$1"
 fi
 
-echo "Building kernel version ${KERNELVERSION}..."
-echo "Initial setup..."
-
 KERNELMAJORVERSION=${KERNELVERSION:0:1}
 KERNELMINORVERSION=$(echo ${KERNELVERSION} | cut -d. -f2)
 [ ${KERNELMINORVERSION} ] && KERNELMINORVERSION=.${KERNELMINORVERSION}
@@ -39,26 +36,40 @@ KERNELPATCHVERSION=$(echo ${KERNELVERSION} | cut -d. -f3)
 [ ${KERNELPATCHVERSION} ] && KERNELPATCHVERSION=.${KERNELPATCHVERSION}
 CRIPPLEDMODULENAME="06-crippled_sources-${KERNELVERSION}"
 
+if [ ${CLANG:-no} = "yes" ]; then
+	if [ ! -f /usr/bin/clang ]; then
+		DownloadFromSlackware
+		installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+		rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+	fi
+	EXTRAFLAGS="LLVM=1 CC=clang"
+	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
+	COMPILER="Clang"
+else
+	BUILDPARAMS="$GCCFLAGS"
+	COMPILER="GCC"
+fi
+
+echo "Building kernel ${KERNELVERSION} $ARCH using ${COMPILER}..."
+
 rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
-cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.xz ${MODULEPATH} 2>/dev/null
+cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH} 2>/dev/null
 
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
-### download packages from slackware repositories
-
-#DownloadFromSlackware
+### download packages from slackware repositoriesg
 
 echo "Downloading kernel source code..."
-if [ ! -f linux-${KERNELVERSION}.tar.xz ]; then
+if [ ! -f linux-${KERNELVERSION}.tar.?z ]; then
 	wget -P ${MODULEPATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNELMAJORVERSION}.x/linux-${KERNELVERSION}.tar.xz > /dev/null 2>&1 || { echo "Fail to download kernel source code."; exit 1; }
 fi
 
 echo "Extracting kernel source code..."
-tar xf ${MODULEPATH}/linux-${KERNELVERSION}.tar.xz -C ${MODULEPATH}
-rm ${MODULEPATH}/linux-${KERNELVERSION}.tar.xz
+tar xf ${MODULEPATH}/linux-${KERNELVERSION}.tar.?z -C ${MODULEPATH}
+rm ${MODULEPATH}/linux-${KERNELVERSION}.tar.?z
 
 echo "Copying .config file..."
 cp ${SCRIPTPATH}/${SYSTEMBITS}bit.config ${MODULEPATH}/linux-${KERNELVERSION}/.config || exit 1
@@ -93,18 +104,18 @@ if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
 	) &
 fi
 
-#installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-#rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-
 # this allows CONFIG_DEBUG_KERNEL=n
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig
 
 echo "Building vmlinuz (this may take a while)..."
-#make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} LLVM=1 CC=clang "KCFLAGS=$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" || { echo "Fail to build kernel."; exit 1; }
-make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} "KCFLAGS=$GCCFLAGS" || { echo "Fail to build kernel."; exit 1; }
+make olddefconfig > /dev/null 2>&1 && make -j${NUMBERTHREADS} KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage ../vmlinuz
+
+echo "Installing modules..."
 make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
-make -j${NUMBERTHREADS} INSTALL_MOD_PATH=../ firmware_install > /dev/null 2>&1
+
+echo "Installing firmwares..."
+make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ firmware_install > /dev/null 2>&1
 
 cd ..
 
