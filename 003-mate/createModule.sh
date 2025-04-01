@@ -200,7 +200,6 @@ cd $MODULEPATH/packages/
 rm -R run/
 rm -R usr/lib*/python2*
 rm -R usr/lib*/python*/site-packages/pip*
-rm -R usr/share/accountsservice
 rm -R usr/share/engrampa
 rm -R usr/share/gdm
 rm -R usr/share/gnome
@@ -210,7 +209,6 @@ rm -R usr/share/icons/mate-black
 rm -R usr/share/mate-media/icons
 rm -R usr/share/mate-power-manager/icons
 rm -R usr/share/Thunar
-rm -R var/lib/AccountsService
 
 rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
