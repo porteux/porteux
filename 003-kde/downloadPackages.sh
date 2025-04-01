@@ -12,8 +12,8 @@ DownloadPackage "egl-wayland" &
 DownloadPackage "eglexternalplatform" &
 DownloadPackage "graphene" &
 DownloadPackage "gst-plugins-good" &
-DownloadPackage "hunspell" &
 wait
+DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libdmtx" &
@@ -21,6 +21,7 @@ DownloadPackage "libproxy" &
 DownloadPackage "libqaccessibilityclient" &
 DownloadPackage "LibRaw" &
 wait
+DownloadPackage "openblas" &
 DownloadPackage "qrencode" &
 DownloadPackage "wayland-protocols" &
 DownloadPackage "xcb-util-cursor" &
@@ -30,13 +31,10 @@ wait
 
 ### packages that require specific striping
 
-DownloadPackage "opencv" &
+DownloadPackage "gcc-gfortran" & # required by spectable
+DownloadPackage "opencv" & # required by spectable
+DownloadPackage "phonon" & # required by dolphin and others
 DownloadPackage "qt6" &
-wait
-
-### temporary packages for further building
-
-DownloadPackage "cups" & # required by qt6
 wait
 
 ### script clean up
