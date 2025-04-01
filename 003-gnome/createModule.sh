@@ -228,6 +228,16 @@ rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
 rm usr/bin/gtk4-widget-factory
 rm usr/bin/js[0-9]*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstfluidsynthmidi.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstneonhttpsrc.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstopencv.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstopenexr.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqmlgl.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstqroverlay.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgsttaglib.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstwebrtc.*
+rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
 rm usr/libexec/localsearch-*
