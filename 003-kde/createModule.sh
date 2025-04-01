@@ -143,13 +143,37 @@ cd ${currentPackage}-stripped-$version
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+# also required by spectacle
+currentPackage=gcc-gfortran
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libgfortran.so* "${currentPackage}-stripped-$version"
+cd ${currentPackage}-stripped-$version
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+# required by dolphin and others
+currentPackage=phonon
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6*.so "${currentPackage}-stripped-$version"
+cd ${currentPackage}-stripped-$version
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 ### packages outside Slackware repository ###
 
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
-
-installpkg $MODULEPATH/packages/cups*.txz || exit 1
-rm $MODULEPATH/packages/cups*.txz
 
 currentPackage=FeatherPad
 mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
@@ -187,7 +211,7 @@ done
 # only required for building
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
 
-# extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/
+# extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/page89.html#post6560591
 KDE6PACKAGES=/tmp/packages
 [ ! -d $KDE6PACKAGES ] && exit 1
 
