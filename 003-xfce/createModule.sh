@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULENAME=003-xfce-4.20
+MODULENAME=003-xfce
 
 source "$PWD/../builder-utils/setflags.sh"
 
@@ -162,6 +162,11 @@ installpkg $MODULEPATH/packages/vte-*.txz || exit 1
 
 # required by xfce4-xkb-plugin
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+
+DE_LATEST_VERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1 | rev | cut -d '-' -f 1 | cut -d "." -f 2- | rev)
+
+echo "Building Xfce ${DE_LATEST_VERSION}..."
+MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
 
 # xfce packages
 for package in \
