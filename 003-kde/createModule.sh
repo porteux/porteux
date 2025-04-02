@@ -215,6 +215,11 @@ rm $MODULEPATH/packages/extra-cmake-modules*.txz
 KDE6PACKAGES=/tmp/packages
 [ ! -d $KDE6PACKAGES ] && exit 1
 
+DE_LATEST_VERSION=$(find $KDE6PACKAGES -type f -name "plasma-desktop-*" | cut -d "-" -f 3)
+
+echo "Building KDE Plasma ${DE_LATEST_VERSION}..."
+MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
+
 find $KDE6PACKAGES -type f -name "ark*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "attica-6*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "baloo-6*" -exec cp {} $MODULEPATH/packages/ \;

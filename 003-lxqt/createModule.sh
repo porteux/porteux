@@ -201,6 +201,11 @@ rm -fr $MODULEPATH/${currentPackage}
 # required by libkscreen
 installpkg $MODULEPATH/packages/plasma-wayland-protocols*.txz || exit 1
 
+DE_LATEST_VERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
+
+echo "Building LXQt ${DE_LATEST_VERSION}..."
+MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
+
 # lxqt deps
 for package in \
 	polkit-qt6-1 \
