@@ -1,6 +1,7 @@
 #!/bin/bash
 
 GenericStrip() {
+	rm -R etc/bash_completion*
 	rm -R etc/logrotate.d
 	rm -R usr/doc
 	rm -R usr/include
