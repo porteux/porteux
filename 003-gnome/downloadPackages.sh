@@ -51,6 +51,7 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "c-ares" &
+DownloadPackage "cups" & # required by gnome-settings-daemon
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
 DownloadPackage "iso-codes" & # required by gnome-desktop
