@@ -60,8 +60,10 @@ cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqminimal.so "${curre
 cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqminimalegl.so "${currentPackage}-stripped-$version"
 cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqoffscreen.so "${currentPackage}-stripped-$version"
 cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqvnc.so "${currentPackage}-stripped-$version"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqwayland*.so "${currentPackage}-stripped-$version"
 cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqxcb.so "${currentPackage}-stripped-$version"
 cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platformthemes/* "${currentPackage}-stripped-$version"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/wayland*/* "${currentPackage}-stripped-$version"
 cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/xcbglintegrations/* "${currentPackage}-stripped-$version"
 rm "${currentPackage}-stripped-$version"/usr/lib$SYSTEMBITS/*.prl
 cd ${currentPackage}-stripped-$version
