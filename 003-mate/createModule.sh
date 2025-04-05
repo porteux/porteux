@@ -42,6 +42,9 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
+# required by lightdm
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
+
 currentPackage=lightdm
 SESSIONTEMPLATE=mate sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
@@ -78,7 +81,6 @@ installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
-installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
