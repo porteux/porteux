@@ -46,7 +46,7 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 [ -f $userresources ] && xrdb -merge $userresources
 [ -f $usermodmap ] && xmodmap $usermodmap
 
-# workaround to have X11 working with dbus services, and functional Wayland session however without dbus working properly
+# cron only works using dbus-launch, but Wayland only works using dbus-run-session
 if [[ "$@" == *"wayland"* ]]; then
 	dbus-run-session -- $@
 else
