@@ -73,10 +73,6 @@ In the terminal, run the following commands: <br />
 6. `mv *.xzm $PORTDIR/modules` <br />
 7. `rm -fr /tmp/opencl-support` <br />
 
-## Compatibility with Porteus 5
-
-PorteuX and Porteus follow the same basic structure, so a given module built in Porteus 5 should work in PorteuX current, and modules built in PorteuX stable should work in Porteus 5. However, this does not apply to the base modules (000-kernel, 001-core, 002-gui, 002-xtra and 003-desktopenvironment).
-
 ## Building
 
 PorteuX can be built in a live session of Slackware 64-bit, Porteus 64-bit or PorteuX 64-bit. At the moment the main scripts are not generating ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-gui, 002-xtra, 003-desktop-environment, etc).
