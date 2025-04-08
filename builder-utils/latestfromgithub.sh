@@ -3,9 +3,10 @@
 DownloadLatestFromGithub() {
 	repository="$1"
 	project="$2"
+	filterOutVersion="$3"
 	filename=
 	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep "/${repository}/${project}/releases/tag/" | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]")
-	[ -n "$3" ] && versions=$(echo "$versions" | grep -v "$3")	
+	[ -n "$filterOutVersion" ] && versions=$(echo "$versions" | grep -v "$filterOutVersion")	
 	versionNormalized=$(echo "${versions//_/.}" | sort -V -r | head -n 1)
 	[[ ${versions} == *"${versionNormalized}"* ]] && version=${versionNormalized} || version=${versionNormalized//./_}
 	releaseUrl="https://github.com/${repository}/${project}/releases/download/${version}/${project}-${version//[^0-9._]/}.tar"
