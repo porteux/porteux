@@ -99,7 +99,10 @@ Feel free to report any issues or request changes. Any constructive feedback is 
 
 ## Donate
 
-Please, consider donating to PorteuX project: https://buymeacoffee.com/porteux
+Please, consider donating to PorteuX project:
+
+https://paypal.me/porteux<br />
+https://buymeacoffee.com/porteux<br />
 
 ## Thanks
 
