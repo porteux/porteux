@@ -115,6 +115,7 @@ DownloadPackage "libpcap" &
 DownloadPackage "libplist" &
 DownloadPackage "libpsl" &
 DownloadPackage "libqmi" &
+DownloadPackage "libqrtr-glib" & # required by libqmi, ModemManager
 DownloadPackage "libraw1394" &
 DownloadPackage "libseccomp" &
 wait
