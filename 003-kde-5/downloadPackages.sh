@@ -166,8 +166,6 @@ wait
 DownloadPackage "syntax-highlighting" &
 DownloadPackage "systemsettings" &
 DownloadPackage "threadweaver" &
-DownloadPackage "wayland-protocols" &
-DownloadPackage "xcb-util-cursor" &
 DownloadPackage "xdg-desktop-portal-kde" &
 wait
 
