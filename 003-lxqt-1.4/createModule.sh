@@ -131,12 +131,12 @@ rm -fr $MODULEPATH/${currentPackage}
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
 currentPackage=lightdm
-SESSIONTEMPLATE=lxqt sh $BUILDERUTILSPATH/common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+SESSIONTEMPLATE=lxqt sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lightdm-gtk-greeter
-ICONTHEME=kora sh $BUILDERUTILSPATH/common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=adwaita-qt
@@ -180,12 +180,12 @@ makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-
 rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=audacious
-QT=5 sh $BUILDERUTILSPATH/common/audacious/${currentPackage}.SlackBuild || exit 1
+QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-QT=5 sh $BUILDERUTILSPATH/common/audacious/${currentPackage}.SlackBuild || exit 1
+QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # lxqt deps

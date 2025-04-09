@@ -54,12 +54,12 @@ makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious
-sh $BUILDERUTILSPATH/common/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-sh $BUILDERUTILSPATH/common/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
@@ -74,7 +74,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 fi
 
 currentPackage=mate-polkit
-sh $BUILDERUTILSPATH/common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa and mate-search-tool
@@ -202,12 +202,12 @@ done
 rm $MODULEPATH/packages/xfce4-dev-tools*
 
 currentPackage=lightdm
-SESSIONTEMPLATE=xfce sh $BUILDERUTILSPATH/common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+SESSIONTEMPLATE=xfce sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lightdm-gtk-greeter
-ICONTHEME=elementary-xfce-dark sh $BUILDERUTILSPATH/common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root

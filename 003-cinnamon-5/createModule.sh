@@ -46,28 +46,28 @@ rm -fr $MODULEPATH/${currentPackage}
 ### packages outside Slackware repository
 
 currentPackage=audacious
-sh $BUILDERUTILSPATH/common/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-sh $BUILDERUTILSPATH/common/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
 currentPackage=lightdm
-SESSIONTEMPLATE=cinnamon sh $BUILDERUTILSPATH/common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+SESSIONTEMPLATE=cinnamon sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lightdm-gtk-greeter
-ICONTHEME=Yaru-blue sh $BUILDERUTILSPATH/common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+ICONTHEME=Yaru-blue sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mate-polkit
-sh $BUILDERUTILSPATH/common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=yaru
