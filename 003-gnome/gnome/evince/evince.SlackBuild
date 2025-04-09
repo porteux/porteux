@@ -40,8 +40,6 @@ meson setup \
 	-Dpreviewer=true \
 	-Dviewer=true \
 	-Dnautilus=false \
-	-Dmultimedia=enabled \
-	-Dgspell=enabled \
 	-Dsystemduserunitdir=no
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install

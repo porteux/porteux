@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$SCRIPTPATH/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 PRGNAM=audacious
 

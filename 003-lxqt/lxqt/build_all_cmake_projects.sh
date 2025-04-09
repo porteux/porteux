@@ -66,7 +66,7 @@ do
 	FLTO=""
 	[ "$d" != "lxqt-config" ] && [ "$d" != "lxqt-panel" ] && [ "$d" != "screengrab" ] && FLTO="-flto=auto"
 	
-	CXXFLAGS="$GCCFLAGS ${FLTO}" cmake $ALL_CMAKE_FLAGS -DBUILD_WITH_QT6=true .. && "$CMAKE_MAKE_PROGRAM" -j$JOB_NUM || exit 1
+	CXXFLAGS="$GCCFLAGS ${FLTO}" cmake $ALL_CMAKE_FLAGS -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DBUILD_WITH_QT6=true .. && "$CMAKE_MAKE_PROGRAM" -j$JOB_NUM || exit 1
 	version=`git describe | cut -d- -f1`
 
 	"$CMAKE_MAKE_PROGRAM" install DESTDIR=$MODULEPATH/lxqt/$d/package/$d-$version-$ARCH-1

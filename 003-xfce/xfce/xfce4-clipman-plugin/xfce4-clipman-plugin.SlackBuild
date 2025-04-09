@@ -1,0 +1,43 @@
+#!/bin/bash
+
+PRGNAM=xfce4-clipman-plugin
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/panel-plugins/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+VERSION=$(echo $DOWNLOADVERSION | rev | cut -d '-' -f 1 | rev)
+wget https://gitlab.xfce.org/panel-plugins/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNAM}-${DOWNLOADVERSION}.tar.gz
+
+tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
+cd $PRGNAM-$DOWNLOADVERSION
+
+CFLAGS="$GCCFLAGS" \
+./autogen.sh \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--enable-shared=yes \
+	--enable-static=no \
+	--enable-debug=no \
+	--enable-lto \
+	--enable-wayland \
+	--build=$ARCH-porteux-linux
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

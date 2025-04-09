@@ -6,11 +6,17 @@ source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$PWD/../builder-utils/cachefiles.sh"
-source "$PWD/../builder-utils/downloadfromslackware.sh"
-source "$PWD/../builder-utils/genericstrip.sh"
-source "$PWD/../builder-utils/helper.sh"
-source "$PWD/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/cachefiles.sh"
+source "$BUILDERUTILSPATH/downloadfromslackware.sh"
+source "$BUILDERUTILSPATH/genericstrip.sh"
+source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
 
 ### create module folder
 
@@ -36,8 +42,13 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=lxdm
-GTK3=yes sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+currentPackage=lightdm
+SESSIONTEMPLATE=mate sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=lightdm-gtk-greeter
+ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious
@@ -52,7 +63,7 @@ rm -fr $MODULEPATH/${currentPackage}
 # temporary just to build engrampa and mate-search-tool
 currentPackage=mate-common
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage} "1.29")
 version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
@@ -61,40 +72,8 @@ sh autogen.sh --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc
 make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-# temporary to build yelp-tools
-installpkg $MODULEPATH/packages/python-pip*.txz || exit 1
-rm $MODULEPATH/packages/python-pip*.txz
-cd $MODULEPATH
-pip install lxml || exit 1
-
-# temporary to build yelp-tools
-currentPackage=yelp-xsl
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "GNOME" ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-make -j${NUMBERTHREADS} install || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# temporary to build engrampa and mate-search-tool
-currentPackage=yelp-tools
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "GNOME" ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-mkdir build && cd build
-meson --prefix /usr ..
-ninja -j${NUMBERTHREADS} install || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 # required from now on
 installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
@@ -109,8 +88,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 fi
 
 # required just for building
-installpkg $MODULEPATH/packages/boost*.txz || exit 1
-rm $MODULEPATH/packages/boost*.txz
 installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
 rm $MODULEPATH/packages/gtk+2*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
@@ -120,7 +97,6 @@ rm $MODULEPATH/packages/xtrans*.txz
 
 # mate deps
 for package in \
-	exempi \
 	zenity \
 	gtk-layer-shell \
 	libpeas \
@@ -166,13 +142,18 @@ done
 
 currentPackage=mate-utils
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage})
+info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage} "1.29")
 version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
+sed -i 's|yelp-build|ls|g' autogen.sh
+sed -i 's|dnl yelp-tools stuff||g' configure.ac
+sed -i 's|YELP_HELP_INIT||g' configure.ac
+sed -i 's| help||g' gsearchtool/Makefile.am
+sed -i 's| help||g' baobab/Makefile.am
 CFLAGS="$GCCFLAGS" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
@@ -219,7 +200,6 @@ cd $MODULEPATH/packages/
 rm -R run/
 rm -R usr/lib*/python2*
 rm -R usr/lib*/python*/site-packages/pip*
-rm -R usr/share/accountsservice
 rm -R usr/share/engrampa
 rm -R usr/share/gdm
 rm -R usr/share/gnome
@@ -229,15 +209,11 @@ rm -R usr/share/icons/mate-black
 rm -R usr/share/mate-media/icons
 rm -R usr/share/mate-power-manager/icons
 rm -R usr/share/Thunar
-rm -R var/lib/AccountsService
 
 rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
-rm usr/bin/canberra*
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
-rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libappindicator.*
-rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*

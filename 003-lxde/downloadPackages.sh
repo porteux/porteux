@@ -1,17 +1,18 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "accountsservice" & # required by lightdm
 DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "keybinder3" &
-DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
+DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "vte" &
 wait
@@ -24,11 +25,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libindicator" &
 	wait
 fi
-
-### temporary packages for further building
-
-DownloadPackage "python-pip" & # to install lxml
-wait
 
 ### script clean up
 

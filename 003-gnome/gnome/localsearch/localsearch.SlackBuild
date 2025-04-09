@@ -30,8 +30,11 @@ meson setup \
 	--sysconfdir=/etc \
 	-Dstrip=true \
 	-Dman=false \
-	-Dminer_rss=false \
+	-Dfunctional_tests=false \
+	-Dsandbox_tests=false \
 	-Dlandlock=disabled \
+	-Dwriteback=false \
+	-Dseccomp=false \
 	-Dsystemd_user_services=false 
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install

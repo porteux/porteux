@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                  |-----handy-ruler------------------------------------------------------|
+xdg-desktop-portal: xdg-desktop-portal (XDG portal frontend service)
+xdg-desktop-portal:
+xdg-desktop-portal: A portal frontend service for Flatpak and possibly other desktop
+xdg-desktop-portal: containment frameworks. xdg-desktop-portal works by exposing a series
+xdg-desktop-portal: of D-Bus interfaces known as _portals_ under a well-known name
+xdg-desktop-portal: (org.freedesktop.portal.Desktop) and object path
+xdg-desktop-portal: (/org/freedesktop/portal/desktop). The portal interfaces include APIs
+xdg-desktop-portal: for file access, opening URIs, printing and others.
+xdg-desktop-portal:
+xdg-desktop-portal:
+xdg-desktop-portal:

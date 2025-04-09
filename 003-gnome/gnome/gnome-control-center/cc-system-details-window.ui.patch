@@ -5,7 +5,7 @@
                          <child>
                            <object class="CcInfoEntry" id="gnome_version_row">
 -                            <property name="label" translatable="yes">GNOME Version</property>
-+                            <property name="label" translatable="yes">GNOME Shell Version</property>
++                            <property name="label" translatable="yes">GNOME Shell</property>
                            </object>
                          </child>
  

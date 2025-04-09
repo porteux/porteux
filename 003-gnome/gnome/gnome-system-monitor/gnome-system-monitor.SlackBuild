@@ -18,6 +18,11 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+sed -i "s|catch2|#catch2|g" meson.build
+
+cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \
 CXXFLAGS="$CFLAGS" \

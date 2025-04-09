@@ -1,19 +1,20 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "accountsservice" &
 DownloadPackage "blueman" &
 DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "ghostscript-fonts-std" &
 DownloadPackage "hunspell" &
-DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libpaper" & # required by xpdf
 DownloadPackage "libproxy" & # required by xpdf
+DownloadPackage "libxklavier" & # required by lightdm-gtk-greeter
 DownloadPackage "plasma-wayland-protocols" & # required by libkscreen
 DownloadPackage "xcb-util-cursor" &
 wait
