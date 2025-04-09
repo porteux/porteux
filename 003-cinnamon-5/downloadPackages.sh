@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -18,7 +18,6 @@ DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libdbusmenu" &
 wait
-DownloadPackage "libcanberra" &
 DownloadPackage "libgee" &
 DownloadPackage "libgpod" &
 DownloadPackage "libgtop" &
@@ -47,9 +46,9 @@ wait
 
 ### temporary packages for further building
 
-DownloadPackage "boost" & # to build exempi
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
+DownloadPackage "libxklavier" &
 DownloadPackage "python-pip" &
 DownloadPackage "xtrans" &
 wait

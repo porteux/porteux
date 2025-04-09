@@ -6,13 +6,19 @@ source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$PWD/../builder-utils/cachefiles.sh"
-source "$PWD/../builder-utils/downloadfromslackware.sh"
-source "$PWD/../builder-utils/genericstrip.sh"
-source "$PWD/../builder-utils/helper.sh"
-source "$PWD/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/cachefiles.sh"
+source "$BUILDERUTILSPATH/downloadfromslackware.sh"
+source "$BUILDERUTILSPATH/genericstrip.sh"
+source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 [ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
+
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
 
 ### create module folder
 
@@ -37,7 +43,6 @@ rm -fr $MODULEPATH/${currentPackage}
 installpkg $MODULEPATH/packages/*.txz || exit 1
 
 # only required for building not for run-time
-rm $MODULEPATH/packages/boost*
 rm $MODULEPATH/packages/c-ares*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
@@ -45,7 +50,6 @@ rm $MODULEPATH/packages/egl-wayland*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
-rm $MODULEPATH/packages/libsoup3*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/openldap*
@@ -56,6 +60,7 @@ rm $MODULEPATH/packages/xtrans*
 
 # required by mutter 45+
 cd $MODULEPATH
+pip install argcomplete || exit 1
 pip install attrs || exit 1
 pip install jinja2 || exit 1
 pip install pygments || exit 1
@@ -73,7 +78,6 @@ MODULENAME=$MODULENAME-${GNOME_LATEST_VERSION}
 # gnome deps
 for package in \
 	libstemmer \
-	exempi \
 	libwpe \
 	wpebackend-fdo \
 	bubblewrap \
@@ -148,7 +152,12 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### removed some useless services
+### renamed background images to jpg
+
+mv $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-d.jxl $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-d.jpg
+mv $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-l.jxl $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-l.jpg
+
+### remove some useless services
 
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
@@ -211,7 +220,6 @@ rm -R var/lib/AccountsService
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/ibus*.desktop
 rm etc/xdg/autostart/localsearch-3.desktop
-rm usr/bin/canberra*
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
@@ -234,7 +242,10 @@ rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
 rm usr/libexec/localsearch-*
+rm usr/share/applications/org.gtk.Demo4.desktop
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
+rm usr/share/applications/org.gtk.PrintEditor4.desktop
+rm usr/share/applications/org.gtk.WidgetFactory4.desktop
 rm usr/share/applications/vte-gtk4.desktop
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null

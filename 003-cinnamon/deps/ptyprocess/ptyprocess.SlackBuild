@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
 PRGNAM=ptyprocess
 
 CWD=$(dirname "$0")
@@ -12,14 +14,14 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="0.7.0"
-wget -c https://files.pythonhosted.org/packages/20/e5/16ff212c1e452235a90aeb09066144d0c5a6a8c0834397e03f5224495c4e/${PRGNAM}-${VERSION}.tar.gz
+info=$(DownloadLatestFromGithub "pexpect" ${PRGNAM})
+VERSION=${info#* }
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-python setup.py install --root=$PKG
-python3 setup.py install --root=$PKG
+python -m build --wheel --no-isolation
+python -m installer --destdir "$PKG" dist/*.whl
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

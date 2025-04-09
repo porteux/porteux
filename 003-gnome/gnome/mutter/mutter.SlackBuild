@@ -18,6 +18,8 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('doc/man')||g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
@@ -37,7 +39,6 @@ meson setup \
 	-Dnative_backend=true \
 	-Dprofiler=false \
 	-Dstartup_notification=true \
-	-Dsystemd=false \
 	-Dtests=disabled \
 	-Dudev=true \
 	-Dwayland_eglstream=true

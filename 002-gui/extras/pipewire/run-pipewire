@@ -1,8 +1,7 @@
 #!/bin/bash
 
-if ! pgrep -x "pipewire" > /dev/null; then
-	pipewire &
-fi
+pkill -u "${USER}" -x pipewire > /dev/null 2>&1
+pipewire &
 
 # Wait for pipewire to load
 sleepTimes=50
@@ -11,10 +10,8 @@ while [ $sleepTimes -gt 0 ] && ! pgrep -x "pipewire" > /dev/null; do
 	sleepTimes=$((sleepTimes - 1))
 done
 
-if ! pgrep -x "wireplumber" > /dev/null; then
-	wireplumber &
-fi
+pkill -u "${USER}" -x wireplumber > /dev/null 2>&1
+wireplumber &
 
-if ! pgrep -x "pipewire-pulse" > /dev/null; then
-	pipewire-pulse &
-fi
+pkill -u "${USER}" -x pipewire-pulse > /dev/null 2>&1
+pipewire-pulse &

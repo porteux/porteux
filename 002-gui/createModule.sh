@@ -6,11 +6,17 @@ source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$PWD/../builder-utils/cachefiles.sh"
-source "$PWD/../builder-utils/downloadfromslackware.sh"
-source "$PWD/../builder-utils/genericstrip.sh"
-source "$PWD/../builder-utils/helper.sh"
-source "$PWD/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/cachefiles.sh"
+source "$BUILDERUTILSPATH/downloadfromslackware.sh"
+source "$BUILDERUTILSPATH/genericstrip.sh"
+source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
 
 ### create module folder
 
@@ -28,8 +34,12 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
 	rm -fr $MODULEPATH/${currentPackage}
 	rm $MODULEPATH/packages/meson-*.txz
+else
+	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 fi
 
+installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
+installpkg $MODULEPATH/packages/libtheora*.txz || exit 1
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 installpkg $MODULEPATH/packages/cups*.txz || exit 1
@@ -71,7 +81,7 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=imlib2
-version="1.12.1"
+version=$(curl -s https://sourceforge.net/projects/enlightenment/files/${currentPackage}-src/ | grep net.sf.files | cut -d '"' -f 2)
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
 wget https://sourceforge.net/projects/enlightenment/files/${currentPackage}-src/$version/${currentPackage}-$version.tar.xz || exit 1
@@ -79,8 +89,10 @@ sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i 's|^make|make -j${NUMBERTHREADS}|g' ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=openbox
@@ -140,6 +152,11 @@ sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=xdg-desktop-portal
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
 ### packages that require specific stripping
 
 currentPackage=llvm
@@ -159,8 +176,14 @@ mv ../packages/${currentPackage}*.txz .
 version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
+cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped-$version
+cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped-$version > /dev/null 2>&1
+cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped-$version
 if [ $SLACKWAREVERSION == "current" ]; then
+	cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped-$version
+	cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped-$version
 	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped-$version
 fi
 cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped-$version
@@ -250,6 +273,7 @@ rm -R usr/lib${SYSTEMBITS}/pangomm-*
 rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/lib${SYSTEMBITS}/sigc++-*
 rm -R usr/lib${SYSTEMBITS}/xmms
+rm -R usr/share/gdm
 rm -R usr/share/gnome
 rm -R usr/share/gnome-session
 rm -R usr/share/gobject-introspection-1.0/tests
@@ -300,6 +324,7 @@ rm etc/xdg/autostart/at-spi-dbus-bus.desktop
 rm usr/bin/cacaclock
 rm usr/bin/cacademo
 rm usr/bin/cacafire
+rm usr/bin/canberra*
 rm usr/bin/gdm-control
 rm usr/bin/gnome-panel-control
 rm usr/bin/gtk3-demo
@@ -308,7 +333,9 @@ rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
+rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
+rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libLLVMExtensions*
 rm usr/lib${SYSTEMBITS}/libLLVMLTO*
 rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
@@ -335,7 +362,7 @@ rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 rm usr/share/xsessions/openbox-gnome.desktop
 rm usr/share/xsessions/openbox-kde.desktop
 
-[ $SLACKWAREVERSION == "current" ] && rm usr/lib64/libpoppler-qt5*
+[ $SLACKWAREVERSION == "current" ] && rm usr/lib${SYSTEMBITS}/libpoppler-qt5*
 
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 

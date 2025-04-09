@@ -19,7 +19,6 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 python setup.py install --root=$PKG
-python3 setup.py install --root=$PKG
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

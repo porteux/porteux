@@ -1,10 +1,11 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
+DownloadPackage "accountsservice" & # required by lightdm
 DownloadPackage "aspell" & # required by mousepad
 DownloadPackage "blueman" &
 DownloadPackage "dconf" &
@@ -13,7 +14,6 @@ DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gtksourceview3" &
 DownloadPackage "keybinder3" &
 wait
-DownloadPackage "libcanberra" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
 DownloadPackage "libnma" &
@@ -29,14 +29,8 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &
 	DownloadPackage "gspell" &
 	DownloadPackage "libindicator" &
-	DownloadPackage "libsoup" & # for stable this libsoup2 will be in 002-gui
 	wait
 fi
-
-### temporary packages
-
-DownloadPackage "python-pip" & # to install lxml
-wait
 
 ### script clean up
 

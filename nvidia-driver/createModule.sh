@@ -1,9 +1,20 @@
 #!/bin/bash
 # script to build nvidia driver module -- works for both i586 and x86_64 architectures
 
-# switch to root
-if [ $(whoami) != root ]; then
-	echo "Please enter root's password below:"
+isRoot() {
+	groupsList=$(groups)
+
+	for entry in $groupsList; do
+		if [[ "$entry" == "root" ]]; then
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+if ! isRoot; then
+	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi

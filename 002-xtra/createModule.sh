@@ -6,11 +6,17 @@ source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$PWD/../builder-utils/cachefiles.sh"
-source "$PWD/../builder-utils/downloadfromslackware.sh"
-source "$PWD/../builder-utils/genericstrip.sh"
-source "$PWD/../builder-utils/helper.sh"
-source "$PWD/../builder-utils/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/cachefiles.sh"
+source "$BUILDERUTILSPATH/downloadfromslackware.sh"
+source "$BUILDERUTILSPATH/genericstrip.sh"
+source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+if ! isRoot; then
+	echo "Please enter admin's password below:"
+	su -c "$0 $1"
+	exit
+fi
 
 ### create module folder
 
@@ -34,6 +40,11 @@ tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
 cp $SCRIPTPATH/extras/transmission/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done # only for version 4.0.6 which is broken
+if [ $SLACKWAREVERSION == "current" ]; then
+	sed -i 's|cmake_minimum_required(VERSION 3.12 FATAL_ERROR)|cmake_minimum_required(VERSION 3.5)|g' third-party/miniupnp/miniupnpc/CMakeLists.txt
+	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/libnatpmp/CMakeLists.txt
+	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/dht/CMakeLists.txt
+fi
 mkdir build && cd build
 CFLAGS="$CLANGFLAGS -fPIC" CXXFLAGS="$CLANGFLAGS -flto=auto" cmake -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF ..
 make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
@@ -57,24 +68,9 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=gsm
-version="1.0.22"
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
-wget https://www.quut.com/${currentPackage}/${currentPackage}-$version.tar.gz || exit 1
-sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=xvidcore
-version="1.3.7"
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+version=$(curl -s https://downloads.xvid.com/downloads/ | grep -oP 'https?://[^\s]+\.tar\.gz' | cut -d "-" -f 2- | grep -v beta | grep -v rc[0-9] | sed 's/\.tar\.gz$//' | sort -V -r | head -1)
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/multimedia/${currentPackage}/ -A * || exit 1
 wget https://downloads.xvid.com/downloads/${currentPackage}-${version}.tar.gz || exit 1
 sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
@@ -130,21 +126,6 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=opencore-amr
-version="0.1.6"
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/audio/${currentPackage}/ -A * || exit 1
-wget https://sourceforge.net/projects/${currentPackage}/files/${currentPackage}/${currentPackage}-$version.tar.gz || exit 1
-sed -z -i "s|make\nmake|make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=libass
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/libass/${currentPackage}.SlackBuild  || exit 1
@@ -176,6 +157,9 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/audio/${currentPackage}/ -A * || exit 1
 info=$(DownloadLatestFromGithub "knik0" ${currentPackage})
 version=${info#* }
+sed -i "s|tar xvf \$CWD/\$PRGNAM-\$SRCVER.tar.gz|tar xvf \$CWD/\$PRGNAM-\$PRGNAM-\$SRCVER.tar.gz|g" ${currentPackage}.SlackBuild
+sed -i "s|cd \$PRGNAM-\$SRCVER|cd \$PRGNAM-\$PRGNAM-\$SRCVER|g" ${currentPackage}.SlackBuild
+sed -i "s|SRCVER=\${VERSION/./_}|SRCVER=\${VERSION}|g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|\$PRGNAM-\$VERSION|\$PRGNAM-${version//_/.}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
@@ -207,7 +191,7 @@ tar xvf ${currentPackage}-master.tar.gz && rm ${currentPackage}-master.tar.gz ||
 cd ${currentPackage}-master
 version=$(date -r . +%Y%m%d)
 mkdir build && cd build
-CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto" meson -Denable_tests=false -Denable_tools=false --prefix /usr ..
+CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto" meson setup -Denable_tests=false -Denable_tools=false --prefix /usr ..
 DESTDIR=$MODULEPATH/${currentPackage}/package ninja -j${NUMBERTHREADS} install || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -279,16 +263,14 @@ wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
 	wget https://ffmpeg.org/releases/ffmpeg-4.4.5.tar.xz
-fi
-if [ $SLACKWAREVERSION != "current" ]; then
-	sed -i "s|\./configure \\\\| \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+	sed -i "s|\./configure \\\\|patch -p0 < $SCRIPTPATH/extras/${currentPackage}/svt-av1-3.0-build-fix.patch;  \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 else
-	sed -i "s|\./configure \\\\|patch -p0 < $SCRIPTPATH/extras/${currentPackage}/fix-x265-encode.patch; \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+	sed -i "s|\./configure \\\\|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 fi
 sed -i "s|-O2.*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|\make |make CC=clang CXX=clang++ |g" ${currentPackage}.SlackBuild
-AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes OPENCORE=yes GSM=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1
+AMF=no AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}

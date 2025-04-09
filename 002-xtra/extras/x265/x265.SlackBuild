@@ -29,6 +29,7 @@ cmake \
 	-DENABLE_SHARED=OFF \
 	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
 	-DCMAKE_BUILD_TYPE=Release ../source \
+	-DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 	-DCMAKE_CC_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
 make -j${NUMBERTHREADS}
@@ -44,6 +45,7 @@ cmake \
 	-DENABLE_SHARED=OFF \
 	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
 	-DCMAKE_BUILD_TYPE=Release ../source \
+	-DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 	-DCMAKE_CC_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
 make -j${NUMBERTHREADS}
@@ -65,6 +67,7 @@ cmake \
 	-DENABLE_CLI=OFF \
 	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
 	-DCMAKE_BUILD_TYPE=Release ../source \
+	-DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 	-DCMAKE_CC_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG

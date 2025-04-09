@@ -5,7 +5,7 @@
                <object class="CcListRow" id="gnome_version_row">
                  <property name="activatable">False</property>
 -                <property name="title" translatable="yes">GNOME Version</property>
-+                <property name="title" translatable="yes">GNOME Shell Version</property>
++                <property name="title" translatable="yes">GNOME Shell</property>
                  <property name="secondary-label">3.0</property>
                </object>
              </child>

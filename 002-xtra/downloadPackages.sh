@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -9,13 +9,6 @@ DownloadPackage "libcue" &
 DownloadPackage "vid.stab" &
 DownloadPackage "openal-soft" &
 wait
-
-### slackware specific version packages
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "libvpx" &
-	wait
-fi
 
 ### only download if not present
 

@@ -23,7 +23,7 @@ PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stabl
 . MATE<br />
 . Xfce<br />
 
-PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's simple like that. Please avoid ISO installer applications such as Rufus or Etcher because by default they set the bootable unit to be read-only. More details in [/boot/docs/install.txt](https://github.com/porteux/porteux/blob/main/boot/boot/docs/install.txt) file in the ISO.
+PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run from the `boot` folder either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's simple like that. Please avoid ISO installer applications such as Rufus or Etcher because by default they set the bootable unit to be read-only. More details in [/boot/docs/install.txt](https://github.com/porteux/porteux/blob/main/boot/boot/docs/install.txt) file in the ISO.
 
 In order to have PorteuX in a language different than English, download the multilanguage package and use PorteuX Language Switcher application to choose the desired language.
 
@@ -60,7 +60,7 @@ Sources:
 [ClearLinux40520](https://browser.geekbench.com/v6/cpu/4073056)
 [PorteuX0.9](https://browser.geekbench.com/v6/cpu/4087178)
 
-All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and all applications are usually as new as possible in the current/rolling release.
+All this performance benefit is achieved without providing ancient software. It means that the kernel, desktop environments and packages are usually as new as possible in the current/rolling release.
 
 ## Enable OpenCL support (required by applications like DaVinci Resolve)
 
@@ -87,7 +87,7 @@ To build PorteuX, run as root the script `createModule.sh` in the exact folder o
 3. 002-gui<br />
 4. 002-xtra<br />
 5. 003-desktopenvironment (where 'desktopenvironment' is the one of your preference, like 003-lxde)<br />
-6. 05-devel<br />
+6. (optional) 05-devel<br />
 7. (optional) 08-multilanguage<br />
 8. (optional) 0050-multilib-lite<br />
 
@@ -99,7 +99,10 @@ Feel free to report any issues or request changes. Any constructive feedback is 
 
 ## Donate
 
-Please, consider donating to PorteuX project: https://buymeacoffee.com/porteux
+Please, consider donating to PorteuX project:
+
+https://paypal.me/porteux<br />
+https://buymeacoffee.com/porteux<br />
 
 ## Thanks
 
@@ -108,6 +111,7 @@ theUtopian (core team)<br />
 blaze (@porteus)<br />
 brokenman (@porteus)<br />
 frank honolka (@snuk)<br />
+luckyCyborg (@slackware)<br />
 ncmprhnsbl (@porteus)<br />
 neko (@porteus)<br />
 patrick volkerding (@slackware)<br />

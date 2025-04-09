@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -66,6 +66,7 @@ DownloadPackage "libblockdev" &
 DownloadPackage "libbluray" &
 DownloadPackage "libbytesize" &
 DownloadPackage "libcaca" &
+DownloadPackage "libcanberra" & # required by pipewire
 DownloadPackage "libcddb" &
 DownloadPackage "libcdio" &
 DownloadPackage "libcdio-paranoia" &
@@ -202,7 +203,6 @@ DownloadPackage "xcb-util-keysyms" &
 DownloadPackage "xcb-util-renderutil" &
 DownloadPackage "xcb-util-wm" &
 DownloadPackage "xclipboard" &
-DownloadPackage "xdg-desktop-portal" &
 DownloadPackage "xdg-user-dirs" &
 DownloadPackage "xdg-utils" &
 wait
@@ -245,11 +245,19 @@ wait
 ### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "libdeflate" & # required by libtiff 
 	DownloadPackage "gcr4" & # required by gvfs 1.54+
+	DownloadPackage "labwc" &
+	DownloadPackage "libdeflate" & # required by libtiff 
+	DownloadPackage "libdisplay-info" & # required by some DEs and mpv to have vaapi
 	DownloadPackage "libnvme" & # required by udisks 2.10.0+
+	DownloadPackage "libsfdo" & # required by labwc
+	wait
 	DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
+	DownloadPackage "seatd" & # required by labwc
 	DownloadPackage "volume_key" & # required by udisks 2.10.0+
+	DownloadPackage "wlroots" & # required by labwc
+	DownloadPackage "xorg-server-xwayland" & # required by labwc
+	DownloadPackage "xcb-util-errors" & # required by labwc
 	wait
 else
 	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)

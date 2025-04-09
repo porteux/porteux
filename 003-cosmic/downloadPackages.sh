@@ -1,11 +1,10 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
 GenerateRepositoryUrls "$REPOSITORY"
 
-DownloadPackage "libdisplay-info" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libnma" &
 DownloadPackage "network-manager-applet" &
@@ -25,8 +24,6 @@ fi
 
 ### temporary packages for further building
 
-DownloadPackage "xorg-server-xwayland" &
-wait
 
 ### script clean up
 

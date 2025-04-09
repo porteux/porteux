@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$PWD/../builder-utils/slackwarerepository.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 REPOSITORY="$1"
 
@@ -19,7 +19,6 @@ DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
-DownloadPackage "libcanberra" &
 wait
 DownloadPackage "libgtop" &
 DownloadPackage "libindicator" &
@@ -34,18 +33,14 @@ wait
 ### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "libappindicator" &
 	DownloadPackage "libdbusmenu" &
-	DownloadPackage "libindicator" &
 	DownloadPackage "libsoup" & # in stable this libsoup2 will be in base
 	wait
 fi
 
 ### temporary packages for further building
 
-DownloadPackage "boost" & # to build exempi
 DownloadPackage "gtk+2" & # to build mate-themes
-DownloadPackage "python-pip" & # to install lxml
 wait
 
 ### script clean up
