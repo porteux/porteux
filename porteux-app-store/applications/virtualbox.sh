@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ] || [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*06-crippled_sources*")" ]; then
+if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ] || [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*06-crippled?sources*")" ]; then
     echo "Both 'devel' and 'crippled-sources' modules need to be activated."
     exit 1
 fi
