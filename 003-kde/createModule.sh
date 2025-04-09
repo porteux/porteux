@@ -374,6 +374,10 @@ InstallAdditionalPackages
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
 sed -i "s|image/png|image/png;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.kde.gwenview.desktop
 
+### disable some services
+
+rm $MODULEPATH/packages/usr/share/dbus-1/services/org.kde.runners.baloo.service
+
 ### copy build files to 05-devel
 
 CopyToDevel
