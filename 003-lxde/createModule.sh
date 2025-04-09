@@ -57,12 +57,12 @@ rm -fr $MODULEPATH/${currentPackage}
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
 currentPackage=lightdm
-SESSIONTEMPLATE=LXDE sh $BUILDERUTILSPATH/common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+SESSIONTEMPLATE=LXDE sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lightdm-gtk-greeter
-ICONTHEME=kora sh $BUILDERUTILSPATH/common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
@@ -86,12 +86,12 @@ makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious
-sh $BUILDERUTILSPATH/common/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-sh $BUILDERUTILSPATH/common/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa
