@@ -56,9 +56,13 @@ rm -R usr/lib*/python2*
 rm -R usr/local
 rm -R usr/man
 rm -R usr/share/applications
+rm -R usr/share/bash-completion
 rm -R usr/share/cmake-*/Help
 rm -R usr/share/devhelp
+rm -R usr/share/doc
+rm -R usr/share/gitk
 rm -R usr/share/gnome
+rm -R usr/share/ffmpeg/examples
 rm -R usr/share/help
 rm -R usr/share/icons
 rm -R usr/share/locale
@@ -92,6 +96,7 @@ rm -R usr/lib${SYSTEMBITS}/gcc/x86_64-slackware-linux/*/32
 rm usr/lib/*
 
 find . -name '*.la' -delete
+find usr/ -type d -empty -delete
 
 AggressiveStrip
 
