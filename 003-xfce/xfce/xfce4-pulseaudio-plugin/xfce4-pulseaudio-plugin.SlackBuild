@@ -19,6 +19,9 @@ wget https://gitlab.xfce.org/panel-plugins/${PRGNAM}/-/archive/${DOWNLOADVERSION
 tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+cp $CWD/*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
