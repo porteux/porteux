@@ -278,7 +278,7 @@ rm -fr $MODULEPATH/${currentPackage}
 # required by mpv
 currentPackage=luajit
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://${currentPackage}.org/git/${currentPackage}.git
+git clone https://github.com/LuaJIT/LuaJIT ${currentPackage}
 cd ${currentPackage}
 version=`git --git-dir=.git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sed -i -e '/-DLUAJIT_ENABLE_LUA52COMPAT/s/^#//' src/Makefile
