@@ -166,7 +166,6 @@ rm $MODULEPATH/packages/cups*.txz
 currentPackage=xpdf
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nH --cut-dirs=6 --no-parent --reject="index.html*" ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/xap/${currentPackage}/ || exit 1
-sed -i "s|/lang/|/|g" ${currentPackage}.SlackBuild
 sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|-DXPDFWIDGET_PRINTING=1|-DMULTITHREADED=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5|g" ${currentPackage}.SlackBuild
 sed -z -i "s|mkdir build\n|sed -i \"s\|initialSidebarState = gTrue\|initialSidebarState = gFalse\|g\" xpdf/GlobalParams.cc\nmkdir build\n|g" ${currentPackage}.SlackBuild
@@ -200,13 +199,13 @@ currentPackage=audacious-plugins
 QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-# required by libkscreen
-installpkg $MODULEPATH/packages/plasma-wayland-protocols*.txz || exit 1
-
 DE_LATEST_VERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
 
 echo "Building LXQt ${DE_LATEST_VERSION}..."
 MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
+
+# required by libkscreen
+installpkg $MODULEPATH/packages/plasma-wayland-protocols*.txz || exit 1
 
 # lxqt deps
 for package in \
