@@ -149,6 +149,10 @@ fi
 
 installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 
+# required by libxfce4ui
+installpkg $MODULEPATH/packages/glade*.txz || exit 1
+rm $MODULEPATH/packages/glade*.txz || exit 1
+
 # required by xfce4-panel
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
