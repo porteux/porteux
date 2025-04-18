@@ -142,8 +142,9 @@ cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
-# required by xfdesktop
-installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
+# required by libxfce4ui
+installpkg $MODULEPATH/packages/glade*.txz || exit 1
+rm $MODULEPATH/packages/glade*.txz || exit 1
 
 # required by mousepad
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
@@ -162,6 +163,9 @@ installpkg $MODULEPATH/packages/vte-*.txz || exit 1
 
 # required by xfce4-xkb-plugin
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+
+# required by xfdesktop
+installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
 
 DE_LATEST_VERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1 | rev | cut -d '-' -f 1 | cut -d "." -f 2- | rev)
 
