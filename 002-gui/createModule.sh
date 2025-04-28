@@ -36,6 +36,18 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm $MODULEPATH/packages/meson-*.txz
 else
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
+	
+	# rust nightly required by librsvg
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+	PATH=/root/.cargo/bin/:$PATH
+	rustup component add rust-src --toolchain nightly
+
+	installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
+	rm $MODULEPATH/packages/cargo-c*.txz
+
+	currentPackage=librsvg
+	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	rm -fr $MODULEPATH/${currentPackage}
 fi
 
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
@@ -74,7 +86,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O2.*|$GCCFLAGS -flto=auto -std=c99 -Wno-implicit-function-declaration\"|g" ${currentPackage}.SlackBuild
 sed -i "s|--prefix=/usr |--prefix=/usr --disable-quadmath |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages

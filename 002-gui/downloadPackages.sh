@@ -97,7 +97,6 @@ DownloadPackage "libopusenc" &
 DownloadPackage "libpciaccess" &
 wait
 DownloadPackage "libpng" &
-DownloadPackage "librsvg" &
 DownloadPackage "libsamplerate" &
 DownloadPackage "libsecret" &
 DownloadPackage "libsigc++" &
@@ -245,6 +244,7 @@ wait
 ### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "cargo-c" & # required by librsvg
 	DownloadPackage "gcr4" & # required by gvfs 1.54+
 	DownloadPackage "labwc" &
 	DownloadPackage "libdeflate" & # required by libtiff 
@@ -260,6 +260,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "xcb-util-errors" & # required by labwc
 	wait
 else
+	DownloadPackage "librsvg" &
 	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)
 	wait
 fi
