@@ -20,7 +20,7 @@ wget https://github.com/Terraspace/UASM/archive/refs/tags/v${uasmVersion}r.tar.g
 tar xfv UASM-${uasmVersion}r.tar.?z*
 cd UASM-${uasmVersion}r
 
-make -j${NUMBERTHREADS} CC="gcc -fcommon -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion" -f Makefile-Linux-GCC-64.mak
+make -j${NUMBERTHREADS} CC="gcc -std=c99 -fcommon -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion" -f Makefile-Linux-GCC-64.mak
 
 chmod +x $PWD/GccUnixR/uasm
 PATH=$PATH:$PWD/GccUnixR
