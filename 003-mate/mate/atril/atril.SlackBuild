@@ -14,38 +14,44 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "mate-desktop" $PRGNAM "1.29")
+info=$(DownloadLatestFromGithub "mate-desktop" ${PRGNAM} "1.29")
 VERSION=${info#* }
 
-tar xvf $PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+tar xvf ${PRGNAM}-$VERSION.tar.?z
+cd ${PRGNAM}-$VERSION
 
-# fix make looking for hard-coded versions of aclocal and automake
-sed -i "s|-\${am__api_version}||g" configure
+sed -i "s|mate_desktop = dependency|#mate_desktop = dependency|g" meson.build
+sed -i "s|mate_desktop,|#mate_desktop,|g" shell/meson.build
+sed -i "s|subdir('po')|#subdir('po')|g" meson.build
+sed -i "s|subdir('help')|#subdir('help')|g" meson.build
+sed -i "s|subdir('test')|#subdir('test')|g" meson.build
 
+sed -i '/^test_name =/,$d' backend/comics/meson.build
+sed -i "s|comicsdocument.atril-backend.in|comicsdocument.atril-backend.desktop.in|g" backend/comics/meson.build
+sed -i "s|'pixbuf.atril-backend.desktop.in'|'pixbufdocument.atril-backend.desktop.in'|g" backend/pixbuf/meson.build
+
+mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$CFLAGS" \
-./configure \
+meson setup \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--buildtype=release \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
-	--localstatedir=/var \
+	--infodir=/usr/info \
 	--mandir=/usr/man \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
-	--disable-static \
-	--disable-synctex \
-	--enable-shared \
-	--enable-introspection \
-	--enable-t1lib \
-	--enable-pixbuf \
-	--enable-comics \
-	--enable-epub \
-	--enable-xps \
-	--disable-gtk-doc \
-	--disable-tests \
-	--build=$ARCH-porteux-linux
+	--localstatedir=/var \
+    -Dintrospection=true \
+    -Dt1lib=true \
+    -Dpixbuf=true \
+    -Dcomics=true \
+    -Depub=false \
+    -Dxps=false \
+    -Dpreviewer=true \
+    -Dgtk_unix_print=true \
+    -Dmathjax-directory=/usr/share/mathjax
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -53,4 +59,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
