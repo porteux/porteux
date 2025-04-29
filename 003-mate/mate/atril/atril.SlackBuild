@@ -20,6 +20,9 @@ VERSION=${info#* }
 tar xvf ${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-$VERSION
 
+cp $CWD/*.patch .
+for i in *.patch; do patch -p0 < $i; done
+
 sed -i "s|mate_desktop = dependency|#mate_desktop = dependency|g" meson.build
 sed -i "s|mate_desktop,|#mate_desktop,|g" shell/meson.build
 sed -i "s|subdir('po')|#subdir('po')|g" meson.build
