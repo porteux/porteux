@@ -18,8 +18,6 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-export RUSTFLAGS="-Cpanic=abort -Cstrip=debuginfo -Copt-level=s -Clto=thin -Cembed-bitcode=yes -Zdylib-lto -Ccodegen-units=1 -Zlocation-detail=none"
-
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
