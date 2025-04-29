@@ -154,6 +154,10 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
+# missing files from 1.28.5
+git clone https://github.com/mate-desktop/mate-submodules gsearchtool/mate-submodules
+cp $PWD/mate/mate-panel/Makefile.in gsearchtool/mate-submodules
+cp $PWD/mate/mate-panel/Makefile.in.libegg gsearchtool/mate-submodules/libegg/Makefile.in
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
 sed -i 's|yelp-build|ls|g' autogen.sh
