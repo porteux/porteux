@@ -25,7 +25,6 @@ for i in *.patch; do patch -p0 < $i; done
 
 sed -i "s|mate_desktop = dependency|#mate_desktop = dependency|g" meson.build
 sed -i "s|mate_desktop,|#mate_desktop,|g" shell/meson.build
-sed -i "s|subdir('po')|#subdir('po')|g" meson.build
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 sed -i "s|subdir('test')|#subdir('test')|g" meson.build
 

@@ -111,5 +111,4 @@ ncmprhnsbl (@porteus)<br />
 neko (@porteus)<br />
 patrick volkerding (@slackware)<br />
 phantom (@porteus)<br />
-ponce (@slackware)<br />
 tomáš matějíček (@slax)<br />
