@@ -105,9 +105,8 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-mkdir build && cd build
-CXXFLAGS="$GCCFLAGS -flto=auto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_SAMPLES=off ..
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+cmake -B build -S . -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto=auto" -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DENABLE_SAMPLES=off
+make -C build -j${NUMBERTHREADS} DESTDIR="$MODULEPATH/${currentPackage}/package" install
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -146,9 +145,8 @@ cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 cp $SCRIPTPATH/deps/adwaita-qt/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
-mkdir build && cd build
-CXXFLAGS="$GCCFLAGS -flto=auto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+cmake -B build -S . -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto=auto" -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DUSE_QT6=true
+make -C build -j${NUMBERTHREADS} DESTDIR="$MODULEPATH/${currentPackage}/package" install
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
@@ -172,9 +170,8 @@ version="1.4.1" # higher than this requires Qt6
 wget https://github.com/tsujan/${currentPackage}/releases/download/V${version}/${currentPackage}-${version}.tar.xz
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
-mkdir build && cd build
-CXXFLAGS="$GCCFLAGS -flto=auto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
+cmake -B build -S . -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto=auto" -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS}
+make -C build -j${NUMBERTHREADS} DESTDIR="$MODULEPATH/${currentPackage}/package" install
 cd $MODULEPATH/${currentPackage,,}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
@@ -208,9 +205,8 @@ wget https://github.com/palinek/${currentPackage}/archive/refs/tags/${version}.t
 tar xvf ${version}.tar.gz && rm ${version}.tar.gz || exit 1
 cd ${currentPackage}*
 sed -i "s|set(NM_TRAY_VERSION \".*|set(NM_TRAY_VERSION \"${version}\")|g" CMakeLists.txt
-mkdir build && cd build
-CXXFLAGS="$GCCFLAGS -flto=auto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
+cmake -B build -S . -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto=auto" -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} -DBUILD_WITH_QT6=true
+make -C build -j${NUMBERTHREADS} DESTDIR="$MODULEPATH/${currentPackage}/package" install
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
@@ -236,8 +232,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-sh autogen.sh
-CFLAGS="$GCCFLAGS" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
+./autogen.sh && CFLAGS="$GCCFLAGS" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -273,7 +268,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/lxde/${currentPackage} || exit 1
 cd ${currentPackage}
 version=`git describe | cut -d- -f1`
-sh ./autogen.sh && CFLAGS="$GCCFLAGS" \
+./autogen.sh && CFLAGS="$GCCFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \

@@ -179,9 +179,8 @@ version=${info#* }
 filename=${info% *}
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
-mkdir build && cd build
-CXXFLAGS="$GCCFLAGS -flto=auto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
+cmake -B build -S . -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto=auto" -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS}
+make -C build -j${NUMBERTHREADS} DESTDIR="$MODULEPATH/${currentPackage}/package" install
 cd $MODULEPATH/${currentPackage,,}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}

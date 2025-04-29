@@ -71,7 +71,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-sh autogen.sh --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc
+./autogen.sh --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc
 make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
