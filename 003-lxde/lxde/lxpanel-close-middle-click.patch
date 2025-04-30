@@ -1,0 +1,17 @@
+--- plugins/task-button.c	2025-04-30 15:15:31.391648871 +0200
++++ plugins/task-button.c.patched	2025-04-30 15:16:00.000650224 +0200
+@@ -543,12 +543,8 @@
+     }
+     else if (event->button == 2)
+     {
+-        /* Middle button.  Toggle the shaded state of the window. */
+-        Xclimsgx(GDK_SCREEN_XSCREEN(gtk_widget_get_screen(tb)),
+-                task->win, a_NET_WM_STATE,
+-                a_NET_WM_STATE_TOGGLE,
+-                a_NET_WM_STATE_SHADED,
+-                0, 0, 0);
++        /* Middle button.  Close the application. */
++        Xclimsgwm(task->win, a_WM_PROTOCOLS, a_WM_DELETE_WINDOW);
+     }
+     return TRUE;
+ }
