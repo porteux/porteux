@@ -478,6 +478,7 @@ version=`git describe | cut -d- -f1`
 
 cp $SCRIPTPATH/lxde/${currentPackage}*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done
+cp $SCRIPTPATH/lxde/background.png data/images
 
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
