@@ -1,0 +1,11 @@
+--- lxsession-logout/lxsession-logout.c	2025-04-01 11:18:10.000000000 +0200
++++ lxsession-logout/lxsession-logout.c.patched	2025-05-01 21:39:14.019986880 +0200
+@@ -749,7 +749,7 @@
+ #endif
+ 
+         if (version_id)
+-            prompt = g_strdup_printf(_("<b><big>Logout %s %s session?</big></b>"), session_name, version_id);
++            prompt = g_strdup_printf(_("<b><big>Logout session?</big></b>"));
+         else
+             prompt = g_strdup_printf(_("<b><big>Logout %s session?</big></b>"), session_name);
+ 
