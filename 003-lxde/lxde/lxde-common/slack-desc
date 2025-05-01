@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+lxde-common: lxde-common (a set of default configurations for LXDE)
+lxde-common:
+lxde-common: The lxde-common package provides a set of default configurations and
+lxde-common: bitmaps for LXDE.
+lxde-common: lxde-settings is the XSettings daemon of LXDE. It presents
+lxde-common: configuration values to other programs via the XSETTINGS protocol
+lxde-common: defined by freedesktop.org.
+lxde-common:
+lxde-common: lxde-common home: http://www.lxde.org/
+lxde-common:
+lxde-common:
