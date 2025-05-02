@@ -185,10 +185,6 @@ InstallAdditionalPackages
 
 sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/eom.desktop
 
-### add mate session
-
-sed -i "s|SESSIONTEMPLATE|/usr/bin/mate-session|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
-
 ### copy xinitrc
 
 cp $MODULEPATH/packages/etc/X11/xinit/xinitrc.mate-session .

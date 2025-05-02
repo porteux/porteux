@@ -228,10 +228,6 @@ sed -i "s|image/avif|image/avif;image/jxl|g" $MODULEPATH/packages/usr/share/appl
 
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/cinnamon-settings-daemon-color.desktop
 
-### add cinnamon session
-
-sed -i "s|SESSIONTEMPLATE|/usr/bin/cinnamon-session|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
-
 ### TEMPORARY: remove some xed plugins that doesn't work with new pygobject 3.52.x
 
 rm -fr $MODULEPATH/packages/usr/lib${SYSTEMBITS}/xed/plugins/bracket-complete

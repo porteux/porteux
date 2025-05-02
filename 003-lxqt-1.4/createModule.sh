@@ -377,10 +377,6 @@ InstallAdditionalPackages
 sed -i "s|image/x-tga|image/x-tga;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/lximage-qt.desktop
 sed -i "s|Icon=xpdfIcon|Icon=xpdf|g" $MODULEPATH/packages/usr/share/applications/xpdf.desktop
 
-### add session
-
-sed -i "s|SESSIONTEMPLATE|/usr/bin/startlxqt|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
-
 ### copy build files to 05-devel
 
 CopyToDevel

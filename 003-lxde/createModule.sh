@@ -197,10 +197,6 @@ sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/pa
 sed -i "s|;Settings;|;|g" $MODULEPATH/packages/usr/share/applications/pavucontrol.desktop
 sed -i "s|System;|Utility;|g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
 
-### add lxde session
-
-sed -i "s|SESSIONTEMPLATE|/usr/bin/lxsession|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
-
 ### copy build files to 05-devel
 
 CopyToDevel
