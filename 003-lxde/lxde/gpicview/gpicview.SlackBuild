@@ -16,14 +16,13 @@ git clone https://github.com/lxde/${PRGNAM}
 cd ${PRGNAM}
 VERSION=`git describe | cut -d- -f1`
 
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" \
+./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto -ffast-math" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \
 	--sysconfdir=/etc \
 	--enable-gtk3 \
-	--disable-static \
-	--disable-man	
+	--disable-static
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
