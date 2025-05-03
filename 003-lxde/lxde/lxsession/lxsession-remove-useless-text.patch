@@ -1,11 +1,28 @@
 --- lxsession-logout/lxsession-logout.c	2025-04-01 11:18:10.000000000 +0200
 +++ lxsession-logout/lxsession-logout.c.patched	2025-05-01 21:39:14.019986880 +0200
-@@ -749,7 +749,7 @@
- #endif
+@@ -739,21 +739,12 @@
+     GtkWidget * label = gtk_label_new("");
+     if (prompt == NULL)
+     {
+-        const char * session_name = g_getenv("DESKTOP_SESSION");
+-        if (session_name == NULL)
+-            session_name = "LXDE";
++        const char * current_user = g_getenv("USER");
  
-         if (version_id)
+-        gchar *version_id = NULL;
+-#if GLIB_CHECK_VERSION(2, 64, 0)
+-        version_id = g_get_os_info(G_OS_INFO_KEY_VERSION_ID);
+-#endif
+-
+-        if (version_id)
 -            prompt = g_strdup_printf(_("<b><big>Logout %s %s session?</big></b>"), session_name, version_id);
-+            prompt = g_strdup_printf(_("<b><big>Logout session?</big></b>"));
++        if (current_user == NULL || current_user == "")
++            prompt = g_strdup_printf(_("<b><big>Log out current session</big></b>"));
          else
-             prompt = g_strdup_printf(_("<b><big>Logout %s session?</big></b>"), session_name);
- 
+-            prompt = g_strdup_printf(_("<b><big>Logout %s session?</big></b>"), session_name);
+-
+-        g_free(version_id);
++            prompt = g_strdup_printf(_("<b><big>Log out %s</big></b>"), current_user);
+     }
+     gtk_label_set_markup(GTK_LABEL(label), prompt);
+     gtk_box_pack_start(GTK_BOX(controls), label, FALSE, FALSE, 4);
