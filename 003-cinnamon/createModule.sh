@@ -174,7 +174,6 @@ rm $MODULEPATH/packages/clutter*.txz
 
 # cinnamon extras
 for package in \
-	adwaita-cursors \
 	file-roller \
 	gnome-terminal \
 	gnome-screenshot \
