@@ -36,6 +36,13 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm $MODULEPATH/packages/meson-*.txz
 else
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
+	installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+	rm $MODULEPATH/packages/xtrans*.txz
+
+	currentPackage=xorg-server
+	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}*.txz
+	rm -fr $MODULEPATH/${currentPackage}
 	
 	# rust nightly required by librsvg
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y

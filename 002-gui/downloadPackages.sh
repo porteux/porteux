@@ -274,6 +274,9 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "cups" & # to build gtk+3
+if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "xtrans" & # to build xorg-server
+fi
 wait
 
 ### script clean up
