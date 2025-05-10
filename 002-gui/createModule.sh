@@ -99,7 +99,7 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=imlib2
+currentPackage=imlib2 # required by openbox to draw application icons
 version=$(curl -s https://sourceforge.net/projects/enlightenment/files/${currentPackage}-src/ | grep net.sf.files | cut -d '"' -f 2)
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
