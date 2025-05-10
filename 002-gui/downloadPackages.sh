@@ -229,9 +229,8 @@ DownloadPackage "xkbcomp" &
 DownloadPackage "xkeyboard-config" &
 DownloadPackage "xkill" &
 DownloadPackage "xmessage" &
-DownloadPackage "xmodmap" &
 wait
-DownloadPackage "xorg-server" &
+DownloadPackage "xmodmap" &
 DownloadPackage "xprop" &
 DownloadPackage "xrandr" &
 DownloadPackage "xrdb" &
@@ -262,6 +261,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 else
 	DownloadPackage "librsvg" &
 	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)
+	DownloadPackage "xorg-server" &
 	wait
 fi
 
