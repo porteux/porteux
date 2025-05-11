@@ -11,6 +11,7 @@ DownloadPackage "acl" &
 DownloadPackage "acpid" &
 DownloadPackage "attr" &
 DownloadPackage "bash" &
+DownloadPackage "bc" & # to perform arithmetic operations in bash
 DownloadPackage "bin" &
 DownloadPackage "bluez" &
 wait

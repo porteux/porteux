@@ -39,6 +39,7 @@ else
 	installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 	rm $MODULEPATH/packages/xtrans*.txz
 
+	# we're building this because Slackware enables 'systemd-logind' which breaks our openbox session autologin
 	currentPackage=xorg-server
 	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}*.txz
