@@ -21,8 +21,6 @@ cd $PRGNAM-$VERSION
 
 DEF_FONTPATH="/usr/share/fonts/misc,/usr/share/fonts/local,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/CID,/usr/share/fonts/75dpi/:unscaled,/usr/share/fonts/100dpi/:unscaled,/usr/share/fonts/75dpi,/usr/share/fonts/100dpi,/usr/share/fonts/cyrillic"
 
-# we're building this because Slackware enables 'systemd-logind' which breaks our openbox session autologin
-
 CFLAGS="$GCCFLAGS" \
 ./configure \
 	--prefix=/usr \
