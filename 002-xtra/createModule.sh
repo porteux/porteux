@@ -62,7 +62,7 @@ tar cvfz ${currentPackage}-${version}.tar.gz ${currentPackage}-${version}/
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -77,7 +77,7 @@ sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto -std=c99\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -flto=auto -std=c99\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -120,7 +120,7 @@ sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -131,7 +131,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/libass/${currentPackage}.SlackBuild  || exit 1
 info=$(DownloadLatestFromGithub "libass" ${currentPackage})
 version=${info#* }
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -163,7 +163,7 @@ sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage
 sed -i "s|\$PRGNAM-\$VERSION|\$PRGNAM-${version//_/.}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -241,7 +241,7 @@ wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}
 wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
 sed -i "s|\$PKGNAM-\$VERSION-\$ARCH|\$PKGNAM-\${VERSION//[vV]}-\$ARCH|g" ${currentPackage}.SlackBuild
 sed -i "s|glslang=enabled|glslang=disabled -Dvulkan=disabled -Dshaderc=disabled |g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -261,11 +261,13 @@ wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
 	wget https://ffmpeg.org/releases/ffmpeg-4.4.5.tar.xz
-	sed -i "s|\./configure \\\\|patch -p0 < $SCRIPTPATH/extras/${currentPackage}/svt-av1-3.0-build-fix.patch;  \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+	sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 else
-	sed -i "s|\./configure \\\\|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; \./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+	sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+	sed -i "s|^CFLAGS|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; CFLAGS|g" ${currentPackage}.SlackBuild
 fi
-sed -i "s|-O2.*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
+sed -i '/^CFLAGS/s/.*/CFLAGS="$CLANGFLAGS -Wno-error=int-conversion -Wno-incompatible-function-pointer-type" \\/' ${currentPackage}.SlackBuild
+sed -i '/^CXXFLAGS/s/.*/CXXFLAGS="$CLANGFLAGS -Wno-error=int-conversion -Wno-incompatible-function-pointer-type" \\/' ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|\make |make CC=clang CXX=clang++ |g" ${currentPackage}.SlackBuild
 AMF=no AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1
