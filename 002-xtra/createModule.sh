@@ -266,8 +266,7 @@ else
 	sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 	sed -i "s|^CFLAGS|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; CFLAGS|g" ${currentPackage}.SlackBuild
 fi
-sed -i '/^CFLAGS/s/.*/CFLAGS="$CLANGFLAGS -Wno-error=int-conversion -Wno-incompatible-function-pointer-type" \\/' ${currentPackage}.SlackBuild
-sed -i '/^CXXFLAGS/s/.*/CXXFLAGS="$CLANGFLAGS -Wno-error=int-conversion -Wno-incompatible-function-pointer-type" \\/' ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|\make |make CC=clang CXX=clang++ |g" ${currentPackage}.SlackBuild
 AMF=no AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1
