@@ -231,6 +231,7 @@ DownloadPackage "xkill" &
 DownloadPackage "xmessage" &
 wait
 DownloadPackage "xmodmap" &
+DownloadPackage "xorg-server" &
 DownloadPackage "xprop" &
 DownloadPackage "xrandr" &
 DownloadPackage "xrdb" &
@@ -261,7 +262,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 else
 	DownloadPackage "librsvg" &
 	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)
-	DownloadPackage "xorg-server" &
 	wait
 fi
 
@@ -274,9 +274,6 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "cups" & # to build gtk+3
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "xtrans" & # to build xorg-server
-fi
 wait
 
 ### script clean up
