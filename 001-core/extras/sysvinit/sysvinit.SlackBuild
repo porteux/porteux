@@ -30,8 +30,8 @@ for replace in src/shutdown.c src/Makefile src/initreq.h src/init.c doc/initctl 
 done
 
 cd src
-CFLAGS="$GCCFLAGS -flto=auto" make clobber
-CFLAGS="$GCCFLAGS -flto=auto" make -j${NUMBERTHREADS}
+CFLAGS="$GCCFLAGS -flto=auto -ffat-lto-objects" make clobber
+CFLAGS="$GCCFLAGS -flto=auto -ffat-lto-objects" make -j${NUMBERTHREADS}
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

@@ -36,7 +36,7 @@ cp $CWD/meson.build.template meson.build
 meson rewrite kwargs set project / version ${VERSION}
 
 mkdir build && cd build
-CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto -pthread" \
+CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto -ffat-lto-objects -pthread" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
 	--prefix=/usr \
