@@ -5,7 +5,7 @@ SetFlags() {
 
 	export KERNELVERSION="6.14.1"
 	export ARCHITECTURELEVEL="x86-64-v2"
-	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -s -fuse-linker-plugin -Wl,--as-needed -Wl,-O1 -ftree-loop-distribute-patterns -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -fivopts -fmodulo-sched"
+	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -fmodulo-sched -s -fuse-linker-plugin -Wl,--as-needed -Wl,-O1 -Wl,-sort-common"
 	export CLANGFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math"
 	export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=$ARCHITECTURELEVEL -Clto=fat -Zdylib-lto -Cpanic=abort -Cstrip=debuginfo -Cembed-bitcode=yes -Ccodegen-units=1 -Zlocation-detail=none"
 
