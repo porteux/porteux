@@ -43,15 +43,15 @@ meson setup \
 	--infodir=/usr/info \
 	--mandir=/usr/man \
 	--localstatedir=/var \
-    -Dintrospection=true \
-    -Dt1lib=true \
-    -Dpixbuf=true \
-    -Dcomics=true \
-    -Depub=false \
-    -Dxps=false \
-    -Dpreviewer=true \
-    -Dgtk_unix_print=true \
-    -Dmathjax-directory=/usr/share/mathjax
+	-Dintrospection=true \
+	-Dt1lib=true \
+	-Dpixbuf=true \
+	-Dcomics=true \
+	-Depub=false \
+	-Dxps=false \
+	-Dpreviewer=true \
+	-Dgtk_unix_print=true \
+	-Dmathjax-directory=/usr/share/mathjax
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
