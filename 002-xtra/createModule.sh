@@ -247,6 +247,20 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
+# to enable AMD hardware encoding acceleration in ffmpeg
+currentPackage=AMF
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+version=$(GetLatestVersionTagFromGithub "GPUOpen-LibrariesAndSDKs" ${currentPackage})
+wget https://github.com/GPUOpen-LibrariesAndSDKs/${currentPackage}/releases/download/${version}/${currentPackage}-headers-${version}.tar.gz || exit 1
+mkdir -p package/usr/include
+tar xvf ${currentPackage}-headers-${version}.tar.gz
+cp -r ${currentPackage,,}-headers-${version}/${currentPackage} $MODULEPATH/${currentPackage}/package/usr/include
+cd $MODULEPATH/${currentPackage}/package
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-headers-${version//[^0-9._]/}-noarch-1.txz
+installpkg $MODULEPATH/packages/AMF-headers*.t?z
+rm $MODULEPATH/packages/AMF-headers-*.t?z || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 # required by ffmpeg
 installpkg $MODULEPATH/packages/openal-soft-*.t?z || exit 1
 installpkg $MODULEPATH/packages/vid.stab-*.t?z || exit 1
@@ -261,15 +275,14 @@ wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
 	wget https://ffmpeg.org/releases/ffmpeg-4.4.5.tar.xz
-	sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 else
-	sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 	sed -i "s|^CFLAGS|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; CFLAGS|g" ${currentPackage}.SlackBuild
 fi
+sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 sed -i "s|-O[23].*|$CLANGFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|\make |make CC=clang CXX=clang++ |g" ${currentPackage}.SlackBuild
-AMF=no AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1
+AMF=yes AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}

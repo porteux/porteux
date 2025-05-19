@@ -41,7 +41,7 @@ currentPackage=adw-gtk3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mkdir -p package/usr/share/themes
 version=$(GetLatestVersionTagFromGithub "lassekongo83" ${currentPackage})
-wget https://github.com/lassekongo83/adw-gtk3/releases/download/${version}/adw-gtk3${version}.tar.xz || exit 1
+wget https://github.com/lassekongo83/${currentPackage}/releases/download/${version}/${currentPackage}${version}.tar.xz || exit 1
 tar xvf ${currentPackage}${version}.tar.?z -C package/usr/share/themes || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version//[^0-9._]/}-$ARCH-1.txz
