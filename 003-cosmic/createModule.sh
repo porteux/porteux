@@ -52,6 +52,9 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-t
 export PATH=$HOME/.cargo/bin/:$PATH
 rustup component add rust-src --toolchain nightly
 
+installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+
 currentPackage=just
 cd $MODULEPATH
 wget https://github.com/casey/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
@@ -59,9 +62,6 @@ tar xfv ${currentPackage}.tar.gz
 cd ${currentPackage}-master
 cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-gnu || exit 1
 export PATH=$MODULEPATH/just-master/target/x86_64-unknown-linux-gnu/release/:$PATH
-
-installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 # cosmic deps
 for package in \
@@ -74,13 +74,13 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# cosmic extras
-for package in \
-	observatory \
-; do
-sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
-done
+## cosmic extras
+#for package in \
+	#observatory \
+#; do
+#sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+#find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
+#done
 
 # cosmic packages
 for package in \
