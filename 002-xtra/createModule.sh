@@ -38,7 +38,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-cp $SCRIPTPATH/extras/transmission/*.patch .
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
 for i in *.patch; do patch -p0 < $i || exit 1; done # only for version 4.0.6 which is broken
 if [ $SLACKWAREVERSION == "current" ]; then
 	sed -i 's|cmake_minimum_required(VERSION 3.12 FATAL_ERROR)|cmake_minimum_required(VERSION 3.5)|g' third-party/miniupnp/miniupnpc/CMakeLists.txt
@@ -188,8 +188,12 @@ wget https://code.videolan.org/videolan/${currentPackage}/-/archive/master/${cur
 tar xvf ${currentPackage}-master.tar.gz && rm ${currentPackage}-master.tar.gz || exit 1
 cd ${currentPackage}-master
 version=$(date -r . +%Y%m%d)
+cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
+if [ $SLACKWAREVERSION != "current" ]; then
+	for i in *.patch; do patch -p0 < $i || exit 1; done
+fi
 mkdir build && cd build
-CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto -ffat-lto-objects" LDFLAGS="-fuse-ld=lld" meson setup -Denable_tests=false -Denable_tools=false --prefix /usr ..
+CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto" LDFLAGS="-fuse-ld=lld" meson setup -Denable_tests=false -Denable_tools=false --prefix /usr ..
 DESTDIR=$MODULEPATH/${currentPackage}/package ninja -j${NUMBERTHREADS} install || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -275,11 +279,12 @@ wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
 	wget https://ffmpeg.org/releases/ffmpeg-4.4.5.tar.xz
+	sed -i "s|-O[23].*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
 else
 	sed -i "s|^CFLAGS|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; CFLAGS|g" ${currentPackage}.SlackBuild
+	sed -i "s|-O[23].*|$CLANGFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
 fi
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$CLANGFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|\make |make CC=clang CXX=clang++ |g" ${currentPackage}.SlackBuild
 AMF=yes AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1
