@@ -212,9 +212,9 @@ DownloadPackage "xf86-input-synaptics" &
 DownloadPackage "xf86-input-vmmouse" &
 DownloadPackage "xf86-input-wacom" &
 DownloadPackage "xf86-video-amdgpu" &
+wait
 DownloadPackage "xf86-video-ati" &
 DownloadPackage "xf86-video-dummy" &
-wait
 DownloadPackage "xf86-video-mach64" &
 DownloadPackage "xf86-video-mga" &
 DownloadPackage "xf86-video-nouveau" &
@@ -222,7 +222,6 @@ DownloadPackage "xf86-video-openchrome" &
 DownloadPackage "xf86-video-r128" &
 wait
 DownloadPackage "xf86-video-vesa" &
-DownloadPackage "xf86-video-vmware" &
 DownloadPackage "xhost" &
 DownloadPackage "xinit" &
 DownloadPackage "xkbcomp" &
