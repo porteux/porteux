@@ -357,6 +357,7 @@ rm usr/lib${SYSTEMBITS}/libLLVMLTO*
 rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
 rm usr/lib${SYSTEMBITS}/libpoppler-cpp*
 rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
+rm usr/lib${SYSTEMBITS}/libxatracker*
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
 rm usr/share/applications/gtk3-demo.desktop
