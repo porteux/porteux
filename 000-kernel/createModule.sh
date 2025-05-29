@@ -31,6 +31,12 @@ KERNELPATCHVERSION=$(echo ${KERNELVERSION} | cut -d. -f3)
 [ ${KERNELPATCHVERSION} ] && KERNELPATCHVERSION=.${KERNELPATCHVERSION}
 CRIPPLEDMODULENAME="06-crippled-sources-${KERNELVERSION}"
 
+### create module folder
+
+mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+
+### set compiler
+
 if [ ${CLANG:-no} = "yes" ]; then
 	if [ ! -f /usr/bin/clang ]; then
 		DownloadFromSlackware
@@ -50,10 +56,6 @@ echo "Building kernel ${KERNELVERSION} $ARCH using ${COMPILER}..."
 rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH} 2>/dev/null
-
-### create module folder
-
-mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 ### download packages from slackware repositoriesg
 
@@ -175,7 +177,7 @@ mkdir -p ${MODULEPATH}/${MODULENAME}
 mv lib ${MODULEPATH}/${MODULENAME}
 
 # create kernel module xzm module
-dir2xzm ${MODULEPATH}/${MODULENAME} -o=${MODULENAME}-${KERNELVERSION}.xzm -q > /dev/null 2>&1
+MakeModule ${MODULEPATH}/${MODULENAME} "${MODULENAME}-${KERNELVERSION}.xzm" > /dev/null 2>&1
 
 echo "Creating crippled xzm module..."
 CRIPPLEDSOURCEPATH=${MODULEPATH}/${CRIPPLEDMODULENAME}/usr/src
@@ -216,13 +218,13 @@ mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/config ${CRIPPLEDSOURCEPAT
 find ${CRIPPLEDSOURCEPATH} | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 
 # create crippled xzm module
-dir2xzm ${MODULEPATH}/${CRIPPLEDMODULENAME} -q > /dev/null 2>&1
+MakeModule ${MODULEPATH}/${CRIPPLEDMODULENAME} ${CRIPPLEDMODULENAME}.xzm > /dev/null 2>&1
 
 echo "Cleaning up..."
-rm -r ${MODULEPATH}/${MODULENAME}
-rm -r ${MODULEPATH}/${CRIPPLEDMODULENAME}
-rm -r ${MODULEPATH}/firmware
-rm -r ${MODULEPATH}/packages
-rm -r ${MODULEPATH}/sof*
+rm -r ${MODULEPATH}/${MODULENAME} > /dev/null 2>&1
+rm -r ${MODULEPATH}/${CRIPPLEDMODULENAME} > /dev/null 2>&1
+rm -r ${MODULEPATH}/firmware > /dev/null 2>&1
+rm -r ${MODULEPATH}/packages > /dev/null 2>&1
+rm -r ${MODULEPATH}/sof* > /dev/null 2>&1
 
 echo "Finished successfully."

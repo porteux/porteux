@@ -35,14 +35,18 @@ InstallAdditionalPackages() {
 	rm *.t?z
 }
 
+MakeModule() {
+	zstdFlags="-comp zstd -b 256K -Xcompression-level 22"
+	mksquashfs "${1}" "${2}" $zstdFlags -noappend
+}
+
 Finalize() {
 	# generate module version file
 	mkdir -p "$MODULEPATH"/packages/etc/porteux
 	echo $MODULENAME.xzm:$(date +%Y%m%d) > "$MODULEPATH"/packages/etc/porteux/$MODULENAME.ver
 
 	# create module
-	zstdFlags="-comp zstd -b 256K -Xcompression-level 22"
-	mksquashfs "$MODULEPATH"/packages/ "$MODULEPATH"/$MODULENAME-$PORTEUXBUILD-$(date +%Y%m%d).xzm $zstdFlags -noappend
+	MakeModule "$MODULEPATH"/packages/ "$MODULEPATH"/$MODULENAME-$PORTEUXBUILD-$(date +%Y%m%d).xzm
 
 	# script clean up
 	rm -fr "$MODULEPATH"/packages/
