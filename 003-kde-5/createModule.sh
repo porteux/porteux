@@ -116,10 +116,7 @@ installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
 currentPackage=FeatherPad
 mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-#info=$(DownloadLatestFromGithub "tsujan" ${currentPackage})
-#version=${info#* }
-#filename=${info% *}
-version="1.4.1"
+version="1.4.1" # higher than this requires Qt6
 wget https://github.com/tsujan/${currentPackage}/releases/download/V${version}/${currentPackage}-${version}.tar.xz
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
