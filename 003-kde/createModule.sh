@@ -157,12 +157,11 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=phonon
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6*.so "${currentPackage}-stripped-$version"
+cp --parents -P -r usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6* "${currentPackage}-stripped-$version"
 cd ${currentPackage}-stripped-$version
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
