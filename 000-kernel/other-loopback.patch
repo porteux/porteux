@@ -1,0 +1,94 @@
+SPDX-License-Identifier: GPL-2.0
+aufs6.x-rcN loopback patch
+
+diff --git a/fs/aufs/f_op.c b/fs/aufs/f_op.c
+index db7e9fcf1056a..6d202136d29af 100644
+--- a/fs/aufs/f_op.c
++++ b/fs/aufs/f_op.c
+@@ -317,7 +317,7 @@ static ssize_t aufs_read_iter(struct kiocb *kio, struct iov_iter *iov_iter)
+ 	if (IS_ERR(h_file))
+ 		goto out;
+ 
+-	if (au_test_loopback_kthread()) {
++	if (0 && au_test_loopback_kthread()) {
+ 		au_warn_loopback(h_file->f_path.dentry->d_sb);
+ 		if (file->f_mapping != h_file->f_mapping) {
+ 			file->f_mapping = h_file->f_mapping;
+diff --git a/fs/aufs/loop.c b/fs/aufs/loop.c
+index 69dea4cda00c0..92a74affb2208 100644
+--- a/fs/aufs/loop.c
++++ b/fs/aufs/loop.c
+@@ -133,3 +133,19 @@ void au_loopback_fin(void)
+ 		symbol_put(loop_backing_file);
+ 	au_kfree_try_rcu(au_warn_loopback_array);
+ }
++
++/* ---------------------------------------------------------------------- */
++
++/* support the loopback block device insude aufs */
++
++struct file *aufs_real_loop(struct file *file)
++{
++	struct file *f;
++
++	BUG_ON(!au_test_aufs(file->f_path.dentry->d_sb));
++	fi_read_lock(file);
++	f = au_hf_top(file);
++	fi_read_unlock(file);
++	AuDebugOn(!f);
++	return f;
++}
+diff --git a/fs/aufs/loop.h b/fs/aufs/loop.h
+index 519efba31c700..ac701381da792 100644
+--- a/fs/aufs/loop.h
++++ b/fs/aufs/loop.h
+@@ -26,6 +26,8 @@ void au_warn_loopback(struct super_block *h_sb);
+ 
+ int au_loopback_init(void);
+ void au_loopback_fin(void);
++
++struct file *aufs_real_loop(struct file *file);
+ #else
+ AuStub(struct file *, loop_backing_file, return NULL, struct super_block *sb)
+ 
+@@ -36,6 +38,8 @@ AuStubVoid(au_warn_loopback, struct super_block *h_sb)
+ 
+ AuStubInt0(au_loopback_init, void)
+ AuStubVoid(au_loopback_fin, void)
++
++AuStub(struct file *, aufs_real_loop, return NULL, struct file *file)
+ #endif /* BLK_DEV_LOOP */
+ 
+ #endif /* __KERNEL__ */
+diff --git a/fs/aufs/super.c b/fs/aufs/super.c
+index e867aa6e757a6..4a4f96e294315 100644
+--- a/fs/aufs/super.c
++++ b/fs/aufs/super.c
+@@ -758,7 +758,10 @@ const struct super_operations aufs_sop = {
+ 	.show_options	= aufs_show_options,
+ 	.statfs		= aufs_statfs,
+ 	.put_super	= aufs_put_super,
+-	.sync_fs	= aufs_sync_fs
++	.sync_fs	= aufs_sync_fs,
++#ifdef CONFIG_AUFS_BDEV_LOOP
++	.real_loop	= aufs_real_loop
++#endif
+ };
+ 
+ /* ---------------------------------------------------------------------- */
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index fed72def0eb0b..6fd0521854c0c 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2319,6 +2319,11 @@ struct super_operations {
+ 	long (*free_cached_objects)(struct super_block *,
+ 				    struct shrink_control *);
+ 	void (*shutdown)(struct super_block *sb);
++
++#if IS_ENABLED(CONFIG_BLK_DEV_LOOP) || IS_ENABLED(CONFIG_BLK_DEV_LOOP_MODULE)
++	/* and aufs */
++	struct file *(*real_loop)(struct file *);
++#endif
+ };
+ 
+ /*

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULENAME=003-lxde-0.10.1
+MODULENAME=003-lxde-0.11.1
 
 source "$PWD/../builder-utils/setflags.sh"
 
@@ -36,33 +36,22 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=gpicview
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=$(git describe | cut -d- -f1)
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --enable-gtk3
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
 currentPackage=lightdm
-SESSIONTEMPLATE=LXDE sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+SESSIONTEMPLATE=LXDE sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lightdm-gtk-greeter
-ICONTHEME=kora sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=atril
@@ -78,20 +67,19 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/stevenhoneyman/${currentPackage}
 cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
-sh autogen.sh
-CFLAGS="$GCCFLAGS -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug || exit 1
+./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug || exit 1
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious
-sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa
@@ -102,7 +90,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
+./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
 make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -116,7 +104,7 @@ cd ${currentPackage}*
 sed -i 's|YELP_HELP_INIT||g' configure.ac
 sed -i 's|yelp-build|ls|g' autogen.sh
 sed -i 's|help.*|\\|g' Makefile.am
-CFLAGS="$GCCFLAGS" sh autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
+CFLAGS="$GCCFLAGS" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -139,351 +127,40 @@ makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=libfm-extra
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/libfm ${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/base/fm-file-info.c || exit 1
-sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/job/fm-deep-count-job.c || exit 1
-sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/job/fm-file-ops-job.c || exit 1
-sed -i "s|g_file_info_get_size(info)|g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/modules/vfs-search.c || exit 1
-./autogen.sh --prefix=/usr --without-gtk --disable-demo && CFLAGS="$GCCFLAGS" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--localstatedir=/var \
-	--enable-static=no \
-	--enable-udisks \
-	--with-gtk=3 \
-	--with-extra-only 
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=menu-cache
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-sh ./autogen.sh && CFLAGS="$GCCFLAGS" \
-./configure \
-  --prefix=/usr \
-  --libdir=/usr/lib$SYSTEMBITS \
-  --localstatedir=/var \
-  --sysconfdir=/etc \
-  --mandir=/usr/man \
-  --enable-static=no \
-  --program-prefix= \
-  --program-suffix= 
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=libfm
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh --prefix=/usr --without-gtk --disable-demo && CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--localstatedir=/var \
-	--with-gtk=3 \
-	--enable-static=no
-
-cp $SCRIPTPATH/lxde/${currentPackage}*.patch .
-for i in *.patch; do patch -p0 < $i; done
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=pcmanfm
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto -Wno-error=incompatible-pointer-types" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--with-gtk=3 \
-	--enable-static=no
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
+# required by lxterminal
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
-currentPackage=lxterminal
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto -Wno-error=incompatible-pointer-types" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--enable-man
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxtask
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--enable-static=no
-
-cp $SCRIPTPATH/lxde/${currentPackage}*.patch .
-for i in *.patch; do patch -p0 < $i; done
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxrandr
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-man \
-	--enable-gtk3
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxsession
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto -Wno-error=incompatible-pointer-types" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--enable-static=no
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxmenu-data
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--enable-static=no
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxlauncher
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--enable-static=no
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxinput
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--enable-man
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxhotkey
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--enable-static=no
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxde-common
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--enable-static=no
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxappearance
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--enable-dbus \
-	--enable-man \
-	--enable-static=no
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lxappearance-obconf
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--enable-static=no
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
 # required by lxpanel
-installpkg $MODULEPATH/packages/libwnck3-*.txz
-installpkg $MODULEPATH/packages/keybinder3*.txz
+installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
+installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 
-currentPackage=lxpanel
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=`git describe | cut -d- -f1`
-./autogen.sh && CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-gtk3 \
-	--with-plugins=all \
-	--program-prefix= \
-	--disable-silent-rules \
-	--enable-static=no
+# lxde packages
+for package in \
+	gpicview \
+	libfm-extra \
+	menu-cache \
+	libfm \
+	pcmanfm \
+	lxterminal \
+	lxtask \
+	lxrandr \
+	lxsession \
+	lxmenu-data \
+	lxlauncher \
+	lxinput \
+	lxhotkey \
+	lxde-common \
+	lxappearance \
+	lxappearance-obconf \
+	lxpanel \
+; do
+sh $SCRIPTPATH/lxde/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
-cp $SCRIPTPATH/lxde/${currentPackage}*.patch .
-for i in *.patch; do patch -p0 < $i || exit 1; done
-
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-installpkg $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
+# only required to build menu-cache
+rm $MODULEPATH/packages/libfm-extra*.txz
 
 currentPackage=kora
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -519,10 +196,6 @@ sed -i "s|Core;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview
 sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|;Settings;|;|g" $MODULEPATH/packages/usr/share/applications/pavucontrol.desktop
 sed -i "s|System;|Utility;|g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
-
-### add lxde session
-
-sed -i "s|SESSIONTEMPLATE|/usr/bin/lxsession|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
 
 ### copy build files to 05-devel
 

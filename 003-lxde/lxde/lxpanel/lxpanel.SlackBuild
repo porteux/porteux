@@ -1,0 +1,44 @@
+#!/bin/bash
+
+PRGNAM=lxpanel
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+git clone https://github.com/lxde/${PRGNAM}
+cd ${PRGNAM}
+VERSION=`git describe | cut -d- -f1`
+
+cp $CWD/*.patch .
+for i in *.patch; do patch -p0 < $i; done
+cp $CWD/background.png data/images
+
+./autogen.sh && CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib$SYSTEMBITS \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--enable-gtk3 \
+	--with-plugins=all \
+	--program-prefix= \
+	--disable-silent-rules \
+	--disable-static \
+	--disable-man
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

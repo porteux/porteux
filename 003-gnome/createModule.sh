@@ -31,12 +31,12 @@ DownloadFromSlackware
 ### packages outside Slackware repository
 
 currentPackage=audacious
-sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
@@ -70,10 +70,10 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-t
 PATH=/root/.cargo/bin/:$PATH
 rustup component add rust-src --toolchain nightly
 
-export GNOME_LATEST_VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
+DE_LATEST_VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
 
-echo "Building GNOME ${GNOME_LATEST_VERSION}..."
-MODULENAME=$MODULENAME-${GNOME_LATEST_VERSION}
+echo "Building GNOME ${DE_LATEST_VERSION}..."
+MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
 
 # gnome deps
 for package in \

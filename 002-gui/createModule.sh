@@ -30,12 +30,24 @@ DownloadFromSlackware
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=meson
-	sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
 	rm -fr $MODULEPATH/${currentPackage}
 	rm $MODULEPATH/packages/meson-*.txz
 else
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
+
+	# rust nightly required by librsvg
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
+	PATH=/root/.cargo/bin/:$PATH
+	rustup component add rust-src --toolchain nightly
+
+	installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
+	rm $MODULEPATH/packages/cargo-c*.txz
+
+	currentPackage=librsvg
+	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	rm -fr $MODULEPATH/${currentPackage}
 fi
 
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
@@ -60,8 +72,12 @@ sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
 sed -i "s|-\${VERSION}-\$ARCH-\${BUILD}|-classic-\${VERSION}-\$ARCH-\${BUILD}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$CLANGFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
-sed -i "s|meson setup|export CC=clang; meson setup|g" ${currentPackage}.SlackBuild
+if [ $SLACKWAREVERSION != "current" ]; then
+	sed -i "s|-O[23].*|$CLANGFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+else
+	sed -i "s|-O[23].*|$CLANGFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
+fi
+sed -i "s|meson setup|export CC=clang LDFLAGS=\"-fuse-ld=lld\"; meson setup|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
@@ -74,13 +90,13 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -flto=auto -std=c99 -Wno-implicit-function-declaration\"|g" ${currentPackage}.SlackBuild
 sed -i "s|--prefix=/usr |--prefix=/usr --disable-quadmath |g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=imlib2
+currentPackage=imlib2 # required by openbox to draw application icons
 version=$(curl -s https://sourceforge.net/projects/enlightenment/files/${currentPackage}-src/ | grep net.sf.files | cut -d '"' -f 2)
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
@@ -88,8 +104,8 @@ wget https://sourceforge.net/projects/enlightenment/files/${currentPackage}-src/
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
-sed -i 's|^make|make -j${NUMBERTHREADS}|g' ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$CLANGFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
+sed -i 's|^make|LDFLAGS=\"-fuse-ld=lld\" make -j${NUMBERTHREADS}|g' ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -105,8 +121,8 @@ sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
 sed -i "s|patch -p1 < \$CWD/py2-to-py3.patch|cp \$CWD/*.patch .|g" ${currentPackage}.SlackBuild
 sed -i "s|\$CWD/patches/\*|\*.patch|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
-sed -z -i "s|make\n|make -j${NUMBERTHREADS}\n|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$CLANGFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
+sed -z -i "s|make\n|LDFLAGS=\"-fuse-ld=lld\" make -j${NUMBERTHREADS}\n|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
@@ -119,7 +135,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
 sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -341,6 +357,7 @@ rm usr/lib${SYSTEMBITS}/libLLVMLTO*
 rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
 rm usr/lib${SYSTEMBITS}/libpoppler-cpp*
 rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
+rm usr/lib${SYSTEMBITS}/libxatracker*
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
 rm usr/share/applications/gtk3-demo.desktop

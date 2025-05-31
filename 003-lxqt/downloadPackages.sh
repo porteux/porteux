@@ -16,7 +16,6 @@ DownloadPackage "libpaper" & # required by xpdf
 DownloadPackage "libproxy" & # required by xpdf
 DownloadPackage "libxklavier" & # required by lightdm-gtk-greeter
 DownloadPackage "plasma-wayland-protocols" & # required by libkscreen
-DownloadPackage "xcb-util-cursor" &
 wait
 
 ### packages that require specific striping

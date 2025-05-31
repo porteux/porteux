@@ -32,6 +32,10 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	wait
 fi
 
+### temporary packages for further building
+DownloadPackage "glade" & # required by libxfce4ui to provide more system information (e.g. nvidia cards)
+wait
+
 ### script clean up
 
 rm FILE_LIST
