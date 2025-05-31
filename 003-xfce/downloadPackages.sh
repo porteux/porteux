@@ -28,6 +28,7 @@ wait
 
 ### temporary packages
 
+DownloadPackage "glade" & # required by libxfce4ui to provide more system information (e.g. nvidia cards)
 DownloadPackage "libyaml" & # to build xfdesktop with desktop icons
 wait
 

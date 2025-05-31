@@ -20,6 +20,11 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+# missing files from 1.28.5
+git clone https://github.com/mate-desktop/mate-submodules mate-panel/mate-submodules
+cp $CWD/Makefile.in mate-panel/mate-submodules
+cp $CWD/Makefile.in.libegg mate-panel/mate-submodules/libegg/Makefile.in
+
 sed -i 's|YELP_HELP_INIT||g' configure.ac
 sed -i 's|yelp-build|ls|g' autogen.sh
 sed -i 's|help.*|\\|g' Makefile.am

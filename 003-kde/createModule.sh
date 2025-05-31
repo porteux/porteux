@@ -107,10 +107,7 @@ cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/qmltooling/* "${currentPackage}-s
 cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/sensors/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/sqldrivers/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/texttospeech/* "${currentPackage}-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/wayland-decoration-client/* "${currentPackage}-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/wayland-graphics-integration-client/* "${currentPackage}-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/wayland-graphics-integration-server/* "${currentPackage}-stripped-$version"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/wayland-shell-integration/* "${currentPackage}-stripped-$version"
+cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/wayland*/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/xcbglintegrations/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/Qt/labs/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/Qt5Compat/* "${currentPackage}-stripped-$version"
@@ -160,12 +157,11 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=phonon
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
 version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6*.so "${currentPackage}-stripped-$version"
+cp --parents -P -r usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6* "${currentPackage}-stripped-$version"
 cd ${currentPackage}-stripped-$version
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -182,20 +178,19 @@ version=${info#* }
 filename=${info% *}
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
-mkdir build && cd build
-CXXFLAGS="$GCCFLAGS -flto=auto" cmake -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} ..
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage,,}/package || exit 1
+cmake -B build -S . -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto=auto" -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS}
+make -C build -j${NUMBERTHREADS} DESTDIR="$MODULEPATH/${currentPackage,,}/package" install
 cd $MODULEPATH/${currentPackage,,}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage,,}
 
 currentPackage=audacious
-QT=6 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-QT=6 sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # kde deps
@@ -214,6 +209,11 @@ rm $MODULEPATH/packages/extra-cmake-modules*.txz
 # extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/page89.html#post6560591
 KDE6PACKAGES=/tmp/packages
 [ ! -d $KDE6PACKAGES ] && exit 1
+
+DE_LATEST_VERSION=$(find $KDE6PACKAGES -type f -name "plasma-desktop-*" | cut -d "-" -f 3)
+
+echo "Building KDE Plasma ${DE_LATEST_VERSION}..."
+MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
 
 find $KDE6PACKAGES -type f -name "ark*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "attica-6*" -exec cp {} $MODULEPATH/packages/ \;
@@ -371,6 +371,10 @@ InstallAdditionalPackages
 
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
 sed -i "s|image/png|image/png;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.kde.gwenview.desktop
+
+### disable some services
+
+rm $MODULEPATH/packages/usr/share/dbus-1/services/org.kde.runners.baloo.service
 
 ### copy build files to 05-devel
 

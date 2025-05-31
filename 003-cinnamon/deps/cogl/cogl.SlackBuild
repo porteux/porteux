@@ -18,9 +18,9 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS -Wno-incompatible-pointer-types -Wno-error=maybe-uninitialized" \
 CXXFLAGS="$CFLAGS" \
-./autogen.sh && ./configure \
+./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \

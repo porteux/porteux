@@ -27,13 +27,13 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 In order to have PorteuX in a language different than English, download the multilanguage package and use PorteuX Language Switcher application to choose the desired language.
 
-To download a Slackware package that is not present in PorteuX and convert it to .xzm module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). It's recommended to move the module to porteux/modules folder to ensure it is automatically loaded after boot.
+To download a Slackware package that is not present in PorteuX and convert it to .xzm module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). It's recommended to move the module to `porteux/modules` folder to ensure it is automatically loaded after boot.
 
-To build anything inside PorteuX, it's recommended to download and activate the 05-devel xzm module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate 06-crippled_sources xzm module.
+To build anything inside PorteuX, it's recommended to download and activate the `05-devel` xzm module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate `06-crippled-sources` xzm module.
 
-To run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. It's recommended to have these 2 modules in /porteux/optional and activate them only when needed.
+To run Windows applications inside PorteuX, in the app store you can find both Wine and Multilib Lite xzm modules. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
 
-In order to read Asian characters, please download and activate the module [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/extras/notoserifcjk-regular.xzm).
+In order to read Asian characters, please download and activate the module [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm).
 
 ## Default Username and Password
 
@@ -45,7 +45,7 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines, it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small and memory RAM consumption is highly optimized.
+PorteuX is lightweight and snappy. Although it can run on old machines (as long as they have support to SSE4), it is on high end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small and memory RAM consumption is highly optimized.
 
 For better performance, it's recommended to have PorteuX installed on a SSD/NVMe storage unit instead of a USB flash drive, or to select 'Copy To RAM' option in the boot menu. The latter will result in a slower boot time, but after booting the system will run 100% in RAM, which is the fastest way possible.
 
@@ -66,20 +66,15 @@ All this performance benefit is achieved without providing ancient software. It 
 
 In the terminal, run the following commands: <br />
 1. `su` (password: toor) <br />
-2. `mkdir -p /tmp/opencl-support` <br />
-3. `cd /tmp/opencl-support` <br />
-4. `getpkg -m libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk` (this may take a while) <br />
-5. `activate *.xzm` <br />
-6. `mv *.xzm $PORTDIR/modules` <br />
-7. `rm -fr /tmp/opencl-support` <br />
+2. `cd $PORTDIR/modules` <br />
+3. `getpkg -m libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk` (this may take a while) <br />
+4. `activate -q libclc*.xzm llvm*.xzm mesa*.xzm ocl-icd*.xzm spirv-llvm-translator*.xzm vulkan-sdk*.xzm` <br />
 
-## Compatibility with Porteus 5
-
-PorteuX and Porteus follow the same basic structure, so a given module built in Porteus 5 should work in PorteuX current, and modules built in PorteuX stable should work in Porteus 5. However, this does not apply to the base modules (000-kernel, 001-core, 002-gui, 002-xtra and 003-desktopenvironment).
+This has to be done just once because these modules will be activated automatically every time the machine boots.
 
 ## Building
 
-PorteuX can be built in a live session of Slackware 64-bit, Porteus 64-bit or PorteuX 64-bit. At the moment the main scripts are not generating ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-gui, 002-xtra, 003-desktop-environment, etc).
+PorteuX can be built in a live session of Slackware 64-bit or PorteuX 64-bit. At the moment the main scripts are not generating ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-gui, 002-xtra, 003-desktop-environment, etc).
 
 To build PorteuX, run as root the script `createModule.sh` in the exact folder order as described: <br />
 1. 000-kernel<br />
@@ -116,5 +111,4 @@ ncmprhnsbl (@porteus)<br />
 neko (@porteus)<br />
 patrick volkerding (@slackware)<br />
 phantom (@porteus)<br />
-ponce (@slackware)<br />
 tomáš matějíček (@slax)<br />

@@ -1,0 +1,12 @@
+          |-----handy-ruler------------------------------------------------------|
+lxlauncher: lxlauncher (Application launcher for netbooks)
+lxlauncher:
+lxlauncher: LXLauncher is an open source clone of Asus launcher for EeePC.
+lxlauncher: It outperformes the original launcher developed by Xandros.
+lxlauncher: Background images used by Asus launcher are non-free and are hence
+lxlauncher: not included in this package.
+lxlauncher: If you add these images yourself they will be used.
+lxlauncher:
+lxlauncher:
+lxlauncher: lxlauncher home: http://www.lxde.org
+lxlauncher:

@@ -36,28 +36,31 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O2.*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
+# required by lightdm
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
+
 currentPackage=lightdm
-SESSIONTEMPLATE=mate sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+SESSIONTEMPLATE=mate sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lightdm-gtk-greeter
-ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious
-sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa and mate-search-tool
@@ -68,7 +71,7 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
-sh autogen.sh --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc
+./autogen.sh --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc
 make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -78,7 +81,6 @@ installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
-installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
@@ -94,6 +96,11 @@ installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
+
+DE_LATEST_VERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "1.29" | head -1)
+
+echo "Building MATE ${DE_LATEST_VERSION}..."
+MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
 
 # mate deps
 for package in \
@@ -147,6 +154,10 @@ version=${info#* }
 filename=${info% *}
 tar xvf $filename && rm $filename || exit 1
 cd ${currentPackage}*
+# missing files from 1.28.5
+git clone https://github.com/mate-desktop/mate-submodules gsearchtool/mate-submodules
+cp $PWD/mate/mate-panel/Makefile.in gsearchtool/mate-submodules
+cp $PWD/mate/mate-panel/Makefile.in.libegg gsearchtool/mate-submodules/libegg/Makefile.in
 sed -i "s|mate-dictionary||g" ./Makefile.am
 sed -i "s|logview||g" ./Makefile.am
 sed -i 's|yelp-build|ls|g' autogen.sh
@@ -173,10 +184,6 @@ InstallAdditionalPackages
 ### fix some .desktop files
 
 sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/eom.desktop
-
-### add mate session
-
-sed -i "s|SESSIONTEMPLATE|/usr/bin/mate-session|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
 
 ### copy xinitrc
 

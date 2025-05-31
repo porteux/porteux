@@ -46,28 +46,28 @@ rm -fr $MODULEPATH/${currentPackage}
 ### packages outside Slackware repository
 
 currentPackage=audacious
-sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 
 currentPackage=lightdm
-SESSIONTEMPLATE=cinnamon sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+SESSIONTEMPLATE=cinnamon sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lightdm-gtk-greeter
-ICONTHEME=Yaru-blue sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+ICONTHEME=Yaru-blue sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mate-polkit
-sh $SCRIPTPATH/../extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=yaru
@@ -130,7 +130,7 @@ pip install wheel || exit 1
 currentPackage=libhandy
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -140,7 +140,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=libgusb
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -150,7 +150,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=colord
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|-Dsane=true|-Dsane=false|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
@@ -161,7 +161,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=python-psutil
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -171,7 +171,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=python-webencodings
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O2.*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -261,10 +261,6 @@ sed -i "s|image/avif|image/avif;image/jxl|g" $MODULEPATH/packages/usr/share/appl
 ### disable some services
 
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/cinnamon-settings-daemon-color.desktop
-
-### add cinnamon session
-
-sed -i "s|SESSIONTEMPLATE|/usr/bin/cinnamon-session|g" $MODULEPATH/packages/etc/lxdm/lxdm.conf
 
 ### copy build files to 05-devel
 

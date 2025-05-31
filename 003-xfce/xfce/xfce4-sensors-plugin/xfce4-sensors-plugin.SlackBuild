@@ -23,16 +23,16 @@ sed -i 's|gint sensors_refresh_time = 60|gint sensors_refresh_time = 1|g' includ
 
 CFLAGS="$GCCFLAGS" \
 ./autogen.sh \
-    --prefix=/usr \
-    --libdir=/usr/lib${SYSTEMBITS} \
-    --sysconfdir=/etc/xfce \
-    --mandir=/usr/man \
-    --docdir=/usr/doc/$PRGNAM-$VERSION \
-    --enable-shared=yes \
-    --enable-static=no \
-    --enable-debug=no \
-    --enable-lto \
-    --build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc/xfce \
+	--mandir=/usr/man \
+	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--enable-shared=yes \
+	--enable-static=no \
+	--enable-debug=no \
+	--enable-lto \
+	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
