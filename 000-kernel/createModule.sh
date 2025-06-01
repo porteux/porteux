@@ -40,6 +40,8 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 if [ ${CLANG:-no} = "yes" ]; then
 	if [ ! -f /usr/bin/clang ]; then
 		DownloadFromSlackware
+		installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
+		rm $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
 		installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 		rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 	fi
