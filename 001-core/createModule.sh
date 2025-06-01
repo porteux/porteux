@@ -28,6 +28,8 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
+installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
+
 if [ $SLACKWAREVERSION != "current" ]; then
 	# required by new wireplumber
 	currentPackage=lua

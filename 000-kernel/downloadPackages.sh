@@ -7,6 +7,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 
 ### only download if not present
 
+DownloadPackage "libxml2"
 DownloadPackage "llvm"
 
 ### script clean up
