@@ -48,6 +48,10 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm $MODULEPATH/packages/meson-*.txz
 fi
 
+currentPackage=squashfs-tools
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=sysvinit
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}

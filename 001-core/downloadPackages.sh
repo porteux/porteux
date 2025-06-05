@@ -187,10 +187,9 @@ DownloadPackage "sed" &
 DownloadPackage "sg3_utils" &
 DownloadPackage "shadow" &
 DownloadPackage "slackpkg" &
-DownloadPackage "smartmontools" &
 wait
+DownloadPackage "smartmontools" &
 DownloadPackage "sqlite" &
-DownloadPackage "squashfs-tools" &
 DownloadPackage "sshfs" &
 DownloadPackage "sudo" &
 DownloadPackage "sysfsutils" &
