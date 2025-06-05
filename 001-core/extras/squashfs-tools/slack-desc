@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in. You must
+# make exactly 11 lines for the formatting to be correct. It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+              |-----handy-ruler------------------------------------------------------|
+squashfs-tools: squashfs-tools (squashed read-only filesystem for Linux)
+squashfs-tools:
+squashfs-tools: Squashfs is a highly compressed read-only filesystem for Linux.
+squashfs-tools: Squashfs compresses both files, inodes and directories, and supports
+squashfs-tools: block sizes up to 1Mbytes for greater compression. It is implemented
+squashfs-tools: as a kernel module under VFS. The package contains tools for
+squashfs-tools: manipulation of squashfs bundles.
+squashfs-tools:
+squashfs-tools: Homepage: https://github.com/plougher/squashfs-tools/
+squashfs-tools:
+squashfs-tools:
