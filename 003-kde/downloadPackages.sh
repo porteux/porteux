@@ -10,7 +10,6 @@ DownloadPackage "cfitsio" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "egl-wayland" &
 DownloadPackage "eglexternalplatform" &
-DownloadPackage "graphene" &
 DownloadPackage "gst-plugins-good" &
 wait
 DownloadPackage "hunspell" &
@@ -19,12 +18,10 @@ DownloadPackage "keybinder3" &
 DownloadPackage "libdmtx" &
 DownloadPackage "libproxy" &
 DownloadPackage "libqaccessibilityclient" &
-DownloadPackage "LibRaw" &
 wait
+DownloadPackage "LibRaw" &
 DownloadPackage "openblas" &
 DownloadPackage "qrencode" &
-DownloadPackage "wayland-protocols" &
-DownloadPackage "xcb-util-cursor" &
 DownloadPackage "xdpyinfo" &
 DownloadPackage "zxing-cpp" &
 wait

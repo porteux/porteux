@@ -33,6 +33,7 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 rm -fr $PKG/usr/share/licenses
+rm -fr $PKG/usr/share/icons/Adwaita/cursors
 
 # Remove icon caches -- it will be generated during module build
 find $PKG -name icon-theme.cache -exec rm "{}" \+

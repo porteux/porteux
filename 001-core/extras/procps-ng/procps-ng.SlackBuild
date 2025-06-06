@@ -35,7 +35,7 @@ sed 's:<ncursesw/:<:g' -i src/watch.c
 echo $VERSION > .version
 echo $VERSION > .tarball-version
 
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS -flto=auto -ffat-lto-objects" \
 ./autogen.sh && ./configure \
 	--prefix=/ \
 	--bindir=/bin \
@@ -119,7 +119,7 @@ if [ ! -r configure ]; then
   fi
 fi
 
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS -flto=auto -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

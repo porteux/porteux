@@ -1,0 +1,148 @@
+SPDX-License-Identifier: GPL-2.0
+aufs6.x-rcN loopback patch
+
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+--- a/drivers/block/loop.c.patched	2025-04-20 22:43:47.000000000 +0200
++++ a/drivers/block/loop.c	2025-04-24 18:49:32.000000000 +0200
+@@ -52,7 +52,7 @@
+ 	int		lo_flags;
+ 	char		lo_file_name[LO_NAME_SIZE];
+ 
+-	struct file	*lo_backing_file;
++	struct file	*lo_backing_file, *lo_backing_virt_file;
+ 	unsigned int	lo_min_dio_size;
+ 	struct block_device *lo_device;
+ 
+@@ -428,6 +428,15 @@
+ 	}
+ }
+ 
++static struct file *loop_real_file(struct file *file)
++{
++	struct file *f = NULL;
++
++	if (file->f_path.dentry->d_sb->s_op->real_loop)
++		f = file->f_path.dentry->d_sb->s_op->real_loop(file);
++	return f;
++}
++
+ static void loop_reread_partitions(struct loop_device *lo)
+ {
+ 	int rc;
+@@ -518,6 +527,7 @@
+ {
+ 	struct file *file = fget(arg);
+ 	struct file *old_file;
++	struct file *f, *virt_file = NULL, *old_virt_file;
+ 	unsigned int memflags;
+ 	int error;
+ 	bool partscan;
+@@ -541,12 +551,20 @@
+ 	error = -EINVAL;
+ 	if (!(lo->lo_flags & LO_FLAGS_READ_ONLY))
+ 		goto out_err;
++		
++	f = loop_real_file(file);
++	if (f) {
++		virt_file = file;
++		file = f;
++		get_file(file);
++	}
+ 
+ 	error = loop_validate_file(file, bdev);
+ 	if (error)
+ 		goto out_err;
+ 
+ 	old_file = lo->lo_backing_file;
++	old_virt_file = lo->lo_backing_virt_file;
+ 
+ 	error = -EINVAL;
+ 
+@@ -566,6 +584,7 @@
+ 	memflags = blk_mq_freeze_queue(lo->lo_queue);
+ 	mapping_set_gfp_mask(old_file->f_mapping, lo->old_gfp_mask);
+ 	loop_assign_backing_file(lo, file);
++	lo->lo_backing_virt_file = virt_file;
+ 	loop_update_dio(lo);
+ 	blk_mq_unfreeze_queue(lo->lo_queue, memflags);
+ 	partscan = lo->lo_flags & LO_FLAGS_PARTSCAN;
+@@ -586,6 +605,8 @@
+ 	 */
+ 	fput(old_file);
+ 	dev_set_uevent_suppress(disk_to_dev(lo->lo_disk), 0);
++	if (old_virt_file)
++		fput(old_virt_file);
+ 	if (partscan)
+ 		loop_reread_partitions(lo);
+ 
+@@ -599,6 +620,8 @@
+ out_putf:
+ 	fput(file);
+ 	dev_set_uevent_suppress(disk_to_dev(lo->lo_disk), 0);
++	if (virt_file)
++		fput(virt_file);
+ 	goto done;
+ }
+ 
+@@ -955,6 +978,7 @@
+ 			  const struct loop_config *config)
+ {
+ 	struct file *file = fget(config->fd);
++	struct file *f, *virt_file = NULL;
+ 	struct queue_limits lim;
+ 	int error;
+ 	loff_t size;
+@@ -967,6 +991,13 @@
+ 
+ 	/* This is safe, since we have a reference from open(). */
+ 	__module_get(THIS_MODULE);
++	
++	f = loop_real_file(file);
++	if (f) {
++		virt_file = file;
++		file = f;
++		get_file(file);
++	}
+ 
+ 	/*
+ 	 * If we don't hold exclusive handle for the device, upgrade to it
+@@ -1022,6 +1053,7 @@
+ 
+ 	lo->lo_device = bdev;
+ 	loop_assign_backing_file(lo, file);
++	lo->lo_backing_virt_file = virt_file;
+ 
+ 	lim = queue_limits_start_update(lo->lo_queue);
+ 	loop_update_limits(lo, &lim, config->block_size);
+@@ -1072,6 +1104,8 @@
+ 		bd_abort_claiming(bdev, loop_configure);
+ out_putf:
+ 	fput(file);
++	if (virt_file)
++		fput(virt_file);
+ 	/* This is safe: open() is still holding a reference. */
+ 	module_put(THIS_MODULE);
+ 	return error;
+@@ -1081,11 +1115,13 @@
+ {
+ 	struct queue_limits lim;
+ 	struct file *filp;
++	struct file *virt_filp = lo->lo_backing_virt_file;
+ 	gfp_t gfp = lo->old_gfp_mask;
+ 
+ 	spin_lock_irq(&lo->lo_lock);
+ 	filp = lo->lo_backing_file;
+ 	lo->lo_backing_file = NULL;
++	lo->lo_backing_virt_file = NULL;
+ 	spin_unlock_irq(&lo->lo_lock);
+ 
+ 	lo->lo_device = NULL;
+@@ -1152,6 +1188,8 @@
+ 	 * fput can take open_mutex which is usually taken before lo_mutex.
+ 	 */
+ 	fput(filp);
++	if (virt_filp)
++		fput(virt_filp);
+ }
+ 
+ static int loop_clr_fd(struct loop_device *lo)

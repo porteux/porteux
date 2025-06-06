@@ -29,18 +29,31 @@ DownloadFromSlackware
 ### packages outside Slackware repository
 
 currentPackage=audacious
-sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-sh $SCRIPTPATH/../extras/audacious/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=adw-gtk3
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mkdir -p package/usr/share/themes
+version=$(GetLatestVersionTagFromGithub "lassekongo83" ${currentPackage})
+wget https://github.com/lassekongo83/${currentPackage}/releases/download/${version}/${currentPackage}${version}.tar.xz || exit 1
+tar xvf ${currentPackage}${version}.tar.?z -C package/usr/share/themes || exit 1
+cd $MODULEPATH/${currentPackage}/package
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version//[^0-9._]/}-$ARCH-1.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
 export PATH=$HOME/.cargo/bin/:$PATH
 rustup component add rust-src --toolchain nightly
+
+installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 currentPackage=just
 cd $MODULEPATH
@@ -49,9 +62,6 @@ tar xfv ${currentPackage}.tar.gz
 cd ${currentPackage}-master
 cargo build --release -Zbuild-std=std,panic_abort --target x86_64-unknown-linux-gnu || exit 1
 export PATH=$MODULEPATH/just-master/target/x86_64-unknown-linux-gnu/release/:$PATH
-
-installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 # cosmic deps
 for package in \
@@ -64,13 +74,13 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# cosmic extras
-for package in \
-	observatory \
-; do
-sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
-done
+## cosmic extras
+#for package in \
+	#observatory \
+#; do
+#sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+#find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
+#done
 
 # cosmic packages
 for package in \
