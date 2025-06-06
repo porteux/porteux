@@ -1,0 +1,6 @@
+                   |-----handy-ruler------------------------------------------------------|
+lightdm-gtk-greeter: lightdm-gtk-greeter (gtk-greeter for lightdm)
+lightdm-gtk-greeter:
+lightdm-gtk-greeter: LightDM is a cross-desktop display manager. lightdm-gtk-greeter is one
+lightdm-gtk-greeter: of many greeters for it.
+lightdm-gtk-greeter:

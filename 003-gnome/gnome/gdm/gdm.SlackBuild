@@ -21,7 +21,7 @@ cd $PRGNAM-$VERSION
 # A couple patches taken from Artix Linux:
 patch -Np1 -i $CWD/0001-Xsession-Don-t-start-ssh-agent-by-default.patch
 patch -Np1 -i $CWD/0003-add-wayland-session-script.patch
-patch -Np1 -i $CWD/0004-fix-Xsession-language-in-gnome.patch
+patch -Np1 -i $CWD/gcc-15-fix.patch
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \

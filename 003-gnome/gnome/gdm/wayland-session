@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# Get the AccountsService value for LANG over the system dbus. This is the user setting in GNOME:
-gnome_lang_usr="$(busctl get-property org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u) org.freedesktop.Accounts.User Language | cut -d\" -f2)"
-
 # The rest of this code is based on KDE's wayland-session script, 
 # with some modifications to suit GDM.
 # Copyright (C) 2022 Bob Funk <bobfunk11@gmail.com>
@@ -23,7 +20,6 @@ case $SHELL in
     elif [ -f $HOME/.profile ]; then
       . $HOME/.profile
     fi
-    [ "$DESKTOP_SESSION" = "gnome" ] && [ -n "$gnome_lang_usr" ] && export LANG=$gnome_lang_usr
   ;;
   */zsh)
     [ -z "$ZSH_NAME" ] && exec $SHELL $0 "$@"
@@ -34,7 +30,6 @@ case $SHELL in
     [ -f $zhome/.zprofile ] && . $zhome/.zprofile
     [ -f $zdir/zlogin ] && . $zdir/zlogin
     [ -f $zhome/.zlogin ] && . $zhome/.zlogin
-    [ "$DESKTOP_SESSION" = "gnome" ] && [ -n "$gnome_lang_usr" ] && export LANG=$gnome_lang_usr
     emulate -R sh
   ;;
   */csh|*/tcsh)
@@ -54,7 +49,6 @@ case $SHELL in
   *) # Plain sh, ksh, and anything we do not know.
     [ -f /etc/profile ] && . /etc/profile
     [ -f $HOME/.profile ] && . $HOME/.profile
-    [ "$DESKTOP_SESSION" = "gnome" ] && [ -n "$gnome_lang_usr" ] && export LANG=$gnome_lang_usr
   ;;
 esac
 

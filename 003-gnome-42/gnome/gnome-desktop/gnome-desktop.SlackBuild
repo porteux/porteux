@@ -18,7 +18,6 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-# Don't build manual test programs (Gentoo ty again S2)
 sed -i -e "/'test-.*'/d" libgnome-desktop/meson.build
 
 mkdir build && cd build

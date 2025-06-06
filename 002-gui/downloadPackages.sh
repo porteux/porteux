@@ -97,7 +97,6 @@ DownloadPackage "libopusenc" &
 DownloadPackage "libpciaccess" &
 wait
 DownloadPackage "libpng" &
-DownloadPackage "librsvg" &
 DownloadPackage "libsamplerate" &
 DownloadPackage "libsecret" &
 DownloadPackage "libsigc++" &
@@ -213,9 +212,9 @@ DownloadPackage "xf86-input-synaptics" &
 DownloadPackage "xf86-input-vmmouse" &
 DownloadPackage "xf86-input-wacom" &
 DownloadPackage "xf86-video-amdgpu" &
+wait
 DownloadPackage "xf86-video-ati" &
 DownloadPackage "xf86-video-dummy" &
-wait
 DownloadPackage "xf86-video-mach64" &
 DownloadPackage "xf86-video-mga" &
 DownloadPackage "xf86-video-nouveau" &
@@ -223,15 +222,14 @@ DownloadPackage "xf86-video-openchrome" &
 DownloadPackage "xf86-video-r128" &
 wait
 DownloadPackage "xf86-video-vesa" &
-DownloadPackage "xf86-video-vmware" &
 DownloadPackage "xhost" &
 DownloadPackage "xinit" &
 DownloadPackage "xkbcomp" &
 DownloadPackage "xkeyboard-config" &
 DownloadPackage "xkill" &
 DownloadPackage "xmessage" &
-DownloadPackage "xmodmap" &
 wait
+DownloadPackage "xmodmap" &
 DownloadPackage "xorg-server" &
 DownloadPackage "xprop" &
 DownloadPackage "xrandr" &
@@ -245,6 +243,7 @@ wait
 ### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "cargo-c" & # required by librsvg
 	DownloadPackage "gcr4" & # required by gvfs 1.54+
 	DownloadPackage "labwc" &
 	DownloadPackage "libdeflate" & # required by libtiff 
@@ -260,6 +259,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "xcb-util-errors" & # required by labwc
 	wait
 else
+	DownloadPackage "librsvg" &
 	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)
 	wait
 fi

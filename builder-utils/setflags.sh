@@ -3,10 +3,14 @@
 SetFlags() {
 	MODULENAME="$1"
 
-	export KERNELVERSION="6.14"
+	export KERNELVERSION="6.15"
 	export ARCHITECTURELEVEL="x86-64-v2"
-	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -s -fuse-linker-plugin -Wl,--as-needed -Wl,-O1 -ftree-loop-distribute-patterns -fno-semantic-interposition -fno-trapping-math -Wl,-sort-common -fivopts -fmodulo-sched"
-	export CLANGFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math"
+	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -fomit-frame-pointer -ftree-vectorize -s -fmodulo-sched -floop-parallelize-all -fuse-linker-plugin -Wl,--as-needed -Wl,-O1 -Wl,-sort-common"
+	export CLANGFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -fomit-frame-pointer -ftree-vectorize"
+	export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=$ARCHITECTURELEVEL -Clto=fat -Zdylib-lto -Cpanic=abort -Cstrip=debuginfo -Cembed-bitcode=yes -Ccodegen-units=1 -Zlocation-detail=none"
+
+	export GCC_LTO_COMPRESSION=zstd
+	export GCC_LTO_COMPRESSION_LEVEL=19
 
 	systemFullVersion=$(cat /etc/slackware-version)
 	systemVersion=${systemFullVersion//* }

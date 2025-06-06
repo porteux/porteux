@@ -25,11 +25,11 @@ DownloadPackage() {
 	cd $MODULEPATH/packages
 
 	# if the package is already presented, don't download it again
-	if find . -regex "./$1[-_][0-9]+.*" -type f | grep -q .; then
+	if find . -type f -name "${1}[-_][0-9]*" | grep -q .; then
 		return
 	fi
 
-	packageUrl=`grep "/$1[-_][0-9]\+" serverPackages.txt`
+	packageUrl=`grep "/${1}[-_][0-9]\+" serverPackages.txt`
 	if [ ! -z $packageUrl ]; then
 		echo "Downloading: $packageUrl..."
 		wget $REPOSITORY/$packageUrl -q > /dev/null 2>&1 || exit
