@@ -31,8 +31,8 @@ fi
 BASE_GITHUB_URL="https://raw.githubusercontent.com"
 USER="porteux"
 REPO="porteux"
-FOLDER="porteux-scripts/porteux-app-store"
-REPO_FOLDER_PATH="$BASE_GITHUB_URL/$USER/$REPO/main/$FOLDER"
+FOLDER="porteux-app-store"
+REPO_FOLDER_PATH="$BASE_GITHUB_URL/$USER/$REPO/refs/heads/main/$FOLDER"
 APP_STORE_FILE="porteux-app-store.py"
 MAX_AGE_HOURS=6
 LOCAL_PATH=$(dirname "$0")
