@@ -21,7 +21,7 @@ if os.geteuid() != 0:
 DB_JSON_FILE = 'porteux-app-store-db.json'
 MAX_AGE_HOURS = 6
 
-REPO_APPSTORE_URL = "https://raw.githubusercontent.com/porteux/porteux/main/porteux-scripts/porteux-app-store/"
+REPO_APPSTORE_URL = "https://raw.githubusercontent.com/porteux/porteux/refs/heads/main/porteux-app-store/"
 REPO_APPS_URL = REPO_APPSTORE_URL + 'applications/'
 REPO_ICONS_URL = REPO_APPSTORE_URL + 'icons/'
 
