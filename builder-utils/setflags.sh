@@ -3,10 +3,10 @@
 SetFlags() {
 	MODULENAME="$1"
 
-	export KERNELVERSION="6.15"
+	export KERNELVERSION="6.15.2"
 	export ARCHITECTURELEVEL="x86-64-v2"
-	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -fomit-frame-pointer -ftree-vectorize -s -fmodulo-sched -floop-parallelize-all -fuse-linker-plugin -Wl,--as-needed -Wl,-O1 -Wl,-sort-common"
-	export CLANGFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -fomit-frame-pointer -ftree-vectorize"
+	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -fomit-frame-pointer -ftree-vectorize -fno-ident -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -s -fmodulo-sched -floop-parallelize-all -fuse-linker-plugin -Wl,--as-needed -Wl,-O1 -Wl,-sort-common -Wl,--build-id=none"
+	export CLANGFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -fomit-frame-pointer -ftree-vectorize -fno-ident -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections"
 	export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=$ARCHITECTURELEVEL -Clto=fat -Zdylib-lto -Cpanic=abort -Cstrip=debuginfo -Cembed-bitcode=yes -Ccodegen-units=1 -Zlocation-detail=none"
 
 	export GCC_LTO_COMPRESSION=zstd
