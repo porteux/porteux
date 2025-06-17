@@ -77,7 +77,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 else
 	sed -i "s|-O[23].*|$CLANGFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
 fi
-sed -i "s|meson setup|export CC=clang LDFLAGS=\"-fuse-ld=lld\"; meson setup|g" ${currentPackage}.SlackBuild
+sed -i "s|meson setup|export CC=clang; meson setup|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
@@ -141,9 +141,20 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=libjxl
+installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+rm $MODULEPATH/packages/xtrans*.txz
+
+currentPackage=xorg-server
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=xf86-input-libinput
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=libjxl
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pipewire
@@ -153,7 +164,6 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=wireplumber
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 # required to build pamixer
@@ -165,12 +175,10 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pamixer
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=xdg-desktop-portal
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages that require specific stripping
