@@ -1,0 +1,86 @@
+#!/bin/bash
+
+PRGNAM=xorg-server
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://gitlab.freedesktop.org/xorg/xserver/-/archive/master/xserver-master.tar.gz
+tar xfv xserver-master.tar.gz
+cd xserver-master
+VERSION=$(date -r . +%Y%m%d)
+
+DEF_FONTPATH="/usr/share/fonts/misc,/usr/share/fonts/local,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/CID,/usr/share/fonts/75dpi/:unscaled,/usr/share/fonts/100dpi/:unscaled,/usr/share/fonts/75dpi,/usr/share/fonts/100dpi,/usr/share/fonts/cyrillic"
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -flto=auto" \
+meson setup \
+	--prefix=/usr \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
+	--mandir=/usr/man \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	-Ddocs=false \
+	-Ddevel-docs=false \
+	-Dxvfb=false \
+	-Dxnest=false \
+	-Dxwayland=false \
+	-Ddefault_font_path="${DEF_FONTPATH}" \
+	-Dmodule_dir=/usr/lib64/xorg/modules \
+	-Dxkb_dir=/usr/share/X11/xkb \
+	-Dxkb_output_dir=/var/lib/xkb
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+#CFLAGS="$GCCFLAGS" \
+#./configure \
+	#--prefix=/usr \
+	#--libdir=/usr/lib${SYSTEMBITS} \
+	#--sysconfdir=/etc \
+	#--localstatedir=/var \
+	#--infodir=/usr/info \
+	#--mandir=/usr/man \
+	#--with-pic \
+	#--with-int10=x86emu \
+	#--with-default-font-path="${DEF_FONTPATH}" \
+	#--with-module-dir=/usr/lib64/xorg/modules \
+	#--with-xkb-path=/usr/share/X11/xkb \
+	#--with-xkb-output=/var/lib/xkb \
+	#--enable-config-udev \
+	#--enable-year2038 \
+	#--enable-xorg \
+	#--enable-glamor \
+	#--enable-kdrive \
+	#--enable-install-setuid \
+	#--disable-systemd-logind \
+	#--disable-xvfb \
+	#--disable-xnest \
+	#--disable-config-hal \
+	#--disable-xephyr \
+	#--disable-unit-tests \
+	#--disable-docs \
+	#--disable-devel-docs \
+	#--disable-static
+
+#make -j${NUMBERTHREADS} install DESTDIR="$PKG"
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
