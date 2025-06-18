@@ -49,7 +49,8 @@ wait
 ### slackware specific version packages
 
 if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "meson" & # for stable we're building since slackware repo has an ancient version
+	DownloadPackage "meson" & # for stable we're building because slackware repo has an ancient version
+	DownloadPackage "pkgconf" & # this replaces pkg-config
 	wait
 fi
 
