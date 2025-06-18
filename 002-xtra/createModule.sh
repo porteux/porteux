@@ -278,7 +278,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 $SOURCEREPOSITORY/l/${currentPackage}/ || exit 1
 if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
-	wget https://ffmpeg.org/releases/ffmpeg-4.4.5.tar.xz
+	wget https://ffmpeg.org/releases/ffmpeg-4.4.6.tar.xz
 	sed -i "s|-O[23].*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
 else
 	sed -i "s|^CFLAGS|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; CFLAGS|g" ${currentPackage}.SlackBuild
@@ -347,8 +347,10 @@ GenericStrip
 
 # move out things that don't support aggressive stripping
 mv $MODULEPATH/packages/usr/bin/transmission-gtk $MODULEPATH/
-AggressiveStrip
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libluajit*.so $MODULEPATH/
+AggressiveStripAll
 mv $MODULEPATH/transmission-gtk $MODULEPATH/packages/usr/bin/
+mv $MODULEPATH/libluajit*.so $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 
 ### copy cache files
 
