@@ -206,6 +206,7 @@ DownloadPackage "xclipboard" &
 DownloadPackage "xdg-user-dirs" &
 DownloadPackage "xdg-utils" &
 DownloadPackage "xev" &
+DownloadPackage "xf86-input-libinput" &
 DownloadPackage "xhost" &
 DownloadPackage "xinit" &
 DownloadPackage "xkbcomp" &
@@ -214,6 +215,7 @@ DownloadPackage "xkill" &
 DownloadPackage "xmessage" &
 wait
 DownloadPackage "xmodmap" &
+DownloadPackage "xorg-server" &
 DownloadPackage "xprop" &
 DownloadPackage "xrandr" &
 DownloadPackage "xrdb" &
@@ -256,7 +258,6 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "cups" & # to build gtk+3
-DownloadPackage "xtrans" & # to build xorg-sever
 wait
 
 ### script clean up
