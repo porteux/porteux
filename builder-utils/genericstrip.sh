@@ -27,8 +27,6 @@ GenericStrip() {
 	rm -R usr/share/help
 	rm -R usr/share/icons/HighContrast
 	rm -R usr/share/icons/hicolor/192x192
-	rm -R usr/share/icons/hicolor/256x256
-	rm -R usr/share/icons/hicolor/512x512
 	rm -R usr/share/icons/hicolor/64x64
 	rm -R usr/share/icons/hicolor/72x72
 	rm -R usr/share/icons/hicolor/96x96
@@ -75,15 +73,15 @@ GenericStrip() {
 	
 	find usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
 	
-	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .comment -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug --strip-unneeded -R .comment -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }
 
 AggressiveStrip() {
-	find . | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+	find . | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }
 
 AggressiveStripAll() {
-	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }
 
 if [ "$1" ]; then
