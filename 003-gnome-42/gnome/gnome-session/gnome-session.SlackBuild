@@ -25,7 +25,7 @@ CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
 	--mandir=/usr/man \

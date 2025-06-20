@@ -120,7 +120,7 @@ version="1.4.1" # higher than this requires Qt6
 wget https://github.com/tsujan/${currentPackage}/releases/download/V${version}/${currentPackage}-${version}.tar.xz
 tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
 cd ${currentPackage}*
-cmake -B build -S . -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto=auto" -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS}
+cmake -B build -S . -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto=auto" -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
 make -C build -j${NUMBERTHREADS} DESTDIR="$MODULEPATH/${currentPackage,,}/package" install
 cd $MODULEPATH/${currentPackage,,}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz

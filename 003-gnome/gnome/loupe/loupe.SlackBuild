@@ -22,7 +22,7 @@ mkdir build && cd build
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \

@@ -29,7 +29,7 @@ CFLAGS="$GCCFLAGS -flto=auto -ffast-math" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
