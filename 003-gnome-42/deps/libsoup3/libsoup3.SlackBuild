@@ -23,7 +23,7 @@ mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--prefix=/usr \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--bindir=/usr/bin \
 	--sbindir=/usr/sbin \

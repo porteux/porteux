@@ -22,7 +22,7 @@ mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--prefix=/usr \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--mandir=/usr/man \

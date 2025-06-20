@@ -24,7 +24,7 @@ CFLAGS="$GCCFLAGS -flto=auto" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
 	--prefix=/usr \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--bindir=/usr/bin \
 	--sbindir=/usr/sbin \

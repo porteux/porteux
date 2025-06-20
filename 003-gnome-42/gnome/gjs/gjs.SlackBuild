@@ -26,7 +26,7 @@ meson setup \
 	--mandir=/usr/man \
 	--datadir=/usr/share \
 	--includedir=/usr/include \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \

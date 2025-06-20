@@ -27,7 +27,7 @@ mkdir build && cd build
 CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto" CXFLAGS="$CLANGFLAGS -flto=auto" LDFLAGS="-fuse-ld=lld" \
 meson setup \
 	--prefix=/usr \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--bindir=/usr/bin \
 	--sbindir=/usr/sbin \
