@@ -391,13 +391,14 @@ rm usr/share/xsessions/openbox-kde.desktop
 
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
+find $MODULEPATH/packages/usr/lib${SYSTEMBITS}/dri -name '*.la' -delete
+
 # move out things that don't support stripping
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/dri $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libgallium* $MODULEPATH/
 mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 GenericStrip
 AggressiveStrip
-find $MODULEPATH/packages/usr/lib${SYSTEMBITS}/dri -name '*.la' -delete
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec

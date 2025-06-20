@@ -12,18 +12,25 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget https://gitlab.freedesktop.org/xorg/xserver/-/archive/master/xserver-master.tar.gz
-tar xfv xserver-master.tar.gz
-cd xserver-master
-VERSION=$(date -r . +%Y%m%d)
+#wget https://gitlab.freedesktop.org/xorg/xserver/-/archive/master/xserver-master.tar.gz
+#tar xfv xserver-master.tar.gz
+#cd xserver-master
+#VERSION=$(date -r . +%Y%m%d)
+
+wget https://gitlab.freedesktop.org/xorg/xserver/-/archive/xorg-server-21.1.18/xserver-xorg-server-21.1.18.tar.gz
+VERSION="21.1.18"
+tar xfv xserver-xorg-server-${VERSION}.tar.gz
+cd xserver-xorg-server-${VERSION}
 
 DEF_FONTPATH="/usr/share/fonts/misc,/usr/share/fonts/local,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/CID,/usr/share/fonts/75dpi/:unscaled,/usr/share/fonts/100dpi/:unscaled,/usr/share/fonts/75dpi,/usr/share/fonts/100dpi,/usr/share/fonts/cyrillic"
+
+patch -p0 < $CWD/tear-free.patch
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \
 meson setup \
 	--prefix=/usr \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--bindir=/usr/bin \
 	--sbindir=/usr/sbin \
@@ -37,11 +44,34 @@ meson setup \
 	-Ddevel-docs=false \
 	-Dxvfb=false \
 	-Dxnest=false \
-	-Dxwayland=false \
 	-Ddefault_font_path="${DEF_FONTPATH}" \
 	-Dmodule_dir=/usr/lib64/xorg/modules \
 	-Dxkb_dir=/usr/share/X11/xkb \
 	-Dxkb_output_dir=/var/lib/xkb
+
+#mkdir build && cd build
+#CFLAGS="$GCCFLAGS -flto=auto" \
+#meson setup \
+	#--prefix=/usr \
+	#--libdir=/usr/lib${SYSTEMBITS} \
+	#--libexecdir=/usr/libexec \
+	#--bindir=/usr/bin \
+	#--sbindir=/usr/sbin \
+	#--includedir=/usr/include \
+	#--datadir=/usr/share \
+	#--mandir=/usr/man \
+	#--sysconfdir=/etc \
+	#--localstatedir=/var \
+	#--buildtype=release \
+	#-Ddocs=false \
+	#-Ddevel-docs=false \
+	#-Dxvfb=false \
+	#-Dxnest=false \
+	#-Dxwayland=false \
+	#-Ddefault_font_path="${DEF_FONTPATH}" \
+	#-Dmodule_dir=/usr/lib64/xorg/modules \
+	#-Dxkb_dir=/usr/share/X11/xkb \
+	#-Dxkb_output_dir=/var/lib/xkb
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
