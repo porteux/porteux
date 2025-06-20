@@ -348,12 +348,8 @@ GenericStrip
 
 # move out things that don't support aggressive stripping
 mv $MODULEPATH/packages/usr/bin/transmission-gtk $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libluajit* $MODULEPATH/
-mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libopenal* $MODULEPATH/
-AggressiveStripAll
+AggressiveStrip
 mv $MODULEPATH/transmission-gtk $MODULEPATH/packages/usr/bin/
-mv $MODULEPATH/libluajit* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
-mv $MODULEPATH/libopenal*  $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 
 ### copy cache files
 
