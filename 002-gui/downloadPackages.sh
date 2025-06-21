@@ -258,6 +258,7 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "cups" & # to build gtk+3
+DownloadPackage "xtrans" & # to build xorg
 wait
 
 ### script clean up
