@@ -49,7 +49,7 @@ if [ ${CLANG:-no} = "yes" ]; then
 	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
 	COMPILER="Clang"
 else
-	BUILDPARAMS="$GCCFLAGS"
+	BUILDPARAMS="${GCCFLAGS/ -ffunction-sections -fdata-sections/}"
 	COMPILER="GCC"
 fi
 
