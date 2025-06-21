@@ -633,7 +633,7 @@ index 239055bc10..46fd9a1fd3 100644
  
          if (vblank->flip) {
  
-@@ -627,6 +647,30 @@ present_execute(present_vblank_ptr vblank, uint64_t ust, uint64_t crtc_msc)
+@@ -627,6 +653,36 @@ present_execute(present_vblank_ptr vblank, uint64_t ust, uint64_t crtc_msc)
  
          present_execute_copy(vblank, crtc_msc);
  
@@ -642,23 +642,29 @@ index 239055bc10..46fd9a1fd3 100644
 +         * If TearFree is already flipping then the presentation will be visible
 +         * at the *next* next vblank.
 +         */
-+        completion_msc = crtc_msc + 1;
-+        switch (vblank->reason) {
-+        case PRESENT_FLIP_REASON_DRIVER_TEARFREE_FLIPPING:
-+            if (vblank->exec_msc < crtc_msc)
-+                completion_msc++;
-+        case PRESENT_FLIP_REASON_DRIVER_TEARFREE:
-+            if (Success == screen_priv->queue_vblank(screen,
++        if (!vblank->queued &&
++            vblank->reason >= PRESENT_FLIP_REASON_DRIVER_TEARFREE) {
++            uint64_t completion_msc = crtc_msc + 1;
++
++            /* If TearFree is already flipping then the presentation will be
++             * visible at the *next* next vblank. This calculation only matters
++             * for the vblank event fallback.
++             */
++           if (vblank->reason == PRESENT_FLIP_REASON_DRIVER_TEARFREE_FLIPPING &&
++                vblank->exec_msc < crtc_msc)
++                    completion_msc++;
++
++            /* Try the fake flip first and then fall back to a vblank event */
++            if (present_flip(vblank->crtc, vblank->event_id, 0, NULL, TRUE) ||
++                Success == screen_priv->queue_vblank(screen,
 +                                                     window,
 +                                                     vblank->crtc,
 +                                                     vblank->event_id,
 +                                                     completion_msc)) {
-+                /* Ensure present_execute_post() runs at the next MSC */
++                /* Ensure present_execute_post() runs at the next execution */
 +                vblank->exec_msc = vblank->target_msc;
 +                vblank->queued = TRUE;
 +            }
-+        default:
-+            break;
 +        }
 +
          if (vblank->queued) {
@@ -899,7 +905,7 @@ index ea9e7a88c5..4d250aa348 100644
  }
  
  /**
-@@ -500,18 +564,61 @@ ms_drm_sequence_handler(int fd, uint64_t frame, uint64_t ns, Bool is64bit, uint6
+@@ -500,18 +564,65 @@ ms_drm_sequence_handler(int fd, uint64_t frame, uint64_t ns, Bool is64bit, uint6
  {
      struct ms_drm_queue *q, *tmp;
      uint32_t seq = (uint32_t) user_data;
@@ -916,11 +922,17 @@ index ea9e7a88c5..4d250aa348 100644
 -            msc = ms_kernel_msc_to_crtc_msc(q->crtc, frame, is64bit);
 +            crtc = q->crtc;
 +            msc = ms_kernel_msc_to_crtc_msc(crtc, frame, is64bit);
-             xorg_list_del(&q->list);
+-            xorg_list_del(&q->list);
++            /* Write the current MSC to this event to ensure its handler runs in
++             * the loop below. This is done because we don't want to run the
++             * handler right now, since we need to ensure all events are handled
++             * in FIFO order with respect to one another. Otherwise, if this
++             * event were handled first just because it was queued to the
++             * kernel, it could run before older events expiring at this MSC.
++             */
 -            q->handler(msc, ns / 1000, q->data);
-+            if (!q->aborted)
-+                q->handler(msc, ns / 1000, q->data);
-             free(q);
++            q->msc = msc;
+-            free(q);
              break;
          }
      }
@@ -1545,16 +1557,19 @@ index a51a10a2c1..8d57047efa 100644
          }
  
          /* We flushed some events, so try again. */
-@@ -467,4 +481,50 @@ error_out:
+@@ -467,4 +481,53 @@ error_out:
  #endif /* GLAMOR_HAS_GBM */
  }
  
 +static void
 +ms_tearfree_flip_abort(void *data)
 +{
-+    drmmode_tearfree_ptr trf = data;
++    xf86CrtcPtr crtc = data;
++    drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
++    drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
 +
 +    trf->flip_seq = 0;
++    ms_tearfree_dri_abort_all(crtc);
 +}
 +
 +static void

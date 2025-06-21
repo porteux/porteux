@@ -12,20 +12,31 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
+## xlibre git master:
+#wget https://github.com/X11Libre/xserver/archive/refs/heads/master.tar.gz
+#tar xfv master.tar.gz
+#cd xserver-master
+#VERSION=$(date -r . +%Y%m%d)
+
+## git master:
 #wget https://gitlab.freedesktop.org/xorg/xserver/-/archive/master/xserver-master.tar.gz
 #tar xfv xserver-master.tar.gz
 #cd xserver-master
 #VERSION=$(date -r . +%Y%m%d)
 
+# lastest official release:
 VERSION=$(curl -s https://gitlab.freedesktop.org/xorg/xserver/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v wayland | rev | cut -d "-" -f 1 | rev | sort -V -r | head -1)
 wget https://gitlab.freedesktop.org/xorg/xserver/-/archive/${PRGNAM}-${VERSION}/xserver-${PRGNAM}-${VERSION}.tar.gz
-
 tar xfv xserver-$PRGNAM-$VERSION.tar.?z*
 cd xserver-$PRGNAM-$VERSION
 
-DEF_FONTPATH="/usr/share/fonts/misc,/usr/share/fonts/local,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/CID,/usr/share/fonts/75dpi/:unscaled,/usr/share/fonts/100dpi/:unscaled,/usr/share/fonts/75dpi,/usr/share/fonts/100dpi,/usr/share/fonts/cyrillic"
+patch -p0 < $CWD/tear-free1.patch
+patch -p0 < $CWD/tear-free2.patch
+patch -p0 < $CWD/tear-free3.patch
+patch -p0 < $CWD/tear-free4.patch
+patch -p0 < $CWD/tear-free5.patch
 
-patch -p0 < $CWD/tear-free.patch
+DEF_FONTPATH="/usr/share/fonts/misc,/usr/share/fonts/local,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/CID,/usr/share/fonts/75dpi/:unscaled,/usr/share/fonts/100dpi/:unscaled,/usr/share/fonts/75dpi,/usr/share/fonts/100dpi,/usr/share/fonts/cyrillic"
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -flto=auto" \
