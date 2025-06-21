@@ -45,7 +45,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/libnatpmp/CMakeLists.txt
 	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/dht/CMakeLists.txt
 fi
-CFLAGS="$CLANGFLAGS -fPIC -flto=auto -ffat-lto-objects" CXXFLAGS="$CLANGFLAGS -flto=auto -ffat-lto-objects" cmake -B build -S . -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF
+CFLAGS="$CLANGFLAGS -fPIC -flto=auto -ffat-lto-objects" CXXFLAGS="$CLANGFLAGS -flto=auto -ffat-lto-objects" cmake -B build -S . -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF || exit 1
 cmake --build build -j${NUMBERTHREADS}
 DESTDIR="$MODULEPATH/${currentPackage}/package" cmake --install build --config Release
 cd $MODULEPATH/${currentPackage}/package
