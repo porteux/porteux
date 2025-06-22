@@ -1,3 +1,56 @@
+From be864d8e185fe9e699fa661e70e02b319384dee6 Mon Sep 17 00:00:00 2001
+From: Sultan Alsawaf <sultan@kerneltoast.com>
+Date: Sun, 22 Jan 2023 20:57:14 -0800
+Subject: [PATCH 03/11] modesetting: Pass CRTC pointer to TearFree flip
+ handlers
+
+The CRTC pointer will soon be needed in the TearFree flip handlers, so pass
+it in instead of passing in drmmode_tearfree_ptr.
+
+No functional change.
+
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+Reviewed-by: Martin Roukala <martin.roukala@mupuf.org>
+---
+ hw/xfree86/drivers/modesetting/pageflip.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
+index b0ff9655b0..08a1bcd314 100644
+--- hw/xfree86/drivers/modesetting/pageflip.c
++++ hw/xfree86/drivers/modesetting/pageflip.c
+@@ -476,7 +476,9 @@ error_out:
+ static void
+ ms_tearfree_flip_abort(void *data)
+ {
+-    drmmode_tearfree_ptr trf = data;
++    xf86CrtcPtr crtc = data;
++    drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
++    drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
+ 
+     trf->flip_seq = 0;
+ }
+@@ -484,7 +486,9 @@ ms_tearfree_flip_abort(void *data)
+ static void
+ ms_tearfree_flip_handler(uint64_t msc, uint64_t usec, void *data)
+ {
+-    drmmode_tearfree_ptr trf = data;
++    xf86CrtcPtr crtc = data;
++    drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
++    drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
+ 
+     /* Swap the buffers and complete the flip */
+     trf->back_idx ^= 1;
+@@ -498,7 +502,7 @@ ms_do_tearfree_flip(ScreenPtr screen, xf86CrtcPtr crtc)
+     drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
+     uint32_t idx = trf->back_idx, seq;
+ 
+-    seq = ms_drm_queue_alloc(crtc, trf, ms_tearfree_flip_handler,
++    seq = ms_drm_queue_alloc(crtc, crtc, ms_tearfree_flip_handler,
+                              ms_tearfree_flip_abort);
+     if (!seq)
+         goto no_flip;
+-- 
 From 35975d90546931de10b014a222a6051f34c62e57 Mon Sep 17 00:00:00 2001
 From: Sultan Alsawaf <sultan@kerneltoast.com>
 Date: Sun, 22 Jan 2023 20:59:32 -0800
@@ -63,5 +116,6 @@ index 08a1bcd314..94437c0f3c 100644
  }
  
 -- 
+
 GitLab
 

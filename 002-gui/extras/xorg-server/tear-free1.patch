@@ -1557,19 +1557,16 @@ index a51a10a2c1..8d57047efa 100644
          }
  
          /* We flushed some events, so try again. */
-@@ -467,4 +481,53 @@ error_out:
+@@ -467,4 +481,50 @@ error_out:
  #endif /* GLAMOR_HAS_GBM */
  }
  
 +static void
 +ms_tearfree_flip_abort(void *data)
 +{
-+    xf86CrtcPtr crtc = data;
-+    drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
-+    drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
++    drmmode_tearfree_ptr trf = data;
 +
 +    trf->flip_seq = 0;
-+    ms_tearfree_dri_abort_all(crtc);
 +}
 +
 +static void
@@ -1632,7 +1629,7 @@ index c3266d8711..642f7baaff 100644
 +
 +no_flip:
 +    /* Export some info about TearFree if Present can't flip anyway */
-+    if (reason && ms->drmmode.tearfree_enable) {
++    if (reason) {
 +        xf86CrtcPtr xf86_crtc = crtc->devPrivate;
 +        drmmode_crtc_private_ptr drmmode_crtc = xf86_crtc->driver_private;
 +        drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
