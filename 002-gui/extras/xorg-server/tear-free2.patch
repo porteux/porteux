@@ -1,3 +1,43 @@
+From 7288b4d1051a4902384fa2b3c12cacbd3caf04b0 Mon Sep 17 00:00:00 2001
+From: Sultan Alsawaf <sultan@kerneltoast.com>
+Date: Sun, 22 Jan 2023 14:56:36 -0800
+Subject: [PATCH 01/11] modesetting: Remove redundant GLAMOR_HAS_GBM #ifdef
+ from ms_do_pageflip
+
+This #ifdef is redundant since ms_do_pageflip is already enclosed within a
+larger GLAMOR_HAS_GBM #ifdef.
+
+No functional change.
+
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+Reviewed-by: Martin Roukala <martin.roukala@mupuf.org>
+---
+ hw/xfree86/drivers/modesetting/pageflip.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
+index 8d57047efa..5a4ad1dba1 100644
+--- hw/xfree86/drivers/modesetting/pageflip.c
++++ hw/xfree86/drivers/modesetting/pageflip.c
+@@ -321,9 +321,6 @@ ms_do_pageflip(ScreenPtr screen,
+                ms_pageflip_abort_proc pageflip_abort,
+                const char *log_prefix)
+ {
+-#ifndef GLAMOR_HAS_GBM
+-    return FALSE;
+-#else
+     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
+     modesettingPtr ms = modesettingPTR(scrn);
+     xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+@@ -478,7 +475,6 @@ error_out:
+         flipdata->flip_count--;
+ 
+     return FALSE;
+-#endif /* GLAMOR_HAS_GBM */
+ }
+ 
+ static void
+-- 
 From 1fd9d79ae0dac5ae5f84f8012aa2764fcb777ea1 Mon Sep 17 00:00:00 2001
 From: Sultan Alsawaf <sultan@kerneltoast.com>
 Date: Sun, 22 Jan 2023 14:58:23 -0800
