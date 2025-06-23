@@ -151,6 +151,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=xf86-input-libinput
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libjxl

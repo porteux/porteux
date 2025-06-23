@@ -47,6 +47,10 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
+# for some reason it's not installing its header by default, so let's do it manually
+mkdir -p $PKG/usr/include/xorg
+cp ../include/libinput-properties.h $PKG/usr/include/xorg
+
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
