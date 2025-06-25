@@ -40,7 +40,7 @@ meson setup \
 	-Dman=disabled \
 	-Dtests=disabled \
 	-Dexamples=disabled \
-	-Dffmpeg=enabled \
+	-Dffmpeg=disabled \
 	-Dvulkan=disabled \
 	-Djack=disabled \
 	-Dpipewire-jack=disabled \
