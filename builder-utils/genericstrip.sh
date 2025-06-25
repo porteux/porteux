@@ -73,15 +73,15 @@ GenericStrip() {
 	
 	find usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
 	
-	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug --strip-unneeded -R .comment* -R .jcr -R .note* 2> /dev/null
+	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug --strip-unneeded -R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }
 
 AggressiveStrip() {
-	find . | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .jcr -R .note* 2> /dev/null
+	find . | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }
 
 AggressiveStripAll() {
-	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .jcr -R .note* 2> /dev/null
+	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }
 
 if [ "$1" ]; then
