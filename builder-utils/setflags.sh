@@ -5,8 +5,8 @@ SetFlags() {
 
 	export KERNELVERSION="6.15.2"
 	export ARCHITECTURELEVEL="x86-64-v2"
-	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -Wl,--gc-sections -fno-ident -s -fmodulo-sched -floop-parallelize-all -fuse-linker-plugin -Wl,--as-needed -Wl,-O1 -Wl,-sort-common -Wl,--build-id=none"
-	export CLANGFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections"
+	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed -Wl,--build-id=none -fno-ident -s -fmodulo-sched -floop-parallelize-all -fuse-linker-plugin -Wl,-O1 -Wl,-sort-common"
+	export CLANGFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed -Wl,--build-id=none -Wno-unused-command-line-argument"
 	export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=$ARCHITECTURELEVEL -Ctarget-cpu=generic -Clto=fat -Zdylib-lto -Cpanic=abort -Cstrip=debuginfo -Cembed-bitcode=yes -Ccodegen-units=1 -Zlocation-detail=none"
 
 	systemFullVersion=$(cat /etc/slackware-version)
