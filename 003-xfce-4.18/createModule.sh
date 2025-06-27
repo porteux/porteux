@@ -255,6 +255,7 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+{
 rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
 rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/share/engrampa
@@ -290,6 +291,7 @@ rm usr/share/icons/hicolor/scalable/status/keyboard.svg
 rm usr/share/icons/hicolor/scalable/status/phone.svg
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
+} >/dev/null 2>&1
 
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/
 GenericStrip

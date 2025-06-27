@@ -171,6 +171,7 @@ gtk-update-icon-cache $MODULEPATH/packages/usr/share/icons/Adwaita
 
 cd $MODULEPATH/packages/
 
+{
 rm -R etc/dbus-1/system.d
 rm -R etc/dconf
 rm -R etc/opt
@@ -238,6 +239,7 @@ rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
+} >/dev/null 2>&1
 
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
 GenericStrip

@@ -48,6 +48,7 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+{
 rm -R usr/doc
 rm -R usr/etc
 rm -R usr/info
@@ -97,6 +98,7 @@ rm usr/lib/*
 
 find . -name '*.la' -delete
 find usr/ -type d -empty -delete
+} >/dev/null 2>&1
 
 AggressiveStrip
 

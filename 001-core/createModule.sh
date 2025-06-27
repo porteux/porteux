@@ -324,6 +324,7 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+{
 rm -R boot
 rm -R lib${SYSTEMBITS}/pkgconfig
 rm -R lib/systemd
@@ -411,6 +412,7 @@ rm var/db/Makefile
 
 find usr/lib${SYSTEMBITS}/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib${SYSTEMBITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +
+} >/dev/null 2>&1
 
 # move out libc because it can't be stripped at all
 mv $MODULEPATH/packages/lib${SYSTEMBITS}/libc.so* $MODULEPATH/

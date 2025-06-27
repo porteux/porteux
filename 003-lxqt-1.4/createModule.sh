@@ -389,6 +389,7 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+{
 rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0/
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0/
 rm -R usr/lib${SYSTEMBITS}/qt5/mkspecs
@@ -419,6 +420,7 @@ find usr/share/lxqt/wallpapers -mindepth 1 -maxdepth 1 ! \( -name "simple_blue_w
 find usr/share/lxqt/themes -mindepth 1 -maxdepth 1 ! \( -name "Porteux-dark" -o -name "Clearlooks" \) -exec rm -rf '{}' \; 2>/dev/null
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
+} >/dev/null 2>&1
 
 GenericStrip
 AggressiveStripAll
