@@ -388,6 +388,7 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+{
 rm usr/bin/kwalletmanager*
 rm usr/bin/oxygen-demo5
 rm usr/bin/oxygen-gtk-demo
@@ -450,6 +451,7 @@ find usr/share/icons -mindepth 1 -maxdepth 1 ! \( -name "breeze" -o -name "breez
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o -name "Air Balloon.png.license" -o -name "Astronaut.png" -o -name "Astronaut.png.license" \) -exec rm -rf '{}' \; 2>/dev/null
+} >/dev/null 2>&1
 
 GenericStrip
 

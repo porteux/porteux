@@ -278,6 +278,7 @@ mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/gobject-introspection $PORTEUXBUILD
 
 cd $MODULEPATH/packages/
 
+{
 rm -R etc/OpenCL
 rm -R etc/pam.d
 rm -R etc/rc_keymaps
@@ -387,6 +388,7 @@ rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 rm usr/share/xsessions/openbox-gnome.desktop
 rm usr/share/xsessions/openbox-kde.desktop
+} >/dev/null 2>&1
 
 [ $SLACKWAREVERSION == "current" ] && rm usr/lib${SYSTEMBITS}/libpoppler-qt5*
 

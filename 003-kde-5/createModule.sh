@@ -178,6 +178,7 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+{
 rm usr/bin/systemmonitor
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/applications/org.kde.plasma.emojier.desktop
@@ -225,6 +226,7 @@ rm -R usr/share/wallpapers/Next
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o -name "Air Balloon.png.license" -o -name "Astronaut.png" -o -name "Astronaut.png.license" \) -exec rm -rf '{}' \; 2>/dev/null
+} >/dev/null 2>&1
 
 GenericStrip
 
