@@ -1,6 +1,7 @@
 #!/bin/bash
 
 PrepareFilesForCacheDE() {
+	mkdir -p $PORTEUXBUILDERPATH/caches > /dev/null 2>&1
 	cp -r $PORTEUXBUILDERPATH/caches/ $PORTEUXBUILDERPATH/caches-bkp
 	PrepareFilesForCache
 }
