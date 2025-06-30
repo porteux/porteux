@@ -15,6 +15,7 @@ wait
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
+DownloadPackage "libqalculate" &
 DownloadPackage "libdmtx" &
 DownloadPackage "libproxy" &
 DownloadPackage "libqaccessibilityclient" &
