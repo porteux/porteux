@@ -4,7 +4,7 @@
 
 PorteuX can be installed to any media storage (including USB flash drive)
 without requiring your personal data to be erased. Partitions supported:
-ext2, ext3, ext4, FAT, exFAT, NTFS and XFS.
+btrfs, ext2, ext3, ext4, FAT, exFAT, NTFS and XFS.
 
 The simplest way to do that is copying the ISO content to your media
 storage and running the installer, which will make the media bootable
@@ -67,8 +67,8 @@ the instructions.
 ~~~~~~~~~~~~~~~
 
 After running the installation program, you should be able to boot 
-PorteuX from your media storage. Reboot your computer, and make sure 
-that your BIOS is set to boot from the media storage where PorteuX is.
+PorteuX from your media storage. Reboot your computer, and make sure that
+your BIOS is set to boot from the media storage where PorteuX is installed.
 
 ~~~~~~~~~~
 | Notes: |
@@ -76,10 +76,11 @@ that your BIOS is set to boot from the media storage where PorteuX is.
 
 1) If your media storage is formatted with a Linux filesystem
 (e.g. EXT4 or XFS), before the first boot make sure the folder
-/porteux has 'guest' ownership (i.e. non-root) otherwise changes
-will not be automatically saved.
+/porteux has your current user ownership (e.g. 'guest') otherwise
+changes will not be automatically saved.
 
 2) If your media storage is formatted with a Windows filesystem
 (e.g. FAT or NTFS), the changes you make to your system will not be 
 automatically saved. In this case, you can create a '.dat' file
-container using PorteuX Save Session application after the boot.
+container using PorteuX Save Session application after the boot, or use
+/porteux/rootcopy folder to save only what you need (cleaner and faster).
