@@ -12,19 +12,6 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-## xlibre git master:
-#wget https://github.com/X11Libre/xserver/archive/refs/heads/master.tar.gz
-#tar xfv master.tar.gz
-#cd xserver-master
-#VERSION=$(date -r . +%Y%m%d)
-
-## git master:
-#wget https://gitlab.freedesktop.org/xorg/xserver/-/archive/master/xserver-master.tar.gz
-#tar xfv xserver-master.tar.gz
-#cd xserver-master
-#VERSION=$(date -r . +%Y%m%d)
-
-# lastest official release:
 VERSION=$(curl -s https://gitlab.freedesktop.org/xorg/xserver/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v wayland | rev | cut -d "-" -f 1 | rev | sort -V -r | head -1)
 wget https://gitlab.freedesktop.org/xorg/xserver/-/archive/${PRGNAM}-${VERSION}/xserver-${PRGNAM}-${VERSION}.tar.gz
 tar xfv xserver-$PRGNAM-$VERSION.tar.?z*
