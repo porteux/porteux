@@ -42,18 +42,16 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt6Concurrent.* "${currentPackage}-strippe
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Core.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Core5Compat.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6DBus.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6EglFSDeviceIntegration.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6EglFsKmsSupport.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Gui.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6LabsQmlModels.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6LabsPlatform.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6LabsQmlModels.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Multimedia.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6MultimediaQuick.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Network.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6OpenGL.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6OpenGLWidgets.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Positioning.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6PositioningQuick.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6PrintSupport.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Qml.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlCore.* "${currentPackage}-stripped-$version"
@@ -61,10 +59,6 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlMeta.* "${currentPackage}-stripped-$
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlModels.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlWorkerScript.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Quick.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickEffects.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Quick3D.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Quick3DRuntimeRender.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Quick3DUtils.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickControls2.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickControls2Basic.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickControls2BasicStyleImpl.* "${currentPackage}-stripped-$version"
@@ -74,6 +68,7 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickControls2Impl.* "${currentPackage}
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickDialogs2.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickDialogs2QuickImpl.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickDialogs2Utils.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickEffects.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickLayouts.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickParticles.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickShapes.* "${currentPackage}-stripped-$version"
@@ -85,13 +80,9 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt6ShaderTools.* "${currentPackage}-stripp
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Sql.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Svg.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6SvgWidgets.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Test.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6TextToSpeech.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandClient.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandCompositor.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandEglClientHwIntegration.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandEglCompositorHwIntegration.so.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6WebChannel.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Widgets.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6XcbQpa.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Xml.* "${currentPackage}-stripped-$version"
@@ -208,7 +199,7 @@ rm $MODULEPATH/packages/extra-cmake-modules*.txz
 
 # extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/page89.html#post6560591
 KDE6PACKAGES=/tmp/packages
-[ ! -d $KDE6PACKAGES ] && exit 1
+[ ! -d $KDE6PACKAGES ] && echo "Couldn't find KDE packages. Extract them to /tmp/packages" && exit 1
 
 DE_LATEST_VERSION=$(find $KDE6PACKAGES -type f -name "plasma-desktop-*" | cut -d "-" -f 3)
 
@@ -358,6 +349,19 @@ find $KDE6PACKAGES -type f -name "threadweaver-6*" -exec cp {} $MODULEPATH/packa
 find $KDE6PACKAGES -type f -name "wayland-utils*" -exec cp {} $MODULEPATH/packages/ \;
 find $KDE6PACKAGES -type f -name "xdg-desktop-portal-kde*" -exec cp {} $MODULEPATH/packages/ \;
 
+currentPackage=qcoro
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libQCoro6Core.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQCoro6DBus.* "${currentPackage}-stripped-$version"
+cd ${currentPackage}-stripped-$version
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
@@ -397,13 +401,17 @@ rm usr/bin/UserFeedbackConsole
 rm etc/kde/xdg/autostart/baloo_file.desktop
 rm etc/kde/xdg/autostart/kaccess.desktop
 rm etc/kde/xdg/autostart/xembedsniproxy.desktop
-rm usr/lib${SYSTEMBITS}/libKF5*.so
-rm usr/lib${SYSTEMBITS}/liboxygenstyle5.so
-rm usr/lib${SYSTEMBITS}/liboxygenstyleconfig5.so
+rm usr/lib${SYSTEMBITS}/libKF5*
+rm usr/lib${SYSTEMBITS}/libKF6PeopleBackend*
+rm usr/lib${SYSTEMBITS}/libKF6PeopleWidgets*
+rm usr/lib${SYSTEMBITS}/liboxygenstyle5*
+rm usr/lib${SYSTEMBITS}/liboxygenstyleconfig5*
 rm usr/lib${SYSTEMBITS}/libphonon4qt5*
 rm usr/lib${SYSTEMBITS}/libpolkit-qt5*
 rm usr/lib${SYSTEMBITS}/libqca-qt5*
 rm usr/lib${SYSTEMBITS}/libQCoro5*
+
+
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/applications/org.kde.kuserfeedback-console.desktop
 rm usr/share/applications/org.kde.kwalletd*.desktop
