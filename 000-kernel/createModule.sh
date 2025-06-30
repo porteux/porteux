@@ -88,7 +88,7 @@ cd $MODULEPATH/linux-${KERNELVERSION}
 
 echo "Patching AUFS..."
 rm ../aufs_sources/tmpfs-idr.patch # this patch isn't useful
-cp -r ../aufs_sources/{fs,Documentation} .
+cp -r ../aufs_sources/fs .
 cp ../aufs_sources/include/uapi/linux/aufs_type.h include/uapi/linux
 for i in ../aufs_sources/*.patch; do
 	patch -N -p1 < "$i" > /dev/null 2>&1 || { echo "Failed to add AUFS patch '${i}'."; exit 1; }
