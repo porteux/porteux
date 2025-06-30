@@ -18,6 +18,7 @@ wait
 DownloadPackage "bluez-firmware" &
 DownloadPackage "bridge-utils" &
 DownloadPackage "brotli" &
+DownloadPackage "btrfs-progs" &
 DownloadPackage "bzip2" &
 DownloadPackage "ca-certificates" &
 DownloadPackage "cdrtools" &
