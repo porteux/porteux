@@ -416,6 +416,7 @@ rm -R boot/
 rm -R lib/
 rm -R lib64/
 rm -R usr/lib${SYSTEMBITS}/qt5
+rm -R usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/VirtualKeyboard
 rm -R usr/lib${SYSTEMBITS}/qt6/qml/QtTest
 rm -R usr/lib${SYSTEMBITS}/qt6/mkspecs
 rm -R usr/share/chromium
@@ -430,7 +431,9 @@ rm -R usr/share/katepart6
 rm -R usr/share/kde4
 rm -R usr/share/kf6/kdoctools
 rm -R usr/share/kf6/locale
+rm -R usr/share/kf6/searchproviders
 rm -R usr/share/konqueror
+rm -R usr/share/kscreen
 rm -R usr/share/ksplash/Themes/Classic
 rm -R usr/share/phonon4qt6
 rm -R usr/share/plasma/desktoptheme/air
