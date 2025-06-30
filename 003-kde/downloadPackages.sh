@@ -21,6 +21,7 @@ DownloadPackage "libqaccessibilityclient" &
 wait
 DownloadPackage "LibRaw" &
 DownloadPackage "openblas" &
+DownloadPackage "polkit-qt" &
 DownloadPackage "qrencode" &
 DownloadPackage "xdpyinfo" &
 DownloadPackage "zxing-cpp" &
