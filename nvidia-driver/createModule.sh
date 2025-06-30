@@ -83,7 +83,7 @@ if [ "$SYSTEMBITS" = 64 ]; then
 	mv $MODULEDIR/usr/lib64/vdpau $MODULEDIR/../nostrip64 &>/dev/null
 fi
 
-find $MODULEDIR | xargs file | egrep -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+find $MODULEDIR | xargs file | egrep -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 
 mv $MODULEDIR/../nostrip/* $MODULEDIR/usr/lib &>/dev/null
 
