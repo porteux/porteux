@@ -30,13 +30,14 @@ meson setup \
 	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Duser_doc=false \
-	-Dintrospection=enabled \
-	-Dpdf=enabled \
-	-Dthumbnailer=true \
-	-Dtests=false \
 	-Ddocumentation=false \
+	-Dtests=false \
+	-Dkeyring=disabled \
 	-Dpreviewer=true \
-	-Dkeyring=disabled
+	-Dthumbnailer=true \
+	-Dintrospection=enabled \
+	-Dpdf=enabled
+	#-Dfile_tests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
