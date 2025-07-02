@@ -50,14 +50,15 @@ wait
 
 ### temporary packages for further building
 
+DownloadPackage "boost" &
 DownloadPackage "c-ares" &
 DownloadPackage "cups" & # required by gnome-settings-daemon
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
 DownloadPackage "iso-codes" & # required by gnome-desktop
 DownloadPackage "krb5" &
-DownloadPackage "libsass" & # required by gnome-console
 wait
+DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
 DownloadPackage "openldap" & # required by libadwaita (appstream)
 DownloadPackage "python-pip" &

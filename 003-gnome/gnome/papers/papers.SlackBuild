@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PRGNAM=evince
+PRGNAM=papers
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -12,8 +12,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
-wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/Incubator/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
+wget https://gitlab.gnome.org/GNOME/Incubator/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
@@ -29,18 +29,14 @@ meson setup \
 	--infodir=/usr/info \
 	--mandir=/usr/man \
 	--localstatedir=/var \
-	-Ddefault_library=shared \
-	-Dgtk_doc=false \
 	-Duser_doc=false \
-	-Dintrospection=true \
-	-Ddbus=true \
+	-Dintrospection=enabled \
 	-Dpdf=enabled \
 	-Dthumbnailer=true \
-	-Dthumbnail_cache=enabled \
+	-Dtests=false \
+	-Ddocumentation=false \
 	-Dpreviewer=true \
-	-Dviewer=true \
-	-Dnautilus=false \
-	-Dsystemduserunitdir=no
+	-Dkeyring=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

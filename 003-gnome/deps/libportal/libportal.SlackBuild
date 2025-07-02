@@ -33,6 +33,8 @@ meson setup \
 	--sysconfdir=/etc \
 	-Dbackend-gtk3=auto \
 	-Dbackend-gtk4=auto \
+	-Dbackend-qt5=disabled \
+	-Dbackend-qt6=disabled \
 	-Ddocs=false \
 	-Dtests=false
 
