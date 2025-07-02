@@ -43,6 +43,7 @@ rm -fr $MODULEPATH/${currentPackage}
 installpkg $MODULEPATH/packages/*.txz || exit 1
 
 # only required for building not for run-time
+rm $MODULEPATH/packages/boost*
 rm $MODULEPATH/packages/c-ares*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
@@ -90,6 +91,7 @@ for package in \
 	libheif \
 	glycin \
 	libwnck4 \
+	exempi \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
@@ -123,7 +125,7 @@ for package in \
 	libspelling \
 	gnome-text-editor \
 	loupe \
-	evince \
+	papers \
 	gnome-system-monitor \
 	vte \
 	gnome-console \

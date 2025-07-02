@@ -30,7 +30,6 @@ meson setup \
 	-Dman=false \
 	-Dkerberos=true \
 	-Dexchange=true \
-	-Dwindows_live=true \
 	-Dintrospection=true \
 	-Downcloud=true \
 	-Dimap_smtp=true \
