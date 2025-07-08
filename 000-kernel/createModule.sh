@@ -59,8 +59,6 @@ rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH} 2>/dev/null
 
-### download packages from slackware repositoriesg
-
 echo "Downloading kernel source code..."
 if [ ! -f linux-${KERNELVERSION}.tar.?z ]; then
 	wget -P ${MODULEPATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNELMAJORVERSION}.x/linux-${KERNELVERSION}.tar.xz > /dev/null 2>&1 || { echo "Fail to download kernel source code."; exit 1; }

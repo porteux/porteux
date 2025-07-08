@@ -24,7 +24,7 @@ GenerateRepositoryUrls() {
 DownloadPackage() {
 	cd $MODULEPATH/packages
 
-	# if the package is already presented, don't download it again
+	# if the package is already present don't download it again
 	if find . -type f -name "${1}[-_][0-9]*" | grep -q .; then
 		return
 	fi
