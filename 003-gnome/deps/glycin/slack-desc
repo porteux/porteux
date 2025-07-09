@@ -1,4 +1,4 @@
-             |-----handy-ruler------------------------------------------------------|
+      |-----handy-ruler------------------------------------------------------|
 glycin: glycin (sandboxed and extendable image decoding)
 glycin:
 glycin: Glycin allows to decode images into gdk::Textures and to extract
