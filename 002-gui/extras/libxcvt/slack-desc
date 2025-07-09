@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+libxcvt: libxcvt (VESA CVT standard modelines library)
+libxcvt:
+libxcvt: libxcvt is a library providing a standalone version of the X server
+libxcvt: implementation of the VESA CVT standard timing modelines generator.
+libxcvt: libxcvt also provides a command line tool "cvt".
+libxcvt:
+libxcvt:
+libxcvt:
+libxcvt:
+libxcvt:
+libxcvt:
