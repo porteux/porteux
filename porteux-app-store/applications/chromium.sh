@@ -107,8 +107,16 @@ make_module_chromium(){
     mv -f "$TMP/$APP/$pkg_name/$APP-$CHANNEL-${pkgver}" "$TMP/$APP/$pkg_name/usr/lib64" &&
     cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "$APP-$CHANNEL-${pkgver}/" "$product_name" &&
     cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/$product_name/chrome" "$product_name" &&
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" "https://slackware.nl/people/alien/slackbuilds/chromium/build/chromium.desktop" &&
-    sed -i "s|TryExec=.*||g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" &&
+    cat > "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" << EOF
+[Desktop Entry]
+Exec=chromium %U
+Icon=chromium
+Type=Application
+Categories=Network;WebBrowser;
+Name=Chromium
+GenericName=Web Browser
+MimeType=text/html;text/xml;application/xhtml+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/mailto;x-scheme-handler/webcal;
+EOF
     sed -i "s|Exec=$APP|Exec=env LANGUAGE=$LANGUAGE $product_name|g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" &&
 
     finisher "$pkg_name" "$pkgver"
