@@ -80,7 +80,7 @@ make_module_firefox(){
     create_application_temp_dir "$APP"
 
     $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://ftp.mozilla.org/pub/firefox/releases/${pkgver}/linux-x86_64/${LANGUAGE}/firefox-${pkgver}.${package_extension}" &&
-    $WGET_WITH_TIME_OUT -P $TMP/"$APP" "http://ftp.slackware.com/pub/slackware/slackware64-current/source/xap/mozilla-firefox/firefox.desktop" &&
+
     mkdir -p "$TMP/$APP/$pkg_name" &&
     tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name" &&
     mkdir -p "$TMP/$APP/$pkg_name/usr/bin" && mkdir -p "$TMP/$APP/$pkg_name/usr/lib64" && mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications" &&
@@ -89,7 +89,17 @@ make_module_firefox(){
     mv -f "$TMP/$APP/$pkg_name/firefox-${CHANNEL}" $TMP/"$APP"/"$pkg_name"/usr/lib64 &&
     cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "firefox-${CHANNEL}/" firefox &&
     cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/firefox/firefox" firefox &&
-    mv -f "$TMP/$APP/firefox.desktop" "$TMP/$APP/$pkg_name/usr/share/applications" &&
+    cat > "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop" << EOF    
+[Desktop Entry]
+Exec=firefox %u
+Icon=firefox
+Type=Application
+Categories=Network;WebBrowser;
+Name=Firefox
+GenericName=Web Browser
+MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
+EOF
+
     if [ "$CHANNEL" != "stable" ]; then
         if [ "$CHANNEL" = "esr" ]; then
             sed -i "s/^Name.*/& ${CHANNEL^^}/" "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop"
