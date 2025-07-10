@@ -84,33 +84,13 @@ make_module_librewolf(){
     mkdir -p "$TMP/$APP/$pkg_name/usr/lib64/${APP}/distribution" 2> /dev/null
     cat > "$TMP/$APP/$pkg_name/usr/share/applications/librewolf.desktop" << EOF
 [Desktop Entry]
-Version=1.0
-Name=LibreWolf
-Comment=Browse the World Wide Web
-GenericName=Web Browser
-Keywords=Internet;WWW;Browser;Web;Explorer
-Exec=/usr/bin/librewolf %u
+Exec=librewolf %u
 Icon=librewolf
-Terminal=false
-X-MultipleArgs=false
 Type=Application
-MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;application/x-xpinstall;application/pdf;application/json;
-StartupNotify=true
-StartupWMClass=LibreWolf
 Categories=Network;WebBrowser;
-Actions=new-window;new-private-window;profile-manager-window;
-
-[Desktop Action new-window]
-Name=Open a New Window
-Exec=/usr/bin/librewolf --new-window %u
-
-[Desktop Action new-private-window]
-Name=Open a New Private Window
-Exec=/usr/bin/librewolf --private-window %u
-
-[Desktop Action profile-manager-window]
-Name=Open the Profile Manager
-Exec=/usr/bin/librewolf --ProfileManager %u
+Name=Librewolf
+GenericName=Web Browser
+MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;application/x-xpinstall;application/pdf;application/json;
 EOF
 
     cat > "$TMP/$APP/$pkg_name/usr/lib64/librewolf/distribution/distribution.ini" << EOF
