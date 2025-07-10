@@ -45,7 +45,7 @@ GenericStrip() {
 	rm -R var/log/pkgtools
 	rm -R var/log/setup
 	rm -R var/man
-	
+
 	rm usr/share/applications/org.gnome.Vte*.desktop
 	rm usr/share/pixmaps/*.xpm
 	rm var/log/removed_packages
@@ -68,20 +68,22 @@ GenericStrip() {
 	find . -name 'COPYING*' -delete
 	find . -name 'LICENSE*' -delete
 	find . -name 'README*' -delete
-	
+
 	find usr/ -type d -empty -delete
-	
+
 	find usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
-	
+
 	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug --strip-unneeded -R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } > /dev/null 2>&1
 
 AggressiveStrip() {
-	find . | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+	[ $(strip --help | grep "strip-section-headers") ] && stripSectionHeaders="--strip-section-headers"
+	find . | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-all ${stripSectionHeaders} -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } > /dev/null 2>&1
 
 AggressiveStripAll() {
-	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+	[ $(strip --help | grep "strip-section-headers") ] && stripSectionHeaders="--strip-section-headers"
+	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all ${stripSectionHeaders} -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } > /dev/null 2>&1
 
 if [ "$1" ]; then
