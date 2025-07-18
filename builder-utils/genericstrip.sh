@@ -77,12 +77,12 @@ GenericStrip() {
 } > /dev/null 2>&1
 
 AggressiveStrip() {
-	[ $(strip --help | grep "strip-section-headers") ] && stripSectionHeaders="--strip-section-headers"
+	[[ $(strip --help | grep "strip-section-headers") ]] && stripSectionHeaders="--strip-section-headers"
 	find . | xargs file | egrep -e "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-all ${stripSectionHeaders} -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } > /dev/null 2>&1
 
 AggressiveStripAll() {
-	[ $(strip --help | grep "strip-section-headers") ] && stripSectionHeaders="--strip-section-headers"
+	[[ $(strip --help | grep "strip-section-headers") ]] && stripSectionHeaders="--strip-section-headers"
 	find . | xargs file | egrep -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all ${stripSectionHeaders} -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } > /dev/null 2>&1
 
