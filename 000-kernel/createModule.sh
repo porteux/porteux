@@ -45,12 +45,15 @@ if [ ${CLANG:-no} = "yes" ]; then
 		installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 		rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 	fi
-	EXTRAFLAGS="LLVM=1 CC=clang"
-	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
 	COMPILER="Clang"
+	EXTRAFLAGS="LLVM=1 CC=clang"
+	# remove flags that are not compatible with the kernel
+	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
 else
-	BUILDPARAMS="${GCCFLAGS/ -ffunction-sections -fdata-sections/}"
 	COMPILER="GCC"
+	# remove flags that are not compatible with the kernel
+	BUILDPARAMS="${GCCFLAGS/ -ffunction-sections -fdata-sections/}"
+	BUILDPARAMS="${BUILDPARAMS/ -flto=auto/}"
 fi
 
 echo "Building kernel ${KERNELVERSION} $ARCH using ${COMPILER}..."
