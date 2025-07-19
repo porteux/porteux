@@ -45,7 +45,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/libnatpmp/CMakeLists.txt
 	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/dht/CMakeLists.txt
 fi
-CFLAGS="$CLANGFLAGS -fPIC -flto=auto -ffat-lto-objects" CXXFLAGS="$CLANGFLAGS -flto=auto -ffat-lto-objects" cmake -B build -S . -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF || exit 1
+CFLAGS="$CLANGFLAGS -ffat-lto-objects -fPIC" CXXFLAGS="$CLANGFLAGS" cmake -B build -S . -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld" -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} -DENABLE_TESTS=OFF -DWITH_APPINDICATOR=OFF -DENABLE_QT=OFF -DINSTALL_DOC=OFF || exit 1
 cmake --build build -j${NUMBERTHREADS}
 DESTDIR="$MODULEPATH/${currentPackage}/package" cmake --install build --config Release
 cd $MODULEPATH/${currentPackage}/package
@@ -62,7 +62,7 @@ tar cvfz ${currentPackage}-${version}.tar.gz ${currentPackage}-${version}/
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -77,7 +77,7 @@ sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS -flto=auto -ffat-lto-objects -std=c99\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -std=c99\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -89,7 +89,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://github.com/${currentPackage}/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
 tar xfv ${currentPackage}.tar.gz
 cd ${currentPackage}-master
-CFLAGS="$GCCFLAGS -flto=auto" CXXFLAGS="$CFLAGS" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --disable-static
+CFLAGS="$GCCFLAGS" CXXFLAGS="$CFLAGS" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --disable-static
 make -j${NUMBERTHREADS} install || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -99,7 +99,7 @@ wget https://code.videolan.org/videolan/${currentPackage}/-/archive/master/${cur
 tar xvf ${currentPackage}-master.tar.gz && rm ${currentPackage}-master.tar.gz || exit 1
 cd ${currentPackage}-master
 version=$(date -r . +%Y%m%d)
-CC=clang CFLAGS="$CLANGFLAGS -flto=auto -ffat-lto-objects" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --enable-shared --enable-pic --enable-strip --enable-lto --disable-cli
+CC=clang CFLAGS="$CLANGFLAGS" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --enable-shared --enable-pic --enable-strip --enable-lto --disable-cli
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz > /dev/null 2>&1
@@ -120,7 +120,7 @@ sed -z -i "s|make\nmake |make -j${NUMBERTHREADS}\nmake -j${NUMBERTHREADS} |g" ${
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -131,7 +131,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/libass/${currentPackage}.SlackBuild  || exit 1
 info=$(DownloadLatestFromGithub "libass" ${currentPackage})
 version=${info#* }
-sed -i "s|-O[23].*|$GCCFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -144,7 +144,7 @@ version=${info#* }
 mkdir package
 tar xvf ${currentPackage}-${version}.tar.gz
 cd ${currentPackage}-${version}
-cmake -B build -S . -DCMAKE_BUILD_TYPE=release -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -flto=auto -ffat-lto-objects" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
+cmake -B build -S . -DCMAKE_BUILD_TYPE=release -DCMAKE_C_FLAGS:STRING="$GCCFLAGS" -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
 make -C build -j${NUMBERTHREADS} DESTDIR="$MODULEPATH/${currentPackage}/package" install
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}-$ARCH-1.txz
@@ -163,7 +163,7 @@ sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage
 sed -i "s|\$PRGNAM-\$VERSION|\$PRGNAM-${version//_/.}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -175,7 +175,7 @@ mkdir package
 version=$(curl -s https://gitlab.com/AOMediaCodec/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 wget https://gitlab.com/AOMediaCodec/${currentPackage}/-/archive/${version}/${currentPackage}-${version}.tar.gz
 tar xvf ${currentPackage}-${version}.tar.gz && cd ${currentPackage}-${version}
-cmake -B build -S . -DCMAKE_C_FLAGS:STRING="$GCCFLAGS -flto=auto -ffat-lto-objects" -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -flto=auto -ffat-lto-objects" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib${SYSTEMBITS} -Wno-dev -DBUILD_DEC=OFF
+cmake -B build -S . -DCMAKE_C_FLAGS:STRING="$GCCFLAGS" -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" -DCMAKE_BUILD_TYPE:STRING=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib${SYSTEMBITS} -Wno-dev -DBUILD_DEC=OFF
 make -C build -j${NUMBERTHREADS} DESTDIR="$MODULEPATH/${currentPackage}/package" install
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-${version//[vV]}-$ARCH-1.txz
@@ -193,7 +193,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	for i in *.patch; do patch -p0 < $i || exit 1; done
 fi
 mkdir build && cd build
-CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -flto=auto" LDFLAGS="-fuse-ld=lld" meson setup -Denable_tests=false -Denable_tools=false --prefix /usr ..
+CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS" LDFLAGS="-fuse-ld=lld" meson setup -Denable_tests=false -Denable_tools=false --prefix /usr ..
 DESTDIR=$MODULEPATH/${currentPackage}/package ninja -j${NUMBERTHREADS} install || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -245,7 +245,7 @@ wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}
 wget https://code.videolan.org/videolan/${currentPackage}/-/archive/v${version}/${currentPackage}-v${version}.tar.gz
 sed -i "s|\$PKGNAM-\$VERSION-\$ARCH|\$PKGNAM-\${VERSION//[vV]}-\$ARCH|g" ${currentPackage}.SlackBuild
 sed -i "s|glslang=enabled|glslang=disabled -Dvulkan=disabled -Dshaderc=disabled |g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -280,11 +280,10 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
 	latestVersion=$(curl -s https://ffmpeg.org/releases/ | grep ffmpeg-4.4.[0-9] | cut -d '>' -f 2 | grep .xz\" | cut -d \" -f 2 | sort -V -r | head -1)
 	wget https://ffmpeg.org/releases/${latestVersion}
-	sed -i "s|-O[23].*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
 else
 	sed -i "s|^CFLAGS|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; CFLAGS|g" ${currentPackage}.SlackBuild
-	sed -i "s|-O[23].*|$CLANGFLAGS -flto=auto -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
 fi
+sed -i "s|-O[23].*|$CLANGFLAGS -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|\make |make CC=clang CXX=clang++ |g" ${currentPackage}.SlackBuild
@@ -300,7 +299,7 @@ git clone https://github.com/LuaJIT/LuaJIT ${currentPackage}
 cd ${currentPackage}
 version=`git --git-dir=.git log -1 --date=format:"%Y%m%d" --format="%ad"`
 sed -i -e '/-DLUAJIT_ENABLE_LUA52COMPAT/s/^#//' src/Makefile
-CFLAGS="${GCCFLAGS/ -fno-unwind-tables -fno-asynchronous-unwind-tables/}" CXXFLAGS="${GCCFLAGS/ -fno-unwind-tables -fno-asynchronous-unwind-tables/}" make -j${NUMBERTHREADS} Q= PREFIX=/usr INSTALL_LIB=/usr/lib$SYSTEMBITS || exit 1
+CFLAGS="${GCCFLAGS/ -fno-unwind-tables -fno-asynchronous-unwind-tables/} -ffat-lto-objects" CXXFLAGS="${GCCFLAGS/ -fno-unwind-tables -fno-asynchronous-unwind-tables/}" make -j${NUMBERTHREADS} Q= PREFIX=/usr INSTALL_LIB=/usr/lib$SYSTEMBITS || exit 1
 make Q= PREFIX=/usr INSTALL_LIB=$MODULEPATH/${currentPackage}/package/usr/lib$SYSTEMBITS install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 rm -fr $MODULEPATH/${currentPackage}/package/usr/bin
 cd $MODULEPATH/${currentPackage}/package

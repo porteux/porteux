@@ -92,6 +92,7 @@ for package in \
 	glycin \
 	libwnck4 \
 	exempi \
+	blueprint-compiler \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
@@ -142,6 +143,7 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # only required for building not for run-time
+rm $MODULEPATH/packages/blueprint-compiler*
 rm $MODULEPATH/packages/gperf*
 rm $MODULEPATH/packages/libheif*
 

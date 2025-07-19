@@ -36,7 +36,7 @@ version=${info#* }
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
@@ -67,7 +67,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/stevenhoneyman/${currentPackage}
 cd ${currentPackage}
 version=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug || exit 1
+./autogen.sh && CFLAGS="$GCCFLAGS" ./configure --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc --disable-static --disable-debug || exit 1
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -104,7 +104,7 @@ cd ${currentPackage}*
 sed -i 's|YELP_HELP_INIT||g' configure.ac
 sed -i 's|yelp-build|ls|g' autogen.sh
 sed -i 's|help.*|\\|g' Makefile.am
-CFLAGS="$GCCFLAGS" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
+CFLAGS="$GCCFLAGS -ffat-lto-objects" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
 make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
@@ -119,7 +119,7 @@ cd ${currentPackage}-$version
 mkdir build && cd build
 sed -i "s|i18n.merge_file('desktop',|i18n.merge_file(|g" ../src/meson.build
 sed -i "s|i18n.merge_file('appdata',|i18n.merge_file(|g" ../src/meson.build
-meson setup -Dcpp_args="$GCCFLAGS -flto=auto" --prefix /usr ..
+meson setup -Dcpp_args="$GCCFLAGS" --prefix /usr ..
 ninja -j${NUMBERTHREADS} || exit 1
 DESTDIR=$MODULEPATH/${currentPackage}/package ninja install
 cd $MODULEPATH/${currentPackage}/package

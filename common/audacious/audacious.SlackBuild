@@ -32,7 +32,7 @@ tar xvf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-${PRGNAM}-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
 	--prefix=/usr \

@@ -22,7 +22,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	cd $PRGNAM-$VERSION
 
 	mkdir build && cd build
-	CFLAGS="$GCCFLAGS -flto=auto" \
+	CFLAGS="$GCCFLAGS" \
 	meson setup \
 		--prefix=/usr \
 		--libdir=/usr/lib${SYSTEMBITS} \
@@ -48,7 +48,7 @@ else
 	cd $PRGNAM-$VERSION
 
 	mkdir build && cd build
-	CFLAGS="$GCCFLAGS -flto=auto" \
+	CFLAGS="$GCCFLAGS" \
 	meson setup \
 		--prefix=/usr \
 		--libdir=/usr/lib${SYSTEMBITS} \

@@ -24,7 +24,7 @@ cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
 	--prefix=/usr \

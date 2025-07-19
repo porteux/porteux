@@ -21,7 +21,7 @@ cd $PRGNAM-$VERSION
 patch -p1 -i $CWD/gnome-session-3.38.0-meson-Support-elogind.patch
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

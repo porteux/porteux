@@ -21,7 +21,7 @@ cd $PRGNAM-$VERSION
 sed -i "s|'--doc-format=gi-docgen',||g" src/meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--mandir=/usr/man \
