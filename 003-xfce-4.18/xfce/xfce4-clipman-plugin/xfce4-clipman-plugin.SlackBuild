@@ -18,7 +18,7 @@ wget https://gitlab.xfce.org/panel-plugins/${PRGNAM}/-/archive/${PRGNAM}-${VERSI
 tar xvf $PRGNAM-$PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$PRGNAM-$VERSION
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

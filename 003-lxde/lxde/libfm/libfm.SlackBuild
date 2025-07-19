@@ -21,7 +21,7 @@ sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FIL
 sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/job/fm-file-ops-job.c || exit 1
 sed -i "s|g_file_info_get_size(info)|g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/modules/vfs-search.c || exit 1
 
-./autogen.sh && CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
+./autogen.sh && CFLAGS="$GCCFLAGS -ffat-lto-objects -Wno-error=incompatible-pointer-types" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \

@@ -63,10 +63,10 @@ do
 	echo $'\n'$'\n'"Building: $d using externally specified options: $ALL_CMAKE_FLAGS"$'\n'
 	mkdir -p "$MODULEPATH/lxqt/$d/build" && cd "$MODULEPATH/lxqt/$d/build" || exit 1
 	
-	FLTO=""
-	[ "$d" != "lxqt-config" ] && [ "$d" != "lxqt-panel" ] && [ "$d" != "screengrab" ] && FLTO="-flto=auto"
+	LTOFAT=""
+	[ "$d" == "lxqt-config" ] || [ "$d" == "lxqt-panel" ] || [ "$d" == "screengrab" ] && LTOFAT="-ffat-lto-objects"
 
-	CXXFLAGS="$GCCFLAGS ${FLTO}" cmake $ALL_CMAKE_FLAGS .. && "$CMAKE_MAKE_PROGRAM" -j$JOB_NUM || exit 1
+	CXXFLAGS="$GCCFLAGS ${LTOFAT}" cmake $ALL_CMAKE_FLAGS .. && "$CMAKE_MAKE_PROGRAM" -j$JOB_NUM || exit 1
 	version=`git describe | cut -d- -f1`
 
 	"$CMAKE_MAKE_PROGRAM" install DESTDIR=$MODULEPATH/lxqt/$d/package/$d-$version-$ARCH-1

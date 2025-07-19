@@ -20,7 +20,7 @@ tar xfv $downloadName-$VERSION.tar.?z*
 cd $downloadName-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

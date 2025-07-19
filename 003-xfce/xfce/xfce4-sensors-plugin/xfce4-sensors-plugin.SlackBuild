@@ -21,7 +21,8 @@ cd $PRGNAM-$DOWNLOADVERSION
 
 sed -i 's|gint sensors_refresh_time = 60|gint sensors_refresh_time = 1|g' include/sensors-interface-plugin.h
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CXXFLAGS="$GCCFLAGS" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

@@ -86,7 +86,7 @@ sed -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
 sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
 sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
 sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS -flto=auto -ffat-lto-objects -fPIC\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS -fPIC\"|g" ${currentPackage}.SlackBuild
 sed -i "s|libunrar.so.5|libunrar.so.7|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
@@ -103,7 +103,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=duktape
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O[23].*|$GCCFLAGS -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
@@ -111,7 +111,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=polkit
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O[23].*|${GCCFLAGS/ -ffunction-sections -fdata-sections/} -flto=auto\"|g" ${currentPackage}.SlackBuild
+sed -i "s|-O[23].*|${GCCFLAGS/ -ffunction-sections -fdata-sections/}\"|g" ${currentPackage}.SlackBuild
 sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages

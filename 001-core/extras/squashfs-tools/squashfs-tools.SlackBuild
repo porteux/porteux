@@ -24,7 +24,7 @@ cd $PRGNAM-$VERSION
 
 cd $PRGNAM
 
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 make -j${NUMBERTHREADS} \
 	GZIP_SUPPORT="1" \
 	XZ_SUPPORT="1" \

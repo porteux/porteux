@@ -1,0 +1,34 @@
+From a7c201489eab973c33f52eaafc9dfcbfa0fdc0e6 Mon Sep 17 00:00:00 2001
+From: Xiaotian Wu <yetist@gmail.com>
+Date: Sun, 18 May 2025 17:10:12 +0800
+Subject: [PATCH] meson: Fix build error about font-viewer
+
+---
+ font-viewer/meson.build | 1 +
+ meson.build             | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/font-viewer/meson.build b/font-viewer/meson.build
+index 6a85f8afc..3636521f8 100644
+--- font-viewer/meson.build
++++ font-viewer/meson.build
+@@ -8,6 +8,7 @@ deps = [
+   common_deps,
+   pango_dep,
+   fontconfig_dep,
++  freetype_dep,
+   libm,
+ ]
+ executable(
+diff --git a/meson.build b/meson.build
+index ca16c48b4..fc28a15db 100644
+--- meson.build
++++ meson.build
+@@ -86,6 +86,7 @@ xi_dep = dependency('xi', version: '>= 1.5')
+ xext_dep = dependency('xext')
+ xscrnsaver_dep = dependency('xscrnsaver')
+ m_dep = cc.find_library('m')
++freetype_dep = dependency('freetype2')
+ 
+ enable_accountsservice = get_option('accountsservice')
+ accounts_dep = dependency('accountsservice', version: '>= 0.6.39', required: enable_accountsservice)

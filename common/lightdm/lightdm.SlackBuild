@@ -29,7 +29,7 @@ sed -i 's|seat_set_supports_multi_session|//seat_set_supports_multi_session|g' s
 export LIGHTDM_USER=gdm
 export LIGHTDM_GROUP=gdm
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 CXXFLAGS="$GCCFLAGS" \
 ./autogen.sh \
 	--prefix=/usr \

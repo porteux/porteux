@@ -21,7 +21,7 @@ cd $PRGNAM-$VERSION
 sed -i "s/subdir('doc')//" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
 	--buildtype=release \
