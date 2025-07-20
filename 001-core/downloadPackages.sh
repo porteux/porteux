@@ -214,8 +214,8 @@ DownloadPackage "utempter" &
 DownloadPackage "util-linux" &
 DownloadPackage "wget" &
 DownloadPackage "which" &
-DownloadPackage "whois" &
 wait
+DownloadPackage "whois" &
 DownloadPackage "wireless_tools" &
 DownloadPackage "wpa_supplicant" &
 DownloadPackage "xfsdump" &
@@ -223,7 +223,6 @@ DownloadPackage "xfsprogs" &
 DownloadPackage "xxHash" &
 DownloadPackage "xz" &
 DownloadPackage "zlib" &
-DownloadPackage "zstd" &
 wait
 
 ### only download if not present
