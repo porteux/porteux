@@ -22,9 +22,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	wait
 fi
 
-### temporary packages for further building
-
-
 ### script clean up
 
 rm FILE_LIST

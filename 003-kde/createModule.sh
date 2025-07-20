@@ -415,7 +415,6 @@ rm usr/lib${SYSTEMBITS}/libpolkit-qt5*
 rm usr/lib${SYSTEMBITS}/libqca-qt5*
 rm usr/lib${SYSTEMBITS}/libQCoro5*
 
-
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/applications/org.kde.kuserfeedback-console.desktop
 rm usr/share/applications/org.kde.kwalletd*.desktop
