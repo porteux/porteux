@@ -280,10 +280,11 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm ffmpeg-*.tar.xz
 	latestVersion=$(curl -s https://ffmpeg.org/releases/ | grep ffmpeg-4.4.[0-9] | cut -d '>' -f 2 | grep .xz\" | cut -d \" -f 2 | sort -V -r | head -1)
 	wget https://ffmpeg.org/releases/${latestVersion}
+	sed -i "s|-O[23].*|${CLANGFLAGS/ -flto=auto}\"|g" ${currentPackage}.SlackBuild
 else
 	sed -i "s|^CFLAGS|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; CFLAGS|g" ${currentPackage}.SlackBuild
+	sed -i "s|-O[23].*|$CLANGFLAGS -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
 fi
-sed -i "s|-O[23].*|$CLANGFLAGS -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
 sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|\make |make CC=clang CXX=clang++ |g" ${currentPackage}.SlackBuild
