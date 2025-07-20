@@ -128,7 +128,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libass
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/libass/${currentPackage}.SlackBuild  || exit 1
+wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/libass/${currentPackage}.SlackBuild || exit 1
 info=$(DownloadLatestFromGithub "libass" ${currentPackage})
 version=${info#* }
 sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
@@ -285,7 +285,7 @@ else
 	sed -i "s|^CFLAGS|cp $SCRIPTPATH/extras/${currentPackage}/*.patch . ; for i in *.patch; do patch -p0 < \$i; done; CFLAGS|g" ${currentPackage}.SlackBuild
 	sed -i "s|-O[23].*|$CLANGFLAGS -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
 fi
-sed -i "s|\./configure \\\\|\./configure \\\\\n  --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
+sed -i "s|\./configure \\\\|\./configure \\\\\n --enable-nvdec --enable-nvenc --disable-ffplay \\\\|g" ${currentPackage}.SlackBuild
 sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
 sed -i "s|\make |make CC=clang CXX=clang++ |g" ${currentPackage}.SlackBuild
 AMF=yes AOM=no GLSLANG=no SHADERC=no VULKAN=no ASS=yes RTMP=yes TWOLAME=yes XVID=yes X265=yes X264=yes DAV1D=yes AAC=yes SVTAV1=yes sh ${currentPackage}.SlackBuild || exit 1

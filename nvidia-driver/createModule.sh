@@ -38,7 +38,7 @@ tar cf $INSTALLERDIR/nvidia.tar.xz --exclude={"*/.*","*/.wh.*",".cache","dev","h
 echo "Extracting memory changes file..."
 tar xf $INSTALLERDIR/nvidia.tar.xz --strip 1 -C $MODULEDIR || exit 1
 
-echo  "Cleaning up driver directory..."
+echo "Cleaning up driver directory..."
 find $MODULEDIR -name '*.la' -delete
 find $MODULEDIR -type f -maxdepth 1 -delete
 find $MODULEDIR -type l -maxdepth 1 -delete

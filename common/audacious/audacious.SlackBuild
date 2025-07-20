@@ -43,7 +43,7 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-rm -f $PKG/{,usr/}lib${SYSTEMBITS}/*.la
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 # remove invalid entry
 sed -i "s|SingleMainWindow=true||g" $PKG/usr/share/applications/audacious.desktop
