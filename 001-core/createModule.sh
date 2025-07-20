@@ -30,6 +30,9 @@ DownloadFromSlackware
 
 installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
 
+installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+
 if [ $SLACKWAREVERSION != "current" ]; then
 	# required by new wireplumber
 	currentPackage=lua
@@ -72,9 +75,6 @@ version=$(date -r package/usr/bin/neofetch +%Y%m%d)
 cd $MODULEPATH/${currentPackage}/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
-
-installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 currentPackage=7zip
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
