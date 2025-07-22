@@ -48,12 +48,10 @@ makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version//[^0-9.
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
-export PATH=$HOME/.cargo/bin/:$PATH
-rustup component add rust-src --toolchain nightly
-
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/llvm* > /dev/null 2>&1
+installpkg $MODULEPATH/packages/rust*.txz
+rm $MODULEPATH/packages/rust*
 
 currentPackage=just
 cd $MODULEPATH
