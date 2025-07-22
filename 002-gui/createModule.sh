@@ -39,8 +39,11 @@ else
 
 	installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
 	rm $MODULEPATH/packages/cargo-c*
-	installpkg $MODULEPATH/packages/rust*.txz || exit 1
-	rm $MODULEPATH/packages/rust*
+
+	# not using rust from slackware because it's much slower
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
+	export PATH=$HOME/.cargo/bin/:$PATH
+	rustup component add rust-src --toolchain stable
 
 	currentPackage=librsvg
 	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1

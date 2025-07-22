@@ -237,7 +237,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libsfdo" & # required by labwc
 	wait
 	DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
-	DownloadPackage "rust" & # required by librsvg
 	DownloadPackage "seatd" & # required by labwc
 	DownloadPackage "volume_key" & # required by udisks 2.10.0+
 	DownloadPackage "wlroots" & # required by labwc

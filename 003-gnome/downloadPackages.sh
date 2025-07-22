@@ -62,7 +62,6 @@ wait
 DownloadPackage "libwnck3" &
 DownloadPackage "openldap" & # required by libadwaita (appstream)
 DownloadPackage "python-pip" &
-DownloadPackage "rust" &
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "vulkan-sdk" & # required by gtksourceview
 DownloadPackage "xtrans" &

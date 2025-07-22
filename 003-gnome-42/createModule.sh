@@ -58,10 +58,14 @@ rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
-rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/texinfo*
 rm $MODULEPATH/packages/xtrans*
+
+# not using rust from slackware because it's much slower
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
+export PATH=$HOME/.cargo/bin/:$PATH
+rustup component add rust-src --toolchain stable
 
 # some packages (e.g nautilus and vte) require this folder
 mkdir -p /usr/local > /dev/null 2>&1
