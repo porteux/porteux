@@ -29,7 +29,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--mandir=/usr/man
-  
+
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
