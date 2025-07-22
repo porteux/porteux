@@ -119,11 +119,8 @@ make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ firmware_instal
 
 cd ..
 
-echo "Creating symlinks..."
-dir=$(ls lib/modules/)
-rm lib/modules/$dir/build lib/modules/$dir/source > /dev/null 2>&1
-ln -sf /usr/src/linux lib/modules/$dir/build
-ln -sf /usr/src/linux lib/modules/$dir/source
+kernelModulesFolder=$(ls lib/modules/)
+rm lib/modules/$kernelModulesFolder/build lib/modules/$kernelModulesFolder/source > /dev/null 2>&1
 
 if [ $DOWNLOADINGFIRMWARE ]; then
 	# wait for firmware download to finish
@@ -189,6 +186,8 @@ mv ${MODULEPATH}/linux-${KERNELVERSION} ${CRIPPLEDSOURCEPATH}
 mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/
 mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/config
 ln -sf linux-${KERNELVERSION} ${CRIPPLEDSOURCEPATH}/linux
+mkdir -p ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder
+ln -sf /usr/src/linux ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder
 
 # strip crippled
 mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch/x86 ${CRIPPLEDSOURCEPATH}
