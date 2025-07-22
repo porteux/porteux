@@ -50,8 +50,11 @@ rm -fr $MODULEPATH/${currentPackage}
 # required from now on
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/llvm* > /dev/null 2>&1
-installpkg $MODULEPATH/packages/rust*.txz
-rm $MODULEPATH/packages/rust*
+
+# not using rust from slackware because it's much slower
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
+export PATH=$HOME/.cargo/bin/:$PATH
+rustup component add rust-src --toolchain stable
 
 currentPackage=just
 cd $MODULEPATH

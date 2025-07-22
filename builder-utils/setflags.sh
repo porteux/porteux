@@ -7,7 +7,7 @@ SetFlags() {
 	export ARCHITECTURELEVEL="x86-64-v2"
 	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed -Wl,--build-id=none -flto=auto -Wl,-O1 -fno-ident -s -fmodulo-sched -floop-parallelize-all -fuse-linker-plugin -Wl,-sort-common"
 	export CLANGFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed -Wl,--build-id=none -flto=auto -Wl,-O2 -Wno-unused-command-line-argument"
-	export RUSTFLAGS="-Copt-level=s -Ctarget-cpu=$ARCHITECTURELEVEL -Clink-arg=-ffunction-sections -Clink-arg=-fdata-sections -Cforce-unwind-tables=no -Clink-arg=-Wl,--gc-sections -Clink-arg=-Wl,--as-needed -Clink-arg=-Wl,--build-id=none -Clto=fat -Cpanic=abort -Cstrip=debuginfo -Cembed-bitcode=yes -Ccodegen-units=16"
+	export RUSTFLAGS="-Copt-level=s -Ctarget-cpu=$ARCHITECTURELEVEL -Clink-arg=-ffunction-sections -Clink-arg=-fdata-sections -Cforce-unwind-tables=no -Clink-arg=-Wl,--gc-sections -Clink-arg=-Wl,--as-needed -Clink-arg=-Wl,--build-id=none -Clto=fat -Cpanic=abort -Cstrip=debuginfo -Cembed-bitcode=yes"
 
 	systemFullVersion=$(cat /etc/slackware-version)
 	systemVersion=${systemFullVersion//* }
@@ -33,7 +33,7 @@ SetFlags() {
 		export SYSTEMBITS="64"
 	fi
 
-	export SLACKWAREDOMAIN="https://ftp.slackware.com/pub"
+	export SLACKWAREDOMAIN="http://ftp.slackware.com/pub"
 	#export SLACKWAREDOMAIN="https://mirrors.slackware.com"
 	#export SLACKWAREDOMAIN="https://slackware.uk"
 	export REPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
