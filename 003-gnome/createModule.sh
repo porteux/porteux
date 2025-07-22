@@ -55,6 +55,7 @@ rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/openldap*
 rm $MODULEPATH/packages/python-pip*
+rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/vulkan-sdk*
 rm $MODULEPATH/packages/xtrans*
@@ -65,11 +66,6 @@ pip install argcomplete || exit 1
 pip install attrs || exit 1
 pip install jinja2 || exit 1
 pip install pygments || exit 1
-
-# rust nightly required by glycin and loupe
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
-PATH=/root/.cargo/bin/:$PATH
-rustup component add rust-src --toolchain nightly
 
 DE_LATEST_VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
 

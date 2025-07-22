@@ -37,13 +37,10 @@ if [ $SLACKWAREVERSION != "current" ]; then
 else
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 
-	# rust nightly required by librsvg
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
-	PATH=/root/.cargo/bin/:$PATH
-	rustup component add rust-src --toolchain nightly
-
 	installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
-	rm $MODULEPATH/packages/cargo-c*.txz
+	rm $MODULEPATH/packages/cargo-c*
+	installpkg $MODULEPATH/packages/rust*.txz || exit 1
+	rm $MODULEPATH/packages/rust*
 
 	currentPackage=librsvg
 	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1

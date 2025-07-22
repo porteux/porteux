@@ -8,6 +8,7 @@ GenerateRepositoryUrls "$REPOSITORY"
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libnma" &
 DownloadPackage "network-manager-applet" &
+DownloadPackage "rust" &
 wait
 
 ### only download if not present
