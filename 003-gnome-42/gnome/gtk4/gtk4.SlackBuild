@@ -13,7 +13,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget -nd -r -l1 --no-parent -A "${SRCNAM}-4*.tar.xz"  https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
+wget -nd -r -l1 --no-parent -A "${SRCNAM}-4*.tar.xz" https://download.gnome.org/core/${GNOME_LATEST_MAJOR_VERSION}/${GNOME_LATEST_VERSION}/sources/
 VERSION=${VERSION:-$(find . -maxdepth 1 -name "$SRCNAM-*.tar.?z*" | rev | cut -f 3- -d . | cut -f 1 -d - | rev)}
 
 tar xfv $SRCNAM-$VERSION.tar.?z*

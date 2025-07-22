@@ -35,7 +35,7 @@ meson setup \
 	-Dwayland=true \
 	-Dnative_backend=true \
 	-Ddefault_driver=auto
-  
+
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;

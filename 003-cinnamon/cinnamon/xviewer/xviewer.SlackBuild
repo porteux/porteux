@@ -31,7 +31,7 @@ meson setup \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Ddocs=false
-  
+
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;

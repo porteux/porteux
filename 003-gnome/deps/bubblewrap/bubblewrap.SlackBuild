@@ -35,7 +35,7 @@ meson setup \
 	-Dselinux=disabled \
 	-Dtests=false \
 	-Dman=disabled
-  
+
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;

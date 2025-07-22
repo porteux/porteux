@@ -31,7 +31,7 @@ meson setup \
 	-Dstrip=true \
 	-Dprofiler=false \
 	-Ddefault_driver=auto
-  
+
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;

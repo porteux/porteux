@@ -41,9 +41,7 @@ find $PKG -type f -name "*.la" -exec rm -f {} \;
 # Add upower policy allowing users in the 'power' group
 # to suspend/hibernate the computer:
 mkdir -p $PKG/usr/share/polkit-1/rules.d
-install -m 0644 -o root \
-  $CWD/10-enable-upower-suspend.rules \
-  $PKG/usr/share/polkit-1/rules.d/10-enable-upower-suspend.rules.new
+install -m 0644 -o root $CWD/10-enable-upower-suspend.rules $PKG/usr/share/polkit-1/rules.d/10-enable-upower-suspend.rules.new
 
 # Don't clobber the config file on upgrades
 mv $PKG/etc/UPower/UPower.conf $PKG/etc/UPower/UPower.conf.new

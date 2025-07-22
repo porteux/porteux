@@ -88,12 +88,9 @@ rm -f $PKG/usr/bin/js*-config
 # Rename shared library to have a proper soname:
 mv $PKG/usr/lib${SYSTEMBITS}/libmozjs-91.so $PKG/usr/lib${SYSTEMBITS}/libmozjs-91.so.0.0.0
 ( cd $PKG/usr/lib${SYSTEMBITS}
-  ln -sf libmozjs-91.so.0.0.0 libmozjs-91.so.0
-  ln -sf libmozjs-91.so.0 libmozjs-91.so
+	ln -sf libmozjs-91.so.0.0.0 libmozjs-91.so.0
+	ln -sf libmozjs-91.so.0 libmozjs-91.so
 )
-
-find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF \
-  | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
