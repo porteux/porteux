@@ -32,7 +32,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
-	-Dgtk_doc=false \
+	-Ddocumentation=false \
 	-Dexamples=false \
 	-Dtests=false
 
