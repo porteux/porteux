@@ -33,9 +33,9 @@ SetFlags() {
 		export SYSTEMBITS="64"
 	fi
 
-	export SLACKWAREDOMAIN="http://ftp.slackware.com/pub"
-	#export SLACKWAREDOMAIN="https://mirrors.slackware.com"
+	export SLACKWAREDOMAIN="https://mirrors.slackware.com"
 	#export SLACKWAREDOMAIN="https://slackware.uk"
+	#export SLACKWAREDOMAIN="http://ftp.slackware.com/pub"
 	export REPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
 	export PATCHREPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS/patches"
 	export SOURCEREPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/source"
