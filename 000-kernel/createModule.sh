@@ -74,13 +74,6 @@ rm ${MODULEPATH}/linux-${KERNELVERSION}.tar.?z
 echo "Copying .config file..."
 cp ${SCRIPTPATH}/${SYSTEMBITS}bit.config ${MODULEPATH}/linux-${KERNELVERSION}/.config || exit 1
 
-echo "Building kernel headers..."
-mkdir -p ${MODULEPATH}/../05-devel/packages
-wget -P $MODULEPATH ${SLACKWAREDOMAIN}/slackware/slackware-current/source/k/kernel-headers.SlackBuild > /dev/null 2>&1 || exit 1
-KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${MODULEPATH}/kernel-headers.SlackBuild > /dev/null 2>&1
-mv /tmp/kernel-headers-*.txz ${MODULEPATH}/../05-devel/packages
-rm ${MODULEPATH}/kernel-headers.SlackBuild
-
 echo "Downloading AUFS..."
 git clone https://github.com/sfjro/aufs-standalone ${MODULEPATH}/aufs_sources > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
 git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}${KERNELMINORVERSION}${KERNELPATCHVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
@@ -95,6 +88,13 @@ for i in ../aufs_sources/*.patch; do
 	patch -N -p1 < "$i" > /dev/null 2>&1 || { echo "Failed to add AUFS patch '${i}'."; exit 1; }
 done
 rm -fr ../aufs_sources
+
+echo "Building kernel headers..."
+mkdir -p ${MODULEPATH}/../05-devel/packages
+wget -P $MODULEPATH ${SLACKWAREDOMAIN}/slackware/slackware-current/source/k/kernel-headers.SlackBuild > /dev/null 2>&1 || exit 1
+KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${MODULEPATH}/kernel-headers.SlackBuild > /dev/null 2>&1
+mv /tmp/kernel-headers-*.txz ${MODULEPATH}/../05-devel/packages
+rm ${MODULEPATH}/kernel-headers.SlackBuild
 
 if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
 	echo "Downloading firmware in the background..."
@@ -175,6 +175,9 @@ cd ..
 echo "Creating kernel xzm module..."
 mkdir -p ${MODULEPATH}/${MODULENAME}
 mv lib ${MODULEPATH}/${MODULENAME}
+
+# strip kernel
+find ${MODULEPATH}/${MODULENAME} | xargs strip --strip-unneeded 2> /dev/null
 
 # create kernel module xzm module
 MakeModule ${MODULEPATH}/${MODULENAME} "${MODULENAME}-${KERNELVERSION}.xzm" > /dev/null 2>&1
