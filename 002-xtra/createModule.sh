@@ -218,6 +218,7 @@ rm -fr $MODULEPATH/${currentPackage}
 rm /tmp/${currentPackage}*.t?z
 
 # required by libplacebo
+cd $MODULEPATH
 installpkg $MODULEPATH/packages/python-pip-*.t?z || exit 1
 rm $MODULEPATH/packages/python-pip-*.t?z || exit 1
 installpkg $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
@@ -227,6 +228,7 @@ rm $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
 installpkg $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
 rm $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
 
+cd $MODULEPATH
 pip install glad2 || exit 1
 
 if [ $SLACKWAREVERSION != "current" ]; then
