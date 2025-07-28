@@ -206,16 +206,14 @@ DownloadPackage "xclipboard" &
 DownloadPackage "xdg-user-dirs" &
 DownloadPackage "xdg-utils" &
 DownloadPackage "xev" &
-DownloadPackage "xf86-input-libinput" &
 DownloadPackage "xhost" &
 DownloadPackage "xinit" &
 DownloadPackage "xkbcomp" &
 DownloadPackage "xkeyboard-config" &
 DownloadPackage "xkill" &
-DownloadPackage "xmessage" &
 wait
+DownloadPackage "xmessage" &
 DownloadPackage "xmodmap" &
-DownloadPackage "xorg-server" &
 DownloadPackage "xprop" &
 DownloadPackage "xrandr" &
 DownloadPackage "xrdb" &
