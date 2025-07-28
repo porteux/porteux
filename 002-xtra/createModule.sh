@@ -21,6 +21,7 @@ fi
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+cd $MODULEPATH
 
 ### download packages from slackware repositories
 
@@ -226,7 +227,6 @@ rm $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
 installpkg $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
 rm $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
 
-cd $MODULEPATH
 pip install glad2 || exit 1
 
 if [ $SLACKWAREVERSION != "current" ]; then
