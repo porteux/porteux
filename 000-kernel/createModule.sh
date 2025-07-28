@@ -30,7 +30,6 @@ CRIPPLEDMODULENAME="06-crippled-sources-${KERNELVERSION}"
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
-cd $MODULEPATH
 
 ### set compiler
 
