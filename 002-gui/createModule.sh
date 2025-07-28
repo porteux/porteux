@@ -42,7 +42,7 @@ else
 	rm $MODULEPATH/packages/cargo-c*
 
 	# not using rust from slackware because it's much slower
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
 	rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
 	export PATH=$HOME/.cargo/bin/:$PATH
 
