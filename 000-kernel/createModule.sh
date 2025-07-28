@@ -187,7 +187,7 @@ mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/
 mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/config
 ln -sf linux-${KERNELVERSION} ${CRIPPLEDSOURCEPATH}/linux
 mkdir -p ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder
-ln -sf /usr/src/linux ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder
+ln -sf /usr/src/linux ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder/build
 
 # strip crippled
 mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch/x86 ${CRIPPLEDSOURCEPATH}
