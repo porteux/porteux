@@ -24,11 +24,7 @@ if [ "$1" ]; then
 	export KERNELVERSION="$1"
 fi
 
-KERNELMAJORVERSION=${KERNELVERSION:0:1}
-KERNELMINORVERSION=$(echo ${KERNELVERSION} | cut -d. -f2)
-[ ${KERNELMINORVERSION} ] && KERNELMINORVERSION=.${KERNELMINORVERSION}
-KERNELPATCHVERSION=$(echo ${KERNELVERSION} | cut -d. -f3)
-[ ${KERNELPATCHVERSION} ] && KERNELPATCHVERSION=.${KERNELPATCHVERSION}
+IFS='.' read -r KERNELMAJORVERSION KERNELMINORVERSION KERNELPATCHVERSION <<< "$KERNELVERSION"
 CRIPPLEDMODULENAME="06-crippled-sources-${KERNELVERSION}"
 
 ### create module folder
@@ -47,8 +43,9 @@ if [ ${CLANG:-no} = "yes" ]; then
 	fi
 	COMPILER="Clang"
 	EXTRAFLAGS="LLVM=1 CC=clang"
-	# remove flags that are not compatible with the kernel
 	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
+	# remove flags that are not compatible with the kernel
+	BUILDPARAMS="${BUILDPARAMS/ -flto=auto/}"
 else
 	COMPILER="GCC"
 	# remove flags that are not compatible with the kernel
