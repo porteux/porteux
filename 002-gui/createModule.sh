@@ -73,11 +73,8 @@ sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" ${currentPackage}.SlackBuild
 sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
 sed -i "s|-\${VERSION}-\$ARCH-\${BUILD}|-classic-\${VERSION}-\$ARCH-\${BUILD}|g" ${currentPackage}.SlackBuild
-if [ $SLACKWAREVERSION != "current" ]; then
-	sed -i "s|-O[23].*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
-else
-	sed -i "s|-O[23].*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
-fi
+sed -i "s|-O[23].*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
+sed -i "s| -DG_ENABLE_DEBUG||g" ${currentPackage}.SlackBuild
 sed -i "s|meson setup|export CC=clang; meson setup|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
