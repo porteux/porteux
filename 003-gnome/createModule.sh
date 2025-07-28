@@ -23,6 +23,7 @@ fi
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+cd $MODULEPATH
 
 ### download packages from slackware repositories
 
@@ -60,7 +61,6 @@ rm $MODULEPATH/packages/vulkan-sdk*
 rm $MODULEPATH/packages/xtrans*
 
 # required by mutter 45+
-cd $MODULEPATH
 pip install argcomplete || exit 1
 pip install attrs || exit 1
 pip install jinja2 || exit 1

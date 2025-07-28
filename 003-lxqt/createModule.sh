@@ -23,6 +23,7 @@ fi
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+cd $MODULEPATH
 
 ### download packages from slackware repositories
 

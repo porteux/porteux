@@ -23,6 +23,7 @@ fi
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+cd $MODULEPATH
 
 ### download packages from slackware repositories
 
@@ -119,7 +120,6 @@ rm $MODULEPATH/packages/python-pip*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
-cd $MODULEPATH
 pip install build || exit 1
 pip install flit-core || exit 1
 pip install installer || exit 1

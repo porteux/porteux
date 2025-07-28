@@ -23,6 +23,7 @@ fi
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+cd $MODULEPATH
 
 ### download packages from slackware repositories
 
@@ -184,7 +185,6 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-cd $MODULEPATH
 pip install pysass # required by cinnamon project
 
 # cinnamon packages
