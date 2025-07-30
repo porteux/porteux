@@ -111,13 +111,10 @@ cp -f arch/x86/boot/bzImage ../vmlinuz
 echo "Installing modules..."
 make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
 
-echo "Installing firmwares..."
-make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ firmware_install > /dev/null 2>&1
-
 cd ..
 
 kernelModulesFolder=$(ls lib/modules/)
-rm lib/modules/$kernelModulesFolder/build lib/modules/$kernelModulesFolder/source > /dev/null 2>&1
+rm lib/modules/$kernelModulesFolder/build > /dev/null 2>&1
 
 if [ $DOWNLOADINGFIRMWARE ]; then
 	# wait for firmware download to finish
