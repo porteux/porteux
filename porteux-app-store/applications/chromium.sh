@@ -109,7 +109,7 @@ make_module_chromium(){
     cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/$product_name/chrome" "$product_name" &&
     cat > "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" << EOF
 [Desktop Entry]
-Exec=chromium %U
+Exec=chromium --enable-features=NetworkServiceInProcess2 %U
 Icon=chromium
 Type=Application
 Categories=Network;WebBrowser;
