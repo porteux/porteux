@@ -101,7 +101,7 @@ if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
 	) &
 fi
 
-# this allows CONFIG_DEBUG_KERNEL=n
+# this allows CONFIG_DEBUG_KERNEL to be disabled
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig
 
 echo "Building vmlinuz (this may take a while)..."
