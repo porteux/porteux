@@ -29,6 +29,166 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
+REPOSITORY="https://slackware.halpanet.org/kde6town/stable/current/${ARCH}"
+GenerateRepositoryUrls
+
+DownloadPackage "ark" &
+DownloadPackage "attica" &
+DownloadPackage "baloo" &
+DownloadPackage "baloo-widgets" &
+DownloadPackage "bluedevil" &
+DownloadPackage "bluez-qt" &
+DownloadPackage "breeze" &
+DownloadPackage "breeze-grub" &
+DownloadPackage "breeze-gtk" &
+DownloadPackage "breeze-icons" &
+wait
+DownloadPackage "ddcutil" &
+DownloadPackage "dolphin" &
+DownloadPackage "dolphin-plugins" &
+DownloadPackage "ffmpegthumbs" &
+DownloadPackage "frameworkintegration" &
+DownloadPackage "gwenview" &
+DownloadPackage "kactivitymanagerd" &
+DownloadPackage "kapidox" &
+wait
+DownloadPackage "karchive" &
+DownloadPackage "kauth" &
+DownloadPackage "kbookmarks" &
+DownloadPackage "kcmutils" &
+DownloadPackage "kcodecs" &
+DownloadPackage "kColorPicker" &
+DownloadPackage "kcolorscheme" &
+DownloadPackage "kcompletion" &
+DownloadPackage "kconfig" &
+DownloadPackage "kconfigwidgets" &
+wait
+DownloadPackage "kcoreaddons" &
+DownloadPackage "kcrash" &
+DownloadPackage "kdbusaddons" &
+DownloadPackage "kdeclarative" &
+DownloadPackage "kde-cli-tools" &
+DownloadPackage "kdecoration" &
+DownloadPackage "kded" &
+DownloadPackage "kde-gtk-config" &
+DownloadPackage "kdenetwork-filesharing" &
+DownloadPackage "kdeplasma-addons" &
+DownloadPackage "kdesu" &
+wait
+DownloadPackage "kdnssd" &
+DownloadPackage "kfilemetadata" &
+DownloadPackage "kglobalaccel" &
+DownloadPackage "kglobalacceld" &
+DownloadPackage "kguiaddons" &
+DownloadPackage "ki18n" &
+DownloadPackage "kiconthemes" &
+DownloadPackage "kidletime" &
+DownloadPackage "kImageAnnotator" &
+DownloadPackage "kinfocenter" &
+wait
+DownloadPackage "kio" &
+DownloadPackage "kio-admin" &
+DownloadPackage "kio-extras" &
+DownloadPackage "kio-gdrive" &
+DownloadPackage "kio-zeroconf" &
+DownloadPackage "kirigami" &
+DownloadPackage "kirigami-addons" &
+DownloadPackage "kitemmodels" &
+DownloadPackage "kitemviews" &
+DownloadPackage "kjobwidgets" &
+wait
+DownloadPackage "kmenuedit" &
+DownloadPackage "knewstuff" &
+DownloadPackage "knotifications" &
+DownloadPackage "knotifyconfig" &
+DownloadPackage "konsole" &
+DownloadPackage "kpackage" &
+DownloadPackage "kparts" &
+DownloadPackage "kpeople" &
+DownloadPackage "kpeoplevcard" &
+DownloadPackage "kpipewire" &
+wait
+DownloadPackage "kplotting" &
+DownloadPackage "kpty" &
+DownloadPackage "kqtquickcharts" &
+DownloadPackage "kquickcharts" &
+DownloadPackage "krunner" &
+DownloadPackage "kscreen" &
+DownloadPackage "kscreenlocker" &
+DownloadPackage "kservice" &
+DownloadPackage "ksshaskpass" &
+DownloadPackage "kstatusnotifieritem" &
+wait
+DownloadPackage "ksvg" &
+DownloadPackage "ksystemstats" &
+DownloadPackage "ktexteditor" &
+DownloadPackage "ktextwidgets" &
+DownloadPackage "kunitconversion" &
+DownloadPackage "kuserfeedback" &
+DownloadPackage "kwallet" &
+DownloadPackage "kwayland" &
+DownloadPackage "kwayland-integration" &
+DownloadPackage "kwidgetsaddons" &
+wait
+DownloadPackage "kwin" &
+DownloadPackage "kwindowsystem" &
+DownloadPackage "kwrited" &
+DownloadPackage "kxmlgui" &
+DownloadPackage "layer-shell-qt" &
+DownloadPackage "libkdcraw" &
+DownloadPackage "libkexiv2" &
+DownloadPackage "libkipi" &
+DownloadPackage "libkscreen" &
+DownloadPackage "libksysguard" &
+wait
+DownloadPackage "libplasma" &
+DownloadPackage "libqaccessibilityclient" &
+DownloadPackage "milou" &
+DownloadPackage "modemmanager-qt" &
+DownloadPackage "networkmanager-qt" &
+DownloadPackage "okular" &
+DownloadPackage "oxygen" &
+DownloadPackage "plasma5support" &
+DownloadPackage "plasma-activities" &
+DownloadPackage "plasma-activities-stats" &
+wait
+DownloadPackage "plasma-browser-integration" &
+DownloadPackage "plasma-desktop" &
+DownloadPackage "plasma-integration" &
+DownloadPackage "plasma-nm" &
+DownloadPackage "plasma-pa" &
+DownloadPackage "plasma-systemmonitor" &
+DownloadPackage "plasma-workspace" &
+wait
+DownloadPackage "polkit-kde-agent" &
+DownloadPackage "polkit-qt" &
+DownloadPackage "powerdevil" &
+DownloadPackage "prison" &
+DownloadPackage "pulseaudio-qt" &
+DownloadPackage "purpose" &
+DownloadPackage "qca" &
+wait
+DownloadPackage "qcoro" &
+DownloadPackage "qqc2-desktop-style" &
+DownloadPackage "sddm" &
+DownloadPackage "sddm-kcm" &
+DownloadPackage "solid" &
+DownloadPackage "sonnet" &
+DownloadPackage "spectacle" &
+DownloadPackage "syndication" &
+DownloadPackage "syntax-highlighting" &
+DownloadPackage "systemsettings" &
+DownloadPackage "threadweaver" &
+DownloadPackage "xdg-desktop-portal-kde" &
+wait
+
+rm $MODULEPATH/packages/FILE_LIST
+rm $MODULEPATH/packages/serverPackages.txt
+
+DE_LATEST_VERSION=$(ls plasma-desktop-* | cut -d "-" -f 3)
+MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
+
 ### packages that require specific stripping
 
 currentPackage=qt6
@@ -199,158 +359,6 @@ done
 
 # only required for building
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
-
-# extract package from here https://www.linuxquestions.org/questions/slackware-14/building-the-plasma6-for-slackware-current-in-the-ktown-style-a-build-based-on-the-alienbob%27s-ktown-4175735773/page89.html#post6560591
-KDE6PACKAGES=/tmp/packages
-[ ! -d $KDE6PACKAGES ] && echo "Couldn't find KDE packages. Extract them to /tmp/packages" && exit 1
-
-DE_LATEST_VERSION=$(find $KDE6PACKAGES -type f -name "plasma-desktop-*" | cut -d "-" -f 3)
-
-echo "Building KDE Plasma ${DE_LATEST_VERSION}..."
-MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
-
-find $KDE6PACKAGES -type f -name "ark*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "attica-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "baloo-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "baloo-widgets*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "bluedevil*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "bluez-qt*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "breeze-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "breeze-grub*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "breeze-gtk*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "breeze-icons*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "ddcutil*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "dolphin*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "dolphin-plugins*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "ffmpegthumbs*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "frameworkintegration-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "gwenview*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kColorPicker*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kImageAnnotator*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kactivitymanagerd*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kapidox*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "karchive-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kauth-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kbookmarks-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kcmutils-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kcodecs-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kcolorscheme*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kcompletion-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kconfig-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kconfigwidgets-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kcoreaddons-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kcrash-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kdbusaddons-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kde-cli-tools*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kde-gtk-config*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kdeclarative-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kdecoration*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kded-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kdenetwork-filesharing*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kdeplasma-addons*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kdesu-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kdnssd-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kfilemetadata-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kglobalaccel-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kglobalacceld*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kguiaddons-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "ki18n-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kiconthemes-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kidletime-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kinfocenter*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kio-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kio-admin*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kio-extras*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kio-gdrive*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kio-zeroconf*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kirigami-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kirigami-addons*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kitemmodels-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kitemviews-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kjobwidgets-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kmenuedit*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "knewstuff-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "knotifications-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "knotifyconfig-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "konsole*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kpackage-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kparts-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kpeople-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kpeoplevcard*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kpipewire*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kplotting-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kpty-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kqtquickcharts-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kquickcharts-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "krunner-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kscreen*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kscreenlocker*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kservice-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "ksshaskpass*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kstatusnotifieritem*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "ksvg*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "ksystemstats*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "ktexteditor-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "ktextwidgets-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kunitconversion-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kuserfeedback*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kwallet-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kwayland-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kwayland-integration*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kwidgetsaddons-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kwin-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kwindowsystem-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kwrited*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "kxmlgui-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "layer-shell-qt*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "libkdcraw*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "libkexiv2*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "libkipi*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "libkscreen*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "libksysguard*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "libplasma*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "libqaccessibilityclient*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "milou*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "modemmanager*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "networkmanager-qt*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "okular*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "oxygen-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "oxygen-fonts*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "oxygen-gtk2*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "phonon-4*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "phonon-backend-gstreamer*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "phonon-backend-mpv*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "phonon-backend-vlc*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "plasma-activities*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "plasma-activities-stats*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "plasma-browser-integration*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "plasma-desktop*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "plasma-integration*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "plasma-nm*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "plasma-pa*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "plasma-systemmonitor*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "plasma-workspace*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "plasma5support*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "polkit-kde-agent*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "polkit-qt*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "powerdevil*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "prison-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "purpose-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "pulseaudio-qt*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "qca*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "qcoro*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "qqc2-desktop-style-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "sddm*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "sddm-kcm*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "solid-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "sonnet-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "spectacle*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "syndication-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "syntax-highlighting-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "systemsettings*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "threadweaver-6*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "wayland-utils*" -exec cp {} $MODULEPATH/packages/ \;
-find $KDE6PACKAGES -type f -name "xdg-desktop-portal-kde*" -exec cp {} $MODULEPATH/packages/ \;
 
 currentPackage=qcoro
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
