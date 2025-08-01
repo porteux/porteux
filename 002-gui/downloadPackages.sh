@@ -189,6 +189,7 @@ DownloadPackage "v4l-utils" &
 DownloadPackage "vorbis-tools" &
 DownloadPackage "wavpack" &
 DownloadPackage "wayland" &
+DownloadPackage "wayland-utils" &
 DownloadPackage "x11-skel" &
 DownloadPackage "xauth" &
 wait
