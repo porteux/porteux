@@ -43,6 +43,7 @@ meson setup \
 	-Dffmpeg=disabled \
 	-Dvulkan=disabled \
 	-Djack=disabled \
+	-Drlimits-install=false \
 	-Dpipewire-jack=disabled \
 	-Dsession-managers=[]
 
