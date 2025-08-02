@@ -31,6 +31,8 @@ fi
 tar xvf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-${PRGNAM}-$VERSION
 
+sed -i "s|subdir('man')|#subdir('man')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 CXXFLAGS="$CFLAGS" \

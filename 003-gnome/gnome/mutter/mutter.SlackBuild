@@ -32,16 +32,18 @@ meson setup \
 	--localstatedir=/var \
 	-Dclutter_tests=false \
 	-Dcogl_tests=false \
+	-Dmutter_tests=false \
+	-Dtests=disabled \
+	-Dinstalled_tests=false \
 	-Ddefault_library=shared \
 	-Ddocs=false \
-	-Dinstalled_tests=false \
 	-Dintrospection=true \
 	-Dnative_backend=true \
 	-Dprofiler=false \
 	-Dstartup_notification=true \
-	-Dtests=disabled \
 	-Dudev=true \
-	-Dwayland_eglstream=true
+	-Dwayland_eglstream=true \
+	-Dbash_completion=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

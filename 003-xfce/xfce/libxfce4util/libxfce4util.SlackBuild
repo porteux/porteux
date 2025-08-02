@@ -19,6 +19,8 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+sed -i "s|subdir('docs'|#subdir('docs'|g" meson.build
+
 cp $CWD/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
