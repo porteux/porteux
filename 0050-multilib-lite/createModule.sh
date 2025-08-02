@@ -22,6 +22,7 @@ fi
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+cd $MODULEPATH
 
 ### download packages from slackware repositories
 
@@ -112,8 +113,9 @@ rm -fr $MODULEPATH/${currentPackage}
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
 rm *.t?z
 
-### strip
+### module clean up
 
+{
 rm -fr $MODULEPATH/packages/etc
 rm -fr $MODULEPATH/packages/lib/e2fsprogs
 rm -fr $MODULEPATH/packages/lib/elogind
@@ -194,6 +196,7 @@ find $MODULEPATH/packages/sbin \( -type f -o -type l \) ! \( -name "ldconfig" -o
 find $MODULEPATH/packages/bin \( -type f -o -type l \) ! -name "sln" -delete
 find $MODULEPATH/packages/usr -mindepth 1 -maxdepth 1 -type d ! -name "lib" -exec rm -rf {} +
 find $MODULEPATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name "en_US.utf8" -exec rm -rf {} +
+} >/dev/null 2>&1
 
 # move out things that don't support stripping
 mv $MODULEPATH/packages/lib/libc.so* $MODULEPATH/

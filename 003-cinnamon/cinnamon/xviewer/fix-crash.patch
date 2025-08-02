@@ -1,0 +1,34 @@
+From 06b883d763a542e8586d80b2aa84ac6725378be2 Mon Sep 17 00:00:00 2001
+From: Yannis Gerlach <y.gerlach@nexat.de>
+Date: Wed, 23 Jul 2025 22:05:44 +0200
+Subject: [PATCH] fix deadlock
+
+---
+ src/xviewer-list-store.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/src/xviewer-list-store.c b/src/xviewer-list-store.c
+index 9f891394..902bc744 100644
+--- src/xviewer-list-store.c
++++ src/xviewer-list-store.c
+@@ -656,20 +656,14 @@ xviewer_list_store_add_files (XviewerListStore *store, GList *file_list)
+ 				if (!is_file_in_list_store_file (store,
+ 								 initial_file,
+ 								 &iter)) {
+-					g_mutex_lock (&store->priv->mutex);
+ 					xviewer_list_store_append_image_from_file (store, initial_file);
+-					g_mutex_unlock (&store->priv->mutex);
+ 				}
+ 			} else {
+-				g_mutex_lock (&store->priv->mutex);
+ 				xviewer_list_store_append_image_from_file (store, initial_file);
+-				g_mutex_unlock (&store->priv->mutex);
+ 			}
+ 			g_object_unref (file);
+ 		} else if (file_type == G_FILE_TYPE_REGULAR && !singleton_list) {
+-			g_mutex_lock (&store->priv->mutex);
+ 			xviewer_list_store_append_image_from_file (store, file);
+-			g_mutex_unlock (&store->priv->mutex);
+ 
+ 
+ 			g_object_unref (file);

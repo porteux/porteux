@@ -38,7 +38,7 @@ tar cf $INSTALLERDIR/nvidia.tar.xz --exclude={"*/.*","*/.wh.*",".cache","dev","h
 echo "Extracting memory changes file..."
 tar xf $INSTALLERDIR/nvidia.tar.xz --strip 1 -C $MODULEDIR || exit 1
 
-echo  "Cleaning up driver directory..."
+echo "Cleaning up driver directory..."
 find $MODULEDIR -name '*.la' -delete
 find $MODULEDIR -type f -maxdepth 1 -delete
 find $MODULEDIR -type l -maxdepth 1 -delete
@@ -83,7 +83,7 @@ if [ "$SYSTEMBITS" = 64 ]; then
 	mv $MODULEDIR/usr/lib64/vdpau $MODULEDIR/../nostrip64 &>/dev/null
 fi
 
-find $MODULEDIR | xargs file | egrep -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip -S --strip-unneeded -R .note.gnu.gold-version -R .comment -R .note -R .note.gnu.build-id -R .note.ABI-tag -R .eh_frame -R .eh_frame_ptr -R .note -R .comment -R .note.GNU-stack -R .jcr -R .eh_frame_hdr 2> /dev/null
+find $MODULEDIR | xargs file | egrep -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 
 mv $MODULEDIR/../nostrip/* $MODULEDIR/usr/lib &>/dev/null
 

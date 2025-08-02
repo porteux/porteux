@@ -22,11 +22,11 @@ sed -i "s|i18n.merge_file('desktop',|i18n.merge_file(|g" src/meson.build
 sed -i "s|i18n.merge_file('appdata',|i18n.merge_file(|g" src/meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \

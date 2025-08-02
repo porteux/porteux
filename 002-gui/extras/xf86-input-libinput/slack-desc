@@ -1,0 +1,12 @@
+                   |-----handy-ruler------------------------------------------------------|
+xf86-input-libinput: xf86-input-libinput (libinput-based X driver)
+xf86-input-libinput:
+xf86-input-libinput: This is an X driver based on libinput.
+xf86-input-libinput:
+xf86-input-libinput: For more information about the X.Org Foundation (the providers of the
+xf86-input-libinput: X.Org implementation of the X Window System), see their website:
+xf86-input-libinput:
+xf86-input-libinput: http://www.x.org
+xf86-input-libinput:
+xf86-input-libinput:
+xf86-input-libinput:

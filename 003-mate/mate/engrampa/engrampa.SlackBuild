@@ -27,7 +27,7 @@ sed -i 's|help.*|\\|g' Makefile.am
 # fix make looking for hard-coded versions of aclocal and automake
 sed -i "s|-\${am__api_version}||g" configure
 
-export CFLAGS="$GCCFLAGS"
+export CFLAGS="$GCCFLAGS -ffat-lto-objects"
 
 [ ! -e configure ] && ./autogen.sh
 ./configure \

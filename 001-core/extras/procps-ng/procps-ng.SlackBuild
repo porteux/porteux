@@ -35,7 +35,7 @@ sed 's:<ncursesw/:<:g' -i src/watch.c
 echo $VERSION > .version
 echo $VERSION > .tarball-version
 
-CFLAGS="$GCCFLAGS -flto=auto -ffat-lto-objects" \
+CFLAGS="$GCCFLAGS" \
 ./autogen.sh && ./configure \
 	--prefix=/ \
 	--bindir=/bin \
@@ -65,34 +65,34 @@ make -j${NUMBERTHREADS} install DESTDIR=$PKG
 # Move the shared library to $PKG/lib${SYSTEMBITS}:
 mkdir -p $PKG/lib${SYSTEMBITS}
 ( cd $PKG/usr/lib${SYSTEMBITS}
-  for file in lib*.so.?.* ; do
-	mv $file ../../lib${SYSTEMBITS}
-	ln -sf ../../lib${SYSTEMBITS}/$file .
-  done
-  cp -a lib*.so.? ../../lib${SYSTEMBITS}
+	for file in lib*.so.?.* ; do
+		mv $file ../../lib${SYSTEMBITS}
+		ln -sf ../../lib${SYSTEMBITS}/$file .
+	done
+	cp -a lib*.so.? ../../lib${SYSTEMBITS}
 )
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 # It seems that upstream has shuffled the location of many tools with the
-# 3.3.11 release.  To me, this just doesn't make sense to break any existing
+# 3.3.11 release. To me, this just doesn't make sense to break any existing
 # scripts that might be using an absolute path, or to move tools that might
-# be needed before /usr is mounted into /usr.  So, we will make sure that
+# be needed before /usr is mounted into /usr. So, we will make sure that
 # everything is moved back to where the Slackware locations have always been.
 # These tools belong in /bin:
 mkdir -p $PKG/bin
 for file in free killall ps ; do
-  find $PKG -name $file -exec mv "{}" $PKG/bin \;
+	find $PKG -name $file -exec mv "{}" $PKG/bin \;
 done
 # These tools belong in /sbin:
 mkdir -p $PKG/sbin
 for file in pidof sysctl ; do
-  find $PKG -name $file -exec mv "{}" $PKG/sbin \;
+	find $PKG -name $file -exec mv "{}" $PKG/sbin \;
 done
 mkdir -p $PKG/usr/bin
 # These tools belong in /usr/bin:
 for file in fuser lsdev peekfd pgrep pkill pmap procinfo prtstat pstree pwdx skill slabtop snice socklist tload top uptime vmstat w watch ; do
-  find $PKG -name $file -exec mv "{}" $PKG/usr/bin \;
+	find $PKG -name $file -exec mv "{}" $PKG/usr/bin \;
 done
 # These symlinks belong in /bin:
 rm -f $PKG/bin/pidof
@@ -112,14 +112,14 @@ mkdir -p $PKG/etc/sysctl.d
 cd ../psmisc-$PSMISCVER
 
 if [ ! -r configure ]; then
-  if [ -x ./autogen.sh ]; then
-	NOCONFIGURE=1 ./autogen.sh
-  else
-	autoreconf -vif
-  fi
+	if [ -x ./autogen.sh ]; then
+		NOCONFIGURE=1 ./autogen.sh
+	else
+		autoreconf -vif
+	fi
 fi
 
-CFLAGS="$GCCFLAGS -flto=auto -ffat-lto-objects" \
+CFLAGS="$GCCFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -138,7 +138,7 @@ mv $PKG/usr/bin/killall $PKG/bin
 ln -s /bin/killall $PKG/usr/bin/killall
 
 cd ../procinfo-ng-$PROCINFONGVER
-CXXFLAGS="$GCCFLAGS -flto=auto" \
+CXXFLAGS="$GCCFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

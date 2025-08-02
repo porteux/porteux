@@ -1,0 +1,47 @@
+#!/bin/bash
+
+PRGNAM=xf86-input-libinput
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://gitlab.freedesktop.org/xorg/driver/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | rev | cut -d "-" -f 1 | rev | sort -V -r | head -1)
+wget https://gitlab.freedesktop.org/xorg/driver/${PRGNAM}/-/archive/${PRGNAM}-${VERSION}/${PRGNAM}-${PRGNAM}-${VERSION}.tar.gz
+tar xfv $PRGNAM-$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$PRGNAM-$VERSION
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
+	--mandir=/usr/man \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+# for some reason it's not installing its header by default, so let's do it manually
+mkdir -p $PKG/usr/include/xorg
+cp ../include/libinput-properties.h $PKG/usr/include/xorg
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

@@ -1,9 +1,7 @@
 #!/bin/bash
 source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
-REPOSITORY="$1"
-
-GenerateRepositoryUrls "$REPOSITORY"
+GenerateRepositoryUrls
 
 DownloadPackage "accountsservice" &
 DownloadPackage "cfitsio" &
@@ -15,12 +13,14 @@ wait
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
+DownloadPackage "libqalculate" &
 DownloadPackage "libdmtx" &
 DownloadPackage "libproxy" &
 DownloadPackage "libqaccessibilityclient" &
 wait
 DownloadPackage "LibRaw" &
 DownloadPackage "openblas" &
+DownloadPackage "polkit-qt" &
 DownloadPackage "qrencode" &
 DownloadPackage "xdpyinfo" &
 DownloadPackage "zxing-cpp" &

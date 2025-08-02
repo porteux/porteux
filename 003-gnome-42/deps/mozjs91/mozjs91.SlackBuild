@@ -27,7 +27,7 @@ rm -rf firefox-unpack
 cd $SRCNAME-$(echo $VERSION | cut -f 1 -d e) || cd $SRCNAME-$VERSION
 
 # We need to use the incredibly ancient autoconf-2.13 for this
-( cd $CWD/autoconf ; ./autoconf.build )
+( cd $CWD/autoconf ; sh autoconf.build )
 PATH=$MODULEPATH/autoconf/autoconf-tmp/usr/bin:$PATH
 
 # Patches from Fedora:
@@ -54,8 +54,8 @@ autoconf-2.13
 
 export RUSTFLAGS="-C embed-bitcode"
 
-CFLAGS+="$CLANGFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing " \
-CXXFLAGS+="$CLANGFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing " \
+CFLAGS+="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-strict-aliasing" \
+CXXFLAGS+="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-strict-aliasing" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -88,12 +88,9 @@ rm -f $PKG/usr/bin/js*-config
 # Rename shared library to have a proper soname:
 mv $PKG/usr/lib${SYSTEMBITS}/libmozjs-91.so $PKG/usr/lib${SYSTEMBITS}/libmozjs-91.so.0.0.0
 ( cd $PKG/usr/lib${SYSTEMBITS}
-  ln -sf libmozjs-91.so.0.0.0 libmozjs-91.so.0
-  ln -sf libmozjs-91.so.0 libmozjs-91.so
+	ln -sf libmozjs-91.so.0.0.0 libmozjs-91.so.0
+	ln -sf libmozjs-91.so.0 libmozjs-91.so
 )
-
-find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF \
-  | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
