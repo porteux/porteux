@@ -23,6 +23,7 @@ fi
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+cd $MODULEPATH
 
 ### download packages from slackware repositories
 
@@ -90,8 +91,8 @@ cp -r icons/Yaru-blue/* $blueIconRootFolder || exit 1
 rm -fr $mainIconRootFolder/cursor*
 rm -fr $mainIconRootFolder/*@2x
 rm -fr $blueIconRootFolder/*@2x
-cp $SCRIPTPATH/deps/${currentPackage}/index.theme $mainIconRootFolder
-cp $SCRIPTPATH/deps/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
+cp $SCRIPTPATH/extras/${currentPackage}/index.theme $mainIconRootFolder
+cp $SCRIPTPATH/extras/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
 gtk-update-icon-cache -f $mainIconRootFolder || exit 1
 gtk-update-icon-cache -f $blueIconRootFolder || exit 1
 cd ../${currentPackage}-$version-noarch
@@ -249,6 +250,7 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
+{
 rm -R etc/dbus-1/system.d
 rm -R etc/dconf
 rm -R etc/geoclue
@@ -301,6 +303,7 @@ rm usr/share/dbus-1/services/org.mate.panel.applet.MateXAppStatusAppletFactory.s
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/cinnamon/faces -mindepth 1 -maxdepth 1 ! \( -name "user-generic*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/cinnamon/thumbnails/cursors -mindepth 1 -maxdepth 1 ! \( -name "Adwaita*" -o -name "Paper*" -o -name "unknown*" -o -name "Yaru*" \) -exec rm -rf '{}' \; 2>/dev/null
+} >/dev/null 2>&1
 
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/

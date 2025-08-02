@@ -22,10 +22,10 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	cd $PRGNAM-$VERSION
 
 	mkdir build && cd build
-	CFLAGS="$GCCFLAGS -flto=auto" \
+	CFLAGS="$GCCFLAGS" \
 	meson setup \
 		--prefix=/usr \
-		--libdir=lib${SYSTEMBITS} \
+		--libdir=/usr/lib${SYSTEMBITS} \
 		--libexecdir=/usr/libexec \
 		--bindir=/usr/bin \
 		--sbindir=/usr/sbin \
@@ -48,10 +48,10 @@ else
 	cd $PRGNAM-$VERSION
 
 	mkdir build && cd build
-	CFLAGS="$GCCFLAGS -flto=auto" \
+	CFLAGS="$GCCFLAGS" \
 	meson setup \
 		--prefix=/usr \
-		--libdir=lib${SYSTEMBITS} \
+		--libdir=/usr/lib${SYSTEMBITS} \
 		--libexecdir=/usr/libexec \
 		--bindir=/usr/bin \
 		--sbindir=/usr/sbin \
@@ -70,7 +70,7 @@ else
 		-Dsandboxed-image-validation=disabled \
 		-Dsandboxed-sound-validation=disabled
 fi
-  
+
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;

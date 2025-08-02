@@ -27,7 +27,7 @@ if ! which xdt-csource > /dev/null 2>&1; then
 	tar xfv $DEVTOOLS-$DEVTOOLSVERSION.tar.?z*
 	cd $DEVTOOLS-$DEVTOOLSVERSION
 
-	CFLAGS="$GCCFLAGS -flto=auto" \
+	CFLAGS="$GCCFLAGS" \
 	./autogen.sh \
 		--prefix=/usr \
 		--libdir=/usr/lib${SYSTEMBITS} \

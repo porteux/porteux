@@ -25,7 +25,7 @@ sed -i "s|extra_args: '--warn-error'|fatal_warnings: get_option('werror')|g" mes
 
 [ ! -e build ] && mkdir build
 cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
 	--buildtype=release \

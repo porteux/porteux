@@ -1,4 +1,4 @@
-       |-----handy-ruler------------------------------------------------------|
+     |-----handy-ruler------------------------------------------------------|
 loupe: loupe (GNOME default image viewer)
 loupe:
 loupe: loupe is a RUST written image viewer for GNOME. It's fast GPU-accelerated

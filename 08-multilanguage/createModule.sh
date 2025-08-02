@@ -19,6 +19,7 @@ fi
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+cd $MODULEPATH
 
 ### download packages from slackware repositories
 
@@ -29,8 +30,9 @@ DownloadFromSlackware
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
 rm *.t?z
 
-### strip
+### module clean up
 
+{
 rm -R $MODULEPATH/packages/var/lib/pkgtools/douninst.sh/
 rm -R $MODULEPATH/packages/var/lib/pkgtools/setup
 rm -R $MODULEPATH/packages/var/log/pkgtools
@@ -41,6 +43,7 @@ rm $MODULEPATH/packages/var/log/removed_scripts
 rm $MODULEPATH/packages/var/log/removed_uninstall_scripts
 
 find $MODULEPATH/packages -type f -name '*.desktop' -exec rm -f {} +
+} >/dev/null 2>&1
 
 ### finalize
 

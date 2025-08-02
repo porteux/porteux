@@ -19,7 +19,7 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--buildtype=release \
 	--infodir=/usr/info \
@@ -29,7 +29,7 @@ meson setup \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Denable-test=false
-  
+
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;

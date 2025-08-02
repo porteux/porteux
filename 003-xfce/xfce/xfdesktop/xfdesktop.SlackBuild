@@ -25,11 +25,11 @@ sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(siz
 sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS)|g" src/xfdesktop-volume-icon.c
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto -ffast-math" \
+CFLAGS="$GCCFLAGS -ffast-math" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \

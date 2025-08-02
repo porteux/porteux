@@ -20,7 +20,7 @@ cp $CWD/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 cp $CWD/background.png data/images
 
-./autogen.sh && CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
+./autogen.sh && CFLAGS="$GCCFLAGS -ffat-lto-objects -Wno-error=incompatible-pointer-types" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \

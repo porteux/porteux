@@ -1,9 +1,7 @@
 #!/bin/bash
 source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
-REPOSITORY="$1"
-
-GenerateRepositoryUrls "$REPOSITORY"
+GenerateRepositoryUrls
 
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libnma" &
@@ -21,9 +19,6 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libindicator" &
 	wait
 fi
-
-### temporary packages for further building
-
 
 ### script clean up
 

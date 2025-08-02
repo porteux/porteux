@@ -30,8 +30,8 @@ for replace in src/shutdown.c src/Makefile src/initreq.h src/init.c doc/initctl 
 done
 
 cd src
-CFLAGS="$GCCFLAGS -flto=auto -ffat-lto-objects" make clobber
-CFLAGS="$GCCFLAGS -flto=auto -ffat-lto-objects" make -j${NUMBERTHREADS}
+CFLAGS="$GCCFLAGS" make clobber
+CFLAGS="$GCCFLAGS" make -j${NUMBERTHREADS}
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -52,9 +52,9 @@ for program in last ; do
 done
 ( cd $PKG/usr/bin ; ln -sf last lastb )
 ( cd $PKG/sbin ; rm -rf telinit )
-( cd $PKG/sbin ; ln -sf  init telinit )
+( cd $PKG/sbin ; ln -sf init telinit )
 ( cd $PKG/sbin ; rm -rf reboot )
-( cd $PKG/sbin ; ln -sf  halt reboot )
+( cd $PKG/sbin ; ln -sf halt reboot )
 ( cd $PKG/sbin ; rm -rf poweroff )
 ( cd $PKG/sbin ; ln -sf halt poweroff )
 
