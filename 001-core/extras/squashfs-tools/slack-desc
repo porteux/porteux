@@ -1,0 +1,12 @@
+              |-----handy-ruler------------------------------------------------------|
+squashfs-tools: squashfs-tools (squashed read-only filesystem for Linux)
+squashfs-tools:
+squashfs-tools: Squashfs is a highly compressed read-only filesystem for Linux.
+squashfs-tools: Squashfs compresses both files, inodes and directories, and supports
+squashfs-tools: block sizes up to 1Mbytes for greater compression. It is implemented
+squashfs-tools: as a kernel module under VFS. The package contains tools for
+squashfs-tools: manipulation of squashfs bundles.
+squashfs-tools:
+squashfs-tools: Homepage: https://github.com/plougher/squashfs-tools/
+squashfs-tools:
+squashfs-tools:

@@ -1,9 +1,7 @@
 #!/bin/bash
 source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
-REPOSITORY="$1"
-
-GenerateRepositoryUrls "$REPOSITORY"
+GenerateRepositoryUrls
 
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
@@ -42,7 +40,6 @@ wait
 DownloadPackage "libsass" & # required by gnome-console
 DownloadPackage "libwnck3" &
 DownloadPackage "llvm" &
-DownloadPackage "rust" &
 DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "texinfo" & # required by mozjs91
 DownloadPackage "xtrans" &

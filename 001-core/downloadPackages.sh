@@ -1,9 +1,7 @@
 #!/bin/bash
 source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
-REPOSITORY="$1"
-
-GenerateRepositoryUrls "$REPOSITORY"
+GenerateRepositoryUrls
 
 DownloadPackage "aaa_base" &
 DownloadPackage "aaa_terminfo" &
@@ -18,6 +16,7 @@ wait
 DownloadPackage "bluez-firmware" &
 DownloadPackage "bridge-utils" &
 DownloadPackage "brotli" &
+DownloadPackage "btrfs-progs" &
 DownloadPackage "bzip2" &
 DownloadPackage "ca-certificates" &
 DownloadPackage "cdrtools" &
@@ -187,10 +186,9 @@ DownloadPackage "sed" &
 DownloadPackage "sg3_utils" &
 DownloadPackage "shadow" &
 DownloadPackage "slackpkg" &
-DownloadPackage "smartmontools" &
 wait
+DownloadPackage "smartmontools" &
 DownloadPackage "sqlite" &
-DownloadPackage "squashfs-tools" &
 DownloadPackage "sshfs" &
 DownloadPackage "sudo" &
 DownloadPackage "sysfsutils" &
@@ -214,8 +212,8 @@ DownloadPackage "utempter" &
 DownloadPackage "util-linux" &
 DownloadPackage "wget" &
 DownloadPackage "which" &
-DownloadPackage "whois" &
 wait
+DownloadPackage "whois" &
 DownloadPackage "wireless_tools" &
 DownloadPackage "wpa_supplicant" &
 DownloadPackage "xfsdump" &
@@ -223,7 +221,6 @@ DownloadPackage "xfsprogs" &
 DownloadPackage "xxHash" &
 DownloadPackage "xz" &
 DownloadPackage "zlib" &
-DownloadPackage "zstd" &
 wait
 
 ### only download if not present

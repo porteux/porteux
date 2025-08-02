@@ -20,8 +20,10 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+patch -p0 < $CWD/fix-crash.patch
+
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--buildtype=release \
 	--infodir=/usr/info \
@@ -31,10 +33,12 @@ meson setup \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Ddocs=false
-  
+
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+sed -i "s|image/jpg|image/jpg;image/jxl|g|" $PKG/usr/share/applications/xviewer.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

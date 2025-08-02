@@ -1,9 +1,7 @@
 #!/bin/bash
 source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
-REPOSITORY="$1"
-
-GenerateRepositoryUrls "$REPOSITORY"
+GenerateRepositoryUrls
 
 DownloadPackage "a52dec" &
 DownloadPackage "alsa-lib" &
@@ -182,8 +180,8 @@ DownloadPackage "SDL2" &
 DownloadPackage "shared-mime-info" &
 DownloadPackage "speex" &
 DownloadPackage "speexdsp" &
-DownloadPackage "startup-notification" &
 wait
+DownloadPackage "startup-notification" &
 DownloadPackage "svgalib" &
 DownloadPackage "udisks2" &
 DownloadPackage "upower" &
@@ -191,6 +189,7 @@ DownloadPackage "v4l-utils" &
 DownloadPackage "vorbis-tools" &
 DownloadPackage "wavpack" &
 DownloadPackage "wayland" &
+DownloadPackage "wayland-utils" &
 DownloadPackage "x11-skel" &
 DownloadPackage "xauth" &
 wait
@@ -201,36 +200,19 @@ DownloadPackage "xcb-util-image" &
 DownloadPackage "xcb-util-keysyms" &
 DownloadPackage "xcb-util-renderutil" &
 DownloadPackage "xcb-util-wm" &
+wait
 DownloadPackage "xclipboard" &
 DownloadPackage "xdg-user-dirs" &
 DownloadPackage "xdg-utils" &
-wait
 DownloadPackage "xev" &
-DownloadPackage "xf86-input-libinput" &
-DownloadPackage "xf86-input-evdev" &
-DownloadPackage "xf86-input-synaptics" &
-DownloadPackage "xf86-input-vmmouse" &
-DownloadPackage "xf86-input-wacom" &
-DownloadPackage "xf86-video-amdgpu" &
-wait
-DownloadPackage "xf86-video-ati" &
-DownloadPackage "xf86-video-dummy" &
-DownloadPackage "xf86-video-mach64" &
-DownloadPackage "xf86-video-mga" &
-DownloadPackage "xf86-video-nouveau" &
-DownloadPackage "xf86-video-openchrome" &
-DownloadPackage "xf86-video-r128" &
-wait
-DownloadPackage "xf86-video-vesa" &
 DownloadPackage "xhost" &
 DownloadPackage "xinit" &
 DownloadPackage "xkbcomp" &
 DownloadPackage "xkeyboard-config" &
 DownloadPackage "xkill" &
-DownloadPackage "xmessage" &
 wait
+DownloadPackage "xmessage" &
 DownloadPackage "xmodmap" &
-DownloadPackage "xorg-server" &
 DownloadPackage "xprop" &
 DownloadPackage "xrandr" &
 DownloadPackage "xrdb" &
@@ -273,6 +255,7 @@ wait
 ### temporary packages for further building
 
 DownloadPackage "cups" & # to build gtk+3
+DownloadPackage "xtrans" & # to build xorg
 wait
 
 ### script clean up

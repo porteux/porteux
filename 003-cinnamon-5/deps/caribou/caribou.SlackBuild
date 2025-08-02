@@ -24,7 +24,7 @@ patch -Np1 -i $CWD/display-adapter.patch
 autoreconf -fiv
 intltoolize
 
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

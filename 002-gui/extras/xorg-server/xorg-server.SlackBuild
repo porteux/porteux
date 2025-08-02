@@ -1,0 +1,62 @@
+#!/bin/bash
+
+PRGNAM=xorg-server
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://gitlab.freedesktop.org/xorg/xserver/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v wayland | rev | cut -d "-" -f 1 | rev | sort -V -r | head -1)
+wget https://gitlab.freedesktop.org/xorg/xserver/-/archive/${PRGNAM}-${VERSION}/xserver-${PRGNAM}-${VERSION}.tar.gz
+
+tar xfv xserver-$PRGNAM-$VERSION.tar.?z*
+cd xserver-$PRGNAM-$VERSION
+
+patch -p0 < $CWD/tear-free1.patch
+patch -p0 < $CWD/tear-free2.patch
+patch -p0 < $CWD/tear-free3.patch
+patch -p0 < $CWD/tear-free4.patch
+patch -p0 < $CWD/tear-free5.patch
+
+sed -i "s|subdir('test')|#subdir('test')|g" meson.build
+
+DEF_FONTPATH="/usr/share/fonts/misc,/usr/share/fonts/local,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/CID,/usr/share/fonts/75dpi/:unscaled,/usr/share/fonts/100dpi/:unscaled,/usr/share/fonts/75dpi,/usr/share/fonts/100dpi,/usr/share/fonts/cyrillic"
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
+	--mandir=/usr/man \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	-Ddocs=false \
+	-Ddevel-docs=false \
+	-Dxvfb=false \
+	-Dxnest=false \
+	-Ddefault_font_path="${DEF_FONTPATH}" \
+	-Dmodule_dir=/usr/lib64/xorg/modules \
+	-Dxkb_dir=/usr/share/X11/xkb \
+	-Dxkb_output_dir=/var/lib/xkb
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

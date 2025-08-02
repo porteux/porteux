@@ -19,14 +19,14 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
-   --prefix=/usr \
-   --libdir=/usr/lib${SYSTEMBITS} \
-   --sysconfdir=/etc \
-   --localstatedir=/var \
-   --mandir=/usr/man \
-   -Dgtk_doc=false 
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	-Dgtk_doc=false 
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

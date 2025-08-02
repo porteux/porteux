@@ -27,7 +27,7 @@ cmake .. \
 	-DQT_MAJOR_VERSION=6 \
 	-DMAN_INSTALL_DIR=/usr/man \
 	-DLIB_SUFFIX=${SYSTEMBITS}
-  
+
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;

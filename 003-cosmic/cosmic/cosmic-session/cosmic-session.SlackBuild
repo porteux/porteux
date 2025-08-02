@@ -16,9 +16,10 @@ git clone https://github.com/pop-os/$PRGNAM
 cd $PRGNAM
 VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
-sed -i 's|--release|--release --features autostart|g' Justfile
+RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}"
 
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
+sed -i 's|--release|--release --features autostart|g' Justfile
 just build
 rsync -r ./target/release ./target/
 just rootdir=$MODULEPATH/$PRGNAM/package install || exit 1

@@ -19,7 +19,7 @@ VERSION=`git describe | cut -d- -f1`
 cp $CWD/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
-./autogen.sh && CFLAGS="$GCCFLAGS -flto=auto" \
+./autogen.sh && CFLAGS="$GCCFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \

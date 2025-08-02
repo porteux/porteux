@@ -23,7 +23,7 @@ cd $PRGNAM-$DOWNLOADVERSION
 sed -i "s/g_warning\ (\"Failed\ to\ open\ plugin\ directory\ '%s':\ %s\",//g" mousepad/mousepad-application.c
 sed -i 's/MOUSEPAD_PLUGIN_DIRECTORY,\ error->message);//g' mousepad/mousepad-application.c
 
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

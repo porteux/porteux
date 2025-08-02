@@ -19,7 +19,7 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -30,7 +30,6 @@ meson setup \
 	-Dman=false \
 	-Dkerberos=true \
 	-Dexchange=true \
-	-Dwindows_live=true \
 	-Dintrospection=true \
 	-Downcloud=true \
 	-Dimap_smtp=true \

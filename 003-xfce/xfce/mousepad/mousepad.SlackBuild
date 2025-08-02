@@ -24,11 +24,11 @@ sed -i "s/g_warning\ (\"Failed\ to\ open\ plugin\ directory\ '%s':\ %s\",//g" mo
 sed -i 's/MOUSEPAD_PLUGIN_DIRECTORY,\ error->message);//g' mousepad/mousepad-application.c
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \

@@ -23,6 +23,7 @@ fi
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+cd $MODULEPATH
 
 ### download packages from slackware repositories
 
@@ -43,6 +44,7 @@ rm -fr $MODULEPATH/${currentPackage}
 installpkg $MODULEPATH/packages/*.txz || exit 1
 
 # only required for building not for run-time
+rm $MODULEPATH/packages/boost*
 rm $MODULEPATH/packages/c-ares*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
@@ -65,10 +67,10 @@ pip install attrs || exit 1
 pip install jinja2 || exit 1
 pip install pygments || exit 1
 
-# rust nightly required by glycin and loupe
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain nightly -y
-PATH=/root/.cargo/bin/:$PATH
-rustup component add rust-src --toolchain nightly
+# not using rust from slackware because it's much slower
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
+rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
+export PATH=$HOME/.cargo/bin/:$PATH
 
 DE_LATEST_VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
 
@@ -90,6 +92,8 @@ for package in \
 	libheif \
 	glycin \
 	libwnck4 \
+	exempi \
+	blueprint-compiler \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
@@ -123,7 +127,7 @@ for package in \
 	libspelling \
 	gnome-text-editor \
 	loupe \
-	evince \
+	papers \
 	gnome-system-monitor \
 	vte \
 	gnome-console \
@@ -140,6 +144,7 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # only required for building not for run-time
+rm $MODULEPATH/packages/blueprint-compiler*
 rm $MODULEPATH/packages/gperf*
 rm $MODULEPATH/packages/libheif*
 
@@ -178,6 +183,7 @@ gtk-update-icon-cache $MODULEPATH/packages/usr/share/icons/Adwaita
 
 cd $MODULEPATH/packages/
 
+{
 rm -R etc/dbus-1/system.d
 rm -R etc/dconf
 rm -R etc/opt
@@ -251,6 +257,7 @@ rm usr/share/applications/vte-gtk4.desktop
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
+} >/dev/null 2>&1
 
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/

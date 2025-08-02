@@ -21,11 +21,11 @@ tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/lib${SYSTEMBITS} \
 	--mandir=/usr/man \
 	-Dselinux=false \
