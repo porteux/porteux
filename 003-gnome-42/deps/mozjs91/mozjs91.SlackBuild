@@ -27,7 +27,7 @@ rm -rf firefox-unpack
 cd $SRCNAME-$(echo $VERSION | cut -f 1 -d e) || cd $SRCNAME-$VERSION
 
 # We need to use the incredibly ancient autoconf-2.13 for this
-( cd $CWD/autoconf ; ./autoconf.build )
+( cd $CWD/autoconf ; sh autoconf.build )
 PATH=$MODULEPATH/autoconf/autoconf-tmp/usr/bin:$PATH
 
 # Patches from Fedora:
@@ -54,8 +54,8 @@ autoconf-2.13
 
 export RUSTFLAGS="-C embed-bitcode"
 
-CFLAGS+="$CLANGFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing " \
-CXXFLAGS+="$CLANGFLAGS -fno-delete-null-pointer-checks -fno-strict-aliasing " \
+CFLAGS+="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-strict-aliasing" \
+CXXFLAGS+="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-strict-aliasing" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
