@@ -32,7 +32,10 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
-	-Dsystem-lua=true
+	-Dsystem-lua=true \
+	-Ddoc=false \
+	-Dtests=false \
+	-Ddbus-tests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

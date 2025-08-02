@@ -19,6 +19,8 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+sed -i "s|subdir('docs'|#subdir('docs'|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
@@ -29,7 +31,8 @@ meson setup \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
 	--mandir=/usr/man \
-	--localstatedir=/var 
+	--localstatedir=/var \
+	-Dtests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

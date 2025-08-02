@@ -19,6 +19,8 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('help')|#subdir('help')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \

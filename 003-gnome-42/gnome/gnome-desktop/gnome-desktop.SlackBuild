@@ -18,6 +18,7 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 sed -i -e "/'test-.*'/d" libgnome-desktop/meson.build
 
 mkdir build && cd build

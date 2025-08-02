@@ -19,6 +19,8 @@ wget https://gitlab.xfce.org/apps/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \

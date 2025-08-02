@@ -23,6 +23,9 @@ patch -Np1 -i $CWD/0001-Xsession-Don-t-start-ssh-agent-by-default.patch
 patch -Np1 -i $CWD/0003-add-wayland-session-script.patch
 patch -Np1 -i $CWD/gcc-15-fix.patch
 
+sed -i "s|subdir('docs')|#subdir('docs')|g" meson.build
+sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \

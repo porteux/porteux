@@ -19,6 +19,9 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xvf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('examples')|#subdir('examples')|g" meson.build
+sed -i "s|subdir('utils')|#subdir('utils')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
@@ -32,9 +35,10 @@ meson setup \
 	-Dman=false \
 	-Dstemmer=enabled \
 	-Dunicode_support=icu \
-	-Dbash_completion=true \
+	-Dbash_completion=false \
 	-Dsystemd_user_services=false \
 	-Dtest_utils=false \
+	-Dtests=false \
 	-Dsoup=soup3 \
 	-Dtests_tap_protocol=false
 

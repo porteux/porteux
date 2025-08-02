@@ -36,7 +36,8 @@ meson setup \
 	-Dms_graph=true \
 	-Dgoogle=true \
 	-Dfedora=false \
-	-Ddocumentation=false
+	-Ddocumentation=false \
+	-Dgtk_doc=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

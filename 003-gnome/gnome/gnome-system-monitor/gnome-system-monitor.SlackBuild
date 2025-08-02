@@ -19,6 +19,7 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 sed -i "s|catch2|#catch2|g" meson.build
+sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 
 cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
 for i in *.patch; do patch -p0 < $i; done
