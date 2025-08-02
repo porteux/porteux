@@ -21,6 +21,8 @@ cd $PRGNAM-$VERSION
 sed -i "s|subdir('docs')|#subdir('docs')|g" meson.build
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 sed -i "s|subdir('examples')|#subdir('examples')|g" meson.build
+sed -i "s|run_uninstalled_conf.set('tracker_uninstalled_miner|#run_uninstalled_conf.set('tracker_uninstalled_miner|g" meson.build
+sed -i "s|run_uninstalled_conf.set('tracker_uninstalled_testutils|#run_uninstalled_conf.set('tracker_uninstalled_testutils|g" meson.build
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \

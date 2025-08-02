@@ -34,7 +34,7 @@ meson setup \
 	-Ddocs=false \
 	-Dman=false \
 	-Dsystemd_user_services=false \
-	-Dtests=true
+	-Dtests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
