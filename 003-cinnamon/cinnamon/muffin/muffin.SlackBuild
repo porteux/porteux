@@ -20,6 +20,8 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('doc/man')|#subdir('doc/man')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -Wno-incompatible-pointer-types" \
 meson setup \
@@ -34,7 +36,11 @@ meson setup \
 	-Dprofiler=false \
 	-Dwayland=true \
 	-Dnative_backend=true \
-	-Ddefault_driver=auto
+	-Ddefault_driver=auto \
+	-Dcogl_tests=false \
+	-Dclutter_tests=false \
+	-Dcore_tests=false \
+	-Dtests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

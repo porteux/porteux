@@ -18,6 +18,9 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('docs')|#subdir('docs')|g" meson.build
+sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
+
 # A couple patches taken from Artix Linux:
 patch -Np1 -i $CWD/0001-Xsession-Don-t-start-ssh-agent-by-default.patch
 patch -Np1 -i $CWD/0002-meson-allow-building-with-elogind.patch
