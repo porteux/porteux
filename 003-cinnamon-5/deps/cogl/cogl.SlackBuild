@@ -20,7 +20,7 @@ cd $PRGNAM-$VERSION
 
 sed -i "s|tests ||g" Makefile.am
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects -Wno-incompatible-pointer-types -Wno-error=maybe-uninitialized" \
 CXXFLAGS="$CFLAGS" \
 ./autogen.sh \
 	--prefix=/usr \
@@ -35,6 +35,7 @@ CXXFLAGS="$CFLAGS" \
 	--enable-debug=no \
 	--enable-deprecated=no \
 	--enable-unit-tests=no \
+	--enable-maintainer-flags=no \
 	--enable-kms-egl-platform \
 	--build=$ARCH-porteux-linux
 
