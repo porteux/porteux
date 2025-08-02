@@ -18,6 +18,8 @@ wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/v${VERSION}/${
 tar xvf $PRGNAM-v${VERSION}.tar.?z*
 cd $PRGNAM-v${VERSION}
 
+sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
