@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PRGNAM=evince
+PRGNAM=papers
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -18,29 +18,30 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}"
+
+sed -i "s|subdir('help')|#subdir('help')|g" meson.build
+
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
 	--mandir=/usr/man \
 	--localstatedir=/var \
-	-Ddefault_library=shared \
-	-Dgtk_doc=false \
 	-Duser_doc=false \
-	-Dintrospection=true \
-	-Ddbus=true \
-	-Dpdf=enabled \
-	-Dthumbnailer=true \
-	-Dthumbnail_cache=enabled \
+	-Ddocumentation=false \
+	-Dtests=false \
+	-Dkeyring=disabled \
 	-Dpreviewer=true \
-	-Dviewer=true \
-	-Dnautilus=false \
-	-Dsystemduserunitdir=no
+	-Dthumbnailer=true \
+	-Dintrospection=enabled \
+	-Dpdf=enabled
+	#-Dfile_tests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

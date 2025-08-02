@@ -23,12 +23,14 @@ cd $PRGNAM-$VERSION
 cp $CWD/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
+sed -i "s|subdir('help')|#subdir('help')|g" meson.build
+
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
-	--libdir=lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	-Daccountsservice=false

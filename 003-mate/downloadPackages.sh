@@ -1,9 +1,7 @@
 #!/bin/bash
 source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
-REPOSITORY="$1"
-
-GenerateRepositoryUrls "$REPOSITORY"
+GenerateRepositoryUrls
 
 DownloadPackage "blueman" &
 DownloadPackage "accountsservice" &

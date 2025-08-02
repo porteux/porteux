@@ -19,7 +19,7 @@ tar xfv ${PRGNAM}_${VERSION}.tar.?z*
 cd $PRGNAM-$VERSION
 
 autoreconf -vfi
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

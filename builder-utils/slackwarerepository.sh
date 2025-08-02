@@ -7,7 +7,7 @@ GenerateRepositoryUrls() {
 	cd $MODULEPATH/packages
 	
 	# Get repository packages list
-	wget $1/FILE_LIST -O FILE_LIST -q > /dev/null 2>&1 || exit
+	wget $REPOSITORY/FILE_LIST -O FILE_LIST -q > /dev/null 2>&1 || wget $REPOSITORY/FILELIST.TXT -O FILE_LIST -q > /dev/null 2>&1 || exit
 	rm serverPackages.txt > /dev/null 2>&1
 
 	# Cleanup server packages list
@@ -24,7 +24,7 @@ GenerateRepositoryUrls() {
 DownloadPackage() {
 	cd $MODULEPATH/packages
 
-	# if the package is already presented, don't download it again
+	# if the package is already present don't download it again
 	if find . -type f -name "${1}[-_][0-9]*" | grep -q .; then
 		return
 	fi

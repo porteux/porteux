@@ -32,7 +32,7 @@ tar xvf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-${PRGNAM}-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -flto=auto" \
+CFLAGS="$GCCFLAGS" \
 CXXFLAGS="$CFLAGS" \
 meson setup \
 	--prefix=/usr \
@@ -44,7 +44,7 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-rm -f $PKG/{,usr/}lib${SYSTEMBITS}/*.la
+find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
 cat $CWD/${PRGNAM}-slack-desc > $PKG/install/slack-desc

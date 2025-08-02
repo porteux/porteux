@@ -1,9 +1,7 @@
 #!/bin/bash
 source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
-REPOSITORY="$1"
-
-GenerateRepositoryUrls "$REPOSITORY"
+GenerateRepositoryUrls
 
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
@@ -50,6 +48,7 @@ wait
 
 ### temporary packages for further building
 
+DownloadPackage "boost" &
 DownloadPackage "c-ares" &
 DownloadPackage "cups" & # required by gnome-settings-daemon
 DownloadPackage "dbus-python" &

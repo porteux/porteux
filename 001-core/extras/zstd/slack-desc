@@ -1,0 +1,12 @@
+    |-----handy-ruler------------------------------------------------------|
+zstd: zstd (real-time compression algorithm)
+zstd:
+zstd: Zstandard, or zstd for short, is a real-time compression algorithm
+zstd: providing high compression ratios. It offers a very wide range of
+zstd: compression/speed trade-off, while being backed by a very fast
+zstd: decoder. It also offers a special mode for small data, called
+zstd: dictionary compression, and can create dictionaries from any sample
+zstd: set.
+zstd:
+zstd: Homepage: http://zstd.net/
+zstd:

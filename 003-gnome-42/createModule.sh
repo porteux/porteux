@@ -23,6 +23,7 @@ fi
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
+cd $MODULEPATH
 
 ### download packages from slackware repositories
 
@@ -58,10 +59,14 @@ rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
-rm $MODULEPATH/packages/rust*
 rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/texinfo*
 rm $MODULEPATH/packages/xtrans*
+
+# not using rust from slackware because it's much slower
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
+rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
+export PATH=$HOME/.cargo/bin/:$PATH
 
 # some packages (e.g nautilus and vte) require this folder
 mkdir -p /usr/local > /dev/null 2>&1
@@ -171,6 +176,7 @@ gtk-update-icon-cache $MODULEPATH/packages/usr/share/icons/Adwaita
 
 cd $MODULEPATH/packages/
 
+{
 rm -R etc/dbus-1/system.d
 rm -R etc/dconf
 rm -R etc/opt
@@ -238,6 +244,7 @@ rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
+} >/dev/null 2>&1
 
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
 GenericStrip

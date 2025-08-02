@@ -22,7 +22,7 @@ cd $PRGNAM-$DOWNLOADVERSION
 cp $CWD/*.patch .
 for i in *.patch; do patch -p0 < $i; done
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
