@@ -2,7 +2,7 @@
 
 source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
-PRGNAM=zstd
+PRGNAM=libheif
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -14,26 +14,18 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "facebook" ${PRGNAM} "kernel")
+info=$(DownloadLatestFromGithub "strukturag" ${PRGNAM})
 VERSION=${info#* }
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-cd build/cmake
-CC=clang CXX=clang++ LD=/usr/bin/ld.lld \
 cmake -B build -S . \
-	-DCMAKE_C_FLAGS="$CLANGFLAGS" \
-	-DCMAKE_CXX_FLAGS="$CLANGFLAGS" \
+	--preset=release \
+	-DCMAKE_C_FLAGS="$GCCGFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -ffat-lto-objects" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR="lib${SYSTEMBITS}" \
-	-DDOC_INSTALL_DIR="doc" \
-	-DMAN_INSTALL_DIR=/usr/man/man1 \
-	-DZSTD_BUILD_STATIC=OFF \
-	-DZSTD_PROGRAMS_LINK_SHARED=ON \
-	-DZSTD_LZ4_SUPPORT=ON \
-	-DZSTD_LZMA_SUPPORT=ON \
-	-DZSTD_ZLIB_SUPPORT=ON
+	-DCMAKE_INSTALL_LIBDIR="lib${SYSTEMBITS}"
 
 make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 
