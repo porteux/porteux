@@ -201,6 +201,11 @@ makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=libheif
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.t?z
+rm -fr $MODULEPATH/${currentPackage}
+
 # temporary just to build ffmpeg and mpv
 currentPackage=nv-codec-headers
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
