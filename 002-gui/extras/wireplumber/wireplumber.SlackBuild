@@ -33,7 +33,7 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Dsystem-lua=true \
-	-Ddoc=false \
+	-Ddoc=disabled \
 	-Dtests=false \
 	-Ddbus-tests=false
 
