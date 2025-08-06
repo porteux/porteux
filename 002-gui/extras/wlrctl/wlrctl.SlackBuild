@@ -30,7 +30,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
-	-Dman-pages=false \
+	-Dman-pages=disabled \
 	-Dzsh-completions=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
