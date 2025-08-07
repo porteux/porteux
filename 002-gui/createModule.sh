@@ -379,6 +379,11 @@ rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
+rm usr/lib${SYSTEMBITS}/dri/i830_dri* # obsolete driver
+rm usr/lib${SYSTEMBITS}/dri/i965_dri* # obsolete driver
+rm usr/lib${SYSTEMBITS}/dri/nouveau_vieux_dri* # obsolete driver
+rm usr/lib${SYSTEMBITS}/dri/r200_dri* # obsolete driver
+rm usr/lib${SYSTEMBITS}/dri/radeon_dri* # obsolete driver
 rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
