@@ -35,6 +35,12 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
 	rm -fr $MODULEPATH/${currentPackage}
 	rm $MODULEPATH/packages/meson-*.txz
+	
+	# required by xorg but not included in slackware repo in stable
+	currentPackage=libxcvt
+	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}*.txz
+	rm -fr $MODULEPATH/${currentPackage}
 else
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 
@@ -57,6 +63,23 @@ installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 installpkg $MODULEPATH/packages/cups*.txz || exit 1
 rm $MODULEPATH/packages/cups*.txz
+installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+rm $MODULEPATH/packages/xtrans*.txz
+
+currentPackage=xorg-server
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=xf86-input-libinput
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=libX11
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=gtk+3-classic
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
@@ -120,32 +143,6 @@ sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
 sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" ${currentPackage}.SlackBuild
 sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
-installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
-rm $MODULEPATH/packages/xtrans*.txz
-
-# required by xorg but not included in Slackware repo in stable
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=libxcvt
-	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}*.txz
-	rm -fr $MODULEPATH/${currentPackage}
-fi
-
-currentPackage=xorg-server
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=xf86-input-libinput
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=libX11
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libjxl
@@ -362,11 +359,11 @@ rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
-rm usr/lib${SYSTEMBITS}/dri/i830_dri* # obsolete driver
-rm usr/lib${SYSTEMBITS}/dri/i965_dri* # obsolete driver
-rm usr/lib${SYSTEMBITS}/dri/nouveau_vieux_dri* # obsolete driver
-rm usr/lib${SYSTEMBITS}/dri/r200_dri* # obsolete driver
-rm usr/lib${SYSTEMBITS}/dri/radeon_dri* # obsolete driver
+rm usr/lib${SYSTEMBITS}/dri/i830_* # obsolete driver
+rm usr/lib${SYSTEMBITS}/dri/i965_* # obsolete driver
+rm usr/lib${SYSTEMBITS}/dri/nouveau_vieux_* # obsolete driver
+rm usr/lib${SYSTEMBITS}/dri/r200_* # obsolete driver
+rm usr/lib${SYSTEMBITS}/dri/radeon_* # obsolete driver
 rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
@@ -408,12 +405,14 @@ find $MODULEPATH/packages/usr/lib${SYSTEMBITS}/dri -name '*.la' -delete
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/dri $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libgallium* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvulkan* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libX11.so* $MODULEPATH/
 mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 GenericStrip
 AggressiveStrip
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libvulkan* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
+mv $MODULEPATH/libX11.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
 
 # specific strip
