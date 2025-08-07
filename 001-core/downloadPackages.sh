@@ -145,6 +145,7 @@ DownloadPackage "mlocate" &
 DownloadPackage "ModemManager" &
 DownloadPackage "mozilla-nss" &
 DownloadPackage "mpfr" &
+DownloadPackage "nano" &
 DownloadPackage "ncurses" &
 DownloadPackage "nettle" &
 DownloadPackage "net-tools" &

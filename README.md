@@ -33,7 +33,7 @@ To build anything inside PorteuX, it's recommended to download and activate the 
 
 To run Windows applications inside PorteuX, you can find both Wine and Multilib Lite xzm modules in the app store. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
 
-To read Asian characters, please download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module.
+To read Asian characters, download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module. Some PDFs may also require `poppler-data` package, also available via `getpkg` command.
 
 ## Default Username and Password
 
