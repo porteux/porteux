@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description. Line
+# up the first '|' above the ':' following the base package name, and the '|' on
+# the right side marks the last column you can put a character in. You must make
+# exactly 11 lines for the formatting to be correct. It's also customary to
+# leave one space after the ':'.
+
+     |-----handy-ruler------------------------------------------------------|
+gtk+3: gtk+3 (multi-platform GUI toolkit v3)
+gtk+3:
+gtk+3: This is GTK+, a multi-platform toolkit for creating graphical user
+gtk+3: interfaces. Offering a complete set of widgets, GTK+ is suitable for
+gtk+3: projects ranging from small one-off projects to complete application
+gtk+3: suites.
+gtk+3:
+gtk+3:
+gtk+3:
+gtk+3:
+gtk+3:
