@@ -12,8 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-#wget https://dl.xpdfreader.com/xpdf-latest.tar.gz
-cp /mnt/nvme0n1p2/xpdf-latest.tar.gz .
+wget https://dl.xpdfreader.com/xpdf-latest.tar.gz
 
 tar xvf $PRGNAM-latest.tar.?z
 VERSION=$(ls -d xpdf-*/ 2>/dev/null | head -n1 | cut -d "-" -f2 | cut -d "/" -f1)
