@@ -163,19 +163,7 @@ installpkg $MODULEPATH/packages/cups*.txz || exit 1
 rm $MODULEPATH/packages/cups*.txz
 
 currentPackage=xpdf
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 --reject="index.html*" ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/xap/${currentPackage}
-mkdir lang && cd lang
-wget -r -nd --no-parent -l1 --reject="index.html*" ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/xap/${currentPackage}/lang
-cd ..
-mkdir patches && cd patches
-wget -r -nd --no-parent -l1 --reject="index.html*" ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/xap/${currentPackage}/patches
-cd $MODULEPATH/${currentPackage}
-sed -i "s|-O[23].*|$GCCFLAGS -ffat-lto-objects\"|g" ${currentPackage}.SlackBuild
-sed -i "s|-DXPDFWIDGET_PRINTING=1|-DMULTITHREADED=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5|g" ${currentPackage}.SlackBuild
-sed -z -i "s|mkdir build\n|sed -i \"s\|initialSidebarState = gTrue\|initialSidebarState = gFalse\|g\" xpdf/GlobalParams.cc\nmkdir build\n|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by featherpad
