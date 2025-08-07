@@ -31,7 +31,8 @@ for i in gtk3-classic-master/*.patch; do
 done
 
 mkdir build && cd build
-export CC=clang; CFLAGS="$CLANGFLAGS" \
+CC=clang LDFLAGS="-fuse-ld=lld" \
+CFLAGS="$CLANGFLAGS" \
 meson setup \
 	--buildtype=release \
 	--infodir=/usr/info \
