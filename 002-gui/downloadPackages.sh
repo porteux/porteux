@@ -112,7 +112,6 @@ DownloadPackage "libvorbis" &
 DownloadPackage "libvpx" &
 DownloadPackage "libwacom" &
 DownloadPackage "libwebp" &
-DownloadPackage "libX11" &
 DownloadPackage "libXau" &
 DownloadPackage "libXaw" &
 DownloadPackage "libxcb" &
