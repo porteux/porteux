@@ -42,7 +42,8 @@ meson setup \
 	-Dvulkan=disabled \
 	-Dshaderc=disabled \
 	-Dlua=luajit \
-	-Dpipewire=auto
+	-Dpipewire=auto \
+	-Dcaca=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
