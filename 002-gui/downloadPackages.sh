@@ -63,7 +63,6 @@ DownloadPackage "libatasmart" &
 DownloadPackage "libblockdev" &
 DownloadPackage "libbluray" &
 DownloadPackage "libbytesize" &
-DownloadPackage "libcaca" &
 DownloadPackage "libcanberra" & # required by pipewire
 DownloadPackage "libcddb" &
 DownloadPackage "libcdio" &
