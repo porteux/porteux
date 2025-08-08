@@ -44,7 +44,7 @@ cd ${currentPackage}-stripped-$version
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-$ARCH-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 currentPackage=audacious
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
@@ -259,7 +259,6 @@ rm -R usr/lib${SYSTEMBITS}/aspell
 rm -R usr/lib${SYSTEMBITS}/glade
 rm -R usr/lib${SYSTEMBITS}/graphene-1.0
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0
-rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/lib*/python*/site-packages/pip*
 rm -R usr/lib*/python*/site-packages/psutil/tests
 rm -R usr/share/cjs-1.0
@@ -270,15 +269,12 @@ rm -R usr/share/glade/pixmaps
 rm -R usr/share/gnome
 rm -R usr/share/gtksourceview-2.0
 rm -R usr/share/gtksourceview-3.0
-rm -R usr/share/installed-tests
 rm -R usr/share/libdbusmenu
 rm -R usr/share/mate-panel
 rm -R usr/share/pixmaps
 rm -R usr/share/Thunar
-rm -R usr/share/vala
 rm -R usr/share/xed/gir-1.0
 rm -R usr/share/xviewer/gir-1.0
-rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
 rm usr/bin/vte-*-gtk4

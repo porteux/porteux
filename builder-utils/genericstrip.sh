@@ -7,7 +7,6 @@ GenericStrip() {
 	rm -R usr/include
 	rm -R usr/info
 	rm -R usr/lib*/cmake
-	rm -R usr/lib*/gnome-keyring
 	rm -R usr/lib*/gtk*/include
 	rm -R usr/lib*/pkgconfig
 	rm -R usr/lib*/python2*
@@ -22,7 +21,6 @@ GenericStrip() {
 	rm -R usr/share/doc
 	rm -R usr/share/gdb
 	rm -R usr/share/gir-1.0
-	rm -R usr/share/gnome-control-center
 	rm -R usr/share/gtk-doc
 	rm -R usr/share/help
 	rm -R usr/share/icons/HighContrast
@@ -39,6 +37,7 @@ GenericStrip() {
 	rm -R usr/share/sounds
 	rm -R usr/share/themes/HighContrast
 	rm -R usr/share/vala
+	rm -R usr/share/zsh
 	rm -R usr/src
 	rm -R var/lib/pkgtools/douninst.sh/
 	rm -R var/lib/pkgtools/setup
@@ -46,7 +45,6 @@ GenericStrip() {
 	rm -R var/log/setup
 	rm -R var/man
 
-	rm usr/share/applications/org.gnome.Vte*.desktop
 	rm usr/share/pixmaps/*.xpm
 	rm var/log/removed_packages
 	rm var/log/removed_scripts
