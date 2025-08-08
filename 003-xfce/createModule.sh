@@ -27,7 +27,7 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 currentPackage=xcape
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -265,7 +265,6 @@ cd $MODULEPATH/packages/
 
 {
 rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
-rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/share/engrampa
 rm -R usr/share/gdm
 rm -R usr/share/gnome
@@ -284,6 +283,7 @@ rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libsoup-gnome*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
+rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/applications/xfce4-file-manager.desktop
 rm usr/share/applications/xfce4-mail-reader.desktop
 rm usr/share/applications/xfce4-terminal-emulator.desktop

@@ -27,7 +27,7 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
@@ -225,13 +225,13 @@ rm /tmp/${currentPackage}*.t?z
 # required by libplacebo
 cd $MODULEPATH
 installpkg $MODULEPATH/packages/python-pip-*.t?z || exit 1
-rm $MODULEPATH/packages/python-pip-*.t?z || exit 1
+rm $MODULEPATH/packages/python-pip-*.t?z
 installpkg $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
-rm $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
+rm $MODULEPATH/packages/python-Jinja2-*.t?z
 installpkg $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
-rm $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
+rm $MODULEPATH/packages/python-MarkupSafe-*.t?z
 installpkg $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
-rm $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
+rm $MODULEPATH/packages/vulkan-sdk-*.t?z
 
 cd $MODULEPATH
 pip install glad2 || exit 1
@@ -258,7 +258,7 @@ mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
-# to enable AMD hardware encoding acceleration in ffmpeg
+# required to enable amd hardware encoding acceleration in ffmpeg
 currentPackage=AMF
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 version=$(GetLatestVersionTagFromGithub "GPUOpen-LibrariesAndSDKs" ${currentPackage})

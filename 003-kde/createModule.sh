@@ -320,7 +320,7 @@ cd ${currentPackage}-stripped-$version
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1

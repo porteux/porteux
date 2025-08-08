@@ -100,7 +100,7 @@ cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version"
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 currentPackage=muparser
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}

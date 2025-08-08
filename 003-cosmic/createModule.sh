@@ -27,7 +27,7 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 currentPackage=audacious
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1

@@ -27,7 +27,7 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 currentPackage=xcape
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -207,7 +207,6 @@ cd $MODULEPATH/packages/
 
 {
 rm -R run/
-rm -R usr/lib*/python2*
 rm -R usr/lib*/python*/site-packages/pip*
 rm -R usr/share/engrampa
 rm -R usr/share/gdm
@@ -229,6 +228,7 @@ rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libsoup-gnome*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
+rm usr/share/applications/org.gnome.Vte*.desktop
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/libmateweather -mindepth 1 -maxdepth 1 ! \( -name "Locations.xml" -o -name "locations.dtd" \) -exec rm -rf '{}' \; 2>/dev/null

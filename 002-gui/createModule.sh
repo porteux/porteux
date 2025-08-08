@@ -52,6 +52,7 @@ else
 	rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
 	export PATH=$HOME/.cargo/bin/:$PATH
 
+	# building this because the slackware package in current depends on dav1d
 	currentPackage=librsvg
 	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	rm -fr $MODULEPATH/${currentPackage}
@@ -100,7 +101,8 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=imlib2 # required by openbox to draw application icons
+# required by openbox to draw application icons
+currentPackage=imlib2
 version=$(curl -s https://sourceforge.net/projects/enlightenment/files/${currentPackage}-src/ | grep net.sf.files | cut -d '"' -f 2)
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
@@ -162,7 +164,7 @@ currentPackage=wlr-randr
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-# only needed until labwc implements 'show desktop'
+# only needed until labwc implements 'ToggleShowDesktop'
 currentPackage=wlrctl
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
@@ -296,7 +298,6 @@ rm -R usr/lib${SYSTEMBITS}/gtkmm-*
 rm -R usr/lib${SYSTEMBITS}/libxslt-plugins
 rm -R usr/lib${SYSTEMBITS}/openjpeg-*
 rm -R usr/lib${SYSTEMBITS}/pangomm-*
-rm -R usr/lib${SYSTEMBITS}/python2*
 rm -R usr/lib${SYSTEMBITS}/sigc++-*
 rm -R usr/lib${SYSTEMBITS}/xmms
 rm -R usr/share/gdm
@@ -308,7 +309,6 @@ rm -R usr/share/gst-plugins-base
 rm -R usr/share/gstreamer-1.0/gdb
 rm -R usr/share/gtk-*
 rm -R usr/share/imlib2
-rm -R usr/share/libcaca
 rm -R usr/share/libgphoto2/*/konica/french
 rm -R usr/share/libgphoto2/*/konica/german
 rm -R usr/share/libgphoto2/*/konica/japanese
@@ -343,18 +343,11 @@ rm -R usr/share/X11/locale/zh*
 rm -R usr/X11R6/include
 rm -R usr/X11R6/man
 
-rm etc/profile.d/vte.csh
-rm etc/profile.d/vte.sh
 rm etc/rc_maps.cfg
 rm etc/xdg/autostart/at-spi-dbus-bus.desktop
-rm usr/bin/cacaclock
-rm usr/bin/cacademo
-rm usr/bin/cacafire
 rm usr/bin/canberra*
 rm usr/bin/gdm-control
 rm usr/bin/gnome-panel-control
-rm usr/bin/gtk3-demo
-rm usr/bin/gtk3-demo-application
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/rsvg-convert
@@ -375,7 +368,6 @@ rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
 rm usr/lib${SYSTEMBITS}/libxatracker*
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
-rm usr/share/applications/gtk3-demo.desktop
 rm usr/share/applications/gtk3-icon-browser.desktop
 rm usr/share/applications/gtk3-widget-factory.desktop
 rm usr/share/applications/mimeinfo.cache

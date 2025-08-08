@@ -29,7 +29,7 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 currentPackage=audacious
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
@@ -186,7 +186,6 @@ rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
 rm -R usr/lib${SYSTEMBITS}/graphene-1.0
 rm -R usr/lib${SYSTEMBITS}/gtk-2.0
 rm -R usr/lib${SYSTEMBITS}/tracker-3.0
-rm -R usr/lib*/python2*
 rm -R usr/lib*/python3*/site-packages/pip*
 rm -R usr/share/icons/Adwaita/8x8
 rm -R usr/share/icons/Adwaita/96x96
@@ -210,11 +209,8 @@ rm -R usr/share/gnome/autostart
 rm -R usr/share/gnome/shutdown
 rm -R usr/share/gtk-4.0
 rm -R usr/share/ibus
-rm -R usr/share/installed-tests
 rm -R usr/share/libgweather-4
 rm -R usr/share/pixmaps
-rm -R usr/share/vala
-rm -R usr/share/zsh
 rm -R var/lib/AccountsService
 
 rm etc/xdg/autostart/blueman.desktop
@@ -239,6 +235,7 @@ rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstwebrtc.*
 rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
+rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null

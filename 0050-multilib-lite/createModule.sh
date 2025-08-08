@@ -129,7 +129,6 @@ rm -fr $MODULEPATH/packages/usr/lib/girepository-1.0
 rm -fr $MODULEPATH/packages/usr/lib/glib-2.0
 rm -fr $MODULEPATH/packages/usr/lib/libear
 rm -fr $MODULEPATH/packages/usr/lib/libscanbuild
-rm -fr $MODULEPATH/packages/usr/lib/python2*
 rm -fr $MODULEPATH/packages/usr/lib/xmms
 rm -fr $MODULEPATH/packages/var/cache
 rm -fr $MODULEPATH/packages/var/cache/fontconfig

@@ -99,7 +99,7 @@ sh ${currentPackage}.SlackBuild || exit 1
 mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-# temporary to build procps-ng
+# required to build procps-ng
 installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
 
 currentPackage=procps-ng
@@ -257,7 +257,7 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### install certificates -- requires perl installed
+### install certificates -- requires perl
 
 TEMPBUNDLE="$(mktemp -t "${CERTBUNDLE}.tmp.XXXXXX")"
 
@@ -279,7 +279,7 @@ mv -f "$TEMPBUNDLE" ca-certificates.crt
 cd $MODULEPATH/packages
 find usr/share/kbd -type f -name "*.gz" -exec gunzip {} \;
 
-### set ctrl+alt+del to now show any error in the terminal
+### set ctrl+alt+del to not show any error in the terminal
 
 sed -i '/^ca::ctrlaltdel/c\ca::ctrlaltdel:/sbin/shutdown -r now 2>/dev/null' $MODULEPATH/packages/etc/inittab
 
@@ -346,7 +346,6 @@ rm -R usr/lib${SYSTEMBITS}/services
 rm -R usr/lib${SYSTEMBITS}/systemd
 rm -R usr/lib/ldscripts
 rm -R usr/lib/modprobe.d
-rm -R usr/lib*/python2*
 rm -R usr/lib*/python*/__phello__
 rm -R usr/lib*/python*/config-*-x86_64-linux-gnu
 rm -R usr/lib*/python*/ensurepip
@@ -428,7 +427,7 @@ GenericStrip
 mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib${SYSTEMBITS}
 mv $MODULEPATH/libc-* $MODULEPATH/packages/lib${SYSTEMBITS}
 
-# move out stuff that can't be stripped
+# move out things that don't support aggressive stripping
 mv $MODULEPATH/packages/lib${SYSTEMBITS} $MODULEPATH/
 AggressiveStrip
 mv $MODULEPATH/lib${SYSTEMBITS} $MODULEPATH/packages/

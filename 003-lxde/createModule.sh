@@ -27,7 +27,7 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 currentPackage=xcape
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -224,6 +224,7 @@ rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
+rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/lxde/wallpapers/lxde_green.jpg
 rm usr/share/lxde/wallpapers/lxde_red.jpg
 
