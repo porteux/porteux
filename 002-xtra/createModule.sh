@@ -236,14 +236,6 @@ rm $MODULEPATH/packages/vulkan-sdk-*.t?z
 cd $MODULEPATH
 pip install glad2 || exit 1
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=meson
-	sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
-	rm -fr $MODULEPATH/${currentPackage}
-	rm $MODULEPATH/packages/meson-*.txz
-fi
-
 currentPackage=libplacebo
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 version=$(curl -s https://code.videolan.org/videolan/${currentPackage}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
