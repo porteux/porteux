@@ -1,0 +1,52 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=openbox
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION="3.6.1"
+wget https://openbox.org/dist/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+patch -p1 < $CWD/py2-to-py3.patch
+
+CFLAGS="$GCCFLAGS" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--enable-static=no
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+# Add xinitrc.openbox so that openbox will show up as an option in xwmconfig
+install -D -m 0755 $CWD/xinitrc.openbox $PKG/etc/X11/xinit/xinitrc.openbox
+
+# Add xinitrc.openbox-session so that openbox-session will show up as an option in xwmconfig
+install -D -m 0755 $CWD/xinitrc.openbox-session $PKG/etc/X11/xinit/xinitrc.openbox-session
+
+# Change name of openbox.desktop KDM session file so it corresponds to openbox-session
+mv $PKG/usr/share/xsessions/openbox.desktop $PKG/usr/share/xsessions/openbox-session.desktop
+sed -i "s,Name=Openbox,Name=Openbox-Session," $PKG/usr/share/xsessions/openbox-session.desktop
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
