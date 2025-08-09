@@ -1,0 +1,34 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=duktape
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "svaarala" ${PRGNAM})
+VERSION=${info#* }
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+sed -i 's/^#undef DUK_USE_FASTINT$/#define DUK_USE_FASTINT/' src/duk_config.h
+sed -i 's/duktape\.c/& -lm/' Makefile.sharedlibrary
+
+make -j${NUMBERTHREADS} CFLAGS="$GCCFLAGS" -f Makefile.sharedlibrary LIBDIR=/lib${SYSTEMBITS} INSTALL_PREFIX=/usr DESTDIR=$PKG install
+
+rm $PKG/usr/lib${SYSTEMBITS}/libduktaped.*
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz

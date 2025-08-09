@@ -47,7 +47,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	
 	currentPackage=meson
 	sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
+	upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
 	rm -fr $MODULEPATH/${currentPackage}
 	rm $MODULEPATH/packages/meson-*.txz
 fi
@@ -67,36 +67,11 @@ sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=hyfetch
-mkdir -p $MODULEPATH/${currentPackage}/package/usr/bin && cd $MODULEPATH/${currentPackage}
-wget https://github.com/hykilpikonna/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz || exit 1
-tar xvf ${currentPackage}.tar.gz && rm ${currentPackage}.tar.gz || exit 1
-cp -p */neofetch package/usr/bin
-sed -i "s|has pkginfo && tot pkginfo -i|#has pkginfo && tot pkginfo -i|g" package/usr/bin/neofetch
-chown 755 package/usr/bin/neofetch
-chmod +x package/usr/bin/neofetch
-version=$(date -r package/usr/bin/neofetch +%Y%m%d)
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-noarch-1.txz > /dev/null 2>&1
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=7zip
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=unrar
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-version=$(curl -s https://www.rarlab.com/rar_add.htm | grep "source" | grep -o 'unrarsrc-[0-9.]\+\.tar\.gz' | cut -d "-" -f 2 | sed 's/\.tar\.gz$//')
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/system/${currentPackage}/ -A * || exit 1
-wget https://www.rarlab.com/rar/unrarsrc-$version.tar.gz || exit 1
-sed -i "s|-j1 ||g" ${currentPackage}.SlackBuild
-sed -i "s|make |make -j${NUMBERTHREADS} |g" ${currentPackage}.SlackBuild
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS -fPIC\"|g" ${currentPackage}.SlackBuild
-sed -i "s|libunrar.so.5|libunrar.so.7|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 # required to build procps-ng
@@ -104,24 +79,15 @@ installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
 
 currentPackage=procps-ng
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
+installpkg $MODULEPATH/packages/${currentPackage}*.txz # required by other packages later on
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=duktape
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=polkit
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O[23].*|${GCCFLAGS/ -ffunction-sections -fdata-sections/}\"|g" ${currentPackage}.SlackBuild
-sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages that require specific stripping
@@ -408,7 +374,6 @@ rm etc/rc.d/rc.inet2
 rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
 rm usr/dict
-rm usr/lib${SYSTEMBITS}/libduktaped.*
 rm usr/lib${SYSTEMBITS}/libicutest.*
 rm usr/lib${SYSTEMBITS}/libqgpgme*
 rm usr/libexec/samba/rpcd_*
