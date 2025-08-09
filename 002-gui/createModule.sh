@@ -36,7 +36,7 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}-*.txz
 	rm -fr $MODULEPATH/${currentPackage}
-	rm $MODULEPATH/packages/meson-*.txz
+	rm $MODULEPATH/packages/${currentPackage}*.txz
 	
 	# required by xorg but not included in slackware repo in stable
 	currentPackage=libxcvt
