@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+duktape: duktape (embeddable JavaScript engine)
+duktape:
+duktape: Duktape is a small and portable ECMAScript E5/E5.1 implementation. It
+duktape: is intended to be easily embeddable into C programs, with a C API
+duktape: similar in spirit to Lua's.
+duktape:
+duktape: Homepage: https://duktape.org
+duktape:
+duktape:
+duktape:
+duktape:
