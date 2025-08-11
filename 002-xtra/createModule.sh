@@ -113,12 +113,12 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=nv-codec-headers
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/d/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-if [ $SLACKWAREVERSION == "current" ]; then
-	info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
-	version=${info#* }
-else
+if [ $SLACKWAREVERSION != "current" ]; then
 	version="12.0.16.1"
 	wget https://github.com/FFmpeg/${currentPackage}/releases/download/n${version}/${currentPackage}-${version}.tar.gz
+else
+	info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
+	version=${info#* }
 fi
 sh ${currentPackage}.SlackBuild || exit 1
 installpkg /tmp/${currentPackage}*.t?z
