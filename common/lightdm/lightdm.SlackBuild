@@ -46,6 +46,8 @@ CXXFLAGS="$GCCFLAGS" \
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
 install -m 755 $CWD/Xsession $PKG/etc/lightdm/
 rm -rf $PKG/etc/init
 
@@ -67,6 +69,9 @@ sed -i 's|pam_systemd|pam_elogind|g' $PKG/etc/pam.d/lightdm-greeter
 
 # apply default settings
 cp $CWD/lightdm.conf $PKG/etc/lightdm
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
