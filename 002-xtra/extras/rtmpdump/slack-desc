@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+rtmpdump: rtmpdump (RTMP streams toolkit)
+rtmpdump:
+rtmpdump: rtmpdump is a toolkit for RTMP streams.
+rtmpdump: All forms of RTMP are supported, including rtmp://, rtmpt://,
+rtmpdump: rtmpe://, rtmpte://, and rtmps://.
+rtmpdump: This package contains the library, librtmp, and the binaries rtmpdump,
+rtmpdump: rtmpgw, rtmpsrv and rtmpsuck.
+rtmpdump:
+rtmpdump: Homepage: http://rtmpdump.mplayerhq.hu/
+rtmpdump:
+rtmpdump:

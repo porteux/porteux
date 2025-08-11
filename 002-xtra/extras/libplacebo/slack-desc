@@ -1,0 +1,12 @@
+          |-----handy-ruler------------------------------------------------------|
+libplacebo: libplacebo (GPU-accelerated video processing library)
+libplacebo:
+libplacebo: libplacebo is, in a nutshell, the core rendering algorithms and ideas
+libplacebo: of mpv rewritten as an independent library. It contains a large
+libplacebo: assortment of video processing shaders, focusing on both quality and
+libplacebo: performance.
+libplacebo:
+libplacebo: Homepage: https://code.videolan.org/videolan/libplacebo
+libplacebo:
+libplacebo:
+libplacebo:

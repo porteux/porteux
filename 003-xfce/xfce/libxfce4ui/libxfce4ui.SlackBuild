@@ -28,7 +28,7 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--docdir=/usr/doc/$PRGNAM-$DOWNLOADVERSION \
 	--disable-static \
 	--disable-debug \
-	--build=$ARCH-porteux-linux || exit 1
+	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 

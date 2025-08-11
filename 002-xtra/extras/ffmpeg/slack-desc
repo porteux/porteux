@@ -1,0 +1,12 @@
+      |-----handy-ruler------------------------------------------------------|
+ffmpeg: ffmpeg (software to record, convert and stream audio and video)
+ffmpeg:
+ffmpeg: FFmpeg is the leading multimedia framework, able to decode, encode,
+ffmpeg: transcode, mux, demux, stream, filter and play pretty much anything
+ffmpeg: that humans and machines have created. It supports the most obscure
+ffmpeg: ancient formats up to the cutting edge. It includes libavcodec, the
+ffmpeg: leading audio/video codec library. 
+ffmpeg:
+ffmpeg: Homepage: https://ffmpeg.org/
+ffmpeg:
+ffmpeg:

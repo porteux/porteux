@@ -1,0 +1,51 @@
+#!/bin/bash
+
+PRGNAM=libplacebo
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://code.videolan.org/videolan/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+wget https://code.videolan.org/videolan/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+
+tar xvf ${PRGNAM}-${VERSION}.tar.?z
+cd ${PRGNAM}-${VERSION}
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
+	--mandir=/usr/man \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	-Ddemos=false \
+	-Dglslang=disabled \
+	-Dvulkan=disabled \
+	-Dshaderc=disabled \
+	-Ddovi=disabled \
+	-Dlibdovi=disabled \
+	-Dd3d11=disabled
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1_porteux.txz

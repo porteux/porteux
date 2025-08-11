@@ -20,8 +20,8 @@ cd gtk-$VERSION
 
 sed -i "s|subdir('docs|#subdir('docs|g" meson.build
 
-wget https://github.com/lah7/gtk3-classic/archive/refs/heads/master.tar.gz || exit 1
-tar xvf master.tar.gz && rm master.tar.gz || exit 1
+wget https://github.com/lah7/gtk3-classic/archive/refs/heads/master.tar.gz
+tar xvf master.tar.gz && rm master.tar.gz
 rm gtk3-classic*/gtk+-atk-bridge-meson.build.patch
 rm gtk3-classic*/gtk+-atk-bridge-meson_options.txt.patch
 rm gtk3-classic*/appearance__disable-backdrop.patch
@@ -53,4 +53,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

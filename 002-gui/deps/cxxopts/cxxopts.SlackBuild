@@ -32,4 +32,4 @@ make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
