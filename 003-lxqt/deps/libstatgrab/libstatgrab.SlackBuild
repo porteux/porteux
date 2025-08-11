@@ -43,19 +43,3 @@ cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
-exit 0
-
-
-currentPackage=libstatgrab
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub ${currentPackage} ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-./autogen.sh && CFLAGS="$GCCFLAGS -ffat-lto-objects" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug
-make -j${NUMBERTHREADS} && make install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1_porteux.txz > /dev/null 2>&1
-installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-rm -fr $MODULEPATH/${currentPackage}
