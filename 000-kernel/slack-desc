@@ -1,0 +1,12 @@
+              |-----handy-ruler------------------------------------------------------|
+kernel-headers: kernel-headers (Linux kernel include files)
+kernel-headers:
+kernel-headers: These are the include files from the Linux kernel.
+kernel-headers:
+kernel-headers: You'll need these to compile most system software for Linux.
+kernel-headers:
+kernel-headers:
+kernel-headers:
+kernel-headers:
+kernel-headers:
+kernel-headers:
