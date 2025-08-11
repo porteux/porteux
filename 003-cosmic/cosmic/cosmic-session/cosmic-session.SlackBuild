@@ -22,7 +22,7 @@ ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 sed -i 's|--release|--release --features autostart|g' Justfile
 just build
 rsync -r ./target/release ./target/
-just rootdir=$MODULEPATH/$PRGNAM/package install || exit 1
+just rootdir=$MODULEPATH/$PRGNAM/package install
 
 cd $MODULEPATH/$PRGNAM/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz

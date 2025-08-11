@@ -16,7 +16,7 @@ git clone https://github.com/pop-os/$PRGNAM
 cd $PRGNAM
 VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
-just rootdir=$MODULEPATH/$PRGNAM/package install || exit 1
+just rootdir=$MODULEPATH/$PRGNAM/package install
 
 gtk-update-icon-cache $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic
 
