@@ -111,33 +111,17 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build ffmpeg and mpv
 currentPackage=nv-codec-headers
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/d/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-if [ $SLACKWAREVERSION != "current" ]; then
-	version="12.0.16.1"
-	wget https://github.com/FFmpeg/${currentPackage}/releases/download/n${version}/${currentPackage}-${version}.tar.gz
-else
-	info=$(DownloadLatestFromGithub "FFmpeg" ${currentPackage})
-	version=${info#* }
-fi
-sh ${currentPackage}.SlackBuild || exit 1
-installpkg /tmp/${currentPackage}*.t?z
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
-rm /tmp/${currentPackage}*.t?z
+rm $MODULEPATH/packages/${currentPackage}*.txz
 
 # temporary to build ffmpeg with amd hardware encoding acceleration
 currentPackage=AMF
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-version=$(GetLatestVersionTagFromGithub "GPUOpen-LibrariesAndSDKs" ${currentPackage})
-wget https://github.com/GPUOpen-LibrariesAndSDKs/${currentPackage}/releases/download/${version}/${currentPackage}-headers-${version}.tar.gz || exit 1
-mkdir -p package/usr/include
-tar xvf ${currentPackage}-headers-${version}.tar.gz
-cp -r ${currentPackage,,}-headers-${version}/${currentPackage} $MODULEPATH/${currentPackage}/package/usr/include
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-headers-${version//[^0-9._]/}-noarch-1.txz
-installpkg $MODULEPATH/packages/AMF-headers*.txz
-rm $MODULEPATH/packages/AMF-headers-*.txz || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
+rm $MODULEPATH/packages/${currentPackage}*.txz
 
 # required by ffmpeg
 installpkg $MODULEPATH/packages/openal-soft-*.t?z || exit 1

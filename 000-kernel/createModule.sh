@@ -29,6 +29,7 @@ CRIPPLEDMODULENAME="06-crippled-sources-${KERNELVERSION}"
 
 ### create module folder
 
+rm -fr ${MODULEPATH}
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 ### set compiler
@@ -55,7 +56,6 @@ fi
 
 echo "Building kernel ${KERNELVERSION} $ARCH using ${COMPILER}..."
 
-rm -fr ${MODULEPATH} && mkdir -p ${MODULEPATH}
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH} 2>/dev/null
 
@@ -87,12 +87,11 @@ done
 rm -fr ../aufs_sources
 
 echo "Building kernel headers..."
+currentPackage=kernel-headers
+KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${SCRIPTPATH}/${currentPackage}.SlackBuild || exit 1
 mkdir -p ${MODULEPATH}/../05-devel/packages
-wget -P $MODULEPATH ${SLACKWAREDOMAIN}/slackware/slackware-current/source/k/kernel-headers.SlackBuild > /dev/null 2>&1 || exit 1
-sed -i "s|\$BUILD.txz|\${BUILD}_porteux.txz|g" ${MODULEPATH}/kernel-headers.SlackBuild
-KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${MODULEPATH}/kernel-headers.SlackBuild > /dev/null 2>&1
-mv /tmp/kernel-headers-*.txz ${MODULEPATH}/../05-devel/packages
-rm ${MODULEPATH}/kernel-headers.SlackBuild
+mv ${MODULEPATH}/packages/${currentPackage}-*.txz ${MODULEPATH}/../05-devel/packages
+rm -fr $MODULEPATH/${currentPackage}
 
 if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
 	echo "Downloading firmware in the background..."
