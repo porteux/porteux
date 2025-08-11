@@ -2,7 +2,7 @@
 
 source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
-PRGNAM=python-xapp
+PRGNAM=python3-xapp
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "linuxmint" "python3" "master.")
+info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
 VERSION=${info#* }
 
 tar xvf python3-$VERSION.tar.?z

@@ -20,17 +20,18 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
-./configure \
-	--prefix=/usr \
+meson setup \
+	--buildtype=release \
+	--infodir=/usr/info \
 	--libdir=/usr/lib${SYSTEMBITS} \
-	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--mandir=/usr/man \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
-	--build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--sysconfdir=/etc
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

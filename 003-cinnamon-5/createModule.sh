@@ -150,7 +150,7 @@ for package in \
 	caribou \
 	python-pexpect \
 	python-polib \
-	python-xapp \
+	python3-xapp \
 	gspell \
 	gtksourceview4 \
 	libpeas \

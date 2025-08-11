@@ -89,7 +89,6 @@ for package in \
 	libei \
 	libportal \
 	libcloudproviders \
-	libheif \
 	glycin \
 	libwnck4 \
 	exempi \

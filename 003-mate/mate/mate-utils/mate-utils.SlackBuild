@@ -2,7 +2,7 @@
 
 source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
-PRGNAM=mate-search-tool
+PRGNAM=mate-utils
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
