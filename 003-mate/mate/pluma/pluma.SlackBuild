@@ -20,6 +20,8 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+sed -i "s| docs help||g" Makefile.in
+
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
@@ -27,8 +29,8 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--mandir=/usr/man \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
-	--build=$ARCH-porteux-linux
+	--enable-tests=no \
+	--enable-gtk-doc-html=no
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 

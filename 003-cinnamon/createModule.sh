@@ -125,22 +125,22 @@ MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
 
 # cinnamon deps
 for package in \
-	tinycss2 \
+	python-tinycss2 \
 	xdotool \
 	gsound \
-	pytz \
+	python-pytz \
 	libtimezonemap \
-	setproctitle \
-	ptyprocess \
+	python-setproctitle \
+	python-ptyprocess \
 	python-pam \
 	libgnomekbd \
 	zenity \
 	cogl \
 	clutter \
 	caribou \
-	pexpect \
-	polib \
-	python-xapp \
+	python-pexpect \
+	python-polib \
+	python3-xapp \
 	libpeas \
 	libgxps \
 ; do
