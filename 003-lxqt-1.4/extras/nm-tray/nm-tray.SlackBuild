@@ -1,0 +1,34 @@
+#!/bin/bash
+
+PRGNAM=nm-tray
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION="0.5.0"
+wget https://github.com/palinek/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz 
+tar xvf ${VERSION}.tar.?z
+cd ${PRGNAM}-${VERSION}
+
+sed -i "s|set(NM_TRAY_VERSION \".*|set(NM_TRAY_VERSION \"${version}\")|g" CMakeLists.txt
+
+cmake -B build -S . \
+	-DCMAKE_BUILD_TYPE=release \
+	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
+
+make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM,,}-$VERSION-$ARCH-1_porteux.txz

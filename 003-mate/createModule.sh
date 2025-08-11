@@ -30,17 +30,7 @@ DownloadFromSlackware
 ### packages outside slackware repository
 
 currentPackage=xcape
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/misc/${currentPackage}/ -A * || exit 1
-info=$(DownloadLatestFromGithub "alols" ${currentPackage})
-version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-installpkg $MODULEPATH/packages/${currentPackage}*.t?z
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
@@ -66,15 +56,10 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa and mate-search-tool
 currentPackage=mate-common
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage} "1.29")
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-./autogen.sh --prefix=/usr --libdir=/usr/lib${SYSTEMBITS} --sysconfdir=/etc
-make -j${NUMBERTHREADS} install || exit 1
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
+rm $MODULEPATH/packages/${currentPackage}*.txz
 
 # required from now on
 installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
@@ -135,6 +120,7 @@ for package in \
 	mate-notification-daemon \
 	eom \
 	mate-control-center \
+	mate-utils \
 	engrampa \
 	mate-media \
 	mate-power-manager \
@@ -147,31 +133,6 @@ sh $SCRIPTPATH/mate/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-currentPackage=mate-utils
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage} "1.29")
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-# missing files from 1.28.5
-git clone https://github.com/mate-desktop/mate-submodules gsearchtool/mate-submodules
-cp $PWD/mate/mate-panel/Makefile.in gsearchtool/mate-submodules
-cp $PWD/mate/mate-panel/Makefile.in.libegg gsearchtool/mate-submodules/libegg/Makefile.in
-sed -i "s|mate-dictionary||g" ./Makefile.am
-sed -i "s|logview||g" ./Makefile.am
-sed -i 's|yelp-build|ls|g' autogen.sh
-sed -i 's|dnl yelp-tools stuff||g' configure.ac
-sed -i 's|YELP_HELP_INIT||g' configure.ac
-sed -i 's| help||g' gsearchtool/Makefile.am
-sed -i 's| help||g' baobab/Makefile.am
-CFLAGS="$GCCFLAGS -ffat-lto-objects" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/mate-utils-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 

@@ -21,4 +21,4 @@ just rootdir=$MODULEPATH/$PRGNAM/package install || exit 1
 gtk-update-icon-cache $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic
 
 cd $MODULEPATH/$PRGNAM/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz

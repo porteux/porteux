@@ -69,8 +69,9 @@ do
 	CXXFLAGS="$GCCFLAGS ${LTOFAT}" cmake $ALL_CMAKE_FLAGS .. && "$CMAKE_MAKE_PROGRAM" -j$JOB_NUM || exit 1
 	version=`git describe | cut -d- -f1`
 
-	"$CMAKE_MAKE_PROGRAM" install DESTDIR=$MODULEPATH/lxqt/$d/package/$d-$version-$ARCH-1
-	cd $MODULEPATH/lxqt/$d/package/$d-$version-$ARCH-1
-	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$d-$version-$ARCH-1.txz
-	installpkg $MODULEPATH/packages/$d-$version-$ARCH-1.txz
+	packageName="$d-$version-$ARCH-1_porteux"
+	"$CMAKE_MAKE_PROGRAM" install DESTDIR=$MODULEPATH/lxqt/$d/package/$packageName
+	cd $MODULEPATH/lxqt/$d/package/$packageName
+	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageName}.txz
+	installpkg $MODULEPATH/packages/${packageName}.txz
 done

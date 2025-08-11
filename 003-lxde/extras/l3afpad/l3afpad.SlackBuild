@@ -1,0 +1,34 @@
+#!/bin/bash
+
+PRGNAM=l3afpad
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://github.com/stevenhoneyman/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xvf ${PRGNAM}.tar.gz
+cd ${PRGNAM}-master
+VERSION=$(date -r . +%Y%m%d)
+
+CFLAGS="$GCCFLAGS" \
+./autogen.sh && ./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--disable-static \
+	--disable-debug
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

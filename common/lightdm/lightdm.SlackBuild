@@ -69,4 +69,4 @@ sed -i 's|pam_systemd|pam_elogind|g' $PKG/etc/pam.d/lightdm-greeter
 cp $CWD/lightdm.conf $PKG/etc/lightdm
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
