@@ -17,6 +17,11 @@ tar xvf ${PRGNAM}.tar.?z
 cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 
+# this icon breaks our xzm icon, so we need to remove it
+rm ${PRGNAM}/apps/scalable/application.svg
+rm ${PRGNAM}/create-new-icon-theme.cache.sh
+rm ${PRGNAM}-light/create-new-icon-theme.cache.sh
+
 iconRootFolder=$PKG/usr/share/icons/${PRGNAM}
 lightIconRootFolder=$PKG/usr/share/icons/${PRGNAM}-light
 mkdir -p $iconRootFolder
