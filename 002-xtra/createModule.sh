@@ -105,7 +105,7 @@ cd $MODULEPATH
 pip install glad2 || exit 1
 
 currentPackage=libplacebo
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -138,7 +138,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # required by mpv
 currentPackage=luajit
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
