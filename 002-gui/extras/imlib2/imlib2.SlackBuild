@@ -13,7 +13,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 VERSION=$(curl -s https://sourceforge.net/projects/enlightenment/files/${PRGNAM}-src/ | grep net.sf.files | cut -d '"' -f 2)
-wget https://sourceforge.net/projects/enlightenment/files/${PRGNAM}-src/${VERSION}/${PRGNAM}-${VERSION}.tar.xz || exit 1
+wget https://sourceforge.net/projects/enlightenment/files/${PRGNAM}-src/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
@@ -35,4 +35,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

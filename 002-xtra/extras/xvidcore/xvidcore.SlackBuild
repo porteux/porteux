@@ -1,0 +1,39 @@
+#!/bin/bash
+
+PRGNAM=xvidcore
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://downloads.xvid.com/downloads/ | grep -oP 'https?://[^\s]+\.tar\.gz' | cut -d "-" -f 2- | grep -v beta | grep -v rc[0-9] | sed 's/\.tar\.gz$//' | sort -V -r | head -1)
+wget https://downloads.xvid.com/downloads/${PRGNAM}-${VERSION}.tar.gz
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM/build/generic
+
+CFLAGS="$GCCFLAGS -std=c99" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man
+
+make -j${NUMBERTHREADS}
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.a" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -89,6 +89,7 @@ rm -fr ../aufs_sources
 echo "Building kernel headers..."
 mkdir -p ${MODULEPATH}/../05-devel/packages
 wget -P $MODULEPATH ${SLACKWAREDOMAIN}/slackware/slackware-current/source/k/kernel-headers.SlackBuild > /dev/null 2>&1 || exit 1
+sed -i "s|\$BUILD.txz|\${BUILD}_porteux.txz|g" ${MODULEPATH}/kernel-headers.SlackBuild
 KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${MODULEPATH}/kernel-headers.SlackBuild > /dev/null 2>&1
 mv /tmp/kernel-headers-*.txz ${MODULEPATH}/../05-devel/packages
 rm ${MODULEPATH}/kernel-headers.SlackBuild
