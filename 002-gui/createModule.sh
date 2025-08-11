@@ -34,18 +34,8 @@ installpkg $MODULEPATH/packages/llvm*.txz || exit 1
 if [ $SLACKWAREVERSION != "current" ]; then
 	# required by xorg but not included in slackware repo in stable
 	currentPackage=libxcvt
-	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}*.txz
-	rm -fr $MODULEPATH/${currentPackage}
-	
-	# required by new wireplumber
-	currentPackage=lua
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/d/${currentPackage}/ || exit 1
-	sed -i "s|-O[23].*|$GCCFLAGS -ffat-lto-objects -fPIC\"|g" ${currentPackage}.SlackBuild
-	sh ${currentPackage}.SlackBuild || exit 1
-	mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-	installpkg $MODULEPATH/packages/lua*.txz
 	rm -fr $MODULEPATH/${currentPackage}
 else
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
@@ -60,7 +50,7 @@ else
 
 	# building this because the slackware package in current depends on dav1d
 	currentPackage=librsvg
-	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	rm -fr $MODULEPATH/${currentPackage}
 fi
 
@@ -89,7 +79,7 @@ installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=gtk+3-classic
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -99,7 +89,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # required by openbox to draw application icons
 currentPackage=imlib2
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
