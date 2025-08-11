@@ -29,163 +29,6 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
-source "$BUILDERUTILSPATH/slackwarerepository.sh"
-REPOSITORY="https://slackware.halpanet.org/kde6town/stable/current/${ARCH}"
-GenerateRepositoryUrls
-
-DownloadPackage "ark" &
-DownloadPackage "attica" &
-DownloadPackage "baloo" &
-DownloadPackage "baloo-widgets" &
-DownloadPackage "bluedevil" &
-DownloadPackage "bluez-qt" &
-DownloadPackage "breeze" &
-DownloadPackage "breeze-grub" &
-DownloadPackage "breeze-gtk" &
-DownloadPackage "breeze-icons" &
-wait
-DownloadPackage "ddcutil" &
-DownloadPackage "dolphin" &
-DownloadPackage "dolphin-plugins" &
-DownloadPackage "ffmpegthumbs" &
-DownloadPackage "frameworkintegration" &
-DownloadPackage "gwenview" &
-DownloadPackage "kactivitymanagerd" &
-DownloadPackage "kapidox" &
-wait
-DownloadPackage "karchive" &
-DownloadPackage "kauth" &
-DownloadPackage "kbookmarks" &
-DownloadPackage "kcmutils" &
-DownloadPackage "kcodecs" &
-DownloadPackage "kColorPicker" &
-DownloadPackage "kcolorscheme" &
-DownloadPackage "kcompletion" &
-DownloadPackage "kconfig" &
-DownloadPackage "kconfigwidgets" &
-wait
-DownloadPackage "kcoreaddons" &
-DownloadPackage "kcrash" &
-DownloadPackage "kdbusaddons" &
-DownloadPackage "kdeclarative" &
-DownloadPackage "kde-cli-tools" &
-DownloadPackage "kdecoration" &
-DownloadPackage "kded" &
-DownloadPackage "kde-gtk-config" &
-DownloadPackage "kdenetwork-filesharing" &
-DownloadPackage "kdeplasma-addons" &
-DownloadPackage "kdesu" &
-wait
-DownloadPackage "kdnssd" &
-DownloadPackage "kfilemetadata" &
-DownloadPackage "kglobalaccel" &
-DownloadPackage "kglobalacceld" &
-DownloadPackage "kguiaddons" &
-DownloadPackage "ki18n" &
-DownloadPackage "kiconthemes" &
-DownloadPackage "kidletime" &
-DownloadPackage "kImageAnnotator" &
-DownloadPackage "kinfocenter" &
-wait
-DownloadPackage "kio" &
-DownloadPackage "kio-admin" &
-DownloadPackage "kio-extras" &
-DownloadPackage "kio-gdrive" &
-DownloadPackage "kio-zeroconf" &
-DownloadPackage "kirigami" &
-DownloadPackage "kirigami-addons" &
-DownloadPackage "kitemmodels" &
-DownloadPackage "kitemviews" &
-DownloadPackage "kjobwidgets" &
-wait
-DownloadPackage "kmenuedit" &
-DownloadPackage "knewstuff" &
-DownloadPackage "knotifications" &
-DownloadPackage "knotifyconfig" &
-DownloadPackage "konsole" &
-DownloadPackage "kpackage" &
-DownloadPackage "kparts" &
-DownloadPackage "kpeople" &
-DownloadPackage "kpeoplevcard" &
-DownloadPackage "kpipewire" &
-wait
-DownloadPackage "kplotting" &
-DownloadPackage "kpty" &
-DownloadPackage "kqtquickcharts" &
-DownloadPackage "kquickcharts" &
-DownloadPackage "krunner" &
-DownloadPackage "kscreen" &
-DownloadPackage "kscreenlocker" &
-DownloadPackage "kservice" &
-DownloadPackage "ksshaskpass" &
-DownloadPackage "kstatusnotifieritem" &
-wait
-DownloadPackage "ksvg" &
-DownloadPackage "ksystemstats" &
-DownloadPackage "ktexteditor" &
-DownloadPackage "ktextwidgets" &
-DownloadPackage "kunitconversion" &
-DownloadPackage "kuserfeedback" &
-DownloadPackage "kwallet" &
-DownloadPackage "kwayland" &
-DownloadPackage "kwayland-integration" &
-DownloadPackage "kwidgetsaddons" &
-wait
-DownloadPackage "kwin" &
-DownloadPackage "kwindowsystem" &
-DownloadPackage "kwrited" &
-DownloadPackage "kxmlgui" &
-DownloadPackage "layer-shell-qt" &
-DownloadPackage "libkdcraw" &
-DownloadPackage "libkexiv2" &
-DownloadPackage "libkipi" &
-DownloadPackage "libkscreen" &
-DownloadPackage "libksysguard" &
-wait
-DownloadPackage "libplasma" &
-DownloadPackage "libqaccessibilityclient" &
-DownloadPackage "milou" &
-DownloadPackage "modemmanager-qt" &
-DownloadPackage "networkmanager-qt" &
-DownloadPackage "okular" &
-DownloadPackage "oxygen" &
-DownloadPackage "plasma5support" &
-DownloadPackage "plasma-activities" &
-DownloadPackage "plasma-activities-stats" &
-wait
-DownloadPackage "plasma-browser-integration" &
-DownloadPackage "plasma-desktop" &
-DownloadPackage "plasma-integration" &
-DownloadPackage "plasma-nm" &
-DownloadPackage "plasma-pa" &
-DownloadPackage "plasma-systemmonitor" &
-DownloadPackage "plasma-workspace" &
-wait
-DownloadPackage "polkit-kde-agent" &
-DownloadPackage "polkit-qt" &
-DownloadPackage "powerdevil" &
-DownloadPackage "prison" &
-DownloadPackage "pulseaudio-qt" &
-DownloadPackage "purpose" &
-DownloadPackage "qca" &
-wait
-DownloadPackage "qcoro" &
-DownloadPackage "qqc2-desktop-style" &
-DownloadPackage "sddm" &
-DownloadPackage "sddm-kcm" &
-DownloadPackage "solid" &
-DownloadPackage "sonnet" &
-DownloadPackage "spectacle" &
-DownloadPackage "syndication" &
-DownloadPackage "syntax-highlighting" &
-DownloadPackage "systemsettings" &
-DownloadPackage "threadweaver" &
-DownloadPackage "xdg-desktop-portal-kde" &
-wait
-
-rm $MODULEPATH/packages/FILE_LIST
-rm $MODULEPATH/packages/serverPackages.txt
-
 DE_LATEST_VERSION=$(ls plasma-desktop-* | cut -d "-" -f 3)
 MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
 
@@ -320,23 +163,27 @@ cd ${currentPackage}-stripped-$version
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=qcoro
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped-$version
+cp --parents -P usr/lib$SYSTEMBITS/libQCoro6Core.* "${currentPackage}-stripped-$version"
+cp --parents -P usr/lib$SYSTEMBITS/libQCoro6DBus.* "${currentPackage}-stripped-$version"
+cd ${currentPackage}-stripped-$version
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 ### packages outside slackware repository
 
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
-currentPackage=FeatherPad
-mkdir $MODULEPATH/${currentPackage,,} && cd $MODULEPATH/${currentPackage,,}
-info=$(DownloadLatestFromGithub "tsujan" ${currentPackage})
-version=${info#* }
-filename=${info% *}
-tar xvf ${currentPackage}-${version}.tar.xz && rm ${currentPackage}-${version}.tar.xz || exit 1
-cd ${currentPackage}*
-cmake -B build -S . -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" -DCMAKE_BUILD_TYPE=release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
-make -C build -j${NUMBERTHREADS} DESTDIR="$MODULEPATH/${currentPackage,,}/package" install
-cd $MODULEPATH/${currentPackage,,}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage,,}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage,,}
+currentPackage=featherpad
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious
 QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
@@ -359,19 +206,6 @@ done
 
 # only required for building
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
-
-currentPackage=qcoro
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libQCoro6Core.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQCoro6DBus.* "${currentPackage}-stripped-$version"
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 

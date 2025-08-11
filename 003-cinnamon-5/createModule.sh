@@ -71,28 +71,8 @@ currentPackage=mate-polkit
 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=yaru
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget https://github.com/ubuntu/${currentPackage}/archive/refs/heads/master.tar.gz || exit 1
-tar xvf master.tar.gz && rm master.tar.gz || exit 1
-cd ${currentPackage}-master
-version=$(date -r . +%Y%m%d)
-mainIconRootFolder=../${currentPackage}-$version-noarch/usr/share/icons/Yaru
-blueIconRootFolder=../${currentPackage}-$version-noarch/usr/share/icons/Yaru-blue
-mkdir -p $mainIconRootFolder
-mkdir -p $blueIconRootFolder
-cp -r icons/Yaru/* $mainIconRootFolder || exit 1
-cp -r icons/Yaru-blue/* $blueIconRootFolder || exit 1
-rm -fr $mainIconRootFolder/cursor*
-rm -fr $mainIconRootFolder/*@2x
-rm -fr $blueIconRootFolder/*@2x
-cp $SCRIPTPATH/extras/${currentPackage}/index.theme $mainIconRootFolder
-cp $SCRIPTPATH/extras/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
-gtk-update-icon-cache -f $mainIconRootFolder || exit 1
-gtk-update-icon-cache -f $blueIconRootFolder || exit 1
-cd ../${currentPackage}-$version-noarch
-echo "Generating icon package. This may take a while..."
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
+currentPackage=yaru-icon-theme
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
@@ -129,74 +109,48 @@ pip install pyproject-hooks || exit 1
 pip install wheel || exit 1
 
 currentPackage=libhandy
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=libgusb
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=colord
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
-sed -i "s|-Dsane=true|-Dsane=false|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=python-psutil
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=python-webencodings
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sed -i "s|\$TAG||g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.t?z
 rm -fr $MODULEPATH/${currentPackage}
 
 # cinnamon deps
 for package in \
-	tinycss2 \
+	python-tinycss2 \
 	xdotool \
 	gsound \
-	pytz \
+	python-pytz \
 	libtimezonemap \
-	setproctitle \
-	ptyprocess \
+	python-setproctitle \
+	python-ptyprocess \
 	python-pam \
 	libgnomekbd \
 	zenity \
 	cogl \
 	clutter \
 	caribou \
-	pexpect \
-	polib \
-	python3-xapp \
+	python-pexpect \
+	python-polib \
+	python-xapp \
 	gspell \
 	gtksourceview4 \
 	libpeas \

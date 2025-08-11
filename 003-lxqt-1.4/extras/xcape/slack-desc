@@ -1,0 +1,12 @@
+     |-----handy-ruler------------------------------------------------------|
+xcape: xcape (Linux utility to configure modifier keys)
+xcape:
+xcape: xcape allows you to use a modifier key as another key when pressed and
+xcape: released on its own. Note that it is slightly slower than pressing the
+xcape: original key, because the pressed event does not occur until the key
+xcape: is released.
+xcape:
+xcape: The default behaviour is to generate the Escape key when Left Control
+xcape: is pressed and released on its own.
+xcape:
+xcape: Homepage https://github.com/alols/xcape

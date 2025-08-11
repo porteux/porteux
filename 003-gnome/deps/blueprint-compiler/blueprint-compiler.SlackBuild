@@ -39,4 +39,4 @@ find $PKG -type f -name "*.la" -exec rm -f {} \;
 mkdir -p $PKG/install
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

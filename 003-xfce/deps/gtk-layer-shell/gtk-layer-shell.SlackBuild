@@ -42,5 +42,5 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
-/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+/sbin/makepkg -l y -c n $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz
+/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

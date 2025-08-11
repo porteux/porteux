@@ -45,4 +45,4 @@ cat $CWD/slack-desc > $PKG/install/slack-desc
 sed -i "s|OnlyShowIn=MATE;||g" $PKG/etc/xdg/autostart/polkit-mate-authentication-agent-1.desktop
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
