@@ -37,6 +37,16 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}*.txz
 	rm -fr $MODULEPATH/${currentPackage}
+	
+	# required by new wireplumber
+	currentPackage=lua
+	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+	wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/d/${currentPackage}/ || exit 1
+	sed -i "s|-O[23].*|$GCCFLAGS -ffat-lto-objects -fPIC\"|g" ${currentPackage}.SlackBuild
+	sh ${currentPackage}.SlackBuild || exit 1
+	mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
+	installpkg $MODULEPATH/packages/lua*.txz
+	rm -fr $MODULEPATH/${currentPackage}
 else
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 
@@ -109,18 +119,6 @@ currentPackage=pipewire
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
-
-if [ $SLACKWAREVERSION != "current" ]; then
-	# required by new wireplumber
-	currentPackage=lua
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware64-current/source/d/${currentPackage}/ || exit 1
-	sed -i "s|-O[23].*|$GCCFLAGS -ffat-lto-objects -fPIC\"|g" ${currentPackage}.SlackBuild
-	sh ${currentPackage}.SlackBuild || exit 1
-	mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-	installpkg $MODULEPATH/packages/lua*.txz
-	rm -fr $MODULEPATH/${currentPackage}
-fi
 
 currentPackage=wireplumber
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1

@@ -66,6 +66,7 @@ cmake -B build -S $TMP/$PRGNAM-$VERSION \
 
 make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 
+find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 find $PKG -name perllocal.pod -o -name ".packlist" -o -name "*.bs" | xargs rm -f || true
 
