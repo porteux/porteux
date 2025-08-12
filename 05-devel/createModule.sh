@@ -50,29 +50,28 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R usr/doc
-rm -R usr/etc
-rm -R usr/info
-rm -R usr/lib${SYSTEMBITS}/bash
-rm -R usr/local
-rm -R usr/man
-rm -R usr/share/applications
-rm -R usr/share/bash-completion
-rm -R usr/share/cmake-*/Help
-rm -R usr/share/devhelp
-rm -R usr/share/doc
-rm -R usr/share/gitk
-rm -R usr/share/gnome
-rm -R usr/share/ffmpeg/examples
-rm -R usr/share/help
-rm -R usr/share/icons
-rm -R usr/share/locale
-rm -R usr/share/valadoc-*
-rm -R usr/x86_64-slackware-linux
-rm -R var/log/pkgtools
-rm -R var/log/setup
-
 rm usr/lib/python*/site-packages/setuptools/_distutils/command/*.exe
+
+rm -fr usr/doc
+rm -fr usr/etc
+rm -fr usr/info
+rm -fr usr/lib${SYSTEMBITS}/bash
+rm -fr usr/local
+rm -fr usr/man
+rm -fr usr/share/applications
+rm -fr usr/share/bash-completion
+rm -fr usr/share/cmake-*/Help
+rm -fr usr/share/devhelp
+rm -fr usr/share/doc
+rm -fr usr/share/gitk
+rm -fr usr/share/gnome
+rm -fr usr/share/help
+rm -fr usr/share/icons
+rm -fr usr/share/locale
+rm -fr usr/share/valadoc-*
+rm -fr usr/x86_64-slackware-linux
+rm -fr var/log/pkgtools
+rm -fr var/log/setup
 
 # already included in aaa_libraries - keeping them will prevent 05-devel from being deactivated
 rm usr/lib${SYSTEMBITS}/libatomic.so*
@@ -91,9 +90,9 @@ rm usr/lib${SYSTEMBITS}/libbfd-*.so
 rm usr/lib${SYSTEMBITS}/libsframe*.so
 
 # remove 32-bit files
-rm -R usr/include/c++/*/x86_64-slackware-linux/32
-rm -R usr/lib/pkgconfig
-rm -R usr/lib${SYSTEMBITS}/gcc/x86_64-slackware-linux/*/32
+rm -fr usr/include/c++/*/x86_64-slackware-linux/32
+rm -fr usr/lib/pkgconfig
+rm -fr usr/lib${SYSTEMBITS}/gcc/x86_64-slackware-linux/*/32
 rm usr/lib/*
 
 find . -name '*.la' -delete

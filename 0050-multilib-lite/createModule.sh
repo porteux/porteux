@@ -116,27 +116,6 @@ rm *.t?z
 ### module clean up
 
 {
-rm -fr $MODULEPATH/packages/etc
-rm -fr $MODULEPATH/packages/lib/e2fsprogs
-rm -fr $MODULEPATH/packages/lib/elogind
-rm -fr $MODULEPATH/packages/lib/security
-rm -fr $MODULEPATH/packages/lib/udev
-rm -fr $MODULEPATH/packages/run
-rm -fr $MODULEPATH/packages/usr/lib/clang
-rm -fr $MODULEPATH/packages/usr/lib/dbus-1.0
-rm -fr $MODULEPATH/packages/usr/lib/gcc
-rm -fr $MODULEPATH/packages/usr/lib/girepository-1.0
-rm -fr $MODULEPATH/packages/usr/lib/glib-2.0
-rm -fr $MODULEPATH/packages/usr/lib/libear
-rm -fr $MODULEPATH/packages/usr/lib/libscanbuild
-rm -fr $MODULEPATH/packages/usr/lib/xmms
-rm -fr $MODULEPATH/packages/var/cache
-rm -fr $MODULEPATH/packages/var/cache/fontconfig
-rm -fr $MODULEPATH/packages/var/db
-rm -fr $MODULEPATH/packages/var/kerberos
-rm -fr $MODULEPATH/packages/var/lib/dbus
-rm -fr $MODULEPATH/packages/var/run
-
 rm $MODULEPATH/packages/*
 rm $MODULEPATH/packages/lib/cpp
 rm $MODULEPATH/packages/lib/e2initrd_helper
@@ -190,6 +169,27 @@ rm $MODULEPATH/packages/usr/lib/libvpx*
 rm $MODULEPATH/packages/usr/lib/*.o
 rm $MODULEPATH/packages/usr/lib/*.spec
 rm $MODULEPATH/packages/usr/lib/xml2Conf.sh
+
+rm -fr $MODULEPATH/packages/etc
+rm -fr $MODULEPATH/packages/lib/e2fsprogs
+rm -fr $MODULEPATH/packages/lib/elogind
+rm -fr $MODULEPATH/packages/lib/security
+rm -fr $MODULEPATH/packages/lib/udev
+rm -fr $MODULEPATH/packages/run
+rm -fr $MODULEPATH/packages/usr/lib/clang
+rm -fr $MODULEPATH/packages/usr/lib/dbus-1.0
+rm -fr $MODULEPATH/packages/usr/lib/gcc
+rm -fr $MODULEPATH/packages/usr/lib/girepository-1.0
+rm -fr $MODULEPATH/packages/usr/lib/glib-2.0
+rm -fr $MODULEPATH/packages/usr/lib/libear
+rm -fr $MODULEPATH/packages/usr/lib/libscanbuild
+rm -fr $MODULEPATH/packages/usr/lib/xmms
+rm -fr $MODULEPATH/packages/var/cache
+rm -fr $MODULEPATH/packages/var/cache/fontconfig
+rm -fr $MODULEPATH/packages/var/db
+rm -fr $MODULEPATH/packages/var/kerberos
+rm -fr $MODULEPATH/packages/var/lib/dbus
+rm -fr $MODULEPATH/packages/var/run
 
 find $MODULEPATH/packages/sbin \( -type f -o -type l \) ! \( -name "ldconfig" -o -name "sln" \) -delete
 find $MODULEPATH/packages/bin \( -type f -o -type l \) ! -name "sln" -delete

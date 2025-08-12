@@ -116,10 +116,10 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -fr usr/share/lua-jit
-
 rm usr/bin/alsoft-config
 rm usr/share/applications/mimeinfo.cache
+
+rm -fr usr/share/lua-jit
 } >/dev/null 2>&1
 
 GenericStrip

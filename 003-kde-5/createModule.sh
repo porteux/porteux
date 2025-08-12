@@ -197,12 +197,12 @@ rm -fr usr/share/icons/Oxygen_Blue
 rm -fr usr/share/icons/Oxygen_White
 rm -fr usr/share/icons/Oxygen_Yellow
 rm -fr usr/share/icons/Oxygen_Zion
-rm -fr usr/share/katepart5
+rm -fr usr/share/katepart*
 rm -fr usr/share/kde4
-rm -fr usr/share/kf5/kdoctools
-rm -fr usr/share/kf5/locale
+rm -fr usr/share/kf*/kdoctools
+rm -fr usr/share/kf*/locale
 rm -fr usr/share/ksplash/Themes/Classic
-rm -fr usr/share/phonon4qt5
+rm -fr usr/share/phonon*
 rm -fr usr/share/plasma/desktoptheme/air
 rm -fr usr/share/plasma/desktoptheme/oxygen
 rm -fr usr/share/plasma/emoji

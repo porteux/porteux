@@ -227,32 +227,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R etc/dbus-1/system.d
-rm -R etc/dconf
-rm -R etc/geoclue
-rm -R etc/opt
-rm -R usr/lib${SYSTEMBITS}/aspell
-rm -R usr/lib${SYSTEMBITS}/glade
-rm -R usr/lib${SYSTEMBITS}/graphene-1.0
-rm -R usr/lib${SYSTEMBITS}/gtk-2.0
-rm -R usr/lib*/python*/site-packages/pip*
-rm -R usr/lib*/python*/site-packages/psutil/tests
-rm -R usr/share/cjs-1.0
-rm -R usr/share/clutter-1.0
-rm -R usr/share/cogl
-rm -R usr/share/gdm
-rm -R usr/share/glade/pixmaps
-rm -R usr/share/gnome
-rm -R usr/share/gtksourceview-2.0
-rm -R usr/share/gtksourceview-3.0
-rm -R usr/share/libdbusmenu
-rm -R usr/share/mate-panel
-rm -R usr/share/pixmaps
-rm -R usr/share/Thunar
-rm -R usr/share/xed/gir-1.0
-rm -R usr/share/xviewer/gir-1.0
-rm -R var/lib/AccountsService
-
 rm usr/bin/vte-*-gtk4
 rm etc/profile.d/80xapp-gtk3-module.sh
 rm etc/xdg/autostart/blueman.desktop
@@ -271,6 +245,32 @@ rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
 rm usr/share/dbus-1/services/org.gnome.Caribou.Daemon.service
 rm usr/share/dbus-1/services/org.gnome.FileRoller.service
 rm usr/share/dbus-1/services/org.mate.panel.applet.MateXAppStatusAppletFactory.service
+
+rm -fr etc/dbus-1/system.d
+rm -fr etc/dconf
+rm -fr etc/geoclue
+rm -fr etc/opt
+rm -fr usr/lib${SYSTEMBITS}/aspell
+rm -fr usr/lib${SYSTEMBITS}/glade
+rm -fr usr/lib${SYSTEMBITS}/graphene-1.0
+rm -fr usr/lib${SYSTEMBITS}/gtk-2.0
+rm -fr usr/lib*/python*/site-packages/pip*
+rm -fr usr/lib*/python*/site-packages/psutil/tests
+rm -fr usr/share/cjs-1.0
+rm -fr usr/share/clutter-1.0
+rm -fr usr/share/cogl
+rm -fr usr/share/gdm
+rm -fr usr/share/glade/pixmaps
+rm -fr usr/share/gnome
+rm -fr usr/share/gtksourceview-2.0
+rm -fr usr/share/gtksourceview-3.0
+rm -fr usr/share/libdbusmenu
+rm -fr usr/share/mate-panel
+rm -fr usr/share/pixmaps
+rm -fr usr/share/Thunar
+rm -fr usr/share/xed/gir-1.0
+rm -fr usr/share/xviewer/gir-1.0
+rm -fr var/lib/AccountsService
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/cinnamon/faces -mindepth 1 -maxdepth 1 ! \( -name "user-generic*" \) -exec rm -rf '{}' \; 2>/dev/null

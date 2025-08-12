@@ -195,66 +195,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R etc/OpenCL
-rm -R etc/pam.d
-rm -R etc/rc_keymaps
-rm -R etc/X11/xorg.conf.d
-rm -R etc/xdg/Xwayland-session.d
-rm -R usr/lib${SYSTEMBITS}/atkmm-*
-rm -R usr/lib${SYSTEMBITS}/cairomm-*
-rm -R usr/lib${SYSTEMBITS}/clang
-rm -R usr/lib${SYSTEMBITS}/gdkmm-*
-rm -R usr/lib${SYSTEMBITS}/giomm-*
-rm -R usr/lib${SYSTEMBITS}/glibmm-*
-rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-*
-rm -R usr/lib${SYSTEMBITS}/graphene-1.0
-rm -R usr/lib${SYSTEMBITS}/gtkmm-*
-rm -R usr/lib${SYSTEMBITS}/libxslt-plugins
-rm -R usr/lib${SYSTEMBITS}/openjpeg-*
-rm -R usr/lib${SYSTEMBITS}/pangomm-*
-rm -R usr/lib${SYSTEMBITS}/sigc++-*
-rm -R usr/lib${SYSTEMBITS}/xmms
-rm -R usr/share/gdm
-rm -R usr/share/gobject-introspection-1.0/tests
-rm -R usr/share/graphite2
-rm -R usr/share/gst-plugins-base
-rm -R usr/share/gstreamer-1.0/gdb
-rm -R usr/share/gtk-*
-rm -R usr/share/imlib2
-rm -R usr/share/libgphoto2/*/konica/french
-rm -R usr/share/libgphoto2/*/konica/german
-rm -R usr/share/libgphoto2/*/konica/japanese
-rm -R usr/share/libgphoto2/*/konica/korean
-rm -R usr/share/libgphoto2/*/konica/spanish
-rm -R usr/share/libgphoto2_port
-rm -R usr/share/svgalib-demos
-rm -R usr/share/themes/Artwiz-boxed
-rm -R usr/share/themes/Bear2
-rm -R usr/share/themes/Clearlooks-3.4
-rm -R usr/share/themes/Clearlooks-Olive
-rm -R usr/share/themes/Mikachu
-rm -R usr/share/themes/Natura
-rm -R usr/share/themes/Orang
-rm -R usr/share/X11/locale/am*
-rm -R usr/share/X11/locale/cs*
-rm -R usr/share/X11/locale/el*
-rm -R usr/share/X11/locale/fi*
-rm -R usr/share/X11/locale/georgian*
-rm -R usr/share/X11/locale/ja*
-rm -R usr/share/X11/locale/km*
-rm -R usr/share/X11/locale/ko*
-rm -R usr/share/X11/locale/mulelao*
-rm -R usr/share/X11/locale/nokhchi*
-rm -R usr/share/X11/locale/pt*
-rm -R usr/share/X11/locale/ru*
-rm -R usr/share/X11/locale/sr*
-rm -R usr/share/X11/locale/tatar-cyr
-rm -R usr/share/X11/locale/th*
-rm -R usr/share/X11/locale/vi*
-rm -R usr/share/X11/locale/zh*
-rm -R usr/X11R6/include
-rm -R usr/X11R6/man
-
 rm etc/rc_maps.cfg
 rm etc/xdg/autostart/at-spi-dbus-bus.desktop
 rm usr/bin/canberra*
@@ -294,6 +234,66 @@ rm usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf
 rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
+
+rm -fr etc/OpenCL
+rm -fr etc/pam.d
+rm -fr etc/rc_keymaps
+rm -fr etc/X11/xorg.conf.d
+rm -fr etc/xdg/Xwayland-session.d
+rm -fr usr/lib${SYSTEMBITS}/atkmm-*
+rm -fr usr/lib${SYSTEMBITS}/cairomm-*
+rm -fr usr/lib${SYSTEMBITS}/clang
+rm -fr usr/lib${SYSTEMBITS}/gdkmm-*
+rm -fr usr/lib${SYSTEMBITS}/giomm-*
+rm -fr usr/lib${SYSTEMBITS}/glibmm-*
+rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-*
+rm -fr usr/lib${SYSTEMBITS}/graphene-1.0
+rm -fr usr/lib${SYSTEMBITS}/gtkmm-*
+rm -fr usr/lib${SYSTEMBITS}/libxslt-plugins
+rm -fr usr/lib${SYSTEMBITS}/openjpeg-*
+rm -fr usr/lib${SYSTEMBITS}/pangomm-*
+rm -fr usr/lib${SYSTEMBITS}/sigc++-*
+rm -fr usr/lib${SYSTEMBITS}/xmms
+rm -fr usr/share/gdm
+rm -fr usr/share/gobject-introspection-1.0/tests
+rm -fr usr/share/graphite2
+rm -fr usr/share/gst-plugins-base
+rm -fr usr/share/gstreamer-1.0/gdb
+rm -fr usr/share/gtk-*
+rm -fr usr/share/imlib2
+rm -fr usr/share/libgphoto2/*/konica/french
+rm -fr usr/share/libgphoto2/*/konica/german
+rm -fr usr/share/libgphoto2/*/konica/japanese
+rm -fr usr/share/libgphoto2/*/konica/korean
+rm -fr usr/share/libgphoto2/*/konica/spanish
+rm -fr usr/share/libgphoto2_port
+rm -fr usr/share/svgalib-demos
+rm -fr usr/share/themes/Artwiz-boxed
+rm -fr usr/share/themes/Bear2
+rm -fr usr/share/themes/Clearlooks-3.4
+rm -fr usr/share/themes/Clearlooks-Olive
+rm -fr usr/share/themes/Mikachu
+rm -fr usr/share/themes/Natura
+rm -fr usr/share/themes/Orang
+rm -fr usr/share/X11/locale/am*
+rm -fr usr/share/X11/locale/cs*
+rm -fr usr/share/X11/locale/el*
+rm -fr usr/share/X11/locale/fi*
+rm -fr usr/share/X11/locale/georgian*
+rm -fr usr/share/X11/locale/ja*
+rm -fr usr/share/X11/locale/km*
+rm -fr usr/share/X11/locale/ko*
+rm -fr usr/share/X11/locale/mulelao*
+rm -fr usr/share/X11/locale/nokhchi*
+rm -fr usr/share/X11/locale/pt*
+rm -fr usr/share/X11/locale/ru*
+rm -fr usr/share/X11/locale/sr*
+rm -fr usr/share/X11/locale/tatar-cyr
+rm -fr usr/share/X11/locale/th*
+rm -fr usr/share/X11/locale/vi*
+rm -fr usr/share/X11/locale/zh*
+rm -fr usr/X11R6/include
+rm -fr usr/X11R6/man
 } >/dev/null 2>&1
 
 [ $SLACKWAREVERSION == "current" ] && rm usr/lib${SYSTEMBITS}/libpoppler-qt5*

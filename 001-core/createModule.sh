@@ -271,74 +271,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R boot
-rm -R lib${SYSTEMBITS}/pkgconfig
-rm -R lib/systemd
-rm -R mnt/*
-rm -R usr/etc
-rm -R usr/include/qgpgme-qt*
-rm -R usr/lib${SYSTEMBITS}/guile
-rm -R usr/lib${SYSTEMBITS}/krb5/plugins
-rm -R usr/lib${SYSTEMBITS}/locale/C.utf8
-rm -R usr/lib${SYSTEMBITS}/sasl2
-rm -R usr/lib${SYSTEMBITS}/services
-rm -R usr/lib${SYSTEMBITS}/systemd
-rm -R usr/lib/ldscripts
-rm -R usr/lib/modprobe.d
-rm -R usr/lib*/python*/__phello__
-rm -R usr/lib*/python*/config-*-x86_64-linux-gnu
-rm -R usr/lib*/python*/ensurepip
-rm -R usr/lib*/python*/idlelib
-rm -R usr/lib*/python*/lib2to3
-rm -R usr/lib*/python*/site-packages/demo
-rm -R usr/lib*/python*/site-packages/msi
-rm -R usr/lib*/python*/site-packages/peg_generator
-rm -R usr/lib*/python*/turtledemo
-rm -R usr/lib*/python*/unittest/__pycache__/
-rm -R usr/lib/udev
-rm -R usr/local
-rm -R usr/share/applications
-rm -R usr/share/common-lisp
-rm -R usr/share/glib-2.0/gdb
-rm -R usr/share/glib-2.0/gettext
-rm -R usr/share/glib-2.0/valgrind
-rm -R usr/share/guile
-rm -R usr/share/icu
-rm -R usr/share/info
-rm -R usr/share/kbd/keymaps/amiga
-rm -R usr/share/kbd/keymaps/atari
-rm -R usr/share/kbd/keymaps/mac
-rm -R usr/share/kbd/keymaps/ppc
-rm -R usr/share/kbd/keymaps/sun
-rm -R usr/share/lynx
-rm -R usr/share/mc/examples
-rm -R usr/share/mc/help
-rm -R usr/share/mc/hints
-rm -R usr/share/terminfo/[0-9]
-rm -R usr/share/terminfo/[A-Z]
-rm -R usr/share/terminfo/b
-rm -R usr/share/terminfo/c
-rm -R usr/share/terminfo/e
-rm -R usr/share/terminfo/f
-rm -R usr/share/terminfo/g
-rm -R usr/share/terminfo/h
-rm -R usr/share/terminfo/i
-rm -R usr/share/terminfo/j
-rm -R usr/share/terminfo/k
-rm -R usr/share/terminfo/m
-rm -R usr/share/terminfo/n
-rm -R usr/share/terminfo/o
-rm -R usr/share/terminfo/p
-rm -R usr/share/terminfo/q
-rm -R usr/share/terminfo/s
-rm -R usr/share/terminfo/t
-rm -R usr/share/terminfo/u
-rm -R usr/share/terminfo/w
-rm -R usr/share/terminfo/z
-rm -R usr/x86_64-slackware-linux
-rm -R var/mail
-rm -R var/spool/mail
-
 rm etc/init.d
 rm etc/motd
 rm etc/termcap
@@ -353,6 +285,74 @@ rm usr/libexec/samba/rpcd_*
 rm usr/share/i18n/locales/C
 rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
+
+rm -fr boot
+rm -fr lib${SYSTEMBITS}/pkgconfig
+rm -fr lib/systemd
+rm -fr mnt/*
+rm -fr usr/etc
+rm -fr usr/include/qgpgme-qt*
+rm -fr usr/lib${SYSTEMBITS}/guile
+rm -fr usr/lib${SYSTEMBITS}/krb*/plugins
+rm -fr usr/lib${SYSTEMBITS}/locale/C.utf8
+rm -fr usr/lib${SYSTEMBITS}/sasl2
+rm -fr usr/lib${SYSTEMBITS}/services
+rm -fr usr/lib${SYSTEMBITS}/systemd
+rm -fr usr/lib/ldscripts
+rm -fr usr/lib/modprobe.d
+rm -fr usr/lib*/python*/__phello__
+rm -fr usr/lib*/python*/config-*-x86_64-linux-gnu
+rm -fr usr/lib*/python*/ensurepip
+rm -fr usr/lib*/python*/idlelib
+rm -fr usr/lib*/python*/lib2to3
+rm -fr usr/lib*/python*/site-packages/demo
+rm -fr usr/lib*/python*/site-packages/msi
+rm -fr usr/lib*/python*/site-packages/peg_generator
+rm -fr usr/lib*/python*/turtledemo
+rm -fr usr/lib*/python*/unittest/__pycache__/
+rm -fr usr/lib/udev
+rm -fr usr/local
+rm -fr usr/share/applications
+rm -fr usr/share/common-lisp
+rm -fr usr/share/glib-2.0/gdb
+rm -fr usr/share/glib-2.0/gettext
+rm -fr usr/share/glib-2.0/valgrind
+rm -fr usr/share/guile
+rm -fr usr/share/icu
+rm -fr usr/share/info
+rm -fr usr/share/kbd/keymaps/amiga
+rm -fr usr/share/kbd/keymaps/atari
+rm -fr usr/share/kbd/keymaps/mac
+rm -fr usr/share/kbd/keymaps/ppc
+rm -fr usr/share/kbd/keymaps/sun
+rm -fr usr/share/lynx
+rm -fr usr/share/mc/examples
+rm -fr usr/share/mc/help
+rm -fr usr/share/mc/hints
+rm -fr usr/share/terminfo/[0-9]
+rm -fr usr/share/terminfo/[A-Z]
+rm -fr usr/share/terminfo/b
+rm -fr usr/share/terminfo/c
+rm -fr usr/share/terminfo/e
+rm -fr usr/share/terminfo/f
+rm -fr usr/share/terminfo/g
+rm -fr usr/share/terminfo/h
+rm -fr usr/share/terminfo/i
+rm -fr usr/share/terminfo/j
+rm -fr usr/share/terminfo/k
+rm -fr usr/share/terminfo/m
+rm -fr usr/share/terminfo/n
+rm -fr usr/share/terminfo/o
+rm -fr usr/share/terminfo/p
+rm -fr usr/share/terminfo/q
+rm -fr usr/share/terminfo/s
+rm -fr usr/share/terminfo/t
+rm -fr usr/share/terminfo/u
+rm -fr usr/share/terminfo/w
+rm -fr usr/share/terminfo/z
+rm -fr usr/x86_64-slackware-linux
+rm -fr var/mail
+rm -fr var/spool/mail
 
 find usr/lib${SYSTEMBITS}/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib${SYSTEMBITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +

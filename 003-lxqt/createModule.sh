@@ -224,32 +224,32 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0/
-rm -R usr/lib${SYSTEMBITS}/gtk-2.0/
-rm -R usr/lib${SYSTEMBITS}/qt6/mkspecs
-rm -R usr/share/featherpad
-rm -R usr/share/gdm
-rm -R usr/share/gnome
-rm -R usr/share/libfm-qt/translations
-rm -R usr/share/lximage-qt
-rm -R usr/share/lxqt-archiver
-rm -R usr/share/lxqt/graphics
-rm -R usr/share/lxqt/panel
-rm -R usr/share/lxqt/translations
-rm -R usr/share/obconf-qt
-rm -R usr/share/pavucontrol-qt
-rm -R usr/share/pcmanfm-qt/translations
-rm -R usr/share/qlogging-categories5
-rm -R usr/share/qps
-rm -R usr/share/qterminal
-rm -R usr/share/qtermwidget5/translations
-rm -R usr/share/screengrab/translations
-rm -R usr/share/Thunar
-
 rm etc/xdg/autostart/blueman.desktop
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/share/icons/hicolor/scalable/apps/pcmanfm-qt.svg
 rm usr/share/nm-tray/nm-tray*.qm
+
+rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0/
+rm -fr usr/lib${SYSTEMBITS}/gtk-2.0/
+rm -fr usr/lib${SYSTEMBITS}/qt*/mkspecs
+rm -fr usr/share/featherpad
+rm -fr usr/share/gdm
+rm -fr usr/share/gnome
+rm -fr usr/share/libfm-qt/translations
+rm -fr usr/share/lximage-qt
+rm -fr usr/share/lxqt-archiver
+rm -fr usr/share/lxqt/graphics
+rm -fr usr/share/lxqt/panel
+rm -fr usr/share/lxqt/translations
+rm -fr usr/share/obconf-qt
+rm -fr usr/share/pavucontrol-qt
+rm -fr usr/share/pcmanfm-qt/translations
+rm -fr usr/share/qlogging-categories*
+rm -fr usr/share/qps
+rm -fr usr/share/qterminal
+rm -fr usr/share/qtermwidget*/translations
+rm -fr usr/share/screengrab/translations
+rm -fr usr/share/Thunar
 
 find usr/share/lxqt/wallpapers -mindepth 1 -maxdepth 1 ! \( -name "simple_blue_widescreen*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/lxqt/themes -mindepth 1 -maxdepth 1 ! \( -name "Porteux-dark" -o -name "Clearlooks" \) -exec rm -rf '{}' \; 2>/dev/null

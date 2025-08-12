@@ -167,18 +167,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R run/
-rm -R usr/lib*/python*/site-packages/pip*
-rm -R usr/share/engrampa
-rm -R usr/share/gdm
-rm -R usr/share/gnome
-rm -R usr/share/icons/ContrastHigh
-rm -R usr/share/icons/mate
-rm -R usr/share/icons/mate-black
-rm -R usr/share/mate-media/icons
-rm -R usr/share/mate-power-manager/icons
-rm -R usr/share/Thunar
-
 rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
@@ -190,6 +178,18 @@ rm usr/lib${SYSTEMBITS}/libsoup-gnome*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
 rm usr/share/applications/org.gnome.Vte*.desktop
+
+rm -fr run/
+rm -fr usr/lib*/python*/site-packages/pip*
+rm -fr usr/share/engrampa
+rm -fr usr/share/gdm
+rm -fr usr/share/gnome
+rm -fr usr/share/icons/ContrastHigh
+rm -fr usr/share/icons/mate
+rm -fr usr/share/icons/mate-black
+rm -fr usr/share/mate-media/icons
+rm -fr usr/share/mate-power-manager/icons
+rm -fr usr/share/Thunar
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/libmateweather -mindepth 1 -maxdepth 1 ! \( -name "Locations.xml" -o -name "locations.dtd" \) -exec rm -rf '{}' \; 2>/dev/null

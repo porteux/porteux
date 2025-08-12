@@ -199,13 +199,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
-rm -R usr/share/engrampa
-rm -R usr/share/gdm
-rm -R usr/share/gnome
-rm -R usr/share/themes/Default/balou
-rm -R usr/share/Thunar
-
 rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
@@ -230,6 +223,13 @@ rm usr/share/backgrounds/xfce/xfce-shapes.svg
 rm usr/share/icons/hicolor/scalable/status/computer.svg
 rm usr/share/icons/hicolor/scalable/status/keyboard.svg
 rm usr/share/icons/hicolor/scalable/status/phone.svg
+
+rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
+rm -fr usr/share/engrampa
+rm -fr usr/share/gdm
+rm -fr usr/share/gnome
+rm -fr usr/share/themes/Default/balou
+rm -fr usr/share/Thunar
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 } >/dev/null 2>&1
