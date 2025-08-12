@@ -178,13 +178,6 @@ rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside slackware repository
 
-# required by featherpad
-installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
-
-currentPackage=featherpad
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=audacious
 QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
@@ -192,6 +185,13 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
 QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+# required by featherpad
+installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
+
+currentPackage=featherpad
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # kde deps

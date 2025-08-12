@@ -102,8 +102,13 @@ rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside slackware repository
 
-currentPackage=xcape
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+currentPackage=audacious
+QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=audacious-plugins
+QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
@@ -118,36 +123,27 @@ currentPackage=lightdm-gtk-greeter
 ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=adwaita-qt
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 # required by xpdf
-installpkg $MODULEPATH/packages/libpaper*.txz || exit 1
 installpkg $MODULEPATH/packages/libproxy*.txz || exit 1
-
-installpkg $MODULEPATH/packages/cups*.txz || exit 1
-rm $MODULEPATH/packages/cups*.txz
-
-currentPackage=xpdf
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
 
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
-currentPackage=featherpad
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# required by nm-tray
+installpkg $MODULEPATH/packages/networkmanager-qt*.txz || exit 1
 
-currentPackage=audacious
-QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=audacious-plugins
-QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# lxqt extras
+for package in \
+	xcape \
+	adwaita-qt \
+	xpdf \
+	featherpad \
+	nm-tray \
+	kora-icon-theme \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 DE_LATEST_VERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
 
@@ -179,10 +175,6 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-currentPackage=nm-tray
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 # required by lxqt
 installpkg $MODULEPATH/packages/libdbusmenu-qt*.txz || exit 1
 installpkg $MODULEPATH/packages/polkit-qt*.txz || exit 1
@@ -203,10 +195,6 @@ rm $MODULEPATH/packages/extra-cmake-modules*.txz
 rm $MODULEPATH/packages/kwayland*.txz
 rm $MODULEPATH/packages/lxqt-build-tools*.txz
 rm $MODULEPATH/packages/plasma-wayland-protocols*.txz
-
-currentPackage=kora-icon-theme
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 

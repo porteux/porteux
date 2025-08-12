@@ -35,6 +35,14 @@ make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+rm $PKG/usr/bin/gdm-control
+rm $PKG/usr/bin/gnome-panel-control
+rm $PKG/usr/share/xsessions/openbox-gnome.desktop
+rm $PKG/usr/share/xsessions/openbox-kde.desktop
+rm -fr $PKG/usr/share/doc
+rm -fr $PKG/usr/share/gnome
+rm -fr $PKG/usr/share/gnome-session
+
 # Add xinitrc.openbox so that openbox will show up as an option in xwmconfig
 install -D -m 0755 $CWD/xinitrc.openbox $PKG/etc/X11/xinit/xinitrc.openbox
 

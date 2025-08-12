@@ -19,6 +19,7 @@ GenericStrip() {
 	rm -R usr/share/cmake
 	rm -R usr/share/devhelp
 	rm -R usr/share/doc
+	rm -R usr/share/fish
 	rm -R usr/share/gdb
 	rm -R usr/share/gir-1.0
 	rm -R usr/share/gtk-doc
