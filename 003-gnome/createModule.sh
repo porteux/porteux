@@ -183,41 +183,6 @@ gtk-update-icon-cache $MODULEPATH/packages/usr/share/icons/Adwaita
 cd $MODULEPATH/packages/
 
 {
-rm -R etc/dbus-1/system.d
-rm -R etc/dconf
-rm -R etc/opt
-rm -R usr/lib${SYSTEMBITS}/aspell
-rm -R usr/lib${SYSTEMBITS}/glade
-rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
-rm -R usr/lib${SYSTEMBITS}/graphene-1.0
-rm -R usr/lib${SYSTEMBITS}/gtk-2.0
-rm -R usr/lib${SYSTEMBITS}/python*/site-packages/pip*
-rm -R usr/libexec/installed-tests
-rm -R usr/share/icons/Adwaita/8x8
-rm -R usr/share/icons/Adwaita/96x96
-rm -R usr/share/icons/Adwaita/256x256
-rm -R usr/share/icons/Adwaita/512x512
-rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
-rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
-rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
-rm -R usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
-rm -R usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
-rm -R usr/share/dbus-1/services/org.gnome.evince.Daemon.service
-rm -R usr/share/dbus-1/services/org.gnome.FileRoller.service
-rm -R usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Extract.service
-rm -R usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Files.service
-rm -R usr/share/dbus-1/services/org.gnome.ScreenSaver.service
-rm -R usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
-rm -R usr/share/gjs-1.0
-rm -R usr/share/glade/pixmaps
-rm -R usr/share/gnome/autostart
-rm -R usr/share/gnome/shutdown
-rm -R usr/share/gtk-4.0
-rm -R usr/share/ibus
-rm -R usr/share/libgweather-4
-rm -R usr/share/pixmaps
-rm -R var/lib/AccountsService
-
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/ibus*.desktop
 rm etc/xdg/autostart/localsearch-3.desktop
@@ -249,6 +214,41 @@ rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 rm usr/share/applications/org.gtk.PrintEditor4.desktop
 rm usr/share/applications/org.gtk.WidgetFactory4.desktop
 rm usr/share/applications/vte-gtk4.desktop
+
+rm -fr etc/dbus-1/system.d
+rm -fr etc/dconf
+rm -fr etc/opt
+rm -fr usr/lib${SYSTEMBITS}/aspell
+rm -fr usr/lib${SYSTEMBITS}/glade
+rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
+rm -fr usr/lib${SYSTEMBITS}/graphene-1.0
+rm -fr usr/lib${SYSTEMBITS}/gtk-2.0
+rm -fr usr/lib${SYSTEMBITS}/python*/site-packages/pip*
+rm -fr usr/libexec/installed-tests
+rm -fr usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
+rm -fr usr/share/dbus-1/services/org.freedesktop.IBus.service
+rm -fr usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
+rm -fr usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
+rm -fr usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
+rm -fr usr/share/dbus-1/services/org.gnome.evince.Daemon.service
+rm -fr usr/share/dbus-1/services/org.gnome.FileRoller.service
+rm -fr usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Extract.service
+rm -fr usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Files.service
+rm -fr usr/share/dbus-1/services/org.gnome.ScreenSaver.service
+rm -fr usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
+rm -fr usr/share/gjs-1.0
+rm -fr usr/share/glade/pixmaps
+rm -fr usr/share/gnome/autostart
+rm -fr usr/share/gnome/shutdown
+rm -fr usr/share/gtk-4.0
+rm -fr usr/share/ibus
+rm -fr usr/share/icons/Adwaita/8x8
+rm -fr usr/share/icons/Adwaita/96x96
+rm -fr usr/share/icons/Adwaita/256x256
+rm -fr usr/share/icons/Adwaita/512x512
+rm -fr usr/share/libgweather-4
+rm -fr usr/share/pixmaps
+rm -fr var/lib/AccountsService
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null

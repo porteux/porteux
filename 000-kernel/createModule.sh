@@ -221,10 +221,10 @@ find ${CRIPPLEDSOURCEPATH} | xargs strip --strip-all -R .comment -R .eh_frame -R
 MakeModule ${MODULEPATH}/${CRIPPLEDMODULENAME} ${CRIPPLEDMODULENAME}.xzm > /dev/null 2>&1
 
 echo "Cleaning up..."
-rm -r ${MODULEPATH}/${MODULENAME} > /dev/null 2>&1
-rm -r ${MODULEPATH}/${CRIPPLEDMODULENAME} > /dev/null 2>&1
-rm -r ${MODULEPATH}/firmware > /dev/null 2>&1
-rm -r ${MODULEPATH}/packages > /dev/null 2>&1
-rm -r ${MODULEPATH}/sof* > /dev/null 2>&1
+rm -fr ${MODULEPATH}/${MODULENAME} > /dev/null 2>&1
+rm -fr ${MODULEPATH}/${CRIPPLEDMODULENAME} > /dev/null 2>&1
+rm -fr ${MODULEPATH}/firmware > /dev/null 2>&1
+rm -fr ${MODULEPATH}/packages > /dev/null 2>&1
+rm -fr ${MODULEPATH}/sof* > /dev/null 2>&1
 
 echo "Finished successfully."

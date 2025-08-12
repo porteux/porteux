@@ -135,11 +135,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R usr/share/engrampa
-rm -R usr/share/gdm
-rm -R usr/share/gnome
-rm -R usr/share/Thunar
-
 rm etc/xdg/autostart/blueman.desktop
 rm usr/bin/vte-*-gtk4
 rm usr/lib${SYSTEMBITS}/libappindicator.*
@@ -151,6 +146,11 @@ rm usr/libexec/indicator-loader
 rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/lxde/wallpapers/lxde_green.jpg
 rm usr/share/lxde/wallpapers/lxde_red.jpg
+
+rm -fr usr/share/engrampa
+rm -fr usr/share/gdm
+rm -fr usr/share/gnome
+rm -fr usr/share/Thunar
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 } >/dev/null 2>&1
