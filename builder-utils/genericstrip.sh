@@ -1,6 +1,11 @@
 #!/bin/bash
 
 GenericStrip() {
+	rm usr/share/pixmaps/*.xpm
+	rm var/log/removed_packages
+	rm var/log/removed_scripts
+	rm var/log/removed_uninstall_scripts
+
 	rm -fr etc/bash_completion*
 	rm -fr etc/logrotate.d
 	rm -fr usr/doc
@@ -45,11 +50,6 @@ GenericStrip() {
 	rm -fr var/log/pkgtools
 	rm -fr var/log/setup
 	rm -fr var/man
-
-	rm usr/share/pixmaps/*.xpm
-	rm var/log/removed_packages
-	rm var/log/removed_scripts
-	rm var/log/removed_uninstall_scripts
 
 	find . -name '*.a' -delete
 	find . -name '*.c' -delete
