@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# only needed until labwc implements 'ToggleShowDesktop'
+
 PRGNAM=wlrctl
 
 CWD=$(dirname "$0")

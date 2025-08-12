@@ -1,0 +1,38 @@
+#!/bin/bash
+
+PRGNAM=fastfetch
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://github.com/fastfetch-cli/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+
+tar xvf ${PRGNAM}.tar.gz
+cd ${PRGNAM}-master
+
+VERSION=$(date -r . +%Y%m%d)
+
+cmake -B build -S . \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS" \
+	-DBUILD_FLASHFETCH=no
+
+make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+
+echo "fastfetch --logo linux --color-title blue --color-keys blue -s Title:Separator:OS:Host:Kernel:Uptime:Packages:Shell:Display:DE:WM:WMTheme:Theme:Icons:Font:Cursor:Terminal:TerminalFont:CPU:GPU:Memory:Swap:LocalIp:Battery:PowerAdapter:Locale:Break:Colors \"\$@\"" > $PKG/usr/bin/neofetch
+chmod 755 $PKG/usr/bin/neofetch
+
+rm -fr $PKG/usr/share
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-noarch-1_porteux.txz

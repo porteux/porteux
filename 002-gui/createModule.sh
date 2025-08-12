@@ -63,80 +63,39 @@ rm $MODULEPATH/packages/cups*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
-currentPackage=xorg-server
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
+# gui deps
+for package in \
+	xorg-server \
+	xf86-input-libinput \
+	libX11 \
+	gtk+3-classic \
+	pipewire \
+	wireplumber \
+	cxxopts \
+	imlib2 \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
-currentPackage=xf86-input-libinput
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
+# only required for building
+rm $MODULEPATH/packages/cxxopts*.txz
 
-currentPackage=libX11
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=gtk+3-classic
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=galculator
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# required by openbox to draw application icons
-currentPackage=imlib2
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=openbox
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=webp-pixbuf-loader
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=libjxl
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=pipewire
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=wireplumber
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=wlr-randr
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# only needed until labwc implements 'ToggleShowDesktop'
-currentPackage=wlrctl
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# required to build pamixer
-currentPackage=cxxopts
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-rm $MODULEPATH/packages/${currentPackage}*.txz
-
-currentPackage=pamixer
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=xdg-desktop-portal
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# gui extras
+for package in \
+	galculator \
+	libjxl \
+	openbox \
+	pamixer \
+	webp-pixbuf-loader \
+	wlr-randr \
+	wlrctl \
+	xdg-desktop-portal \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 ### packages that require specific stripping
 
@@ -253,8 +212,6 @@ rm -R usr/lib${SYSTEMBITS}/pangomm-*
 rm -R usr/lib${SYSTEMBITS}/sigc++-*
 rm -R usr/lib${SYSTEMBITS}/xmms
 rm -R usr/share/gdm
-rm -R usr/share/gnome
-rm -R usr/share/gnome-session
 rm -R usr/share/gobject-introspection-1.0/tests
 rm -R usr/share/graphite2
 rm -R usr/share/gst-plugins-base
@@ -298,11 +255,8 @@ rm -R usr/X11R6/man
 rm etc/rc_maps.cfg
 rm etc/xdg/autostart/at-spi-dbus-bus.desktop
 rm usr/bin/canberra*
-rm usr/bin/gdm-control
-rm usr/bin/gnome-panel-control
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
-rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
 rm usr/lib${SYSTEMBITS}/dri/i830_* # obsolete driver
 rm usr/lib${SYSTEMBITS}/dri/i965_* # obsolete driver
@@ -335,8 +289,6 @@ rm usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf
 rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
-rm usr/share/xsessions/openbox-gnome.desktop
-rm usr/share/xsessions/openbox-kde.desktop
 } >/dev/null 2>&1
 
 [ $SLACKWAREVERSION == "current" ] && rm usr/lib${SYSTEMBITS}/libpoppler-qt5*

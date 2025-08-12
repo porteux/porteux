@@ -29,8 +29,13 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
-currentPackage=xcape
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+currentPackage=audacious
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=audacious-plugins
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
@@ -45,41 +50,26 @@ currentPackage=lightdm-gtk-greeter
 ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=atril
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=pavucontrol
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=l3afpad
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=audacious
-sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=audacious-plugins
-sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=gnome-screenshot
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 # temporary just to build engrampa
 currentPackage=mate-common
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 rm $MODULEPATH/packages/${currentPackage}*.txz
 
-currentPackage=engrampa
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# lxde extras
+for package in \
+	xcape \
+	atril \
+	engrampa \
+	pavucontrol \
+	l3afpad \
+	gnome-screenshot \
+	kora-icon-theme \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 # required by lxterminal
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
@@ -115,10 +105,6 @@ done
 
 # only required to build menu-cache
 rm $MODULEPATH/packages/libfm-extra*.txz
-
-currentPackage=kora-icon-theme
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 

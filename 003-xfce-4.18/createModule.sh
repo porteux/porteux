@@ -29,14 +29,6 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
-currentPackage=xcape
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=gpicview
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 currentPackage=audacious
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
@@ -44,10 +36,6 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=atril
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 if [ $SLACKWAREVERSION == "current" ]; then
@@ -63,7 +51,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa and mate-search-tool
 currentPackage=mate-common
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 rm $MODULEPATH/packages/${currentPackage}*.txz
@@ -71,17 +59,18 @@ rm $MODULEPATH/packages/${currentPackage}*.txz
 # required from now on
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 
-currentPackage=pavucontrol
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=mate-search-tool
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=engrampa
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# xfce extras
+for package in \
+	xcape \
+	atril \
+	engrampa \
+	pavucontrol \
+	gpicview \
+	mate-search-tool \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 # required by gspell and mousepad
 installpkg $MODULEPATH/packages/aspell*.txz || exit 1

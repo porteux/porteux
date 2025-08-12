@@ -29,8 +29,13 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
-currentPackage=xcape
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+currentPackage=audacious
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=audacious-plugins
+sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
@@ -45,13 +50,8 @@ currentPackage=lightdm-gtk-greeter
 ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=audacious
-sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=audacious-plugins
-sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+currentPackage=xcape
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa and mate-search-tool

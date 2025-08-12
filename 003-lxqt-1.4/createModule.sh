@@ -99,8 +99,13 @@ rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside slackware repository
 
-currentPackage=xcape
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+currentPackage=audacious
+QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=audacious-plugins
+QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
@@ -115,29 +120,24 @@ currentPackage=lightdm-gtk-greeter
 ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=adwaita-qt
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=xpdf
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
-currentPackage=featherpad
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# required by nm-tray
+installpkg $MODULEPATH/packages/networkmanager-qt*.txz || exit 1
 
-currentPackage=audacious
-QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=audacious-plugins
-QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# lxqt extras
+for package in \
+	xcape \
+	adwaita-qt \
+	xpdf \
+	featherpad \
+	nm-tray \
+	kora-icon-theme \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 # lxqt deps
 for package in \
@@ -152,13 +152,6 @@ sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-# required by nm-tray
-installpkg $MODULEPATH/packages/networkmanager-qt*.txz || exit 1
-
-currentPackage=nm-tray
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
 
 # required by lxqt
 installpkg $MODULEPATH/packages/libdbusmenu-qt*.txz || exit 1
@@ -215,10 +208,6 @@ rm -fr $MODULEPATH/${currentPackage}
 # only required for building
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
 rm $MODULEPATH/packages/lxqt-build-tools*.txz
-
-currentPackage=kora-icon-theme
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 

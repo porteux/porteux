@@ -32,65 +32,6 @@ DownloadFromSlackware
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
-currentPackage=transmission
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=rtmpdump
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=xvidcore
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=x264
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=x265
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=twolame
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=libass
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=faad2
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=faac
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=SVT-AV1
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=dav1d
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=libheif
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
 # required by libplacebo
 installpkg $MODULEPATH/packages/python-pip-*.t?z || exit 1
 rm $MODULEPATH/packages/python-pip-*.t?z
@@ -104,25 +45,6 @@ rm $MODULEPATH/packages/vulkan-sdk-*.t?z
 cd $MODULEPATH
 pip install glad2 || exit 1
 
-currentPackage=libplacebo
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-# temporary just to build ffmpeg and mpv
-currentPackage=nv-codec-headers
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-rm $MODULEPATH/packages/${currentPackage}*.txz
-
-# temporary to build ffmpeg with amd hardware encoding acceleration
-currentPackage=AMF
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-rm $MODULEPATH/packages/${currentPackage}*.txz
-
 # required by ffmpeg
 installpkg $MODULEPATH/packages/openal-soft-*.t?z || exit 1
 installpkg $MODULEPATH/packages/vid.stab-*.t?z || exit 1
@@ -131,18 +53,39 @@ rm $MODULEPATH/packages/frei0r-plugins-*.t?z || exit 1
 installpkg $MODULEPATH/packages/opencl-headers*.t?z || exit 1
 rm $MODULEPATH/packages/opencl-headers-*.t?z || exit 1
 
-currentPackage=ffmpeg
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
+# xtra deps
+for package in \
+	rtmpdump \
+	xvidcore \
+	x264 \
+	x265 \
+	twolame \
+	libass \
+	faad2 \
+	faac \
+	SVT-AV1 \
+	dav1d \
+	libheif \
+	libplacebo \
+	nv-codec-headers \
+	AMF \
+	ffmpeg \
+	luajit \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
-# required by mpv
-currentPackage=luajit
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
+# only required for building
+rm $MODULEPATH/packages/nv-codec-headers*.txz
+rm $MODULEPATH/packages/AMD*.txz
 
 currentPackage=mpv
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=transmission
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
