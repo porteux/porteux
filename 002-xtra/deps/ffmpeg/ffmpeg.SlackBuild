@@ -97,6 +97,8 @@ make CC=clang CXX=clang++ -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+rm -R $PKG/usr/share/ffmpeg/examples
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
