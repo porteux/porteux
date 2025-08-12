@@ -112,6 +112,7 @@ DownloadPackage "libvpx" &
 DownloadPackage "libwacom" &
 DownloadPackage "libwebp" &
 DownloadPackage "libXau" &
+DownloadPackage "libXaw" &
 DownloadPackage "libxcb" &
 DownloadPackage "libXcomposite" &
 wait

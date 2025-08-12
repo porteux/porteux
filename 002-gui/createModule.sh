@@ -51,15 +51,18 @@ else
 	# building this because the slackware package in current depends on dav1d
 	currentPackage=librsvg
 	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
 	rm -fr $MODULEPATH/${currentPackage}
 fi
 
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
-installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
 installpkg $MODULEPATH/packages/libtheora*.txz || exit 1
 
+# required by gtk+3
 installpkg $MODULEPATH/packages/cups*.txz || exit 1
 rm $MODULEPATH/packages/cups*.txz
+
+# required by xorg-server
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
@@ -272,6 +275,8 @@ rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
 rm usr/lib${SYSTEMBITS}/libpoppler-cpp*
 rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
 rm usr/lib${SYSTEMBITS}/libxatracker*
+rm usr/lib${SYSTEMBITS}/libXaw.so.6*
+rm usr/lib${SYSTEMBITS}/libXaw6*
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
 rm usr/share/applications/gtk3-icon-browser.desktop

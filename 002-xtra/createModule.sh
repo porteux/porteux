@@ -116,8 +116,7 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R usr/share/ffmpeg/examples
-rm -R usr/share/lua
+rm -fr usr/share/lua-jit
 
 rm usr/bin/alsoft-config
 rm usr/share/applications/mimeinfo.cache
