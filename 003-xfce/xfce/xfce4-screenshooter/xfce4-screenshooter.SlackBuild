@@ -19,20 +19,19 @@ wget https://gitlab.xfce.org/apps/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+mkdir build && cd build
 CFLAGS="$GCCFLAGS -ffat-lto-objects -ffast-math" \
-./autogen.sh \
+meson setup \
 	--prefix=/usr \
+	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
+	--infodir=/usr/info \
 	--mandir=/usr/man \
-	--enable-shared=yes \
-	--enable-static=no \
-	--enable-debug=no \
-	--enable-lto \
-	--build=$ARCH-porteux-linux
+	--localstatedir=/var 
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
