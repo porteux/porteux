@@ -12,6 +12,8 @@ source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
 source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
+[ $SLACKWAREVERSION == "current" ] && echo "This module should be built in stable only" && exit 1
+
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
@@ -37,13 +39,6 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=audacious-plugins
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	# required by mate-polkit
-	installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
-	installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-	installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
-fi
 
 currentPackage=mate-polkit
 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
@@ -77,11 +72,9 @@ installpkg $MODULEPATH/packages/aspell*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=gspell
-	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	rm -fr $MODULEPATH/${currentPackage}
-fi
+currentPackage=gspell
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 
