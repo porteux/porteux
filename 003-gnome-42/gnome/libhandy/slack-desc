@@ -4,5 +4,3 @@ libhandy:
 libhandy: libhandy package provides additional GTK UI widgets for use in
 libhandy: developing user interfaces.
 libhandy:
-
-

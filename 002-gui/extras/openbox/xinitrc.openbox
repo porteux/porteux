@@ -24,4 +24,3 @@ if [ -z "$DESKTOP_SESSION" ]; then
 else
   exec openbox
 fi
-
