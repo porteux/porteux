@@ -161,6 +161,47 @@ installpkg $MODULEPATH/packages/kwindowsystem*.txz || exit 1
 installpkg $MODULEPATH/packages/polkit-qt*.txz || exit 1
 installpkg $MODULEPATH/packages/solid*.txz || exit 1
 
+# lxqt packages
+for package in \
+	lxqt-build-tools \
+	libqtxdg \
+	qtxdg-tools \
+	liblxqt \
+	libsysstat \
+	lxqt-menu-data \
+	libfm-qt \
+	lxqt-themes \
+	pavucontrol-qt \
+	lxqt-about \
+	lxqt-admin \
+	lxqt-config \
+	lxqt-globalkeys \
+	lxqt-notificationd \
+	lxqt-openssh-askpass \
+	lxqt-policykit \
+	lxqt-powermanagement \
+	lxqt-qtplugin \
+	lxqt-session \
+	lxqt-sudo \
+	pcmanfm-qt \
+	lxqt-panel \
+	lxqt-runner \
+	lxqt-archiver \
+	xdg-desktop-portal-lxqt \
+	obconf-qt \
+	lximage-qt \
+	qtermwidget \
+	qterminal \
+	qps \
+	screengrab \
+; do
+sh $SCRIPTPATH/lxqt/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+exit 0
+
 currentPackage=lxqt
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 git clone https://github.com/${currentPackage}/${currentPackage} $MODULEPATH/${currentPackage}
