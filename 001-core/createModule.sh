@@ -61,7 +61,9 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # required by other modules
-installpkg $MODULEPATH/packages/procps-ng*.txz 
+installpkg $MODULEPATH/packages/procps-ng*.txz
+installpkg $MODULEPATH/packages/squashfs-tools*.txz
+installpkg $MODULEPATH/packages/zstd*.txz
 
 ### packages that require specific stripping
 
