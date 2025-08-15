@@ -103,12 +103,12 @@ rm -fr $MODULEPATH/${currentPackage}
 ### packages outside slackware repository
 
 currentPackage=audacious
-QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
@@ -122,28 +122,6 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=lightdm-gtk-greeter
 ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
-
-# required by xpdf
-installpkg $MODULEPATH/packages/libproxy*.txz || exit 1
-
-# required by featherpad
-installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
-
-# required by nm-tray
-installpkg $MODULEPATH/packages/networkmanager-qt*.txz || exit 1
-
-# lxqt extras
-for package in \
-	xcape \
-	adwaita-qt \
-	xpdf \
-	featherpad \
-	nm-tray \
-	kora-icon-theme \
-; do
-sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-done
 
 DE_LATEST_VERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
 
@@ -175,20 +153,69 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+# required by xpdf
+installpkg $MODULEPATH/packages/libproxy*.txz || exit 1
+
+# required by featherpad
+installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
+
+# lxqt extras
+for package in \
+	xcape \
+	adwaita-qt \
+	xpdf \
+	featherpad \
+	nm-tray \
+	kora-icon-theme \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
 # required by lxqt
 installpkg $MODULEPATH/packages/libdbusmenu-qt*.txz || exit 1
 installpkg $MODULEPATH/packages/polkit-qt*.txz || exit 1
 
-currentPackage=lxqt
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/${currentPackage}/${currentPackage} $MODULEPATH/${currentPackage}
-git submodule init || exit 1
-git submodule update --remote --rebase || exit 1
-cp $SCRIPTPATH/lxqt/build_all_cmake_projects.sh .
-cp $SCRIPTPATH/lxqt/*.patch .
-for i in *.patch; do patch -p0 < $i || exit 1; done
-sh build_all_cmake_projects.sh || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# lxqt packages
+for package in \
+	lxqt-build-tools \
+	libqtxdg \
+	qtxdg-tools \
+	liblxqt \
+	libdbusmenu-lxqt \
+	libsysstat \
+	lxqt-menu-data \
+	libfm-qt \
+	lxqt-themes \
+	pavucontrol-qt \
+	lxqt-about \
+	lxqt-admin \
+	lxqt-config \
+	lxqt-globalkeys \
+	lxqt-notificationd \
+	lxqt-openssh-askpass \
+	lxqt-policykit \
+	lxqt-powermanagement \
+	lxqt-qtplugin \
+	lxqt-session \
+	lxqt-sudo \
+	pcmanfm-qt \
+	lxqt-panel \
+	lxqt-runner \
+	lxqt-archiver \
+	lxqt-wayland-session \
+	xdg-desktop-portal-lxqt \
+	obconf-qt \
+	lximage-qt \
+	qtermwidget \
+	qterminal \
+	qps \
+	screengrab \
+; do
+sh $SCRIPTPATH/lxqt/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 # only required for building
 rm $MODULEPATH/packages/extra-cmake-modules*.txz
