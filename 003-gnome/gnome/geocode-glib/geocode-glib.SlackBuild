@@ -32,7 +32,8 @@ meson setup \
 	-Denable-introspection=true \
 	-Denable-gtk-doc=false \
 	-Denable-installed-tests=false \
-	-Dsoup2=false
+	-Dsoup2=false \
+	-Denable-gtk-doc=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

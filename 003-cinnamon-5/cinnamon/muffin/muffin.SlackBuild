@@ -18,6 +18,8 @@ wget -c https://github.com/linuxmint/${PRGNAM}/archive/refs/tags/${VERSION}.tar.
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('doc/man')|#subdir('doc/man')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
@@ -30,7 +32,11 @@ meson setup \
 	--sysconfdir=/etc \
 	-Dstrip=true \
 	-Dprofiler=false \
-	-Ddefault_driver=auto
+	-Ddefault_driver=auto \
+	-Dcogl_tests=false \
+	-Dclutter_tests=false \
+	-Dcore_tests=false \
+	-Dtests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

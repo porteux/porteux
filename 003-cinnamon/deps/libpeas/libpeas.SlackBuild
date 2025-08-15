@@ -18,6 +18,8 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${PRGNAM}-${VERSION}/${P
 tar xfv $PRGNAM-$PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$PRGNAM-$VERSION
 
+sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 CXXFLAGS="$CFLAGS" \

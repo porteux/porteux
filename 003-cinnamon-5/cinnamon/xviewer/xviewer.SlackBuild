@@ -20,6 +20,8 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('help')|#subdir('help')|g" meson.build
+
 patch -p0 < $CWD/fix-crash.patch
 
 mkdir build && cd build

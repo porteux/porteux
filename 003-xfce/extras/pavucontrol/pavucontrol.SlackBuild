@@ -17,6 +17,8 @@ git clone https://gitlab.freedesktop.org/pulseaudio/${PRGNAM}.git/
 cd ${PRGNAM}
 git checkout c330506815f78f77f6685cb40749679eae789d63
 
+sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \

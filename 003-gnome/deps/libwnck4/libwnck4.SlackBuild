@@ -28,7 +28,7 @@ meson setup \
 	--mandir=/usr/man \
 	--buildtype=release \
 	-Ddeprecation_flags=false \
-	-Dinstall_tools=true \
+	-Dinstall_tools=false \
 	-Dstartup_notification=enabled \
 	-Dintrospection=enabled \
 	-Dgtk_doc=false

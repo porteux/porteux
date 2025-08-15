@@ -30,7 +30,9 @@ meson setup \
 	--infodir=/usr/info \
 	--mandir=/usr/man \
 	--localstatedir=/var \
-	-Dtest_skip_install=true
+	-Dtest_skip_install=true \
+	-Dtests=false \
+	-Dtokio_tests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

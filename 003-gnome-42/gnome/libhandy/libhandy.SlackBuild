@@ -18,6 +18,10 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('examples')|#subdir('examples')|g" meson.build
+sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
+sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \

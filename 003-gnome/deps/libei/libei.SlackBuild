@@ -18,7 +18,8 @@ wget https://gitlab.freedesktop.org/libinput/${PRGNAM}/-/archive/${VERSION}/${PR
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-sed -i "s/subdir('doc')//" meson.build
+sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
+sed -i "s|subdir('test')|#subdir('test')|g" meson.build
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
