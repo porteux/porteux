@@ -1,5 +1,5 @@
---- lxqt-notificationd/src/notification.cpp	2023-09-04 22:38:20.194922617 +0200
-+++ lxqt-notificationd/src/notification-patched.cpp	2023-09-04 22:39:14.160922102 +0200
+--- src/notification.cpp	2023-09-04 22:38:20.194922617 +0200
++++ src/notification-patched.cpp	2023-09-04 22:39:14.160922102 +0200
 @@ -33,7 +33,6 @@
  #include <QDebug>
  #include <XdgIcon>

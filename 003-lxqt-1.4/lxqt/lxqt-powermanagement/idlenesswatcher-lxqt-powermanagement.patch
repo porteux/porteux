@@ -1,5 +1,5 @@
---- lxqt-powermanagement/src/idlenesswatcher.cpp	2023-09-04 21:54:49.639947513 +0200
-+++ lxqt-powermanagement/src/idlenesswatcher.cpp.patched	2023-09-04 21:54:34.632947656 +0200
+--- src/idlenesswatcher.cpp	2023-09-04 21:54:49.639947513 +0200
++++ src/idlenesswatcher.cpp.patched	2023-09-04 21:54:34.632947656 +0200
 @@ -30,7 +30,6 @@
  #include <Solid/Device>
  #include <Solid/Battery>

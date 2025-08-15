@@ -1,5 +1,5 @@
---- liblxqt/lxqtsingleapplication.cpp	2023-09-04 21:46:59.000000000 +0200
-+++ liblxqt/lxqtsingleapplication.cpp.patched	2023-09-04 21:48:00.043951419 +0200
+--- lxqtsingleapplication.cpp	2023-09-04 21:46:59.000000000 +0200
++++ lxqtsingleapplication.cpp.patched	2023-09-04 21:48:00.043951419 +0200
 @@ -28,7 +28,6 @@
  #include "lxqtsingleapplication.h"
  #include "singleapplicationadaptor.h"

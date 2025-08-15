@@ -1,5 +1,5 @@
---- lxqt-panel/plugin-taskbar/lxqttaskgroup.cpp	2023-09-04 22:04:03.000000000 +0200
-+++ lxqt-panel/plugin-taskbar/lxqttaskgroup-patched.cpp	2023-09-04 23:05:34.420907031 +0200
+--- plugin-taskbar/lxqttaskgroup.cpp	2023-09-04 22:04:03.000000000 +0200
++++ plugin-taskbar/lxqttaskgroup-patched.cpp	2023-09-04 23:05:34.420907031 +0200
 @@ -38,7 +38,7 @@
  #include <QStringBuilder>
  #include <QMenu>

@@ -1,5 +1,5 @@
---- lxqt-runner/dialog.cpp	2023-09-04 22:04:05.000000000 +0200
-+++ lxqt-runner/dialog-patched.cpp	2023-09-04 23:33:29.203891059 +0200
+--- dialog.cpp	2023-09-04 22:04:05.000000000 +0200
++++ dialog-patched.cpp	2023-09-04 23:33:29.203891059 +0200
 @@ -55,7 +55,6 @@
  #include <QScrollBar>
  
