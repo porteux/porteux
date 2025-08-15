@@ -1,5 +1,5 @@
---- lxqt-panel/plugin-taskbar/lxqttaskbarconfiguration.cpp	2023-09-04 22:04:03.000000000 +0200
-+++ lxqt-panel/plugin-taskbar/lxqttaskbarconfiguration-patched.cpp	2023-09-04 23:02:28.445908805 +0200
+--- plugin-taskbar/lxqttaskbarconfiguration.cpp	2023-09-04 22:04:03.000000000 +0200
++++ plugin-taskbar/lxqttaskbarconfiguration-patched.cpp	2023-09-04 23:02:28.445908805 +0200
 @@ -29,7 +29,7 @@
  
  #include "lxqttaskbarconfiguration.h"

@@ -1,5 +1,5 @@
---- qps/src/infobar.cpp	2023-05-20 15:31:24.081040884 +1200
-+++ qps/src/infobar-patched.cpp	2023-05-20 15:30:55.111044073 +1200
+--- src/infobar.cpp	2023-05-20 15:31:24.081040884 +1200
++++ src/infobar-patched.cpp	2023-05-20 15:30:55.111044073 +1200
 @@ -452,8 +452,7 @@
          height = pf_char_height() + 4;
          x = x_cpu->xpluswidth() + 10;

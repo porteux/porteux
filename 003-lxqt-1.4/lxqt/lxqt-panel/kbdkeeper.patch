@@ -1,5 +1,5 @@
---- lxqt-panel/plugin-kbindicator/src/kbdkeeper.cpp	2023-09-04 22:04:03.000000000 +0200
-+++ lxqt-panel/plugin-kbindicator/src/kbdkeeper-patched.cpp	2023-09-04 23:07:54.829905692 +0200
+--- plugin-kbindicator/src/kbdkeeper.cpp	2023-09-04 22:04:03.000000000 +0200
++++ plugin-kbindicator/src/kbdkeeper-patched.cpp	2023-09-04 23:07:54.829905692 +0200
 @@ -25,7 +25,7 @@
   * END_COMMON_COPYRIGHT_HEADER */
  

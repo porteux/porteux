@@ -1,5 +1,5 @@
---- screengrab/src/core/core.cpp	2023-09-04 22:04:11.000000000 +0200
-+++ screengrab/src/core/core-patched.cpp	2023-09-04 23:51:40.752880650 +0200
+--- src/core/core.cpp	2023-09-04 22:04:11.000000000 +0200
++++ src/core/core-patched.cpp	2023-09-04 23:51:40.752880650 +0200
 @@ -32,8 +32,7 @@
  #include <XdgMimeApps>
  #include <qt5xdg/XdgDesktopFile>

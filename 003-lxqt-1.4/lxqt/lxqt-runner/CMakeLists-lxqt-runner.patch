@@ -1,5 +1,5 @@
---- lxqt-runner/CMakeLists.txt	2023-09-04 22:04:05.000000000 +0200
-+++ lxqt-runner/CMakeLists-patched.txt	2023-09-04 23:33:05.049891290 +0200
+--- CMakeLists.txt	2023-09-04 22:04:05.000000000 +0200
++++ CMakeLists-patched.txt	2023-09-04 23:33:05.049891290 +0200
 @@ -25,7 +25,7 @@
  )
  

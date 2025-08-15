@@ -1,5 +1,5 @@
---- lxqt-panel/plugin-taskbar/lxqttaskbar.cpp	2023-09-04 22:04:03.000000000 +0200
-+++ lxqt-panel/plugin-taskbar/lxqttaskbar-patched.cpp	2023-09-04 23:01:26.401909397 +0200
+--- plugin-taskbar/lxqttaskbar.cpp	2023-09-04 22:04:03.000000000 +0200
++++ plugin-taskbar/lxqttaskbar-patched.cpp	2023-09-04 23:01:26.401909397 +0200
 @@ -93,10 +93,10 @@
      connect(mSignalMapper, &QSignalMapper::mappedInt, this, &LXQtTaskBar::activateTask);
      QTimer::singleShot(0, this, &LXQtTaskBar::registerShortcuts);

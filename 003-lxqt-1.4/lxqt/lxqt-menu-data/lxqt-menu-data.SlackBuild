@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=lxqt-menu-data
 
 CWD=$(dirname "$0")
@@ -14,13 +12,13 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "lxqt" $PRGNAM)
-VERSION=${info#* }
+git clone https://github.com/lxqt/${PRGNAM}
+cd ${PRGNAM}
+VERSION=$(date -r . +%Y%m%d)
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
-
-patch -p0 < $CWD/remove-screensaver-entry.patch
+for i in *.patch; do
+	patch -p0 < $CWD/i
+done
 
 cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=release \

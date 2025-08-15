@@ -1,5 +1,5 @@
---- lxqt-panel/panel/lxqtpanel.cpp	2023-09-04 22:04:03.000000000 +0200
-+++ lxqt-panel/panel/lxqtpanel-patched.cpp	2023-09-04 22:57:56.713911396 +0200
+--- panel/lxqtpanel.cpp	2023-09-04 22:04:03.000000000 +0200
++++ panel/lxqtpanel-patched.cpp	2023-09-04 22:57:56.713911396 +0200
 @@ -50,7 +50,6 @@
  #include <XdgDirs>
  

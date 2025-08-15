@@ -1,5 +1,5 @@
---- screengrab/CMakeLists.txt	2023-09-04 22:04:11.000000000 +0200
-+++ screengrab/CMakeLists-patched.txt	2023-09-04 23:51:07.834880963 +0200
+--- CMakeLists.txt	2023-09-04 22:04:11.000000000 +0200
++++ CMakeLists-patched.txt	2023-09-04 23:51:07.834880963 +0200
 @@ -15,7 +15,7 @@
  option(UPDATE_TRANSLATIONS "Update source translation translations/*.ts files" OFF)
  

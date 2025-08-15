@@ -1,5 +1,5 @@
---- lxqt-session/lxqt-session/src/procreaper.cpp	2025-02-02 12:10:41.000000000 +0100
-+++ lxqt-session/lxqt-session/src/procreaper.cpp.patched	2025-02-02 12:18:36.561335892 +0100
+--- lxqt-session/src/procreaper.cpp	2025-02-02 12:10:41.000000000 +0100
++++ lxqt-session/src/procreaper.cpp.patched	2025-02-02 12:18:36.561335892 +0100
 @@ -119,10 +119,10 @@
      pids_stack * stack = nullptr;
      while ((stack = procps_pids_get(info, PIDS_FETCH_TASKS_ONLY)))
