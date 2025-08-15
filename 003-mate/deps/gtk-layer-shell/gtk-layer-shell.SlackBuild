@@ -20,6 +20,8 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('examples')|#subdir('examples')|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
