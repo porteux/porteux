@@ -282,7 +282,6 @@ rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
 rm usr/dict
 rm usr/lib${SYSTEMBITS}/libicutest.*
-rm usr/lib${SYSTEMBITS}/libqgpgme*
 rm usr/libexec/samba/rpcd_*
 rm usr/share/i18n/locales/C
 rm usr/share/pixmaps/wpa_gui.png
@@ -293,7 +292,6 @@ rm -fr lib${SYSTEMBITS}/pkgconfig
 rm -fr lib/systemd
 rm -fr mnt/*
 rm -fr usr/etc
-rm -fr usr/include/qgpgme-qt*
 rm -fr usr/lib${SYSTEMBITS}/guile
 rm -fr usr/lib${SYSTEMBITS}/krb*/plugins
 rm -fr usr/lib${SYSTEMBITS}/locale/C.utf8
@@ -355,6 +353,14 @@ rm -fr usr/share/terminfo/z
 rm -fr usr/x86_64-slackware-linux
 rm -fr var/mail
 rm -fr var/spool/mail
+
+if [ $SLACKWAREVERSION != "current" ]; then
+	rm usr/lib${SYSTEMBITS}/libqgpgmeqt6.so*
+	rm -fr usr/include/qgpgme-qt6*
+else
+	rm usr/lib${SYSTEMBITS}/libqgpgme.so*
+	rm -fr usr/include/qgpgme-qt5*
+fi
 
 find usr/lib${SYSTEMBITS}/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib${SYSTEMBITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +
