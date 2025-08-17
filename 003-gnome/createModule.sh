@@ -156,14 +156,8 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### renamed background images to jpg
-
-mv $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-d.jxl $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-d.jpg
-mv $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-l.jxl $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-l.jpg
-
 ### remove some useless services
 
-echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
 
 ### copy build files to 05-devel
@@ -214,6 +208,7 @@ rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 rm usr/share/applications/org.gtk.PrintEditor4.desktop
 rm usr/share/applications/org.gtk.WidgetFactory4.desktop
 rm usr/share/applications/vte-gtk4.desktop
+rm usr/share/glib-2.0/schemas/org.gtk.Demo4.gschema.xml
 
 rm -fr etc/dbus-1/system.d
 rm -fr etc/dconf

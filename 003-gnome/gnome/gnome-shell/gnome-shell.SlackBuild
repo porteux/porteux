@@ -12,14 +12,15 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v '\-dev' | sort -V -r | head -1)
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
-for i in *.patch; do patch -p0 < $i; done
+for i in $CWD/*.patch; do
+	patch -p1 < $i
+done
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
@@ -38,6 +39,9 @@ meson setup \
 	-Dsystemd=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+cp $CWD/org.gnome.Shell.desktop $PKG/usr/share/applications
+chmod 644 $PKG/usr/share/applications/org.gnome.Shell.desktop
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

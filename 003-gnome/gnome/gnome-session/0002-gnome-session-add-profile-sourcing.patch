@@ -1,0 +1,16 @@
+diff -Naur gnome-session-46.0.orig/gnome-session/gnome-session.in gnome-session-46.0/gnome-session/gnome-session.in
+--- gnome-session-46.0.orig/gnome-session/gnome-session.in	2024-05-31 02:30:35.122963169 +0000
++++ gnome-session-46.0/gnome-session/gnome-session.in	2024-05-31 02:39:28.661942267 +0000
+@@ -13,6 +13,12 @@
+   fi
+ fi
+ 
++# Source /etc/profile.d/lang.sh first. If also set in
++# gsettings, then that will override after.
++if [ -x "/etc/profile.d/lang.sh" ]; then
++  /etc/profile.d/lang.sh
++fi
++
+ SETTING=$(G_MESSAGES_DEBUG='' gsettings get org.gnome.system.locale region)
+ REGION=${SETTING#\'}
+ REGION=${REGION%\'}
