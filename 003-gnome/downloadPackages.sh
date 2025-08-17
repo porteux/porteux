@@ -55,12 +55,11 @@ DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
 DownloadPackage "iso-codes" & # required by gnome-desktop
 DownloadPackage "krb5" &
-DownloadPackage "libsass" & # required by gnome-console
 wait
+DownloadPackage "libsass" & # required by libadwaita
 DownloadPackage "libwnck3" &
 DownloadPackage "openldap" & # required by libadwaita (appstream)
 DownloadPackage "python-pip" &
-DownloadPackage "sassc" & # required by gnome-console
 DownloadPackage "vulkan-sdk" & # required by gtksourceview
 DownloadPackage "xtrans" &
 wait
