@@ -123,10 +123,10 @@ currentPackage=lightdm-gtk-greeter
 ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-DE_LATEST_VERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
+LATESTVERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
 
-echo "Building LXQt ${DE_LATEST_VERSION}..."
-MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
+echo "Building LXQt ${LATESTVERSION}..."
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # required by libkscreen
 installpkg $MODULEPATH/packages/plasma-wayland-protocols*.txz || exit 1
