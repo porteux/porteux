@@ -71,10 +71,16 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile m
 rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
 export PATH=$HOME/.cargo/bin/:$PATH
 
-DE_LATEST_VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
+if [[ ${BLOCKTESTINGRELEASES:-yes} == yes ]]; then
+	export TESTRELEASES="grep -Ev 'rc|beta|alpha'"
+else
+	export TESTRELEASES="grep ''"
+fi
 
-echo "Building GNOME ${DE_LATEST_VERSION}..."
-MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
+LATESTVERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "$TESTRELEASES" | grep -v '\-dev' | sed -e 's/alpha/0.0007/' -e 's/beta/0.0008/' -e 's/rc/0.0009/' | sort -V -r | sed 's/0.0007/alpha/g; s/0.0008/beta/g; s/0.0009/rc/g' | head -1)
+
+echo "Building GNOME ${LATESTVERSION}..."
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # gnome deps
 for package in \
@@ -98,8 +104,14 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+# only required for building not for run-time
+rm $MODULEPATH/packages/blueprint-compiler*
+rm $MODULEPATH/packages/gperf*
+
 # gnome packages
 for package in \
+	libadwaita \
+	gnome-online-accounts \
 	gtksourceview5 \
 	geocode-glib \
 	libgweather \
@@ -107,11 +119,9 @@ for package in \
 	gnome-autoar \
 	gnome-desktop \
 	gnome-settings-daemon \
-	libadwaita \
 	gnome-tweaks \
 	gnome-bluetooth \
 	libnma-gtk4 \
-	gnome-online-accounts \
 	gnome-control-center \
 	mutter \
 	gnome-shell \
@@ -140,11 +150,6 @@ sh $SCRIPTPATH/gnome/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-# only required for building not for run-time
-rm $MODULEPATH/packages/blueprint-compiler*
-rm $MODULEPATH/packages/gperf*
-rm $MODULEPATH/packages/libheif*
 
 ### fake root
 
@@ -232,8 +237,7 @@ rm -fr usr/share/dbus-1/services/org.gnome.ScreenSaver.service
 rm -fr usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 rm -fr usr/share/gjs-1.0
 rm -fr usr/share/glade/pixmaps
-rm -fr usr/share/gnome/autostart
-rm -fr usr/share/gnome/shutdown
+rm -fr usr/share/gnome
 rm -fr usr/share/gtk-4.0
 rm -fr usr/share/ibus
 rm -fr usr/share/icons/Adwaita/8x8
