@@ -1,7 +1,6 @@
 #!/bin/bash
 
-PRGNAM=gnome-console
-downloadName=console
+PRGNAM=ptyxis
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -13,11 +12,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${downloadName}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
-wget https://gitlab.gnome.org/GNOME/${downloadName}/-/archive/${VERSION}/${downloadName}-${VERSION}.tar.gz
+VERSION=$(curl -s https://gitlab.gnome.org/chergert/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v '\-dev' | sort -V -r | head -1)
+wget https://gitlab.gnome.org/chergert/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-tar xfv $downloadName-$VERSION.tar.?z*
-cd $downloadName-$VERSION
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
@@ -30,8 +29,7 @@ meson setup \
 	--infodir=/usr/info \
 	--mandir=/usr/man \
 	--localstatedir=/var \
-	-Dtests=false \
-	-Ddevel=false 
+	-Dgeneric="terminal"
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
