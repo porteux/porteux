@@ -29,8 +29,8 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
-DE_LATEST_VERSION=$(ls $MODULEPATH/packages/plasma-desktop-* | cut -d "-" -f 3)
-MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
+LATESTVERSION=$(ls $MODULEPATH/packages/plasma-desktop-* | cut -d "-" -f 3)
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### packages that require specific stripping
 

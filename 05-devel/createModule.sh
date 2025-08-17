@@ -65,6 +65,7 @@ rm -fr usr/share/devhelp
 rm -fr usr/share/doc
 rm -fr usr/share/gitk
 rm -fr usr/share/gnome
+rm -fr usr/share/gnome-doc-utils
 rm -fr usr/share/help
 rm -fr usr/share/icons
 rm -fr usr/share/locale
