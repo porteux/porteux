@@ -84,6 +84,8 @@ MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # gnome deps
 for package in \
+	appstream \
+	libxmlb \
 	libstemmer \
 	libwpe \
 	wpebackend-fdo \
