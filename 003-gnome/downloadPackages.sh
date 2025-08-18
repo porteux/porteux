@@ -60,6 +60,7 @@ DownloadPackage "libsass" & # required by libadwaita
 DownloadPackage "libwnck3" &
 DownloadPackage "openldap" & # required by libadwaita (appstream)
 DownloadPackage "python-pip" &
+DownloadPackage "sassc" & # required by libadwaita
 DownloadPackage "vulkan-sdk" & # required by gtksourceview
 DownloadPackage "xtrans" &
 wait

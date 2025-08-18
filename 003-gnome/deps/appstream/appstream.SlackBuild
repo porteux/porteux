@@ -47,6 +47,7 @@ find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 rm -fr $PKG/usr/bin
 rm -fr $PKG/usr/share
+rm -fr $PKG/usr/libexec/
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
