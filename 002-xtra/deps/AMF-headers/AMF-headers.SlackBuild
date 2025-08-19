@@ -2,7 +2,7 @@
 
 source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
-PRGNAM=AMF
+PRGNAM=AMF-headers
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
