@@ -68,7 +68,7 @@ for package in \
 	libheif \
 	libplacebo \
 	nv-codec-headers \
-	AMF \
+	AMF-headers \
 	ffmpeg \
 	luajit \
 ; do
