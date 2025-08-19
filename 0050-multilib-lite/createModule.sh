@@ -66,7 +66,7 @@ cp -fs libgmpxx.so* libgmpxx.so
 cp -fs libltdl.so* libltdl.so
 cp -fs libslang.so* libslang.so
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=llvm
@@ -77,7 +77,7 @@ tar xvf ${currentPackage}-*.txz
 mkdir -p ${currentPackage}-stripped-$version/usr/lib
 cp usr/lib/libLLVM*.so* ${currentPackage}-stripped-$version/usr/lib
 cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pulseaudio
@@ -91,7 +91,7 @@ cp --parents -P usr/lib/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$v
 cp --parents -P usr/lib/libpulse-simple.so* ${currentPackage}-stripped-$version
 cp --parents -P usr/lib/pulseaudio/libpulsecommon* ${currentPackage}-stripped-$version
 cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=vulkan-sdk
@@ -105,7 +105,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped-$version
 fi
 cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root

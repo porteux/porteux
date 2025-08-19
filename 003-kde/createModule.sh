@@ -120,7 +120,7 @@ cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWayland/* "${currentPackage}-stripp
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWebChannel/* "${currentPackage}-stripped-$version"
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWebSockets/* "${currentPackage}-stripped-$version"
 cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by spectacle
@@ -134,7 +134,7 @@ mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libopencv_imgproc.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libopencv_core.* "${currentPackage}-stripped-$version"
 cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 # also required by spectacle
@@ -147,7 +147,7 @@ ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libgfortran.so* "${currentPackage}-stripped-$version"
 cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by dolphin and others
@@ -160,7 +160,7 @@ mkdir ${currentPackage}-stripped-$version
 cp --parents -P -r usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6* "${currentPackage}-stripped-$version"
 cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=qcoro
@@ -173,7 +173,7 @@ mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libQCoro6Core.* "${currentPackage}-stripped-$version"
 cp --parents -P usr/lib$SYSTEMBITS/libQCoro6DBus.* "${currentPackage}-stripped-$version"
 cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside slackware repository
