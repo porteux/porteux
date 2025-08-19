@@ -19,7 +19,7 @@ tar xfv xserver-$PRGNAM-$VERSION.tar.?z*
 cd xserver-$PRGNAM-$VERSION
 
 for i in $CWD/*.patch; do
-	patch -p1 < $i
+	patch -p0 < $i
 done
 
 sed -i "s|subdir('test')|#subdir('test')|g" meson.build
