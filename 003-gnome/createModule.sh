@@ -165,6 +165,7 @@ InstallAdditionalPackages
 
 ### remove some useless services
 
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/localsearch-3.desktop
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
 
 ### copy build files to 05-devel
@@ -186,7 +187,6 @@ cd $MODULEPATH/packages/
 {
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/ibus*.desktop
-rm etc/xdg/autostart/localsearch-3.desktop
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
@@ -208,14 +208,30 @@ rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
-rm usr/libexec/localsearch-*
 rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/applications/org.gtk.Demo4.desktop
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 rm usr/share/applications/org.gtk.PrintEditor4.desktop
 rm usr/share/applications/org.gtk.WidgetFactory4.desktop
 rm usr/share/applications/vte-gtk4.desktop
+rm usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
+rm usr/share/dbus-1/services/org.freedesktop.IBus.service
+rm usr/share/dbus-1/services/org.freedesktop.LocalSearch3.Control.service
+rm usr/share/dbus-1/services/org.freedesktop.LocalSearch3.service
+rm usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
+rm usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
+rm usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.service
+rm usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.service
+rm usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
+rm usr/share/dbus-1/services/org.gnome.evince.Daemon.service
+rm usr/share/dbus-1/services/org.gnome.FileRoller.service
+rm usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Extract.service
+rm usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Files.service
+rm usr/share/dbus-1/services/org.gnome.ScreenSaver.service
+rm usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 rm usr/share/glib-2.0/schemas/org.gtk.Demo4.gschema.xml
+rm usr/share/icons/hicolor/symbolic/apps/org.gtk.Demo4-symbolic.svg
+rm usr/share/icons/hicolor/scalable/apps/org.gtk.Demo4.svg
 
 rm -fr etc/dbus-1/system.d
 rm -fr etc/dconf
@@ -226,18 +242,6 @@ rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
 rm -fr usr/lib${SYSTEMBITS}/graphene-1.0
 rm -fr usr/lib${SYSTEMBITS}/gtk-2.0
 rm -fr usr/lib${SYSTEMBITS}/python*/site-packages/pip*
-rm -fr usr/libexec/installed-tests
-rm -fr usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
-rm -fr usr/share/dbus-1/services/org.freedesktop.IBus.service
-rm -fr usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
-rm -fr usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
-rm -fr usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
-rm -fr usr/share/dbus-1/services/org.gnome.evince.Daemon.service
-rm -fr usr/share/dbus-1/services/org.gnome.FileRoller.service
-rm -fr usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Extract.service
-rm -fr usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Files.service
-rm -fr usr/share/dbus-1/services/org.gnome.ScreenSaver.service
-rm -fr usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 rm -fr usr/share/gjs-1.0
 rm -fr usr/share/glade/pixmaps
 rm -fr usr/share/gnome

@@ -17,6 +17,7 @@ GenericStrip() {
 	rm -fr usr/lib*/python2*
 	rm -fr usr/lib*/systemd
 	rm -fr usr/lib/python*/site-packages/*-info
+	rm -fr usr/libexec/installed-tests
 	rm -fr usr/man
 	rm -fr usr/share/*/translations
 	rm -fr usr/share/aclocal
