@@ -201,6 +201,17 @@ rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
 rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
+rm usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
+rm usr/share/dbus-1/services/org.freedesktop.IBus.service
+rm usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
+rm usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
+rm usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
+rm usr/share/dbus-1/services/org.gnome.evince.Daemon.service
+rm usr/share/dbus-1/services/org.gnome.FileRoller.service
+rm usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Extract.service
+rm usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Files.service
+rm usr/share/dbus-1/services/org.gnome.ScreenSaver.service
+rm usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 
 rm -fr etc/dbus-1/system.d
 rm -fr etc/dconf
@@ -212,17 +223,6 @@ rm -fr usr/lib${SYSTEMBITS}/graphene-1.0
 rm -fr usr/lib${SYSTEMBITS}/gtk-2.0
 rm -fr usr/lib${SYSTEMBITS}/tracker-3.0
 rm -fr usr/lib*/python3*/site-packages/pip*
-rm -fr usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
-rm -fr usr/share/dbus-1/services/org.freedesktop.IBus.service
-rm -fr usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
-rm -fr usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
-rm -fr usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
-rm -fr usr/share/dbus-1/services/org.gnome.evince.Daemon.service
-rm -fr usr/share/dbus-1/services/org.gnome.FileRoller.service
-rm -fr usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Extract.service
-rm -fr usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Files.service
-rm -fr usr/share/dbus-1/services/org.gnome.ScreenSaver.service
-rm -fr usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 rm -fr usr/share/gjs-1.0
 rm -fr usr/share/glade/pixmaps
 rm -fr usr/share/gnome/autostart

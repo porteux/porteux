@@ -18,6 +18,8 @@ wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/${VERSION}/${P
 tar xfv $PRGNAM-$VERSION.tar.gz
 cd $PRGNAM-$VERSION
 
+sed -i "s|subdir('demo|#subdir('demo|g" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
@@ -31,13 +33,15 @@ meson setup \
 	--localstatedir=/var \
 	-Ddefault_library=shared \
 	-Dlibgeoclue=true \
+	-Denable-backend=true \
 	-Dintrospection=true \
 	-Dgtk-doc=false \
-	-D3g-source=true \
-	-Dcdma-source=true \
-	-Dmodem-gps-source=true \
+	-D3g-source=false \
+	-Dcdma-source=false \
+	-Dcompass=false \
+	-Dvapi=false \
+	-Dmodem-gps-source=false \
 	-Dnmea-source=false \
-	-Denable-backend=true \
 	-Ddemo-agent=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
