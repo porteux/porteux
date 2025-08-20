@@ -23,7 +23,7 @@ fi
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 cd $MODULEPATH
 
-### download packages from slackware repositories
+### download packages from slackware repository
 
 DownloadFromSlackware
 
