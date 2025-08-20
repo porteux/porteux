@@ -18,8 +18,9 @@ wget https://download.gnome.org/sources/${PRGNAM}/${VERSION%%.*}/${PRGNAM}-${VER
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
-for i in *.patch; do patch -p0 < $i; done
+for i in $CWD/*.patch; do
+	patch -p0 < $i;
+done
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \

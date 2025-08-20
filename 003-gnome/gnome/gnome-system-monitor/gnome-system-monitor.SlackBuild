@@ -21,8 +21,9 @@ cd $PRGNAM-$VERSION
 sed -i "s|catch2|#catch2|g" meson.build
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 
-cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
-for i in *.patch; do patch -p0 < $i; done
+for i in $CWD/*.patch; do
+	patch -p0 < $i;
+done
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
