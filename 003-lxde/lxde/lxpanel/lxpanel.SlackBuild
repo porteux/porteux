@@ -16,8 +16,10 @@ git clone https://github.com/lxde/${PRGNAM}
 cd ${PRGNAM}
 VERSION=`git describe | cut -d- -f1`
 
-cp $CWD/*.patch .
-for i in *.patch; do patch -p0 < $i; done
+for i in $CWD/*.patch; do
+	patch -p0 < $i;
+done
+
 cp $CWD/background.png data/images
 
 ./autogen.sh && CFLAGS="$GCCFLAGS -ffat-lto-objects -Wno-error=incompatible-pointer-types" \
