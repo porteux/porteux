@@ -48,6 +48,7 @@ pip install glad2 || exit 1
 # required by ffmpeg
 installpkg $MODULEPATH/packages/openal-soft-*.t?z || exit 1
 installpkg $MODULEPATH/packages/vid.stab-*.t?z || exit 1
+
 installpkg $MODULEPATH/packages/frei0r-plugins*.t?z || exit 1
 rm $MODULEPATH/packages/frei0r-plugins-*.t?z || exit 1
 installpkg $MODULEPATH/packages/opencl-headers*.t?z || exit 1
@@ -79,7 +80,7 @@ done
 
 # only required for building
 rm $MODULEPATH/packages/nv-codec-headers*.txz
-rm $MODULEPATH/packages/AMD*.txz
+rm $MODULEPATH/packages/AMF-headers*.txz
 
 currentPackage=mpv
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
