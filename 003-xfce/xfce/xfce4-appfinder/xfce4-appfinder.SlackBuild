@@ -20,8 +20,9 @@ tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
 # fix runner not executing apps with single Enter stroke
-cp $CWD/*.patch .
-for i in *.patch; do patch -p0 < $i; done
+for i in $CWD/*.patch; do
+	patch -p0 < $i;
+done
 
 # add case insensitive and contains features
 sed -i 's/xfce_appfinder_model_fuzzy_match (item->command, string);/strcasestr(item->command, string) != 0;/g' src/appfinder-model.c

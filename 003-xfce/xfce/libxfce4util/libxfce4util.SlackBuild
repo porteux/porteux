@@ -21,8 +21,9 @@ cd $PRGNAM-$DOWNLOADVERSION
 
 sed -i "s|subdir('docs'|#subdir('docs'|g" meson.build
 
-cp $CWD/*.patch .
-for i in *.patch; do patch -p0 < $i; done
+for i in $CWD/*.patch; do
+	patch -p0 < $i;
+done
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
