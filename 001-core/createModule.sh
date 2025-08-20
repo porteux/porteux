@@ -23,16 +23,11 @@ fi
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 cd $MODULEPATH
 
-### download packages from slackware repositories
+### download packages from slackware repository
 
 DownloadFromSlackware
 
 ### packages outside slackware repository
-
-installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
-
-installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=meson
@@ -41,6 +36,11 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm -fr $MODULEPATH/${currentPackage}
 	rm $MODULEPATH/packages/meson-*.txz
 fi
+
+installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
+
+installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 # required to build procps-ng
 installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
