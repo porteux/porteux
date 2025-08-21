@@ -5,8 +5,18 @@ GenerateRepositoryUrls
 
 ### only download if not present
 
-DownloadPackage "libxml2"
-DownloadPackage "llvm"
+if [ ${CLANG:-no} = "yes" ]; then
+	if [ ! -f /usr/bin/clang ]; then
+		DownloadPackage "libxml2" &
+		DownloadPackage "llvm" &
+		wait
+	fi
+fi
+
+if [ ! -f ${SCRIPTPATH}/kernel-firmware*.txz ]; then
+	DownloadPackage "kernel-firmware" &
+	wait
+fi
 
 ### script clean up
 
