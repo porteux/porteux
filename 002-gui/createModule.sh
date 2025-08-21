@@ -105,7 +105,7 @@ done
 currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped-$version
@@ -116,7 +116,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=vulkan-sdk
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
-version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped-$version
@@ -137,7 +137,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=pulseaudio
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
-version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped-$version

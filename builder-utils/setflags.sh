@@ -3,7 +3,7 @@
 SetFlags() {
 	MODULENAME="$1"
 
-	export KERNELVERSION="6.16"
+	export KERNELVERSION="6.16.2"
 	export ARCHITECTURELEVEL="x86-64-v2"
 	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed -Wl,--build-id=none -flto=auto -Wl,-O1 -fno-ident -s -fmodulo-sched -floop-parallelize-all -fuse-linker-plugin -Wl,-sort-common"
 	export CLANGFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -Wl,--gc-sections -Wl,--as-needed -Wl,--build-id=none -flto=auto -Wl,-O2 -Wno-unused-command-line-argument"
@@ -30,12 +30,12 @@ SetFlags() {
 	export NUMBERTHREADS=$(nproc --all)
 	export MAKEPKGFLAGS="-l y -c n --compress -0"
 
-	if [ -z ${SYSTEMBITS+x} ] && [ `getconf LONG_BIT` == "64" ]; then
+	if [ -z ${SYSTEMBITS+x} ] && [ "$(getconf LONG_BIT)" = "64" ]; then
 		export SYSTEMBITS="64"
 	fi
 
-	#export SLACKWAREDOMAIN="https://mirrors.slackware.com"
-	export SLACKWAREDOMAIN="https://slackware.uk"
+	export SLACKWAREDOMAIN="https://mirrors.slackware.com"
+	#export SLACKWAREDOMAIN="https://slackware.uk"
 	#export SLACKWAREDOMAIN="http://ftp.slackware.com/pub"
 	export REPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS-$SLACKWAREVERSION/slackware$SYSTEMBITS"
 	export PATCHREPOSITORY="$SLACKWAREDOMAIN/slackware/slackware$SYSTEMBITS/patches"

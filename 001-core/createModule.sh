@@ -71,7 +71,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	currentPackage=avahi
 	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 	mv ../packages/${currentPackage}-[0-9]* .
-	version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+	version=$(ls * -a | rev | cut -d - -f 3 | rev)
 	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 	mkdir ${currentPackage}-stripped-$version
 	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped-$version/
@@ -84,7 +84,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	currentPackage=glibc
 	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 	mv ../packages/${currentPackage}-[0-9]* .
-	version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+	version=$(ls * -a | rev | cut -d - -f 3 | rev)
 	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 	rm -fr var/lib/pkgtools
 	rm -fr var/log
@@ -102,7 +102,7 @@ fi
 currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
 ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}-*.txz
 rm usr/lib${SYSTEMBITS}/libslang.so.1*
@@ -140,7 +140,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=binutils
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents usr/bin/ar ${currentPackage}-stripped-$version/
@@ -154,7 +154,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=fftw
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib${SYSTEMBITS}/libfftw3f.* ${currentPackage}-stripped-$version/
@@ -165,7 +165,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=ntp
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/bin/ntpdate ${currentPackage}-stripped-$version/
@@ -178,7 +178,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=openldap
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents etc/openldap/ldap.conf.new ${currentPackage}-stripped-$version/

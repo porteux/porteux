@@ -33,7 +33,7 @@ DownloadFromSlackware
 currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
 ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}-*.txz
 rm usr/lib/libslang.so.1*
@@ -72,7 +72,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 tar xvf ${currentPackage}-*.txz
 mkdir -p ${currentPackage}-stripped-$version/usr/lib
 cp usr/lib/libLLVM*.so* ${currentPackage}-stripped-$version/usr/lib
@@ -83,7 +83,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=pulseaudio
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib/libpulse.so* ${currentPackage}-stripped-$version
@@ -97,7 +97,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=vulkan-sdk
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 tar xvf ${currentPackage}-*.txz
 mkdir -p ${currentPackage}-stripped-$version/usr/lib
 cp usr/lib/libvulkan.so* ${currentPackage}-stripped-$version/usr/lib
