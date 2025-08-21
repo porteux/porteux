@@ -33,31 +33,31 @@ DownloadFromSlackware
 currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
-ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 rm usr/lib/libslang.so.1*
 rm usr/lib/libstdc++.so*
 ROOT=./ installpkg gcc-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P lib/libfuse.* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libgssapi_krb5.* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libk5crypto.* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libkrb5.* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libkrb5support.* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libpcre2* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libsigsegv.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libatomic.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libcares.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libcups.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libgcc_s.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libgmp.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libgmpxx.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libgomp.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libltdl.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libslang.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libstdc++.* ${currentPackage}-stripped-$version/
-cd ${currentPackage}-stripped-$version/usr/lib
+mkdir ${currentPackage}-stripped
+cp --parents -P lib/libfuse.* ${currentPackage}-stripped/
+cp --parents -P lib/libgssapi_krb5.* ${currentPackage}-stripped/
+cp --parents -P lib/libk5crypto.* ${currentPackage}-stripped/
+cp --parents -P lib/libkrb5.* ${currentPackage}-stripped/
+cp --parents -P lib/libkrb5support.* ${currentPackage}-stripped/
+cp --parents -P lib/libpcre2* ${currentPackage}-stripped/
+cp --parents -P lib/libsigsegv.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libatomic.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libcares.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libcups.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libgcc_s.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libgmp.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libgmpxx.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libgomp.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libltdl.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libslang.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libstdc++.* ${currentPackage}-stripped/
+cd $MODULEPATH/${currentPackage}-stripped/usr/lib
 cp -fs libcares.so* libcares.so
 cp -fs libcares.so libcares.so.2
 cp -fs libcups.so* libcups.so
@@ -65,47 +65,47 @@ cp -fs libgmp.so* libgmp.so
 cp -fs libgmpxx.so* libgmpxx.so
 cp -fs libltdl.so* libltdl.so
 cp -fs libslang.so* libslang.so
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 tar xvf ${currentPackage}-*.txz
-mkdir -p ${currentPackage}-stripped-$version/usr/lib
-cp usr/lib/libLLVM*.so* ${currentPackage}-stripped-$version/usr/lib
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+mkdir -p ${currentPackage}-stripped/usr/lib
+cp usr/lib/libLLVM*.so* ${currentPackage}-stripped/usr/lib
+cd $MODULEPATH/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pulseaudio
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib/libpulse.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib/libpulse-simple.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib/pulseaudio/libpulsecommon* ${currentPackage}-stripped-$version
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib/libpulse.so* ${currentPackage}-stripped
+cp --parents -P usr/lib/libpulse-mainloop-glib.so* ${currentPackage}-stripped
+cp --parents -P usr/lib/libpulse-simple.so* ${currentPackage}-stripped
+cp --parents -P usr/lib/pulseaudio/libpulsecommon* ${currentPackage}-stripped
+cd $MODULEPATH/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=vulkan-sdk
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 tar xvf ${currentPackage}-*.txz
-mkdir -p ${currentPackage}-stripped-$version/usr/lib
-cp usr/lib/libvulkan.so* ${currentPackage}-stripped-$version/usr/lib
+mkdir -p ${currentPackage}-stripped/usr/lib
+cp usr/lib/libvulkan.so* ${currentPackage}-stripped/usr/lib
 if [ $SLACKWAREVERSION == "current" ]; then
-	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped-$version
+	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
 fi
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+cd $MODULEPATH/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root

@@ -105,50 +105,71 @@ done
 currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped-$version
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped
+cd $MODULEPATH/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=vulkan-sdk
+currentPackage=mesa
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}*.txz .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped-$version
-cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped-$version > /dev/null 2>&1
-cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped-$version
-if [ $SLACKWAREVERSION == "current" ]; then
-	cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped-$version
-	cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped-$version
-	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped-$version
-fi
-cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped-$version
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+mv ../packages/${currentPackage}-[0-9]* .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+rm -fr etc/OpenCL
+rm usr/lib${SYSTEMBITS}/dri/i830_*
+rm usr/lib${SYSTEMBITS}/dri/i965_*
+rm usr/lib${SYSTEMBITS}/dri/nouveau_vieux_*
+rm usr/lib${SYSTEMBITS}/dri/r200_*
+rm usr/lib${SYSTEMBITS}/dri/radeon_*
+rm usr/lib${SYSTEMBITS}/libLLVMExtensions*
+rm usr/lib${SYSTEMBITS}/libLLVMLTO*
+rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
+rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
+mkdir ${currentPackage}-stripped
+rsync -av --exclude=${currentPackage}-stripped/ * ${currentPackage}-stripped/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pulseaudio
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libpulse-simple.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-stripped-$version
-cp --parents -P -r usr/lib$SYSTEMBITS/cmake/* $MODULEPATH/../05-devel/packages
-cp --parents -P -r usr/lib$SYSTEMBITS/pkgconfig/* $MODULEPATH/../05-devel/packages
-cp --parents -P -r usr/include/* $MODULEPATH/../05-devel/packages
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libpulse-simple.so* ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-stripped
+cp --parents -P -r usr/lib$SYSTEMBITS/cmake/* ${currentPackage}-stripped
+cp --parents -P -r usr/lib$SYSTEMBITS/pkgconfig/* ${currentPackage}-stripped
+cp --parents -P -r usr/include/* ${currentPackage}-stripped
+cd $MODULEPATH/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=vulkan-sdk
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}*.txz .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped
+cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped > /dev/null 2>&1
+cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped
+if [ $SLACKWAREVERSION == "current" ]; then
+	cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped
+	cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped
+	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
+fi
+cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped
+cd $MODULEPATH/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### install poppler so it can be used by next modules
@@ -201,19 +222,11 @@ rm usr/bin/canberra*
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/Xdmx
-rm usr/lib${SYSTEMBITS}/dri/i830_* # obsolete driver
-rm usr/lib${SYSTEMBITS}/dri/i965_* # obsolete driver
-rm usr/lib${SYSTEMBITS}/dri/nouveau_vieux_* # obsolete driver
-rm usr/lib${SYSTEMBITS}/dri/r200_* # obsolete driver
-rm usr/lib${SYSTEMBITS}/dri/radeon_* # obsolete driver
+
 rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
-rm usr/lib${SYSTEMBITS}/libLLVMExtensions*
-rm usr/lib${SYSTEMBITS}/libLLVMLTO*
-rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
 rm usr/lib${SYSTEMBITS}/libpoppler-cpp*
-rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
 rm usr/lib${SYSTEMBITS}/libxatracker*
 rm usr/lib${SYSTEMBITS}/libXaw.so.6*
 rm usr/lib${SYSTEMBITS}/libXaw6*
@@ -235,7 +248,6 @@ rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 
-rm -fr etc/OpenCL
 rm -fr etc/pam.d
 rm -fr etc/rc_keymaps
 rm -fr etc/X11/xorg.conf.d

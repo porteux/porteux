@@ -65,26 +65,26 @@ installpkg $MODULEPATH/packages/procps-ng*.txz
 installpkg $MODULEPATH/packages/squashfs-tools*.txz
 installpkg $MODULEPATH/packages/zstd*.txz
 
-### packages that require specific stripping
+## packages that require specific stripping
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	currentPackage=avahi
 	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 	mv ../packages/${currentPackage}-[0-9]* .
-	version=$(ls * -a | rev | cut -d - -f 3 | rev)
-	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
-	mkdir ${currentPackage}-stripped-$version
-	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped-$version/
-	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped-$version/
-	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped-$version/
-	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+	packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+	ROOT=./ installpkg ${currentPackage}-*.txz
+	mkdir ${currentPackage}-stripped
+	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped/
+	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped/
+	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped/
+	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 	rm -fr $MODULEPATH/${currentPackage}
 
 	currentPackage=glibc
 	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 	mv ../packages/${currentPackage}-[0-9]* .
-	version=$(ls * -a | rev | cut -d - -f 3 | rev)
+	packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 	rm -fr var/lib/pkgtools
 	rm -fr var/log
@@ -92,40 +92,40 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	rm -fr usr/lib/
 	rm usr/include/gnu/*-32.h
 	rm usr/libexec/getconf/*ILP32*
-	mkdir ${currentPackage}-stripped-$version
-	rsync -av --exclude=${currentPackage}-stripped-$version/ * ${currentPackage}-stripped-$version/
-	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+	mkdir ${currentPackage}-stripped
+	rsync -av --exclude=${currentPackage}-stripped/ * ${currentPackage}-stripped/
+	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 	rm -fr $MODULEPATH/${currentPackage}
 fi
 
 currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
-ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 rm usr/lib${SYSTEMBITS}/libslang.so.1*
 rm usr/lib${SYSTEMBITS}/libstdc++.so*
 ROOT=./ installpkg gcc-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P lib${SYSTEMBITS}/libfuse.* ${currentPackage}-stripped-$version/
-cp --parents -P lib${SYSTEMBITS}/libgssapi_krb5.* ${currentPackage}-stripped-$version/
-cp --parents -P lib${SYSTEMBITS}/libk5crypto.* ${currentPackage}-stripped-$version/
-cp --parents -P lib${SYSTEMBITS}/libkrb5.* ${currentPackage}-stripped-$version/
-cp --parents -P lib${SYSTEMBITS}/libkrb5support.* ${currentPackage}-stripped-$version/
-cp --parents -P lib${SYSTEMBITS}/libsigsegv.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libatomic.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libcares.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libcups.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libgcc_s.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libgmp.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libgmpxx.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libgomp.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libltdl.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libslang.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.* ${currentPackage}-stripped-$version/
-cd ${currentPackage}-stripped-$version/usr/lib${SYSTEMBITS}
+mkdir ${currentPackage}-stripped
+cp --parents -P lib${SYSTEMBITS}/libfuse.* ${currentPackage}-stripped/
+cp --parents -P lib${SYSTEMBITS}/libgssapi_krb5.* ${currentPackage}-stripped/
+cp --parents -P lib${SYSTEMBITS}/libk5crypto.* ${currentPackage}-stripped/
+cp --parents -P lib${SYSTEMBITS}/libkrb5.* ${currentPackage}-stripped/
+cp --parents -P lib${SYSTEMBITS}/libkrb5support.* ${currentPackage}-stripped/
+cp --parents -P lib${SYSTEMBITS}/libsigsegv.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libatomic.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libcares.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libcups.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libgcc_s.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libgmp.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libgmpxx.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libgomp.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libltdl.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libslang.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.* ${currentPackage}-stripped/
+cd $MODULEPATH/${currentPackage}-stripped/usr/lib${SYSTEMBITS}
 cp -fs libcares.so* libcares.so
 cp -fs libcares.so libcares.so.2
 cp -fs libcups.so* libcups.so
@@ -133,60 +133,60 @@ cp -fs libgmp.so* libgmp.so
 cp -fs libgmpxx.so* libgmpxx.so
 cp -fs libltdl.so* libltdl.so
 cp -fs libslang.so* libslang.so
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=binutils
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents usr/bin/ar ${currentPackage}-stripped-$version/
-cp --parents usr/bin/strip ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib$SYSTEMBITS/libbfd* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib$SYSTEMBITS/libsframe* ${currentPackage}-stripped-$version/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped
+cp --parents usr/bin/ar ${currentPackage}-stripped/
+cp --parents usr/bin/strip ${currentPackage}-stripped/
+cp --parents -P usr/lib$SYSTEMBITS/libbfd* ${currentPackage}-stripped/
+cp --parents -P usr/lib$SYSTEMBITS/libsframe* ${currentPackage}-stripped/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=fftw
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib${SYSTEMBITS}/libfftw3f.* ${currentPackage}-stripped-$version/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib${SYSTEMBITS}/libfftw3f.* ${currentPackage}-stripped/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=ntp
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/bin/ntpdate ${currentPackage}-stripped-$version/
-cp --parents -P usr/sbin/ntpdate ${currentPackage}-stripped-$version/
-cp --parents -P usr/sbin/ntpd ${currentPackage}-stripped-$version/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/bin/ntpdate ${currentPackage}-stripped/
+cp --parents -P usr/sbin/ntpdate ${currentPackage}-stripped/
+cp --parents -P usr/sbin/ntpd ${currentPackage}-stripped/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=openldap
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents etc/openldap/ldap.conf.new ${currentPackage}-stripped-$version/
-mv ${currentPackage}-stripped-$version/etc/openldap/ldap.conf.new ${currentPackage}-stripped-$version/etc/openldap/ldap.conf
-cp --parents usr/include/* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib$SYSTEMBITS/libl* ${currentPackage}-stripped-$version/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped
+cp --parents etc/openldap/ldap.conf.new ${currentPackage}-stripped/
+mv ${currentPackage}-stripped/etc/openldap/ldap.conf.new ${currentPackage}-stripped/etc/openldap/ldap.conf
+cp --parents usr/include/* ${currentPackage}-stripped/
+cp --parents -P usr/lib$SYSTEMBITS/libl* ${currentPackage}-stripped/
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
