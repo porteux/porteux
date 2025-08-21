@@ -32,16 +32,18 @@ CRIPPLEDMODULENAME="06-crippled-sources-${KERNELVERSION}"
 rm -fr ${MODULEPATH}
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
+### download packages from slackware repository
+
+DownloadFromSlackware
+
 ### set compiler
 
 if [ ${CLANG:-no} = "yes" ]; then
-	if [ ! -f /usr/bin/clang ]; then
-		DownloadFromSlackware
-		installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
-		rm $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
-		installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-		rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-	fi
+	installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
+	rm $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
+	installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+	rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+
 	COMPILER="Clang"
 	EXTRAFLAGS="LLVM=1 CC=clang"
 	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
@@ -54,10 +56,10 @@ else
 	BUILDPARAMS="${BUILDPARAMS/ -flto=auto/}"
 fi
 
-echo "Building kernel ${KERNELVERSION} $ARCH using ${COMPILER}..."
+echo "Building kernel ${KERNELVERSION} using ${COMPILER}..."
 
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
-cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH} 2>/dev/null
+cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH}/packages 2>/dev/null
 
 echo "Downloading kernel source code..."
 if [ ! -f linux-${KERNELVERSION}.tar.?z ]; then
@@ -73,7 +75,7 @@ cp ${SCRIPTPATH}/${SYSTEMBITS}bit.config ${MODULEPATH}/linux-${KERNELVERSION}/.c
 
 echo "Downloading AUFS..."
 git clone https://github.com/sfjro/aufs-standalone ${MODULEPATH}/aufs_sources > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
-git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}${KERNELMINORVERSION}${KERNELPATCHVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
+git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION}.${KERNELPATCHVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULEPATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
 
 cd $MODULEPATH/linux-${KERNELVERSION}
 
@@ -93,14 +95,6 @@ mkdir -p ${MODULEPATH}/../05-devel/packages
 mv ${MODULEPATH}/packages/${currentPackage}-*.txz ${MODULEPATH}/../05-devel/packages
 rm -fr $MODULEPATH/${currentPackage}
 
-if [ ! -f ${MODULEPATH}/kernel-firmware-*.txz ]; then
-	echo "Downloading firmware in the background..."
-	DOWNLOADINGFIRMWARE=true
-	(
-		wget -r -nd --no-parent -w 2 ${SLACKWAREDOMAIN}/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz -P ${MODULEPATH} > /dev/null 2>&1 & PID1=$! || { echo "Fail to download firmware."; exit 1; }
-	) &
-fi
-
 # this allows CONFIG_DEBUG_KERNEL to be disabled
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig
 
@@ -111,19 +105,13 @@ cp -f arch/x86/boot/bzImage ../vmlinuz
 echo "Installing modules..."
 make -j${NUMBERTHREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
 
-cd ..
+cd $MODULEPATH
 
 kernelModulesFolder=$(ls lib/modules/)
 rm lib/modules/$kernelModulesFolder/build > /dev/null 2>&1
 
-if [ $DOWNLOADINGFIRMWARE ]; then
-	# wait for firmware download to finish
-	wait $PID1
-fi
-
 echo "Extracting firmware..."
-mkdir firmware && tar xf kernel-firmware-*.txz -C firmware > /dev/null 2>&1
-rm kernel-firmware-*.txz
+mkdir firmware && tar xf packages/kernel-firmware-*.txz -C firmware/ > /dev/null 2>&1
 cd firmware && mv install/doinst.sh . && sh ./doinst.sh
 
 echo "Adding firmware..."

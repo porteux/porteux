@@ -72,7 +72,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile m
 rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
 export PATH=$HOME/.cargo/bin/:$PATH
 
-if [[ ${BLOCKTEST:-yes} == yes ]]; then
+if [[ ${ALLOWTEST:-no} == no ]]; then
 	export TESTRELEASES="grep -Ev '\.rc|\.beta|\.alpha'"
 else
 	export TESTRELEASES="grep ''"
