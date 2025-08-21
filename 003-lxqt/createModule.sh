@@ -35,69 +35,69 @@ currentPackage=qt6
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Concurrent.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Core.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6DBus.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Gui.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Network.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Pdf.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6PrintSupport.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Svg.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6SvgWidgets.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandClient.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Widgets.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6XcbQpa.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Xml.* "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/egldeviceintegrations/* "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/iconengines/* "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/imageformats/* "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforminputcontexts/* "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqeglfs.so "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqlinuxfb.so "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqminimal.so "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqminimalegl.so "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqoffscreen.so "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqvnc.so "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqwayland*.so "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqxcb.so "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platformthemes/* "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/wayland*/* "${currentPackage}-stripped-$version"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/xcbglintegrations/* "${currentPackage}-stripped-$version"
-rm "${currentPackage}-stripped-$version"/usr/lib$SYSTEMBITS/*.prl
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Concurrent.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Core.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6DBus.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Gui.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Network.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Pdf.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6PrintSupport.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Svg.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6SvgWidgets.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandClient.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Widgets.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6XcbQpa.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Xml.* "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/egldeviceintegrations/* "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/iconengines/* "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/imageformats/* "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforminputcontexts/* "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqeglfs.so "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqlinuxfb.so "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqminimal.so "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqminimalegl.so "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqoffscreen.so "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqvnc.so "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqwayland*.so "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqxcb.so "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platformthemes/* "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/wayland*/* "${currentPackage}-stripped"
+cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/xcbglintegrations/* "${currentPackage}-stripped"
+rm "${currentPackage}-stripped"/usr/lib$SYSTEMBITS/*.prl
+cd $MODULEPATH/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by xpdf
 currentPackage=ghostscript-fonts-std
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* . || exit 1
-version=$(ls * -a | rev | cut -d - -f 3 | rev)
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/share/fonts/Type1/d050000l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/fonts.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n019003l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n019004l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n019023l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n019024l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n021003l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n021004l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n021023l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n021024l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n022003l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n022004l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n022023l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/n022024l.* "${currentPackage}-stripped-$version"
-cp --parents -P usr/share/fonts/Type1/s050000l.* "${currentPackage}-stripped-$version"
-cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version/usr/share"
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/share/fonts/Type1/d050000l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/fonts.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n019003l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n019004l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n019023l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n019024l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n021003l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n021004l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n021023l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n021024l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n022003l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n022004l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n022023l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/n022024l.* "${currentPackage}-stripped"
+cp --parents -P usr/share/fonts/Type1/s050000l.* "${currentPackage}-stripped"
+cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped/usr/share"
 mkdir ghostscript && cd ghostscript
 ln -s ../fonts/Type1 fonts
-cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version"
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version}_stripped.txz > /dev/null 2>&1
+cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped"
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside slackware repository

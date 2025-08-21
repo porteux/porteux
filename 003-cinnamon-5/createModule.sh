@@ -34,14 +34,14 @@ DownloadFromSlackware
 currentPackage=gettext-tools
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-version=$(ls *.txz -a | rev | cut -d '-' -f 3 | rev)
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/bin/msgfmt "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libgettextlib* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libgettextsrc* "${currentPackage}-stripped-$version"
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-$ARCH.txz > /dev/null 2>&1
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/bin/msgfmt "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libgettextlib* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libgettextsrc* "${currentPackage}-stripped"
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside slackware repository
