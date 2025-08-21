@@ -33,7 +33,7 @@ currentPackage=qt5
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg qt5*.txz || exit 1
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libQt5Concurrent.* "${currentPackage}-stripped-$version"

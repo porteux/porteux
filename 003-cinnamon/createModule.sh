@@ -34,7 +34,7 @@ DownloadFromSlackware
 currentPackage=gettext-tools
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-version=`ls *.txz -a | rev | cut -d '-' -f 3 | rev`
+version=$(ls *.txz -a | rev | cut -d '-' -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/bin/msgfmt "${currentPackage}-stripped-$version"

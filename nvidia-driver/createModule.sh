@@ -19,7 +19,7 @@ if ! isRoot; then
 	exit
 fi
 
-[ `getconf LONG_BIT` = "64" ] && SYSTEMBITS=64
+[ "$(getconf LONG_BIT)" = "64" ] && SYSTEMBITS=64
 OUTPUTDIR="$PORTDIR/modules"
 INSTALLERDIR=/tmp/nvidia
 MODULEDIR=$INSTALLERDIR/nvidia-module

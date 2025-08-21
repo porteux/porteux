@@ -38,7 +38,7 @@ currentPackage=qt6
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 rm usr/lib$SYSTEMBITS/*.prl
@@ -128,7 +128,7 @@ currentPackage=opencv
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libopencv_imgproc.* "${currentPackage}-stripped-$version"
@@ -142,7 +142,7 @@ currentPackage=gcc-gfortran
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libgfortran.so* "${currentPackage}-stripped-$version"
@@ -154,7 +154,7 @@ rm -fr $MODULEPATH/${currentPackage}
 currentPackage=phonon
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P -r usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped-$version"
@@ -167,7 +167,7 @@ currentPackage=qcoro
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+version=$(ls * -a | rev | cut -d - -f 3 | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped-$version
 cp --parents -P usr/lib$SYSTEMBITS/libQCoro6Core.* "${currentPackage}-stripped-$version"
