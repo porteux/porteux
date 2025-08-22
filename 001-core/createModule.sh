@@ -77,7 +77,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped/
 	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped/
 	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped/
-	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+	cd ${currentPackage}-stripped
 	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 	rm -fr $MODULEPATH/${currentPackage}
 
@@ -86,15 +86,15 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	mv ../packages/${currentPackage}-[0-9]* .
 	packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+	rm usr/include/gnu/*-32.h
+	rm usr/libexec/getconf/*ILP32*
 	rm -fr var/lib/pkgtools
 	rm -fr var/log
 	rm -fr lib/
 	rm -fr usr/lib/
-	rm usr/include/gnu/*-32.h
-	rm usr/libexec/getconf/*ILP32*
 	mkdir ${currentPackage}-stripped
-	rsync -av --exclude=${currentPackage}-stripped/ * ${currentPackage}-stripped/
-	cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+	rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
+	cd ${currentPackage}-stripped
 	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 	rm -fr $MODULEPATH/${currentPackage}
 fi
@@ -125,7 +125,7 @@ cp --parents -P usr/lib${SYSTEMBITS}/libgomp.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libltdl.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libslang.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.* ${currentPackage}-stripped/
-cd $MODULEPATH/${currentPackage}-stripped/usr/lib${SYSTEMBITS}
+cd ${currentPackage}-stripped/usr/lib${SYSTEMBITS}
 cp -fs libcares.so* libcares.so
 cp -fs libcares.so libcares.so.2
 cp -fs libcups.so* libcups.so
@@ -147,7 +147,7 @@ cp --parents usr/bin/ar ${currentPackage}-stripped/
 cp --parents usr/bin/strip ${currentPackage}-stripped/
 cp --parents -P usr/lib$SYSTEMBITS/libbfd* ${currentPackage}-stripped/
 cp --parents -P usr/lib$SYSTEMBITS/libsframe* ${currentPackage}-stripped/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -158,7 +158,7 @@ packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib${SYSTEMBITS}/libfftw3f.* ${currentPackage}-stripped/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -171,7 +171,7 @@ mkdir ${currentPackage}-stripped
 cp --parents -P usr/bin/ntpdate ${currentPackage}-stripped/
 cp --parents -P usr/sbin/ntpdate ${currentPackage}-stripped/
 cp --parents -P usr/sbin/ntpd ${currentPackage}-stripped/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -185,7 +185,7 @@ cp --parents etc/openldap/ldap.conf.new ${currentPackage}-stripped/
 mv ${currentPackage}-stripped/etc/openldap/ldap.conf.new ${currentPackage}-stripped/etc/openldap/ldap.conf
 cp --parents usr/include/* ${currentPackage}-stripped/
 cp --parents -P usr/lib$SYSTEMBITS/libl* ${currentPackage}-stripped/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 

@@ -66,8 +66,8 @@ cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqxcb.so "${currentPa
 cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platformthemes/* "${currentPackage}-stripped"
 cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/wayland*/* "${currentPackage}-stripped"
 cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/xcbglintegrations/* "${currentPackage}-stripped"
-rm "${currentPackage}-stripped"/usr/lib$SYSTEMBITS/*.prl
-cd $MODULEPATH/${currentPackage}-stripped
+rm ${currentPackage}-stripped/usr/lib$SYSTEMBITS/*.prl
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -93,10 +93,10 @@ cp --parents -P usr/share/fonts/Type1/n022004l.* "${currentPackage}-stripped"
 cp --parents -P usr/share/fonts/Type1/n022023l.* "${currentPackage}-stripped"
 cp --parents -P usr/share/fonts/Type1/n022024l.* "${currentPackage}-stripped"
 cp --parents -P usr/share/fonts/Type1/s050000l.* "${currentPackage}-stripped"
-cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped/usr/share"
+cd ${currentPackage}-stripped/usr/share
 mkdir ghostscript && cd ghostscript
 ln -s ../fonts/Type1 fonts
-cd "$MODULEPATH/${currentPackage}/${currentPackage}-stripped"
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 

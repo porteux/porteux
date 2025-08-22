@@ -33,8 +33,8 @@ meson setup \
 	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Dlogind_provider=elogind \
-	-Dmimeapps=false \
 	-Dx11=true \
+	-Dmimeapps=false \
 	-Ddocbook=false \
 	-Dman=false
 

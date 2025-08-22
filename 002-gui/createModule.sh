@@ -109,7 +109,7 @@ packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped
-cd $MODULEPATH/${currentPackage}-stripped
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -119,18 +119,18 @@ mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 rm -fr etc/OpenCL
-rm usr/lib${SYSTEMBITS}/dri/i830_*
-rm usr/lib${SYSTEMBITS}/dri/i965_*
-rm usr/lib${SYSTEMBITS}/dri/nouveau_vieux_*
-rm usr/lib${SYSTEMBITS}/dri/r200_*
-rm usr/lib${SYSTEMBITS}/dri/radeon_*
-rm usr/lib${SYSTEMBITS}/libLLVMExtensions*
-rm usr/lib${SYSTEMBITS}/libLLVMLTO*
+rm usr/lib${SYSTEMBITS}/dri/i830*
+rm usr/lib${SYSTEMBITS}/dri/i965*
+rm usr/lib${SYSTEMBITS}/dri/nouveau_vieux*
+rm usr/lib${SYSTEMBITS}/dri/r200*
+rm usr/lib${SYSTEMBITS}/dri/radeon_dri*
 rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
 rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
+rm -fr var/lib/pkgtools
+rm -fr var/log
 mkdir ${currentPackage}-stripped
-rsync -av --exclude=${currentPackage}-stripped/ * ${currentPackage}-stripped/
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -147,7 +147,7 @@ cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-
 cp --parents -P -r usr/lib$SYSTEMBITS/cmake/* ${currentPackage}-stripped
 cp --parents -P -r usr/lib$SYSTEMBITS/pkgconfig/* ${currentPackage}-stripped
 cp --parents -P -r usr/include/* ${currentPackage}-stripped
-cd $MODULEPATH/${currentPackage}-stripped
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -168,7 +168,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
 fi
 cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped
-cd $MODULEPATH/${currentPackage}-stripped
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
