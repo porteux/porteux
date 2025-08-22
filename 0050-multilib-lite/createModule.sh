@@ -57,7 +57,7 @@ cp --parents -P usr/lib/libgomp.* ${currentPackage}-stripped/
 cp --parents -P usr/lib/libltdl.* ${currentPackage}-stripped/
 cp --parents -P usr/lib/libslang.* ${currentPackage}-stripped/
 cp --parents -P usr/lib/libstdc++.* ${currentPackage}-stripped/
-cd $MODULEPATH/${currentPackage}-stripped/usr/lib
+cd ${currentPackage}-stripped/usr/lib
 cp -fs libcares.so* libcares.so
 cp -fs libcares.so libcares.so.2
 cp -fs libcups.so* libcups.so
@@ -76,7 +76,7 @@ packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 tar xvf ${currentPackage}-*.txz
 mkdir -p ${currentPackage}-stripped/usr/lib
 cp usr/lib/libLLVM*.so* ${currentPackage}-stripped/usr/lib
-cd $MODULEPATH/${currentPackage}-stripped
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -90,7 +90,7 @@ cp --parents -P usr/lib/libpulse.so* ${currentPackage}-stripped
 cp --parents -P usr/lib/libpulse-mainloop-glib.so* ${currentPackage}-stripped
 cp --parents -P usr/lib/libpulse-simple.so* ${currentPackage}-stripped
 cp --parents -P usr/lib/pulseaudio/libpulsecommon* ${currentPackage}-stripped
-cd $MODULEPATH/${currentPackage}-stripped
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
@@ -104,7 +104,7 @@ cp usr/lib/libvulkan.so* ${currentPackage}-stripped/usr/lib
 if [ $SLACKWAREVERSION == "current" ]; then
 	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
 fi
-cd $MODULEPATH/${currentPackage}-stripped
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 

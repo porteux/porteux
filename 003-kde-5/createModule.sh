@@ -105,8 +105,8 @@ cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtTest/* "${currentPackage}-stripped"
 cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWayland/* "${currentPackage}-stripped"
 cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWebChannel/* "${currentPackage}-stripped"
 cp --parents -R usr/lib$SYSTEMBITS/qt5/qml/QtWebSockets/* "${currentPackage}-stripped"
-rm "${currentPackage}-stripped"/usr/lib$SYSTEMBITS/*.prl
-cd $MODULEPATH/${currentPackage}-stripped
+rm ${currentPackage}-stripped/usr/lib$SYSTEMBITS/*.prl
+cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
