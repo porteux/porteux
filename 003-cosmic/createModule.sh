@@ -38,6 +38,10 @@ currentPackage=audacious-plugins
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=ffmpegthumbnailer
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=adw-gtk3
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mkdir -p package/usr/share/themes

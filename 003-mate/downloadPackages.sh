@@ -11,14 +11,13 @@ DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 wait
-DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "hunspell" &
 DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
-wait
 DownloadPackage "libgtop" &
+wait
 DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &

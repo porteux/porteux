@@ -5,10 +5,9 @@ GenerateRepositoryUrls
 
 DownloadPackage "accountsservice" & # required by lightdm
 DownloadPackage "blueman" &
-DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "keybinder3" &
-wait
 DownloadPackage "libnma" &
+wait
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &

@@ -38,6 +38,10 @@ currentPackage=audacious-plugins
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=ffmpegthumbnailer
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 # required by mate-polkit
 installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
