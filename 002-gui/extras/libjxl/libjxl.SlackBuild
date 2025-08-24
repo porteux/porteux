@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=libjxl
 
 CWD=$(dirname "$0")
@@ -14,11 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "${PRGNAM}" ${PRGNAM})
-VERSION=${info#* }
-
-tar xfv $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
+wget https://github.com/${PRGNAM}/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xvf ${PRGNAM}.tar.?z
+cd ${PRGNAM}-main
+VERSION=$(date -r . +%Y%m%d)
 
 # skipping not used deps download
 sed -i "s|download_github testdata libjxl/testdata||g" deps.sh
@@ -30,7 +27,7 @@ sed -i "s|download_github third_party/libjpeg-turbo libjpeg-turbo/libjpeg-turbo|
 
 sh deps.sh
 
-cmake -B build -S $TMP/$PRGNAM-$VERSION \
+cmake -B build -S . \
 	-DBUILD_TESTING:BOOL='false' \
 	-DENABLE_FUZZERS_DEFAULT:BOOL='false' \
 	-DCMAKE_C_FLAGS:STRING="$CLANGFLAGS" \
