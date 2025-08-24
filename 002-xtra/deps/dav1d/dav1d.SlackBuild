@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=dav1d
 
 CWD=$(dirname "$0")
@@ -18,10 +16,6 @@ wget https://code.videolan.org/videolan/${PRGNAM}/-/archive/master/${PRGNAM}-mas
 tar xvf ${PRGNAM}-master.tar.gz
 cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
-
-#if [ $SLACKWAREVERSION != "current" ]; then
-	#patch -p0 < $CWD/meson.patch
-#fi
 
 mkdir build && cd build
 CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS" LDFLAGS="-fuse-ld=lld" \
