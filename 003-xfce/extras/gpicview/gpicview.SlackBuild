@@ -23,7 +23,7 @@ done
 ./autogen.sh && CFLAGS="$GCCFLAGS -ffast-math" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
+	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--enable-gtk3 \
 	--disable-static
