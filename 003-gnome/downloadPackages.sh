@@ -12,7 +12,6 @@ DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 wait
-DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gexiv2" &
 DownloadPackage "gjs" &
 DownloadPackage "hunspell" &

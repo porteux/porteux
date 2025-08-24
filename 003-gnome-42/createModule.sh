@@ -31,6 +31,12 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
+currentPackage=meson
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
+rm -fr $MODULEPATH/${currentPackage}
+rm $MODULEPATH/packages/${currentPackage}-*.txz
+
 currentPackage=audacious
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
@@ -40,11 +46,9 @@ currentPackage=audacious-plugins
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=meson
+currentPackage=ffmpegthumbnailer
 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
 rm -fr $MODULEPATH/${currentPackage}
-rm $MODULEPATH/packages/${currentPackage}-*.txz
 
 # required from now on
 installpkg $MODULEPATH/packages/*.txz || exit 1

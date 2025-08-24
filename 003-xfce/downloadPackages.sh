@@ -8,7 +8,6 @@ DownloadPackage "aspell" & # required by mousepad
 DownloadPackage "blueman" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
-DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gspell" &
 DownloadPackage "gtksourceview4" &
 DownloadPackage "keybinder3" &

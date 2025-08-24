@@ -108,6 +108,10 @@ currentPackage=audacious-plugins
 QT=5 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=ffmpegthumbnailer
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 

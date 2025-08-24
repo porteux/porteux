@@ -8,7 +8,6 @@ DownloadPackage "aspell" &
 DownloadPackage "cracklib" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
-DownloadPackage "ffmpegthumbnailer" &
 wait
 DownloadPackage "gexiv2" &
 DownloadPackage "glib-networking" &

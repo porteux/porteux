@@ -29,7 +29,9 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
-LATESTVERSION=$(ls $MODULEPATH/packages/plasma-desktop-* | cut -d "-" -f 3)
+LATESTVERSION=$(ls -a $MODULEPATH/packages/plasma-desktop-* | rev | cut -d - -f 3 | rev)
+
+echo "Building KDE Plasma ${LATESTVERSION}..."
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### packages that require specific stripping

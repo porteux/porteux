@@ -1,0 +1,12 @@
+                 |-----handy-ruler------------------------------------------------------|
+ffmpegthumbnailer: ffmpegthumbnailer (Lightweight Video Thumbnailer)
+ffmpegthumbnailer:
+ffmpegthumbnailer: FFmpegthumbnailer is a lightweight video thumbnailer that can be
+ffmpegthumbnailer: used by file managers to create thumbnails for your video files.
+ffmpegthumbnailer: The thumbnailer uses ffmpeg to decode frames from the video files,
+ffmpegthumbnailer: so supported videoformats depend on the configuration flags of
+ffmpegthumbnailer: ffmpeg.
+ffmpegthumbnailer:
+ffmpegthumbnailer: Homepage: https://github.com/dirkvdb/ffmpegthumbnailer
+ffmpegthumbnailer:
+ffmpegthumbnailer:
