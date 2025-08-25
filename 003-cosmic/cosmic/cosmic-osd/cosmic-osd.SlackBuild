@@ -23,5 +23,8 @@ sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
 make -j${NUMBERTHREADS}
 make install DESTDIR=$MODULEPATH/$PRGNAM/package
 
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
 cd $MODULEPATH/$PRGNAM/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz

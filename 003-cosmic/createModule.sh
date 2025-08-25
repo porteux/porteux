@@ -105,6 +105,8 @@ for package in \
 ; do
 sh $SCRIPTPATH/cosmic/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
+rm -fr $HOME/.cargo/git/checkouts/* # this increases build time but frees up RAM
+rm -fr $HOME/.cargo/registry/src/index.crates*/* # this increases build time but frees up RAM
 done
 
 # only required for building not for run-time

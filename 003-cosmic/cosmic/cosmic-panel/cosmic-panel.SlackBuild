@@ -21,5 +21,8 @@ just build-release --target x86_64-unknown-linux-gnu
 rsync -r ./target/x86_64-unknown-linux-gnu/release ./target/ --remove-source-files
 just rootdir=$MODULEPATH/$PRGNAM/package install
 
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
 cd $MODULEPATH/$PRGNAM/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz

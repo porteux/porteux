@@ -20,5 +20,8 @@ just rootdir=$MODULEPATH/$PRGNAM/package install
 
 gtk-update-icon-cache $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic
 
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
 cd $MODULEPATH/$PRGNAM/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz
