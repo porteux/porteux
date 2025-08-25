@@ -24,5 +24,8 @@ just build
 rsync -r ./target/release ./target/
 just rootdir=$MODULEPATH/$PRGNAM/package install
 
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
 cd $MODULEPATH/$PRGNAM/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz
