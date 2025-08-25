@@ -50,17 +50,20 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa and mate-search-tool
 currentPackage=mate-common
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 rm $MODULEPATH/packages/${currentPackage}*.txz
+
+currentPackage=xcape
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 
 # xfce extras
 for package in \
-	xcape \
 	atril \
 	engrampa \
 	pavucontrol \

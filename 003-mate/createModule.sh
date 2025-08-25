@@ -55,15 +55,8 @@ ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../common/${currentPackage}/${curr
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=xcape
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
-
-# temporary just to build engrampa and mate-search-tool
-currentPackage=mate-common
-sh $SCRIPTPATH/mate/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-rm $MODULEPATH/packages/${currentPackage}*.txz
 
 # required from now on
 installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
@@ -86,6 +79,13 @@ installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
+
+# required just for building mate projects
+currentPackage=mate-common
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+rm $MODULEPATH/packages/${currentPackage}*.txz
 
 LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "1.29" | head -1)
 
