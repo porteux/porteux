@@ -25,7 +25,6 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--buildtype=release \
 	-Ddeprecation_flags=false \
 	-Dinstall_tools=false \

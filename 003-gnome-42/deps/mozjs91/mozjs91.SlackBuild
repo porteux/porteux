@@ -61,7 +61,6 @@ CXXFLAGS+="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-stric
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--without-system-icu \
 	--with-system-zlib \
 	--disable-tests \

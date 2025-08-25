@@ -33,7 +33,6 @@ CFLAGS="$GCCFLAGS" \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/$PRGNAM-$DOWNLOADVERSION \
 	--disable-static \
 	--disable-debug \

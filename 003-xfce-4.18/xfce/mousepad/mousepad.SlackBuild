@@ -29,7 +29,6 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--disable-gtksourceview4 \
 	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-debug \

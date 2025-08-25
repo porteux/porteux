@@ -27,7 +27,6 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--buildtype=release \
 	-Dgtk_doc=false \
 	-Dintrospection=true

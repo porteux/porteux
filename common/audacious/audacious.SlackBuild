@@ -40,7 +40,6 @@ meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--mandir=/usr/man \
 	${toolkitFlags}
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install

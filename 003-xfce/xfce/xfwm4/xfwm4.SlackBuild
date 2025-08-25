@@ -24,7 +24,6 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects -ffast-math" \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/$PRGNAM-$DOWNLOADVERSION \
 	--disable-static \
 	--disable-debug \

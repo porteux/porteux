@@ -17,7 +17,8 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	BUILDPARAMS="${CLANGFLAGS/ -flto=auto}"
 else
 	fileName=$(curl -s $SOURCEREPOSITORY/l/ffmpeg/ | grep -oP '<a href="\K[^"]+' | grep ffmpeg- | head -n1)
-	BUILDPARAMS="$CLANGFLAGS -ffat-lto-objects -Wno-error=int-conversion -Wno-error=incompatible-pointer-types"
+	#fileName=ffmpeg-8.0.tar.xz
+	#BUILDPARAMS="$CLANGFLAGS -ffat-lto-objects -Wno-error=int-conversion -Wno-error=incompatible-pointer-types"
 fi
 
 wget https://ffmpeg.org/releases/${fileName}
@@ -87,7 +88,6 @@ CFLAGS="$BUILDPARAMS" \
 	--enable-libplacebo \
 	--enable-lcms2 \
 	--enable-librtmp \
-	--enable-libtwolame \
 	--enable-libxvid \
 	--enable-libsvtav1 \
 	--enable-libx264 \

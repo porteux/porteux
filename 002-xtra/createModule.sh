@@ -60,7 +60,6 @@ for package in \
 	xvidcore \
 	x264 \
 	x265 \
-	twolame \
 	libass \
 	faad2 \
 	faac \

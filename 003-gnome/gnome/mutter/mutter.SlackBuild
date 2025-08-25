@@ -28,7 +28,6 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
-	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Dclutter_tests=false \
 	-Dcogl_tests=false \

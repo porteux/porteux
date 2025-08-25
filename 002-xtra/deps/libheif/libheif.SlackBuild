@@ -25,11 +25,17 @@ cmake -B build -S . \
 	-DCMAKE_C_FLAGS="$GCCGFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS -ffat-lto-objects" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR="lib${SYSTEMBITS}"
+	-DCMAKE_INSTALL_LIBDIR="lib${SYSTEMBITS}" \
+	-DWITH_EXAMPLES=OFF \
+	-DWITH_EXAMPLE_HEIF_VIEW=OFF \
+	-DBUILD_DOCUMENTATION=OFF \
+	-DBUILD_TESTING=OFF
 
 make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm -fr $PKG/usr/bin
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

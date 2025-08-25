@@ -61,6 +61,7 @@ cmake -B build \
 	-DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
 	-Wno-dev \
 	-DENABLE_HDR10_PLUS=ON \
+	-DENABLE_CLI=OFF \
 	-DENABLE_SHARED=ON \
 	-DEXTRA_LIB="x265_main10.a;x265_main12.a" \
 	-DEXTRA_LINK_FLAGS="-L." \

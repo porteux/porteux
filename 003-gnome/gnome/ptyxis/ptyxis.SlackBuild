@@ -27,7 +27,6 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
-	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Dgeneric="terminal"
 

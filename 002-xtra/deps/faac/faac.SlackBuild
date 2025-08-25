@@ -28,13 +28,15 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib$SYSTEMBITS \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--enable-shared=yes \
-	--enable-static=no
+	--enable-static=no \
+	--enable-year2038
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm -fr $PKG/usr/bin
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -28,7 +28,6 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
-	--mandir=/usr/man \
 	--localstatedir=/var
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install

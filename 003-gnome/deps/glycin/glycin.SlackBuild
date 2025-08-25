@@ -28,11 +28,10 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
-	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Dtest_skip_install=true \
 	-Dtests=false \
-	-Dtokio_tests=false \
+	-Dtest_tokio=false \
 	-Dglycin-thumbnailer=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install

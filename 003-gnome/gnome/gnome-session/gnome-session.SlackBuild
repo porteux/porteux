@@ -30,7 +30,6 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
-	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Dlogind_provider=elogind \
 	-Dx11=true \
