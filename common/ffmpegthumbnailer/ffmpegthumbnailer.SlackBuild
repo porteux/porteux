@@ -37,6 +37,8 @@ make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+rm -fr $PKG/usr/share/man
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
