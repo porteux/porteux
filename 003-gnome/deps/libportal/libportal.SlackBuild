@@ -28,7 +28,6 @@ meson setup \
 	--infodir=/usr/info \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Dbackend-gtk3=auto \

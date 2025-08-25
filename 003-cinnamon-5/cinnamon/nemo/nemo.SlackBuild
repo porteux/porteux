@@ -28,7 +28,6 @@ meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/lib${SYSTEMBITS} \
-	--mandir=/usr/man \
 	-Dselinux=false \
 	-Dtracker=false \
 	-Dxmp=false

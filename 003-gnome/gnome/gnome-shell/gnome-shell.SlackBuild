@@ -30,13 +30,14 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
-	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Ddefault_library=shared \
 	-Dgtk_doc=false \
 	-Dman=false \
 	-Dtests=false \
-	-Dsystemd=false
+	-Dsystemd=false \
+	-Dextensions_tool=false \
+	-Dportal_helper=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

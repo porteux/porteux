@@ -31,7 +31,6 @@ meson setup \
 	--infodir=/usr/info \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Depub=false

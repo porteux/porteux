@@ -25,7 +25,6 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	-Dlibnma_gtk4=true \
 	-Dgtk_doc=false
 

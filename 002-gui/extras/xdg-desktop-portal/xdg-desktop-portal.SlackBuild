@@ -31,7 +31,6 @@ if [ $SLACKWAREVERSION != "current" ]; then
 		--sbindir=/usr/sbin \
 		--includedir=/usr/include \
 		--datadir=/usr/share \
-		--mandir=/usr/man \
 		--sysconfdir=/etc \
 		--localstatedir=/var \
 		--buildtype=release \
@@ -57,7 +56,6 @@ else
 		--sbindir=/usr/sbin \
 		--includedir=/usr/include \
 		--datadir=/usr/share \
-		--mandir=/usr/man \
 		--sysconfdir=/etc \
 		--localstatedir=/var \
 		--buildtype=release \

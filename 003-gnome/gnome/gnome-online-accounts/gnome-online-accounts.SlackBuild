@@ -24,7 +24,6 @@ meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Dman=false \

@@ -25,7 +25,6 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--enable-debug=no \
 	--disable-static \
 	--enable-dbus-start-daemon \

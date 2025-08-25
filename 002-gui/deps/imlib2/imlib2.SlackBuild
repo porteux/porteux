@@ -24,7 +24,6 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--enable-static=no
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG

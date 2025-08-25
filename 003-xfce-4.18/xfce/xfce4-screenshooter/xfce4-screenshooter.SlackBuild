@@ -25,7 +25,6 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--docdir=/usr/doc/$PRGNAM-$VERSION \
-	--mandir=/usr/man \
 	--enable-shared=yes \
 	--enable-static=no \
 	--enable-debug=no \

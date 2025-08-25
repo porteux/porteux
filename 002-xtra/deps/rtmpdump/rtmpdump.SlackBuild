@@ -26,7 +26,7 @@ sed -i \
   Makefile librtmp/Makefile
 
 CFLAGS="$GCCFLAGS" \
-make \
+make -j${NUMBERTHREADS} \
 	prefix=/usr \
 	libdir=/usr/lib${SYSTEMBITS} \
 	DESTDIR=$PKG \
@@ -35,9 +35,11 @@ make \
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+rm -fr $PKG/usr/bin
+rm -fr $PKG/usr/sbin
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
-exit 0

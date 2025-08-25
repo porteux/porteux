@@ -23,7 +23,6 @@ meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--mandir=/usr/man \
 	-Dbuildtype=release \
 	-Denable_tests=false \
 	-Denable_tools=false

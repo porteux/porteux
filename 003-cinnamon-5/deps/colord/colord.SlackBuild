@@ -28,7 +28,6 @@ meson setup \
 	--localstatedir=/var \
 	--libdir=lib${SYSTEMBITS} \
 	--libexecdir=/usr/lib${SYSTEMBITS}/colord \
-	--mandir=/usr/man \
 	-Ddaemon_user=colord \
 	-Dlibcolordcompat=true \
 	-Dvapi=true \	

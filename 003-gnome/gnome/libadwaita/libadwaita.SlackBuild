@@ -29,7 +29,6 @@ mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
-	--mandir=/usr/man \
 	--datadir=/usr/share \
 	--includedir=/usr/include \
 	--libdir=/usr/lib${SYSTEMBITS} \

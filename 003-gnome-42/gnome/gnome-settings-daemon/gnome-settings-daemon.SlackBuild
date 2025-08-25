@@ -28,7 +28,6 @@ meson setup \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
 	-Dcolord=false \
-	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Ddefault_library=shared \
 	-Dsystemd=false

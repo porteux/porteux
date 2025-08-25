@@ -17,13 +17,19 @@ cd $TMP
 if [ $SLACKWAREVERSION == "current" ]; then
 	info=$(DownloadLatestFromGithub "mpv-player" ${PRGNAM})
 	VERSION=${info#* }
+	tar xfv $PRGNAM-$VERSION.tar.?z*
+	cd $PRGNAM-$VERSION
+
+	#wget https://github.com/${PRGNAM}-player/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+	#tar xvf ${PRGNAM}.tar.?z
+	#cd ${PRGNAM}-master
+	#VERSION=$(date -r . +%Y%m%d)
 else
 	VERSION="0.38.0"
 	wget --content-disposition https://github.com/mpv-player/${PRGNAM}/archive/refs/tags/v${VERSION}.tar.gz
+	tar xfv $PRGNAM-$VERSION.tar.?z*
+	cd $PRGNAM-$VERSION
 fi
-
-tar xfv $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
 
 mkdir build && cd build
 CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS" LDFLAGS="-fuse-ld=lld" \
@@ -31,7 +37,6 @@ meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--mandir=/usr/man \
 	-Dbuildtype=release \
 	-Dmanpage-build=disabled \
 	-Dlibmpv=false \
@@ -48,10 +53,6 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-
-for f in $PKG/etc/mpv/*.conf ; do
-	mv $f{,.new}
-done
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -23,12 +23,16 @@ cmake -B build -S . \
 	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
 	-DCMAKE_BUILD_TYPE:STRING=Release \
 	-DCMAKE_INSTALL_PREFIX:PATH=/usr \
-	-DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib${SYSTEMBITS}
+	-DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib${SYSTEMBITS} \
+	-DBUILD_TESTING=OFF \
+	-DBUILD_APPS=OFF
 
 make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm -fr $PKG/usr/bin
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

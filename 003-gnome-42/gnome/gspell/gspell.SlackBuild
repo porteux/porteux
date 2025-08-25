@@ -25,7 +25,6 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--enable-compile-warnings=no \
 	--enable-installed-tests=no \
 	--enable-introspection=yes \

@@ -44,7 +44,6 @@ CFLAGS="$GCCFLAGS" \
 	--includedir=/usr/include \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--datarootdir=/usr/share \
 	--docdir=/usr/doc/$PRGNAM-$downloadedVersion \
 	--enable-static=no \
@@ -104,7 +103,6 @@ ln -sf /sbin/pidof $PKG/usr/bin/pidof
 ln -sf /bin/ps $PKG/usr/bin/ps
 # WTF changing the name of this
 ( cd $PKG/bin ; ln -sf pidwait pwait )
-( cd $PKG/usr/man/man1 ; ln -sf pidwait.1 pwait.1 )
 
 # Create /etc/sysctl.d:
 mkdir -p $PKG/etc/sysctl.d
@@ -125,7 +123,6 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/psmisc-$PSMISCVER \
 	--disable-silent-rules \
 	--disable-rpath \
@@ -144,7 +141,6 @@ CXXFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/procinfo-ng-$PROCINFONGVER \
 	--enable-maintainer-mode \
 	--build=$ARCH-porteux-linux

@@ -23,8 +23,7 @@ CFLAGS="$GCCFLAGS -std=c99" \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--mandir=/usr/man
+	--localstatedir=/var
 
 make -j${NUMBERTHREADS}
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
