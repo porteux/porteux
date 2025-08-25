@@ -124,6 +124,10 @@ currentPackage=lightdm-gtk-greeter
 ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=xcape
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
@@ -132,7 +136,6 @@ installpkg $MODULEPATH/packages/networkmanager-qt*.txz || exit 1
 
 # lxqt extras
 for package in \
-	xcape \
 	adwaita-qt \
 	xpdf \
 	featherpad \
