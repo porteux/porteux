@@ -22,7 +22,7 @@ cd ${PRGNAM}-${VERSION}
 
 CFLAGS="$GCCFLAGS" \
 make -j${NUMBERTHREADS} LIBDIR=/usr/lib${SYSTEMBITS}
-make install -j${NUMBERTHREADS} LIBDIR=/usr/lib${SYSTEMBITS} DESTDIR=$PKG MANDIR=/man/man1
+make install -j${NUMBERTHREADS} LIBDIR=/usr/lib${SYSTEMBITS} DESTDIR=$PKG
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 
