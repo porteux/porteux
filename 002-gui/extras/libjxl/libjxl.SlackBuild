@@ -28,6 +28,7 @@ sed -i "s|download_github third_party/libjpeg-turbo libjpeg-turbo/libjpeg-turbo|
 sh deps.sh
 
 cmake -B build -S . \
+	-G Ninja \
 	-DBUILD_TESTING:BOOL='false' \
 	-DENABLE_FUZZERS_DEFAULT:BOOL='false' \
 	-DCMAKE_C_FLAGS:STRING="$CLANGFLAGS" \
@@ -50,7 +51,6 @@ cmake -B build -S . \
 	-DJPEGXL_ENABLE_PLUGINS:BOOL='true' \
 	-DJPEGXL_ENABLE_VIEWERS:BOOL='false' \
 	-DJPEGXL_ENABLE_TOOLS:BOOL='false' \
-	-DJPEGXL_ENABLE_SIZELESS_VECTORS:BOOL='false' \
 	-DJPEGXL_ENABLE_TCMALLOC:BOOL='false' \
 	-DJPEGXL_WARNINGS_AS_ERRORS:BOOL='false' \
 	-DJPEGXL_FORCE_SYSTEM_BROTLI:BOOL='false' \
@@ -60,7 +60,7 @@ cmake -B build -S . \
 	-DJPEGXL_STATIC:BOOL='false' \
 	-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 
-make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;

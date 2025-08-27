@@ -30,9 +30,9 @@ meson setup \
 	--infodir=/usr/info \
 	--localstatedir=/var \
 	-Dtest_skip_install=true \
+	-Dglycin-thumbnailer=true \
 	-Dtests=false \
-	-Dtest_tokio=false \
-	-Dglycin-thumbnailer=false
+	-Dtest_tokio=false	
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

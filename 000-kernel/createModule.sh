@@ -162,7 +162,7 @@ mv lib ${MODULEPATH}/${MODULENAME}
 find ${MODULEPATH}/${MODULENAME} | xargs strip --strip-unneeded 2> /dev/null
 
 # create kernel module xzm module
-MakeModule ${MODULEPATH}/${MODULENAME} "${MODULENAME}-${KERNELVERSION}.xzm" > /dev/null 2>&1
+MakeModule ${MODULEPATH}/${MODULENAME} "${MODULENAME}-${KERNELVERSION}-$(date +%Y%m%d).xzm" > /dev/null 2>&1
 
 echo "Creating crippled xzm module..."
 CRIPPLEDSOURCEPATH=${MODULEPATH}/${CRIPPLEDMODULENAME}/usr/src
@@ -206,7 +206,7 @@ mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/config ${CRIPPLEDSOURCEPAT
 find ${CRIPPLEDSOURCEPATH} | xargs strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 
 # create crippled xzm module
-MakeModule ${MODULEPATH}/${CRIPPLEDMODULENAME} ${CRIPPLEDMODULENAME}.xzm > /dev/null 2>&1
+MakeModule ${MODULEPATH}/${CRIPPLEDMODULENAME} ${CRIPPLEDMODULENAME}-$(date +%Y%m%d).xzm > /dev/null 2>&1
 
 echo "Cleaning up..."
 rm -fr ${MODULEPATH}/${MODULENAME} > /dev/null 2>&1

@@ -20,11 +20,12 @@ cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 
 cmake -B build -S . \
+	-G Ninja \
 	-DCMAKE_C_FLAGS="$GCCFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS" \
 	-DBUILD_FLASHFETCH=no
 
-make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+DESTDIR="$PKG" ninja -C build install -j${NUMBERTHREADS}
 
 echo "fastfetch --logo linux --color-title blue --color-keys blue -s Title:Separator:OS:Host:Kernel:Uptime:Packages:Shell:Display:DE:WM:WMTheme:Theme:Icons:Font:Cursor:Terminal:TerminalFont:CPU:GPU:Memory:Swap:LocalIp:Battery:PowerAdapter:Locale:Break:Colors \"\$@\"" > $PKG/usr/bin/neofetch
 chmod 755 $PKG/usr/bin/neofetch
