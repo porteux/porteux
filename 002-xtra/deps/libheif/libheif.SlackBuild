@@ -21,17 +21,17 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 cmake -B build -S . \
-	--preset=release \
+	-G Ninja \
 	-DCMAKE_C_FLAGS="$GCCGFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS -ffat-lto-objects" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR="lib${SYSTEMBITS}" \
 	-DWITH_EXAMPLES=OFF \
 	-DWITH_EXAMPLE_HEIF_VIEW=OFF \
-	-DBUILD_DOCUMENTATION=OFF \
-	-DBUILD_TESTING=OFF
+	-DBUILD_TESTING=OFF \
+	--preset=release
 
-make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

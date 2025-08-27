@@ -24,11 +24,14 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--enable-static=no
+	--enable-static=no \
+	--enable-progs=no
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm -fr $PKG/usr/share/imlib2
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

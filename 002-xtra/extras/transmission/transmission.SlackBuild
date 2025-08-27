@@ -30,6 +30,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 fi
 
 cmake -B build -S . \
+	-G Ninja \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_C_FLAGS="$CLANGFLAGS -ffat-lto-objects -fPIC" \
 	-DCMAKE_CXX_FLAGS="$CLANGFLAGS" \
@@ -44,7 +45,7 @@ cmake -B build -S . \
 	-DINSTALL_DOC=OF
 
 cmake --build build -j${NUMBERTHREADS}
-DESTDIR="$PKG" cmake --install build --config Release
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

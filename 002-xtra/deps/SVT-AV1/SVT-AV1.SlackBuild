@@ -19,6 +19,7 @@ tar xvf ${PRGNAM}-${VERSION}.tar.?z
 cd ${PRGNAM}-${VERSION}
 
 cmake -B build -S . \
+	-G Ninja \
 	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
 	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
 	-DCMAKE_BUILD_TYPE:STRING=Release \
@@ -27,7 +28,7 @@ cmake -B build -S . \
 	-DBUILD_TESTING=OFF \
 	-DBUILD_APPS=OFF
 
-make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;

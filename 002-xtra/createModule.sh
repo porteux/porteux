@@ -98,11 +98,6 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### fix applications shortcuts
-
-sed -i "s|TryExec=.*||g" $MODULEPATH/packages/usr/share/applications/mpv.desktop
-sed -i "s|Exec=.*|Exec=mpv --player-operation-mode=pseudo-gui --hwdec=auto --no-osd-bar --audio-file-auto=fuzzy -- %U|g" $MODULEPATH/packages/usr/share/applications/mpv.desktop
-
 ### copy build files to 05-devel
 
 CopyToDevel
