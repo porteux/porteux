@@ -36,8 +36,6 @@ meson setup \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
 	--localstatedir=/var \
-	-Ddefault_library=shared \
-	-Dwnck=true \
 	-Dsystemd=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
