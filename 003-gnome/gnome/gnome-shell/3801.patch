@@ -1,40 +1,9 @@
-diff --git a/js/ui/environment.js b/js/ui/environment.js
-index 77f09bf10c..bbbdf1d31d 100644
---- a/js/ui/environment.js
-+++ b/js/ui/environment.js
-@@ -8,7 +8,6 @@
- import Clutter from 'gi://Clutter';
- import Gdk from 'gi://Gdk';
- import Gio from 'gi://Gio';
--import GioUnix from 'gi://GioUnix';
- import GLib from 'gi://GLib';
- import GObject from 'gi://GObject';
- import Meta from 'gi://Meta';
-@@ -341,17 +340,6 @@
-     }
- };
- 
--// Work around https://gitlab.gnome.org/GNOME/glib/-/issues/3744
--if (!GioUnix.DesktopAppInfo.prototype.has_key) {
--    GioUnix.DesktopAppInfo.prototype.has_key = function (key) {
--        return GioUnix.DesktopAppInfo.has_key(this, key);
--    };
--
--    GioUnix.DesktopAppInfo.prototype.get_categories = function () {
--        return GioUnix.DesktopAppInfo.get_categories(this);
--    };
--}
--
- const slowdownEnv = GLib.getenv('GNOME_SHELL_SLOWDOWN_FACTOR');
- if (slowdownEnv) {
-     let factor = parseFloat(slowdownEnv);
-
 diff --git a/meson.build b/meson.build
 index 66e1592f33..ce2215032d 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -20,12 +20,13 @@
- 
+ ecal_req = '>= 3.33.1'
  eds_req = '>= 3.33.1'
  gcr_req = '>= 3.90.0'
 -gio_req = '>= 2.85.1'
@@ -43,7 +12,7 @@ index 66e1592f33..ce2215032d 100644
 +gi_req = '>= 1.49.1'
 +gjs_req = '>= 1.81.2'
  gtk_req = '>= 4.0'
- mutter_req = '>= 49.beta'
+ mutter_req = '>= 49.rc'
  polkit_req = '>= 0.100'
 -schemas_req = '>= 49.alpha'
 +schemas_req = '>= 48.0'
@@ -51,7 +20,7 @@ index 66e1592f33..ce2215032d 100644
  gnome_desktop_req = '>= 40'
  pipewire_req = '>= 0.3.49'
 @@ -69,7 +70,7 @@
- atk_bridge_dep = dependency('atk-bridge-2.0')
+ eds_dep = dependency('libedataserver-1.2', version: eds_req)
  gcr_dep = dependency('gcr-4', version: gcr_req)
  gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0')
 -gi_dep = dependency('girepository-2.0', version: gio_req)
@@ -59,7 +28,6 @@ index 66e1592f33..ce2215032d 100644
  gio_dep = dependency('gio-2.0', version: gio_req)
  gio_unix_dep = dependency('gio-unix-2.0', version: gio_req)
  gjs_dep = dependency('gjs-1.0', version: gjs_req)
-
 diff --git a/src/main.c b/src/main.c
 index af4fa8597e..99eca3e3c9 100644
 --- a/src/main.c
