@@ -42,6 +42,7 @@ meson setup \
 	-Dstartup_notification=true \
 	-Dudev=true \
 	-Dwayland_eglstream=true \
+	-Dx11=true \
 	-Dbash_completion=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
