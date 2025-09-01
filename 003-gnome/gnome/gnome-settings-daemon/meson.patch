@@ -1,0 +1,11 @@
+--- meson.build	2025-09-01 14:34:35.000000000 +0200
++++ meson.build.patched	2025-09-01 20:11:54.336868880 +0200
+@@ -37,6 +37,8 @@
+ 
+ gsd_schemadir = join_paths(gsd_datadir, 'glib-2.0', 'schemas')
+ 
++gsd_xdg_autostart = join_paths(gsd_sysconfdir, 'xdg', 'autostart')
++
+ gsd_3_0_api_name = '@0@-@1@'.format(meson.project_name(), '3.0')
+ gsd_gtk_modules_directory = join_paths(gsd_libdir, gsd_3_0_api_name, 'gtk-modules')
+ 

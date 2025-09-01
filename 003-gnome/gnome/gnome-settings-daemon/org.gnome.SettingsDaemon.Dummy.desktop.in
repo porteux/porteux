@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=GNOME Settings Daemon's @pluginname@ dummy autostart file
+Exec=false
+OnlyShowIn=GNOME;
+NoDisplay=true
+Hidden=true

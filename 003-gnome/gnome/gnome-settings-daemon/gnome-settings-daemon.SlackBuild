@@ -20,6 +20,13 @@ cd $PRGNAM-$VERSION
 
 sed -i "/\['housekeeping', 'Housekeeping', 'GNOME maintenance of expirable data']/d" plugins/meson.build
 
+cp $CWD/org.gnome.SettingsDaemon.Dummy.desktop.in plugins/
+cp $CWD/org.gnome.SettingsDaemon.Real.desktop.in plugins/
+
+for i in $CWD/*.patch; do
+	patch -p0 < $i
+done
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
@@ -33,7 +40,8 @@ meson setup \
 	-Dcolord=false \
 	-Ddefault_library=shared \
 	-Dsystemd=false \
-	-Delogind=true
+	-Delogind=true \
+	-Dx11=true
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
