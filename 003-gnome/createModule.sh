@@ -167,6 +167,10 @@ rm *.t?z
 
 InstallAdditionalPackages
 
+### apply some fixes
+
+patch -p0 < $SCRIPTPATH/deps/gtkmm4-iconpaintable.patch
+
 ### remove some useless services
 
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/localsearch-3.desktop
