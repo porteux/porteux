@@ -1,25 +1,33 @@
 --- panels/system/about/cc-system-details-window.c	2024-09-08 23:55:53.453146903 +0200
 +++ panels/system/about/cc-system-details-window.c.patched	2024-09-08 23:55:11.950144940 +0200
-@@ -657,6 +657,24 @@
+@@ -657,6 +657,32 @@
      g_string_append (dst_string, " ");
  }
  
 +static char* get_gnome_shell_version() {
-+   FILE *fp = popen("gnome-shell --version | cut -d \" \" -f 3", "r");
-+   if (fp == NULL)
++   FILE *file_pointer = popen("gnome-shell --version | cut -d \" \" -f 3", "r");
++   if (file_pointer == NULL)
 +       return MAJOR_VERSION;
 +
 +   char *version = NULL;
 +   size_t len = 0;
 +   ssize_t read;
 +
-+   if ((read = getline(&version, &len, fp)) != -1) {
++   char *result = NULL;
++
++   if ((read = getline(&version, &len, file_pointer)) != -1) {
 +       if (version[read - 1] == '\n')
 +           version[read - 1] = '\0';
++
++       result = strdup(version);
++   } else {
++       result = MAJOR_VERSION;
 +   }
 +
-+   pclose(fp);
-+   return version;
++   free(version);
++   pclose(file_pointer);
++
++   return result;
 +}
 +
  static void
