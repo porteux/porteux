@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+jbig2dec: jbig2dec (a JBIG2 decoder)
+jbig2dec:
+jbig2dec: jbig2dec is a decoder implementation of the JBIG2 image compression
+jbig2dec: format.
+jbig2dec:
+jbig2dec: JBIG2 is designed for lossy or lossless encoding of 'bilevel' (1-bit
+jbig2dec: monochrome) images at moderately high resolution, and in particular
+jbig2dec: scanned paper documents. In this domain it is very efficient, offering
+jbig2dec: compression ratios on the order of 100:1.
+jbig2dec: 
+jbig2dec: https://github.com/ArtifexSoftware/jbig2dec
