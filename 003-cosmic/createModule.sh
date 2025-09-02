@@ -95,6 +95,7 @@ for package in \
 	cosmic-osd \
 	cosmic-panel \
 	cosmic-randr \
+	cosmic-reader \
 	cosmic-screenshot \
 	cosmic-session \
 	cosmic-settings \
