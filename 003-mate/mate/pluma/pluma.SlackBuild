@@ -31,7 +31,7 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--enable-tests=no \
 	--enable-gtk-doc-html=no
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

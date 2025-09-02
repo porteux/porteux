@@ -62,7 +62,7 @@ CXXFLAGS="$GCCFLAGS" \
 	--disable-indicator-services-command \
 	--disable-static
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 mkdir -p $PKG/usr/share/backgrounds
 cp $CWD/wave.svg $PKG/usr/share/backgrounds

@@ -35,7 +35,7 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--disable-static \
 	--disable-debug
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

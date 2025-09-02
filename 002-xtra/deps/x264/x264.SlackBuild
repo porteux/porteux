@@ -27,7 +27,7 @@ CC=clang CFLAGS="$CLANGFLAGS" \
 	--enable-lto \
 	--disable-cli
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;

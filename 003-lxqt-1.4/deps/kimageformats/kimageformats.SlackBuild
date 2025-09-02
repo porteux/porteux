@@ -27,7 +27,7 @@ cmake .. \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
 	-DCMAKE_INSTALL_PREFIX=/usr
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 find $PKG/usr/lib${SYSTEMBITS}/qt*/plugins/imageformats/ -mindepth 1 -maxdepth 1 ! \( -name "kimg_jxl*" -o -name "kimg_tga*" \) -exec rm '{}' \; 2>/dev/null
