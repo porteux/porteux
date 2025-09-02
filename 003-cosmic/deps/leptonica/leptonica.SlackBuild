@@ -30,7 +30,7 @@ cmake -B build -S . \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
 	-DBUILD_SHARED_LIBS=ON \
 
-DESTDIR="$PKG" ninja -C build install -j${NUMBERTHREADS}
+DESTDIR="$PKG" ninja -C build install-strip -j${NUMBERTHREADS}
 
 sed -i "s|/lib|/lib${SYSTEMBITS}|g" $PKG/usr/lib${SYSTEMBITS}/pkgconfig/lept_Release.pc
 

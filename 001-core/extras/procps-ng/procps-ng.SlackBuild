@@ -59,7 +59,7 @@ CFLAGS="$GCCFLAGS" \
 	--disable-modern-top \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 # Move the shared library to $PKG/lib${SYSTEMBITS}:
 mkdir -p $PKG/lib${SYSTEMBITS}
@@ -128,7 +128,7 @@ CFLAGS="$GCCFLAGS" \
 	--disable-rpath \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 # Move "killall" to the traditional location:
 mv $PKG/usr/bin/killall $PKG/bin
@@ -145,7 +145,7 @@ CXXFLAGS="$GCCFLAGS" \
 	--enable-maintainer-mode \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

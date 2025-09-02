@@ -34,7 +34,7 @@ make -j${NUMBERTHREADS} \
 	ZSTD_SUPPORT="1" \
 	COMP_DEFAULT="xz"
 
-make install-strip INSTALL_DIR=$PKG/usr/bin
+make install INSTALL_DIR=$PKG/usr/bin
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

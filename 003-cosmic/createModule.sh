@@ -73,7 +73,7 @@ for package in \
 	gumbo-parser \
 	jbig2dec \
 	leptonica \
-	tesseract
+	tesseract \
 	greetd \
 	launcher \
 	xdg-desktop-portal-gtk \
