@@ -70,6 +70,10 @@ export PATH=$MODULEPATH/just-master/target/x86_64-unknown-linux-gnu/release/:$PA
 
 # cosmic deps
 for package in \
+	gumbo-parser \
+	jbig2dec \
+	leptonica \
+	tesseract
 	greetd \
 	launcher \
 	xdg-desktop-portal-gtk \
@@ -78,6 +82,10 @@ sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+# only required for building
+rm $MODULEPATH/packages/leptonica*.txz
+rm $MODULEPATH/packages/tesseract*.txz
 
 # cosmic packages
 for package in \
@@ -118,7 +126,7 @@ rm -fr $MODULEPATH/just-master
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
 rm *.t?z
 
-### install additional packages, including porteux utils
+### install-strip additional packages, including porteux utils
 
 InstallAdditionalPackages
 

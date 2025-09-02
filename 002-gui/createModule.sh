@@ -30,7 +30,7 @@ DownloadFromSlackware
 ### packages outside slackware repository
 
 installpkg $MODULEPATH/packages/gdk-pixbuf2*.txz || exit 1
-installpkg $MODULEPATH/packages/llvm*.txz || exit 1
+[ ! -f /usr/bin/clang ] && installpkg $MODULEPATH/packages/llvm*.txz || exit 1
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	# required by xorg but not included in slackware repo in stable
