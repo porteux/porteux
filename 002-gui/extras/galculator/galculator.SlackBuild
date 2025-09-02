@@ -28,7 +28,7 @@ CFLAGS="$GCCFLAGS -fcommon -std=c99 -Wno-implicit-function-declaration" \
 	--localstatedir=/var \
 	--enable-static=no
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

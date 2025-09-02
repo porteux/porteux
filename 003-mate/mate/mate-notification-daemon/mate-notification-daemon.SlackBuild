@@ -31,7 +31,7 @@ CFLAGS="$GCCFLAGS" \
 	--libexecdir=/usr/lib${SYSTEMBITS}/mate-notification-daemon \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 mkdir -p $PKG/etc/xdg/autostart
 cp $CWD/mate-notification-daemon.desktop $PKG/etc/xdg/autostart

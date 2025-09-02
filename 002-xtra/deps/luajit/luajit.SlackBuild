@@ -23,7 +23,7 @@ CFLAGS="${GCCFLAGS/ -fno-unwind-tables -fno-asynchronous-unwind-tables/} -ffat-l
 CXXFLAGS="${GCCFLAGS/ -fno-unwind-tables -fno-asynchronous-unwind-tables/}" \
 
 make -j${NUMBERTHREADS} Q= PREFIX=/usr INSTALL_LIB=/usr/lib${SYSTEMBITS}
-make Q= PREFIX=/usr INSTALL_LIB=${PKG}/usr/lib${SYSTEMBITS} install DESTDIR=${PKG}
+make Q= PREFIX=/usr INSTALL_LIB=${PKG}/usr/lib${SYSTEMBITS} install-strip DESTDIR=${PKG}
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 

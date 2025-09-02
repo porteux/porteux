@@ -26,7 +26,7 @@ CFLAGS="$GCCFLAGS -std=c99" \
 	--localstatedir=/var
 
 make -j${NUMBERTHREADS}
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;

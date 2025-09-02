@@ -28,7 +28,7 @@ cmake .. \
 	-DCMAKE_VERBOSE_MAKEFILE=ON \
 	-DDOC_INSTALL_DIR=/usr/doc/$PRGNAM-$VERSION
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

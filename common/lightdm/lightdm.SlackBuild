@@ -44,7 +44,7 @@ CXXFLAGS="$GCCFLAGS" \
 	--disable-liblightdm-qt5 \
 	--enable-gtk-doc-html=false
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

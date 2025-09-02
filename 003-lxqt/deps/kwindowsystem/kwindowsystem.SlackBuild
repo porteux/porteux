@@ -28,7 +28,7 @@ cmake .. \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_VERBOSE_MAKEFILE=ON
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

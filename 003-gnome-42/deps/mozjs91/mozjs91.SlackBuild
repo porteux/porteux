@@ -74,7 +74,7 @@ CXXFLAGS+="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-stric
 	--build=$ARCH-slackware-linux
 
 make -j${NUMBERTHREADS}
-make install DESTDIR=$PKG
+make install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

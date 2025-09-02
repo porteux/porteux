@@ -28,7 +28,7 @@ cmake .. \
 	-DMAN_INSTALL_DIR=/usr/man \
 	-DLIB_SUFFIX=${SYSTEMBITS}
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

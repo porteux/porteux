@@ -33,7 +33,7 @@ cmake -B build -S . \
 	-DMULTITHREADED=ON \
 	-DXPDFWIDGET_PRINTING=ON
 
-make -C build -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -C build -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

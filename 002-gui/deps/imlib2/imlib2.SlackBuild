@@ -27,7 +27,7 @@ CFLAGS="$GCCFLAGS" \
 	--enable-static=no \
 	--enable-progs=no
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
