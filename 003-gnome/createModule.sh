@@ -115,9 +115,6 @@ done
 rm $MODULEPATH/packages/blueprint-compiler*
 rm $MODULEPATH/packages/gperf*
 
-# required to build gnome-system-monitor until gtkmm4 gets updated to 4.18.0+
-patch -p0 -d / < $SCRIPTPATH/deps/gtkmm4-iconpaintable.patch || exit 1
-
 # gnome packages
 for package in \
 	libadwaita \
