@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=gumbo-parser
 
 CWD=$(dirname "$0")
@@ -14,10 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-#info=$(DownloadLatestFromGithub "flatpak" ${PRGNAM})
-#VERSION=${info#* }
-
-VERSION="0.13.2"
+VERSION=$(curl -s https://codeberg.org/gumbo-parser/gumbo-parser/tags | grep tar.gz | cut -d '"' -f 4 | rev | cut -d '/' -f -1 | cut -d '.' -f 3- | rev | grep -Ev '^v' | sort -V -r | head -1)
 wget https://codeberg.org/gumbo-parser/gumbo-parser/archive/${VERSION}.tar.gz -O $PRGNAM-$VERSION.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
