@@ -59,7 +59,7 @@ rm $MODULEPATH/packages/libwnck3*
 rm $MODULEPATH/packages/llvm*
 rm $MODULEPATH/packages/openldap*
 rm $MODULEPATH/packages/python-pip*
-rm $MODULEPATH/packages/sass*
+rm $MODULEPATH/packages/sassc*
 rm $MODULEPATH/packages/vulkan-sdk*
 rm $MODULEPATH/packages/xtrans*
 

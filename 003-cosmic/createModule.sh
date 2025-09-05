@@ -41,16 +41,6 @@ currentPackage=ffmpegthumbnailer
 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=adw-gtk3
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mkdir -p package/usr/share/themes
-version=$(GetLatestVersionTagFromGithub "lassekongo83" ${currentPackage})
-wget https://github.com/lassekongo83/${currentPackage}/releases/download/${version}/${currentPackage}${version}.tar.xz || exit 1
-tar xvf ${currentPackage}${version}.tar.?z -C package/usr/share/themes || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version//[^0-9._]/}-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
 # required from now on
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/llvm* > /dev/null 2>&1
@@ -75,6 +65,8 @@ for package in \
 	tesseract \
 	greetd \
 	launcher \
+	dart-sass \
+	adw-gtk3 \
 	xdg-desktop-portal-gtk \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
@@ -83,6 +75,7 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-ma
 done
 
 # only required for building
+rm $MODULEPATH/packages/dart-sass*.txz
 rm $MODULEPATH/packages/leptonica*.txz
 rm $MODULEPATH/packages/tesseract*.txz
 

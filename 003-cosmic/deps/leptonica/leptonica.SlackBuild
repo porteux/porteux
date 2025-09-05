@@ -28,11 +28,12 @@ cmake -B build -S . \
 	-DCMAKE_C_FLAGS="$GCCFLAGS" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
-	-DBUILD_SHARED_LIBS=ON \
+	-DBUILD_SHARED_LIBS=ON
 
-DESTDIR="$PKG" ninja -C build install-strip -j${NUMBERTHREADS}
+DESTDIR="$PKG" ninja -C build install -j${NUMBERTHREADS}
 
-sed -i "s|/lib|/lib${SYSTEMBITS}|g" $PKG/usr/lib${SYSTEMBITS}/pkgconfig/lept_Release.pc
+mv $PKG/usr/lib${SYSTEMBITS}/pkgconfig/lept_Release.pc $PKG/usr/lib${SYSTEMBITS}/pkgconfig/lept.pc
+sed -i "s|/lib|/lib${SYSTEMBITS}|g" $PKG/usr/lib${SYSTEMBITS}/pkgconfig/lept.pc
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
