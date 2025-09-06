@@ -125,13 +125,6 @@ cp --parents -P usr/lib${SYSTEMBITS}/libltdl.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libslang.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.* ${currentPackage}-stripped/
 cd ${currentPackage}-stripped/usr/lib${SYSTEMBITS}
-cp -fs libcares.so* libcares.so
-cp -fs libcares.so libcares.so.2
-cp -fs libcups.so* libcups.so
-cp -fs libgmp.so* libgmp.so
-cp -fs libgmpxx.so* libgmpxx.so
-cp -fs libltdl.so* libltdl.so
-cp -fs libslang.so* libslang.so
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}

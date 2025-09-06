@@ -4,8 +4,6 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 GenerateRepositoryUrls
 
 DownloadPackage "libdbusmenu" &
-DownloadPackage "libnma" &
-DownloadPackage "network-manager-applet" &
 wait
 
 ### only download if not present

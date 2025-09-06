@@ -29,7 +29,7 @@ DownloadFromSlackware
 ### packages outside slackware repository
 
 installpkg $MODULEPATH/packages/gdk-pixbuf2*.txz || exit 1
-[ ! -f /usr/bin/clang ] && installpkg $MODULEPATH/packages/llvm*.txz || exit 1
+[ ! -f /usr/bin/clang ] && (installpkg $MODULEPATH/packages/llvm*.txz || exit 1)
 
 if [ $SLACKWAREVERSION != "current" ]; then
 	# required by xorg but not included in slackware repo in stable
@@ -140,13 +140,14 @@ mv ../packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
 mkdir ${currentPackage}-stripped
+cp --parents -P usr/bin/pactl ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libpulse-simple.so* ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-stripped
-cp --parents -P -r usr/lib$SYSTEMBITS/cmake/* ${currentPackage}-stripped
-cp --parents -P -r usr/lib$SYSTEMBITS/pkgconfig/* ${currentPackage}-stripped
-cp --parents -P -r usr/include/* ${currentPackage}-stripped
+cp --parents -Pr usr/lib$SYSTEMBITS/cmake/* ${currentPackage}-stripped
+cp --parents -Pr usr/lib$SYSTEMBITS/pkgconfig/* ${currentPackage}-stripped
+cp --parents -Pr usr/include/* ${currentPackage}-stripped
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
