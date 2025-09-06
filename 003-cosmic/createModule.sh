@@ -134,11 +134,6 @@ CopyToMultiLanguage
 
 cd $MODULEPATH/packages/
 
-{
-rm etc/xdg/autostart/nm-applet.desktop
-rm usr/share/applications/nm-applet.desktop
-} >/dev/null 2>&1
-
 GenericStrip
 AggressiveStripAll
 

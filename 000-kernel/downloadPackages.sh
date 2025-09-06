@@ -8,7 +8,7 @@ GenerateRepositoryUrls
 if [ ${CLANG:-no} = "yes" ]; then
 	if [ ! -f /usr/bin/clang ]; then
 		DownloadPackage "libxml2" &
-		[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
+		DownloadPackage "llvm" &
 		wait
 	fi
 fi
