@@ -149,7 +149,6 @@ DownloadPackage "libXvMC" &
 DownloadPackage "libXxf86dga" &
 DownloadPackage "libXxf86misc" &
 DownloadPackage "libXxf86vm" &
-DownloadPackage "mesa" &
 DownloadPackage "mkfontscale" &
 DownloadPackage "mobile-broadband-provider-info" &
 DownloadPackage "mpg123" &
@@ -165,7 +164,6 @@ DownloadPackage "pango" &
 DownloadPackage "pangomm" &
 DownloadPackage "pixman" &
 DownloadPackage "poppler" &
-DownloadPackage "pulseaudio" &
 wait
 DownloadPackage "pycairo" &
 DownloadPackage "pygobject3" &
@@ -246,7 +244,13 @@ fi
 
 ### packages that require specific striping
 
+if [ $SLACKWAREVERSION == "current" ]; then
+	DownloadPackage "ibus" & # required by gtk4 to allow accented characters
+fi
+
 DownloadPackage "llvm" &
+DownloadPackage "mesa" &
+DownloadPackage "pulseaudio" &
 DownloadPackage "vulkan-sdk" &
 wait
 

@@ -60,7 +60,6 @@ wait
 DownloadPackage "gdbm" &
 DownloadPackage "gettext" &
 DownloadPackage "glib2" &
-DownloadPackage "glibc" &
 DownloadPackage "glibc-zoneinfo" &
 DownloadPackage "gnupg" &
 DownloadPackage "gnutls" &
@@ -85,8 +84,8 @@ DownloadPackage "kbd" &
 DownloadPackage "keyutils" &
 DownloadPackage "kmod" &
 DownloadPackage "less" &
-wait
 DownloadPackage "libaio" &
+wait
 DownloadPackage "libarchive" &
 DownloadPackage "libassuan" &
 DownloadPackage "libcap" &
@@ -246,6 +245,7 @@ DownloadPackage "binutils" &
 DownloadPackage "fftw" & # required by pulse plugins
 DownloadPackage "gcc" & # required by aaa_libraries
 DownloadPackage "gcc-g++" & # required by aaa_libraries
+DownloadPackage "glibc" &
 DownloadPackage "ntp" &
 DownloadPackage "openldap" &
 wait
