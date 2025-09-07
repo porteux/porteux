@@ -19,7 +19,7 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

@@ -27,7 +27,7 @@ done
 cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_C_FLAGS="$GCCFLAGS" \
-	-DCMAKE_CXX_FLAGS="$GCCFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX="/usr" \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
 	-DENABLE_THUMBNAILER="yes" \

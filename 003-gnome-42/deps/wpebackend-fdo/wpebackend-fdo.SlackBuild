@@ -22,7 +22,7 @@ cd $PRGNAM-$VERSION
 
 mkdir build && cd build
 CXXFLAGS="$GCCFLAGS" \
-CXXFLAGS="$CFLAGS" \
+CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

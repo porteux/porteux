@@ -22,7 +22,7 @@ sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$CFLAGS" \
+CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

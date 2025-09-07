@@ -135,7 +135,7 @@ mv $PKG/usr/bin/killall $PKG/bin
 ln -s /bin/killall $PKG/usr/bin/killall
 
 cd ../procinfo-ng-$PROCINFONGVER
-CXXFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

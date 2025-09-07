@@ -30,7 +30,7 @@ export LIGHTDM_USER=gdm
 export LIGHTDM_GROUP=gdm
 
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-CXXFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

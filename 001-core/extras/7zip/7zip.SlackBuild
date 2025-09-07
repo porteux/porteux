@@ -38,7 +38,7 @@ meson rewrite kwargs set project / version ${VERSION}
 mkdir build && cd build
 CC=clang CXX=clang++ \
 CFLAGS="$CLANGFLAGS -pthread" \
-CXXFLAGS="$CFLAGS" \
+CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 meson setup \
 	--prefix=/usr \

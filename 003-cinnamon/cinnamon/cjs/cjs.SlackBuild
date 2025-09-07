@@ -26,7 +26,7 @@ sed -i "s|extra_args: '--warn-error'|fatal_warnings: get_option('werror')|g" mes
 [ ! -e build ] && mkdir build
 cd build
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$CFLAGS" \
+CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--buildtype=release \
 	--infodir=/usr/info \

@@ -22,7 +22,7 @@ cd $SRCNAM-$VERSION
 mkdir build && cd build
 cmake .. \
 	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
-	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
+	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_BUILD_TYPE=Release
 
