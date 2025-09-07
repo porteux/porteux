@@ -44,16 +44,23 @@ rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 # required to build procps-ng
 installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
 
-# core extras
+# core deps
 for package in \
 	zstd \
 	squashfs-tools \
 	sysvinit \
+	duktape \
+	polkit \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# core extras
+for package in \
 	fastfetch \
 	7zip \
 	procps-ng \
-	duktape \
-	polkit \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
