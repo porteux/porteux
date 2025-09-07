@@ -132,12 +132,12 @@ cp --parents -P usr/lib${SYSTEMBITS}/libltdl.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libslang.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libstdc++.* ${currentPackage}-stripped/
 cd ${currentPackage}-stripped/usr/lib${SYSTEMBITS}
-cp -fs $(readlink -f "$(command ls -1 --color=never libcares.so* | head -n1)") libcares.so
-cp -fs $(readlink -f "$(command ls -1 --color=never libcups.so* | head -n1)") libcups.so
-cp -fs $(readlink -f "$(command ls -1 --color=never libgmp.so* | head -n1)") libgmp.so
-cp -fs $(readlink -f "$(command ls -1 --color=never libgmpxx.so* | head -n1)") libgmpxx.so
-cp -fs $(readlink -f "$(command ls -1 --color=never libltdl.so* | head -n1)") libltdl.so
-cp -fs $(readlink -f "$(command ls -1 --color=never libslang.so* | head -n1)") libslang.so
+cp -fs $(basename $(readlink -f $(command ls libcares.so* | head -n1))) libcares.so
+cp -fs $(basename $(readlink -f $(command ls libcups.so* | head -n1))) libcups.so
+cp -fs $(basename $(readlink -f $(command ls libgmp.so* | head -n1))) libgmp.so
+cp -fs $(basename $(readlink -f $(command ls libgmpxx.so* | head -n1))) libgmpxx.so
+cp -fs $(basename $(readlink -f $(command ls libltdl.so* | head -n1))) libltdl.so
+cp -fs $(basename $(readlink -f $(command ls libslang.so* | head -n1))) libslang.so
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
