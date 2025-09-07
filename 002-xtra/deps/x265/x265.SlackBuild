@@ -68,7 +68,7 @@ cmake -B build \
 	-DLINKED_10BIT=ON \
 	-DLINKED_12BIT=ON \
 	-DCMAKE_CXX_COMPILER=clang++ \
-	-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld" \
+	-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 	-DCMAKE_CXX_FLAGS:STRING="$BUILDPARAMS"
 
 ln -s ../build-10/libx265.a build/libx265_main10.a

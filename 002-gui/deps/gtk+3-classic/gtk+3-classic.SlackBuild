@@ -31,7 +31,9 @@ for i in gtk3-classic-master/*.patch; do
 done
 
 mkdir build && cd build
-CC=clang CFLAGS="$CLANGFLAGS -Wno-implicit-function-declaration" LDFLAGS="-fuse-ld=lld" \
+CC=clang \
+CFLAGS="$CLANGFLAGS -Wno-implicit-function-declaration" \
+LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 meson setup \
 	--buildtype=release \
 	--infodir=/usr/info \
