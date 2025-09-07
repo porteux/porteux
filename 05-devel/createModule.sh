@@ -74,7 +74,7 @@ rm -fr usr/x86_64-slackware-linux
 rm -fr var/log/pkgtools
 rm -fr var/log/setup
 
-# already included in aaa_libraries - keeping them will prevent 05-devel from being deactivated
+# already included in aaa_libraries-stripped - keeping them will prevent 05-devel from being deactivated
 rm usr/lib${SYSTEMBITS}/libatomic.so*
 rm usr/lib${SYSTEMBITS}/libgcc_s.so*
 rm usr/lib${SYSTEMBITS}/libgmp.so*
