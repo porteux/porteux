@@ -21,7 +21,7 @@ cd $PRGNAM-$DOWNLOADVERSION
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-CXXFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

@@ -26,7 +26,7 @@ cd $PRGNAM-$VERSION
 mkdir build && cd build
 CC=clang CXX=clang++ \
 CFLAGS="$CLANGFLAGS" \
-CXFLAGS="$CLANGFLAGS" \
+CXFLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
 LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 meson setup \
 	--prefix=/usr \

@@ -25,7 +25,7 @@ CC=clang CXX=clang++ LD=/usr/bin/ld.lld \
 cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_C_FLAGS="$CLANGFLAGS" \
-	-DCMAKE_CXX_FLAGS="$CLANGFLAGS" \
+	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
 	-DZSTD_BUILD_STATIC=OFF \

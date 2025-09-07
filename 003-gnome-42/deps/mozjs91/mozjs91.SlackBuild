@@ -55,7 +55,7 @@ autoconf-2.13
 export RUSTFLAGS="-C embed-bitcode"
 
 CFLAGS+="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-strict-aliasing" \
-CXXFLAGS+="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-strict-aliasing" \
+CXXFLAGS+="${CLANGFLAGS/ -flto=auto/} -fvisibility-inlines-hidden -fno-delete-null-pointer-checks -fno-strict-aliasing" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

@@ -33,7 +33,7 @@ cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_C_FLAGS="$CLANGFLAGS -ffat-lto-objects -fPIC" \
-	-DCMAKE_CXX_FLAGS="$CLANGFLAGS" \
+	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 	-DCMAKE_BUILD_TYPE=release \
 	-DCMAKE_INSTALL_PREFIX=/usr \

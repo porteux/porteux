@@ -48,7 +48,7 @@ cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 
 CFLAGS="$GCCFLAGS -Wno-declaration-after-statement" \
-CXXFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

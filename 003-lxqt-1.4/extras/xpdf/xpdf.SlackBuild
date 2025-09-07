@@ -25,8 +25,8 @@ patch -p1 < $CWD/font.patch
 
 cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -ffat-lto-objects" \
 	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS -ffat-lto-objects" \
+	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -fvisibility-inlines-hidden -ffat-lto-objects" \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DSYSTEM_XPDFRC=/etc/xpdfrc \
