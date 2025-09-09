@@ -157,6 +157,22 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+### packages that require specific stripping
+
+# required by gtk4 applications to be able to have accented characters
+currentPackage=ibus
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}*.txz .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+rm usr/share/applications/org.freedesktop.IBus.Setup.desktop
+rm -fr usr/share/ibus/dicts
+mkdir ${currentPackage}-stripped
+rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
