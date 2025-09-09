@@ -24,8 +24,5 @@ cmake -B build -S . \
 
 make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 
-mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

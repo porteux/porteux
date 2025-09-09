@@ -1,5 +1,5 @@
---- lxqt-menu-data/menu/lxqt-applications.menu	2023-11-07 14:01:33.586297915 +0000
-+++ lxqt-menu-data/menu/lxqt-applications-patched.menu	2023-11-07 14:01:23.021297360 +0000
+--- menu/lxqt-applications.menu	2023-11-07 14:01:33.586297915 +0000
++++ menu/lxqt-applications-patched.menu	2023-11-07 14:01:23.021297360 +0000
 @@ -214,14 +214,6 @@
  		</Include>
  	</Menu>	 <!-- End Leave -->

@@ -29,7 +29,7 @@ cmake .. \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
 	-DCMAKE_INSTALL_PREFIX=/usr
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
