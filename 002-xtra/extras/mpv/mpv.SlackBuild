@@ -19,11 +19,10 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	VERSION=${info#* }
 	tar xfv $PRGNAM-$VERSION.tar.?z*
 	cd $PRGNAM-$VERSION
-
-	#wget https://github.com/${PRGNAM}-player/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
-	#tar xvf ${PRGNAM}.tar.?z
-	#cd ${PRGNAM}-master
-	#VERSION=$(date -r . +%Y%m%d)
+	
+	for i in $CWD/*.patch; do
+		patch -p0 < $i
+	done
 else
 	VERSION="0.38.0"
 	wget --content-disposition https://github.com/mpv-player/${PRGNAM}/archive/refs/tags/v${VERSION}.tar.gz
@@ -32,7 +31,9 @@ else
 fi
 
 mkdir build && cd build
-CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS" LDFLAGS="-fuse-ld=lld" \
+CC=clang \
+CFLAGS="$CLANGFLAGS" \
+LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
