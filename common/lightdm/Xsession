@@ -47,7 +47,7 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 [ -f $usermodmap ] && xmodmap $usermodmap
 
 # cron only works using dbus-launch, but Wayland only works using dbus-run-session
-if [[ "$@" == *"wayland"* ]]; then
+if [[ "$@" == *"wayland"* || "$@" == *"labwc"* ]]; then
 	dbus-run-session -- $@
 else
 	dbus-launch --exit-with-session $@
