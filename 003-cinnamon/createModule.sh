@@ -43,6 +43,19 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+# temporary until cjs fixes compatibility with glib 2.86.0+ (https://github.com/linuxmint/cjs/issues/130)
+currentPackage=glib2
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/glib2-2.84.4-x86_64-1.txz
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -Pr usr/lib$SYSTEMBITS/girepository-1.0 "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/lib* "${currentPackage}-stripped"
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 ### packages outside slackware repository
 
 currentPackage=audacious
