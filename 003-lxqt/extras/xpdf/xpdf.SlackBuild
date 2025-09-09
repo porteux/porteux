@@ -34,7 +34,7 @@ cmake -B build -S . \
 	-DXPDFWIDGET_PRINTING=ON \
 	-DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
-make -C build -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+make -C build -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
