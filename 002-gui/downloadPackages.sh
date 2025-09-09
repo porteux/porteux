@@ -244,10 +244,6 @@ fi
 
 ### packages that require specific striping
 
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "ibus" & # required by gtk4 to allow accented characters
-fi
-
 DownloadPackage "llvm" &
 DownloadPackage "mesa" &
 DownloadPackage "pulseaudio" &

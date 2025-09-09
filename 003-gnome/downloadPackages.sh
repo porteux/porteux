@@ -43,7 +43,11 @@ wait
 
 ### only download if not present
 
-[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" # required by glycin
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &  # required by glycin and others
+
+### packages that require specific striping
+
+DownloadPackage "ibus" & # required by gtk4 to allow accented characters
 
 ### temporary packages for further building
 

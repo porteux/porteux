@@ -102,20 +102,6 @@ done
 
 ### packages that require specific stripping
 
-if [ $SLACKWAREVERSION == "current" ]; then
-	currentPackage=ibus
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	mv ../packages/${currentPackage}*.txz .
-	packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
-	rm -fr usr/share/ibus/dicts
-	mkdir ${currentPackage}-stripped
-	rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
-	cd ${currentPackage}-stripped
-	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-	rm -fr $MODULEPATH/${currentPackage}
-fi
-
 currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
