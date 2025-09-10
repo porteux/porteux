@@ -30,7 +30,6 @@ wait
 DownloadPackage "freetype" &
 DownloadPackage "fribidi" &
 DownloadPackage "gcr" &
-DownloadPackage "gdk-pixbuf2" &
 DownloadPackage "giflib" &
 DownloadPackage "glew" &
 DownloadPackage "glibmm" &
@@ -237,6 +236,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "xcb-util-errors" & # required by labwc
 	wait
 else
+	DownloadPackage "gdk-pixbuf2" &
 	DownloadPackage "librsvg" &
 	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)
 	wait
