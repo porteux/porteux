@@ -8,5 +8,5 @@ sysvinit: For example, the normal system runlevel is 3, which starts agetty
 sysvinit: on virtual consoles tty1 - tty6. Runlevel 4 starts xdm.
 sysvinit: Runlevel 0 shuts the system down.
 sysvinit:
-sysvinit: Homepage: http://www.nongnu.org/sysvinit/
+sysvinit: Homepage: https://github.com/slicer69/sysvinit
 sysvinit:
