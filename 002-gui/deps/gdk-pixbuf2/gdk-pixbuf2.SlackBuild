@@ -1,0 +1,63 @@
+#!/bin/bash
+
+PRGNAM=gdk-pixbuf2
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^2.41|^2.43|^2.45|^2.47|^2.49|^2.51|^2.53|^2.55'| sort -V -r | head -1)
+wget https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd gdk-pixbuf-$VERSION*
+
+for i in $CWD/*.patch; do
+	patch -p0 < $i
+done
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	-Dgtk_doc=false \
+	-Dtests=false \
+	-Dinstalled_tests=false \
+	-Dothers=enabled \
+	-Dglycin=disabled \
+	-Ddocumentation=false \
+	-Dman=false
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mv $PKG/usr/bin/gdk-pixbuf-query-loaders{,-64}
+( cd $PKG/usr/bin
+ ln -sf gdk-pixbuf-query-loaders-64 gdk-pixbuf-query-loaders
+)
+
+# Install wrappers for the binaries:
+cp $CWD/update-gdk-pixbuf-loaders $PKG/usr/bin/update-gdk-pixbuf-loaders
+chmod 0755 $PKG/usr/bin/update-gdk-pixbuf-loaders
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

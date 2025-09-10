@@ -28,16 +28,22 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
-installpkg $MODULEPATH/packages/gdk-pixbuf2*.txz || exit 1
 [ ! -f /usr/bin/clang ] && (installpkg $MODULEPATH/packages/llvm*.txz || exit 1)
 
 if [ $SLACKWAREVERSION != "current" ]; then
+	installpkg $MODULEPATH/packages/gdk-pixbuf2*.txz || exit 1
+
 	# required by xorg but not included in slackware repo in stable
 	currentPackage=libxcvt
 	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	installpkg $MODULEPATH/packages/${currentPackage}*.txz
 	rm -fr $MODULEPATH/${currentPackage}
 else
+	currentPackage=gdk-pixbuf2
+	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}*.txz
+	rm -fr $MODULEPATH/${currentPackage}
+
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 
 	installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
