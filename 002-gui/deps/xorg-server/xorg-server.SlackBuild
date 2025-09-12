@@ -39,6 +39,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
+	-Dsuid_wrapper=true \
 	-Ddocs=false \
 	-Ddevel-docs=false \
 	-Dxvfb=false \
@@ -51,6 +52,10 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/etc/X11
+cp $CWD/Xwrapper.config $PKG/etc/X11
+chmod 644 $PKG/etc/X11/Xwrapper.config
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
