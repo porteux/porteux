@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
 PRGNAM=fastfetch
 
 CWD=$(dirname "$0")
@@ -12,12 +14,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget https://github.com/fastfetch-cli/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+info=$(DownloadLatestFromGithub "fastfetch-cli" ${PRGNAM})
+VERSION=${info#* }
 
-tar xvf ${PRGNAM}.tar.gz
-cd ${PRGNAM}-master
-
-VERSION=$(date -r . +%Y%m%d)
+tar xvf ${PRGNAM}-${VERSION}.tar.gz
+cd ${PRGNAM}-${VERSION}
 
 cmake -B build -S . \
 	-G Ninja \

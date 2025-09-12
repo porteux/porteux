@@ -18,7 +18,7 @@ VERSION=$(date -r . +%Y%m%d)
 
 cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=release \
-	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
 
