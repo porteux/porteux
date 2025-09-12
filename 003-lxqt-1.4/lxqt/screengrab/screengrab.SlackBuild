@@ -22,7 +22,7 @@ done
 
 cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=release \
-	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS -ffat-lto-objects" \
+	-DCMAKE_C_FLAGS="$GCCFLAGS -ffat-lto-objects" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
 

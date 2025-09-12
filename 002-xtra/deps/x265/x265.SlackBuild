@@ -36,7 +36,7 @@ cmake -B build-12 \
 	-DHIGH_BIT_DEPTH=ON \
 	-DMAIN12=ON \
 	-DCMAKE_CXX_COMPILER=clang++ \
-	-DCMAKE_CXX_FLAGS:STRING="$BUILDPARAMS -fvisibility-inlines-hidden"
+	-DCMAKE_CXX_FLAGS="$BUILDPARAMS -fvisibility-inlines-hidden"
 
 cmake --build build-12 -- -j${NUMBERTHREADS}
 
@@ -50,7 +50,7 @@ cmake -B build-10 \
 	-DEXPORT_C_API=OFF \
 	-DHIGH_BIT_DEPTH=ON \
 	-DCMAKE_CXX_COMPILER=clang++ \
-	-DCMAKE_CXX_FLAGS:STRING="$BUILDPARAMS -fvisibility-inlines-hidden"
+	-DCMAKE_CXX_FLAGS="$BUILDPARAMS -fvisibility-inlines-hidden"
 
 cmake --build build-10 -- -j${NUMBERTHREADS}
 
@@ -69,7 +69,7 @@ cmake -B build \
 	-DLINKED_12BIT=ON \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -Wl,--icf=safe" \
-	-DCMAKE_CXX_FLAGS:STRING="$BUILDPARAMS -fvisibility-inlines-hidden"
+	-DCMAKE_CXX_FLAGS="$BUILDPARAMS -fvisibility-inlines-hidden"
 
 ln -s ../build-10/libx265.a build/libx265_main10.a
 ln -s ../build-12/libx265.a build/libx265_main12.a

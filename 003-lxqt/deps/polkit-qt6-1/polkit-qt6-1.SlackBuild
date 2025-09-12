@@ -21,8 +21,8 @@ cd $SRCNAM-$VERSION
 
 mkdir build && cd build
 cmake .. \
-	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
-	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -fvisibility-inlines-hidden" \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DQT_MAJOR_VERSION=6 \
 	-DMAN_INSTALL_DIR=/usr/man \
