@@ -81,7 +81,7 @@ else
 	export TESTRELEASES="grep ''"
 fi
 
-LATESTVERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "$TESTRELEASES" | grep -v '\-dev' | sed -e 's/alpha/0.0007/' -e 's/beta/0.0008/' -e 's/rc/0.0009/' | sort -V -r | sed 's/0.0007/alpha/g; s/0.0008/beta/g; s/0.0009/rc/g' | head -1)
+LATESTVERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "$TESTRELEASES" | grep -v '\-dev' | sed -e 's/alpha/0.00007/' -e 's/beta/0.00008/' -e 's/rc/0.00009/' | sort -V -r | sed 's/0.00007/alpha/g; s/0.00008/beta/g; s/0.00009/rc/g' | head -1)
 
 echo "Building GNOME ${LATESTVERSION}..."
 MODULENAME=$MODULENAME-${LATESTVERSION}

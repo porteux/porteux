@@ -1,41 +1,35 @@
 --- app/desktopManager.js	2025-09-10 00:05:22.962750824 +0200
 +++ app/desktopManager.js.patched	2025-09-10 00:05:13.978750399 +0200
-@@ -1201,12 +1201,15 @@
+@@ -1203,10 +1203,13 @@
  
-         this._menu.add(new Gtk.SeparatorMenuItem());
- 
--        this._changeBackgroundMenuItem = new Gtk.MenuItem({label: _('Change Background…')});
-+        this._changeBackgroundMenuItem = new Gtk.MenuItem({ label: _('Change Background…') });
+         this._changeBackgroundMenuItem = new Gtk.MenuItem({label: _('Change Background…')});
          this._changeBackgroundMenuItem.connect('activate', () => {
 -            const desktopFile = Gio.DesktopAppInfo.new('gnome-background-panel.desktop');
 -            const context = Gdk.Display.get_default().get_app_launch_context();
 -            context.set_timestamp(Gtk.get_current_event_time());
 -            desktopFile.launch([], context);
-+            const argv = ['gnome-control-center', 'background'];
++            const argv = ['/usr/bin/gnome-control-center', 'background'];
 +
 +            try {
-+                GLib.spawn_async(null, argv, null, GLib.SpawnFlags.SEARCH_PATH, null);
++                GLib.spawn_async(null, argv, null, null, null);
 +            } catch (e) {
 +                logError(e, 'Failed to launch Background Settings');
 +            }
          });
          this._menu.add(this._changeBackgroundMenuItem);
  
-@@ -1225,12 +1228,15 @@
-         }
-         this._menu.add(this._settingsMenuItem);
+@@ -1227,10 +1230,13 @@
  
--        this._displaySettingsMenuItem = new Gtk.MenuItem({label: _('Display Settings')});
-+        this._displaySettingsMenuItem = new Gtk.MenuItem({ label: _('Display Settings') });
+         this._displaySettingsMenuItem = new Gtk.MenuItem({label: _('Display Settings')});
          this._displaySettingsMenuItem.connect('activate', () => {
 -            const desktopFile = Gio.DesktopAppInfo.new('gnome-display-panel.desktop');
 -            const context = Gdk.Display.get_default().get_app_launch_context();
 -            context.set_timestamp(Gtk.get_current_event_time());
 -            desktopFile.launch([], context);
-+            const argv = ['gnome-control-center', 'display'];
++            const argv = ['/usr/bin/gnome-control-center', 'display'];
 +
 +            try {
-+                GLib.spawn_async(null, argv, null, GLib.SpawnFlags.SEARCH_PATH, null);
++                GLib.spawn_async(null, argv, null, null, null);
 +            } catch (e) {
 +                logError(e, 'Failed to launch Display Settings');
 +            }
