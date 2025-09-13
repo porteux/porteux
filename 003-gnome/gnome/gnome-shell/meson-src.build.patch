@@ -7,4 +7,4 @@
 -subdir('calendar-server')
  subdir('hotplug-sniffer')
  subdir('st')
- subdir('tray')
+ if have_x11_client

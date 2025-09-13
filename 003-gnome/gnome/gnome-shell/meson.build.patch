@@ -7,8 +7,8 @@
 -ecal_req = '>= 3.33.1'
  eds_req = '>= 3.33.1'
  gcr_req = '>= 3.90.0'
- gio_req = '>= 2.79.2'
-@@ -69,8 +68,6 @@
+ gio_req = '>= 2.85.1'
+@@ -68,8 +67,6 @@
  endif
  
  atk_bridge_dep = dependency('atk-bridge-2.0')

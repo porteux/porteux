@@ -22,6 +22,8 @@ for i in $CWD/*.patch; do
 	patch -p1 < $i
 done
 
+sed -i "s|^schemas_req.*|schemas_req = '>= 48.0'|" meson.build
+
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
@@ -32,12 +34,12 @@ meson setup \
 	--infodir=/usr/info \
 	--localstatedir=/var \
 	-Ddefault_library=shared \
+	-Dportal_helper=true \
 	-Dgtk_doc=false \
 	-Dman=false \
 	-Dtests=false \
 	-Dsystemd=false \
-	-Dextensions_tool=false \
-	-Dportal_helper=false
+	-Dextensions_tool=false	
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
