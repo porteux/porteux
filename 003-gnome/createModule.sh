@@ -139,6 +139,7 @@ for package in \
 	libnma-gtk4 \
 	gnome-control-center \
 	mutter \
+	gjs \
 	gnome-shell \
 	gnome-session \
 	tinysparql \

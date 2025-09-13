@@ -35,7 +35,7 @@ DownloadPackage "libproxy" &
 DownloadPackage "libsigc++3" & # required by gnome-system-monitor
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
-DownloadPackage "mozjs128" &
+DownloadPackage "mozjs140" &
 DownloadPackage "pangomm2" & # required by gnome-system-monitor
 DownloadPackage "libpwquality" & # required by gnome-control-center
 DownloadPackage "woff2" &
