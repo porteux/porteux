@@ -86,6 +86,15 @@ LATESTVERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format
 echo "Building GNOME ${LATESTVERSION}..."
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
+# gnome extras
+for package in \
+	dash-to-dock \
+	desktop-icons-ng \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
 # gnome deps
 for package in \
 	libxmlb \
