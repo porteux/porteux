@@ -1,0 +1,58 @@
+--- extension.js	2025-09-13 02:43:26.000000000 +0200
++++ extension.js.patched	2025-09-13 02:45:55.694141363 +0200
+@@ -1,7 +1,8 @@
+-// -*- mode: js; js-indent-level: 4; indent-tabs-mode: nil -*-
+ 
+-import {DockManager} from './docking.js';
+-import {Extension} from './dependencies/shell/extensions/extension.js';
++import { DockManager } from './docking.js';
++import { Extension } from './dependencies/shell/extensions/extension.js';
++import Gio from 'gi://Gio';
++import GioUnix from 'gi://GioUnix';
+ 
+ // We export this so it can be accessed by other extensions
+ export let dockManager;
+@@ -16,3 +17,42 @@
+         dockManager = null;
+     }
+ }
++
++if (!GioUnix.DesktopAppInfo.prototype.has_key) {
++    const reservedNames = ['$gtype', 'prototype', 'length', 'name']
++    Object.getOwnPropertyNames(GioUnix.DesktopAppInfo).forEach(prop => {
++        if (reservedNames.includes(prop))
++            return;
++
++        if (prop.startsWith('new'))
++            return;
++
++        if (GioUnix.DesktopAppInfo.prototype[prop] !== undefined)
++            return;
++
++        GioUnix.DesktopAppInfo.prototype[prop] = function (...args) {
++            return GioUnix.DesktopAppInfo[prop](this, ...args);
++        };
++    });
++}
++
++Object.entries(Object.getOwnPropertyDescriptors(GioUnix)).forEach(([prop, desc]) => {
++    if (Object.hasOwn(Gio, prop)) {
++        console.debug(`Gio already contains property ${prop}`);
++        return;
++    }
++
++    const newDesc = {
++        enumerable: true,
++        configurable: false,
++        get() {
++            if (!newDesc._deprecationWarningDone) {
++                console.warn(`Gio.${prop} is deprecated, please use ` +
++                    `${GioUnix.__name__}.${prop} instead`);
++                newDesc._deprecationWarningDone = true;
++            }
++            return desc.get?.() ?? desc.value;
++        },
++    };
++    Object.defineProperty(Gio, prop, newDesc);
++});
+\ No newline at end of file
