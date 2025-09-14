@@ -58,9 +58,7 @@ done
 ( cd $PKG/sbin ; rm -rf poweroff )
 ( cd $PKG/sbin ; ln -sf halt poweroff )
 
-cp $CWD/init $PKG/sbin/
-chmod 755 $PKG/sbin/init
-chown root:root $PKG/sbin/init
+install -Dm755 "$CWD/init" "$PKG/sbin/init"
 
 # already included in util-linux
 rm $PKG/usr/bin/last

@@ -58,8 +58,7 @@ mv $PKG/usr/bin/gdk-pixbuf-query-loaders{,-64}
 )
 
 # Install wrappers for the binaries:
-cp $CWD/update-gdk-pixbuf-loaders $PKG/usr/bin/update-gdk-pixbuf-loaders
-chmod 0755 $PKG/usr/bin/update-gdk-pixbuf-loaders
+install -Dm755 "$CWD/update-gdk-pixbuf-loaders" $PKG/usr/bin/
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

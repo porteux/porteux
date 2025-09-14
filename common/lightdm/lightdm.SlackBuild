@@ -68,7 +68,7 @@ sed -i 's|pam_systemd|pam_elogind|g' $PKG/etc/pam.d/lightdm-autologin
 sed -i 's|pam_systemd|pam_elogind|g' $PKG/etc/pam.d/lightdm-greeter
 
 # apply default settings
-cp $CWD/lightdm.conf $PKG/etc/lightdm
+install -Dm644 "$CWD/lightdm.conf" $PKG/etc/lightdm/
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
