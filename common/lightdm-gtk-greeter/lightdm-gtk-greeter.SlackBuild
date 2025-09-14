@@ -64,11 +64,9 @@ CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
-mkdir -p $PKG/usr/share/backgrounds
-cp $CWD/wave.svg $PKG/usr/share/backgrounds
-chmod 644 $PKG/usr/share/backgrounds/wave.svg
+install -Dm644 "$CWD/wave.svg" "$PKG/usr/share/backgrounds/wave.svg"
 
-cp $CWD/lightdm-gtk-greeter.conf $PKG/etc/lightdm/
+install -Dm644 "$CWD/lightdm-gtk-greeter.conf" $PKG/etc/lightdm/
 sed -i "s|ICONTHEMETEMPLATE|$ICONTHEME|g" $PKG/etc/lightdm/lightdm-gtk-greeter.conf
 
 cd $PKG

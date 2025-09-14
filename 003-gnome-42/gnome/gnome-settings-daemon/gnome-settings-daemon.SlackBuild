@@ -35,7 +35,7 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 # Don't auto-suspend by default on AC power (Gentoo)
-cp $CWD/org.gnome.settings-daemon.plugins.power.gschema.override $PKG/usr/share/glib-2.0/schemas
+install -Dm644 "$CWD/org.gnome.settings-daemon.plugins.power.gschema.override" $PKG/usr/share/glib-2.0/schemas/
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

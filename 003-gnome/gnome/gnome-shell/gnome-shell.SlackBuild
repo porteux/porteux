@@ -43,8 +43,7 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-cp $CWD/org.gnome.Shell.desktop $PKG/usr/share/applications
-chmod 644 $PKG/usr/share/applications/org.gnome.Shell.desktop
+install -Dm644 "$CWD/org.gnome.Shell.desktop" $PKG/usr/share/applications/
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

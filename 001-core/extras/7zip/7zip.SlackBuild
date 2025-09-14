@@ -32,7 +32,7 @@ VERSION=${info#* }
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-cp $CWD/meson.build.template meson.build
+cp "$CWD/meson.build.template" meson.build
 meson rewrite kwargs set project / version ${VERSION}
 
 mkdir build && cd build
@@ -56,11 +56,11 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-
 cd $PKG/usr/bin
 cp -s 7zz 7z
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
