@@ -86,7 +86,6 @@ cp ../aufs_sources/include/uapi/linux/aufs_type.h include/uapi/linux
 for i in ../aufs_sources/*.patch; do
 	patch -N -p1 < "$i" > /dev/null 2>&1 || { echo "Failed to add AUFS patch '${i}'."; exit 1; }
 done
-sed -i "s|get_file(file);|//get_file(file);|g" mm/mmap.c # temporary until aufs commits this change
 rm -fr ../aufs_sources
 
 echo "Building kernel headers..."

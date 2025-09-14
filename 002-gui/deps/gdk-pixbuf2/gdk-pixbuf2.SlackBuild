@@ -12,7 +12,15 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^2.41|^2.43|^2.45|^2.47|^2.49|^2.51|^2.53|^2.55'| sort -V -r | head -1)
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -V -r | { 
+	while read -r version; do
+		minor=$(echo "$version" | cut -d. -f2)
+		if (( minor % 2 == 0 )); then
+			echo "$version";
+			break;
+		fi
+	done
+})
 wget https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
