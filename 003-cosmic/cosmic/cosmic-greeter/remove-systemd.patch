@@ -1,0 +1,26 @@
+diff --git debian/cosmic-greeter-daemon.service debian/cosmic-greeter-daemon.service
+index a567119..03c67db 100644
+--- debian/cosmic-greeter-daemon.service
++++ debian/cosmic-greeter-daemon.service
+@@ -1,11 +1,10 @@
+-[Unit]
+-Description=COSMIC Greeter Daemon
+-
+-[Service]
+-Type=dbus
+-BusName=com.system76.CosmicGreeter
+-ExecStart=/usr/bin/cosmic-greeter-daemon
+-Restart=on-failure
+-
+-[Install]
+-WantedBy=multi-user.target
++#  SPDX-License-Identifier: GPL-3.0-or-later
++#
++# This program is free software; you can redistribute it and/or modify it
++# under the terms of the GNU General Public License version 3 as published by
++# the Free Software Foundation.
++ 
++[D-BUS Service]
++Name=com.system76.CosmicGreeter
++Exec=/usr/bin/cosmic-greeter-daemon &
++User=root

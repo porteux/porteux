@@ -18,8 +18,10 @@ VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
 RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}"
 
-ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
+sed 's/sudo/wheel/g' -i data/polkit-1/rules.d/cosmic-settings-daemon.rules
 sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
+
+ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 make -j${NUMBERTHREADS}
 make install-strip DESTDIR=$MODULEPATH/$PRGNAM/package
 
