@@ -100,17 +100,13 @@ for package in \
 	libxmlb \
 	appstream \
 	libstemmer \
-	libwpe \
-	wpebackend-fdo \
 	bubblewrap \
 	geoclue2 \
-	libpeas \
 	colord-gtk \
 	libei \
 	libportal \
 	libcloudproviders \
 	glycin \
-	libwnck4 \
 	exempi \
 	blueprint-compiler \
 ; do
@@ -172,11 +168,16 @@ done
 # required by gtk4 applications to be able to have accented characters
 currentPackage=ibus
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}*.txz .
+mv $MODULEPATH/packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 rm usr/share/applications/org.freedesktop.IBus.Setup.desktop
 rm -fr usr/share/ibus/dicts
+rm -fr var/lib/pkgtools
+rm -f var/log/packages
+rm -fr var/log/pkgtools
+rm -f var/log/setup
+rm -f var/log/scripts
 mkdir ${currentPackage}-stripped
 rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
 cd ${currentPackage}-stripped
@@ -215,7 +216,6 @@ cd $MODULEPATH/packages/
 
 {
 rm etc/xdg/autostart/blueman.desktop
-rm etc/xdg/autostart/ibus*.desktop
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
@@ -244,10 +244,8 @@ rm usr/share/applications/org.gtk.PrintEditor4.desktop
 rm usr/share/applications/org.gtk.WidgetFactory4.desktop
 rm usr/share/applications/vte-gtk4.desktop
 rm usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
-rm usr/share/dbus-1/services/org.freedesktop.IBus.service
 rm usr/share/dbus-1/services/org.freedesktop.LocalSearch3.Control.service
 rm usr/share/dbus-1/services/org.freedesktop.LocalSearch3.service
-rm usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
 rm usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
 rm usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.service
 rm usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.service
@@ -275,7 +273,6 @@ rm -fr usr/share/gjs-1.0
 rm -fr usr/share/glade/pixmaps
 rm -fr usr/share/gnome
 rm -fr usr/share/gtk-4.0
-rm -fr usr/share/ibus
 rm -fr usr/share/icons/Adwaita/8x8
 rm -fr usr/share/icons/Adwaita/96x96
 rm -fr usr/share/icons/Adwaita/256x256

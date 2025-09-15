@@ -13,11 +13,10 @@ DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 wait
 DownloadPackage "gexiv2" &
-DownloadPackage "gjs" &
 DownloadPackage "hunspell" &
 DownloadPackage "glib-networking" &
 DownloadPackage "glibmm2" & # required by gnome-system-monitor
-DownloadPackage "gperf" & # required by libadwaita (appstream sub-project)
+DownloadPackage "gperf" & # required by appstream
 DownloadPackage "gst-plugins-bad-free" & # required by gtk4 plugin
 DownloadPackage "gst-plugins-good" & # required by nautilus media properties
 DownloadPackage "gst-plugins-libav" & # required by nautilus media properties
@@ -28,7 +27,6 @@ DownloadPackage "hyphen" &
 DownloadPackage "ibus" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
-DownloadPackage "libhandy" &
 DownloadPackage "libnma" &
 wait
 DownloadPackage "libproxy" &
@@ -61,7 +59,7 @@ DownloadPackage "krb5" &
 wait
 DownloadPackage "libsass" & # required by libadwaita
 DownloadPackage "libwnck3" &
-DownloadPackage "openldap" & # required by libadwaita (appstream)
+DownloadPackage "openldap" & # required by appstream
 DownloadPackage "python-pip" &
 DownloadPackage "sassc" & # required by libadwaita
 DownloadPackage "vulkan-sdk" & # required by gtksourceview

@@ -89,14 +89,16 @@ if [ $SLACKWAREVERSION == "current" ]; then
 
 	currentPackage=glibc
 	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	mv ../packages/${currentPackage}-[0-9]* .
+	mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 	packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 	rm usr/include/gnu/*-32.h
 	rm usr/libexec/getconf/*ILP32*
 	rm -fr var/lib/pkgtools
-	rm -fr var/log
-	rm -fr lib/
+	rm -f var/log/packages
+	rm -fr var/log/pkgtools
+	rm -f var/log/setup
+	rm -f var/log/scripts
 	rm -fr usr/lib/
 	mkdir ${currentPackage}-stripped
 	rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
