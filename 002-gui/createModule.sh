@@ -121,7 +121,7 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=mesa
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 rm -fr etc/OpenCL
@@ -133,7 +133,10 @@ rm usr/lib${SYSTEMBITS}/dri/radeon_dri*
 rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
 rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
 rm -fr var/lib/pkgtools
-rm -fr var/log
+rm -f var/log/packages
+rm -fr var/log/pkgtools
+rm -f var/log/setup
+rm -f var/log/scripts
 mkdir ${currentPackage}-stripped
 rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
 cd ${currentPackage}-stripped
