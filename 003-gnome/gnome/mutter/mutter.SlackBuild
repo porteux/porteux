@@ -29,21 +29,22 @@ meson setup \
 	--sysconfdir=/etc \
 	--infodir=/usr/info \
 	--localstatedir=/var \
-	-Dclutter_tests=false \
-	-Dcogl_tests=false \
-	-Dmutter_tests=false \
-	-Dtests=disabled \
-	-Dinstalled_tests=false \
 	-Ddefault_library=shared \
-	-Ddocs=false \
 	-Dintrospection=true \
 	-Dnative_backend=true \
-	-Dprofiler=false \
 	-Dstartup_notification=true \
 	-Dudev=true \
 	-Dwayland_eglstream=true \
 	-Dx11=true \
-	-Dbash_completion=false
+	-Dclutter_tests=false \
+	-Dcogl_tests=false \
+	-Dmutter_tests=false \
+	-Dinstalled_tests=false \
+	-Ddocs=false \
+	-Dprofiler=false \
+	-Dbash_completion=false \
+	-Ddevkit=false \
+	-Dtests=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
