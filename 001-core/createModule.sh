@@ -94,12 +94,13 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
 	rm usr/include/gnu/*-32.h
 	rm usr/libexec/getconf/*ILP32*
-	rm -fr var/lib/pkgtools
-	rm -f var/log/packages
-	rm -fr var/log/pkgtools
-	rm -f var/log/setup
-	rm -f var/log/scripts
+	rm var/log/packages
+	rm var/log/scripts
+	rm var/log/setup
+	rm -fr lib/
 	rm -fr usr/lib/
+	rm -fr var/lib/pkgtools
+	rm -fr var/log/pkgtools
 	mkdir ${currentPackage}-stripped
 	rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
 	cd ${currentPackage}-stripped
