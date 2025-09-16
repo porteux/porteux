@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | grep -v '\-dev' | sed -e 's/alpha/0.00007/' -e 's/beta/0.00008/' -e 's/rc/0.00009/' | sort -V -r | sed 's/0.00007/alpha/g; s/0.00008/beta/g; s/0.00009/rc/g' | head -1)
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -V -r | sed 's/~/\./' | head -1)
 wget https://download.gnome.org/sources/${PRGNAM}/${VERSION%%.*}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
