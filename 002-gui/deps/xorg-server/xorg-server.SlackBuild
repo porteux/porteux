@@ -53,7 +53,7 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-install -Dm644 "$CWD/Xwrapper.config" $PKG/etc/X11/
+install -Dm644 "$CWD/Xwrapper.config" $PKG/etc/X11/Xwrapper.config
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

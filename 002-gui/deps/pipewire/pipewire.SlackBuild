@@ -52,8 +52,8 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-install -Dm755 "$CWD/run-pipewire" $PKG/etc/pipewire/
-install -Dm644 "$CWD/pipewire.desktop" $PKG/etc/xdg/autostart/
+install -Dm755 "$CWD/run-pipewire" $PKG/etc/pipewire/run-pipewire
+install -Dm644 "$CWD/pipewire.desktop" $PKG/etc/xdg/autostart/pipewire.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
