@@ -27,7 +27,6 @@ meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--infodir=/usr/info \
 	--localstatedir=/var \
 	-Ddefault_library=shared \
 	-Dintrospection=true \

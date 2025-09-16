@@ -27,7 +27,6 @@ mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
 	--buildtype=release \
-	--infodir=/usr/info \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
 	--prefix=/usr \
