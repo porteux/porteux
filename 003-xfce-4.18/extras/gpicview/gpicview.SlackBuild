@@ -16,10 +16,6 @@ git clone https://github.com/lxde/${PRGNAM}
 cd ${PRGNAM}
 VERSION=`git describe | cut -d- -f1`
 
-for i in $CWD/*.patch; do
-	patch -p1 < $i;
-done
-
 ./autogen.sh && CFLAGS="$GCCFLAGS -ffast-math" \
 ./configure \
 	--prefix=/usr \

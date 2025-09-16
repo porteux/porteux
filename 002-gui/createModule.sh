@@ -232,6 +232,7 @@ rm etc/xdg/autostart/at-spi-dbus-bus.desktop
 rm usr/bin/canberra*
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
+rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
 
 rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
