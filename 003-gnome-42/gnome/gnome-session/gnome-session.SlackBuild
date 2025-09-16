@@ -27,7 +27,6 @@ meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--infodir=/usr/info \
 	--localstatedir=/var \
 	-Dsystemd=false \
 	-Delogind=true \

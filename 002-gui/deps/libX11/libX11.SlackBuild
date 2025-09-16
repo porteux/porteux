@@ -25,7 +25,6 @@ CFLAGS="${GCCFLAGS/ -flto=auto/}" \
 	--docdir=/usr/doc/${PRGNAM}-${VERSION} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--infodir=/usr/info \
 	--disable-static \
 	--enable-year2038 \
 	--build=$ARCH-porteux-linux

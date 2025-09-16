@@ -36,7 +36,6 @@ CFLAGS="$CLANGFLAGS -Wno-implicit-function-declaration" \
 LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 meson setup \
 	--buildtype=release \
-	--infodir=/usr/info \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
 	--prefix=/usr \

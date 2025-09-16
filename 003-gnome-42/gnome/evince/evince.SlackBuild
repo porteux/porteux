@@ -32,7 +32,6 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
-	--infodir=/usr/info \
 	--localstatedir=/var \
 	-Ddefault_library=shared \
 	-Dgtk_doc=false \

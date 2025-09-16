@@ -29,7 +29,6 @@ meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--infodir=/usr/info \
 	--localstatedir=/var \
 	-Dlogind_provider=elogind \
 	-Dx11=true \

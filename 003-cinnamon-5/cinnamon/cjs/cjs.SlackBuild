@@ -24,7 +24,6 @@ CFLAGS="$GCCFLAGS" \
 CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--buildtype=release \
-	--infodir=/usr/info \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
 	--prefix=/usr \
