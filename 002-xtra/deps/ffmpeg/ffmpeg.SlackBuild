@@ -29,11 +29,11 @@ cd $PRGNAM-$VERSION
 if [ $SLACKWAREVERSION != "current" ]; then
 	# Fix linking with flite:
 	sed -i "s| -lflite\"| -lflite -lm -lasound\"|" ./configure
+	patch -p0 < $CWD/svt-av1-3.0-build-fix.patch
 else
 	sed -i "s|enabled extra_warnings |#enabled extra_warnings |g" ./configure
-	for i in $CWD/*.patch; do
-		patch -p0 < $i
-	done
+	patch -p0 < $CWD/add-av_stream_get_first_dts-for-chromium.patch
+	EXTRAS="--enable-libplacebo --enable-lcms2"
 fi
 
 CFLAGS="$BUILDPARAMS" \
@@ -84,13 +84,12 @@ CFLAGS="$BUILDPARAMS" \
 	--enable-librsvg \
 	--enable-libdrm \
 	--enable-libass \
-	--enable-libplacebo \
-	--enable-lcms2 \
 	--enable-librtmp \
 	--enable-libxvid \
 	--enable-libsvtav1 \
 	--enable-libx264 \
-	--enable-libx265
+	--enable-libx265 \
+	$EXTRAS
 
 make CC=clang -j${NUMBERTHREADS} install DESTDIR=$PKG
 
