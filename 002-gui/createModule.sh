@@ -77,6 +77,7 @@ for package in \
 	xorg-server \
 	xf86-input-libinput \
 	libX11 \
+	gsettings-desktop-schemas \
 	gtk+3-classic \
 	pipewire \
 	wireplumber \

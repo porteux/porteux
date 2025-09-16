@@ -40,7 +40,6 @@ DownloadPackage "gparted" &
 DownloadPackage "graphene" & # required by libgstopengl
 DownloadPackage "graphite2" &
 wait
-DownloadPackage "gsettings-desktop-schemas" &
 DownloadPackage "gsl" &
 DownloadPackage "gst-plugins-base" & # required by bluetooth audio
 DownloadPackage "gstreamer" & # required by bluetooth audio
