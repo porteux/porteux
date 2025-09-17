@@ -52,8 +52,7 @@ meson setup \
 	-Dtests=false \
 	-Dudev=true \
 	-Dwayland=true \
-	-Dwayland_eglstream=true \
-	-Dbash_completion=false
+	-Dwayland_eglstream=true
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
