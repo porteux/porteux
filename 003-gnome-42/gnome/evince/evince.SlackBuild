@@ -18,8 +18,6 @@ wget https://download.gnome.org/sources/${PRGNAM}/41/${PRGNAM}-${VERSION}.tar.xz
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-sed -i "s|subdir('help')|#subdir('help')|g" meson.build
-
 for i in $CWD/*.patch; do
 	patch -p0 < $i;
 done

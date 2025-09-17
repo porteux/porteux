@@ -74,7 +74,7 @@ CXXFLAGS+="${CLANGFLAGS/ -flto=auto/} -fvisibility-inlines-hidden -fno-delete-nu
 	--build=$ARCH-slackware-linux
 
 make -j${NUMBERTHREADS}
-make install-strip DESTDIR=$PKG
+make install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
