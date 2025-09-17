@@ -26,7 +26,7 @@ cmake -B build -S . \
 	-DCMAKE_C_FLAGS="$GCCFLAGS" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
-	-DUSE_QT6=true
+	-DUSE_QT6=false
 
 make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 

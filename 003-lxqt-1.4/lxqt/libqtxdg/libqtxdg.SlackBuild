@@ -14,7 +14,8 @@ cd $TMP
 
 git clone https://github.com/lxqt/${PRGNAM}
 cd ${PRGNAM}
-VERSION=$(date -r . +%Y%m%d)
+git checkout e31ae3b2566939cf868a93cb2f088c5423232f4b
+VERSION=$(git describe | cut -d- -f1)
 
 cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=release \

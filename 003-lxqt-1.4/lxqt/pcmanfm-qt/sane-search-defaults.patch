@@ -16,6 +16,6 @@
 +    searchContentRegexp_ = settings.value(QStringLiteral("searchContentRegexp"), false).toBool();
 +    searchRecursive_ = settings.value(QStringLiteral("searchRecursive"), true).toBool();
 +    searchhHidden_ = settings.value(QStringLiteral("searchhHidden"), true).toBool();
-     maxSearchHistory_ = std::clamp(settings.value(QStringLiteral("MaxSearchHistory"), 0).toInt(), 0, 50);
+     maxSearchHistory_ = qBound(0, settings.value(QStringLiteral("MaxSearchHistory"), 0).toInt(), 50);
      namePatterns_ = settings.value(QStringLiteral("NamePatterns")).toStringList();
      namePatterns_.removeDuplicates();

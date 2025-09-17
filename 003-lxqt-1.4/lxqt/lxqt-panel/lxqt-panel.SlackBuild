@@ -14,10 +14,11 @@ cd $TMP
 
 git clone https://github.com/lxqt/${PRGNAM}
 cd ${PRGNAM}
-VERSION=$(date -r . +%Y%m%d)
+git checkout 371f60fa806a89779a9c90ed5a1dce7b92126e0b
+VERSION=$(git describe | cut -d- -f1)
 
-for i in *.patch; do
-	patch -p0 < $CWD/i
+for i in $CWD/*.patch; do
+	patch -p0 < $i
 done
 
 cmake -B build -S . \
