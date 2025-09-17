@@ -21,13 +21,12 @@ cd $PRGNAM-$VERSION
 sed -i "s|tests ||g" Makefile.am
 
 CFLAGS="$GCCFLAGS -ffat-lto-objects -Wno-incompatible-pointer-types -Wno-error=maybe-uninitialized" \
-CXXFLAGS="$CFLAGS" \
+CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-static \
 	--disable-gtk-doc \
@@ -39,7 +38,7 @@ CXXFLAGS="$CFLAGS" \
 	--enable-kms-egl-platform \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -47,4 +46,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

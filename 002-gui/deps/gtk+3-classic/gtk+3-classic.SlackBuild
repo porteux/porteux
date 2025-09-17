@@ -1,0 +1,55 @@
+#!/bin/bash
+
+PRGNAM=gtk+3-classic
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gtk/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep ^3\. | sort -V -r | head -1)
+wget https://gitlab.gnome.org/GNOME/gtk/-/archive/${VERSION}/gtk-${VERSION}.tar.gz
+
+tar xfv gtk-$VERSION.tar.?z*
+cd gtk-$VERSION
+
+sed -i "s|subdir('docs|#subdir('docs|g" meson.build
+
+wget https://github.com/lah7/gtk3-classic/archive/refs/heads/master.tar.gz
+tar xvf master.tar.gz && rm master.tar.gz
+rm gtk3-classic*/gtk+-atk-bridge-meson.build.patch
+rm gtk3-classic*/gtk+-atk-bridge-meson_options.txt.patch
+rm gtk3-classic*/appearance__disable-backdrop.patch
+
+for i in gtk3-classic-master/*.patch; do
+	patch -p1 < $i
+done
+
+mkdir build && cd build
+CC=clang \
+CFLAGS="$CLANGFLAGS -Wno-implicit-function-declaration" \
+LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+meson setup \
+	--buildtype=release \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--libexecdir=/usr/libexec \
+	-Dbroadway_backend=true \
+	-Ddemos=false \
+	-Dexamples=false \
+	-Dtests=false
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

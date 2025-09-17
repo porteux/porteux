@@ -1,0 +1,185 @@
+From 7288b4d1051a4902384fa2b3c12cacbd3caf04b0 Mon Sep 17 00:00:00 2001
+From: Sultan Alsawaf <sultan@kerneltoast.com>
+Date: Sun, 22 Jan 2023 14:56:36 -0800
+Subject: [PATCH 01/11] modesetting: Remove redundant GLAMOR_HAS_GBM #ifdef
+ from ms_do_pageflip
+
+This #ifdef is redundant since ms_do_pageflip is already enclosed within a
+larger GLAMOR_HAS_GBM #ifdef.
+
+No functional change.
+
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+Reviewed-by: Martin Roukala <martin.roukala@mupuf.org>
+---
+ hw/xfree86/drivers/modesetting/pageflip.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
+index 8d57047efa..5a4ad1dba1 100644
+--- hw/xfree86/drivers/modesetting/pageflip.c
++++ hw/xfree86/drivers/modesetting/pageflip.c
+@@ -321,9 +321,6 @@ ms_do_pageflip(ScreenPtr screen,
+                ms_pageflip_abort_proc pageflip_abort,
+                const char *log_prefix)
+ {
+-#ifndef GLAMOR_HAS_GBM
+-    return FALSE;
+-#else
+     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
+     modesettingPtr ms = modesettingPTR(scrn);
+     xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+@@ -478,7 +475,6 @@ error_out:
+         flipdata->flip_count--;
+ 
+     return FALSE;
+-#endif /* GLAMOR_HAS_GBM */
+ }
+ 
+ static void
+-- 
+From 1fd9d79ae0dac5ae5f84f8012aa2764fcb777ea1 Mon Sep 17 00:00:00 2001
+From: Sultan Alsawaf <sultan@kerneltoast.com>
+Date: Sun, 22 Jan 2023 14:58:23 -0800
+Subject: [PATCH] modesetting: Pass reference CRTC pointer to ms_do_pageflip
+
+Rather than passing the reference CRTC's vblank pipe to ms_do_pageflip,
+just pass the pointer to the reference CRTC directly instead. This is
+clearer and more useful than the vblank pipe, since the vblank pipe is only
+used to identify whether or not a given CRTC is the reference CRTC.
+
+No functional change.
+
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+Reviewed-by: Martin Roukala <martin.roukala@mupuf.org>
+---
+ hw/xfree86/drivers/modesetting/dri2.c     |  3 +--
+ hw/xfree86/drivers/modesetting/driver.h   |  2 +-
+ hw/xfree86/drivers/modesetting/pageflip.c | 14 +++++---------
+ hw/xfree86/drivers/modesetting/present.c  |  5 ++---
+ 4 files changed, 9 insertions(+), 15 deletions(-)
+
+diff --git a/hw/xfree86/drivers/modesetting/dri2.c b/hw/xfree86/drivers/modesetting/dri2.c
+index 8d1b742efb..34ddec4246 100644
+--- hw/xfree86/drivers/modesetting/dri2.c
++++ hw/xfree86/drivers/modesetting/dri2.c
+@@ -483,7 +483,6 @@ ms_dri2_schedule_flip(ms_dri2_frame_event_ptr info)
+     modesettingPtr ms = modesettingPTR(scrn);
+     ms_dri2_buffer_private_ptr back_priv = info->back->driverPrivate;
+     struct ms_dri2_vblank_event *event;
+-    drmmode_crtc_private_ptr drmmode_crtc = info->crtc->driver_private;
+ 
+     event = calloc(1, sizeof(struct ms_dri2_vblank_event));
+     if (!event)
+@@ -495,7 +494,7 @@ ms_dri2_schedule_flip(ms_dri2_frame_event_ptr info)
+     event->event_data = info->event_data;
+ 
+     if (ms_do_pageflip(screen, back_priv->pixmap, event,
+-                       drmmode_crtc->vblank_pipe, FALSE,
++                       info->crtc, FALSE,
+                        ms_dri2_flip_handler,
+                        ms_dri2_flip_abort,
+                        "DRI2-flip")) {
+diff --git a/hw/xfree86/drivers/modesetting/driver.h b/hw/xfree86/drivers/modesetting/driver.h
+index 3f2b1d1aef..605fd8530f 100644
+--- hw/xfree86/drivers/modesetting/driver.h
++++ hw/xfree86/drivers/modesetting/driver.h
+@@ -236,7 +236,7 @@ typedef void (*ms_pageflip_abort_proc)(modesettingPtr ms, void *data);
+ Bool ms_do_pageflip(ScreenPtr screen,
+                     PixmapPtr new_front,
+                     void *event,
+-                    int ref_crtc_vblank_pipe,
++                    xf86CrtcPtr ref_crtc,
+                     Bool async,
+                     ms_pageflip_handler_proc pageflip_handler,
+                     ms_pageflip_abort_proc pageflip_abort,
+diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
+index 5a4ad1dba1..b0ff9655b0 100644
+--- hw/xfree86/drivers/modesetting/pageflip.c
++++ hw/xfree86/drivers/modesetting/pageflip.c
+@@ -204,11 +204,10 @@ enum queue_flip_status {
+ static int
+ queue_flip_on_crtc(ScreenPtr screen, xf86CrtcPtr crtc,
+                    struct ms_flipdata *flipdata,
+-                   int ref_crtc_vblank_pipe, uint32_t flags)
++                   xf86CrtcPtr ref_crtc, uint32_t flags)
+ {
+     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
+     modesettingPtr ms = modesettingPTR(scrn);
+-    drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
+     struct ms_crtc_pageflip *flip;
+     uint32_t seq;
+ 
+@@ -220,7 +219,7 @@ queue_flip_on_crtc(ScreenPtr screen, xf86CrtcPtr crtc,
+     /* Only the reference crtc will finally deliver its page flip
+      * completion event. All other crtc's events will be discarded.
+      */
+-    flip->on_reference_crtc = (drmmode_crtc->vblank_pipe == ref_crtc_vblank_pipe);
++    flip->on_reference_crtc = crtc == ref_crtc;
+     flip->flipdata = flipdata;
+ 
+     seq = ms_drm_queue_alloc(crtc, flip, ms_pageflip_handler, ms_pageflip_abort);
+@@ -315,7 +314,7 @@ Bool
+ ms_do_pageflip(ScreenPtr screen,
+                PixmapPtr new_front,
+                void *event,
+-               int ref_crtc_vblank_pipe,
++               xf86CrtcPtr ref_crtc,
+                Bool async,
+                ms_pageflip_handler_proc pageflip_handler,
+                ms_pageflip_abort_proc pageflip_abort,
+@@ -393,7 +392,6 @@ ms_do_pageflip(ScreenPtr screen,
+     for (i = 0; i < config->num_crtc; i++) {
+         enum queue_flip_status flip_status;
+         xf86CrtcPtr crtc = config->crtc[i];
+-        drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
+ 
+         if (!xf86_crtc_on(crtc))
+             continue;
+@@ -414,13 +412,11 @@ ms_do_pageflip(ScreenPtr screen,
+          * outputs in a "clone-mode" or "mirror-mode" configuration.
+          */
+         if (ms->drmmode.can_async_flip && ms->drmmode.async_flip_secondaries &&
+-            (drmmode_crtc->vblank_pipe != ref_crtc_vblank_pipe) &&
+-            (ref_crtc_vblank_pipe >= 0))
++            ref_crtc && crtc != ref_crtc)
+             flags |= DRM_MODE_PAGE_FLIP_ASYNC;
+ 
+         flip_status = queue_flip_on_crtc(screen, crtc, flipdata,
+-                                         ref_crtc_vblank_pipe,
+-                                         flags);
++                                         ref_crtc, flags);
+ 
+         switch (flip_status) {
+             case QUEUE_FLIP_ALLOC_FAILED:
+diff --git a/hw/xfree86/drivers/modesetting/present.c b/hw/xfree86/drivers/modesetting/present.c
+index 642f7baaff..e147f3eda5 100644
+--- hw/xfree86/drivers/modesetting/present.c
++++ hw/xfree86/drivers/modesetting/present.c
+@@ -361,6 +361,5 @@ ms_present_flip(RRCrtcPtr crtc,
+     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
+     modesettingPtr ms = modesettingPTR(scrn);
+     xf86CrtcPtr xf86_crtc = crtc->devPrivate;
+-    drmmode_crtc_private_ptr drmmode_crtc = xf86_crtc->driver_private;
+     Bool ret;
+     struct ms_present_vblank_event *event;
+@@ -389,7 +388,7 @@ ms_present_flip(RRCrtcPtr crtc,
+         ms_present_set_screen_vrr(scrn, TRUE);
+     }
+ 
+-    ret = ms_do_pageflip(screen, pixmap, event, drmmode_crtc->vblank_pipe, !sync_flip,
++    ret = ms_do_pageflip(screen, pixmap, event, xf86_crtc, !sync_flip,
+                          ms_present_flip_handler, ms_present_flip_abort,
+                          "Present-flip");
+     if (ret)
+@@ -422,7 +422,7 @@ ms_present_unflip(ScreenPtr screen, uint64_t event_id)
+         event->event_id = event_id;
+         event->unflip = TRUE;
+ 
+-        if (ms_do_pageflip(screen, pixmap, event, -1, FALSE,
++        if (ms_do_pageflip(screen, pixmap, event, NULL, FALSE,
+                            ms_present_flip_handler, ms_present_flip_abort,
+                            "Present-unflip")) {
+             return;
+-- 
+GitLab

@@ -1,0 +1,75 @@
+From 18b14ea1f68b0acac4bfb48d51e749db4ec417e4 Mon Sep 17 00:00:00 2001
+From: Sultan Alsawaf <sultan@kerneltoast.com>
+Date: Tue, 14 Feb 2023 19:30:08 -0800
+Subject: [PATCH] modesetting: Introduce ms_tearfree_is_active_on_crtc helper
+
+There is more than one place with the confusing TearFree state check for a
+CRTC. Instead of open-coding the TearFree check everywhere, introduce a
+helper, ms_tearfree_is_active_on_crtc, to cover the TearFree state checks.
+
+Suggested-by: Martin Roukala <martin.roukala@mupuf.org>
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+Reviewed-by: Martin Roukala <martin.roukala@mupuf.org>
+---
+ hw/xfree86/drivers/modesetting/driver.c   |  3 +--
+ hw/xfree86/drivers/modesetting/driver.h   |  1 +
+ hw/xfree86/drivers/modesetting/pageflip.c | 10 ++++++++++
+ hw/xfree86/drivers/modesetting/present.c  |  3 +--
+ 4 files changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/hw/xfree86/drivers/modesetting/driver.c b/hw/xfree86/drivers/modesetting/driver.c
+index 3f185489e3..5176b6d402 100644
+--- hw/xfree86/drivers/modesetting/driver.c
++++ hw/xfree86/drivers/modesetting/driver.c
+@@ -655,8 +655,7 @@ ms_tearfree_do_flips(ScreenPtr pScreen)
+         drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
+         drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
+ 
+-        /* Skip disabled CRTCs and those which aren't using TearFree */
+-        if (!trf->buf[0].px || !crtc->scrn->vtSema || !xf86_crtc_on(crtc))
++        if (!ms_tearfree_is_active_on_crtc(crtc))
+             continue;
+ 
+         /* Skip if the last flip is still pending, a DRI client is flipping, or
+diff --git a/hw/xfree86/drivers/modesetting/driver.h b/hw/xfree86/drivers/modesetting/driver.h
+index 605fd8530f..a54bf28ff0 100644
+--- hw/xfree86/drivers/modesetting/driver.h
++++ hw/xfree86/drivers/modesetting/driver.h
+@@ -249,3 +249,4 @@ Bool ms_do_tearfree_flip(ScreenPtr screen, xf86CrtcPtr crtc);
+ int ms_flush_drm_events(ScreenPtr screen);
+ Bool ms_window_has_variable_refresh(modesettingPtr ms, WindowPtr win);
+ void ms_present_set_screen_vrr(ScrnInfoPtr scrn, Bool vrr_enabled);
++Bool ms_tearfree_is_active_on_crtc(xf86CrtcPtr crtc);
+diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
+index 94437c0f3c..a804841faf 100644
+--- hw/xfree86/drivers/modesetting/pageflip.c
++++ hw/xfree86/drivers/modesetting/pageflip.c
+@@ -529,3 +529,13 @@ no_flip:
+     return TRUE;
+ }
+ #endif
++
++Bool
++ms_tearfree_is_active_on_crtc(xf86CrtcPtr crtc)
++{
++    drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
++    drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
++
++    /* If TearFree is enabled, XServer owns the VT, and the CRTC is active */
++    return trf->buf[0].px && crtc->scrn->vtSema && xf86_crtc_on(crtc);
++}
+diff --git a/hw/xfree86/drivers/modesetting/present.c b/hw/xfree86/drivers/modesetting/present.c
+index acc299f3b5..89fca1a9c7 100644
+--- hw/xfree86/drivers/modesetting/present.c
++++ hw/xfree86/drivers/modesetting/present.c
+@@ -334,7 +334,7 @@ no_flip:
+         drmmode_crtc_private_ptr drmmode_crtc = xf86_crtc->driver_private;
+         drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
+ 
+-        if (trf->buf[0].px) {
++        if (ms_tearfree_is_active_on_crtc(xf86_crtc)) {
+             if (trf->flip_seq)
+                 /* The driver has a TearFree flip pending */
+                 *reason = PRESENT_FLIP_REASON_DRIVER_TEARFREE_FLIPPING;
+-- 
+GitLab

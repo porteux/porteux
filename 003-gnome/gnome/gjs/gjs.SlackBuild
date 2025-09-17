@@ -1,0 +1,58 @@
+#!/bin/bash
+
+PRGNAM=gjs
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -V -r | { 
+	if [[ "$ALLOWTEST" == "yes" ]]; then
+		head -1 && echo "$version";
+	else
+		while read -r version; do
+			minor=$(echo "$version" | cut -d. -f2)
+			if (( minor % 2 == 0 )); then
+				echo "$version";
+				break;
+			fi
+		done
+	fi
+})
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+sed -i '/gi_tests = subproject/,/installed_tests_execdir/s/^/#/' meson.build
+sed -i "s|subdir('installed-tests')|#subdir('installed-tests')|g" meson.build
+sed -i "s|subdir('test')|#subdir('test')|g" meson.build
+
+[ ! -d build ] && mkdir build
+cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	-Dprofiler=disabled \
+	-Dinstalled_tests=false \
+	-Dskip_dbus_tests=true \
+	-Dskip_gtk_tests=true
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

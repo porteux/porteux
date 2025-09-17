@@ -11,7 +11,6 @@ DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 wait
-DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gspell" &
 DownloadPackage "gtksourceview4" &
 DownloadPackage "hunspell" &

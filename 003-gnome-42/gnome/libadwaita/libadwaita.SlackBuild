@@ -27,7 +27,6 @@ mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
-	--mandir=/usr/man \
 	--datadir=/usr/share \
 	--includedir=/usr/include \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -47,4 +46,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

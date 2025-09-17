@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+l3afpad: l3afpad (a notepad clone for GTK3)
+l3afpad:
+l3afpad: l3afpad is a simple GTK3 text editor that emphasizes simplicity.
+l3afpad: As development focuses on keeping weight down to a minimum,
+l3afpad: only the most essential features are implemented in the editor.
+l3afpad: l3afpad is simple to use, it's easily compiled, requires few
+l3afpad: libraries, and starts up quickly.
+l3afpad:
+l3afpad: https://github.com/stevenhoneyman/l3afpad
+l3afpad:
+l3afpad:

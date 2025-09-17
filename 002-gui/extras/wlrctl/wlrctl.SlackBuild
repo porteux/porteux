@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# only needed until labwc implements 'ToggleShowDesktop'
+
 PRGNAM=wlrctl
 
 CWD=$(dirname "$0")
@@ -26,11 +28,10 @@ meson setup \
 	--sbindir=/usr/sbin \
 	--includedir=/usr/include \
 	--datadir=/usr/share \
-	--mandir=/usr/man \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
-	-Dman-pages=false \
+	-Dman-pages=disabled \
 	-Dzsh-completions=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
@@ -41,4 +42,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1_porteux.txz

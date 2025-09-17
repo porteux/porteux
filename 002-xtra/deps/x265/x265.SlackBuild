@@ -1,0 +1,85 @@
+#!/bin/bash
+
+PRGNAM=x265
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG $OUTPUT
+cd $TMP
+
+wget https://bitbucket.org/multicoreware/${PRGNAM}_git/get/HEAD.tar.gz
+tar xvf HEAD.tar.gz && rm HEAD.tar.gz
+cd multicoreware-${PRGNAM}*
+VERSION=$(date -r . +%Y%m%d)
+
+if [ $SLACKWAREVERSION != "current" ]; then
+	BUILDPARAMS="${CLANGFLAGS/ -flto=auto}"
+else
+	BUILDPARAMS="${CLANGFLAGS} -ffat-lto-objects"
+fi
+
+patch -p0 < $CWD/build-fix.patch
+
+cmake -B build-12 \
+	-Ssource \
+	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
+	-Wno-dev \
+	-DENABLE_HDR10_PLUS=ON \
+	-DENABLE_CLI=OFF \
+	-DENABLE_SHARED=OFF \
+	-DEXPORT_C_API=OFF \
+	-DHIGH_BIT_DEPTH=ON \
+	-DMAIN12=ON \
+	-DCMAKE_CXX_COMPILER=clang++ \
+	-DCMAKE_CXX_FLAGS="$BUILDPARAMS -fvisibility-inlines-hidden"
+
+cmake --build build-12 -- -j${NUMBERTHREADS}
+
+cmake -B build-10 \
+	-Ssource \
+	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
+	-Wno-dev \
+	-DENABLE_HDR10_PLUS=ON \
+	-DENABLE_CLI=OFF \
+	-DENABLE_SHARED=OFF \
+	-DEXPORT_C_API=OFF \
+	-DHIGH_BIT_DEPTH=ON \
+	-DCMAKE_CXX_COMPILER=clang++ \
+	-DCMAKE_CXX_FLAGS="$BUILDPARAMS -fvisibility-inlines-hidden"
+
+cmake --build build-10 -- -j${NUMBERTHREADS}
+
+cmake -B build \
+	-Ssource \
+	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
+	-Wno-dev \
+	-DENABLE_HDR10_PLUS=ON \
+	-DENABLE_CLI=OFF \
+	-DENABLE_SHARED=ON \
+	-DEXTRA_LIB="x265_main10.a;x265_main12.a" \
+	-DEXTRA_LINK_FLAGS="-L." \
+	-DLINKED_10BIT=ON \
+	-DLINKED_12BIT=ON \
+	-DCMAKE_CXX_COMPILER=clang++ \
+	-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+	-DCMAKE_CXX_FLAGS="$BUILDPARAMS -fvisibility-inlines-hidden"
+
+ln -s ../build-10/libx265.a build/libx265_main10.a
+ln -s ../build-12/libx265.a build/libx265_main12.a
+
+DESTDIR="$PKG" cmake --build build --target install -- -j${NUMBERTHREADS}
+
+find $PKG -type f -name "*.a" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -8,7 +8,6 @@ DownloadPackage "aspell" &
 DownloadPackage "cracklib" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
-DownloadPackage "ffmpegthumbnailer" &
 wait
 DownloadPackage "gexiv2" &
 DownloadPackage "glib-networking" &
@@ -26,7 +25,7 @@ wait
 
 ### only download if not present
 
-[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" # required by mozjs
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" & # required by mozjs
 
 ### temporary packages for further building
 

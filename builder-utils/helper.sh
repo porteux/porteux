@@ -4,7 +4,7 @@ CopyToDevel() {
 	mkdir -p "$PORTEUXBUILDERPATH"/05-devel/packages > /dev/null 2>&1
 	cd "$MODULEPATH"/packages
 	find . -regex '.*\.\(h\|c\|m4\|cmake\|a\|o\|pc\|gir\|deps\|vapi\|in\)$' -exec cp --parents {} "$PORTEUXBUILDERPATH"/05-devel/packages \;
-	cp -r --parents usr/lib/python*/site-packages/*-info "$PORTEUXBUILDERPATH"/05-devel/packages
+	cp -r --parents usr/lib/python*/site-packages/*-info "$PORTEUXBUILDERPATH"/05-devel/packages > /dev/null 2>&1
 }
 
 CopyToMultiLanguage() {

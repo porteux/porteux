@@ -26,27 +26,24 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--libexecdir=/usr/lib${SYSTEMBITS} \
 	--without-systemd \
 	--with-elogind \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 # Add xinitrc for xwmconfig
-mkdir -p $PKG/etc/X11/xinit
-install -m 0755 $CWD/xinitrc.mate-session $PKG/etc/X11/xinit/xinitrc.mate-session
+install -Dm755 "$CWD/xinitrc.mate-session" $PKG/etc/X11/xinit/xinitrc.mate-session
 
 # Create default directories upon startup
-mkdir -p $PKG/etc/xdg/autostart
-cp $CWD/xdg-user-dirs-update.desktop $PKG/etc/xdg/autostart/xdg-user-dirs-update.desktop
+install -Dm644 "$CWD/xdg-user-dirs-update.desktop" $PKG/etc/xdg/autostart/xdg-user-dirs-update.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

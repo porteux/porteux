@@ -1,0 +1,31 @@
+#!/bin/bash
+
+PRGNAM=python-pytz
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+repository="stub42"
+project="pytz"
+
+VERSION=$(curl -s https://github.com/${repository}/${project}/tags/ | grep "/${repository}/${project}/releases/tag/" | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | cut -d "_" -f 2 | sort -V -r | head -n 1)
+
+wget -c https://github.com/$repository/$project/releases/download/release_$VERSION/pytz-$VERSION.tar.gz
+
+tar xvf pytz-$VERSION.tar.?z
+cd pytz-$VERSION
+
+python setup.py install --root=$PKG
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

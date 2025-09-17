@@ -30,7 +30,6 @@ wait
 DownloadPackage "freetype" &
 DownloadPackage "fribidi" &
 DownloadPackage "gcr" &
-DownloadPackage "gdk-pixbuf2" &
 DownloadPackage "giflib" &
 DownloadPackage "glew" &
 DownloadPackage "glibmm" &
@@ -41,7 +40,6 @@ DownloadPackage "gparted" &
 DownloadPackage "graphene" & # required by libgstopengl
 DownloadPackage "graphite2" &
 wait
-DownloadPackage "gsettings-desktop-schemas" &
 DownloadPackage "gsl" &
 DownloadPackage "gst-plugins-base" & # required by bluetooth audio
 DownloadPackage "gstreamer" & # required by bluetooth audio
@@ -63,7 +61,6 @@ DownloadPackage "libatasmart" &
 DownloadPackage "libblockdev" &
 DownloadPackage "libbluray" &
 DownloadPackage "libbytesize" &
-DownloadPackage "libcaca" &
 DownloadPackage "libcanberra" & # required by pipewire
 DownloadPackage "libcddb" &
 DownloadPackage "libcdio" &
@@ -112,7 +109,6 @@ DownloadPackage "libvorbis" &
 DownloadPackage "libvpx" &
 DownloadPackage "libwacom" &
 DownloadPackage "libwebp" &
-DownloadPackage "libX11" &
 DownloadPackage "libXau" &
 DownloadPackage "libXaw" &
 DownloadPackage "libxcb" &
@@ -151,7 +147,6 @@ DownloadPackage "libXvMC" &
 DownloadPackage "libXxf86dga" &
 DownloadPackage "libXxf86misc" &
 DownloadPackage "libXxf86vm" &
-DownloadPackage "mesa" &
 DownloadPackage "mkfontscale" &
 DownloadPackage "mobile-broadband-provider-info" &
 DownloadPackage "mpg123" &
@@ -167,7 +162,6 @@ DownloadPackage "pango" &
 DownloadPackage "pangomm" &
 DownloadPackage "pixman" &
 DownloadPackage "poppler" &
-DownloadPackage "pulseaudio" &
 wait
 DownloadPackage "pycairo" &
 DownloadPackage "pygobject3" &
@@ -241,6 +235,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "xcb-util-errors" & # required by labwc
 	wait
 else
+	DownloadPackage "gdk-pixbuf2" &
 	DownloadPackage "librsvg" &
 	DownloadPackage "libsoup" & # required by gvfs (gvfsd-http)
 	wait
@@ -249,6 +244,8 @@ fi
 ### packages that require specific striping
 
 DownloadPackage "llvm" &
+DownloadPackage "mesa" &
+DownloadPackage "pulseaudio" &
 DownloadPackage "vulkan-sdk" &
 wait
 

@@ -22,17 +22,16 @@ cd $PRGNAM-$VERSION
 
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-./configure \
-	--prefix=/usr \
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
-	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
-	--build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--sysconfdir=/etc
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -40,4 +39,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -1,0 +1,9 @@
+--- src/polkitbackend/50-default.rules.in	2025-01-13 08:54:22.000000000 -0600
++++ src/polkitbackend/50-default.rules.in	2025-01-14 12:41:52.726910352 -0600
+@@ -8,5 +8,5 @@
+ // about configuring polkit.
+ 
+ polkit.addAdminRule(function(action, subject) {
+-    return ["unix-group:@PRIVILEGED_GROUP@"];
++    return ["unix-user:root"];
+ });

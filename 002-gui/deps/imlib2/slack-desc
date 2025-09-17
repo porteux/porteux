@@ -1,0 +1,12 @@
+      |-----handy-ruler------------------------------------------------------|
+imlib2: imlib2 (successor to Imlib)
+imlib2:
+imlib2: Imlib2 can load image files from disk in one of many formats, save
+imlib2: images to disk in one of many formats, render image data onto other
+imlib2: images, render images to an X-Windows drawable, produce pixmaps and
+imlib2: pixmap masks of images, apply filters to images, rotate images,
+imlib2: accept RGBA data for images, scale images, and more.
+imlib2:
+imlib2:
+imlib2:
+imlib2:

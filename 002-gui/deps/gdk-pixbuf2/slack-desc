@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+gdk-pixbuf2: gdk-pixbuf2 (image library used by GTK+ v2)
+gdk-pixbuf2:
+gdk-pixbuf2: The gdk-pixbuf library provides a number of features:
+gdk-pixbuf2: - GdkPixbuf structure for representing images.
+gdk-pixbuf2: - Image loading facilities, both synchronous and progressive.
+gdk-pixbuf2: - Rendering of a GdkPixbuf into various formats:
+gdk-pixbuf2:  drawables (windows, pixmaps), GdkRGB buffers.
+gdk-pixbuf2: - Fast scaling and compositing of pixbufs.
+gdk-pixbuf2: - Simple animation loading (ie. animated gifs).
+gdk-pixbuf2:
+gdk-pixbuf2:

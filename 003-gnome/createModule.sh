@@ -10,7 +10,6 @@ source "$BUILDERUTILSPATH/cachefiles.sh"
 source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 [ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
 
@@ -25,11 +24,11 @@ fi
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 cd $MODULEPATH
 
-### download packages from slackware repositories
+### download packages from slackware repository
 
 DownloadFromSlackware
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 currentPackage=audacious
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
@@ -38,6 +37,10 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=ffmpegthumbnailer
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
@@ -72,26 +75,39 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile m
 rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
 export PATH=$HOME/.cargo/bin/:$PATH
 
-DE_LATEST_VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
+if [[ ${ALLOWTEST:-no} == no ]]; then
+	export TESTRELEASES="grep -Ev '\.rc|\.beta|\.alpha'"
+else
+	export TESTRELEASES="grep ''"
+fi
 
-echo "Building GNOME ${DE_LATEST_VERSION}..."
-MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
+LATESTVERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
+
+echo "Building GNOME ${LATESTVERSION}..."
+MODULENAME=$MODULENAME-${LATESTVERSION}
+
+# gnome extras
+for package in \
+	dash-to-dock \
+	desktop-icons-ng \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 # gnome deps
 for package in \
+	libxmlb \
+	libfyaml \
+	appstream \
 	libstemmer \
-	libwpe \
-	wpebackend-fdo \
 	bubblewrap \
 	geoclue2 \
-	libpeas \
 	colord-gtk \
 	libei \
 	libportal \
 	libcloudproviders \
-	libheif \
 	glycin \
-	libwnck4 \
 	exempi \
 	blueprint-compiler \
 ; do
@@ -100,8 +116,14 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+# only required for building not for run-time
+rm $MODULEPATH/packages/blueprint-compiler*
+rm $MODULEPATH/packages/gperf*
+
 # gnome packages
 for package in \
+	libadwaita \
+	gnome-online-accounts \
 	gtksourceview5 \
 	geocode-glib \
 	libgweather \
@@ -109,13 +131,12 @@ for package in \
 	gnome-autoar \
 	gnome-desktop \
 	gnome-settings-daemon \
-	libadwaita \
 	gnome-tweaks \
 	gnome-bluetooth \
 	libnma-gtk4 \
-	gnome-online-accounts \
 	gnome-control-center \
 	mutter \
+	gjs \
 	gnome-shell \
 	gnome-session \
 	tinysparql \
@@ -130,7 +151,7 @@ for package in \
 	papers \
 	gnome-system-monitor \
 	vte \
-	gnome-console \
+	ptyxis \
 	gnome-user-share \
 	gnome-backgrounds \
 	gnome-browser-connector \
@@ -143,10 +164,26 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# only required for building not for run-time
-rm $MODULEPATH/packages/blueprint-compiler*
-rm $MODULEPATH/packages/gperf*
-rm $MODULEPATH/packages/libheif*
+### packages that require specific stripping
+
+# required by gtk4 applications to be able to have accented characters
+currentPackage=ibus
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}*.txz .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+rm usr/share/applications/org.freedesktop.IBus.Setup.desktop
+rm -fr usr/share/ibus/dicts
+rm -fr var/lib/pkgtools
+rm -f var/log/packages
+rm -fr var/log/pkgtools
+rm -f var/log/setup
+rm -f var/log/scripts
+mkdir ${currentPackage}-stripped
+rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 
@@ -157,14 +194,9 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### renamed background images to jpg
-
-mv $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-d.jxl $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-d.jpg
-mv $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-l.jxl $MODULEPATH/packages/usr/share/backgrounds/gnome/adwaita-l.jpg
-
 ### remove some useless services
 
-echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Housekeeping.desktop
+echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/localsearch-3.desktop
 echo "Hidden=true" >> $MODULEPATH/packages/etc/xdg/autostart/org.gnome.SettingsDaemon.Rfkill.desktop
 
 ### copy build files to 05-devel
@@ -184,48 +216,7 @@ gtk-update-icon-cache $MODULEPATH/packages/usr/share/icons/Adwaita
 cd $MODULEPATH/packages/
 
 {
-rm -R etc/dbus-1/system.d
-rm -R etc/dconf
-rm -R etc/opt
-rm -R usr/lib${SYSTEMBITS}/aspell
-rm -R usr/lib${SYSTEMBITS}/glade
-rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
-rm -R usr/lib${SYSTEMBITS}/graphene-1.0
-rm -R usr/lib${SYSTEMBITS}/gtk-2.0
-rm -R usr/lib${SYSTEMBITS}/python2*
-rm -R usr/lib${SYSTEMBITS}/python*/site-packages/pip*
-rm -R usr/libexec/installed-tests
-rm -R usr/share/icons/Adwaita/8x8
-rm -R usr/share/icons/Adwaita/96x96
-rm -R usr/share/icons/Adwaita/256x256
-rm -R usr/share/icons/Adwaita/512x512
-rm -R usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
-rm -R usr/share/dbus-1/services/org.freedesktop.IBus.service
-rm -R usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
-rm -R usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
-rm -R usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
-rm -R usr/share/dbus-1/services/org.gnome.evince.Daemon.service
-rm -R usr/share/dbus-1/services/org.gnome.FileRoller.service
-rm -R usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Extract.service
-rm -R usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Files.service
-rm -R usr/share/dbus-1/services/org.gnome.ScreenSaver.service
-rm -R usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
-rm -R usr/share/gjs-1.0
-rm -R usr/share/glade/pixmaps
-rm -R usr/share/gnome/autostart
-rm -R usr/share/gnome/shutdown
-rm -R usr/share/gtk-4.0
-rm -R usr/share/ibus
-rm -R usr/share/installed-tests
-rm -R usr/share/libgweather-4
-rm -R usr/share/pixmaps
-rm -R usr/share/vala
-rm -R usr/share/zsh
-rm -R var/lib/AccountsService
-
 rm etc/xdg/autostart/blueman.desktop
-rm etc/xdg/autostart/ibus*.desktop
-rm etc/xdg/autostart/localsearch-3.desktop
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
@@ -247,12 +238,49 @@ rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
-rm usr/libexec/localsearch-*
+rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/applications/org.gtk.Demo4.desktop
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 rm usr/share/applications/org.gtk.PrintEditor4.desktop
 rm usr/share/applications/org.gtk.WidgetFactory4.desktop
 rm usr/share/applications/vte-gtk4.desktop
+rm usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
+rm usr/share/dbus-1/services/org.freedesktop.LocalSearch3.Control.service
+rm usr/share/dbus-1/services/org.freedesktop.LocalSearch3.service
+rm usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
+rm usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.service
+rm usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.service
+rm usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
+rm usr/share/dbus-1/services/org.gnome.evince.Daemon.service
+rm usr/share/dbus-1/services/org.gnome.FileRoller.service
+rm usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Extract.service
+rm usr/share/dbus-1/services/org.gnome.Nautilus.Tracker3.Miner.Files.service
+rm usr/share/dbus-1/services/org.gnome.ScreenSaver.service
+rm usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
+rm usr/share/glib-2.0/schemas/org.gtk.Demo4.gschema.xml
+rm usr/share/icons/hicolor/symbolic/apps/org.gtk.Demo4-symbolic.svg
+rm usr/share/icons/hicolor/scalable/apps/org.gtk.Demo4.svg
+
+rm -fr etc/dbus-1/system.d
+rm -fr etc/dconf
+rm -fr etc/opt
+rm -fr usr/lib${SYSTEMBITS}/aspell
+rm -fr usr/lib${SYSTEMBITS}/glade
+rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
+rm -fr usr/lib${SYSTEMBITS}/graphene-1.0
+rm -fr usr/lib${SYSTEMBITS}/gtk-2.0
+rm -fr usr/lib${SYSTEMBITS}/python*/site-packages/pip*
+rm -fr usr/share/gjs-1.0
+rm -fr usr/share/glade/pixmaps
+rm -fr usr/share/gnome
+rm -fr usr/share/gtk-4.0
+rm -fr usr/share/icons/Adwaita/8x8
+rm -fr usr/share/icons/Adwaita/96x96
+rm -fr usr/share/icons/Adwaita/256x256
+rm -fr usr/share/icons/Adwaita/512x512
+rm -fr usr/share/libgweather-4
+rm -fr usr/share/pixmaps
+rm -fr var/lib/AccountsService
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null

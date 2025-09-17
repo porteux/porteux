@@ -10,7 +10,6 @@ source "$BUILDERUTILSPATH/cachefiles.sh"
 source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
@@ -23,36 +22,11 @@ fi
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 cd $MODULEPATH
 
-### download packages from slackware repositories
+### download packages from slackware repository
 
 DownloadFromSlackware
 
-### packages outside Slackware repository
-
-currentPackage=xcape
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/misc/${currentPackage}/ -A * || exit 1
-info=$(DownloadLatestFromGithub "alols" ${currentPackage})
-version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=gpicview
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-git clone https://github.com/lxde/${currentPackage}
-cd ${currentPackage}
-version=$(git describe | cut -d- -f1)
-./autogen.sh && CFLAGS="$GCCFLAGS -ffast-math" ./configure --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --enable-gtk3
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
+### packages outside slackware repository
 
 currentPackage=audacious
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
@@ -63,8 +37,8 @@ currentPackage=audacious-plugins
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=atril
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+currentPackage=ffmpegthumbnailer
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by mate-polkit
@@ -86,62 +60,29 @@ rm -fr $MODULEPATH/${currentPackage}
 
 # temporary just to build engrampa and mate-search-tool
 currentPackage=mate-common
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage} "1.29")
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc
-make -j${NUMBERTHREADS} install || exit 1
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
+rm $MODULEPATH/packages/${currentPackage}*.txz
+
+currentPackage=xcape
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 
-currentPackage=pavucontrol
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=mate-utils
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage} "1.29")
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-cp $SCRIPTPATH/extras/${currentPackage}/*.patch .
-for i in *.patch; do patch -p0 < $i || exit 1; done
-sed -i 's|baobab||g' ./Makefile.am
-sed -i 's|mate-dictionary||g' ./Makefile.am
-sed -i 's|mate-screenshot||g' ./Makefile.am
-sed -i 's|logview||g' ./Makefile.am
-sed -i 's|yelp-build|ls|g' autogen.sh
-sed -i 's|dnl yelp-tools stuff||g' configure.ac
-sed -i 's|YELP_HELP_INIT||g' configure.ac
-sed -i 's| help||g' gsearchtool/Makefile.am
-CFLAGS="$GCCFLAGS -ffat-lto-objects" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-gdict-applet --disable-disk-image-mounter || exit
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$version/schemas/org.mate.interface.gschema.xml -P usr/share/glib-2.0/schemas || exit 1
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/mate-search-tool-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=engrampa
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-info=$(DownloadLatestFromGithub "mate-desktop" ${currentPackage} "1.29")
-version=${info#* }
-filename=${info% *}
-tar xvf $filename && rm $filename || exit 1
-cd ${currentPackage}*
-sed -i 's|YELP_HELP_INIT||g' configure.ac
-sed -i 's|yelp-build|ls|g' autogen.sh
-sed -i 's|help.*|\\|g' Makefile.am
-CFLAGS="$GCCFLAGS -ffat-lto-objects" ./autogen.sh --prefix=/usr --libdir=/usr/lib$SYSTEMBITS --sysconfdir=/etc --disable-static --disable-debug --disable-caja-actions || exit 1
-make -j${NUMBERTHREADS} install DESTDIR=$MODULEPATH/${currentPackage}/package || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-$version-$ARCH-1.txz
-rm -fr $MODULEPATH/${currentPackage}
+# xfce extras
+for package in \
+	atril \
+	engrampa \
+	pavucontrol \
+	gpicview \
+	mate-search-tool \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 # required by libxfce4ui
 installpkg $MODULEPATH/packages/glade*.txz || exit 1
@@ -168,10 +109,10 @@ installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 # required by xfdesktop
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
 
-DE_LATEST_VERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1 | rev | cut -d '-' -f 1 | cut -d "." -f 2- | rev)
+LATESTVERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1 | rev | cut -d '-' -f 1 | cut -d "." -f 2- | rev)
 
-echo "Building Xfce ${DE_LATEST_VERSION}..."
-MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
+echo "Building Xfce ${LATESTVERSION}..."
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # xfce packages
 for package in \
@@ -264,14 +205,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
-rm -R usr/lib${SYSTEMBITS}/python2*
-rm -R usr/share/engrampa
-rm -R usr/share/gdm
-rm -R usr/share/gnome
-rm -R usr/share/themes/Default/balou
-rm -R usr/share/Thunar
-
 rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
 rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
@@ -284,6 +217,7 @@ rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libsoup-gnome*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
+rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/applications/xfce4-file-manager.desktop
 rm usr/share/applications/xfce4-mail-reader.desktop
 rm usr/share/applications/xfce4-terminal-emulator.desktop
@@ -295,6 +229,13 @@ rm usr/share/backgrounds/xfce/xfce-shapes.svg
 rm usr/share/icons/hicolor/scalable/status/computer.svg
 rm usr/share/icons/hicolor/scalable/status/keyboard.svg
 rm usr/share/icons/hicolor/scalable/status/phone.svg
+
+rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
+rm -fr usr/share/engrampa
+rm -fr usr/share/gdm
+rm -fr usr/share/gnome
+rm -fr usr/share/themes/Default/balou
+rm -fr usr/share/Thunar
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 } >/dev/null 2>&1

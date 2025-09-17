@@ -1,0 +1,54 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=transmission
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub ${PRGNAM} ${PRGNAM})
+VERSION=${info#* }
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+# only for version 4.0.6 which is broken
+patch -p0 < $CWD/cmake.patch 
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	sed -i 's|cmake_minimum_required(VERSION 3.12 FATAL_ERROR)|cmake_minimum_required(VERSION 3.5)|g' third-party/miniupnp/miniupnpc/CMakeLists.txt
+	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/libnatpmp/CMakeLists.txt
+	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/dht/CMakeLists.txt
+fi
+
+cmake -B build -S . \
+	-G Ninja \
+	-DCMAKE_CXX_COMPILER=clang++ \
+	-DCMAKE_C_FLAGS="$CLANGFLAGS -ffat-lto-objects -fPIC" \
+	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
+	-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+	-DCMAKE_BUILD_TYPE=release \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_SYSCONFDIR=/etc \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DENABLE_TESTS=OFF \
+	-DWITH_APPINDICATOR=OFF \
+	-DENABLE_QT=OFF \
+	-DINSTALL_DOC=OF
+
+cmake --build build -j${NUMBERTHREADS}
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
