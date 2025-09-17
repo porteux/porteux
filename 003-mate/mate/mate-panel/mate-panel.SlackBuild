@@ -14,8 +14,13 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "mate-desktop" $PRGNAM "1.29")
-VERSION=${info#* }
+if [ $SLACKWAREVERSION != "current" ]; then
+	VERSION="1.28.4"
+	wget https://github.com/mate-desktop/${PRGNAM}/releases/download/v${VERSION}/${PRGNAM}-${VERSION}.tar.xz
+else
+	info=$(DownloadLatestFromGithub "mate-desktop" $PRGNAM "1.29")
+	VERSION=${info#* }
+fi
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION

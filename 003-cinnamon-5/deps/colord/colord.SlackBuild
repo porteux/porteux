@@ -30,7 +30,7 @@ meson setup \
 	--libexecdir=/usr/lib${SYSTEMBITS}/colord \
 	-Ddaemon_user=colord \
 	-Dlibcolordcompat=true \
-	-Dvapi=true \	
+	-Dvapi=true \
 	-Dsane=false \
 	-Dsystemd=false \
 	-Dargyllcms_sensor=false \
