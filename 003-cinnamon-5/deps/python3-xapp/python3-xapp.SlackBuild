@@ -17,8 +17,8 @@ cd $TMP
 info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
 VERSION=${info#* }
 
-tar xvf python3-$VERSION.tar.?z
-cd python3-$VERSION
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \

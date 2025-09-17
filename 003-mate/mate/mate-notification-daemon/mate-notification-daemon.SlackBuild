@@ -33,11 +33,10 @@ CFLAGS="$GCCFLAGS" \
 
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
-
 install -Dm644 "$CWD/mate-notification-daemon.desktop" $PKG/etc/xdg/autostart/
 sed -i "s|%LIBDIR%|${SYSTEMBITS}|g" $PKG/etc/xdg/autostart/mate-notification-daemon.desktop
 
-install -Dm644 "$CWD/mate-notification" $PKG/etc/cron.hourly/
+install -Dm644 "$CWD/mate-notification" $PKG/etc/cron.hourly/mate-notification
 sed -i "s|%LIBDIR%|${SYSTEMBITS}|g" $PKG/etc/cron.hourly/mate-notification
 
 mkdir -p $PKG/install
