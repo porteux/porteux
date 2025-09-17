@@ -1,0 +1,12 @@
+diff -Naur rtmpdump-2.3.orig/librtmp/Makefile rtmpdump-2.3/librtmp/Makefile
+--- rtmpdump-2.3.orig/librtmp/Makefile	2010-06-30 22:01:28.000000000 +0200
++++ rtmpdump-2.3/librtmp/Makefile	2010-09-14 04:35:48.967060986 +0200
+@@ -52,7 +52,7 @@
+ 
+ OBJS=rtmp.o log.o amf.o hashswf.o parseurl.o
+ 
+-all:	librtmp.a $(SO_LIB)
++all:	librtmp.a $(SO_LIB) librtmp.pc
+ 
+ clean:
+ 	rm -f *.o *.a *.so *.$(SO_EXT)

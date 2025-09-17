@@ -24,7 +24,7 @@ elif [[ ${QT} == "6" ]]; then
 	TOOLKIT="qt6"
 	toolkitFlags="-Dgtk=false -Dqt=true"
 else
-	TOOLKIT="gtk3"
+	TOOLKIT="gtk"
 	toolkitFlags="-Dgtk=true -Dqt5=false -Dqt=false"
 fi
 
@@ -33,12 +33,11 @@ cd ${PRGNAM}-${PRGNAM}-$VERSION
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$CFLAGS" \
+CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--mandir=/usr/man \
 	-Dneon=false \
 	${toolkitFlags}
 
@@ -50,4 +49,4 @@ mkdir -p $PKG/install
 cat $CWD/${PRGNAM}-slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$TOOLKIT-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$TOOLKIT-$VERSION-$ARCH-1_porteux.txz

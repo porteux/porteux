@@ -1,0 +1,44 @@
+#!/bin/bash
+
+PRGNAM=libX11
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://gitlab.freedesktop.org/xorg/lib/${PRGNAM,,}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | rev | cut -d "-" -f 1 | rev | sort -V -r | head -1)
+wget https://gitlab.freedesktop.org/xorg/lib/${PRGNAM,,}/-/archive/${PRGNAM}-${VERSION}/${PRGNAM,,}-${PRGNAM}-${VERSION}.tar.gz
+
+tar xfv ${PRGNAM,,}-$PRGNAM-$VERSION.tar.?z*
+cd ${PRGNAM,,}-$PRGNAM-$VERSION
+
+if [ $SLACKWAREVERSION != "current" ]; then
+	sed -i "s|AC_PREREQ|#AC_PREREQ|g" configure.ac
+fi
+
+CFLAGS="${GCCFLAGS/ -flto=auto/}" \
+./autogen.sh \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--docdir=/usr/doc/${PRGNAM}-${VERSION} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--disable-static \
+	--enable-year2038 \
+	--build=$ARCH-porteux-linux
+
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

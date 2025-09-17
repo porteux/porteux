@@ -1,0 +1,137 @@
+--- panel/lxqtpanel.cpp	2023-09-04 22:04:03.000000000 +0200
++++ panel/lxqtpanel-patched.cpp	2023-09-04 22:57:56.713911396 +0200
+@@ -50,7 +50,6 @@
+ #include <XdgDirs>
+ 
+ #include <KWindowSystem/KWindowSystem>
+-#include <KWindowSystem/KX11Extras>
+ #include <KWindowSystem/NETWM>
+ 
+ // Turn on this to show the time required to load each plugin during startup
+@@ -242,18 +241,18 @@
+         QTimer::singleShot(PANEL_HIDE_FIRST_TIME, this, SLOT(hidePanel()));
+     }
+ 
+-    connect(KX11Extras::self(), &KX11Extras::windowAdded, this, [this] {
++    connect(KWindowSystem::self(), &KWindowSystem::windowAdded, this, [this] {
+         if (mHidable && mHideOnOverlap && !mHidden)
+         {
+             mShowDelayTimer.stop();
+             hidePanel();
+         }
+     });
+-    connect(KX11Extras::self(), &KX11Extras::windowRemoved, this, [this] {
++    connect(KWindowSystem::self(), &KWindowSystem::windowRemoved, this, [this] {
+         if (mHidable && mHideOnOverlap && mHidden && !isPanelOverlapped())
+             mShowDelayTimer.start();
+     });
+-    connect(KX11Extras::self(), &KX11Extras::currentDesktopChanged, this, [this] {
++    connect(KWindowSystem::self(), &KWindowSystem::currentDesktopChanged, this, [this] {
+        if (mHidable && mHideOnOverlap)
+        {
+             if (!mHidden)
+@@ -265,8 +264,8 @@
+                 mShowDelayTimer.start();
+        }
+     });
+-    connect(KX11Extras::self(),
+-            static_cast<void (KX11Extras::*)(WId, NET::Properties, NET::Properties2)>(&KX11Extras::windowChanged),
++    connect(KWindowSystem::self(),
++            static_cast<void (KWindowSystem::*)(WId, NET::Properties, NET::Properties2)>(&KWindowSystem::windowChanged),
+             this, [this] (WId /* id */, NET::Properties prop, NET::Properties2) {
+         if (mHidable && mHideOnOverlap
+             // when a window is moved, resized, shaded, or minimized
+@@ -419,7 +418,7 @@
+ void LXQtPanel::show()
+ {
+     QWidget::show();
+-    KX11Extras::setOnDesktop(effectiveWinId(), NET::OnAllDesktops);
++    KWindowSystem::setOnDesktop(effectiveWinId(), NET::OnAllDesktops);
+ }
+ 
+ 
+@@ -676,7 +675,7 @@
+         switch (mPosition)
+         {
+         case LXQtPanel::PositionTop:
+-            KX11Extras::setExtendedStrut(wid,
++            KWindowSystem::setExtendedStrut(wid,
+                                             /* Left   */  0, 0, 0,
+                                             /* Right  */  0, 0, 0,
+                                             /* Top    */  rect.top() + getReserveDimension(), rect.left(), rect.right(),
+@@ -685,7 +684,7 @@
+             break;
+ 
+         case LXQtPanel::PositionBottom:
+-            KX11Extras::setExtendedStrut(wid,
++            KWindowSystem::setExtendedStrut(wid,
+                                             /* Left   */  0, 0, 0,
+                                             /* Right  */  0, 0, 0,
+                                             /* Top    */  0, 0, 0,
+@@ -694,7 +693,7 @@
+             break;
+ 
+         case LXQtPanel::PositionLeft:
+-            KX11Extras::setExtendedStrut(wid,
++            KWindowSystem::setExtendedStrut(wid,
+                                             /* Left   */  rect.left() + getReserveDimension(), rect.top(), rect.bottom(),
+                                             /* Right  */  0, 0, 0,
+                                             /* Top    */  0, 0, 0,
+@@ -704,7 +703,7 @@
+             break;
+ 
+         case LXQtPanel::PositionRight:
+-            KX11Extras::setExtendedStrut(wid,
++            KWindowSystem::setExtendedStrut(wid,
+                                             /* Left   */  0, 0, 0,
+                                             /* Right  */  wholeScreen.right() - rect.right() + getReserveDimension(), rect.top(), rect.bottom(),
+                                             /* Top    */  0, 0, 0,
+@@ -714,7 +713,7 @@
+     }
+     } else
+     {
+-        KX11Extras::setExtendedStrut(wid,
++        KWindowSystem::setExtendedStrut(wid,
+                                         /* Left   */  0, 0, 0,
+                                         /* Right  */  0, 0, 0,
+                                         /* Top    */  0, 0, 0,
+@@ -826,8 +825,8 @@
+     mConfigDialog->activateWindow();
+     WId wid = mConfigDialog->windowHandle()->winId();
+ 
+-    KX11Extras::activateWindow(wid);
+-    KX11Extras::setOnDesktop(wid, KX11Extras::currentDesktop());
++    KWindowSystem::activateWindow(wid);
++    KWindowSystem::setOnDesktop(wid, KWindowSystem::currentDesktop());
+ }
+ 
+ 
+@@ -846,8 +845,8 @@
+     mConfigDialog->activateWindow();
+     WId wid = mConfigDialog->windowHandle()->winId();
+ 
+-    KX11Extras::activateWindow(wid);
+-    KX11Extras::setOnDesktop(wid, KX11Extras::currentDesktop());
++    KWindowSystem::activateWindow(wid);
++    KWindowSystem::setOnDesktop(wid, KWindowSystem::currentDesktop());
+ }
+ 
+ 
+@@ -1130,7 +1129,7 @@
+         KWindowSystem::setType(effectiveWinId(), NET::Dock);
+ 
+         updateWmStrut(); // reserve screen space for the panel
+-        KX11Extras::setOnAllDesktops(effectiveWinId(), true);
++        KWindowSystem::setOnAllDesktops(effectiveWinId(), true);
+         break;
+     }
+     case QEvent::DragEnter:
+@@ -1414,7 +1413,7 @@
+     ignoreList |= NET::TopMenuMask;
+     ignoreList |= NET::NotificationMask;
+ 
+-    const auto wIds = KX11Extras::stackingOrder();
++    const auto wIds = KWindowSystem::stackingOrder();
+     for (auto const wId : wIds)
+     {
+         KWindowInfo info(wId, NET::WMWindowType | NET::WMState | NET::WMFrameExtents | NET::WMDesktop);

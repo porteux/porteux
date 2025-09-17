@@ -1,0 +1,38 @@
+diff -Nur xpdf-4.00.orig/doc/sample-xpdfrc xpdf-4.00/doc/sample-xpdfrc
+--- xpdf-4.00.orig/doc/sample-xpdfrc	2017-08-08 18:22:50.000000000 -0500
++++ xpdf-4.00/doc/sample-xpdfrc	2017-09-25 23:39:20.010485577 -0500
+@@ -29,20 +29,20 @@
+ # installed in a "standard" location, xpdf will find them
+ # automatically.)
+ 
+-#fontFile Times-Roman		/usr/local/share/ghostscript/fonts/n021003l.pfb
+-#fontFile Times-Italic		/usr/local/share/ghostscript/fonts/n021023l.pfb
+-#fontFile Times-Bold		/usr/local/share/ghostscript/fonts/n021004l.pfb
+-#fontFile Times-BoldItalic	/usr/local/share/ghostscript/fonts/n021024l.pfb
+-#fontFile Helvetica		/usr/local/share/ghostscript/fonts/n019003l.pfb
+-#fontFile Helvetica-Oblique	/usr/local/share/ghostscript/fonts/n019023l.pfb
+-#fontFile Helvetica-Bold		/usr/local/share/ghostscript/fonts/n019004l.pfb
+-#fontFile Helvetica-BoldOblique	/usr/local/share/ghostscript/fonts/n019024l.pfb
+-#fontFile Courier		/usr/local/share/ghostscript/fonts/n022003l.pfb
+-#fontFile Courier-Oblique	/usr/local/share/ghostscript/fonts/n022023l.pfb
+-#fontFile Courier-Bold		/usr/local/share/ghostscript/fonts/n022004l.pfb
+-#fontFile Courier-BoldOblique	/usr/local/share/ghostscript/fonts/n022024l.pfb
+-#fontFile Symbol			/usr/local/share/ghostscript/fonts/s050000l.pfb
+-#fontFile ZapfDingbats		/usr/local/share/ghostscript/fonts/d050000l.pfb
++fontFile Times-Roman		/usr/share/ghostscript/fonts/n021003l.pfb
++fontFile Times-Italic		/usr/share/ghostscript/fonts/n021023l.pfb
++fontFile Times-Bold		/usr/share/ghostscript/fonts/n021004l.pfb
++fontFile Times-BoldItalic	/usr/share/ghostscript/fonts/n021024l.pfb
++fontFile Helvetica		/usr/share/ghostscript/fonts/n019003l.pfb
++fontFile Helvetica-Oblique	/usr/share/ghostscript/fonts/n019023l.pfb
++fontFile Helvetica-Bold		/usr/share/ghostscript/fonts/n019004l.pfb
++fontFile Helvetica-BoldOblique	/usr/share/ghostscript/fonts/n019024l.pfb
++fontFile Courier		/usr/share/ghostscript/fonts/n022003l.pfb
++fontFile Courier-Oblique	/usr/share/ghostscript/fonts/n022023l.pfb
++fontFile Courier-Bold		/usr/share/ghostscript/fonts/n022004l.pfb
++fontFile Courier-BoldOblique	/usr/share/ghostscript/fonts/n022024l.pfb
++fontFile Symbol			/usr/share/ghostscript/fonts/s050000l.pfb
++fontFile ZapfDingbats		/usr/share/ghostscript/fonts/d050000l.pfb
+ 
+ # If you need to display PDF files that refer to non-embedded fonts,
+ # you should add one or more fontDir options to point to the

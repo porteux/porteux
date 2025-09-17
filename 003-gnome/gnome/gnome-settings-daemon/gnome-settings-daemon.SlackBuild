@@ -12,11 +12,20 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
 wget https://download.gnome.org/sources/${PRGNAM}/${VERSION%%.*}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
+
+sed -i "/\['housekeeping', 'Housekeeping', 'GNOME maintenance of expirable data']/d" plugins/meson.build
+
+cp $CWD/org.gnome.SettingsDaemon.Dummy.desktop.in plugins/
+cp $CWD/org.gnome.SettingsDaemon.Real.desktop.in plugins/
+
+for i in $CWD/*.patch; do
+	patch -p0 < $i
+done
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
@@ -26,18 +35,19 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
-	--infodir=/usr/info \
-	-Dcolord=false \
-	--mandir=/usr/man \
 	--localstatedir=/var \
+	-Dcolord=false \
 	-Ddefault_library=shared \
 	-Dsystemd=false \
-	-Delogind=true
+	-Delogind=true \
+	-Dx11=true
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 # Don't auto-suspend by default on AC power (Gentoo)
-cp $CWD/org.gnome.settings-daemon.plugins.power.gschema.override $PKG/usr/share/glib-2.0/schemas
+install -Dm644 "$CWD/org.gnome.settings-daemon.plugins.power.gschema.override" $PKG/usr/share/glib-2.0/schemas/
+
+install -Dm644 "$CWD/org.gnome.SettingsDaemon.Housekeeping.desktop" $PKG/etc/xdg/autostart/
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -45,4 +55,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

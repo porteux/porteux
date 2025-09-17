@@ -26,24 +26,21 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-static \
 	--libexecdir=/usr/lib${SYSTEMBITS}/mate-notification-daemon \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
-mkdir -p $PKG/etc/xdg/autostart
-cp $CWD/mate-notification-daemon.desktop $PKG/etc/xdg/autostart
+install -Dm644 "$CWD/mate-notification-daemon.desktop" $PKG/etc/xdg/autostart/
 sed -i "s|%LIBDIR%|${SYSTEMBITS}|g" $PKG/etc/xdg/autostart/mate-notification-daemon.desktop
 
-mkdir -p $PKG/etc/cron.hourly/
-cp $CWD/mate-notification $PKG/etc/cron.hourly/
+install -Dm644 "$CWD/mate-notification" $PKG/etc/cron.hourly/mate-notification
 sed -i "s|%LIBDIR%|${SYSTEMBITS}|g" $PKG/etc/cron.hourly/mate-notification
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

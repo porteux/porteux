@@ -1,0 +1,37 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=galculator
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub ${PRGNAM} ${PRGNAM})
+VERSION=${info#* }
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+CFLAGS="$GCCFLAGS -fcommon -std=c99 -Wno-implicit-function-declaration" \
+./autogen.sh \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--enable-static=no
+
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -20,17 +20,18 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+sed -i "s| docs help||g" Makefile.in
+
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
-	--build=$ARCH-porteux-linux
+	--enable-tests=no \
+	--enable-gtk-doc-html=no
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -38,4 +39,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -32,7 +32,6 @@ if ! which xdt-csource > /dev/null 2>&1; then
 		--prefix=/usr \
 		--libdir=/usr/lib${SYSTEMBITS} \
 		--sysconfdir=/etc \
-		--mandir=/usr/man \
 		--docdir=/usr/doc/$DEVTOOLS-$DEVTOOLSVERSION \
 		--disable-static \
 		--disable-debug \
@@ -49,7 +48,7 @@ cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 
 CFLAGS="$GCCFLAGS -Wno-declaration-after-statement" \
-CXXFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -63,14 +62,12 @@ CXXFLAGS="$GCCFLAGS" \
 	--disable-indicator-services-command \
 	--disable-static
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
-mkdir -p $PKG/usr/share/backgrounds
-cp $CWD/wave.svg $PKG/usr/share/backgrounds
-chmod 644 $PKG/usr/share/backgrounds/wave.svg
+install -Dm644 "$CWD/wave.svg" "$PKG/usr/share/backgrounds/wave.svg"
 
-cp $CWD/lightdm-gtk-greeter.conf $PKG/etc/lightdm/
+install -Dm644 "$CWD/lightdm-gtk-greeter.conf" $PKG/etc/lightdm/
 sed -i "s|ICONTHEMETEMPLATE|$ICONTHEME|g" $PKG/etc/lightdm/lightdm-gtk-greeter.conf
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

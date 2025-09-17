@@ -24,23 +24,18 @@ sed -i 's|YELP_HELP_INIT||g' configure.ac
 sed -i 's|yelp-build|ls|g' autogen.sh
 sed -i 's|help.*|\\|g' Makefile.am
 
-# fix make looking for hard-coded versions of aclocal and automake
-sed -i "s|-\${am__api_version}||g" configure
-
-export CFLAGS="$GCCFLAGS -ffat-lto-objects"
-
-[ ! -e configure ] && ./autogen.sh
-./configure \
+CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-packagekit \
-	--build=$ARCH-porteux-linux
+	--disable-static \
+	--disable-debug
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -48,4 +43,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

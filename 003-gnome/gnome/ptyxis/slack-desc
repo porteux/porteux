@@ -1,0 +1,12 @@
+      |-----handy-ruler------------------------------------------------------|
+ptyxis: ptyxis (container-oriented terminal for GNOME)
+ptyxis:
+ptyxis: A modern terminal emulator built for the container era.
+ptyxis: Seamlessly navigate between your host system and local containers
+ptyxis: like Podman, Toolbox, and Distrobox with intelligent detection and
+ptyxis: a beautiful, responsive GNOME interface.
+ptyxis:
+ptyxis:
+ptyxis:
+ptyxis: https://gitlab.gnome.org/chergert/ptyxis/
+ptyxis:

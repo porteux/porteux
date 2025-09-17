@@ -1,0 +1,54 @@
+#! /bin/sh
+# Updates $(libdir)/gdk-pixbuf-2.0/2.10.0/loaders
+
+umask 022
+
+# Get the machine type from uname:
+host=$(uname -m)-slackware-linux
+
+# Fix $host for arm arch:
+case "$host" in
+  arm*) host=arm-slackware-linux-gnueabi ;;
+esac
+
+case "$host" in
+  s390x*|x86_64*)
+   if [ -x /usr/bin/gdk-pixbuf-query-loaders-64 ]; then
+     if [ "$1" = "--verbose" ]; then
+       echo "Updating gdk-pixbuf.loaders for ${host}:"
+       echo "  /usr/bin/gdk-pixbuf-query-loaders-64 --update-cache"
+     fi
+     /usr/bin/gdk-pixbuf-query-loaders-64 --update-cache
+     # Check for x86_64 multilib:
+     if [ -x /usr/bin/gdk-pixbuf-query-loaders-32 ]; then
+       if [ "$1" = "--verbose" ]; then
+         echo "Updating gdk-pixbuf.loaders for 32-bit:"
+         echo "  /usr/bin/gdk-pixbuf-query-loaders-32 --update-cache"
+       fi
+       /usr/bin/gdk-pixbuf-query-loaders-32 --update-cache
+     fi
+   else
+     if [ "$1" = "--verbose" ]; then
+       echo "Updating gdk-pixbuf.loaders for ${host}:"
+       echo "  /usr/bin/gdk-pixbuf-query-loaders --update-cache"
+     fi
+     /usr/bin/gdk-pixbuf-query-loaders --update-cache
+   fi
+   ;;
+  *)
+   if [ -x /usr/bin/gdk-pixbuf-query-loaders-32 ]; then
+     if [ "$1" = "--verbose" ]; then
+       echo "Updating gdk-pixbuf.loaders for ${host}:"
+       echo "  /usr/bin/gdk-pixbuf-query-loaders-32 --update-cache"
+     fi
+     /usr/bin/gdk-pixbuf-query-loaders-32 --update-cache
+   else
+     if [ "$1" = "--verbose" ]; then
+       echo "Updating gdk-pixbuf.loaders for ${host}:"
+       echo "  /usr/bin/gdk-pixbuf-query-loaders --update-cache"
+     fi
+     /usr/bin/gdk-pixbuf-query-loaders --update-cache
+   fi
+   ;;
+esac
+

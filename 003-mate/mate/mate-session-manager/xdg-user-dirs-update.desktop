@@ -9,4 +9,3 @@ Terminal=false
 Comment=Create XDG user directories
 Type=Application
 OnlyShowIn=MATE;
-

@@ -20,8 +20,9 @@ tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
 # fix runner not executing apps with single Enter stroke
-cp $CWD/*.patch .
-for i in *.patch; do patch -p0 < $i; done
+for i in $CWD/*.patch; do
+	patch -p0 < $i;
+done
 
 # add case insensitive and contains features
 sed -i 's/xfce_appfinder_model_fuzzy_match (item->command, string);/strcasestr(item->command, string) != 0;/g' src/appfinder-model.c
@@ -32,13 +33,12 @@ CFLAGS="$GCCFLAGS" \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/$PRGNAM-$DOWNLOADVERSION \
 	--disable-static \
 	--disable-debug \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -46,4 +46,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

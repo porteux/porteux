@@ -1,0 +1,39 @@
+#!/bin/bash
+
+PRGNAM=dash-to-dock
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://github.com/micheleg/dash-to-dock/archive/refs/heads/master.tar.gz -O $PRGNAM-master.tar.gz
+tar xvf $PRGNAM-master.tar.?z*
+cd $PRGNAM-master
+VERSION=$(date -r . +%Y%m%d)
+
+for i in $CWD/*.patch; do
+	patch -p0 < $i
+done
+
+make -j${NUMBERTHREADS} DESTDIR=${PKG} VERSION=$VERSION install
+
+EXTENSIONPATH="usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com"
+
+rm $PKG/${EXTENSIONPATH}/COPYING
+rm $PKG/${EXTENSIONPATH}/README.md
+
+mv $PKG/usr/share/glib-2.0/schemas $PKG/${EXTENSIONPATH}/
+rm -fr $PKG/usr/share/glib-2.0
+glib-compile-schemas $PKG/${EXTENSIONPATH}/schemas/
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

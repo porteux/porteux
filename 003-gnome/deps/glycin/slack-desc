@@ -6,4 +6,3 @@ glycin: image metadata. The decoding happens in sandboxed modular image loaders.
 glycin:
 glycin:
 glycin: https://git.gnome.org/browse/geocode-glib
-

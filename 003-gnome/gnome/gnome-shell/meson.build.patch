@@ -1,19 +1,19 @@
---- meson.build	2024-01-16 20:24:17.795809077 +0100
-+++ meson.build.patched	2024-01-16 20:24:09.276810015 +0100
-@@ -19,7 +19,6 @@
+--- a/meson.build	2025-09-01 12:13:19.546066111 +0200
++++ b/meson.build.patched	2025-09-01 12:13:32.197066709 +0200
+@@ -18,7 +18,6 @@
  libmutter_pc = 'libmutter-' + mutter_api_version
  libmutter_test_pc = 'libmutter-test-' + mutter_api_version
  
 -ecal_req = '>= 3.33.1'
  eds_req = '>= 3.33.1'
  gcr_req = '>= 3.90.0'
- gio_req = '>= 2.56.0'
-@@ -72,8 +71,6 @@
+ gio_req = '>= 2.85.1'
+@@ -68,8 +67,6 @@
  endif
  
  atk_bridge_dep = dependency('atk-bridge-2.0')
 -ecal_dep = dependency('libecal-2.0', version: ecal_req)
 -eds_dep = dependency('libedataserver-1.2', version: eds_req)
  gcr_dep = dependency('gcr-4', version: gcr_req)
- gdk_x11_dep = dependency('gdk-x11-3.0')
  gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0')
+ gi_dep = dependency('girepository-2.0', version: gio_req)

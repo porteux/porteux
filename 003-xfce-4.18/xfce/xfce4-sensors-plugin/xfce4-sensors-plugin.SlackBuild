@@ -22,12 +22,11 @@ cd $PRGNAM-$DOWNLOADVERSION
 sed -i 's|gint sensors_refresh_time = 60|gint sensors_refresh_time = 1|g' include/sensors-interface-plugin.h
 
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-CXXFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden -ffat-lto-objects" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc/xfce \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--enable-shared=yes \
 	--enable-static=no \
@@ -35,7 +34,7 @@ CXXFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--enable-lto \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -46,4 +45,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

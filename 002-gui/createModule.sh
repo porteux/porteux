@@ -10,7 +10,6 @@ source "$BUILDERUTILSPATH/cachefiles.sh"
 source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
@@ -23,19 +22,28 @@ fi
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 cd $MODULEPATH
 
-### download packages from slackware repositories
+### download packages from slackware repository
 
 DownloadFromSlackware
 
 ### packages outside slackware repository
 
+[ ! -f /usr/bin/clang ] && (installpkg $MODULEPATH/packages/llvm*.txz || exit 1)
+
 if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=meson
-	sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	/sbin/upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
+	installpkg $MODULEPATH/packages/gdk-pixbuf2*.txz || exit 1
+
+	# required by xorg but not included in slackware repo in stable
+	currentPackage=libxcvt
+	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}*.txz
 	rm -fr $MODULEPATH/${currentPackage}
-	rm $MODULEPATH/packages/meson-*.txz
 else
+	currentPackage=gdk-pixbuf2
+	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	installpkg $MODULEPATH/packages/${currentPackage}*.txz
+	rm -fr $MODULEPATH/${currentPackage}
+
 	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 
 	installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
@@ -46,206 +54,133 @@ else
 	rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
 	export PATH=$HOME/.cargo/bin/:$PATH
 
+	# building this because the slackware package in current depends on dav1d
 	currentPackage=librsvg
-	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
 	rm -fr $MODULEPATH/${currentPackage}
 fi
 
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libtheora*.txz || exit 1
-installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
+# required by gtk+3
 installpkg $MODULEPATH/packages/cups*.txz || exit 1
 rm $MODULEPATH/packages/cups*.txz
 
-currentPackage=gtk+3
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget https://github.com/lah7/gtk3-classic/archive/refs/heads/master.tar.gz || exit 1
-tar xvf master.tar.gz && rm master.tar.gz || exit 1
-rm gtk3-classic*/gtk+-atk-bridge-meson.build.patch
-rm gtk3-classic*/gtk+-atk-bridge-meson_options.txt.patch
-rm gtk3-classic*/appearance__disable-backdrop.patch
-sed -i "s|+++ .*/gtk/|+++ gtk/|g" gtk3-classic*/*.patch
-sed -i "s|+++ .*/gdk/|+++ gdk/|g" gtk3-classic*/*.patch
-wget -r -nd --no-parent -l1 ${SLACKWAREDOMAIN}/slackware/slackware${SYSTEMBITS}-current/source/l/${currentPackage}/ || exit 1
-sed -i "s|mkdir meson-build|cp -r $PWD/gtk3-classic*/* /tmp/gtk-\$VERSION/\nfor i in *.patch; do patch -p0 < \$i; done\n\nmkdir meson-build|g" ${currentPackage}.SlackBuild
-sed -i "s|Ddemos=true|Ddemos=false|g" ${currentPackage}.SlackBuild
-sed -i "s|Dgtk_doc=true|Dgtk_doc=false|g" ${currentPackage}.SlackBuild
-sed -i "s|Dman=true|Dman=false|g" ${currentPackage}.SlackBuild
-sed -i "s|-\${VERSION}-\$ARCH-\${BUILD}|-classic-\${VERSION}-\$ARCH-\${BUILD}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
-sed -i "s| -DG_ENABLE_DEBUG||g" ${currentPackage}.SlackBuild
-sed -i "s|meson setup|export CC=clang; meson setup|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=galculator
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/academic/${currentPackage}/ -A * || exit 1
-info=$(DownloadLatestFromGithub "${currentPackage}" "${currentPackage}")
-version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS -std=c99 -Wno-implicit-function-declaration\"|g" ${currentPackage}.SlackBuild
-sed -i "s|--prefix=/usr |--prefix=/usr --disable-quadmath |g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=imlib2 # required by openbox to draw application icons
-version=$(curl -s https://sourceforge.net/projects/enlightenment/files/${currentPackage}-src/ | grep net.sf.files | cut -d '"' -f 2)
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/libraries/${currentPackage}/ -A * || exit 1
-wget https://sourceforge.net/projects/enlightenment/files/${currentPackage}-src/$version/${currentPackage}-$version.tar.xz || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
-sed -i 's|^make|LDFLAGS=\"-fuse-ld=lld\" make -j${NUMBERTHREADS}|g' ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-installpkg $MODULEPATH/packages/${currentPackage}*.t?z
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=openbox
-version="3.6.1"
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/desktop/${currentPackage}/ -A * || exit 1
-wget http://openbox.org/dist/${currentPackage}/${currentPackage}-$version.tar.xz || exit 1
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|patch -p1 < \$CWD/py2-to-py3.patch|cp \$CWD/*.patch .|g" ${currentPackage}.SlackBuild
-sed -i "s|\$CWD/patches/\*|\*.patch|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$CLANGFLAGS\"|g" ${currentPackage}.SlackBuild
-sed -z -i "s|make\n|LDFLAGS=\"-fuse-ld=lld\" make -j${NUMBERTHREADS}\n|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=webp-pixbuf-loader
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget -r -nd --no-parent $SLACKBUILDREPOSITORY/graphics/${currentPackage}/ -A * || exit 1
-info=$(DownloadLatestFromGithub "aruiz" "${currentPackage}")
-version=${info#* }
-sed -i "s|VERSION=\${VERSION.*|VERSION=\${VERSION:-$version}|g" ${currentPackage}.SlackBuild
-sed -i "s|TAG=\${TAG:-_SBo}|TAG=|g" ${currentPackage}.SlackBuild
-sed -i "s|PKGTYPE=\${PKGTYPE:-tgz}|PKGTYPE=\${PKGTYPE:-txz}|g" ${currentPackage}.SlackBuild
-sed -i "s|-O[23].*|$GCCFLAGS\"|g" ${currentPackage}.SlackBuild
-sed -i "s|cp -a LICENSE|#cp -a LICENSE|g" ${currentPackage}.SlackBuild
-sh ${currentPackage}.SlackBuild || exit 1
-mv /tmp/${currentPackage}*.t?z $MODULEPATH/packages
-rm -fr $MODULEPATH/${currentPackage}
-
+# required by xorg-server
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
-# required by xorg but not included in Slackware repo in stable
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=libxcvt
-	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}*.txz
-	rm -fr $MODULEPATH/${currentPackage}
-fi
+# gui deps
+for package in \
+	xorg-server \
+	xf86-input-libinput \
+	libX11 \
+	gsettings-desktop-schemas \
+	gtk+3-classic \
+	pipewire \
+	wireplumber \
+	cxxopts \
+	imlib2 \
+; do
+sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
-currentPackage=xorg-server
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
+# only required for building
+rm $MODULEPATH/packages/cxxopts*.txz
 
-currentPackage=xf86-input-libinput
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=libjxl
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=pipewire
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=wireplumber
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=wlr-randr
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# only needed until labwc implements 'show desktop'
-currentPackage=wlrctl
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# required to build pamixer
-currentPackage=cxxopts
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=pamixer
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=xdg-desktop-portal
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# gui extras
+for package in \
+	galculator \
+	libjxl \
+	openbox \
+	pamixer \
+	webp-pixbuf-loader \
+	wlr-randr \
+	wlrctl \
+	xdg-desktop-portal \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 ### packages that require specific stripping
 
 currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped-$version
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=vulkan-sdk
+currentPackage=mesa
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}*.txz .
-version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
-ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped-$version
-cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped-$version > /dev/null 2>&1
-cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped-$version
-if [ $SLACKWAREVERSION == "current" ]; then
-	cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped-$version
-	cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped-$version
-	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped-$version
-fi
-cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped-$version
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+rm -fr etc/OpenCL
+rm usr/lib${SYSTEMBITS}/dri/i830*
+rm usr/lib${SYSTEMBITS}/dri/i965*
+rm usr/lib${SYSTEMBITS}/dri/nouveau_vieux*
+rm usr/lib${SYSTEMBITS}/dri/r200*
+rm usr/lib${SYSTEMBITS}/dri/radeon_dri*
+rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
+rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
+rm -fr var/lib/pkgtools
+rm -f var/log/packages
+rm -fr var/log/pkgtools
+rm -f var/log/setup
+rm -f var/log/scripts
+mkdir ${currentPackage}-stripped
+rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pulseaudio
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
-version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/libpulse-simple.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-stripped-$version
-cp --parents -P -r usr/lib$SYSTEMBITS/cmake/* $MODULEPATH/../05-devel/packages
-cp --parents -P -r usr/lib$SYSTEMBITS/pkgconfig/* $MODULEPATH/../05-devel/packages
-cp --parents -P -r usr/include/* $MODULEPATH/../05-devel/packages
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/bin/pactl ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libpulse-simple.so* ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-stripped
+cp --parents -Pr usr/lib$SYSTEMBITS/cmake/* ${currentPackage}-stripped
+cp --parents -Pr usr/lib$SYSTEMBITS/pkgconfig/* ${currentPackage}-stripped
+cp --parents -Pr usr/include/* ${currentPackage}-stripped
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=vulkan-sdk
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}*.txz .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped
+cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped > /dev/null 2>&1
+cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped
+if [ $SLACKWAREVERSION == "current" ]; then
+	cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped
+	cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped
+	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
+fi
+cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### install poppler so it can be used by next modules
@@ -287,105 +222,28 @@ CopyToDevel
 
 CopyToMultiLanguage
 
-mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/gobject-introspection $PORTEUXBUILDERPATH/05-devel/packages/usr/lib${SYSTEMBITS}
-
 ### module clean up
 
 cd $MODULEPATH/packages/
 
 {
-rm -R etc/OpenCL
-rm -R etc/pam.d
-rm -R etc/rc_keymaps
-rm -R etc/X11/xorg.conf.d
-rm -R etc/xdg/Xwayland-session.d
-rm -R usr/lib${SYSTEMBITS}/atkmm-*
-rm -R usr/lib${SYSTEMBITS}/cairomm-*
-rm -R usr/lib${SYSTEMBITS}/clang
-rm -R usr/lib${SYSTEMBITS}/gdkmm-*
-rm -R usr/lib${SYSTEMBITS}/giomm-*
-rm -R usr/lib${SYSTEMBITS}/glibmm-*
-rm -R usr/lib${SYSTEMBITS}/gnome-settings-daemon-*
-rm -R usr/lib${SYSTEMBITS}/graphene-1.0
-rm -R usr/lib${SYSTEMBITS}/gtkmm-*
-rm -R usr/lib${SYSTEMBITS}/libxslt-plugins
-rm -R usr/lib${SYSTEMBITS}/openjpeg-*
-rm -R usr/lib${SYSTEMBITS}/pangomm-*
-rm -R usr/lib${SYSTEMBITS}/python2*
-rm -R usr/lib${SYSTEMBITS}/sigc++-*
-rm -R usr/lib${SYSTEMBITS}/xmms
-rm -R usr/share/gdm
-rm -R usr/share/gnome
-rm -R usr/share/gnome-session
-rm -R usr/share/gobject-introspection-1.0/tests
-rm -R usr/share/graphite2
-rm -R usr/share/gst-plugins-base
-rm -R usr/share/gstreamer-1.0/gdb
-rm -R usr/share/gtk-*
-rm -R usr/share/imlib2
-rm -R usr/share/libcaca
-rm -R usr/share/libgphoto2/*/konica/french
-rm -R usr/share/libgphoto2/*/konica/german
-rm -R usr/share/libgphoto2/*/konica/japanese
-rm -R usr/share/libgphoto2/*/konica/korean
-rm -R usr/share/libgphoto2/*/konica/spanish
-rm -R usr/share/libgphoto2_port
-rm -R usr/share/svgalib-demos
-rm -R usr/share/themes/Artwiz-boxed
-rm -R usr/share/themes/Bear2
-rm -R usr/share/themes/Clearlooks-3.4
-rm -R usr/share/themes/Clearlooks-Olive
-rm -R usr/share/themes/Mikachu
-rm -R usr/share/themes/Natura
-rm -R usr/share/themes/Orang
-rm -R usr/share/X11/locale/am*
-rm -R usr/share/X11/locale/cs*
-rm -R usr/share/X11/locale/el*
-rm -R usr/share/X11/locale/fi*
-rm -R usr/share/X11/locale/georgian*
-rm -R usr/share/X11/locale/ja*
-rm -R usr/share/X11/locale/km*
-rm -R usr/share/X11/locale/ko*
-rm -R usr/share/X11/locale/mulelao*
-rm -R usr/share/X11/locale/nokhchi*
-rm -R usr/share/X11/locale/pt*
-rm -R usr/share/X11/locale/ru*
-rm -R usr/share/X11/locale/sr*
-rm -R usr/share/X11/locale/tatar-cyr
-rm -R usr/share/X11/locale/th*
-rm -R usr/share/X11/locale/vi*
-rm -R usr/share/X11/locale/zh*
-rm -R usr/X11R6/include
-rm -R usr/X11R6/man
-
-rm etc/profile.d/vte.csh
-rm etc/profile.d/vte.sh
 rm etc/rc_maps.cfg
 rm etc/xdg/autostart/at-spi-dbus-bus.desktop
-rm usr/bin/cacaclock
-rm usr/bin/cacademo
-rm usr/bin/cacafire
 rm usr/bin/canberra*
-rm usr/bin/gdm-control
-rm usr/bin/gnome-panel-control
-rm usr/bin/gtk3-demo
-rm usr/bin/gtk3-demo-application
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
+
 rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
-rm usr/lib${SYSTEMBITS}/libLLVMExtensions*
-rm usr/lib${SYSTEMBITS}/libLLVMLTO*
-rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
 rm usr/lib${SYSTEMBITS}/libpoppler-cpp*
-rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
 rm usr/lib${SYSTEMBITS}/libxatracker*
+rm usr/lib${SYSTEMBITS}/libXaw.so.6*
+rm usr/lib${SYSTEMBITS}/libXaw6*
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
-rm usr/share/applications/gtk3-demo.desktop
 rm usr/share/applications/gtk3-icon-browser.desktop
 rm usr/share/applications/gtk3-widget-factory.desktop
 rm usr/share/applications/mimeinfo.cache
@@ -401,8 +259,66 @@ rm usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf
 rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
-rm usr/share/xsessions/openbox-gnome.desktop
-rm usr/share/xsessions/openbox-kde.desktop
+
+rm -fr etc/pam.d
+rm -fr etc/rc_keymaps
+rm -fr etc/X11/xorg.conf.d
+rm -fr etc/xdg/Xwayland-session.d
+rm -fr usr/lib${SYSTEMBITS}/atkmm-*
+rm -fr usr/lib${SYSTEMBITS}/cairomm-*
+rm -fr usr/lib${SYSTEMBITS}/clang
+rm -fr usr/lib${SYSTEMBITS}/gdkmm-*
+rm -fr usr/lib${SYSTEMBITS}/giomm-*
+rm -fr usr/lib${SYSTEMBITS}/glibmm-*
+rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-*
+rm -fr usr/lib${SYSTEMBITS}/graphene-*
+rm -fr usr/lib${SYSTEMBITS}/gtkmm-*
+rm -fr usr/lib${SYSTEMBITS}/libxslt-plugins
+rm -fr usr/lib${SYSTEMBITS}/openjpeg-*
+rm -fr usr/lib${SYSTEMBITS}/pangomm-*
+rm -fr usr/lib${SYSTEMBITS}/sigc++-*
+rm -fr usr/lib${SYSTEMBITS}/xmms
+rm -fr usr/libexec/upower/tests
+rm -fr usr/share/gdm
+rm -fr usr/share/gobject-introspection*/tests
+rm -fr usr/share/graphite2
+rm -fr usr/share/gst-plugins-base
+rm -fr usr/share/gstreamer*/gdb
+rm -fr usr/share/gtk-*
+rm -fr usr/share/imlib2
+rm -fr usr/share/libgphoto2/*/konica/french
+rm -fr usr/share/libgphoto2/*/konica/german
+rm -fr usr/share/libgphoto2/*/konica/japanese
+rm -fr usr/share/libgphoto2/*/konica/korean
+rm -fr usr/share/libgphoto2/*/konica/spanish
+rm -fr usr/share/libgphoto2_port
+rm -fr usr/share/svgalib-demos
+rm -fr usr/share/themes/Artwiz-boxed
+rm -fr usr/share/themes/Bear2
+rm -fr usr/share/themes/Clearlooks-3.4
+rm -fr usr/share/themes/Clearlooks-Olive
+rm -fr usr/share/themes/Mikachu
+rm -fr usr/share/themes/Natura
+rm -fr usr/share/themes/Orang
+rm -fr usr/share/X11/locale/am*
+rm -fr usr/share/X11/locale/cs*
+rm -fr usr/share/X11/locale/el*
+rm -fr usr/share/X11/locale/fi*
+rm -fr usr/share/X11/locale/georgian*
+rm -fr usr/share/X11/locale/ja*
+rm -fr usr/share/X11/locale/km*
+rm -fr usr/share/X11/locale/ko*
+rm -fr usr/share/X11/locale/mulelao*
+rm -fr usr/share/X11/locale/nokhchi*
+rm -fr usr/share/X11/locale/pt*
+rm -fr usr/share/X11/locale/ru*
+rm -fr usr/share/X11/locale/sr*
+rm -fr usr/share/X11/locale/tatar-cyr
+rm -fr usr/share/X11/locale/th*
+rm -fr usr/share/X11/locale/vi*
+rm -fr usr/share/X11/locale/zh*
+rm -fr usr/X11R6/include
+rm -fr usr/X11R6/man
 } >/dev/null 2>&1
 
 [ $SLACKWAREVERSION == "current" ] && rm usr/lib${SYSTEMBITS}/libpoppler-qt5*
@@ -415,12 +331,14 @@ find $MODULEPATH/packages/usr/lib${SYSTEMBITS}/dri -name '*.la' -delete
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/dri $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libgallium* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvulkan* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libX11.so* $MODULEPATH/
 mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
 GenericStrip
 AggressiveStrip
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libvulkan* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
+mv $MODULEPATH/libX11.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
 
 # specific strip

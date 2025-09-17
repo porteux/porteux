@@ -1,0 +1,60 @@
+#!/bin/bash
+
+PRGNAM=xpdf
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://dl.xpdfreader.com/xpdf-latest.tar.gz
+
+tar xvf $PRGNAM-latest.tar.?z
+VERSION=$(ls -d xpdf-*/ 2>/dev/null | head -n1 | cut -d "-" -f2 | cut -d "/" -f1)
+
+cd $PRGNAM-$VERSION
+
+sed -i "s|initialSidebarState = gTrue|initialSidebarState = gFalse|g" xpdf/GlobalParams.cc
+
+patch -p1 < $CWD/font.patch
+
+cmake -B build -S . \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_C_FLAGS="$GCCFLAGS -ffat-lto-objects" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden -ffat-lto-objects" \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DSYSTEM_XPDFRC=/etc/xpdfrc \
+	-DMULTITHREADED=ON \
+	-DXPDFWIDGET_PRINTING=ON \
+	-DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+make -C build -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+# Remover these since we use the poppler ones
+rm $PKG/usr/bin/pdfdetach
+rm $PKG/usr/bin/pdfinfo
+rm $PKG/usr/bin/pdftops
+rm $PKG/usr/bin/pdftoppm
+rm $PKG/usr/bin/pdftohtml
+rm $PKG/usr/bin/pdftotext
+rm $PKG/usr/bin/pdfimages
+rm $PKG/usr/bin/pdffonts
+
+# Add desktop menu entry and icon
+mkdir -p $PKG/usr/share/{applications,pixmaps}
+cat $CWD/xpdf.desktop > $PKG/usr/share/applications/xpdf.desktop
+cat $CWD/xpdfIcon.xpm > $PKG/usr/share/pixmaps/xpdfIcon.xpm
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

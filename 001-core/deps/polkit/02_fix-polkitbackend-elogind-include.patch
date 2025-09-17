@@ -1,0 +1,19 @@
+--- src/polkitbackend/meson.build
++++ src/polkitbackend/meson.build
+@@ -37,7 +37,6 @@
+ 
+ if enable_logind
+   sources += files('polkitbackendsessionmonitor-systemd.c')
+-
+   deps += logind_dep
+ else
+   sources += files('polkitbackendsessionmonitor.c')
+@@ -73,7 +72,7 @@
+   program,
+   program + '.c',
+   include_directories: top_inc,
+-  dependencies: libpolkit_gobject_dep,
++  dependencies: deps,
+   c_args: c_flags,
+   link_with: libpolkit_backend,
+   install: true,

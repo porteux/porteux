@@ -1,0 +1,46 @@
+#!/bin/bash
+
+PRGNAM=librsvg
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | grep -v 'gtk' | sort -V -r | head -1)
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}"
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	-Dtests=false \
+	-Ddocs=disabled \
+	-Davif=disabled
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm $PKG/usr/bin/rsvg-convert
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

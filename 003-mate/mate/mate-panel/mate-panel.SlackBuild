@@ -14,16 +14,16 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "mate-desktop" $PRGNAM "1.29")
-VERSION=${info#* }
+if [ $SLACKWAREVERSION != "current" ]; then
+	VERSION="1.28.4"
+	wget https://github.com/mate-desktop/${PRGNAM}/releases/download/v${VERSION}/${PRGNAM}-${VERSION}.tar.xz
+else
+	info=$(DownloadLatestFromGithub "mate-desktop" $PRGNAM "1.29")
+	VERSION=${info#* }
+fi
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
-
-# missing files from 1.28.5
-git clone https://github.com/mate-desktop/mate-submodules mate-panel/mate-submodules
-cp $CWD/Makefile.in mate-panel/mate-submodules
-cp $CWD/Makefile.in.libegg mate-panel/mate-submodules/libegg/Makefile.in
 
 sed -i 's|YELP_HELP_INIT||g' configure.ac
 sed -i 's|yelp-build|ls|g' autogen.sh
@@ -35,7 +35,6 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-static \
 	--libexecdir=/usr/lib${SYSTEMBITS}/mate-panel \
@@ -44,7 +43,7 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--enable-wayland \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -52,4 +51,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -1,0 +1,12 @@
+            |-----handy-ruler------------------------------------------------------|
+gumbo-parser: gumbo-parser (An HTML5 parsing library in pure C99)
+gumbo-parser:
+gumbo-parser: Gumbo is an implementation of the HTML5 parsing algorithm implemented
+gumbo-parser: as a pure C99 library with no outside dependencies. It's designed to
+gumbo-parser: serve as a building block for other tools and libraries such as
+gumbo-parser: linters, validators, templating languages, and refactoring and
+gumbo-parser: analysis tools.
+gumbo-parser:
+gumbo-parser: Homepage: https://codeberg.org/gumbo-parser/gumbo-parser
+gumbo-parser:
+gumbo-parser:

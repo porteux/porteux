@@ -1,0 +1,30 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=python-tinycss2
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "Kozea" "tinycss2")
+VERSION=${info#* }
+
+tar xvf tinycss2-$VERSION.tar.?z
+cd tinycss2-$VERSION
+
+python -m build --no-isolation
+python -m installer -d "$PKG" dist/*.whl
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

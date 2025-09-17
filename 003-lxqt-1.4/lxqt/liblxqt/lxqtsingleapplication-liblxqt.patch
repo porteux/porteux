@@ -1,0 +1,28 @@
+--- lxqtsingleapplication.cpp	2023-09-04 21:46:59.000000000 +0200
++++ lxqtsingleapplication.cpp.patched	2023-09-04 21:48:00.043951419 +0200
+@@ -28,7 +28,6 @@
+ #include "lxqtsingleapplication.h"
+ #include "singleapplicationadaptor.h"
+ #include <KWindowSystem/KWindowSystem>
+-#include <KWindowSystem/KX11Extras>
+ #include <QDBusMessage>
+ #include <QWidget>
+ #include <QDebug>
+@@ -99,14 +98,8 @@
+         KWindowInfo info(window, KWindowSystem::WMDesktop);
+         int windowDesktop = info.desktop();
+ 
+-        if (windowDesktop != KX11Extras::currentDesktop())
+-            KX11Extras::setCurrentDesktop(windowDesktop);
+-
+-        if (QWindow *w = mActivationWindow->windowHandle())
+-            KWindowSystem::activateWindow(w);
+-         else
+-            qDebug() << Q_FUNC_INFO << "Got null windowHandle";
+-    } else {
+-        qDebug() << Q_FUNC_INFO << "activationWindow not set or null";
++    if (windowDesktop != KWindowSystem::currentDesktop())
++        KWindowSystem::setCurrentDesktop(windowDesktop);
++    KWindowSystem::activateWindow(window);
+     }
+ }

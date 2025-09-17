@@ -1,0 +1,35 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=lxqt-runner
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/${PRGNAM}
+PKG=$TMP/package-${PRGNAM}
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "lxqt" $PRGNAM)
+VERSION=${info#* }
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+cmake -B build -S . \
+	-DCMAKE_BUILD_TYPE=release \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
+
+make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

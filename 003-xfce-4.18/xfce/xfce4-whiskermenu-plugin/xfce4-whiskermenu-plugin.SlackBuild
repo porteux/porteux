@@ -19,18 +19,17 @@ wget https://gitlab.xfce.org/panel-plugins/${PRGNAM}/-/archive/${DOWNLOADVERSION
 tar xvf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-mkdir build && cd build
-cmake \
-	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS -fPIC" \
-	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS -fPIC" \
+cmake -B build -S . \
+	-G Ninja \
+	-DCMAKE_C_FLAGS="$GCCFLAGS -fPIC" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden -fPIC" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
-	-DCMAKE_INSTALL_MANDIR=/usr/man \
 	-DENABLE_ACCOUNTS_SERVICE=OFF \
 	-DENABLE_GTK_LAYER_SHELL=OFF \
-	-DCMAKE_BUILD_TYPE=Release ..
+	-DCMAKE_BUILD_TYPE=Release
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -38,4 +37,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//v/}-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//v/}-$ARCH-1_porteux.txz
