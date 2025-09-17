@@ -98,6 +98,7 @@ done
 # gnome deps
 for package in \
 	libxmlb \
+	libfyaml \
 	appstream \
 	libstemmer \
 	bubblewrap \
