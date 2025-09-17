@@ -24,7 +24,8 @@ cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_C_FLAGS="$GCCFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
-	-DBUILD_FLASHFETCH=no
+	-DBUILD_FLASHFETCH=no \
+	-DENABLE_OPENCL=off
 
 DESTDIR="$PKG" ninja -C build install -j${NUMBERTHREADS}
 
