@@ -24,7 +24,7 @@ elif [[ ${QT} == "6" ]]; then
 	TOOLKIT="qt6"
 	toolkitFlags="-Dgtk=false -Dqt=true"
 else
-	TOOLKIT="gtk"
+	TOOLKIT="gtk3"
 	toolkitFlags="-Dgtk=true -Dqt5=false -Dqt=false"
 fi
 
