@@ -36,6 +36,10 @@ find $PKG -type f -name "*.la" -exec rm -f {} \;
 # don't ship the xscreensaver autostart file
 rm -fr $PKG/etc/xdg/autostart
 
+install -Dm755 "$CWD/xinitrc.xfce" $PKG/etc/X11/xinit/xinitrc.xfce
+cd $PKG/etc/X11/xinit/
+cp -s xinitrc.xfce xinitrc
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
