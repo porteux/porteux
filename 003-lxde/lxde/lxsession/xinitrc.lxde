@@ -10,4 +10,4 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 [ -f $userresources ] && xrdb -merge $userresources
 [ -f $usermodmap ] && xmodmap $usermodmap
 
-exec dbus-launch --exit-with-session startxfce4
+exec dbus-launch --exit-with-session startlxde
