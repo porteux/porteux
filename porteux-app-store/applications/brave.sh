@@ -52,7 +52,7 @@ sed -i "s|Exec=|Exec=env LANGUAGE=${LANGUAGE} |g" "${MODULEDIR}/usr/share/applic
 
 striptease
 
-/opt/porteux-scripts/porteux-app-store/module-builder.sh "${MODULEDIR}" "${OUTPUTDIR}/${FRIENDLYPACKAGENAME}-${VERSION}-${ARCH}-${LANGUAGE}.xzm" "${ACTIVATEMODULE}"
+/opt/porteux-scripts/porteux-app-store/module-builder.sh "${MODULEDIR}" "${OUTPUTDIR}/${FRIENDLYPACKAGENAME}-${LANGUAGE}-${VERSION}-${ARCH}_porteux.xzm" "${ACTIVATEMODULE}"
 
 # cleanup
 rm -fr "${BUILDDIR}" 2> /dev/null

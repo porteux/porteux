@@ -39,7 +39,7 @@ cp "$BUILDDIR"/*.AppImage "$MODULEDIR/opt/$CURRENTPACKAGE/$APPIMAGEFILENAME" || 
 chmod 755 -R "$MODULEDIR" 2> /dev/null || exit 1
 chmod 644 "$MODULEDIR"/usr/share/applications/* 2> /dev/null || exit 1
 
-MODULEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH.xzm"
+MODULEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH_porteux.xzm"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
