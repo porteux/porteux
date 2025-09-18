@@ -1,8 +1,7 @@
 #!/bin/sh
-# LightDM wrapper to run around X sessions.
+# LightDM wrapper to run sessions
+# Based on https://github.com/sddm/sddm/blob/develop/data/scripts/Xsession
 
-# From https://github.com/sddm/sddm/blob/develop/data/scripts/Xsession
-# Note that the respective logout scripts are not sourced.
 case $SHELL in
   */bash)
     [ -z "$BASH" ] && exec $SHELL --login $0 "$@"
@@ -48,7 +47,7 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 
 # cron only works using dbus-launch, but Wayland only works using dbus-run-session
 if [[ "$@" == *"wayland"* || "$@" == *"labwc"* ]]; then
-	dbus-run-session -- $@
+	exec dbus-run-session -- "$@"
 else
-	dbus-launch --exit-with-session $@
+	exec dbus-launch --exit-with-session "$@"
 fi
