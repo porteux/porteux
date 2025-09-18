@@ -60,7 +60,7 @@ rm -fr $MODULEDIR/opt/VBoxGuestAdditions-${CURRENTVERSION}/LICENSE
 
 # Build the xzm module
 KERNELVERSION=$(uname -r | awk -F- '{print$1}')
-MODULEFILENAME="$CURRENTPACKAGE-$CURRENTVERSION-porteux-k.$KERNELVERSION-$ARCH.xzm"
+MODULEFILENAME="$CURRENTPACKAGE-$CURRENTVERSION-k.$KERNELVERSION-$ARCH_porteux.xzm"
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME"
 
 # cleanup

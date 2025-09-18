@@ -14,7 +14,7 @@ mkdir -p "$BUILDDIR/usr/bin" || exit 1
 eval wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR/usr/bin" || exit 1
 chmod 755 ${BUILDDIR}/usr/bin/* 2> /dev/null || exit 1
 
-MODULEFILENAME="$CURRENTPACKAGE-$VERSION-noarch.xzm"
+MODULEFILENAME="$CURRENTPACKAGE-$VERSION-noarch_porteux.xzm"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"

@@ -50,7 +50,7 @@ get_module_name(){
     local pkgver; pkgver="$2"
     local arch; arch="$3"
 
-    echo "${APP}-${CHANNEL}-${pkgver}-${arch}"
+    echo "${APP}-${CHANNEL}-${LANGUAGE}-${pkgver}-${arch}_porteux"
 }
 
 set_sane_defaults(){
@@ -87,7 +87,7 @@ EOF
 finisher(){
     striptease "$APP" "$1"
 
-    /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}-${LANGUAGE}.xzm" "$ACTIVATEMODULE" || exit 1
+    /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
     remove_application_temp_dir "$APP" "$2"
 }
 
