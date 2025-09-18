@@ -58,7 +58,7 @@ get_module_name(){
     local pkgver; pkgver="$2"
     local arch; arch="$3"
 
-    echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}"
+    echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
 finisher(){
