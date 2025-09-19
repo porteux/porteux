@@ -10,7 +10,7 @@ ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module"
 ARCH=$(uname -m)
 OUTPUTDIR="$PORTDIR/modules"
 BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
-MODULEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH.xzm"
+MODULEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH_porteux.xzm"
 INPUTFILE="$BUILDDIR/codium_${VERSION}_amd64.deb"
 
 rm -fr "$BUILDDIR"
