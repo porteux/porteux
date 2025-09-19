@@ -200,11 +200,6 @@ InstallAdditionalPackages
 
 sed -i "s|Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULEPATH/packages/usr/share/applications/gparted.desktop
 
-### fix symlinks
-
-cd $MODULEPATH/packages/etc/X11/xinit/
-cp -fs xinitrc.openbox-session xinitrc
-
 ### add xzm to freedesktop.org.xml
 
 patch --no-backup-if-mismatch -d $MODULEPATH/packages -p0 < $SCRIPTPATH/extras/freedesktop/freedesktop.org.xml.patch || exit 1
