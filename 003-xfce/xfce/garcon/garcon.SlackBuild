@@ -24,7 +24,6 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--docdir=/usr/doc/$PRGNAM-$DOWNLOADVERSION \
 	--disable-static \
 	--disable-debug \
 	--build=$ARCH-porteux-linux
@@ -33,12 +32,12 @@ make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-
 cd $PKG
 
 # make main menu more beautiful
 patch -p0 < $CWD/xfce-applications.menu.patch
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -172,12 +172,6 @@ sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/thunar-bulk-re
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/xfce4-sensors.desktop
 sed -i "s|Utility;||g" $MODULEPATH/packages/usr/share/applications/xfce4-taskmanager.desktop
 
-### copy xinitrc
-
-mkdir -p $MODULEPATH/packages/etc/X11/xinit
-cp $SCRIPTPATH/xfce/xfce4-session/xinitrc.xfce $MODULEPATH/packages/etc/X11/xinit/
-chmod 0755 $MODULEPATH/packages/etc/X11/xinit/xinitrc.xfce
-
 ### copy build files to 05-devel
 
 CopyToDevel

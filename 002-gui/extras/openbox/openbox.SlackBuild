@@ -38,7 +38,6 @@ rm $PKG/usr/bin/gdm-control
 rm $PKG/usr/bin/gnome-panel-control
 rm $PKG/usr/share/xsessions/openbox-gnome.desktop
 rm $PKG/usr/share/xsessions/openbox-kde.desktop
-rm -fr $PKG/usr/share/doc
 rm -fr $PKG/usr/share/gnome
 rm -fr $PKG/usr/share/gnome-session
 

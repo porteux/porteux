@@ -27,7 +27,6 @@ CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden -ffat-lto-objects" \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc/xfce \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--enable-shared=yes \
 	--enable-static=no \
 	--enable-debug=no \

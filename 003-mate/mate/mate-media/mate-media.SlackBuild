@@ -26,7 +26,6 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--enable-deprecated \
 	--enable-static=no \
 	--build=$ARCH-porteux-linux

@@ -26,7 +26,6 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--libexecdir=/usr/lib${SYSTEMBITS} \
 	--without-systemd \
 	--with-elogind \
@@ -39,9 +38,6 @@ find $PKG -type f -name "*.la" -exec rm -f {} \;
 install -Dm755 "$CWD/xinitrc.mate" $PKG/etc/X11/xinit/xinitrc.mate
 cd $PKG/etc/X11/xinit/
 cp -s xinitrc.mate xinitrc
-
-# Create default directories upon startup
-install -Dm644 "$CWD/xdg-user-dirs-update.desktop" $PKG/etc/xdg/autostart/xdg-user-dirs-update.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

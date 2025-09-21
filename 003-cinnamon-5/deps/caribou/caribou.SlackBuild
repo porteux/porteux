@@ -30,7 +30,6 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--enable-static=no \
 	--enable-gtk2-module=no \
 	--enable-docs=no \

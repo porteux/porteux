@@ -24,7 +24,6 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--docdir=/usr/doc/$PRGNAM-$DOWNLOADVERSION \
 	--enable-pluggable-dialogs \
 	--enable-sound-settings \
 	--disable-static \
