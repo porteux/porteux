@@ -30,7 +30,6 @@ CFLAGS="$GCCFLAGS" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--disable-gtksourceview4 \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-debug \
 	--disable-static \
 	--build=$ARCH-porteux-linux

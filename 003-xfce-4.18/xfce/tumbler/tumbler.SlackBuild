@@ -24,7 +24,6 @@ CFLAGS="$GCCFLAGS" \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-static \
 	--disable-debug \
 	--build=$ARCH-porteux-linux

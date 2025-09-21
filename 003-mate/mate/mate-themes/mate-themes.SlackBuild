@@ -28,7 +28,6 @@ export CFLAGS="$GCCFLAGS"
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG

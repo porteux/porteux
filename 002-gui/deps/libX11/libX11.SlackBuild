@@ -26,7 +26,6 @@ CFLAGS="${GCCFLAGS/ -flto=auto/}" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
-	--docdir=/usr/doc/${PRGNAM}-${VERSION} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--disable-static \

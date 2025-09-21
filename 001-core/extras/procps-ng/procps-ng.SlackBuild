@@ -45,7 +45,6 @@ CFLAGS="$GCCFLAGS" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--datarootdir=/usr/share \
-	--docdir=/usr/doc/$PRGNAM-$downloadedVersion \
 	--enable-static=no \
 	--disable-silent-rules \
 	--disable-rpath \
@@ -123,7 +122,6 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/psmisc-$PSMISCVER \
 	--disable-silent-rules \
 	--disable-rpath \
 	--build=$ARCH-porteux-linux
@@ -141,7 +139,6 @@ CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/procinfo-ng-$PROCINFONGVER \
 	--enable-maintainer-mode \
 	--build=$ARCH-porteux-linux
 

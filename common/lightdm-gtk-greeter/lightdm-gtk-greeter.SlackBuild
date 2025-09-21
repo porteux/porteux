@@ -32,7 +32,6 @@ if ! which xdt-csource > /dev/null 2>&1; then
 		--prefix=/usr \
 		--libdir=/usr/lib${SYSTEMBITS} \
 		--sysconfdir=/etc \
-		--docdir=/usr/doc/$DEVTOOLS-$DEVTOOLSVERSION \
 		--disable-static \
 		--disable-debug \
 		--build=$ARCH-porteux-linux
