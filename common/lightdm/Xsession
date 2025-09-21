@@ -1,6 +1,5 @@
 #!/bin/sh
 # LightDM wrapper to run sessions
-# Based on https://github.com/sddm/sddm/blob/develop/data/scripts/Xsession
 
 case $SHELL in
   */bash)
@@ -14,8 +13,6 @@ case $SHELL in
     emulate -R sh
     ;;
   */csh|*/tcsh)
-    # [t]cshrc is always sourced automatically.
-    # Note that sourcing csh.login after .cshrc is non-standard.
     xsess_tmp=`mktemp /tmp/xsess-env-XXXXXX`
     $SHELL -c "if (-f /etc/csh.login) source /etc/csh.login; if (-f ~/.login) source ~/.login; /bin/sh -c 'export -p' >! $xsess_tmp"
     . $xsess_tmp
@@ -29,7 +26,7 @@ case $SHELL in
     . $xsess_tmp
     rm -f $xsess_tmp
     ;;
-  *) # Plain sh, ksh, and anything we do not know.
+  *)
     [ -f /etc/profile ] && . /etc/profile
     [ -f "$HOME/.profile" ] && . "$HOME/.profile"
     ;;
@@ -45,7 +42,7 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 [ -f $userresources ] && xrdb -merge $userresources
 [ -f $usermodmap ] && xmodmap $usermodmap
 
-# cron only works using dbus-launch, but Wayland only works using dbus-run-session
+# wayland seems to only work properly using dbus-run-session
 if [[ "$@" == *"wayland"* || "$@" == *"labwc"* ]]; then
 	exec dbus-run-session -- "$@"
 else
