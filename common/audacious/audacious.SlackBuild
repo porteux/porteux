@@ -46,6 +46,8 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+install -Dm644 "$CWD/audacious-enqueue.desktop" $PKG/usr/share/applications/audacious-enqueue.desktop
+
 # remove invalid entry
 sed -i "s|SingleMainWindow=true||g" $PKG/usr/share/applications/audacious.desktop
 
