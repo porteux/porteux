@@ -13,11 +13,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-downloadedVersion=$(curl -s https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+downloadedVersion=$(curl -s https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | sort -Vr | head -1)
 VERSION=${downloadedVersion//[vV]}
 wget https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/archive/${downloadedVersion}/${PRGNAMDOWNLOAD}-${downloadedVersion}.tar.gz
 
-PSMISCVER=$(curl -s https://gitlab.com/psmisc/psmisc/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+PSMISCVER=$(curl -s https://gitlab.com/psmisc/psmisc/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | sort -Vr | head -1)
 wget https://gitlab.com/psmisc/psmisc/-/archive/${PSMISCVER}/psmisc-${PSMISCVER}.tar.gz
 
 PROCINFONGVER=${PROCINFONGVER:-2.0.304}

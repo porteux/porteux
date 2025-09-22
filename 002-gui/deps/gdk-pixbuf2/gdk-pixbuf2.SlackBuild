@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -V -r | { 
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -Vr | { 
 	while read -r version; do
 		minor=$(echo "$version" | cut -d. -f2)
 		if (( minor % 2 == 0 )); then

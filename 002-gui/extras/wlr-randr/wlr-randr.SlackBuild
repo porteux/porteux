@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.freedesktop.org/emersion/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | rev | cut -d "-" -f 1 | rev | sort -V -r | head -1)
+VERSION=$(curl -s https://gitlab.freedesktop.org/emersion/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | rev | cut -d "-" -f 1 | rev | sort -Vr | head -1)
 wget https://gitlab.freedesktop.org/emersion/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
