@@ -16,7 +16,7 @@ cd $TMP
 
 #info=$(DownloadLatestFromGithub "plougher" ${PRGNAM} "squashfs-tools")
 #VERSION=${info#* }
-VERSION=$(curl -s https://github.com/plougher/${PRGNAM}/tags | grep tar.gz | grep -oP "(?<=/plougher/${PRGNAM}/archive/refs/tags/)[^\"]+" | grep -v "CVE" | grep -v "${PRGNAM}" | sort -V -r | head -n 1 | rev | cut -d "." -f 3- | rev)
+VERSION=$(curl -s https://github.com/plougher/${PRGNAM}/tags | grep tar.gz | grep -oP "(?<=/plougher/${PRGNAM}/archive/refs/tags/)[^\"]+" | grep -v "CVE" | grep -v "${PRGNAM}" | sort -Vr | head -n 1 | rev | cut -d "." -f 3- | rev)
 wget https://github.com/plougher/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz
 
 tar xfv $VERSION.tar.?z*

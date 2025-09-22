@@ -13,7 +13,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://invent.kde.org/libraries/${SRCNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -vE 'rc|alpha|beta' | sort -V -r | head -1)
+VERSION=$(curl -s https://invent.kde.org/libraries/${SRCNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -vE 'alpha|beta|rc' | sort -Vr | head -1)
 wget https://invent.kde.org/libraries/${SRCNAM}/-/archive/${VERSION}/${SRCNAM}-${VERSION}.tar.gz
 
 tar xvf $SRCNAM-$VERSION.tar.?z

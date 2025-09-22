@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.freedesktop.org/libopenraw/${PRGNAM}/-/tags | grep "/releases" | cut -d '>' -f 2 | cut -d '<' -f 1 | grep -vE 'rc|alpha|beta' | cut -d ' ' -f 1 | sort -V -r | head -1)
+VERSION=$(curl -s https://gitlab.freedesktop.org/libopenraw/${PRGNAM}/-/tags | grep "/releases" | cut -d '>' -f 2 | cut -d '<' -f 1 | grep -vE 'alpha|beta|rc' | cut -d ' ' -f 1 | sort -Vr | head -1)
 wget https://gitlab.freedesktop.org/libopenraw/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
