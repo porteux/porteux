@@ -220,6 +220,7 @@ rm usr/bin/xfce4-set-wallpaper
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py
+rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
 rm usr/share/dbus-1/services/org.gnome.Caribou.Daemon.service
 rm usr/share/dbus-1/services/org.gnome.FileRoller.service
