@@ -145,6 +145,7 @@ for package in \
 	extra-cmake-modules \
 	layer-shell-qt6 \
 	kwindowsystem \
+	plasma-wayland-protocols \
 	kwayland \
 	solid \
 	kidletime \
