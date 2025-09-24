@@ -16,8 +16,8 @@ git clone https://github.com/lxde/${PRGNAM}
 cd ${PRGNAM}
 VERSION=`git describe | cut -d- -f1`
 
-./autogen.sh && CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-./configure \
+CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+./autogen.sh && ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \
 	--localstatedir=/var \
