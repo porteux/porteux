@@ -11,7 +11,7 @@ wait
 
 ### only download if not present
 
-[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" & # required by cosmic-greeter
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
 wait
 
 ### slackware current only packages
