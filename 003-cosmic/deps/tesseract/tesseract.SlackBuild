@@ -36,8 +36,5 @@ find $PKG -type f -name "*.la" -exec rm -f {} \;
 mkdir -p $PKG/usr/share/tessdata
 wget https://github.com/tesseract-ocr/tessdata/raw/refs/heads/main/eng.traineddata -O $PKG/usr/share/tessdata/eng.traineddata
 
-mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
