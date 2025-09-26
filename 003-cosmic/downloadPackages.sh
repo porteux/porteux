@@ -4,6 +4,9 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 GenerateRepositoryUrls
 
 DownloadPackage "libdbusmenu" &
+DownloadPackage "libgtop" &
+DownloadPackage "libhandy" &
+DownloadPackage "libwnck3" &
 wait
 
 ### only download if not present

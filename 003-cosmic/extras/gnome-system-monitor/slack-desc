@@ -1,0 +1,12 @@
+                    |-----handy-ruler------------------------------------------------------|
+gnome-system-monitor: gnome-system-monitor (GNOME System Monitor)
+gnome-system-monitor:
+gnome-system-monitor: GNOME System Monitor is a GNOME process viewer and system monitor 
+gnome-system-monitor: with an attractive,easy-to-use interface, It has features, 
+gnome-system-monitor: such as a tree view for process dependencies,icons for processes
+gnome-system-monitor: the ability to hide processes that you don't want to see,graphical 
+gnome-system-monitor: time histories of CPU/memory/swap usage,the ability to kill/renice.
+gnome-system-monitor:
+gnome-system-monitor: 
+gnome-system-monitor: https://gitlab.gnome.org/GNOME/gnome-system-monitor
+gnome-system-monitor:
