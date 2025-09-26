@@ -20,20 +20,18 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-sed -i "s|lib/|\${CMAKE_INSTALL_LIBDIR}/|g" CMakeLists.txt
-sed -i "s| lib | \${CMAKE_INSTALL_LIBDIR} |g" src/CMakeLists.txt
+CFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+./autogen.sh && ./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--disable-static
 
-cmake -B build -S . \
-	-G Ninja \
-	-DCMAKE_C_FLAGS="$GCCFLAGS" \
-	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
-	-DBUILD_SHARED_LIBS=ON
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
-DESTDIR="$PKG" ninja -C build install -j${NUMBERTHREADS}
-
-mv $PKG/usr/lib${SYSTEMBITS}/pkgconfig/lept_Release.pc $PKG/usr/lib${SYSTEMBITS}/pkgconfig/lept.pc
-sed -i "s|/lib|/lib${SYSTEMBITS}|g" $PKG/usr/lib${SYSTEMBITS}/pkgconfig/lept.pc
+rm -fr $PKG/usr/bin
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -22,7 +22,7 @@ sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
 
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 make -j${NUMBERTHREADS}
-make install-strip DESTDIR=$MODULEPATH/$PRGNAM/package
+make install DESTDIR=$MODULEPATH/$PRGNAM/package
 
 cd $MODULEPATH/$PRGNAM/package
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz
