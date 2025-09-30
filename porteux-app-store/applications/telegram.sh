@@ -53,7 +53,7 @@ chmod 755 -R "$MODULEDIR" 2> /dev/null || exit 1
 chown -R guest: "$MODULEDIR/home/guest/"
 chmod 644 "$MODULEDIR"/home/guest/.local/share/applications/* 2> /dev/null || exit
 
-MODULEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH_porteux.xzm"
+MODULEFILENAME="$CURRENTPACKAGE-$VERSION-${ARCH}_porteux.xzm"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"

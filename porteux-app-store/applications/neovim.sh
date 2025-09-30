@@ -19,7 +19,7 @@ wget -T 15 "$APPLICATIONURL" -O - | tar -xz -C "$MODULEDIR" || exit 1
 
 mv "$MODULEDIR/nvim-linux-x86_64" "$MODULEDIR/usr"
 
-MODULEFILENAME="$CURRENTPACKAGE-${VERSION//v}-$ARCH_porteux.xzm"
+MODULEFILENAME="$CURRENTPACKAGE-${VERSION//v}-${ARCH}_porteux.xzm"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
