@@ -85,7 +85,7 @@ chown root:root $MODULEDIR/opt/VirtualBox/VirtualBox
 chmod -s $MODULEDIR/opt/VirtualBox/VirtualBox
 chmod +s $MODULEDIR/opt/VirtualBox/VirtualBoxVM
 KERNELVERSION=$(uname -r | awk -F- '{print$1}')
-MODULEFILENAME="$CURRENTPACKAGE-$CURRENTVERSION-k.$KERNELVERSION-$ARCH_porteux.xzm"
+MODULEFILENAME="$CURRENTPACKAGE-$CURRENTVERSION-k.$KERNELVERSION-${ARCH}_porteux.xzm"
 ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
 
