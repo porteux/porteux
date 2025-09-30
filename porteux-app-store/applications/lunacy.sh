@@ -18,7 +18,7 @@ wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
 
 deb2xzm "$INPUTFILE" -o="$BUILDDIR/$TMPMODULEFILENAME" -q &>/dev/null
 VERSION=$(unsquashfs -cat "$BUILDDIR/$TMPMODULEFILENAME" "usr/share/applications/*.desktop" | grep Version | cut -d= -f2)
-MODULEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH_porteux.xzm"
+MODULEFILENAME="$CURRENTPACKAGE-$VERSION-${ARCH}_porteux.xzm"
 
 if [ ! -w "$OUTPUTDIR" ]; then
     mv "$BUILDDIR/$TMPMODULEFILENAME" "/tmp/$MODULEFILENAME"
