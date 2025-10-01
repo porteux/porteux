@@ -176,7 +176,6 @@ DownloadPackage "python-urllib3" &
 DownloadPackage "readline" &
 DownloadPackage "rpcbind" &
 DownloadPackage "rpm2tgz" &
-DownloadPackage "rpm" &
 wait
 DownloadPackage "rp-pppoe" &
 DownloadPackage "rsync" &

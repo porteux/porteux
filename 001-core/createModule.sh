@@ -60,6 +60,7 @@ done
 for package in \
 	fastfetch \
 	7zip \
+	rpm \
 	procps-ng \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1

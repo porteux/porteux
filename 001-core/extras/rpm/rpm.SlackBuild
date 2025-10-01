@@ -1,0 +1,55 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=rpm
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "rpm-software-management" ${PRGNAM})
+VERSION=${info#* }
+
+tar xvf ${PRGNAM}*.tar.?z*
+cd ${PRGNAM}*/
+
+sed -i "s|find_program(SCDOC|#find_program(SCDOC|g" CMakeLists.txt
+sed -i "s|mark_as_advanced(SCDOC)|#mark_as_advanced(SCDOC)|g" CMakeLists.txt
+
+sed -i "s|find_program(SCD2HTML|#find_program(SCD2HTML|g" CMakeLists.txt
+sed -i "s|mark_as_advanced(SCD2HTML|#mark_as_advanced(SCD2HTML|g" CMakeLists.txt
+
+sed -i "s|add_subdirectory(docs)|#add_subdirectory(docs)|g" CMakeLists.txt
+sed -i "s|install(FILES CONTRIBUTING.md|#install(FILES CONTRIBUTING.md|g" CMakeLists.txt
+
+cmake -B build -S . \
+	-G Ninja \
+	-DCMAKE_CXX_COMPILER=clang++ \
+	-DCMAKE_C_FLAGS="$CLANGFLAGS -ffat-lto-objects" \
+	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
+	-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_LIBDIR="lib${SYSTEMBITS}" \
+	-DWITH_AUDIT=OFF \
+	-DWITH_SELINUX=OFF \
+	-DWITH_SEQUOIA=OFF \
+	-DENABLE_OPENMP=OFF \
+	-DENABLE_TESTSUITE=OFF
+
+DESTDIR="$PKG" ninja -C build install -j${NUMBERTHREADS}
+
+rm -fr $PKG/etc
+rm -fr $PKG/usr/share/doc
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
