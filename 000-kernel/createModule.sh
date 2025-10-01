@@ -155,9 +155,6 @@ echo "Creating kernel xzm module..."
 mkdir -p ${MODULEPATH}/${MODULENAME}
 mv lib ${MODULEPATH}/${MODULENAME}
 
-# strip kernel
-find ${MODULEPATH}/${MODULENAME} | xargs strip --strip-unneeded 2> /dev/null
-
 # create kernel module xzm module
 MakeModule ${MODULEPATH}/${MODULENAME} "${MODULENAME}-${KERNELVERSION}-$(date +%Y%m%d).xzm" > /dev/null 2>&1
 
