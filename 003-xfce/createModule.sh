@@ -109,7 +109,20 @@ installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
 # required by xfdesktop
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
 
-LATESTVERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1 | rev | cut -d '-' -f 1 | cut -d "." -f 2- | rev)
+LATESTVERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^xfce-|pre' | sort -Vr | {
+	if [[ "$ALLOWTEST" == "yes" ]]; then
+		version=$(head -1)
+		echo "$version" | rev | cut -d '-' -f 1 | rev
+	else
+		while read -r version; do
+			minor=$(echo "$version" | cut -d. -f2)
+			if (( minor % 2 == 0 )); then
+				echo "$version" | rev | cut -d '-' -f 1 | rev
+				break
+			fi
+		done
+	fi
+})
 
 echo "Building Xfce ${LATESTVERSION}..."
 MODULENAME=$MODULENAME-${LATESTVERSION}
