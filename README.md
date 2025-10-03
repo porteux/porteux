@@ -45,7 +45,7 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines (as long as they support SSE4), it is on high-end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small, and memory RAM consumption is highly optimized.
+PorteuX is lightweight and snappy. Although it can run on old machines (as long as they support SSE4.2), it is on high-end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small, and memory RAM consumption is highly optimized.
 
 For better performance, it's recommended to have PorteuX installed on a SSD/NVMe storage unit instead of a USB flash drive, or to select the 'Copy To RAM' option in the boot menu. The latter will result in a slower boot time, but after booting the system will run 100% in RAM, which is the fastest way possible.
 
