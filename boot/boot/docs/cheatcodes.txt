@@ -14,6 +14,7 @@ PorteuX logo appears with a boot menu. Choose your desired menu
 entry and hit Tab, which will allow you to edit the command line.
 Add your desired boot argument from the list below to affect booting
 the way you like.
+
 Here's an example of what the boot line would look like, adding the
 noauto and copy2ram cheatcodes to a standard PorteuX boot option
 (which already has some other cheatcodes by default):
@@ -122,8 +123,9 @@ copy2ram
 delay=some_value
 
    ... To be used for devices which need extra time to settle up.
-       Example: 'delay=5' will cause a 5 second delay before PorteuX
-       starts the boot process.
+       
+       Example (to delay 5 seconds before PorteuX starts the boot process):
+       delay=5.
 
 extramod=/path/folder_with_modules
 extramod=/path/folder_with_modules;/path2/folder_with_modules
@@ -142,6 +144,11 @@ from=/path/folder
 from=/path/porteux.iso
 
    ... Loads PorteuX from the specified partition, folder or ISO file.
+
+       NOTE: if the destination partition is not provided with this
+       cheatcode, the booting script will search through all available
+       devices for your data.
+
        Examples:
        'from=/mnt/sdb2' will attempt to load unpacked PorteuX ISO from
        the second partition on your second drive.
@@ -149,10 +156,6 @@ from=/path/porteux.iso
        from the 'linux-testing' folder placed on the second partition.
        'from=/mnt/sda1/porteux-test.iso' will attempt to load the PorteuX
        data from 'porteux-test.iso'.
-
-       NOTE: if the destination partition is not provided with this
-       cheatcode, the booting script will search through all available
-       devices for your data.
 
 fsck
 
@@ -177,8 +180,9 @@ guiexec=firefox;pidgin
        Use semicolons (;) as command separators with no spaces.
    ... If you need to use spaces in the command line, replace them
        with '~'.
-       Example: 'guiexec=firefox~kernel.org' will open the firefox
-       browser on the 'kernel.org' website.
+       
+       Example (to open the Firefox browser on the 'kernel.org' website):
+       guiexec=firefox~kernel.org
 
 kmap=keyboardmap
 kmap=keyboardmap1,keyboardmap2,keyboardmap3
@@ -187,16 +191,17 @@ kmap=keyboardmap:variant
    ... Specifies the preferred keyboard layout for Xorg sessions of any
        desktop environment. A full list of supported layouts can be found
        in the /etc/X11/xkb/symbols folder. Up to 3 layouts are supported.
-       Example: 'kmap=ara,us' will set the Arabic keyboard layout at
-       startup. 'kmap=ara,us' will keep Arabic layout as default
-       with possibility of switching to 'us' by 'alt+shift' key
-       combination.
        Keyboard layout variants are also supported.
 
        NOTE: changing the keyboard layout using the desktop environment
        settings may overwrite this cheatcode. Also, it will not work in
        Wayland sessions.
 
+       Example (to set the American keyboard layout with accent support):
+       kmap=us:alt-intl
+       Example (to set the Arabic keyboard layout as default with
+       possibility of switching to 'us'):
+       kmap=ara,us
        Example (to set Polish keyboard layout with 'qwertz' as a variant):
        kmap=pl:qwertz
 
@@ -295,7 +300,7 @@ noswap
    ... Prevents the automatic use of an existing swap partition.
        By default, PorteuX searches your attached drives for
        partitions that are formatted as swap, and will mount them
-       for use within PorteuX. The 'noswap' cheatcode disables
+       for use within PorteuX. This 'noswap' cheatcode disables
        this behaviour.
 
 ramsize=some_value%
@@ -343,7 +348,8 @@ rootcopy=/path/to_folder/with_files
        filesystem. This directory will be used instead of the
        traditional /porteux/rootcopy.
 
-       Example: 'rootcopy=/mnt/sda5/porteux-files'
+       Example:
+       rootcopy=/mnt/sda5/porteux-files
 
 rootmount
 
@@ -360,28 +366,10 @@ cfgfile=some_name.cfg
        Example:
        cfgfile=porteux-usb.cfg
 
-storage=/path/folder
-storage=/path/file.dat
-
-   ... This cheatcode takes action only when used together with the
-       'pxe' cheatcode. It tells the server to store persistent
-       changes from the clients in a specified folder. Changes must
-       be saved on a real and writeable filesystem (will not work with
-       aufs).
-       Separate folders for each client will be created with the name
-       '/path/folder/client-xxxx' where xxxx is the last 4 characters
-       of the clients' NIC MAC address.
-       This cheatcode should be used on the server side.
-
-       Example:
-       storage=/mnt/sda3/pxe-clients
-
 timezone=region/zone
 
-   ... Tell PorteuX the correct timezone for your location. By default,
-       this assumes that your hardware clock is set to localtime. To use
-       a timezone with a hardware clock set to UTC time instead, also
-       add the 'utc' cheatcode.
+   ... Tell PorteuX the correct timezone for your location.
+       
        A full listing of available timezones can be found in 
        /usr/share/zoneinfo/.
 
@@ -392,30 +380,28 @@ timezone=region/zone
 utc
 
    ... Tell PorteuX that your hardware clock is set to UTC time and
-       not to localtime. Most computers that have Windows installed on
-       them use localtime instead of UTC time, but many UNIX machines
-       use UTC instead. This cheatcode is normally used together with
+       not to localtime. Most computers that have Windows installed
+       use localtime instead of UTC time, but many UNIX machines use
+       UTC instead. This cheatcode is normally used together with
        the 'timezone' cheatcode.
-
-       Example:
-       timezone=Europe/Warsaw utc
 
 noupdateclock
 
-   ... Prevents the automatic update of the machine (i.e. BIOS) clock
-       during boot time. By default, PorteuX updates the machine clock
+   ... Prevents the automatic update of the hardware clock during
+       boot time. By default, PorteuX updates the hardware clock
        from the internet during boot time if a timezone is specified.
-       The 'noupdateclock' cheatcode disables this behaviour.
+       This 'noupdateclock' cheatcode disables this behaviour.
 
 vga_detect
 
-   ... Automatically detects Nvidia video cards and loads the
+   ... Automatically detects NVIDIA video cards and loads the
        proprietary driver at startup. You must have a module
        containing the appropriate graphics driver stored in your
        /porteux/optional/ directory. The driver module is available in
        the PorteuX App Store. If you want to compile your own driver,
        please note that the module's name must contain nvidia-[number],
-       where [number] is the number of the driver version for example 08-nvidia-560.35.03-k.6.11.4-porteux-x86_64.xzm).
+       where [number] is the number of the driver version. For example:
+       08-nvidia-560.35.03-k.6.11.4-porteux-x86_64.xzm.
 
 volume=some_value%
 
