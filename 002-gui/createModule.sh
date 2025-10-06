@@ -222,6 +222,7 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
+rm etc/asound.state
 rm etc/rc_maps.cfg
 rm etc/xdg/autostart/at-spi-dbus-bus.desktop
 rm usr/bin/canberra*
