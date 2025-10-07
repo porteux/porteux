@@ -149,6 +149,34 @@ cd ${currentPackage}*
 mv sof ${MODULEPATH}/lib/firmware/intel
 mv sof-tplg ${MODULEPATH}/lib/firmware/intel
 
+echo "Creating symlinks of duplicate firmwares..."
+HASH_LIST=$(mktemp)
+declare -A seen_hashes
+find ${MODULEPATH}/lib/firmware -type f -exec sha256sum "{}" + > "$HASH_LIST"
+
+while IFS= read -r line; do
+    file_hash="${line:0:64}"
+    file_path="${line:65}"
+    file_path="$(echo -e "${file_path}" | sed -e 's/^[[:space:]]*//')"
+
+    # if we've already seen this hash, it's a duplicate
+    if [[ -n "${seen_hashes[$file_hash]}" ]]; then
+        original="${seen_hashes[$file_hash]}"
+
+        if [[ -f "$file_path" ]]; then
+            rm "$file_path"
+
+            # create relative symlink
+            rel_link=$(realpath --relative-to="$(dirname "$file_path")" "$original")
+            ln -s "$rel_link" "$file_path"
+        fi
+    else
+        seen_hashes["$file_hash"]="$file_path"
+    fi
+done < "$HASH_LIST"
+
+rm "$HASH_LIST"
+
 cd $MODULEPATH
 
 echo "Creating kernel xzm module..."
