@@ -244,6 +244,10 @@ sed -i "s|try_first_pass use_authtok||g" $MODULEPATH/packages/etc/pam.d/system-a
 sed -i "s|dhcp=dhclient|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/NetworkManager.conf || exit 1
 sed -i "s|#dhcp=internal|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/conf.d/00-dhcp-client.conf || exit 1
 
+### fix timeconfig missing folder
+
+sed -i '/^TMP=\/var\/log\/setup\/tmp$/a [ ! -d \$TMP ] && mkdir -p \$TMP' $MODULEPATH/packages/usr/sbin/timeconfig
+
 ### fix symlinks
 
 cd $MODULEPATH/packages/bin
