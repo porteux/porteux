@@ -239,6 +239,11 @@ sed -i '/^ca::ctrlaltdel/c\ca::ctrlaltdel:/sbin/shutdown -r now 2>/dev/null' $MO
 sed -i "s|password    requisite     pam_pwquality.so|#password    requisite     pam_pwquality.so|g" $MODULEPATH/packages/etc/pam.d/system-auth
 sed -i "s|try_first_pass use_authtok||g" $MODULEPATH/packages/etc/pam.d/system-auth
 
+### remove fake curl deps
+
+sed -i "s|,mit-krb5-gssapi||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
+sed -i "s|,libcares||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
+
 ### set NetworkManager to use internal dhcp
 
 sed -i "s|dhcp=dhclient|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/NetworkManager.conf || exit 1
@@ -261,11 +266,6 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	cd $MODULEPATH/packages
 	patch -p0 < $SCRIPTPATH/extras/rc.cpufreq.patch
 fi
-
-### remove fake curl deps
-
-sed -i "s|,mit-krb5-gssapi||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
-sed -i "s|,libcares||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
 
 ### fix permissions
 
