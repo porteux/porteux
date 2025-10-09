@@ -35,6 +35,9 @@ install -Dm755 "$CWD/xinitrc.cinnamon" $PKG/etc/X11/xinit/xinitrc.cinnamon
 cd $PKG/etc/X11/xinit/
 cp -s xinitrc.cinnamon xinitrc
 
+# fix for Wayland sessions which happens to also work for X11
+sed -i '/cinnamon-session-binary/c\exec dbus-run-session -- /usr/lib${SYSTEMBITS}/cinnamon-session-binary "\$@"' $PKG/usr/bin/cinnamon-session
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
