@@ -198,7 +198,8 @@ InstallAdditionalPackages
 
 ### fix applications shortcuts
 
-sed -i "s|Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULEPATH/packages/usr/share/applications/gparted.desktop
+sed -i "s|^Exec=.*|Exec=dbus-run-session -- labwc|g" $MODULEPATH/packages/usr/share/wayland-sessions/labwc.desktop
+sed -i "s|^Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULEPATH/packages/usr/share/applications/gparted.desktop
 
 ### add xzm to freedesktop.org.xml
 
