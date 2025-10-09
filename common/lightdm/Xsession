@@ -44,7 +44,7 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 
 # wayland seems to only work properly using dbus-run-session
 if [[ "$@" == *"wayland"* || "$@" == *"labwc"* ]]; then
-	exec dbus-run-session -- "$@"
+	dbus-run-session -- "$@"
 else
 	exec dbus-launch --exit-with-session "$@"
 fi
