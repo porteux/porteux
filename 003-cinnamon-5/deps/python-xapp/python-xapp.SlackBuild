@@ -2,7 +2,7 @@
 
 source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
-PRGNAM=python3-xapp
+PRGNAM=python-xapp
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -14,11 +14,13 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
+project="python3-xapp"
+
+info=$(DownloadLatestFromGithub "linuxmint" ${project} "master.")
 VERSION=${info#* }
 
-tar xvf $PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+tar xvf $project-$VERSION.tar.?z
+cd $project-$VERSION
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
