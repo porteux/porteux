@@ -1,7 +1,7 @@
 diff --git a/common/gdm-common.c b/common/gdm-common.c
 index 654b84e0a..4f56a05d4 100644
---- a/common/gdm-common.c
-+++ b/common/gdm-common.c
+--- common/gdm-common.c
++++ common/gdm-common.c
 @@ -88,42 +88,6 @@ gdm_get_pwent_for_name (const char     *name,
          return (pwent != NULL);
  }
@@ -47,8 +47,8 @@ index 654b84e0a..4f56a05d4 100644
                         struct group **grentp)
 diff --git a/common/gdm-common.h b/common/gdm-common.h
 index 3e210b87b..cffefe1e4 100644
---- a/common/gdm-common.h
-+++ b/common/gdm-common.h
+--- common/gdm-common.h
++++ common/gdm-common.h
 @@ -24,7 +24,6 @@
  #include <glib-unix.h>
  #include <gio/gio.h>
@@ -72,8 +72,8 @@ index 3e210b87b..cffefe1e4 100644
  char          *gdm_generate_random_bytes (gsize          size,
 diff --git a/daemon/gdm-display.c b/daemon/gdm-display.c
 index 54e054808..5a5096aa1 100644
---- a/daemon/gdm-display.c
-+++ b/daemon/gdm-display.c
+--- daemon/gdm-display.c
++++ daemon/gdm-display.c
 @@ -1678,32 +1678,6 @@ wants_initial_setup (GdmDisplay *self)
          return enabled;
  }
@@ -109,8 +109,8 @@ index 54e054808..5a5096aa1 100644
  {
 diff --git a/daemon/gdm-display.h b/daemon/gdm-display.h
 index c91c44995..1575faac2 100644
---- a/daemon/gdm-display.h
-+++ b/daemon/gdm-display.h
+--- daemon/gdm-display.h
++++ daemon/gdm-display.h
 @@ -25,8 +25,6 @@
  #include <glib-object.h>
  #include <gio/gio.h>
@@ -133,7 +133,7 @@ index c91c44995..1575faac2 100644
 diff --git a/daemon/gdm-dynamic-user-store.h b/daemon/gdm-dynamic-user-store.h
 deleted file mode 100644
 index 848f00525..000000000
---- a/daemon/gdm-dynamic-user-store.h
+--- daemon/gdm-dynamic-user-store.h
 +++ /dev/null
 @@ -1,56 +0,0 @@
 -/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
@@ -194,8 +194,8 @@ index 848f00525..000000000
 -G_END_DECLS
 diff --git a/daemon/gdm-launch-environment.c b/daemon/gdm-launch-environment.c
 index 67f6c29..29cbc14 100644
---- a/daemon/gdm-launch-environment.c
-+++ b/daemon/gdm-launch-environment.c
+--- daemon/gdm-launch-environment.c
++++ daemon/gdm-launch-environment.c
 @@ -31,6 +31,8 @@
  #include <sys/wait.h>
  #include <errno.h>
@@ -672,8 +672,8 @@ index 67f6c29..29cbc14 100644
          return launch_environment;
 diff --git a/daemon/gdm-launch-environment.h b/daemon/gdm-launch-environment.h
 index f0102ef..354cf49 100644
---- a/daemon/gdm-launch-environment.h
-+++ b/daemon/gdm-launch-environment.h
+--- daemon/gdm-launch-environment.h
++++ daemon/gdm-launch-environment.h
 @@ -25,17 +25,12 @@
  #include <glib-object.h>
  
@@ -694,8 +694,8 @@ index f0102ef..354cf49 100644
  GdmSession *          gdm_launch_environment_get_session        (GdmLaunchEnvironment *launch_environment);
 diff --git a/daemon/gdm-launch-environment.h b/daemon/gdm-launch-environment.h
 index f0102efe6..5636014f8 100644
---- a/daemon/gdm-launch-environment.h
-+++ b/daemon/gdm-launch-environment.h
+--- daemon/gdm-launch-environment.h
++++ daemon/gdm-launch-environment.h
 @@ -23,19 +23,13 @@
  #define __GDM_LAUNCH_ENVIRONMENT_H
  
@@ -732,8 +732,8 @@ index f0102efe6..5636014f8 100644
                                                               const char *display_hostname);
 diff --git a/daemon/gdm-manager.c b/daemon/gdm-manager.c
 index f73bccf61..10a5475f2 100644
---- a/daemon/gdm-manager.c
-+++ b/daemon/gdm-manager.c
+--- daemon/gdm-manager.c
++++ daemon/gdm-manager.c
 @@ -46,7 +46,6 @@
  #include "gdm-manager-glue.h"
  #include "gdm-display-store.h"
@@ -955,8 +955,8 @@ index f73bccf61..10a5475f2 100644
  }
 diff --git a/daemon/gdm-session.c b/daemon/gdm-session.c
 index b78068d42..08ba39cf6 100644
---- a/daemon/gdm-session.c
-+++ b/daemon/gdm-session.c
+--- daemon/gdm-session.c
++++ daemon/gdm-session.c
 @@ -3184,18 +3184,33 @@ gdm_session_start_session (GdmSession *self,
  
                  g_free (command);
@@ -996,8 +996,8 @@ index b78068d42..08ba39cf6 100644
  
 diff --git a/daemon/meson.build b/daemon/meson.build
 index 26fe79bfc..aaf990e25 100644
---- a/daemon/meson.build
-+++ b/daemon/meson.build
+--- daemon/meson.build
++++ daemon/meson.build
 @@ -188,7 +188,6 @@ gdm_daemon_sources = files(
    'gdm-display-factory.c',
    'gdm-display-store.c',
@@ -1010,7 +1010,7 @@ diff --git a/data/autostart/meson.build b/data/autostart/meson.build
 new file mode 100644
 index 000000000..11ea694ec
 --- /dev/null
-+++ b/data/autostart/meson.build
++++ data/autostart/meson.build
 @@ -0,0 +1,12 @@
 +autostart_files_conf = {
 +  'LIBEXECDIR': gdm_prefix / get_option('libexecdir'),
@@ -1028,7 +1028,7 @@ diff --git a/data/autostart/orca-autostart.desktop b/data/autostart/orca-autosta
 new file mode 100644
 index 000000000..944cfd78f
 --- /dev/null
-+++ b/data/autostart/orca-autostart.desktop
++++ data/autostart/orca-autostart.desktop
 @@ -0,0 +1,7 @@
 +[Desktop Entry]
 +Type=Application
@@ -1039,8 +1039,8 @@ index 000000000..944cfd78f
 +X-GNOME-AutoRestart=true
 diff --git a/data/gdm.conf.in b/data/gdm.conf.in
 index eda131e02..fcc2bd2b1 100644
---- a/data/gdm.conf.in
-+++ b/data/gdm.conf.in
+--- data/gdm.conf.in
++++ data/gdm.conf.in
 @@ -71,7 +71,7 @@
             send_member="CreateTransientDisplay"/>
    </policy>
@@ -1053,7 +1053,7 @@ index eda131e02..fcc2bd2b1 100644
 diff --git a/data/gnome-login.session b/data/gnome-login.session
 deleted file mode 100644
 index 927f63152..000000000
---- a/data/gnome-login.session
+--- data/gnome-login.session
 +++ /dev/null
 @@ -1,3 +0,0 @@
 -[GNOME Session]
@@ -1062,7 +1062,7 @@ index 927f63152..000000000
 diff --git a/data/gnome-login.session.conf b/data/gnome-login.session.conf
 deleted file mode 100644
 index 69ae1761c..000000000
---- a/data/gnome-login.session.conf
+--- data/gnome-login.session.conf
 +++ /dev/null
 @@ -1,2 +0,0 @@
 -[Unit]
@@ -1071,15 +1071,15 @@ diff --git a/data/gnome-login.session.in b/data/gnome-login.session.in
 new file mode 100644
 index 000000000..63470962e
 --- /dev/null
-+++ b/data/gnome-login.session.in
++++ data/gnome-login.session.in
 @@ -0,0 +1,3 @@
 +[GNOME Session]
 +Name=Display Manager
 +RequiredComponents=@gnome_required_components@;
 diff --git a/data/meson.build b/data/meson.build
 index 17b0c72d7..5d0703ef7 100644
---- a/data/meson.build
-+++ b/data/meson.build
+--- data/meson.build
++++ data/meson.build
 @@ -1,4 +1,5 @@
  subdir('applications')
 +subdir('autostart')
@@ -1169,8 +1169,8 @@ index 17b0c72d7..5d0703ef7 100644
  )
 diff --git a/data/polkit-gdm.rules.in b/data/polkit-gdm.rules.in
 index 8faaaffcb..a1951a2a5 100644
---- a/data/polkit-gdm.rules.in
-+++ b/data/polkit-gdm.rules.in
+--- data/polkit-gdm.rules.in
++++ data/polkit-gdm.rules.in
 @@ -1,5 +1,5 @@
  polkit.addRule(function(action, subject) {
 -    if (!subject.isInGroup("@GDM_GROUPNAME@"))
@@ -1182,7 +1182,7 @@ diff --git a/data/session.conf.in b/data/session.conf.in
 new file mode 100644
 index 000000000..7bfa36525
 --- /dev/null
-+++ b/data/session.conf.in
++++ data/session.conf.in
 @@ -0,0 +1,4 @@
 +[Unit]
 +@wants_required_components@
@@ -1190,8 +1190,8 @@ index 000000000..7bfa36525
 +Requires=@requires_component@.target
 diff --git a/meson.build b/meson.build
 index 25b94f2e4..88df7ab07 100644
---- a/meson.build
-+++ b/meson.build
+--- meson.build
++++ meson.build
 @@ -29,13 +29,14 @@
  gdm_defaults_conf = (get_option('defaults-conf') != '')? get_option('defaults-conf') : gdm_prefix / gdm_datadir / 'defaults.conf'
  gdm_custom_conf = (get_option('custom-conf') != '')? get_option('custom-conf') : gdmconfdir / 'custom.conf'
@@ -1280,8 +1280,8 @@ index 25b94f2e4..88df7ab07 100644
      'GDM Custom config': gdm_custom_conf,
 diff --git a/meson_options.txt b/meson_options.txt
 index 3f3865c7a..18f223ddf 100644
---- a/meson_options.txt
-+++ b/meson_options.txt
+--- meson_options.txt
++++ meson_options.txt
 @@ -21,8 +21,10 @@
  option('plymouth', type: 'feature', value: 'auto', description: 'Add plymouth support.')
  option('private-dbus-dir', type: 'string', value: '', description: 'Directory for private D-Bus server sockets')
@@ -1304,8 +1304,8 @@ index 3f3865c7a..18f223ddf 100644
 \ No newline at end of file
 diff --git a/utils/gdm-config.c b/utils/gdm-config.c
 index f468312c0..82051a1b1 100644
---- a/utils/gdm-config.c
-+++ b/utils/gdm-config.c
+--- utils/gdm-config.c
++++ utils/gdm-config.c
 @@ -482,6 +482,53 @@ config_command_handler_add_to_group (GdmConfigCommandHandler *command_handler,
                                          command_handler->post_parse_func);
  }
