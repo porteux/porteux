@@ -67,7 +67,7 @@ All this performance benefit is achieved without providing ancient software. Thi
 In the terminal, run the following commands: <br />
 1. `su` (password: toor) <br />
 2. `cd $PORTDIR/modules` <br />
-3. `getpkg -m libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk` (this may take a while) <br />
+3. `getpkg -m libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk`<br />
 4. `activate -q libclc*.xzm llvm*.xzm mesa*.xzm ocl-icd*.xzm spirv-llvm-translator*.xzm vulkan-sdk*.xzm` <br />
 
 This only needs to be done once, as these modules will be activated automatically every time the machine boots.
