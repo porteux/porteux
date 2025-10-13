@@ -198,18 +198,21 @@ kmap=keyboardmap
 kmap=keyboardmap1,keyboardmap2,keyboardmap3
 kmap=keyboardmap:variant
 
-   ... Specifies the preferred keyboard layout for Xorg sessions of any
-       desktop environment. A full list of supported layouts can be found
-       in the /etc/X11/xkb/symbols folder. Up to 3 layouts are supported.
-       Keyboard layout variants are also supported.
+   ... Specifies the preferred keyboard layout for Xorg sessions.
+       A full list of supported layouts can be found in the
+       /etc/X11/xkb/symbols folder. To view the current layout,
+       run 'setxkbmap -query'.
+       
+       Up to 3 layouts are supported. Keyboard layout variants are
+       also supported.
 
+       NOTE: it may not work in some Wayland sessions.
        NOTE: changing the keyboard layout using the desktop environment
-       settings may overwrite this cheatcode. Also, it will not work in
-       Wayland sessions.
+       settings may overwrite this cheatcode.
 
-       Example (to set the American keyboard layout with accent support):
+       Example (to set American keyboard layout with accent support):
        kmap=us:alt-intl
-       Example (to set the Arabic keyboard layout as default with
+       Example (to set Arabic keyboard layout as default with
        possibility of switching to 'us'):
        kmap=ara,us
        Example (to set Polish keyboard layout with 'qwertz' as a variant):
@@ -274,7 +277,7 @@ nohotplug
 noload=module
 noload=module1;module2
 
-   ... Disable loading of any modules with a name containing the strings
+   ... Disable loading of any modules with a name containing the text
        specified. This affects all the modules on the PorteuX booting
        media, including /base and /modules folders, so using noload=kde
        will disable loading of all modules with 'kde' in the name. It's
