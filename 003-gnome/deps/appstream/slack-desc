@@ -8,5 +8,5 @@ appstream: way to retrieve information about available software, making it
 appstream: one of the building blocks for modern software centers.
 appstream:
 appstream:
-appstream: See: https://www.freedesktop.org/wiki/Distributions/AppStream/
+appstream: https://github.com/ximion/appstream
 appstream:

@@ -105,7 +105,7 @@ arleson (core team)<br />
 theUtopian (core team)<br />
 blaze (@porteus)<br />
 brokenman (@porteus)<br />
-frank honolka (@snuk)<br />
+nater1983 (@gfs)<br />
 luckyCyborg (@slackware)<br />
 ncmprhnsbl (@porteus)<br />
 neko (@porteus)<br />

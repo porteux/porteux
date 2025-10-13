@@ -21,6 +21,7 @@ cd $PRGNAM-$VERSION
 RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}"
 
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
+sed -i "s|^appstreamcli|#appstreamcli|g" meson.build
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
