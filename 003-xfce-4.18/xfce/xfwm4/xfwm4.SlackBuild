@@ -32,6 +32,9 @@ make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+# fix cropping title bar when maximized
+sed -i "s|^frame_border_top=.*|frame_border_top=0|" $PKG/usr/share/themes/Default*/xfwm4/themerc
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
