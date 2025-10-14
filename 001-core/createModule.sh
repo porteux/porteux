@@ -267,15 +267,26 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	patch -p0 < $SCRIPTPATH/extras/rc.cpufreq.patch
 fi
 
-### fix permissions
+### update version
+
+echo "PorteuX-v${PORTEUXVERSION}-${PORTEUXBUILD}" > $MODULEPATH/packages/etc/porteux-version
+sed -i "s|version|v${PORTEUXVERSION}|" $MODULEPATH/packages/etc/issue
+sed -i "s|version|v${PORTEUXVERSION}|" $MODULEPATH/packages/etc/issue-openbox
+sed -i "s|^VERSION=.*|VERSION=\"${PORTEUXVERSION}\"|" $MODULEPATH/packages/etc/os-release
+sed -i "s|^VERSION_ID=.*|VERSION_ID=${PORTEUXVERSION}|" $MODULEPATH/packages/etc/os-release
+sed -i "s|^PRETTY_NAME=.*|PRETTY_NAME=\"PorteuX ${PORTEUXVERSION} ${PORTEUXBUILD}\"|" $MODULEPATH/packages/etc/os-release
+sed -i "s|^CPE_NAME=.*|CPE_NAME=\"cpe:/o:porteux:porteux_linux:${PORTEUXVERSION}\"|" $MODULEPATH/packages/etc/os-release
+sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUXVERSION}|" $SCRIPTPATH/../boot/boot/syslinux/help.txt
+
+### set permissions
 
 cd $MODULEPATH/packages
 
 chmod 644 etc/rc.d/rc.bluetooth
-chmod 644 etc/rc.d/rc.inet1
-chmod 755 etc/rc.d/rc.networkmanager
 chmod 644 etc/rc.d/rc.fuse3
+chmod 644 etc/rc.d/rc.inet1
 chmod 644 etc/rc.d/rc.loop
+chmod 755 etc/rc.d/rc.networkmanager
 chmod 644 etc/rc.d/rc.sshd
 chmod 644 etc/rc.d/rc.wireless
 
