@@ -283,6 +283,7 @@ sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUXVERSION}|" $SCRIPTPATH/../boot/
 cd $MODULEPATH/packages
 
 chmod 644 etc/rc.d/rc.bluetooth
+chmod 644 etc/rc.d/rc.crond
 chmod 644 etc/rc.d/rc.fuse3
 chmod 644 etc/rc.d/rc.inet1
 chmod 644 etc/rc.d/rc.loop
