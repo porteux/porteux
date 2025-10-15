@@ -42,4 +42,9 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 [ -f $userresources ] && xrdb -merge $userresources
 [ -f $usermodmap ] && xmodmap $usermodmap
 
-exec $@
+# xorg sessions in combination with cron only work using dbus-launch
+if [[ "$@" != *"wayland"* && "$@" != *"labwc"* ]]; then
+	exec dbus-launch --sh-syntax --exit-with-session $@
+else
+	exec $@
+fi
