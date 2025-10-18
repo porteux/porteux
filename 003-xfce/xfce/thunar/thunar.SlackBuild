@@ -31,10 +31,6 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-for i in $CWD/*.patch; do
-	patch -p0 < $i;
-done
-
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 ./autogen.sh \
 	--prefix=/usr \
