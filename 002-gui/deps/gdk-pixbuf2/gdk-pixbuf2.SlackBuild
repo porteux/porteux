@@ -41,6 +41,7 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Dothers=enabled \
+	-Dpixbuf-loader=enabled \
 	-Ddocumentation=false \
 	-Dtests=false \
 	-Dinstalled_tests=false \
