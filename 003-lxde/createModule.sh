@@ -127,6 +127,8 @@ sed -i "s|Core;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview
 sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|;Settings;|;|g" $MODULEPATH/packages/usr/share/applications/pavucontrol.desktop
 sed -i "s|System;|Utility;|g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
+sed -i "s|^Exec=.*|Exec=nm-applet --indicator|g" $MODULEPATH/packages/etc/xdg/autostart/nm-applet.desktop
+sed -i "s|^Exec=.*|Exec=nm-applet --indicator|g" $MODULEPATH/packages/usr/share/applications/nm-applet.desktop
 
 ### copy build files to 05-devel
 
