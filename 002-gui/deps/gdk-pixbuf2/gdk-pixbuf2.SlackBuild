@@ -45,6 +45,7 @@ meson setup \
 	-Ddocumentation=false \
 	-Dtests=false \
 	-Dinstalled_tests=false \
+	-Drsvg-convert=disabled \
 	-Dglycin=disabled \
 	-Ddocumentation=false \
 	-Dman=false
