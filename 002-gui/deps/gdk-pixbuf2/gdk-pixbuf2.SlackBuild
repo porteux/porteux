@@ -26,10 +26,6 @@ wget https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/archive/${VERSION}/${PRGNAM}-${
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd gdk-pixbuf-$VERSION*
 
-for i in $CWD/*.patch; do
-	patch -p0 < $i
-done
-
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
