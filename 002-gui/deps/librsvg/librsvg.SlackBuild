@@ -37,15 +37,15 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
+	-Dpixbuf-loader=enabled \
 	-Dtests=false \
 	-Ddocs=disabled \
-	-Davif=disabled
+	-Davif=disabled \
+	-Drsvg-convert=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-
-rm $PKG/usr/bin/rsvg-convert
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
