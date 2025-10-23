@@ -37,12 +37,11 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Dothers=enabled \
-	-Dpixbuf-loader=enabled \
 	-Ddocumentation=false \
 	-Dtests=false \
 	-Dinstalled_tests=false \
-	-Drsvg-convert=disabled \
 	-Dglycin=disabled \
+	-Dgtk_doc=false \
 	-Ddocumentation=false \
 	-Dman=false
 
@@ -51,8 +50,9 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mv $PKG/usr/bin/gdk-pixbuf-query-loaders{,-64}
-( cd $PKG/usr/bin
- ln -sf gdk-pixbuf-query-loaders-64 gdk-pixbuf-query-loaders
+(
+	cd $PKG/usr/bin
+	ln -sf gdk-pixbuf-query-loaders-64 gdk-pixbuf-query-loaders
 )
 
 # Install wrappers for the binaries:
