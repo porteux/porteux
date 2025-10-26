@@ -20,6 +20,7 @@ RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}"
 
 sed 's/sudo/wheel/g' -i data/polkit-1/rules.d/cosmic-settings-daemon.rules
 sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
+sed -i 's|_ = std::thread::spawn|tokio::time::sleep(std::time::Duration::from_secs(5)).await; _ = std::thread::spawn|g' src/pulse.rs
 
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 make -j${NUMBERTHREADS}
