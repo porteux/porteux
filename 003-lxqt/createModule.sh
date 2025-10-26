@@ -137,9 +137,6 @@ LATESTVERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/l
 echo "Building LXQt ${LATESTVERSION}..."
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
-# required by libkscreen
-installpkg $MODULEPATH/packages/plasma-wayland-protocols*.txz || exit 1
-
 # lxqt deps
 for package in \
 	muparser \
