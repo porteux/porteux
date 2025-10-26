@@ -25,12 +25,12 @@ cmake .. \
 	-DCMAKE_C_FLAGS="$GCCFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
-	-DCMAKE_INSTALL_PREFIX=/usr
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DKIMAGEFORMATS_HEIF=ON
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-find $PKG/usr/lib${SYSTEMBITS}/qt*/plugins/imageformats/ -mindepth 1 -maxdepth 1 ! \( -name "kimg_jxl*" -o -name "kimg_tga*" \) -exec rm '{}' \; 2>/dev/null
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
