@@ -21,6 +21,7 @@ tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 patch -p1 < $CWD/py2-to-py3.patch
+sed -i 's|mkdirprog="\${MKDIRPROG-mkdir}"|mkdirprog="\${MKDIRPROG-mkdir} -p"|g' install-sh
 
 CFLAGS="$GCCFLAGS" \
 ./configure \
