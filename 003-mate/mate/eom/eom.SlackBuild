@@ -20,6 +20,13 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+sed -i 's| man | |g' Makefile.am
+sed -i 's| help | |g' Makefile.am
+sed -i 's| doc||g' Makefile.am
+sed -i 's| man | |g' Makefile.in
+sed -i 's| help | |g' Makefile.in
+sed -i 's| doc||g' Makefile.in
+
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
