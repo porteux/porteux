@@ -4,6 +4,7 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 GenerateRepositoryUrls
 
 DownloadPackage "accountsservice" &
+DownloadPackage "appstream" &
 DownloadPackage "cfitsio" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "egl-wayland" &
@@ -13,11 +14,12 @@ wait
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
-DownloadPackage "libqalculate" &
+DownloadPackage "libfyaml" &
 DownloadPackage "libdmtx" &
 DownloadPackage "libproxy" &
 DownloadPackage "libqaccessibilityclient" &
 wait
+DownloadPackage "libqalculate" &
 DownloadPackage "LibRaw" &
 DownloadPackage "openblas" &
 DownloadPackage "polkit-qt" &
@@ -93,6 +95,7 @@ DownloadPackage "kfilemetadata" &
 DownloadPackage "kglobalaccel" &
 DownloadPackage "kglobalacceld" &
 DownloadPackage "kguiaddons" &
+DownloadPackage "kholidays" &
 DownloadPackage "ki18n" &
 DownloadPackage "kiconthemes" &
 DownloadPackage "kidletime" &
@@ -112,6 +115,7 @@ DownloadPackage "kjobwidgets" &
 wait
 DownloadPackage "kmenuedit" &
 DownloadPackage "knewstuff" &
+DownloadPackage "knighttime" &
 DownloadPackage "knotifications" &
 DownloadPackage "knotifyconfig" &
 DownloadPackage "konsole" &
@@ -144,6 +148,7 @@ DownloadPackage "kwayland-integration" &
 DownloadPackage "kwidgetsaddons" &
 wait
 DownloadPackage "kwin" &
+DownloadPackage "kwin_x11" &
 DownloadPackage "kwindowsystem" &
 DownloadPackage "kwrited" &
 DownloadPackage "kxmlgui" &
