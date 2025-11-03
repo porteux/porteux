@@ -36,7 +36,9 @@ else
 	EXTRAS="--enable-libplacebo --enable-lcms2"
 fi
 
+CC=clang \
 CFLAGS="$BUILDPARAMS" \
+LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

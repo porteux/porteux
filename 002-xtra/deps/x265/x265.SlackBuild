@@ -18,58 +18,60 @@ cd multicoreware-${PRGNAM}*
 VERSION=$(date -r . +%Y%m%d)
 
 if [ $SLACKWAREVERSION != "current" ]; then
-	BUILDPARAMS="${CLANGFLAGS/ -flto=auto}"
+	BUILDPARAMS="${CLANGFLAGS/ -flto=auto} -fvisibility-inlines-hidden"
 else
-	BUILDPARAMS="${CLANGFLAGS} -ffat-lto-objects"
+	BUILDPARAMS="${CLANGFLAGS} -ffat-lto-objects -fvisibility-inlines-hidden"
 fi
 
 patch -p0 < $CWD/build-fix.patch
 
+LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 cmake -B build-12 \
 	-Ssource \
-	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
 	-Wno-dev \
+	-DCMAKE_CXX_COMPILER=clang++ \
+	-DCMAKE_CXX_FLAGS="$BUILDPARAMS" \
+	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
 	-DENABLE_HDR10_PLUS=ON \
 	-DENABLE_CLI=OFF \
 	-DENABLE_SHARED=OFF \
 	-DEXPORT_C_API=OFF \
 	-DHIGH_BIT_DEPTH=ON \
-	-DMAIN12=ON \
-	-DCMAKE_CXX_COMPILER=clang++ \
-	-DCMAKE_CXX_FLAGS="$BUILDPARAMS -fvisibility-inlines-hidden"
+	-DMAIN12=ON
 
 cmake --build build-12 -- -j${NUMBERTHREADS}
 
+LDFLAGS="-fuse-ld=lld" \
 cmake -B build-10 \
 	-Ssource \
-	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
 	-Wno-dev \
+	-DCMAKE_CXX_COMPILER=clang++ \
+	-DCMAKE_CXX_FLAGS="$BUILDPARAMS" \
+	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
 	-DENABLE_HDR10_PLUS=ON \
 	-DENABLE_CLI=OFF \
 	-DENABLE_SHARED=OFF \
 	-DEXPORT_C_API=OFF \
-	-DHIGH_BIT_DEPTH=ON \
-	-DCMAKE_CXX_COMPILER=clang++ \
-	-DCMAKE_CXX_FLAGS="$BUILDPARAMS -fvisibility-inlines-hidden"
+	-DHIGH_BIT_DEPTH=ON
 
 cmake --build build-10 -- -j${NUMBERTHREADS}
 
+LDFLAGS="-fuse-ld=lld" \
 cmake -B build \
 	-Ssource \
+	-Wno-dev \
+	-DCMAKE_CXX_COMPILER=clang++ \
+	-DCMAKE_CXX_FLAGS="$BUILDPARAMS" \
 	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
-	-Wno-dev \
 	-DENABLE_HDR10_PLUS=ON \
 	-DENABLE_CLI=OFF \
 	-DENABLE_SHARED=ON \
 	-DEXTRA_LIB="x265_main10.a;x265_main12.a" \
 	-DEXTRA_LINK_FLAGS="-L." \
 	-DLINKED_10BIT=ON \
-	-DLINKED_12BIT=ON \
-	-DCMAKE_CXX_COMPILER=clang++ \
-	-DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -Wl,--icf=safe" \
-	-DCMAKE_CXX_FLAGS="$BUILDPARAMS -fvisibility-inlines-hidden"
+	-DLINKED_12BIT=ON
 
 ln -s ../build-10/libx265.a build/libx265_main10.a
 ln -s ../build-12/libx265.a build/libx265_main12.a

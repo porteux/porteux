@@ -23,7 +23,9 @@ if [ $SLACKWAREVERSION == "current" ]; then
 fi
 
 mkdir build && cd build
+CC=clang \
 CFLAGS="$CLANGFLAGS" \
+LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
