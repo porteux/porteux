@@ -32,7 +32,7 @@ done
 
 mkdir build && cd build
 CC=clang \
-CFLAGS="$CLANGFLAGS -Wno-implicit-function-declaration" \
+CFLAGS="${CLANGFLAGS/ -fuse-ld=lld -Wl,--icf=safe}" \
 LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 meson setup \
 	--buildtype=release \

@@ -19,7 +19,10 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$CLANGFLAGS" CXFLAGS="$CLANGFLAGS" \
+CC=clang CXX=clang++ \
+CFLAGS="${CLANGFLAGS/ -fuse-ld=lld -Wl,--icf=safe}" \
+CXFLAGS="$CLANGFLAGS" \
+LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
