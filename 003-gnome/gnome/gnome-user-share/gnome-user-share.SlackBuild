@@ -21,7 +21,6 @@ cd $PRGNAM-$VERSION
 sed -i "s/'systemd'/'libelogind'/" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

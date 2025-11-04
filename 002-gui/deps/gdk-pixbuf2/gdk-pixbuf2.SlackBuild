@@ -41,7 +41,6 @@ meson setup \
 	-Dtests=false \
 	-Dinstalled_tests=false \
 	-Dglycin=disabled \
-	-Dgtk_doc=false \
 	-Ddocumentation=false \
 	-Dman=false
 

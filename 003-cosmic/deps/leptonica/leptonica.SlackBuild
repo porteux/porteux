@@ -20,9 +20,11 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+./autogen.sh
+
 CFLAGS="$GCCFLAGS" \
 CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
-./autogen.sh && ./configure \
+./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \

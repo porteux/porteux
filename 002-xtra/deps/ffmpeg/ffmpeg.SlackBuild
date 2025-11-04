@@ -38,7 +38,7 @@ fi
 
 CC=clang \
 CFLAGS="$BUILDPARAMS" \
-LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+LDFLAGS="$LLDFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

@@ -20,7 +20,9 @@ for i in $CWD/*.patch; do
 	patch -p1 < $i;
 done
 
-./autogen.sh && CFLAGS="$GCCFLAGS -ffast-math" \
+./autogen.sh
+
+CFLAGS="$GCCFLAGS -ffast-math" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \

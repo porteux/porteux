@@ -29,7 +29,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/dht/CMakeLists.txt
 fi
 
-LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_CXX_COMPILER=clang++ \

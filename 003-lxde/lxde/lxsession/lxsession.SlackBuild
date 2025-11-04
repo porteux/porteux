@@ -20,7 +20,9 @@ for i in $CWD/*.patch; do
 	patch -p0 < $i;
 done
 
-./autogen.sh && CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
+./autogen.sh
+
+CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \

@@ -20,6 +20,7 @@ cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 
 ./bootstrap.sh
+
 CFLAGS="${GCCFLAGS} -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \

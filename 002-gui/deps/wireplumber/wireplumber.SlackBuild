@@ -25,7 +25,7 @@ fi
 mkdir build && cd build
 CC=clang \
 CFLAGS="$CLANGFLAGS" \
-LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+LDFLAGS="$LLDFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

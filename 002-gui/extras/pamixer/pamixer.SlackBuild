@@ -21,10 +21,11 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CC=clang CXX=clang++ \
+CC=clang \
+CXX=clang++ \
 CFLAGS="$CLANGFLAGS" \
 CXFLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
-LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+LDFLAGS="$LLDFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

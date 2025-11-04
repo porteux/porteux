@@ -23,7 +23,8 @@ cd $PRGNAM-$VERSION
 sed -i 's/^#undef DUK_USE_FASTINT$/#define DUK_USE_FASTINT/' src/duk_config.h
 sed -i 's/duktape\.c/& -lm/' Makefile.sharedlibrary
 
-make -j${NUMBERTHREADS} CFLAGS="$GCCFLAGS" -f Makefile.sharedlibrary LIBDIR=/lib${SYSTEMBITS} INSTALL_PREFIX=/usr DESTDIR=$PKG install
+CFLAGS="$GCCFLAGS" \
+make -j${NUMBERTHREADS} -f Makefile.sharedlibrary LIBDIR=/lib${SYSTEMBITS} INSTALL_PREFIX=/usr DESTDIR=$PKG install
 
 rm $PKG/usr/lib${SYSTEMBITS}/libduktaped.*
 
