@@ -27,7 +27,7 @@ sed -i "s|download_github third_party/libjpeg-turbo libjpeg-turbo/libjpeg-turbo|
 
 sh deps.sh
 
-LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
 	-DBUILD_TESTING=false \

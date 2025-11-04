@@ -29,13 +29,12 @@ sed -i "s|mark_as_advanced(SCD2HTML|#mark_as_advanced(SCD2HTML|g" CMakeLists.txt
 sed -i "s|add_subdirectory(docs)|#add_subdirectory(docs)|g" CMakeLists.txt
 sed -i "s|install(FILES CONTRIBUTING.md|#install(FILES CONTRIBUTING.md|g" CMakeLists.txt
 
-LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_C_FLAGS="$CLANGFLAGS -ffat-lto-objects" \
 	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
-	-DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -Wl,--icf=safe" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR="lib${SYSTEMBITS}" \
 	-DWITH_AUDIT=OFF \

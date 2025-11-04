@@ -23,8 +23,10 @@ filename=${info% *}
 tar xvf $filename
 cd ${PRGNAM}*/
 
+./autogen.sh
+
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-./autogen.sh && ./configure \
+./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
