@@ -180,6 +180,9 @@ done
 cd $MODULEPATH
 pip install pysass # required by cinnamon project
 
+# temporary until cjs migrates do mozjs140
+wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/mozjs128-128.14.0esr-x86_64-1.txz -P $MODULEPATH/packages
+
 # cinnamon packages
 for package in \
 	cjs \
