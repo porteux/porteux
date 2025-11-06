@@ -36,7 +36,7 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 DownloadFromSlackware
 
-### set compiler
+### set compiler and linker
 
 if [ ${CLANG:-no} = "yes" ]; then
 	installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
@@ -46,14 +46,24 @@ if [ ${CLANG:-no} = "yes" ]; then
 
 	COMPILER="Clang"
 	EXTRAFLAGS="LLVM=1 CC=clang"
+	# fixing flags that are not compatible with the kernel
 	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
-	# remove flags that are not compatible with the kernel
-	BUILDPARAMS="${BUILDPARAMS/ -flto=auto/}"
+	BUILDPARAMS="${BUILDPARAMS/-flto=auto/}"
+	LDFLAGS="${LLDFLAGS//-Wl,/}"
+	LDFLAGS="${LDFLAGS//-z,pack-relative-relocs/-z pack-relative-relocs}"
+	LDFLAGS="${LDFLAGS/--gc-sections/}"
+	LDFLAGS="${LDFLAGS/--strip-all/}"
+	LDFLAGS="${LDFLAGS/--icf=safe/}"
+	LDFLAGS="${LDFLAGS/-fuse-ld=lld/}"
 else
 	COMPILER="GCC"
-	# remove flags that are not compatible with the kernel
-	BUILDPARAMS="${GCCFLAGS/ -ffunction-sections -fdata-sections/}"
-	BUILDPARAMS="${BUILDPARAMS/ -flto=auto/}"
+	# fixing flags that are not compatible with the kernel
+	BUILDPARAMS="${GCCFLAGS/-ffunction-sections -fdata-sections/}"
+	BUILDPARAMS="${BUILDPARAMS/-flto=auto/}"
+	LDFLAGS="${LDFLAGS//-Wl,/}"
+	LDFLAGS="${LDFLAGS//-z,pack-relative-relocs/-z pack-relative-relocs}"
+	LDFLAGS="${LDFLAGS/--gc-sections/}"
+	LDFLAGS="${LDFLAGS/--strip-all/}"
 fi
 
 echo "Building kernel ${KERNELVERSION} using ${COMPILER}..."
@@ -102,7 +112,7 @@ rm -fr $MODULEPATH/${currentPackage}
 echo "Building vmlinuz (this may take a while)..."
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
-make -j${NUMBERTHREADS} KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
+make -j${NUMBERTHREADS} KBUILD_LDFLAGS="$LDFLAGS" LDFLAGS_MODULE="$LDFLAGS" EXTRA_LDFLAGS="$LDFLAGS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULEPATH/vmlinuz
 
 echo "Installing modules..."
@@ -119,9 +129,11 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 tar xf $MODULEPATH/packages/kernel-firmware-*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/kernel-firmware-*.txz
 sh install/doinst.sh > /dev/null 2>&1
+
 # manually copy intel bluetooth firmwares until kernel fixes drivers/bluetooth/btintel.c
 mkdir -p ${MODULEPATH}/lib/firmware/intel > /dev/null 2>&1
 cp lib/firmware/intel/ibt* ${MODULEPATH}/lib/firmware/intel
+
 modulesDependencies=$(ls $MODULEPATH/lib/modules/*/modules.dep)
 modulesPath=${modulesDependencies%/modules.dep}
 for dependency in $(cat $modulesDependencies | cut -d':' -f1); do
