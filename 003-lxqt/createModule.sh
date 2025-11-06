@@ -143,8 +143,8 @@ for package in \
 	polkit-qt6-1 \
 	extra-cmake-modules \
 	layer-shell-qt6 \
-	kwindowsystem \
 	plasma-wayland-protocols \
+	kwindowsystem \
 	kwayland \
 	solid \
 	kidletime \
