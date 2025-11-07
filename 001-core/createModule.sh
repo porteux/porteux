@@ -34,6 +34,10 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
 	rm -fr $MODULEPATH/${currentPackage}
 	rm $MODULEPATH/packages/meson-*.txz
+else
+	currentPackage=rpm
+	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	rm -fr $MODULEPATH/${currentPackage}
 fi
 
 installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
@@ -60,7 +64,6 @@ done
 for package in \
 	fastfetch \
 	7zip \
-	rpm \
 	procps-ng \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
@@ -260,7 +263,7 @@ cp -s fusermount3 fusermount
 cd $MODULEPATH/packages/usr/bin
 cp -s python3 python > /dev/null 2>&1
 cd $MODULEPATH/packages/usr/lib${SYSTEMBITS}
-cp -s libxml2.so libxml2.so.2
+cp -s libxml2.so libxml2.so.2 > /dev/null 2>&1
 
 ### set CPU governor to performance -- only in stable because current is already doing it
 
