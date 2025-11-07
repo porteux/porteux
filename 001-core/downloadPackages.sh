@@ -228,7 +228,10 @@ wait
 
 ### slackware specific version packages
 
-if [ $SLACKWAREVERSION == "current" ]; then
+if [ $SLACKWAREVERSION != "current" ]; then
+	DownloadPackage "rpm" &
+	wait
+else
 	DownloadPackage "avahi" &
 	DownloadPackage "lua" &
 	DownloadPackage "lzlib" &
