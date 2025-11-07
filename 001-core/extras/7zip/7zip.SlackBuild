@@ -39,7 +39,7 @@ mkdir build && cd build
 CC=clang \
 CXX=clang++ \
 CFLAGS="$CLANGFLAGS -pthread" \
-CXXFLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
+CXXFLAGS="$CLANGFLAGS -fvisibility-inlines-hidden -pthread" \
 LDFLAGS="$LLDFLAGS" \
 meson setup \
 	--prefix=/usr \
