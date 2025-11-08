@@ -64,6 +64,12 @@ currentPackage=xcape
 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+# required from now on
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libnma*.txz || exit 1
+
 # lxde extras
 for package in \
 	atril \
@@ -71,6 +77,7 @@ for package in \
 	pavucontrol \
 	l3afpad \
 	gnome-screenshot \
+	network-manager-applet \
 	kora-icon-theme \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
@@ -127,8 +134,6 @@ sed -i "s|Core;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview
 sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|;Settings;|;|g" $MODULEPATH/packages/usr/share/applications/pavucontrol.desktop
 sed -i "s|System;|Utility;|g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
-sed -i "s|^Exec=.*|Exec=nm-applet --indicator|g" $MODULEPATH/packages/etc/xdg/autostart/nm-applet.desktop
-sed -i "s|^Exec=.*|Exec=nm-applet --indicator|g" $MODULEPATH/packages/usr/share/applications/nm-applet.desktop
 
 ### copy build files to 05-devel
 

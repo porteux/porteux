@@ -22,10 +22,9 @@ DownloadPackage "libxklavier" &
 DownloadPackage "vte" &
 wait
 
-### temporary packages
+### temporary packages only for building
 
 DownloadPackage "glade" & # required by libxfce4ui to provide more system information (e.g. nvidia cards)
-DownloadPackage "libnma" & # to build network-manager-applet
 DownloadPackage "libyaml" & # to build xfdesktop with desktop iconslibnma
 wait
 
