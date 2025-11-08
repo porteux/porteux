@@ -16,12 +16,13 @@ DownloadPackage "libgtop" &
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-DownloadPackage "network-manager-applet" &
 DownloadPackage "vte" &
 wait
 
-### temporary packages for further building
+### temporary packages only for building
+
 DownloadPackage "glade" & # required by libxfce4ui to provide more system information (e.g. nvidia cards)
+DownloadPackage "libnma" & # to build network-manager-applet
 wait
 
 ### script clean up

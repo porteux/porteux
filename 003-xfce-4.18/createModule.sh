@@ -59,7 +59,10 @@ sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
+installpkg $MODULEPATH/packages/libnma*.txz || exit 1
+rm $MODULEPATH/packages/libnma*.txz || exit 1
 
 # xfce extras
 for package in \
@@ -68,6 +71,7 @@ for package in \
 	pavucontrol \
 	gpicview \
 	mate-search-tool \
+	network-manager-applet \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
@@ -89,7 +93,6 @@ installpkg $MODULEPATH/packages/glade*.txz || exit 1
 rm $MODULEPATH/packages/glade*.txz || exit 1
 
 # required by xfce4-panel
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
 
 # required by xfce4-pulseaudio-plugin
