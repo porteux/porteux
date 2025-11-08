@@ -30,7 +30,7 @@ wait
 
 DownloadPackage "ibus" & # required by gnome-control-center
 
-### temporary packages for further building
+### temporary packages only for building
 
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &

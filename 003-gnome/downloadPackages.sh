@@ -46,7 +46,7 @@ wait
 
 DownloadPackage "ibus" & # required by gtk4 to allow accented characters
 
-### temporary packages for further building
+### temporary packages only for building
 
 DownloadPackage "boost" &
 DownloadPackage "c-ares" &
