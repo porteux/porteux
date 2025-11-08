@@ -41,7 +41,7 @@ wait
 DownloadPackage "gettext-tools" & # required by extensions
 wait
 
-### temporary packages for further building
+### temporary packages only for building
 
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
