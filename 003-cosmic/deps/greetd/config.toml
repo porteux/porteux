@@ -3,16 +3,16 @@ vt = "7"
 
 [general]
 # for autologin but not greeter
-#service = "login"
+service = "login"
 
 # for greeter but not autologin
-service = "cosmic-greeter"
+#service = "cosmic-greeter"
 
 [default_session]
 # for autologin but not greeter
-#command = "start-cosmic > ~/.session-errors"
-#user = "guest"
+command = "start-cosmic > ~/.session-errors"
+user = "guest"
 
 # for greeter but not autologin
-command = "cosmic-greeter-start"
-user = "cosmic-greeter"
+#command = "cosmic-greeter-start"
+#user = "cosmic-greeter"
