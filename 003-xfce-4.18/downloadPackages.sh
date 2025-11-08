@@ -22,7 +22,6 @@ wait
 ### temporary packages only for building
 
 DownloadPackage "glade" & # required by libxfce4ui to provide more system information (e.g. nvidia cards)
-DownloadPackage "libnma" & # to build network-manager-applet
 wait
 
 ### script clean up

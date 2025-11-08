@@ -62,7 +62,6 @@ rm -fr $MODULEPATH/${currentPackage}
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libnma*.txz || exit 1
-rm $MODULEPATH/packages/libnma*.txz || exit 1
 
 # xfce extras
 for package in \
@@ -174,8 +173,6 @@ sed -i "s|Categories=System;|Categories=|g" $MODULEPATH/packages/usr/share/appli
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/thunar-bulk-rename.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/xfce4-sensors.desktop
 sed -i "s|Utility;||g" $MODULEPATH/packages/usr/share/applications/xfce4-taskmanager.desktop
-sed -i "s|^Exec=.*|Exec=nm-applet --indicator|g" $MODULEPATH/packages/etc/xdg/autostart/nm-applet.desktop
-sed -i "s|^Exec=.*|Exec=nm-applet --indicator|g" $MODULEPATH/packages/usr/share/applications/nm-applet.desktop
 
 ### copy build files to 05-devel
 

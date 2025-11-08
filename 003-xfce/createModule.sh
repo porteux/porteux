@@ -41,11 +41,6 @@ currentPackage=ffmpegthumbnailer
 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-# required by mate-polkit
-installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
-
 currentPackage=mate-polkit
 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
@@ -70,10 +65,11 @@ sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libnma*.txz || exit 1
-rm $MODULEPATH/packages/libnma*.txz || exit 1
 
 # xfce extras
 for package in \

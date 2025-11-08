@@ -6,8 +6,10 @@ GenerateRepositoryUrls
 DownloadPackage "accountsservice" & # required by lightdm
 DownloadPackage "blueman" &
 DownloadPackage "keybinder3" &
-DownloadPackage "libnma" &
+DownloadPackage "libdbusmenu" &
+DownloadPackage "libindicator" &
 wait
+DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "network-manager-applet" &
@@ -18,8 +20,6 @@ wait
 
 if [ $SLACKWAREVERSION == "current" ]; then
 	DownloadPackage "libappindicator" &
-	DownloadPackage "libdbusmenu" &
-	DownloadPackage "libindicator" &
 	wait
 fi
 
