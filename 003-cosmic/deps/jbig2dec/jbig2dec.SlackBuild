@@ -23,7 +23,7 @@ cd $PRGNAM-$VERSION
 ./autogen.sh
 
 CFLAGS="$GCCFLAGS" \
-/configure \
+./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
