@@ -70,7 +70,10 @@ sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
+installpkg $MODULEPATH/packages/libnma*.txz || exit 1
+rm $MODULEPATH/packages/libnma*.txz || exit 1
 
 # xfce extras
 for package in \
@@ -79,6 +82,7 @@ for package in \
 	pavucontrol \
 	gpicview \
 	mate-search-tool \
+	network-manager-applet \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
@@ -94,7 +98,6 @@ installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 
 # required by xfce4-panel
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
 
 # required by xfce4-pulseaudio-plugin
@@ -198,8 +201,6 @@ sed -i "s|Categories=System;|Categories=|g" $MODULEPATH/packages/usr/share/appli
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/thunar-bulk-rename.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/xfce4-sensors.desktop
 sed -i "s|Utility;||g" $MODULEPATH/packages/usr/share/applications/xfce4-taskmanager.desktop
-sed -i "s|^Exec=.*|Exec=nm-applet --indicator|g" $MODULEPATH/packages/etc/xdg/autostart/nm-applet.desktop
-sed -i "s|^Exec=.*|Exec=nm-applet --indicator|g" $MODULEPATH/packages/usr/share/applications/nm-applet.desktop
 
 ### copy build files to 05-devel
 
