@@ -14,7 +14,7 @@ Out of the box, PorteuX can open basically any multimedia file. Hardware acceler
 
 If you're new to PorteuX and have never used Slax or Porteus, it's recommended to read this [in-depth review of Porteus](https://medium.com/@fulalas/porteus-5-review-a-different-and-powerful-linux-distro-33df8789a758).
 
-PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable (safer) and current/rolling (bleeding edge). After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases/latest): <br />
+PorteuX is based on Slackware 64-bit current/rolling (bleeding edge). The ISOs are available in 7 spins: <br />
 . Cinnamon<br />
 . GNOME<br />
 . KDE<br />
@@ -60,7 +60,7 @@ Sources:
 [ClearLinux40520](https://browser.geekbench.com/v6/cpu/4073056)
 [PorteuX0.9](https://browser.geekbench.com/v6/cpu/4087178)
 
-All this performance benefit is achieved without providing ancient software. This means that the kernel, desktop environments and packages are usually as new as possible in the current/rolling release.
+All this performance benefit is achieved without providing ancient software. This means that the kernel, desktop environments and packages are usually as new as possible.
 
 ## Enable OpenCL support (required by applications like DaVinci Resolve)
 
