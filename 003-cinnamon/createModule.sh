@@ -106,7 +106,6 @@ installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
-installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
@@ -182,6 +181,7 @@ pip install pysass # required by cinnamon project
 
 # temporary until cjs migrates do mozjs140
 wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/mozjs128-128.14.0esr-x86_64-1.txz -P $MODULEPATH/packages
+installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 
 # cinnamon packages
 for package in \

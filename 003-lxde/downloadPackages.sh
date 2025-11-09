@@ -8,12 +8,11 @@ DownloadPackage "blueman" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
-DownloadPackage "libindicator" &
 wait
+DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-DownloadPackage "network-manager-applet" &
 DownloadPackage "vte" &
 wait
 
