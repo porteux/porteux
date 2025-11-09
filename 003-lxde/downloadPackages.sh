@@ -6,6 +6,7 @@ GenerateRepositoryUrls
 DownloadPackage "accountsservice" & # required by lightdm
 DownloadPackage "blueman" &
 DownloadPackage "keybinder3" &
+DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libindicator" &
 wait

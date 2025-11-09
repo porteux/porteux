@@ -28,6 +28,11 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
+installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
+
+installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=meson
 	sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
@@ -36,14 +41,9 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	rm $MODULEPATH/packages/meson-*.txz
 else
 	currentPackage=rpm
-	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	rm -fr $MODULEPATH/${currentPackage}
 fi
-
-installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
-
-installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 # required to build procps-ng
 installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
