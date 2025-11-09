@@ -30,6 +30,8 @@ make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 
 rm -fr $PKG/usr/share/themes
 
+sed -i "s|^Exec=|Exec=dbus-run-session -- |g" $PKG/usr/share/wayland-sessions/lxqt-wayland.desktop
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
