@@ -230,6 +230,7 @@ rm usr/bin/canberra*
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/Xdmx
+rm usr/bin/rsvg-convert # only for stable
 
 rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
