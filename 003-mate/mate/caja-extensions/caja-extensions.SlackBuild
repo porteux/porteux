@@ -26,7 +26,6 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-static \
 	--enable-image-converter \
 	--enable-open-terminal \

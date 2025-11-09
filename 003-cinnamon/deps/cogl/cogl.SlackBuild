@@ -27,7 +27,6 @@ CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-static \
 	--disable-gtk-doc \
 	--disable-glibtest \

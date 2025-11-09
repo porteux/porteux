@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://invent.kde.org/frameworks/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
+VERSION=$(curl -s https://invent.kde.org/frameworks/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -viE 'alpha|beta|rc' | sort -Vr | head -1)
 wget https://invent.kde.org/frameworks/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
@@ -25,12 +25,12 @@ cmake .. \
 	-DCMAKE_C_FLAGS="$GCCFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
-	-DCMAKE_INSTALL_PREFIX=/usr
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DKIMAGEFORMATS_HEIF=ON
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-find $PKG/usr/lib${SYSTEMBITS}/qt*/plugins/imageformats/ -mindepth 1 -maxdepth 1 ! \( -name "kimg_jxl*" -o -name "kimg_tga*" \) -exec rm '{}' \; 2>/dev/null
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

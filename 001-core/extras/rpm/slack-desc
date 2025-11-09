@@ -1,0 +1,12 @@
+   |-----handy-ruler-------------------------------------------------------|
+rpm: rpm (RPM package format tool)
+rpm:
+rpm: RPM is a tool from Red Hat Software used to install and remove
+rpm: packages in the .rpm format. When installing RPM packages on
+rpm: Slackware, you may need to use the --nodeps and --force options.
+rpm: Before installing any binary package, it's wise to examine it to
+rpm: see what it's going to do, and if it will overwrite any files. You
+rpm: can use rpm2tgz to convert .rpm packages to .tgz packages so you
+rpm: can look them over.
+rpm:
+rpm: https://github.com/rpm-software-management/rpm

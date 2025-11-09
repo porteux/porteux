@@ -1,10 +1,11 @@
 --- panels/info-overview/cc-info-overview-panel.c	2023-03-17 17:05:05.000000000 +0100
 +++ panels/info-overview/cc-info-overview-panel.c.patched	2024-08-29 16:15:45.156200533 +0200
-@@ -83,6 +83,32 @@
+@@ -83,6 +83,33 @@
    char **current;
  } VersionData;
  
-+static char* get_gnome_shell_version() {
++static char*
++get_gnome_shell_version() {
 +   FILE *file_pointer = popen("gnome-shell --version | cut -d \" \" -f 3", "r");
 +   if (file_pointer == NULL)
 +       return "Not Available";

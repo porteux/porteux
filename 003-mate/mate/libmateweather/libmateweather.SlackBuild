@@ -21,12 +21,11 @@ tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 CFLAGS="$GCCFLAGS" \
-./configure \
+./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-static \
 	--enable-locations-compression \
 	--build=$ARCH-porteux-linux

@@ -18,9 +18,12 @@ cd ${PRGNAM}
 git checkout c330506815f78f77f6685cb40749679eae789d63
 
 sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
+# fix version not showing when running 'pavucontrol --version'
+sed -i 's|printf("%s\\n", PACKAGE_STRING);|printf("%s %s\\n", PACKAGE_STRING, PACKAGE_VERSION);|g' src/pavuapplication.cc
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
+CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

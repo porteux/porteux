@@ -42,6 +42,10 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+install -Dm755 "$CWD/xinitrc.gnome" $PKG/etc/X11/xinit/xinitrc.gnome
+cd $PKG/etc/X11/xinit/
+cp -s xinitrc.gnome xinitrc
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 

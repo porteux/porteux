@@ -13,7 +13,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 if [ $SLACKWAREVERSION != "current" ]; then
-	fileName=$(curl -s https://ffmpeg.org/releases/ | grep ffmpeg-4.4.[0-9] | cut -d '>' -f 2 | grep .xz\" | cut -d \" -f 2 | sort -V -r | head -1)
+	fileName=$(curl -s https://ffmpeg.org/releases/ | grep ffmpeg-4.4.[0-9] | cut -d '>' -f 2 | grep .xz\" | cut -d \" -f 2 | sort -Vr | head -1)
 	BUILDPARAMS="${CLANGFLAGS/ -flto=auto}"
 else
 	fileName=$(curl -s $SOURCEREPOSITORY/l/ffmpeg/ | grep -oP '<a href="\K[^"]+' | grep ffmpeg- | head -n1)
@@ -36,7 +36,9 @@ else
 	EXTRAS="--enable-libplacebo --enable-lcms2"
 fi
 
+CC=clang \
 CFLAGS="$BUILDPARAMS" \
+LDFLAGS="$LLDFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

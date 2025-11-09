@@ -45,7 +45,7 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines (as long as they support SSE4), it is on high-end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small, and memory RAM consumption is highly optimized.
+PorteuX is lightweight and snappy. Although it can run on old machines (as long as they support SSE4.2), it is on high-end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small, and memory RAM consumption is highly optimized.
 
 For better performance, it's recommended to have PorteuX installed on a SSD/NVMe storage unit instead of a USB flash drive, or to select the 'Copy To RAM' option in the boot menu. The latter will result in a slower boot time, but after booting the system will run 100% in RAM, which is the fastest way possible.
 
@@ -67,7 +67,7 @@ All this performance benefit is achieved without providing ancient software. Thi
 In the terminal, run the following commands: <br />
 1. `su` (password: toor) <br />
 2. `cd $PORTDIR/modules` <br />
-3. `getpkg -m libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk` (this may take a while) <br />
+3. `getpkg -m libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk`<br />
 4. `activate -q libclc*.xzm llvm*.xzm mesa*.xzm ocl-icd*.xzm spirv-llvm-translator*.xzm vulkan-sdk*.xzm` <br />
 
 This only needs to be done once, as these modules will be activated automatically every time the machine boots.
@@ -105,8 +105,8 @@ arleson (core team)<br />
 theUtopian (core team)<br />
 blaze (@porteus)<br />
 brokenman (@porteus)<br />
-frank honolka (@snuk)<br />
 luckyCyborg (@slackware)<br />
+nater1983 (@gfs)<br />
 ncmprhnsbl (@porteus)<br />
 neko (@porteus)<br />
 patrick volkerding (@slackware)<br />

@@ -198,12 +198,8 @@ InstallAdditionalPackages
 
 ### fix applications shortcuts
 
-sed -i "s|Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULEPATH/packages/usr/share/applications/gparted.desktop
-
-### fix symlinks
-
-cd $MODULEPATH/packages/etc/X11/xinit/
-cp -fs xinitrc.openbox-session xinitrc
+sed -i "s|^Exec=.*|Exec=dbus-run-session -- labwc|g" $MODULEPATH/packages/usr/share/wayland-sessions/labwc.desktop
+sed -i "s|^Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULEPATH/packages/usr/share/applications/gparted.desktop
 
 ### add xzm to freedesktop.org.xml
 
@@ -227,13 +223,14 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
+rm etc/asound.state
 rm etc/rc_maps.cfg
 rm etc/xdg/autostart/at-spi-dbus-bus.desktop
 rm usr/bin/canberra*
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
-rm usr/bin/rsvg-convert
 rm usr/bin/Xdmx
+rm usr/bin/rsvg-convert # only for stable
 
 rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*

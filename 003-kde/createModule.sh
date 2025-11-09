@@ -88,7 +88,7 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt6Svg.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6SvgWidgets.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6TextToSpeech.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandClient.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandEglClientHwIntegration.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandEglCompositorHwIntegration.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Widgets.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6XcbQpa.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Xml.* "${currentPackage}-stripped"
@@ -290,6 +290,7 @@ rm -fr usr/share/kf6/searchproviders
 rm -fr usr/share/konqueror
 rm -fr usr/share/kscreen
 rm -fr usr/share/ksplash/Themes/Classic
+rm -fr usr/share/kwin-x11/kcm_kwintabbox
 rm -fr usr/share/phonon4qt6
 rm -fr usr/share/plasma/desktoptheme/air
 rm -fr usr/share/plasma/desktoptheme/oxygen

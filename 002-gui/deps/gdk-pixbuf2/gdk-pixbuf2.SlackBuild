@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -V -r | { 
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -Vr | { 
 	while read -r version; do
 		minor=$(echo "$version" | cut -d. -f2)
 		if (( minor % 2 == 0 )); then
@@ -26,10 +26,6 @@ wget https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/archive/${VERSION}/${PRGNAM}-${
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd gdk-pixbuf-$VERSION*
 
-for i in $CWD/*.patch; do
-	patch -p0 < $i
-done
-
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
@@ -41,7 +37,7 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Dothers=enabled \
-	-Dgtk_doc=false \
+	-Ddocumentation=false \
 	-Dtests=false \
 	-Dinstalled_tests=false \
 	-Dglycin=disabled \
@@ -53,8 +49,9 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mv $PKG/usr/bin/gdk-pixbuf-query-loaders{,-64}
-( cd $PKG/usr/bin
- ln -sf gdk-pixbuf-query-loaders-64 gdk-pixbuf-query-loaders
+(
+	cd $PKG/usr/bin
+	ln -sf gdk-pixbuf-query-loaders-64 gdk-pixbuf-query-loaders
 )
 
 # Install wrappers for the binaries:

@@ -13,9 +13,8 @@ DownloadPackage "gexiv2" &
 DownloadPackage "glib-networking" &
 DownloadPackage "hunspell" &
 DownloadPackage "hyphen" &
-DownloadPackage "ibus" &
-wait
 DownloadPackage "libgtop" &
+wait
 DownloadPackage "libproxy" &
 DownloadPackage "libpwquality" &
 DownloadPackage "libxklavier" &
@@ -27,7 +26,11 @@ wait
 
 [ ! -f /usr/bin/clang ] && DownloadPackage "llvm" & # required by mozjs
 
-### temporary packages for further building
+### packages that require specific striping
+
+DownloadPackage "ibus" & # required by gnome-control-center
+
+### temporary packages only for building
 
 DownloadPackage "cups" &
 DownloadPackage "dbus-python" &

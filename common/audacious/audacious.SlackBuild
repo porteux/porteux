@@ -24,7 +24,7 @@ elif [[ ${QT} == "6" ]]; then
 	TOOLKIT="qt6"
 	toolkitFlags="-Dgtk=false -Dqt=true"
 else
-	TOOLKIT="gtk"
+	TOOLKIT="gtk3"
 	toolkitFlags="-Dgtk=true -Dqt5=false -Dqt=false"
 fi
 
@@ -45,6 +45,8 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+install -Dm644 "$CWD/audacious-enqueue.desktop" $PKG/usr/share/applications/audacious-enqueue.desktop
 
 # remove invalid entry
 sed -i "s|SingleMainWindow=true||g" $PKG/usr/share/applications/audacious.desktop

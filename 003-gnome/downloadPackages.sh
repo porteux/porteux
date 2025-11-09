@@ -24,7 +24,6 @@ wait
 DownloadPackage "gtk4" &
 DownloadPackage "gtkmm4" & # required by gnome-system-monitor
 DownloadPackage "hyphen" &
-DownloadPackage "ibus" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
 DownloadPackage "libnma" &
@@ -47,7 +46,7 @@ wait
 
 DownloadPackage "ibus" & # required by gtk4 to allow accented characters
 
-### temporary packages for further building
+### temporary packages only for building
 
 DownloadPackage "boost" &
 DownloadPackage "c-ares" &

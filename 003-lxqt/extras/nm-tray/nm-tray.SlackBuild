@@ -22,11 +22,10 @@ cd $PRGNAM-$VERSION
 
 cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=release \
-	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_C_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
-	-DCMAKE_INSTALL_SYSCONFDIR=/etc \
-	-DBUILD_WITH_QT6=true
+	-DCMAKE_INSTALL_SYSCONFDIR=/etc
 
 make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 

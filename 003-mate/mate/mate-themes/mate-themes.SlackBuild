@@ -20,15 +20,14 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-export CFLAGS="$GCCFLAGS"
-
 [ ! -e configure ] && ./autogen.sh
+
+CFLAGS="$GCCFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG

@@ -35,7 +35,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	wait
 fi
 
-### temporary packages for further building
+### temporary packages only for building
 
 DownloadPackage "gtk+2" & # to build mate-themes
 wait

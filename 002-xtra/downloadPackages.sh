@@ -12,7 +12,7 @@ wait
 
 [ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
 
-### temporary packages for further building
+### temporary packages only for building
 
 DownloadPackage "frei0r-plugins" & # temporary to build ffmpeg
 DownloadPackage "opencl-headers" & # temporary to build ffmpeg

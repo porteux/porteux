@@ -27,6 +27,7 @@ sed -i "s|download_github third_party/libjpeg-turbo libjpeg-turbo/libjpeg-turbo|
 
 sh deps.sh
 
+LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
 	-DBUILD_TESTING=false \
@@ -59,7 +60,8 @@ cmake -B build -S . \
 	-DJPEGXL_ENABLE_SJPEG=false \
 	-DJPEGXL_ENABLE_PLUGIN_GIMP210=false \
 	-DJPEGXL_STATIC=false \
-	-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+	-DCMAKE_C_COMPILER=clang \
+	-DCMAKE_CXX_COMPILER=clang++
 
 DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
 

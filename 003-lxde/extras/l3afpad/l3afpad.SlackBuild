@@ -17,8 +17,10 @@ tar xvf ${PRGNAM}.tar.gz
 cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 
+./autogen.sh
+
 CFLAGS="$GCCFLAGS" \
-./autogen.sh && ./configure \
+./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \

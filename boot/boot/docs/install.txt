@@ -17,6 +17,8 @@ SSD/NVMe storage unit instead of a USB flash drive, or to select
 boot time, but after booting the system will be running 100% in RAM, 
 which is the fastest way possible.
 
+Please notice that a CPU with SSE4.2 is required to run PorteuX.
+
 It's not recommended to use any third-party ISO installer application,
 such as Rufus or Etcher because the media storage will be set to
 read-only mode, making it impossible to write any data, including

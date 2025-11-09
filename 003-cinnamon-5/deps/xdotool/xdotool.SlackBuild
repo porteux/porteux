@@ -22,8 +22,8 @@ cd $PRGNAM-$VERSION
 
 mkdir -p $PKG/usr/lib$SYSTEMBITS
 
+CFLAGS="$GCCFLAGS" \
 make -j${NUMBERTHREADS} install \
-	WARNFLAGS="$GCCFLAGS" \
 	PREFIX=/usr \
 	INSTALLLIB=/usr/lib$SYSTEMBITS \
 	DESTDIR=$PKG \

@@ -20,6 +20,7 @@ cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 
 ./bootstrap.sh
+
 CFLAGS="${GCCFLAGS} -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
@@ -31,6 +32,9 @@ make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

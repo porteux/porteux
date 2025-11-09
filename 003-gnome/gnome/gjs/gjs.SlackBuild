@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -V -r | { 
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -Vr | { 
 	if [[ "$ALLOWTEST" == "yes" ]]; then
 		head -1 && echo "$version";
 	else

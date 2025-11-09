@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -V -r | sed 's/~/\./' | head -1)
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
@@ -39,6 +39,10 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+install -Dm755 "$CWD/xinitrc.gnome" $PKG/etc/X11/xinit/xinitrc.gnome
+cd $PKG/etc/X11/xinit/
+cp -s xinitrc.gnome xinitrc
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
