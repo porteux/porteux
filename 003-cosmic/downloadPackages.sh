@@ -3,8 +3,10 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 GenerateRepositoryUrls
 
+DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
+DownloadPackage "libindicator" &
 DownloadPackage "libhandy" &
 DownloadPackage "libwnck3" &
 wait
@@ -13,14 +15,6 @@ wait
 
 [ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
 wait
-
-### slackware current only packages
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "libappindicator" &
-	DownloadPackage "libindicator" &
-	wait
-fi
 
 ### script clean up
 

@@ -30,36 +30,26 @@ DownloadFromSlackware
 
 [ ! -f /usr/bin/clang ] && (installpkg $MODULEPATH/packages/llvm*.txz || exit 1)
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	installpkg $MODULEPATH/packages/gdk-pixbuf2*.txz || exit 1
+currentPackage=gdk-pixbuf2
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
 
-	# required by xorg but not included in slackware repo in stable
-	currentPackage=libxcvt
-	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}*.txz
-	rm -fr $MODULEPATH/${currentPackage}
-else
-	currentPackage=gdk-pixbuf2
-	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}*.txz
-	rm -fr $MODULEPATH/${currentPackage}
+installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 
-	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
+installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
+rm $MODULEPATH/packages/cargo-c*
 
-	installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
-	rm $MODULEPATH/packages/cargo-c*
+# not using rust from slackware because it's much slower
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
+rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
+export PATH=$HOME/.cargo/bin/:$PATH
 
-	# not using rust from slackware because it's much slower
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
-	rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
-	export PATH=$HOME/.cargo/bin/:$PATH
-
-	# building this because the slackware package in current depends on dav1d
-	currentPackage=librsvg
-	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
-	rm -fr $MODULEPATH/${currentPackage}
-fi
+# building this because the slackware package in current depends on dav1d
+currentPackage=librsvg
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libtheora*.txz || exit 1
@@ -173,11 +163,9 @@ cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped > /dev/null 2>&1
 cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped
-if [ $SLACKWAREVERSION == "current" ]; then
-	cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped
-	cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped
-	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
-fi
+cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
 cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
@@ -236,6 +224,7 @@ rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libpoppler-cpp*
+rm usr/lib${SYSTEMBITS}/libpoppler-qt5*
 rm usr/lib${SYSTEMBITS}/libxatracker*
 rm usr/lib${SYSTEMBITS}/libXaw.so.6*
 rm usr/lib${SYSTEMBITS}/libXaw6*
@@ -318,7 +307,7 @@ rm -fr usr/X11R6/include
 rm -fr usr/X11R6/man
 } >/dev/null 2>&1
 
-[ $SLACKWAREVERSION == "current" ] && rm usr/lib${SYSTEMBITS}/libpoppler-qt5*
+
 
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 

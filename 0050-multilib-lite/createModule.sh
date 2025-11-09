@@ -100,9 +100,7 @@ packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 tar xvf ${currentPackage}-*.txz
 mkdir -p ${currentPackage}-stripped/usr/lib
 cp usr/lib/libvulkan.so* ${currentPackage}-stripped/usr/lib
-if [ $SLACKWAREVERSION == "current" ]; then
-	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
-fi
+cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}

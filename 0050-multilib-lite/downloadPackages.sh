@@ -23,14 +23,15 @@ DownloadPackage "glibc-profile" &
 DownloadPackage "glu" &
 DownloadPackage "graphite2" &
 DownloadPackage "harfbuzz" &
-wait
 DownloadPackage "keyutils" &
+wait
 DownloadPackage "krb5" &
 DownloadPackage "lame" &
 DownloadPackage "libcap" &
 DownloadPackage "libasyncns" &
 DownloadPackage "libcap" &
 DownloadPackage "libdrm" &
+DownloadPackage "libedit" &
 DownloadPackage "libffi" &
 DownloadPackage "libglvnd" &
 DownloadPackage "libICE" &
@@ -89,13 +90,6 @@ DownloadPackage "llvm" &
 DownloadPackage "pulseaudio" &
 DownloadPackage "vulkan-sdk" &
 wait
-
-### slackware specific version packages
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "libedit" &
-	wait
-fi
 
 ### script clean up
 

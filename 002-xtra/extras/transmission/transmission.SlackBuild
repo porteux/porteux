@@ -23,11 +23,9 @@ cd $PRGNAM-$VERSION
 # only for version 4.0.6 which is broken
 patch -p0 < $CWD/cmake.patch 
 
-if [ $SLACKWAREVERSION == "current" ]; then
-	sed -i 's|cmake_minimum_required(VERSION 3.12 FATAL_ERROR)|cmake_minimum_required(VERSION 3.5)|g' third-party/miniupnp/miniupnpc/CMakeLists.txt
-	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/libnatpmp/CMakeLists.txt
-	sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/dht/CMakeLists.txt
-fi
+sed -i 's|cmake_minimum_required(VERSION 3.12 FATAL_ERROR)|cmake_minimum_required(VERSION 3.5)|g' third-party/miniupnp/miniupnpc/CMakeLists.txt
+sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/libnatpmp/CMakeLists.txt
+sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/dht/CMakeLists.txt
 
 LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \

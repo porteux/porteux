@@ -1,6 +1,0 @@
-                     |-----handy-ruler------------------------------------------------------|
-gnome-settings-daemon: GNOME Settings Daemon
-gnome-settings-daemon:
-gnome-settings-daemon: The GNOME Settings Daemon is responsible for setting various
-gnome-settings-daemon: parameters of a GNOME Session and the applications that run under it.
-gnome-settings-daemon:

@@ -65,11 +65,8 @@ installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
-	installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-fi
+installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 
 # required just for building
 installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
