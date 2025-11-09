@@ -15,7 +15,7 @@ cd $TMP
 if [ $SLACKWAREVERSION != "current" ]; then
 	VERSION="40.0"
 else
-	VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '\.rc|\.beta|\.alpha' | sort -V -r | head -1)
+	VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '\.rc|\.beta|\.alpha' | sort -Vr | head -1)
 fi
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 

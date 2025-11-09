@@ -21,14 +21,16 @@ tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 cd build/cmake
-CC=clang CXX=clang++ \
-LDFLAGS="-fuse-ld=lld -Wl,--icf=safe" \
+CC=clang \
+CXX=clang++ \
+LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_C_FLAGS="$CLANGFLAGS" \
 	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DBUILD_SHARED_LIBS=ON \
 	-DZSTD_BUILD_STATIC=OFF \
 	-DZSTD_PROGRAMS_LINK_SHARED=ON \
 	-DZSTD_LZ4_SUPPORT=ON \

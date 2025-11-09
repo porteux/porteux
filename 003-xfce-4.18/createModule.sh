@@ -59,7 +59,9 @@ sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
+installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 
 # xfce extras
 for package in \
@@ -68,6 +70,7 @@ for package in \
 	pavucontrol \
 	gpicview \
 	mate-search-tool \
+	network-manager-applet \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
@@ -89,7 +92,6 @@ installpkg $MODULEPATH/packages/glade*.txz || exit 1
 rm $MODULEPATH/packages/glade*.txz || exit 1
 
 # required by xfce4-panel
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
 
 # required by xfce4-pulseaudio-plugin
@@ -146,7 +148,7 @@ installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=lightdm-gtk-greeter
-ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+ICONTHEME=elementary-xfce sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
@@ -171,12 +173,6 @@ sed -i "s|Categories=System;|Categories=|g" $MODULEPATH/packages/usr/share/appli
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/thunar-bulk-rename.desktop
 sed -i "s|System;||g" $MODULEPATH/packages/usr/share/applications/xfce4-sensors.desktop
 sed -i "s|Utility;||g" $MODULEPATH/packages/usr/share/applications/xfce4-taskmanager.desktop
-
-### copy xinitrc
-
-mkdir -p $MODULEPATH/packages/etc/X11/xinit
-cp $SCRIPTPATH/xfce/xfce4-session/xinitrc.xfce $MODULEPATH/packages/etc/X11/xinit/
-chmod 0755 $MODULEPATH/packages/etc/X11/xinit/xinitrc.xfce
 
 ### copy build files to 05-devel
 

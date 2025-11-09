@@ -48,7 +48,7 @@ make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-install -m 755 $CWD/Xsession $PKG/etc/lightdm/
+install -Dm755 $CWD/Xsession $PKG/etc/lightdm/
 rm -rf $PKG/etc/init
 
 mkdir -p -m=755 $PKG/var/cache/lightdm

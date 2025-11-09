@@ -19,14 +19,13 @@ DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-DownloadPackage "network-manager-applet" &
 DownloadPackage "vte" &
 wait
 
-### temporary packages
+### temporary packages only for building
 
 DownloadPackage "glade" & # required by libxfce4ui to provide more system information (e.g. nvidia cards)
-DownloadPackage "libyaml" & # to build xfdesktop with desktop icons
+DownloadPackage "libyaml" & # to build xfdesktop with desktop iconslibnma
 wait
 
 ### script clean up

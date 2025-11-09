@@ -14,12 +14,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-#info=$(DownloadLatestFromGithub "plougher" ${PRGNAM} "squashfs-tools")
-#VERSION=${info#* }
-VERSION=$(curl -s https://github.com/plougher/${PRGNAM}/tags | grep tar.gz | grep -oP "(?<=/plougher/${PRGNAM}/archive/refs/tags/)[^\"]+" | grep -v "CVE" | grep -v "${PRGNAM}" | sort -V -r | head -n 1 | rev | cut -d "." -f 3- | rev)
-wget https://github.com/plougher/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz
+info=$(DownloadLatestFromGithub "plougher" ${PRGNAM} "squashfs-tools|CVE")
+VERSION=${info#* }
 
-tar xfv $VERSION.tar.?z*
+tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 cd $PRGNAM
@@ -32,7 +30,7 @@ make -j${NUMBERTHREADS} \
 	LZO_SUPPORT="1" \
 	LZMA_XZ_SUPPORT="1" \
 	ZSTD_SUPPORT="1" \
-	COMP_DEFAULT="xz"
+	COMP_DEFAULT="zstd"
 
 make install INSTALL_DIR=$PKG/usr/bin
 

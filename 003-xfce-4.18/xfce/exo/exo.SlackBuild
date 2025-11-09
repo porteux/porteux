@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v pre | grep 4.18 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v pre | grep 4.18 | sort -Vr | head -1)
 VERSION=$(echo $DOWNLOADVERSION | rev | cut -d '-' -f 1 | rev)
 wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNAM}-${DOWNLOADVERSION}.tar.gz
 
@@ -24,7 +24,6 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-static \
 	--disable-debug \
 	--build=$ARCH-porteux-linux

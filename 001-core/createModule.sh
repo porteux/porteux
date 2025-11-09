@@ -28,18 +28,22 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
+installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
+
+installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+
 if [ $SLACKWAREVERSION != "current" ]; then
 	currentPackage=meson
 	sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 	upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
 	rm -fr $MODULEPATH/${currentPackage}
 	rm $MODULEPATH/packages/meson-*.txz
+else
+	currentPackage=rpm
+	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+	rm -fr $MODULEPATH/${currentPackage}
 fi
-
-installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
-
-installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 # required to build procps-ng
 installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
@@ -238,10 +242,19 @@ sed -i '/^ca::ctrlaltdel/c\ca::ctrlaltdel:/sbin/shutdown -r now 2>/dev/null' $MO
 sed -i "s|password    requisite     pam_pwquality.so|#password    requisite     pam_pwquality.so|g" $MODULEPATH/packages/etc/pam.d/system-auth
 sed -i "s|try_first_pass use_authtok||g" $MODULEPATH/packages/etc/pam.d/system-auth
 
+### remove fake curl deps
+
+sed -i "s|,mit-krb5-gssapi||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
+sed -i "s|,libcares||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
+
 ### set NetworkManager to use internal dhcp
 
 sed -i "s|dhcp=dhclient|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/NetworkManager.conf || exit 1
 sed -i "s|#dhcp=internal|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/conf.d/00-dhcp-client.conf || exit 1
+
+### fix timeconfig missing folder
+
+sed -i '/^TMP=\/var\/log\/setup\/tmp$/a [ ! -d \$TMP ] && mkdir -p \$TMP' $MODULEPATH/packages/usr/sbin/timeconfig
 
 ### fix symlinks
 
@@ -249,6 +262,8 @@ cd $MODULEPATH/packages/bin
 cp -s fusermount3 fusermount
 cd $MODULEPATH/packages/usr/bin
 cp -s python3 python > /dev/null 2>&1
+cd $MODULEPATH/packages/usr/lib${SYSTEMBITS}
+cp -s libxml2.so libxml2.so.2 > /dev/null 2>&1
 
 ### set CPU governor to performance -- only in stable because current is already doing it
 
@@ -257,20 +272,27 @@ if [ $SLACKWAREVERSION != "current" ]; then
 	patch -p0 < $SCRIPTPATH/extras/rc.cpufreq.patch
 fi
 
-### remove fake curl deps
+### update version
 
-sed -i "s|,mit-krb5-gssapi||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
-sed -i "s|,libcares||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
+echo "PorteuX-v${PORTEUXVERSION}-${PORTEUXBUILD}" > $MODULEPATH/packages/etc/porteux-version
+sed -i "s|version|v${PORTEUXVERSION}|" $MODULEPATH/packages/etc/issue
+sed -i "s|version|v${PORTEUXVERSION}|" $MODULEPATH/packages/etc/issue-openbox
+sed -i "s|^VERSION=.*|VERSION=\"${PORTEUXVERSION}\"|" $MODULEPATH/packages/etc/os-release
+sed -i "s|^VERSION_ID=.*|VERSION_ID=${PORTEUXVERSION}|" $MODULEPATH/packages/etc/os-release
+sed -i "s|^PRETTY_NAME=.*|PRETTY_NAME=\"PorteuX ${PORTEUXVERSION} ${PORTEUXBUILD}\"|" $MODULEPATH/packages/etc/os-release
+sed -i "s|^CPE_NAME=.*|CPE_NAME=\"cpe:/o:porteux:porteux_linux:${PORTEUXVERSION}\"|" $MODULEPATH/packages/etc/os-release
+sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUXVERSION}|" $SCRIPTPATH/../boot/boot/syslinux/help.txt
 
-### fix permissions
+### set permissions
 
 cd $MODULEPATH/packages
 
 chmod 644 etc/rc.d/rc.bluetooth
-chmod 644 etc/rc.d/rc.inet1
-chmod 755 etc/rc.d/rc.networkmanager
+chmod 644 etc/rc.d/rc.crond
 chmod 644 etc/rc.d/rc.fuse3
+chmod 644 etc/rc.d/rc.inet1
 chmod 644 etc/rc.d/rc.loop
+chmod 755 etc/rc.d/rc.networkmanager
 chmod 644 etc/rc.d/rc.sshd
 chmod 644 etc/rc.d/rc.wireless
 

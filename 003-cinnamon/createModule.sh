@@ -106,7 +106,6 @@ installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
-installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
@@ -152,7 +151,7 @@ for package in \
 	caribou \
 	python-pexpect \
 	python-polib \
-	python3-xapp \
+	python-xapp \
 	libpeas \
 	libgxps \
 ; do
@@ -179,6 +178,10 @@ done
 
 cd $MODULEPATH
 pip install pysass # required by cinnamon project
+
+# temporary until cjs migrates do mozjs140
+wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/mozjs128-128.14.0esr-x86_64-1.txz -P $MODULEPATH/packages
+installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 
 # cinnamon packages
 for package in \
@@ -257,6 +260,7 @@ rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py
 rm usr/libexec/indicator-loader
+rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
 rm usr/share/dbus-1/services/org.gnome.Caribou.Daemon.service
 rm usr/share/dbus-1/services/org.gnome.FileRoller.service

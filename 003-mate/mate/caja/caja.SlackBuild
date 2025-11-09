@@ -20,13 +20,15 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+sed -i 's|docs \\|\\|g' Makefile.am
+sed -i 's|test \\|\\|g' Makefile.am
+
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-static \
 	--libexecdir=/usr/lib${SYSTEMBITS}/caja \
 	--disable-update-mimedb \

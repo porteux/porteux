@@ -14,8 +14,13 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "mate-desktop" $PRGNAM "1.29")
-VERSION=${info#* }
+if [ $SLACKWAREVERSION != "current" ]; then
+	VERSION="1.28.3"
+	wget https://github.com/mate-desktop/${PRGNAM}/releases/download/v${VERSION}/${PRGNAM}-${VERSION}.tar.xz
+else
+	info=$(DownloadLatestFromGithub "mate-desktop" $PRGNAM "1.29")
+	VERSION=${info#* }
+fi
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
@@ -26,18 +31,17 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
 	--disable-static \
 	--libexecdir=/usr/lib${SYSTEMBITS}/mate-notification-daemon \
 	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
-install -Dm644 "$CWD/mate-notification-daemon.desktop" $PKG/etc/xdg/autostart/
-sed -i "s|%LIBDIR%|${SYSTEMBITS}|g" $PKG/etc/xdg/autostart/mate-notification-daemon.desktop
+#install -Dm644 "$CWD/mate-notification-daemon.desktop" $PKG/etc/xdg/autostart/
+#sed -i "s|%LIBDIR%|${SYSTEMBITS}|g" $PKG/etc/xdg/autostart/mate-notification-daemon.desktop
 
-install -Dm644 "$CWD/mate-notification" $PKG/etc/cron.hourly/mate-notification
-sed -i "s|%LIBDIR%|${SYSTEMBITS}|g" $PKG/etc/cron.hourly/mate-notification
+#install -Dm644 "$CWD/mate-notification" $PKG/etc/cron.hourly/mate-notification
+#sed -i "s|%LIBDIR%|${SYSTEMBITS}|g" $PKG/etc/cron.hourly/mate-notification
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

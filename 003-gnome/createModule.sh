@@ -166,7 +166,6 @@ done
 
 ### packages that require specific stripping
 
-# required by gtk4 applications to be able to have accented characters
 currentPackage=ibus
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}*.txz .

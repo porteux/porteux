@@ -41,7 +41,9 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt6Concurrent.* "${currentPackage}-strippe
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Core.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6DBus.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Gui.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Multimedia.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Network.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6OpenGL.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Pdf.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6PrintSupport.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Svg.* "${currentPackage}-stripped"
@@ -135,15 +137,13 @@ LATESTVERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/l
 echo "Building LXQt ${LATESTVERSION}..."
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
-# required by libkscreen
-installpkg $MODULEPATH/packages/plasma-wayland-protocols*.txz || exit 1
-
 # lxqt deps
 for package in \
 	muparser \
 	polkit-qt6-1 \
 	extra-cmake-modules \
 	layer-shell-qt6 \
+	plasma-wayland-protocols \
 	kwindowsystem \
 	kwayland \
 	solid \

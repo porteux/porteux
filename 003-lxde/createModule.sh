@@ -64,6 +64,12 @@ currentPackage=xcape
 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
+# required from now on
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libnma*.txz || exit 1
+
 # lxde extras
 for package in \
 	atril \
@@ -71,6 +77,7 @@ for package in \
 	pavucontrol \
 	l3afpad \
 	gnome-screenshot \
+	network-manager-applet \
 	kora-icon-theme \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1

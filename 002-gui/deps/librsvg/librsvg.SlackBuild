@@ -12,16 +12,25 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | grep -v 'gtk' | sort -V -r | head -1)
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -viE 'alpha|beta|rc|gtk' | sort -Vr | { 
+	while read -r version; do
+		patchVersion=$(echo "$version" | rev | cut -d. -f1 | rev)
+		if [[ $patchVersion != "9"* ]]; then
+			echo "$version";
+			break;
+		fi
+	done
+})
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}"
-
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CC=clang \
+CFLAGS="$CLANGFLAGS" \
+RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}" \
+LDFLAGS="$LLDFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
@@ -29,15 +38,15 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
+	-Dpixbuf-loader=enabled \
 	-Dtests=false \
 	-Ddocs=disabled \
-	-Davif=disabled
+	-Davif=disabled \
+	-Drsvg-convert=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-
-rm $PKG/usr/bin/rsvg-convert
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

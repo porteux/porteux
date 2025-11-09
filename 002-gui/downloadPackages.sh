@@ -249,7 +249,7 @@ DownloadPackage "pulseaudio" &
 DownloadPackage "vulkan-sdk" &
 wait
 
-### temporary packages for further building
+### temporary packages only for building
 
 DownloadPackage "cups" & # to build gtk+3
 DownloadPackage "xtrans" & # to build xorg

@@ -145,6 +145,26 @@ installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+### packages that require specific stripping
+
+currentPackage=ibus
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}*.txz .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+rm usr/share/applications/org.freedesktop.IBus.Setup.desktop
+rm -fr usr/share/ibus/dicts
+rm -fr var/lib/pkgtools
+rm -f var/log/packages
+rm -fr var/log/pkgtools
+rm -f var/log/setup
+rm -f var/log/scripts
+mkdir ${currentPackage}-stripped
+rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
@@ -181,7 +201,6 @@ cd $MODULEPATH/packages/
 
 {
 rm etc/xdg/autostart/blueman.desktop
-rm etc/xdg/autostart/ibus*.desktop
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
@@ -205,8 +224,6 @@ rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
 rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 rm usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
-rm usr/share/dbus-1/services/org.freedesktop.IBus.service
-rm usr/share/dbus-1/services/org.freedesktop.portal.IBus.service
 rm usr/share/dbus-1/services/org.freedesktop.portal.Tracker.service
 rm usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
 rm usr/share/dbus-1/services/org.gnome.evince.Daemon.service
@@ -231,7 +248,6 @@ rm -fr usr/share/glade/pixmaps
 rm -fr usr/share/gnome/autostart
 rm -fr usr/share/gnome/shutdown
 rm -fr usr/share/gtk-4.0
-rm -fr usr/share/ibus
 rm -fr usr/share/icons/Adwaita/8x8
 rm -fr usr/share/icons/Adwaita/96x96
 rm -fr usr/share/icons/Adwaita/256x256

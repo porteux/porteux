@@ -12,8 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-#VERSION=$(curl -s https://invent.kde.org/plasma/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
-VERSION="v6.0.5"
+VERSION=$(curl -s https://invent.kde.org/plasma/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -viE 'alpha|beta|rc' | sort -Vr | head -1)
 wget https://invent.kde.org/plasma/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
@@ -27,8 +26,7 @@ cmake .. \
 	-DCMAKE_C_FLAGS="$GCCFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
-	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_VERBOSE_MAKEFILE=ON
+	-DCMAKE_INSTALL_PREFIX=/usr
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 

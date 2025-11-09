@@ -176,7 +176,6 @@ DownloadPackage "python-urllib3" &
 DownloadPackage "readline" &
 DownloadPackage "rpcbind" &
 DownloadPackage "rpm2tgz" &
-DownloadPackage "rpm" &
 wait
 DownloadPackage "rp-pppoe" &
 DownloadPackage "rsync" &
@@ -229,7 +228,10 @@ wait
 
 ### slackware specific version packages
 
-if [ $SLACKWAREVERSION == "current" ]; then
+if [ $SLACKWAREVERSION != "current" ]; then
+	DownloadPackage "rpm" &
+	wait
+else
 	DownloadPackage "avahi" &
 	DownloadPackage "lua" &
 	DownloadPackage "lzlib" &
