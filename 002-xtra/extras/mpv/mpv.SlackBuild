@@ -14,21 +14,15 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-if [ $SLACKWAREVERSION == "current" ]; then
-	info=$(DownloadLatestFromGithub "mpv-player" ${PRGNAM})
-	VERSION=${info#* }
-	tar xfv $PRGNAM-$VERSION.tar.?z*
-	cd $PRGNAM-$VERSION
-	
-	for i in $CWD/*.patch; do
-		patch -p0 < $i
-	done
-else
-	VERSION="0.38.0"
-	wget --content-disposition https://github.com/mpv-player/${PRGNAM}/archive/refs/tags/v${VERSION}.tar.gz
-	tar xfv $PRGNAM-$VERSION.tar.?z*
-	cd $PRGNAM-$VERSION
-fi
+info=$(DownloadLatestFromGithub "mpv-player" ${PRGNAM})
+VERSION=${info#* }
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+for i in $CWD/*.patch; do
+	patch -p0 < $i
+done
 
 mkdir build && cd build
 CC=clang \

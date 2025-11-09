@@ -12,13 +12,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	fileName=$(curl -s https://ffmpeg.org/releases/ | grep ffmpeg-4.4.[0-9] | cut -d '>' -f 2 | grep .xz\" | cut -d \" -f 2 | sort -Vr | head -1)
-	BUILDPARAMS="${CLANGFLAGS/ -flto=auto}"
-else
-	fileName=$(curl -s $SOURCEREPOSITORY/l/ffmpeg/ | grep -oP '<a href="\K[^"]+' | grep ffmpeg- | head -n1)
-	BUILDPARAMS="$CLANGFLAGS -ffat-lto-objects -Wno-error=int-conversion -Wno-error=incompatible-pointer-types"
-fi
+fileName=$(curl -s $SOURCEREPOSITORY/l/ffmpeg/ | grep -oP '<a href="\K[^"]+' | grep ffmpeg- | head -n1)
+BUILDPARAMS="$CLANGFLAGS -ffat-lto-objects -Wno-error=int-conversion -Wno-error=incompatible-pointer-types"
 
 wget https://ffmpeg.org/releases/${fileName}
 VERSION=$(echo ${fileName} | cut -d '-' -f 2 | rev | cut -d '.' -f 3- | rev)
@@ -26,15 +21,9 @@ VERSION=$(echo ${fileName} | cut -d '-' -f 2 | rev | cut -d '.' -f 3- | rev)
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	# Fix linking with flite:
-	sed -i "s| -lflite\"| -lflite -lm -lasound\"|" ./configure
-	patch -p0 < $CWD/svt-av1-3.0-build-fix.patch
-else
-	sed -i "s|enabled extra_warnings |#enabled extra_warnings |g" ./configure
-	patch -p0 < $CWD/add-av_stream_get_first_dts-for-chromium.patch
-	EXTRAS="--enable-libplacebo --enable-lcms2"
-fi
+sed -i "s|enabled extra_warnings |#enabled extra_warnings |g" ./configure
+patch -p0 < $CWD/add-av_stream_get_first_dts-for-chromium.patch
+EXTRAS="--enable-libplacebo --enable-lcms2"
 
 CC=clang \
 CFLAGS="$BUILDPARAMS" \

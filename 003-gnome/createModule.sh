@@ -11,8 +11,6 @@ source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
 
-[ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
-
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"

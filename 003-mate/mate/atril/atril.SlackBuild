@@ -24,10 +24,6 @@ for i in $CWD/*.patch; do
 	patch -p0 < $i;
 done
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	sed -i "s|'>= 3.6.0'|'>= 3.5.2'|g" meson.build
-fi
-
 sed -i "s|mate_desktop = dependency|#mate_desktop = dependency|g" meson.build
 sed -i "s|mate_desktop,|#mate_desktop,|g" shell/meson.build
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build

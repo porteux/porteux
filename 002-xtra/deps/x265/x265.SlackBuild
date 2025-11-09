@@ -17,11 +17,7 @@ tar xvf HEAD.tar.gz && rm HEAD.tar.gz
 cd multicoreware-${PRGNAM}*
 VERSION=$(date -r . +%Y%m%d)
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	BUILDPARAMS="${CLANGFLAGS/ -flto=auto} -fvisibility-inlines-hidden"
-else
-	BUILDPARAMS="${CLANGFLAGS} -ffat-lto-objects -fvisibility-inlines-hidden"
-fi
+BUILDPARAMS="${CLANGFLAGS} -ffat-lto-objects -fvisibility-inlines-hidden"
 
 patch -p0 < $CWD/build-fix.patch
 

@@ -8,20 +8,12 @@ DownloadPackage "blueman" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
-wait
 DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "vte" &
 wait
-
-### slackware specific version packages
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "libappindicator" &
-	wait
-fi
 
 ### script clean up
 
