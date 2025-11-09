@@ -149,8 +149,6 @@ InstallAdditionalPackages
 ### fix some .desktop files
 
 sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/eom.desktop
-sed -i "s|^Exec=.*|Exec=nm-applet --indicator|g" $MODULEPATH/packages/etc/xdg/autostart/nm-applet.desktop
-sed -i "s|^Exec=.*|Exec=nm-applet --indicator|g" $MODULEPATH/packages/usr/share/applications/nm-applet.desktop
 
 ### copy build files to 05-devel
 
