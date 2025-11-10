@@ -2,7 +2,8 @@
 
 CURRENTPACKAGE=multilib
 PORTEUXFULLVERSION=$(cat /etc/porteux-version)
-PORTEUXVERSION=${PORTEUXFULLVERSION//*-}
+PORTEUXVERSION=${PORTEUXFULLVERSION#*-}
+PORTEUXVERSION=${PORTEUXVERSION%%-*} 
 
 systemFullVersion=$(cat /etc/slackware-version)
 SLACKWAREVERSION=${systemFullVersion//* }
