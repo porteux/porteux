@@ -36,11 +36,8 @@ cp "$CWD/meson.build.template" meson.build
 meson rewrite kwargs set project / version ${VERSION}
 
 mkdir build && cd build
-CC=clang \
-CXX=clang++ \
-CFLAGS="$CLANGFLAGS -pthread" \
-CXXFLAGS="$CLANGFLAGS -fvisibility-inlines-hidden -pthread" \
-LDFLAGS="$LLDFLAGS" \
+CFLAGS="$GCCFLAGS -pthread" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden -pthread" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
