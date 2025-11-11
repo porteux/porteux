@@ -148,7 +148,7 @@ DownloadPackage "kwayland-integration" &
 DownloadPackage "kwidgetsaddons" &
 wait
 DownloadPackage "kwin" &
-DownloadPackage "kwin_x11" &
+DownloadPackage "kwin-x11" &
 DownloadPackage "kwindowsystem" &
 DownloadPackage "kwrited" &
 DownloadPackage "kxmlgui" &
