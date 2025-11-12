@@ -75,7 +75,7 @@ for package in \
 	imlib2 \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -103,7 +103,7 @@ currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped
 cd ${currentPackage}-stripped
@@ -114,7 +114,7 @@ currentPackage=mesa
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}*.txz
 rm -fr etc/OpenCL
 rm usr/lib${SYSTEMBITS}/dri/i830*
 rm usr/lib${SYSTEMBITS}/dri/i965*
@@ -138,7 +138,7 @@ currentPackage=pulseaudio
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/bin/pactl ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped
@@ -156,7 +156,7 @@ currentPackage=vulkan-sdk
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped
 cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped > /dev/null 2>&1

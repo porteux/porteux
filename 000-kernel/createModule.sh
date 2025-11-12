@@ -112,7 +112,7 @@ echo "Building kernel headers..."
 currentPackage=kernel-headers
 KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${SCRIPTPATH}/${currentPackage}.SlackBuild || exit 1
 mkdir -p ${MODULEPATH}/../05-devel/packages
-mv ${MODULEPATH}/packages/${currentPackage}-*.txz ${MODULEPATH}/../05-devel/packages
+mv ${MODULEPATH}/packages/${currentPackage}*.txz ${MODULEPATH}/../05-devel/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 echo "Building vmlinuz (this may take a while)..."
@@ -132,8 +132,8 @@ rm $MODULEPATH/lib/modules/$kernelModulesFolder/build > /dev/null 2>&1
 echo "Installing firmwares..."
 currentPackage=kernel-firmware
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-tar xf $MODULEPATH/packages/kernel-firmware-*.txz > /dev/null 2>&1
-rm $MODULEPATH/packages/kernel-firmware-*.txz
+tar xf $MODULEPATH/packages/kernel-firmware*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/kernel-firmware*.txz
 sh install/doinst.sh > /dev/null 2>&1
 
 # manually copy intel bluetooth firmwares until kernel fixes drivers/bluetooth/btintel.c

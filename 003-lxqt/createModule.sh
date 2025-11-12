@@ -33,7 +33,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Concurrent.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Core.* "${currentPackage}-stripped"
@@ -75,7 +75,7 @@ currentPackage=ghostscript-fonts-std
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* . || exit 1
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/share/fonts/Type1/d050000l.* "${currentPackage}-stripped"
 cp --parents -P usr/share/fonts/Type1/fonts.* "${currentPackage}-stripped"
@@ -115,7 +115,7 @@ sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
-installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
 currentPackage=lightdm
 SESSIONTEMPLATE=lxqt sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
@@ -154,7 +154,7 @@ for package in \
 	libstatgrab \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -217,7 +217,7 @@ for package in \
 	screengrab \
 ; do
 sh $SCRIPTPATH/lxqt/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

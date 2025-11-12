@@ -94,16 +94,18 @@ installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 
 # required by xfce4-panel
-installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
+installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 
 # required by xfce4-pulseaudio-plugin
 installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 
 # required by xfce4-terminal
-installpkg $MODULEPATH/packages/vte-*.txz || exit 1
+installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
+rm $MODULEPATH/packages/icu4c*.txz
+installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required by xfce4-xkb-plugin
-installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
 # required by xfdesktop
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
@@ -159,7 +161,7 @@ for package in \
 	xfce4-xkb-plugin \
 ; do
 sh $SCRIPTPATH/xfce/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

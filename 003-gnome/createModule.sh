@@ -50,6 +50,7 @@ rm $MODULEPATH/packages/c-ares*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
+rm $MODULEPATH/packages/icu4c*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
@@ -110,7 +111,7 @@ for package in \
 	blueprint-compiler \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -158,7 +159,7 @@ for package in \
 	xdg-desktop-portal-gnome \
 ; do
 sh $SCRIPTPATH/gnome/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -168,7 +169,7 @@ currentPackage=ibus
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}*.txz
 rm usr/share/applications/org.freedesktop.IBus.Setup.desktop
 rm -fr usr/share/ibus/dicts
 rm -fr var/lib/pkgtools

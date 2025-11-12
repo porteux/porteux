@@ -72,7 +72,7 @@ currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-tar xvf ${currentPackage}-*.txz
+tar xvf ${currentPackage}*.txz
 mkdir -p ${currentPackage}-stripped/usr/lib
 cp usr/lib/libLLVM*.so* ${currentPackage}-stripped/usr/lib
 cd ${currentPackage}-stripped
@@ -83,7 +83,7 @@ currentPackage=pulseaudio
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib/libpulse.so* ${currentPackage}-stripped
 cp --parents -P usr/lib/libpulse-mainloop-glib.so* ${currentPackage}-stripped
@@ -97,7 +97,7 @@ currentPackage=vulkan-sdk
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-tar xvf ${currentPackage}-*.txz
+tar xvf ${currentPackage}*.txz
 mkdir -p ${currentPackage}-stripped/usr/lib
 cp usr/lib/libvulkan.so* ${currentPackage}-stripped/usr/lib
 cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped

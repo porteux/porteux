@@ -70,7 +70,7 @@ currentPackage=avahi
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped/
@@ -83,7 +83,7 @@ currentPackage=glibc
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}*.txz
 rm usr/include/gnu/*-32.h
 rm usr/libexec/getconf/*ILP32*
 rm var/log/packages
@@ -140,7 +140,7 @@ currentPackage=binutils
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents usr/bin/ar ${currentPackage}-stripped/
 cp --parents usr/bin/strip ${currentPackage}-stripped/
@@ -154,7 +154,7 @@ currentPackage=fftw
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib${SYSTEMBITS}/libfftw3.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libfftw3f.* ${currentPackage}-stripped/
@@ -166,7 +166,7 @@ currentPackage=ntp
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/bin/ntpdate ${currentPackage}-stripped/
 cp --parents -P usr/sbin/ntpdate ${currentPackage}-stripped/
@@ -179,7 +179,7 @@ currentPackage=openldap
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents etc/openldap/ldap.conf.new ${currentPackage}-stripped/
 mv ${currentPackage}-stripped/etc/openldap/ldap.conf.new ${currentPackage}-stripped/etc/openldap/ldap.conf
