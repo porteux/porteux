@@ -47,23 +47,26 @@ if [ ${CLANG:-no} = "yes" ]; then
 	COMPILER="Clang"
 	EXTRAFLAGS="LLVM=1 CC=clang"
 	# fixing flags that are not compatible with the kernel
-	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
-	BUILDPARAMS="${BUILDPARAMS/-flto=auto/}"
-	LDFLAGS="${LLDFLAGS//-Wl,/}"
-	LDFLAGS="${LDFLAGS//-z,pack-relative-relocs/-z pack-relative-relocs}"
-	LDFLAGS="${LDFLAGS/--gc-sections/}"
-	LDFLAGS="${LDFLAGS/--strip-all/}"
-	LDFLAGS="${LDFLAGS/--icf=safe/}"
-	LDFLAGS="${LDFLAGS/-fuse-ld=lld/}"
+	BUILDPARAMS="${CLANGFLAGS/-flto=auto/} -Wno-incompatible-pointer-types-discards-qualifiers"
+	LINKPARAMS=$(echo "$LLDFLAGS" | sed \
+		-e 's/-z,pack-relative-relocs/-z pack-relative-relocs/g' \
+		-e 's/-Wl,//g' \
+		-e 's/-fuse-ld=lld//g' \
+		-e 's/--icf=safe//g' \
+		-e 's/--gc-sections//g' \
+		-e 's/--strip-all//g')
 else
 	COMPILER="GCC"
 	# fixing flags that are not compatible with the kernel
-	BUILDPARAMS="${GCCFLAGS/-ffunction-sections -fdata-sections/}"
-	BUILDPARAMS="${BUILDPARAMS/-flto=auto/}"
-	LDFLAGS="${LDFLAGS//-Wl,/}"
-	LDFLAGS="${LDFLAGS//-z,pack-relative-relocs/-z pack-relative-relocs}"
-	LDFLAGS="${LDFLAGS/--gc-sections/}"
-	LDFLAGS="${LDFLAGS/--strip-all/}"
+	BUILDPARAMS=$(echo "$GCCFLAGS" | sed \
+		-e 's/-ffunction-sections//g' \
+		-e 's/-fdata-sections//g' \
+		-e 's/-flto=auto//g')
+	LINKPARAMS=$(echo "$LDFLAGS" | sed \
+		-e 's/-z,pack-relative-relocs/-z pack-relative-relocs/g' \
+		-e 's/-Wl,//g' \
+		-e 's/--gc-sections//g' \
+		-e 's/--strip-all//g')
 fi
 
 echo "Building kernel ${KERNELVERSION} using ${COMPILER}..."
@@ -115,7 +118,7 @@ rm -fr $MODULEPATH/${currentPackage}
 echo "Building vmlinuz (this may take a while)..."
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
-make -j${NUMBERTHREADS} KBUILD_LDFLAGS="$LDFLAGS" LDFLAGS_MODULE="$LDFLAGS" EXTRA_LDFLAGS="$LDFLAGS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
+make -j${NUMBERTHREADS} KBUILD_LDFLAGS="${LINKPARAMS/-O2/-O1}" LDFLAGS_MODULE="$LINKPARAMS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULEPATH/vmlinuz
 
 echo "Installing modules..."
