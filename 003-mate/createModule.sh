@@ -69,8 +69,6 @@ installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 
 # required just for building
-installpkg $MODULEPATH/packages/gtk+2*.txz || exit 1
-rm $MODULEPATH/packages/gtk+2*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
@@ -116,7 +114,6 @@ for package in \
 	mate-terminal \
 	libmateweather \
 	mate-panel \
-	mate-themes \
 	mate-notification-daemon \
 	eom \
 	mate-control-center \

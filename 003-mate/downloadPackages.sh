@@ -29,11 +29,6 @@ DownloadPackage "vte" &
 DownloadPackage "xtrans" &
 wait
 
-### temporary packages only for building
-
-DownloadPackage "gtk+2" & # to build mate-themes
-wait
-
 ### script clean up
 
 rm FILE_LIST
