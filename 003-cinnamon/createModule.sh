@@ -32,7 +32,7 @@ currentPackage=gettext-tools
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/bin/msgfmt "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libgettextlib* "${currentPackage}-stripped"
@@ -46,7 +46,7 @@ currentPackage=glib2
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/glib2-2.84.4-x86_64-1.txz
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -Pr usr/lib$SYSTEMBITS/girepository-1.0 "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/lib* "${currentPackage}-stripped"
@@ -70,7 +70,7 @@ sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
-installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
 currentPackage=lightdm
 SESSIONTEMPLATE=cinnamon sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
@@ -108,6 +108,8 @@ installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required only for building
+installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
+rm $MODULEPATH/packages/icu4c*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
@@ -154,7 +156,7 @@ for package in \
 	libgxps \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -200,7 +202,7 @@ for package in \
 	xed \
 ; do
 sh $SCRIPTPATH/cinnamon/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

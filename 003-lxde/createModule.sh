@@ -42,7 +42,7 @@ sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
-installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
 currentPackage=lightdm
 SESSIONTEMPLATE=LXDE sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
@@ -88,8 +88,12 @@ done
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required by lxpanel
-installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
+installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
+
+# required by lxterminal
+installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
+rm $MODULEPATH/packages/icu4c*.txz
 
 # lxde packages
 for package in \
@@ -112,7 +116,7 @@ for package in \
 	lxpanel \
 ; do
 sh $SCRIPTPATH/lxde/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

@@ -53,6 +53,7 @@ DownloadPackage "c-ares" &
 DownloadPackage "cups" & # required by gnome-settings-daemon
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
+DownloadPackage "icu4c" & # required by vte (only for safety in case it gets updated in Slackware repo)
 DownloadPackage "iso-codes" & # required by gnome-desktop
 DownloadPackage "krb5" &
 wait
