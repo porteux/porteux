@@ -24,8 +24,11 @@ Here's an example of what the boot line looks like, adding the
 
 APPEND changes=EXIT:/porteux noauto volume=30
 
-NOTE: if a given cheatcode is found in both '/boot/syslinux/porteux.cfg'
-and '/porteux/porteux.cfg', only the latter will be used.
+NOTE: if a given cheatcode appears in multiple places, PorteuX uses
+the following priority list (from higher to lower):
+1. /porteux/porteux.cfg
+2. manual boot command line edit
+3. /boot/syslinux/porteux.cfg
 
 NOTE: example cheatcodes are sometimes listed down below in single
 quotes (e.g. 'example=somevalue') for clarity in the documentation.
@@ -56,6 +59,10 @@ cfgfile=some_name.cfg
 
        Example:
        cfgfile=porteux-usb.cfg
+       
+       NOTE: this cheatcode is ignored if set in '/porteux/porteux.cfg'
+       because it affects how PorteuX storage media is detected and
+       mounted.
 
 changes=/dev/device
 changes=/path/
@@ -100,6 +107,7 @@ changes=EXIT:/path/file.dat
        you experience a freeze or power interrupt.
 
        NOTE: this is the default option.
+
        NOTE: while running a session with changes=EXIT: you can
        use the '/opt/porteux-scripts/dump-session' command to
        move all of your changes from RAM to your storage media,
@@ -151,7 +159,11 @@ delay=some_value
        
        Example (to delay 5 seconds before PorteuX starts the boot
        process):
-       delay=5.
+       delay=5
+       
+       NOTE: this cheatcode is ignored if set in '/porteux/porteux.cfg'
+       because it's also used to delay the filesystem check ('fsck'),
+       and this check requires partitions to be unmounted.
 
 extramod=/path/folder_with_modules
 extramod=/path/folder_with_modules;/path2/folder_with_modules
@@ -178,11 +190,17 @@ from=/path/porteux.iso
        Example (to load unpacked PorteuX ISO from the second
        partition on your second drive):
        from=/mnt/sdb2
+       
        Example (to load unpacked ISO from the 'linux-testing' folder
        placed on the second partition):
        from=/mnt/sda2/linux-testing
+       
        Example (to load the PorteuX data from 'porteux-test.iso'):
        from=/mnt/sda1/porteux-test.iso
+       
+       NOTE: this cheatcode is ignored if set in '/porteux/porteux.cfg'
+       because it affects how PorteuX storage media is detected and
+       mounted.
 
 fsck
 
@@ -193,6 +211,10 @@ fsck
 
        NOTE: on some systems, you will need to use the 'delay='
        cheatcode in order to allow your devices to settle.
+
+       NOTE: this cheatcode is ignored if set in '/porteux/porteux.cfg'
+       because it affects how PorteuX storage media is detected and
+       mounted.
 
 fscknolog
 
@@ -231,9 +253,11 @@ kmap=keyboardmap:variant
 
        Example (to set American keyboard layout with accent support):
        kmap=us:alt-intl
+       
        Example (to set Arabic keyboard layout as default with
        possibility of switching to 'us'):
        kmap=ara,us
+       
        Example (to set Polish keyboard layout with 'qwertz' as a variant):
        kmap=pl:qwertz
 
@@ -267,6 +291,10 @@ mopt
 
        Example:
        mopt=realtime,sync,users,nosuid,noexec
+       
+       NOTE: this cheatcode is ignored if set in '/porteux/porteux.cfg'
+       because it affects how PorteuX storage media is detected and
+       mounted.
 
 noauto
 
