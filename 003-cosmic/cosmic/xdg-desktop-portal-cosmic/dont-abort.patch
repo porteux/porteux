@@ -1,0 +1,50 @@
+From d637ebc17fe19fd95f75c7d2e50a80bb81b1925e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ball=C3=B3=20Gy=C3=B6rgy?= <ballogyor@gmail.com>
+Date: Fri, 7 Nov 2025 14:37:55 +0100
+Subject: [PATCH] Don't abort if dma-buf support is missing
+
+This fixes the problem that the portal backend fails to run if dma-buf
+support is missing.
+
+Closes: https://github.com/pop-os/xdg-desktop-portal-cosmic/issues/227
+---
+ src/wayland/mod.rs | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/src/wayland/mod.rs b/src/wayland/mod.rs
+index 73c7b85..15a9536 100644
+--- src/wayland/mod.rs
++++ src/wayland/mod.rs
+@@ -91,7 +91,7 @@ struct WaylandHelperInner {
+     capturer: Capturer,
+     wl_shm: wl_shm::WlShm,
+     dmabuf: Mutex<Option<DmabufHelper>>,
+-    zwp_dmabuf: ZwpLinuxDmabufV1,
++    zwp_dmabuf: Option<ZwpLinuxDmabufV1>,
+ }
+ 
+ // TODO seperate state object from what is passed to threads
+@@ -237,7 +237,7 @@ impl WaylandHelper {
+         let registry_state = RegistryState::new(&globals);
+         let screencopy_state = ScreencopyState::new(&globals, &qh);
+         let shm_state = Shm::bind(&globals, &qh).unwrap();
+-        let zwp_dmabuf = globals.bind(&qh, 4..=4, sctk::globals::GlobalData).unwrap();
++        let zwp_dmabuf = globals.bind(&qh, 4..=4, sctk::globals::GlobalData).ok();
+         let wayland_helper = WaylandHelper {
+             inner: Arc::new(WaylandHelperInner {
+                 conn,
+@@ -458,10 +458,10 @@ impl WaylandHelper {
+     ) -> wl_buffer::WlBuffer {
+         // TODO ensure dmabuf is valid format with right number of planes?
+         // - params.add can raise protocol error
+-        let params = self
+-            .inner
+-            .zwp_dmabuf
+-            .create_params(&self.inner.qh, sctk::globals::GlobalData);
++        let zwp_dmabuf = self.inner.zwp_dmabuf.as_ref().unwrap_or_else(|| {
++            panic!("zwp_linux_dmabuf_v1 not available on this compositor");
++        });
++        let params = zwp_dmabuf.create_params(&self.inner.qh, sctk::globals::GlobalData);
+         let modifier = u64::from(dmabuf.modifier);
+         let modifier_hi = (modifier >> 32) as u32;
+         let modifier_lo = (modifier & 0xffffffff) as u32;
