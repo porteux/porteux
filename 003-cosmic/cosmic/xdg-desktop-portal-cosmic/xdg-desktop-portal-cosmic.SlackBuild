@@ -16,6 +16,10 @@ git clone https://github.com/pop-os/$PRGNAM
 cd $PRGNAM
 VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
+for i in $CWD/*.patch; do
+	patch -p0 < $i
+done
+
 RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"
 
 sed -i "s|license = {|#license = {|g" Cargo.toml
