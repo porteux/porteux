@@ -19,23 +19,17 @@ VERSION=$(date -r . +%Y%m%d)
 
 # this icon breaks our xzm icon, so we need to remove it
 rm ${PRGNAM}/apps/scalable/application.svg
-rm ${PRGNAM}/create-new-icon-theme.cache.sh
-rm ${PRGNAM}-light/create-new-icon-theme.cache.sh
 
-icon_folder=$PKG/usr/share/icons/${PRGNAM}
-mkdir -p ${icon_folder}
-cp -r ${PRGNAM}/* ${icon_folder}
-gtk-update-icon-cache -f ${icon_folder}
+# fix ugly show-desktop icon
+ln -sf ../../places/scalable/user-desktop.svg ${PRGNAM}/apps/scalable/window-manager.svg
 
-light_icon_folder=$PKG/usr/share/icons/${PRGNAM}-light
-mkdir -p ${light_icon_folder}
-cp -r ${PRGNAM}-light/* ${light_icon_folder}
-gtk-update-icon-cache -f ${light_icon_folder}
-
-light_panel_icon_folder=$PKG/usr/share/icons/${PRGNAM}-light-panel
-mkdir -p ${light_panel_icon_folder}
-cp -r ${PRGNAM}-light-panel/* ${light_panel_icon_folder}
-gtk-update-icon-cache -f ${light_panel_icon_folder}
+for theme in "${PRGNAM}" "${PRGNAM}-light" "${PRGNAM}-light-panel"; do
+    dest_dir="$PKG/usr/share/icons/${theme}"
+    mkdir -p "$dest_dir"
+    rm -f "${theme}/create-new-icon-theme.cache.sh"
+    cp -r "${theme}/"* "$dest_dir"
+    gtk-update-icon-cache -f "$dest_dir"
+done
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
