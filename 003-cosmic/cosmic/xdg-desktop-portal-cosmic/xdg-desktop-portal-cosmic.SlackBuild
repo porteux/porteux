@@ -18,10 +18,12 @@ VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
 RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}"
 
-ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
+sed -i "s|license = {|#license = {|g" Cargo.toml
 sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
+
+ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 make -j${NUMBERTHREADS}
-make install DESTDIR=$MODULEPATH/$PRGNAM/package || exit 1
+make install DESTDIR=$MODULEPATH/$PRGNAM/package
 
 cd $MODULEPATH/$PRGNAM/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz

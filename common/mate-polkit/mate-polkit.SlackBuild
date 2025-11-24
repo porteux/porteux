@@ -20,8 +20,9 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-cp $CWD/*.patch .
-for i in *.patch; do patch -p0 < $i; done
+for i in $CWD/*.patch; do
+	patch -p0 < $i;
+done
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
@@ -43,4 +44,4 @@ cat $CWD/slack-desc > $PKG/install/slack-desc
 sed -i "s|OnlyShowIn=MATE;||g" $PKG/etc/xdg/autostart/polkit-mate-authentication-agent-1.desktop
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

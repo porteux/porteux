@@ -19,8 +19,9 @@ VERSION=${VERSION:-$(find . -maxdepth 1 -name "$PRGNAM-*.tar.?z*" | rev | cut -f
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-cp $SCRIPTPATH/gnome/${PRGNAM}/*.patch .
-for i in *.patch; do patch -p0 < $i; done
+for i in $CWD/*.patch; do
+	patch -p0 < $i;
+done
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
@@ -29,8 +30,6 @@ meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--infodir=/usr/info \
-	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Ddefault_library=shared \
 	-Dgtk_doc=false \
@@ -46,4 +45,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

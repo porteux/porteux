@@ -8,7 +8,6 @@ DownloadPackage "aspell" & # required by mousepad
 DownloadPackage "blueman" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
-DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gtksourceview3" &
 DownloadPackage "keybinder3" &
 wait
@@ -17,20 +16,11 @@ DownloadPackage "libgtop" &
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-DownloadPackage "network-manager-applet" &
 DownloadPackage "vte" &
 wait
 
-### slackware specific version packages
+### temporary packages only for building
 
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "libappindicator" &
-	DownloadPackage "gspell" &
-	DownloadPackage "libindicator" &
-	wait
-fi
-
-### temporary packages for further building
 DownloadPackage "glade" & # required by libxfce4ui to provide more system information (e.g. nvidia cards)
 wait
 

@@ -10,19 +10,18 @@ DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 wait
-DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libdbusmenu" &
-wait
 DownloadPackage "libgee" &
+wait
 DownloadPackage "libgpod" &
 DownloadPackage "libgtop" &
 DownloadPackage "libnma" &
 DownloadPackage "libspectre" &
-wait
 DownloadPackage "libwnck3" &
+wait
 DownloadPackage "libxklavier" &
 DownloadPackage "mozjs78" &
 DownloadPackage "network-manager-applet" &
@@ -42,7 +41,7 @@ wait
 DownloadPackage "gettext-tools" & # required by extensions
 wait
 
-### temporary packages for further building
+### temporary packages only for building
 
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &

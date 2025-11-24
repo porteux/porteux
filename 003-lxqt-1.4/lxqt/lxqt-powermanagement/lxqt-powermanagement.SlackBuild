@@ -1,0 +1,36 @@
+#!/bin/bash
+
+PRGNAM=lxqt-powermanagement
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/${PRGNAM}
+PKG=$TMP/package-${PRGNAM}
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+git clone https://github.com/lxqt/${PRGNAM}
+cd ${PRGNAM}
+git checkout 1a1b28e43c7ab5df1cf9d21a6f0ce34378007489
+VERSION=$(git describe | cut -d- -f1)
+
+for i in $CWD/*.patch; do
+	patch -p0 < $i
+done
+
+cmake -B build -S . \
+	-DCMAKE_BUILD_TYPE=release \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
+
+make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

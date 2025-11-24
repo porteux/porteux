@@ -1,9 +1,8 @@
       |-----handy-ruler------------------------------------------------------|
 glycin: glycin (sandboxed and extendable image decoding)
 glycin:
-glycin: Glycin allows to decode images into gdk::Textures and to extract
-glycin: image metadata. The decoding happens in sandboxed modular image loaders.
+glycin: Glycin allows to decode, edit, and create images and read metadata.
+glycin: The decoding happens in sandboxed modular image loaders and editors.
 glycin:
+glycin: https://gitlab.gnome.org/GNOME/glycin
 glycin:
-glycin: https://git.gnome.org/browse/geocode-glib
-

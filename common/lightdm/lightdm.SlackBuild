@@ -30,7 +30,7 @@ export LIGHTDM_USER=gdm
 export LIGHTDM_GROUP=gdm
 
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-CXXFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -44,9 +44,11 @@ CXXFLAGS="$GCCFLAGS" \
 	--disable-liblightdm-qt5 \
 	--enable-gtk-doc-html=false
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
-install -m 755 $CWD/Xsession $PKG/etc/lightdm/
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+install -Dm755 $CWD/Xsession $PKG/etc/lightdm/
 rm -rf $PKG/etc/init
 
 mkdir -p -m=755 $PKG/var/cache/lightdm
@@ -66,7 +68,10 @@ sed -i 's|pam_systemd|pam_elogind|g' $PKG/etc/pam.d/lightdm-autologin
 sed -i 's|pam_systemd|pam_elogind|g' $PKG/etc/pam.d/lightdm-greeter
 
 # apply default settings
-cp $CWD/lightdm.conf $PKG/etc/lightdm
+install -Dm644 "$CWD/lightdm.conf" $PKG/etc/lightdm/
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

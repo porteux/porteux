@@ -1,0 +1,45 @@
+#!/bin/bash
+
+PRGNAM=rtmpdump
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+git clone http://git.ffmpeg.org/${PRGNAM}
+cd $PRGNAM
+VERSION=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
+
+# patch makefiles for shared library install
+patch -p1 < $CWD/librtmp-makefile.patch
+
+# use gnutls instead of openssl
+sed -i \
+  -e 's/^CRYPTO=OPENSSL/#CRYPTO=OPENSSL/' \
+  -e 's/#CRYPTO=GNUTLS/CRYPTO=GNUTLS/' \
+  Makefile librtmp/Makefile
+
+CFLAGS="$GCCFLAGS" \
+make -j${NUMBERTHREADS} \
+	prefix=/usr \
+	libdir=/usr/lib${SYSTEMBITS} \
+	DESTDIR=$PKG \
+	install
+
+find $PKG -type f -name "*.a" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm -fr $PKG/usr/bin
+rm -fr $PKG/usr/sbin
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

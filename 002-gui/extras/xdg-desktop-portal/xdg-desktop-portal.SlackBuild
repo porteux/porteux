@@ -17,59 +17,36 @@ cd $TMP
 if [ $SLACKWAREVERSION != "current" ]; then
 	VERSION="1.18.4"
 	wget https://github.com/flatpak/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
-
-	tar xfv $PRGNAM-$VERSION.tar.?z*
-	cd $PRGNAM-$VERSION
-
-	mkdir build && cd build
-	CFLAGS="$GCCFLAGS" \
-	meson setup \
-		--prefix=/usr \
-		--libdir=/usr/lib${SYSTEMBITS} \
-		--libexecdir=/usr/libexec \
-		--bindir=/usr/bin \
-		--sbindir=/usr/sbin \
-		--includedir=/usr/include \
-		--datadir=/usr/share \
-		--mandir=/usr/man \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--buildtype=release \
-		-Dflatpak-interfaces=disabled \
-		-Dgeoclue=disabled \
-		-Dsystemd=disabled \
-		-Dman-pages=disabled \
-		-Dsandboxed-image-validation=false
+	
+	extraFlags="-Dsandboxed-image-validation=false"
 else
 	info=$(DownloadLatestFromGithub "flatpak" ${PRGNAM})
 	VERSION=${info#* }
-
-	tar xfv $PRGNAM-$VERSION.tar.?z*
-	cd $PRGNAM-$VERSION
-
-	mkdir build && cd build
-	CFLAGS="$GCCFLAGS" \
-	meson setup \
-		--prefix=/usr \
-		--libdir=/usr/lib${SYSTEMBITS} \
-		--libexecdir=/usr/libexec \
-		--bindir=/usr/bin \
-		--sbindir=/usr/sbin \
-		--includedir=/usr/include \
-		--datadir=/usr/share \
-		--mandir=/usr/man \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--buildtype=release \
-		-Dflatpak-interfaces=disabled \
-		-Dtests=disabled \
-		-Dgeoclue=disabled \
-		-Dsystemd=disabled \
-		-Ddocumentation=disabled \
-		-Dman-pages=disabled \
-		-Dsandboxed-image-validation=disabled \
-		-Dsandboxed-sound-validation=disabled
+	
+	extraFlags="-Ddocumentation=disabled -Dtests=disabled -Dsandboxed-image-validation=disabled -Dsandboxed-sound-validation=disabled"
 fi
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	${extraFlags} \
+	-Dflatpak-interfaces=disabled \
+	-Dgeoclue=disabled \
+	-Dsystemd=disabled \
+	-Dman-pages=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
@@ -79,4 +56,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

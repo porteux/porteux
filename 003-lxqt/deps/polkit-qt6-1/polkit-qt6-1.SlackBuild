@@ -13,7 +13,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://invent.kde.org/libraries/${SRCNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
+VERSION=$(curl -s https://invent.kde.org/libraries/${SRCNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -viE 'alpha|beta|rc' | sort -Vr | head -1)
 wget https://invent.kde.org/libraries/${SRCNAM}/-/archive/${VERSION}/${SRCNAM}-${VERSION}.tar.gz
 
 tar xvf $SRCNAM-$VERSION.tar.?z
@@ -21,8 +21,8 @@ cd $SRCNAM-$VERSION
 
 mkdir build && cd build
 cmake .. \
-	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
-	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DQT_MAJOR_VERSION=6 \
 	-DMAN_INSTALL_DIR=/usr/man \
@@ -36,4 +36,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1_porteux.txz

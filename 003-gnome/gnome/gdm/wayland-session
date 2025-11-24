@@ -1,13 +1,5 @@
 #!/bin/sh
 
-# The rest of this code is based on KDE's wayland-session script, 
-# with some modifications to suit GDM.
-# Copyright (C) 2022 Bob Funk <bobfunk11@gmail.com>
-# This code was copied from KDE's "wayland-session" script.
-# Copyright (C) 2015-2016 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-# This file is extracted from kde-workspace (kdm/kfrontend/genkdmconf.c)
-# Copyright (C) 2001-2005 Oswald Buddenhagen <ossi@kde.org>
-
 case $SHELL in
   */bash)
     [ -z "$BASH" ] && exec $SHELL $0 "$@"

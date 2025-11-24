@@ -1,0 +1,37 @@
+#!/bin/bash
+
+PRGNAM=adwaita-qt
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://github.com/FedoraQt/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xvf ${PRGNAM}.tar.?z
+cd ${PRGNAM}-master
+VERSION=$(date -r . +%Y%m%d)
+
+for i in $CWD/*.patch; do
+	patch -p0 < $i
+done
+
+cmake -B build -S . \
+	-DCMAKE_BUILD_TYPE=release \
+	-DCMAKE_C_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DUSE_QT6=true
+
+make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM,,}-$VERSION-$ARCH-1_porteux.txz

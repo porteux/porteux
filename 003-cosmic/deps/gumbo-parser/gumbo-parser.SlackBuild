@@ -1,0 +1,41 @@
+#!/bin/bash
+
+PRGNAM=gumbo-parser
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://codeberg.org/gumbo-parser/gumbo-parser/tags | grep tar.gz | cut -d '"' -f 4 | rev | cut -d '/' -f -1 | cut -d '.' -f 3- | rev | grep -Ev '^v' | sort -Vr | head -1)
+wget https://codeberg.org/gumbo-parser/gumbo-parser/archive/${VERSION}.tar.gz -O $PRGNAM-$VERSION.tar.gz
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--buildtype=release \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	-Dtests=false \
+    -Dstrip=true
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.a" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

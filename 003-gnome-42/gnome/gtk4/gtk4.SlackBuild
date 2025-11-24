@@ -31,7 +31,6 @@ meson setup \
   --sbindir=/usr/sbin \
   --includedir=/usr/include \
   --datadir=/usr/share \
-  --mandir=/usr/man \
   --sysconfdir=/etc \
   --localstatedir=/var \
   --buildtype=release \
@@ -52,4 +51,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

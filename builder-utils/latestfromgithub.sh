@@ -5,7 +5,7 @@ GetLatestVersionTagFromGithub() {
 	project="$2"
 	filterOutVersion="$3"
 	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep "/${repository}/${project}/releases/tag/" | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]")
-	[ -n "$filterOutVersion" ] && versions=$(echo "$versions" | grep -v "$filterOutVersion")
+	[ -n "$filterOutVersion" ] && versions=$(echo "$versions" | grep -Ev "$filterOutVersion")
 	versionNormalized=$(echo "${versions//_/.}" | sort -V -r | head -n 1)
 	[[ ${versions} == *"${versionNormalized}"* ]] && version=${versionNormalized} || version=${versionNormalized//./_}
 

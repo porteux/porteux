@@ -18,10 +18,16 @@ VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
 RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}"
 
-ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
+sed 's/sudo/wheel/g' -i data/polkit-1/rules.d/cosmic-settings-daemon.rules
 sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
+sed -i 's|_ = std::thread::spawn|tokio::time::sleep(std::time::Duration::from_secs(7)).await; _ = std::thread::spawn|g' src/pulse.rs
+
+ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 make -j${NUMBERTHREADS}
-make install DESTDIR=$MODULEPATH/$PRGNAM/package || exit 1
+make install DESTDIR=$MODULEPATH/$PRGNAM/package
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $MODULEPATH/$PRGNAM/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz

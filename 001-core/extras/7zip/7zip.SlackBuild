@@ -20,7 +20,7 @@ wget https://github.com/Terraspace/UASM/archive/refs/tags/v${uasmVersion}r.tar.g
 tar xfv UASM-${uasmVersion}r.tar.?z*
 cd UASM-${uasmVersion}r
 
-make -j${NUMBERTHREADS} CC="gcc -std=c99 -fcommon -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion" -f Makefile-Linux-GCC-64.mak
+make -j${NUMBERTHREADS} CC="gcc -O2 -std=c99 -fcommon -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-discarded-qualifiers -Wno-lto-type-mismatch -Wno-compare-distinct-pointer-types -Wno-pointer-to-int-cast" -f Makefile-Linux-GCC-64.mak
 
 chmod +x $PWD/GccUnixR/uasm
 PATH=$PATH:$PWD/GccUnixR
@@ -32,12 +32,15 @@ VERSION=${info#* }
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-cp $CWD/meson.build.template meson.build
+cp "$CWD/meson.build.template" meson.build
 meson rewrite kwargs set project / version ${VERSION}
 
 mkdir build && cd build
-CC=clang CXX=clang++ CFLAGS="$CLANGFLAGS -pthread" \
-CXXFLAGS="$CFLAGS" \
+CC=clang \
+CXX=clang++ \
+CFLAGS="$CLANGFLAGS -pthread" \
+CXXFLAGS="$CLANGFLAGS -fvisibility-inlines-hidden -pthread" \
+LDFLAGS="$LLDFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -46,7 +49,6 @@ meson setup \
 	--sbindir=/usr/sbin \
 	--includedir=/usr/include \
 	--datadir=/usr/share \
-	--mandir=/usr/man \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release
@@ -55,11 +57,11 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
-
 cd $PKG/usr/bin
 cp -s 7zz 7z
 
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

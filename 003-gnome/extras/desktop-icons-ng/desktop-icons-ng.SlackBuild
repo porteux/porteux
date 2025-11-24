@@ -1,0 +1,41 @@
+#!/bin/bash
+
+PRGNAM=desktop-icons-ng
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://gitlab.com/rastersoft/desktop-icons-ng/-/archive/master/desktop-icons-ng-master.tar.gz
+tar xvf $PRGNAM-master.tar.?z*
+cd $PRGNAM-master
+VERSION=$(date -r . +%Y%m%d)
+
+mkdir build && cd build
+meson setup \
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	--localstatedir=/var
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+EXTENSIONPATH="usr/share/gnome-shell/extensions/ding@rastersoft.com"
+
+mv $PKG/usr/share/glib-2.0/schemas $PKG/${EXTENSIONPATH}/
+rm -fr $PKG/usr/share/glib-2.0
+glib-compile-schemas $PKG/${EXTENSIONPATH}/schemas/
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

@@ -13,11 +13,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-downloadedVersion=$(curl -s https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+downloadedVersion=$(curl -s https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | sort -Vr | head -1)
 VERSION=${downloadedVersion//[vV]}
 wget https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/archive/${downloadedVersion}/${PRGNAMDOWNLOAD}-${downloadedVersion}.tar.gz
 
-PSMISCVER=$(curl -s https://gitlab.com/psmisc/psmisc/-/tags?format=atom | grep ' <title>' | grep -v rc | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+PSMISCVER=$(curl -s https://gitlab.com/psmisc/psmisc/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | sort -Vr | head -1)
 wget https://gitlab.com/psmisc/psmisc/-/archive/${PSMISCVER}/psmisc-${PSMISCVER}.tar.gz
 
 PROCINFONGVER=${PROCINFONGVER:-2.0.304}
@@ -35,8 +35,10 @@ sed 's:<ncursesw/:<:g' -i src/watch.c
 echo $VERSION > .version
 echo $VERSION > .tarball-version
 
+./autogen.sh
+
 CFLAGS="$GCCFLAGS" \
-./autogen.sh && ./configure \
+./configure \
 	--prefix=/ \
 	--bindir=/bin \
 	--sbindir=/sbin \
@@ -44,9 +46,7 @@ CFLAGS="$GCCFLAGS" \
 	--includedir=/usr/include \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--datarootdir=/usr/share \
-	--docdir=/usr/doc/$PRGNAM-$downloadedVersion \
 	--enable-static=no \
 	--disable-silent-rules \
 	--disable-rpath \
@@ -104,7 +104,6 @@ ln -sf /sbin/pidof $PKG/usr/bin/pidof
 ln -sf /bin/ps $PKG/usr/bin/ps
 # WTF changing the name of this
 ( cd $PKG/bin ; ln -sf pidwait pwait )
-( cd $PKG/usr/man/man1 ; ln -sf pidwait.1 pwait.1 )
 
 # Create /etc/sysctl.d:
 mkdir -p $PKG/etc/sysctl.d
@@ -125,8 +124,6 @@ CFLAGS="$GCCFLAGS" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
-	--docdir=/usr/doc/psmisc-$PSMISCVER \
 	--disable-silent-rules \
 	--disable-rpath \
 	--build=$ARCH-porteux-linux
@@ -138,14 +135,12 @@ mv $PKG/usr/bin/killall $PKG/bin
 ln -s /bin/killall $PKG/usr/bin/killall
 
 cd ../procinfo-ng-$PROCINFONGVER
-CXXFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
-	--docdir=/usr/doc/procinfo-ng-$PROCINFONGVER \
 	--enable-maintainer-mode \
 	--build=$ARCH-porteux-linux
 
@@ -157,4 +152,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION}-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION}-$ARCH-1_porteux.txz

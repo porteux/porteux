@@ -12,14 +12,18 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.freedesktop.org/emersion/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | rev | cut -d "-" -f 1 | rev | sort -V -r | head -1)
+VERSION=$(curl -s https://gitlab.freedesktop.org/emersion/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | rev | cut -d "-" -f 1 | rev | sort -Vr | head -1)
 wget https://gitlab.freedesktop.org/emersion/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$CLANGFLAGS" CXFLAGS="$CLANGFLAGS" \
+CC=clang \
+CXX=clang++ \
+CFLAGS="$CLANGFLAGS" \
+CXFLAGS="$CLANGFLAGS" \
+LDFLAGS="$LLDFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -28,7 +32,6 @@ meson setup \
 	--sbindir=/usr/sbin \
 	--includedir=/usr/include \
 	--datadir=/usr/share \
-	--mandir=/usr/man \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release
@@ -41,4 +44,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1_porteux.txz

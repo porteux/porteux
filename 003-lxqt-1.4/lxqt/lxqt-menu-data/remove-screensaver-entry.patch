@@ -1,0 +1,17 @@
+--- menu/lxqt-applications.menu	2023-11-07 14:01:33.586297915 +0000
++++ menu/lxqt-applications-patched.menu	2023-11-07 14:01:23.021297360 +0000
+@@ -214,14 +214,6 @@
+ 		</Include>
+ 	</Menu>	 <!-- End Leave -->
+ 
+-	<!-- Screensaver -->
+-	<Menu>
+-		<Name>Screensaver</Name>
+-		<Include>
+-		<Filename>lxqt-lockscreen.desktop</Filename>
+-		</Include>
+-	</Menu> <!-- End Screensaver -->
+-
+ 	<Layout>
+ 		<Merge type="files"/>
+ 		<Merge type="menus"/>

@@ -12,16 +12,15 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | grep -v '\-dev' | sort -V -r | head -1)
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-# A couple patches taken from Artix Linux:
-patch -Np1 -i $CWD/0001-Xsession-Don-t-start-ssh-agent-by-default.patch
-patch -Np1 -i $CWD/0003-add-wayland-session-script.patch
-patch -Np1 -i $CWD/gcc-15-fix.patch
+for i in $CWD/*.patch; do
+	patch -p0 < $i
+done
 
 sed -i "s|subdir('docs')|#subdir('docs')|g" meson.build
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
@@ -30,10 +29,8 @@ mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \
 	--buildtype=release \
-	--infodir=/usr/info \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--libexecdir=/usr/libexec \
@@ -66,4 +63,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

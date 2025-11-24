@@ -1,0 +1,12 @@
+         |-----handy-ruler------------------------------------------------------|
+cosmic-bg: cosmic-bg ( COSMIC session service which applies backgrounds. )
+cosmic-bg:
+cosmic-bg: * Supports common image formats supported by image-rs
+cosmic-bg: * 8 and 10-bit background surface layers
+cosmic-bg: * Use of colors and gradients for backgrounds
+cosmic-bg: * Per-display background application
+cosmic-bg: * Wallpaper slideshows that alternate between backgrounds
+cosmic-bg:
+cosmic-bg: Homepage: https://github.com/pop-os/cosmic-bg/
+cosmic-bg:
+cosmic-bg:

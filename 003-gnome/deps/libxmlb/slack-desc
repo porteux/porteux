@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+libxmlb: libxmlb (XML)
+libxmlb:
+libxmlb: The libxmlb library takes XML source, and converts it to a structured
+libxmlb: binary representation with a deduplicated string table -- where the
+libxmlb: strings have the NULs included.
+libxmlb:
+libxmlb:
+libxmlb:
+libxmlb:
+libxmlb: 
+libxmlb:

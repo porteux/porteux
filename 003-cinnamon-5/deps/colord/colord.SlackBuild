@@ -1,0 +1,51 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=colord
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "hughsie" ${PRGNAM})
+VERSION=${info#* }
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--buildtype=release \
+	--localstatedir=/var \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/lib${SYSTEMBITS}/colord \
+	-Ddaemon_user=colord \
+	-Dlibcolordcompat=true \
+	-Dvapi=true \
+	-Dsane=false \
+	-Dsystemd=false \
+	-Dargyllcms_sensor=false \
+	-Dprint_profiles=false \
+	-Dtests=false \
+	-Ddocs=false \
+	-Dbash_completion=false \
+	-Dman=false
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+PRGNAM=lximage-qt
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/${PRGNAM}
+PKG=$TMP/package-${PRGNAM}
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+git clone https://github.com/lxqt/${PRGNAM}
+cd ${PRGNAM}
+git checkout 48de1ba52d6f543126d87f0dd4643da08e238966
+VERSION=$(git describe | cut -d- -f1)
+
+cmake -B build -S . \
+	-DCMAKE_BUILD_TYPE=release \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
+
+make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

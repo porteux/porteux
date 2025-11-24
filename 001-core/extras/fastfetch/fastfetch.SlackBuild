@@ -1,0 +1,41 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=fastfetch
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "fastfetch-cli" ${PRGNAM})
+VERSION=${info#* }
+
+tar xvf ${PRGNAM}-${VERSION}.tar.gz
+cd ${PRGNAM}-${VERSION}
+
+cmake -B build -S . \
+	-G Ninja \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+	-DBUILD_FLASHFETCH=no \
+	-DENABLE_OPENCL=off
+
+DESTDIR="$PKG" ninja -C build install -j${NUMBERTHREADS}
+
+echo "fastfetch --logo linux --color-title blue --color-keys blue -s Title:Separator:OS:Host:Kernel:Uptime:Packages:Shell:Display:DE:WM:WMTheme:Theme:Icons:Font:Cursor:Terminal:TerminalFont:CPU:GPU:Memory:Swap:LocalIp:Battery:PowerAdapter:Locale:Break:Colors \"\$@\"" > $PKG/usr/bin/neofetch
+chmod 755 $PKG/usr/bin/neofetch
+
+rm -fr $PKG/usr/share
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

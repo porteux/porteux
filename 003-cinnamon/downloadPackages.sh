@@ -11,7 +11,6 @@ DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 wait
-DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "gspell" &
 DownloadPackage "gtksourceview4" &
 DownloadPackage "hunspell" &
@@ -32,7 +31,7 @@ wait
 DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-DownloadPackage "mozjs128" &
+#DownloadPackage "mozjs140" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "python-certifi" &
 DownloadPackage "python-charset-normalizer" &
@@ -52,7 +51,7 @@ wait
 DownloadPackage "gettext-tools" & # required by extensions
 wait
 
-### temporary packages for further building
+### temporary packages only for building
 
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &

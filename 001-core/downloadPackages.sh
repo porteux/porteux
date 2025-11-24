@@ -60,7 +60,6 @@ wait
 DownloadPackage "gdbm" &
 DownloadPackage "gettext" &
 DownloadPackage "glib2" &
-DownloadPackage "glibc" &
 DownloadPackage "glibc-zoneinfo" &
 DownloadPackage "gnupg" &
 DownloadPackage "gnutls" &
@@ -85,8 +84,8 @@ DownloadPackage "kbd" &
 DownloadPackage "keyutils" &
 DownloadPackage "kmod" &
 DownloadPackage "less" &
-wait
 DownloadPackage "libaio" &
+wait
 DownloadPackage "libarchive" &
 DownloadPackage "libassuan" &
 DownloadPackage "libcap" &
@@ -145,6 +144,7 @@ DownloadPackage "mlocate" &
 DownloadPackage "ModemManager" &
 DownloadPackage "mozilla-nss" &
 DownloadPackage "mpfr" &
+DownloadPackage "nano" &
 DownloadPackage "ncurses" &
 DownloadPackage "nettle" &
 DownloadPackage "net-tools" &
@@ -176,7 +176,6 @@ DownloadPackage "python-urllib3" &
 DownloadPackage "readline" &
 DownloadPackage "rpcbind" &
 DownloadPackage "rpm2tgz" &
-DownloadPackage "rpm" &
 wait
 DownloadPackage "rp-pppoe" &
 DownloadPackage "rsync" &
@@ -225,11 +224,14 @@ wait
 
 ### only download if not present
 
-[ ! -f /usr/bin/clang ] && DownloadPackage "llvm"
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
 
 ### slackware specific version packages
 
-if [ $SLACKWAREVERSION == "current" ]; then
+if [ $SLACKWAREVERSION != "current" ]; then
+	DownloadPackage "rpm" &
+	wait
+else
 	DownloadPackage "avahi" &
 	DownloadPackage "lua" &
 	DownloadPackage "lzlib" &
@@ -245,6 +247,7 @@ DownloadPackage "binutils" &
 DownloadPackage "fftw" & # required by pulse plugins
 DownloadPackage "gcc" & # required by aaa_libraries
 DownloadPackage "gcc-g++" & # required by aaa_libraries
+DownloadPackage "glibc" &
 DownloadPackage "ntp" &
 DownloadPackage "openldap" &
 wait

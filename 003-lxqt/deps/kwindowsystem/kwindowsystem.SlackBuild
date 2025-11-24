@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://invent.kde.org/frameworks/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | grep -v alpha | grep -v beta | sort -V -r | head -1)
+VERSION=$(curl -s https://invent.kde.org/frameworks/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -viE 'alpha|beta|rc' | sort -Vr | head -1)
 wget https://invent.kde.org/frameworks/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xvf $PRGNAM-$VERSION.tar.?z
@@ -23,11 +23,10 @@ cmake .. \
 	-DBUILD_QCH=OFF \
 	-DBUILD_TESTING=OFF \
 	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
-	-DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_VERBOSE_MAKEFILE=ON \
-	-DKDE_INSTALL_MANDIR=/usr/man
+	-DCMAKE_VERBOSE_MAKEFILE=ON
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
@@ -37,4 +36,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1_porteux.txz

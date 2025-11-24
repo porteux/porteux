@@ -1,19 +1,18 @@
 [terminal]
-# The VT to run the greeter on. Can be "next", "current" or a number
-# designating the VT.
-vt = 7
+vt = "7"
 
 [general]
+# for autologin but not greeter
 service = "login"
 
-# The default session, also known as the greeter.
+# for greeter but not autologin
+#service = "cosmic-greeter"
+
 [default_session]
-
-# `agreety` is the bundled agetty/login-lookalike. You can replace `/bin/sh`
-# with whatever you want started, such as `sway`.
+# for autologin but not greeter
 command = "start-cosmic > ~/.session-errors"
-
-# The user to run the command as. The privileges this user must have depends
-# on the greeter. A graphical greeter may for example require the user to be
-# in the `video` group.
 user = "guest"
+
+# for greeter but not autologin
+#command = "cosmic-greeter-start"
+#user = "cosmic-greeter"

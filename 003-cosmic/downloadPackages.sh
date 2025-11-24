@@ -4,13 +4,15 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 GenerateRepositoryUrls
 
 DownloadPackage "libdbusmenu" &
-DownloadPackage "libnma" &
-DownloadPackage "network-manager-applet" &
+DownloadPackage "libgtop" &
+DownloadPackage "libhandy" &
+DownloadPackage "libwnck3" &
 wait
 
 ### only download if not present
 
-[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" # required by cosmic-greeter
+[ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
+wait
 
 ### slackware current only packages
 
