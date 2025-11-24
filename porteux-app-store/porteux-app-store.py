@@ -195,7 +195,7 @@ class AppWindow(Gtk.ApplicationWindow):
         subprocess.call([GTK_DIALOG_SCRIPT, "-p", input])
 
     def has_internet(self):
-        has_Internet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 1.1.1.1 > /dev/null 2>&1"])
+        has_Internet = subprocess.call(["/bin/bash", "-c", "curl 1.1.1.1 > /dev/null 2>&1"])
         if has_Internet != 0:
             has_Internet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 8.8.8.8 > /dev/null 2>&1"])
             if has_Internet != 0:
