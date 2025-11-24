@@ -16,18 +16,15 @@ git clone https://git.sr.ht/~kennylevinsen/$PRGNAM
 cd $PRGNAM
 VERSION=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 
-cargo build --release --target x86_64-unknown-linux-gnu || exit 1
+cargo build --release --target x86_64-unknown-linux-gnu
 
-install -Dm0755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/agreety"
-install -Dm0755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/fakegreet"
-install -Dm0755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/$PRGNAM"
-
-mkdir -p $PKG/etc/$PRGNAM
-cp $CWD/config.toml $PKG/etc/$PRGNAM
-chmod 0644 $PKG/etc/$PRGNAM/config.toml
+install -Dm755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/agreety"
+install -Dm755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/fakegreet"
+install -Dm755 -t "$PKG/usr/bin/" "target/x86_64-unknown-linux-gnu/release/$PRGNAM"
+install -Dm644 "$CWD/config.toml" $PKG/etc/greetd/config.toml
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz

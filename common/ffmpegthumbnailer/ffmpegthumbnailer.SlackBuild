@@ -1,0 +1,49 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=ffmpegthumbnailer
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "dirkvdb" ${PRGNAM} "ffmpegthumbnailer")
+VERSION=${info#* }
+
+tar xvf ${PRGNAM}-${VERSION}.tar.?z
+cd ${PRGNAM}-${VERSION}
+
+if [ $SLACKWAREVERSION == "current" ]; then
+	for i in $CWD/*.patch; do
+		patch -p1 < $i;
+	done
+fi
+
+cmake -B build -S . \
+	-G Ninja \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+	-DCMAKE_INSTALL_PREFIX="/usr" \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DENABLE_THUMBNAILER="yes" \
+	-DENABLE_GIO="yes" \
+	-DENABLE_TESTS="no"
+
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm -fr $PKG/usr/share/man
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

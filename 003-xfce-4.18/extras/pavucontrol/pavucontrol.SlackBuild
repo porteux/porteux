@@ -18,18 +18,18 @@ cd ${PRGNAM}
 git checkout c330506815f78f77f6685cb40749679eae789d63
 
 sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
+# fix version not showing when running 'pavucontrol --version'
+sed -i 's|printf("%s\\n", PACKAGE_STRING);|printf("%s %s\\n", PACKAGE_STRING, PACKAGE_VERSION);|g' src/pavuapplication.cc
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$CFLAGS" \
+CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
-	--infodir=/usr/info \
-	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Dlynx=false
 
@@ -41,4 +41,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

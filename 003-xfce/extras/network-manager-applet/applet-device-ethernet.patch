@@ -1,0 +1,20 @@
+--- src/applet-device-ethernet.c	2024-01-02 14:29:22.000000000 +0100
++++ src/applet-device-ethernet.c.patched	2025-11-08 14:11:57.305006900 +0100
+@@ -123,7 +123,7 @@
+ 	applet_do_notify (applet,
+ 	                  _("Connection Established"),
+ 	                  msg ? msg : _("You are now connected to the ethernet network."),
+-	                  "nm-device-wired",
++	                  "nm-device-wired-symbolic",
+ 	                  PREF_DISABLE_CONNECTED_NOTIFICATIONS);
+ }
+ 
+@@ -162,7 +162,7 @@
+ 		*tip = g_strdup_printf (_("Requesting an ethernet network address for “%s”…"), id);
+ 		break;
+ 	case NM_DEVICE_STATE_ACTIVATED:
+-		*out_icon_name = "nm-device-wired";
++		*out_icon_name = "nm-device-wired-symbolic";
+ 		*tip = g_strdup_printf (_("Ethernet network connection “%s” active"), id);
+ 		break;
+ 	default:

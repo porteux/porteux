@@ -21,15 +21,16 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 cmake -B build -S $TMP/$PRGNAM-$VERSION \
-	-DCMAKE_CXX_FLAGS="$GCCFLAGS" \
+	-G Ninja \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR="lib${SYSTEMBITS}" \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
 	-DCXXOPTS_BUILD_EXAMPLES=OFF \
 	-DCXXOPTS_BUILD_TESTS=OFF
 
-make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

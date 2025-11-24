@@ -1,0 +1,17 @@
+--- src/nautilus-main.c	2025-08-16 01:46:48.007404033 +0200
++++ src/nautilus-main.c.patched	2025-08-16 01:46:57.481404481 +0200
+@@ -56,14 +56,6 @@
+ 
+     g_set_prgname (APPLICATION_ID);
+ 
+-    if (getuid () == 0)
+-    {
+-        g_warning (_("Running as root is not supported. "
+-                     "Consider running `nautilus admin:///` instead."));
+-
+-        exit (ENOTSUP);
+-    }
+-
+     nautilus_register_resource ();
+     /* Run the nautilus application. */
+     application = nautilus_application_new ();

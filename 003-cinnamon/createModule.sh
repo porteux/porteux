@@ -10,7 +10,6 @@ source "$BUILDERUTILSPATH/cachefiles.sh"
 source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 [ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
 
@@ -25,7 +24,7 @@ fi
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 cd $MODULEPATH
 
-### download packages from slackware repositories
+### download packages from slackware repository
 
 DownloadFromSlackware
 
@@ -34,17 +33,30 @@ DownloadFromSlackware
 currentPackage=gettext-tools
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-version=`ls *.txz -a | rev | cut -d '-' -f 3 | rev`
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/bin/msgfmt "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libgettextlib* "${currentPackage}-stripped-$version"
-cp --parents -P usr/lib$SYSTEMBITS/libgettextsrc* "${currentPackage}-stripped-$version"
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-$ARCH-1.txz > /dev/null 2>&1
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/bin/msgfmt "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libgettextlib* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libgettextsrc* "${currentPackage}-stripped"
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-### packages outside Slackware repository
+# temporary until cjs fixes compatibility with glib 2.86.0+ (https://github.com/linuxmint/cjs/issues/130)
+currentPackage=glib2
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/glib2-2.84.4-x86_64-1.txz
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}-*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -Pr usr/lib$SYSTEMBITS/girepository-1.0 "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/lib* "${currentPackage}-stripped"
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+### packages outside slackware repository
 
 currentPackage=audacious
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
@@ -53,6 +65,10 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=ffmpegthumbnailer
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by lightdm
@@ -76,30 +92,6 @@ currentPackage=mate-polkit
 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=yaru
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget https://github.com/ubuntu/${currentPackage}/archive/refs/heads/master.tar.gz || exit 1
-tar xvf master.tar.gz && rm master.tar.gz || exit 1
-cd ${currentPackage}-master
-version=$(date -r . +%Y%m%d)
-mainIconRootFolder=../${currentPackage}-$version-noarch/usr/share/icons/Yaru
-blueIconRootFolder=../${currentPackage}-$version-noarch/usr/share/icons/Yaru-blue
-mkdir -p $mainIconRootFolder
-mkdir -p $blueIconRootFolder
-cp -r icons/Yaru/* $mainIconRootFolder || exit 1
-cp -r icons/Yaru-blue/* $blueIconRootFolder || exit 1
-rm -fr $mainIconRootFolder/cursor*
-rm -fr $mainIconRootFolder/*@2x
-rm -fr $blueIconRootFolder/*@2x
-cp $SCRIPTPATH/extras/${currentPackage}/index.theme $mainIconRootFolder
-cp $SCRIPTPATH/extras/${currentPackage}/index-blue.theme $blueIconRootFolder/index.theme
-gtk-update-icon-cache -f $mainIconRootFolder || exit 1
-gtk-update-icon-cache -f $blueIconRootFolder || exit 1
-cd ../${currentPackage}-$version-noarch
-echo "Generating icon package. This may take a while..."
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-icon-theme-$version-noarch-1.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
 # required from now on
 installpkg $MODULEPATH/packages/aspell*.txz || exit 1
 installpkg $MODULEPATH/packages/colord*.txz || exit 1
@@ -114,7 +106,6 @@ installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
-installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
@@ -138,29 +129,29 @@ rm $MODULEPATH/packages/python-wheel*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
-DE_LATEST_VERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "master." | head -1)
+LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "master." | head -1)
 
-echo "Building Cinnamon ${DE_LATEST_VERSION}..."
-MODULENAME=$MODULENAME-${DE_LATEST_VERSION}
+echo "Building Cinnamon ${LATESTVERSION}..."
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # cinnamon deps
 for package in \
-	tinycss2 \
+	python-tinycss2 \
 	xdotool \
 	gsound \
-	pytz \
+	python-pytz \
 	libtimezonemap \
-	setproctitle \
-	ptyprocess \
+	python-setproctitle \
+	python-ptyprocess \
 	python-pam \
 	libgnomekbd \
 	zenity \
 	cogl \
 	clutter \
 	caribou \
-	pexpect \
-	polib \
-	python3-xapp \
+	python-pexpect \
+	python-polib \
+	python-xapp \
 	libpeas \
 	libgxps \
 ; do
@@ -179,14 +170,18 @@ for package in \
 	gnome-terminal \
 	gnome-screenshot \
 	gnome-system-monitor \
+	yaru-icon-theme \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
 cd $MODULEPATH
 pip install pysass # required by cinnamon project
+
+# temporary until cjs migrates do mozjs140
+wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/mozjs128-128.14.0esr-x86_64-1.txz -P $MODULEPATH/packages
+installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 
 # cinnamon packages
 for package in \
@@ -251,36 +246,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm -R etc/dbus-1/system.d
-rm -R etc/dconf
-rm -R etc/geoclue
-rm -R etc/opt
-rm -R usr/lib${SYSTEMBITS}/aspell
-rm -R usr/lib${SYSTEMBITS}/glade
-rm -R usr/lib${SYSTEMBITS}/graphene-1.0
-rm -R usr/lib${SYSTEMBITS}/gtk-2.0
-rm -R usr/lib${SYSTEMBITS}/python2*
-rm -R usr/lib*/python*/site-packages/pip*
-rm -R usr/lib*/python*/site-packages/psutil/tests
-rm -R usr/share/cjs-1.0
-rm -R usr/share/clutter-1.0
-rm -R usr/share/cogl
-rm -R usr/share/gdm
-rm -R usr/share/glade/pixmaps
-rm -R usr/share/gnome
-rm -R usr/share/gtksourceview-2.0
-rm -R usr/share/gtksourceview-3.0
-rm -R usr/share/installed-tests
-rm -R usr/share/libdbusmenu
-rm -R usr/share/mate-panel
-rm -R usr/share/pixmaps
-rm -R usr/share/Thunar
-rm -R usr/share/vala
-rm -R usr/share/xed/gir-1.0
-rm -R usr/share/xviewer/gir-1.0
-rm -R usr/share/zsh
-rm -R var/lib/AccountsService
-
 rm usr/bin/vte-*-gtk4
 rm etc/profile.d/80xapp-gtk3-module.sh
 rm etc/xdg/autostart/blueman.desktop
@@ -295,10 +260,37 @@ rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py
 rm usr/libexec/indicator-loader
+rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
 rm usr/share/dbus-1/services/org.gnome.Caribou.Daemon.service
 rm usr/share/dbus-1/services/org.gnome.FileRoller.service
 rm usr/share/dbus-1/services/org.mate.panel.applet.MateXAppStatusAppletFactory.service
+
+rm -fr etc/dbus-1/system.d
+rm -fr etc/dconf
+rm -fr etc/geoclue
+rm -fr etc/opt
+rm -fr usr/lib${SYSTEMBITS}/aspell
+rm -fr usr/lib${SYSTEMBITS}/glade
+rm -fr usr/lib${SYSTEMBITS}/graphene-1.0
+rm -fr usr/lib${SYSTEMBITS}/gtk-2.0
+rm -fr usr/lib*/python*/site-packages/pip*
+rm -fr usr/lib*/python*/site-packages/psutil/tests
+rm -fr usr/share/cjs-1.0
+rm -fr usr/share/clutter-1.0
+rm -fr usr/share/cogl
+rm -fr usr/share/gdm
+rm -fr usr/share/glade/pixmaps
+rm -fr usr/share/gnome
+rm -fr usr/share/gtksourceview-2.0
+rm -fr usr/share/gtksourceview-3.0
+rm -fr usr/share/libdbusmenu
+rm -fr usr/share/mate-panel
+rm -fr usr/share/pixmaps
+rm -fr usr/share/Thunar
+rm -fr usr/share/xed/gir-1.0
+rm -fr usr/share/xviewer/gir-1.0
+rm -fr var/lib/AccountsService
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/cinnamon/faces -mindepth 1 -maxdepth 1 ! \( -name "user-generic*" \) -exec rm -rf '{}' \; 2>/dev/null

@@ -12,7 +12,19 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v pre | grep -v 4.21 | sort -V -r | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
+DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^xfce-|pre' | sort -Vr | {
+	if [[ "$ALLOWTEST" == "yes" ]]; then
+		head -1 && echo "$version"
+	else
+		while read -r version; do
+			minor=$(echo "$version" | cut -d. -f2)
+			if (( minor % 2 == 0 )); then
+				echo "$version"
+				break
+			fi
+		done
+	fi
+})
 VERSION=$(echo $DOWNLOADVERSION | rev | cut -d '-' -f 1 | rev)
 wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNAM}-${DOWNLOADVERSION}.tar.gz
 
@@ -24,22 +36,20 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--mandir=/usr/man \
-	--docdir=/usr/doc/$PRGNAM-$DOWNLOADVERSION \
 	--disable-static \
 	--disable-debug \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-
-mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 
 # make main menu more beautiful
 patch -p0 < $CWD/xfce-applications.menu.patch
 
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

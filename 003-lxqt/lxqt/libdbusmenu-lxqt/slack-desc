@@ -1,0 +1,9 @@
+                |-----handy-ruler------------------------------------------|
+libdbusmenu-lxqt: This library provides a Qt implementation of the
+libdbusmenu-lxqt: DBusMenu protocol.
+libdbusmenu-lxqt:
+libdbusmenu-lxqt: The DBusMenu protocol makes it possible for applications
+libdbusmenu-lxqt: to export and import their menus over DBus.
+libdbusmenu-lxqt:
+libdbusmenu-lxqt: https://github.com/lxqt/libdbusmenu-lxqt
+libdbusmenu-lxqt:

@@ -10,4 +10,3 @@ tracker: Tracker is a central repository of user information, that provides
 tracker: two big benefits for the desktop; shared data between applications
 tracker: and information which is relational to other information (e.g. mixing
 tracker: contacts with files, locations, activities and etcetera).
-

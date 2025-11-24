@@ -1,0 +1,41 @@
+#!/bin/bash
+
+PRGNAM=x264
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://code.videolan.org/videolan/${PRGNAM}/-/archive/master/${PRGNAM}-master.tar.gz
+tar xvf ${PRGNAM}-master.tar.?z
+cd ${PRGNAM}-master
+VERSION=$(date -r . +%Y%m%d)
+
+CC=clang \
+CFLAGS="$CLANGFLAGS" \
+LDFLAGS="$LLDFLAGS" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib$SYSTEMBITS \
+	--enable-shared \
+	--enable-pic \
+	--enable-strip \
+	--enable-lto \
+	--disable-cli
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.a" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -20,19 +20,19 @@ VERSION=${info#* }
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-./configure \
-	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--mandir=/usr/man \
-	--docdir=/usr/doc/$PRGNAM-$VERSION \
-	--disable-static \
-	--enable-introspection \
-	--build=$ARCH-porteux-linux
+sed -i "s|subdir('man')|#subdir('man')|g" meson.build
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+mkdir build && cd build
+CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+meson setup \
+	--buildtype=release \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	-Dintrospection=true
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -43,4 +43,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

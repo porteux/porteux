@@ -11,14 +11,13 @@ DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 wait
-DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "hunspell" &
 DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
-wait
 DownloadPackage "libgtop" &
+wait
 DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
@@ -36,7 +35,7 @@ if [ $SLACKWAREVERSION == "current" ]; then
 	wait
 fi
 
-### temporary packages for further building
+### temporary packages only for building
 
 DownloadPackage "gtk+2" & # to build mate-themes
 wait

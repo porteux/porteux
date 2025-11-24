@@ -5,8 +5,18 @@ GenerateRepositoryUrls
 
 ### only download if not present
 
-DownloadPackage "libxml2"
-DownloadPackage "llvm"
+if [ ${CLANG:-no} = "yes" ]; then
+	if [ ! -f /usr/bin/clang ]; then
+		DownloadPackage "libxml2" & # required by llvm
+		DownloadPackage "llvm" & # required when building with clang
+		wait
+	fi
+fi
+
+if [ ! -f ${SCRIPTPATH}/kernel-firmware*.txz ]; then
+	# always download firmware from current
+	wget -r -nd --no-parent -w 2 ${SLACKWAREDOMAIN}/slackware/slackware64-current/slackware64/a/ -A kernel-firmware-*.txz
+fi
 
 ### script clean up
 

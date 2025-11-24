@@ -22,7 +22,8 @@ cd $SRCNAM-$VERSION
 
 patch -Np0 -i $CWD/libstemmer_c-shared-library.patch
 
-CFLAGS="$GCCFLAGS" make -j${NUMBERTHREADS} libstemmer.so stemwords
+CFLAGS="$GCCFLAGS" \
+make -j${NUMBERTHREADS} libstemmer.so stemwords
 
 mkdir -p $PKG/usr/lib${SYSTEMBITS}
 mv libstemmer.so* $PKG/usr/lib${SYSTEMBITS}
@@ -34,4 +35,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

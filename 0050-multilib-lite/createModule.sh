@@ -11,7 +11,6 @@ SetFlags "$MODULENAME"
 source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
-source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
@@ -24,7 +23,7 @@ fi
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 cd $MODULEPATH
 
-### download packages from slackware repositories
+### download packages from slackware repository
 
 DownloadFromSlackware
 
@@ -33,31 +32,31 @@ DownloadFromSlackware
 currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
-ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 rm usr/lib/libslang.so.1*
 rm usr/lib/libstdc++.so*
 ROOT=./ installpkg gcc-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P lib/libfuse.* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libgssapi_krb5.* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libk5crypto.* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libkrb5.* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libkrb5support.* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libpcre2* ${currentPackage}-stripped-$version/
-cp --parents -P lib/libsigsegv.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libatomic.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libcares.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libcups.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libgcc_s.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libgmp.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libgmpxx.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libgomp.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libltdl.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libslang.* ${currentPackage}-stripped-$version/
-cp --parents -P usr/lib/libstdc++.* ${currentPackage}-stripped-$version/
-cd ${currentPackage}-stripped-$version/usr/lib
+mkdir ${currentPackage}-stripped
+cp --parents -P lib/libfuse.* ${currentPackage}-stripped/
+cp --parents -P lib/libgssapi_krb5.* ${currentPackage}-stripped/
+cp --parents -P lib/libk5crypto.* ${currentPackage}-stripped/
+cp --parents -P lib/libkrb5.* ${currentPackage}-stripped/
+cp --parents -P lib/libkrb5support.* ${currentPackage}-stripped/
+cp --parents -P lib/libpcre2* ${currentPackage}-stripped/
+cp --parents -P lib/libsigsegv.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libatomic.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libcares.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libcups.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libgcc_s.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libgmp.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libgmpxx.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libgomp.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libltdl.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libslang.* ${currentPackage}-stripped/
+cp --parents -P usr/lib/libstdc++.* ${currentPackage}-stripped/
+cd ${currentPackage}-stripped/usr/lib
 cp -fs libcares.so* libcares.so
 cp -fs libcares.so libcares.so.2
 cp -fs libcups.so* libcups.so
@@ -65,47 +64,47 @@ cp -fs libgmp.so* libgmp.so
 cp -fs libgmpxx.so* libgmpxx.so
 cp -fs libltdl.so* libltdl.so
 cp -fs libslang.so* libslang.so
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f2- | sed 's/\.txz$//'`
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 tar xvf ${currentPackage}-*.txz
-mkdir -p ${currentPackage}-stripped-$version/usr/lib
-cp usr/lib/libLLVM*.so* ${currentPackage}-stripped-$version/usr/lib
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+mkdir -p ${currentPackage}-stripped/usr/lib
+cp usr/lib/libLLVM*.so* ${currentPackage}-stripped/usr/lib
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=pulseaudio
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}-*.txz
-mkdir ${currentPackage}-stripped-$version
-cp --parents -P usr/lib/libpulse.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib/libpulse-mainloop-glib.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib/libpulse-simple.so* ${currentPackage}-stripped-$version
-cp --parents -P usr/lib/pulseaudio/libpulsecommon* ${currentPackage}-stripped-$version
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib/libpulse.so* ${currentPackage}-stripped
+cp --parents -P usr/lib/libpulse-mainloop-glib.so* ${currentPackage}-stripped
+cp --parents -P usr/lib/libpulse-simple.so* ${currentPackage}-stripped
+cp --parents -P usr/lib/pulseaudio/libpulsecommon* ${currentPackage}-stripped
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=vulkan-sdk
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
-version=`ls * -a | cut -d'-' -f3- | sed 's/\.txz$//'`
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 tar xvf ${currentPackage}-*.txz
-mkdir -p ${currentPackage}-stripped-$version/usr/lib
-cp usr/lib/libvulkan.so* ${currentPackage}-stripped-$version/usr/lib
+mkdir -p ${currentPackage}-stripped/usr/lib
+cp usr/lib/libvulkan.so* ${currentPackage}-stripped/usr/lib
 if [ $SLACKWAREVERSION == "current" ]; then
-	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped-$version
+	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
 fi
-cd ${currentPackage}-stripped-$version
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-stripped-$version-1.txz > /dev/null 2>&1
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
@@ -116,28 +115,6 @@ rm *.t?z
 ### module clean up
 
 {
-rm -fr $MODULEPATH/packages/etc
-rm -fr $MODULEPATH/packages/lib/e2fsprogs
-rm -fr $MODULEPATH/packages/lib/elogind
-rm -fr $MODULEPATH/packages/lib/security
-rm -fr $MODULEPATH/packages/lib/udev
-rm -fr $MODULEPATH/packages/run
-rm -fr $MODULEPATH/packages/usr/lib/clang
-rm -fr $MODULEPATH/packages/usr/lib/dbus-1.0
-rm -fr $MODULEPATH/packages/usr/lib/gcc
-rm -fr $MODULEPATH/packages/usr/lib/girepository-1.0
-rm -fr $MODULEPATH/packages/usr/lib/glib-2.0
-rm -fr $MODULEPATH/packages/usr/lib/libear
-rm -fr $MODULEPATH/packages/usr/lib/libscanbuild
-rm -fr $MODULEPATH/packages/usr/lib/python2*
-rm -fr $MODULEPATH/packages/usr/lib/xmms
-rm -fr $MODULEPATH/packages/var/cache
-rm -fr $MODULEPATH/packages/var/cache/fontconfig
-rm -fr $MODULEPATH/packages/var/db
-rm -fr $MODULEPATH/packages/var/kerberos
-rm -fr $MODULEPATH/packages/var/lib/dbus
-rm -fr $MODULEPATH/packages/var/run
-
 rm $MODULEPATH/packages/*
 rm $MODULEPATH/packages/lib/cpp
 rm $MODULEPATH/packages/lib/e2initrd_helper
@@ -191,6 +168,27 @@ rm $MODULEPATH/packages/usr/lib/libvpx*
 rm $MODULEPATH/packages/usr/lib/*.o
 rm $MODULEPATH/packages/usr/lib/*.spec
 rm $MODULEPATH/packages/usr/lib/xml2Conf.sh
+
+rm -fr $MODULEPATH/packages/etc
+rm -fr $MODULEPATH/packages/lib/e2fsprogs
+rm -fr $MODULEPATH/packages/lib/elogind
+rm -fr $MODULEPATH/packages/lib/security
+rm -fr $MODULEPATH/packages/lib/udev
+rm -fr $MODULEPATH/packages/run
+rm -fr $MODULEPATH/packages/usr/lib/clang
+rm -fr $MODULEPATH/packages/usr/lib/dbus-1.0
+rm -fr $MODULEPATH/packages/usr/lib/gcc
+rm -fr $MODULEPATH/packages/usr/lib/girepository-1.0
+rm -fr $MODULEPATH/packages/usr/lib/glib-2.0
+rm -fr $MODULEPATH/packages/usr/lib/libear
+rm -fr $MODULEPATH/packages/usr/lib/libscanbuild
+rm -fr $MODULEPATH/packages/usr/lib/xmms
+rm -fr $MODULEPATH/packages/var/cache
+rm -fr $MODULEPATH/packages/var/cache/fontconfig
+rm -fr $MODULEPATH/packages/var/db
+rm -fr $MODULEPATH/packages/var/kerberos
+rm -fr $MODULEPATH/packages/var/lib/dbus
+rm -fr $MODULEPATH/packages/var/run
 
 find $MODULEPATH/packages/sbin \( -type f -o -type l \) ! \( -name "ldconfig" -o -name "sln" \) -delete
 find $MODULEPATH/packages/bin \( -type f -o -type l \) ! -name "sln" -delete

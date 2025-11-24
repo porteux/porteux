@@ -5,7 +5,6 @@ GenerateRepositoryUrls
 
 DownloadPackage "accountsservice" &
 DownloadPackage "blueman" &
-DownloadPackage "ffmpegthumbnailer" &
 DownloadPackage "ghostscript-fonts-std" &
 DownloadPackage "hunspell" &
 DownloadPackage "kidletime" &

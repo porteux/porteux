@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+cosmic-idle: cosmic-idle ( Idle notify manager for COSMIC )
+cosmic-idle:
+cosmic-idle: This interface allows to monitor user idle time on a given seat. 
+cosmic-idle: The interface allows to register timers which trigger after no user
+cosmic-idle: activity was registered on the seat for a given interval. It notifies
+cosmic-idle: when user activity resumes.
+cosmic-idle:
+cosmic-idle: Homepage: https://github.com/pop-os/cosmic-idle
+cosmic-idle:
+cosmic-idle:
+cosmic-idle:

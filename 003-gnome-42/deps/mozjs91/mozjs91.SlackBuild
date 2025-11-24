@@ -54,14 +54,16 @@ autoconf-2.13
 
 export RUSTFLAGS="-C embed-bitcode"
 
+CC=clang \
+CXX=clang++ \
 CFLAGS+="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-strict-aliasing" \
-CXXFLAGS+="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-strict-aliasing" \
+CXXFLAGS+="${CLANGFLAGS/ -flto=auto/} -fvisibility-inlines-hidden -fno-delete-null-pointer-checks -fno-strict-aliasing" \
+LDFLAGS="$LLDFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--without-system-icu \
 	--with-system-zlib \
 	--disable-tests \
@@ -96,4 +98,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

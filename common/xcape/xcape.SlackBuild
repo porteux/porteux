@@ -1,0 +1,34 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=xcape
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/${PRGNAM,,}
+PKG=$TMP/package-${PRGNAM,,}
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "alols" ${PRGNAM})
+VERSION=${info#* }
+
+tar xvf ${PRGNAM}-${VERSION}.tar.?z
+cd ${PRGNAM}-${VERSION}
+
+CFLAGS="$GCCFLAGS" \
+make -j${NUMBERTHREADS}
+make install -j${NUMBERTHREADS} MANDIR=/man DESTDIR=$PKG
+
+find $PKG -type f -name "*.a" -exec rm -f {} \;
+rm -fr $PKG/usr/man
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

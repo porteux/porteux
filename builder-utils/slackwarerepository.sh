@@ -29,7 +29,7 @@ DownloadPackage() {
 		return
 	fi
 
-	packageUrl=`grep "/${1}[-_][0-9]\+" serverPackages.txt`
+	packageUrl=$(grep "/${1}[-_][0-9]\+" serverPackages.txt)
 	if [ ! -z $packageUrl ]; then
 		echo "Downloading: $packageUrl..."
 		wget $REPOSITORY/$packageUrl -q > /dev/null 2>&1 || exit

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=leptonica
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "DanBloomberg" ${PRGNAM} "pre")
+VERSION=${info#* }
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+./autogen.sh
+
+CFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--disable-static
+
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+
+rm -fr $PKG/usr/bin
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+

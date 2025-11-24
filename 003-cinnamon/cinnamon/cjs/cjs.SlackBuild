@@ -23,16 +23,18 @@ cd $PRGNAM-$VERSION
 sed -i "s|meson.build_root|meson.project_build_root|g" meson.build
 sed -i "s|extra_args: '--warn-error'|fatal_warnings: get_option('werror')|g" meson.build
 
+for i in $CWD/*.patch; do
+	patch -p1 < $i
+done
+
 [ ! -e build ] && mkdir build
 cd build
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$CFLAGS" \
+CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--buildtype=release \
-	--infodir=/usr/info \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
-	--mandir=/usr/man \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Dprofiler=disabled \
@@ -50,4 +52,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -1,10 +1,10 @@
---- src/meson.build	2024-01-16 20:23:12.165816301 +0100
-+++ src/meson.build.patched	2024-01-16 20:23:05.038817085 +0100
+--- a/src/meson.build	2024-01-16 20:23:12.165816301 +0100
++++ b/src/meson.build.patched	2024-01-16 20:23:05.038817085 +0100
 @@ -3,7 +3,6 @@
- service_data = configuration_data()
- service_data.set('libexecdir', libexecdir)
- 
+   'fatal_warnings': get_option('werror'),
+ }
+
 -subdir('calendar-server')
  subdir('hotplug-sniffer')
  subdir('st')
- subdir('tray')
+ if have_x11_client

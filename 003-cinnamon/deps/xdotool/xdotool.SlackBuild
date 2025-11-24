@@ -22,8 +22,8 @@ cd $PRGNAM-$VERSION
 
 mkdir -p $PKG/usr/lib$SYSTEMBITS
 
+CFLAGS="$GCCFLAGS" \
 make -j${NUMBERTHREADS} install \
-	WARNFLAGS="$GCCFLAGS" \
 	PREFIX=/usr \
 	INSTALLLIB=/usr/lib$SYSTEMBITS \
 	DESTDIR=$PKG \
@@ -33,4 +33,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

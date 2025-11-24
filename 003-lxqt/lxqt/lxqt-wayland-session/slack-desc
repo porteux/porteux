@@ -1,0 +1,11 @@
+                    |-----handy-ruler-----------------------------------------|
+lxqt-wayland-session: lxqt-wayland-session (desktop menus for LXQt)
+lxqt-wayland-session:
+lxqt-wayland-session: This package provides files needed for the 
+lxqt-wayland-session: LXQt Wayland Session: Wayland session start script,
+lxqt-wayland-session: its desktop entry for display managers and default
+lxqt-wayland-session: configurations for actually supported compositors.
+lxqt-wayland-session:
+lxqt-wayland-session:
+lxqt-wayland-session: homepage: https://github.com/lxqt/lxqt-wayland-session
+lxqt-wayland-session:

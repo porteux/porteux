@@ -1,0 +1,56 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=polkit
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "polkit-org" ${PRGNAM})
+VERSION=${info#* }
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+patch -p0 < $CWD/dont-set-wheel-group-as-admin.patch
+patch -p0 < $CWD/02_fix-polkitbackend-elogind-include.patch
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--libdir=lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--includedir=/usr/include \
+	--datadir=/usr/share \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--buildtype=release \
+	-Dintrospection=true \
+	-Dsession_tracking=elogind \
+	-Dsystemdsystemunitdir=/usr/lib/systemd/user \
+	-Dauthfw=pam \
+	-Dpam_module_dir=/lib${SYSTEMBITS}/security \
+	-Dpam_prefix=/etc/pam.d \
+	-Dexamples=false \
+	-Dgtk_doc=false \
+	-Dman=false \
+	-Dtests=false
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

@@ -19,7 +19,7 @@ if ! isRoot; then
 	exit
 fi
 
-[ `getconf LONG_BIT` = "64" ] && SYSTEMBITS=64
+[ "$(getconf LONG_BIT)" = "64" ] && SYSTEMBITS=64
 OUTPUTDIR="$PORTDIR/modules"
 INSTALLERDIR=/tmp/nvidia
 MODULEDIR=$INSTALLERDIR/nvidia-module
@@ -46,11 +46,12 @@ find $MODULEDIR/etc/ -maxdepth 1 \( -type f -o -type d \) ! \( -name "modprobe.d
 rm -f $MODULEDIR/usr/bin/nvidia-debugdump
 rm -f $MODULEDIR/usr/bin/nvidia-installer
 rm -f $MODULEDIR/usr/bin/nvidia-uninstall
+rm -rf $MODULEDIR/etc/X11/xorg.conf.d
 rm -f $MODULEDIR/etc/X11/xorg.conf.nvidia-xconfig-original
 rm -rf $MODULEDIR/usr/{man,src}
 rm -f $MODULEDIR/usr/bin/gnome-keyring-daemon
-rm -rf $MODULEDIR/usr/lib$SYSTEMBITS/{gio,gtk-2.0,gtk-3.0}
-rm -f $MODULEDIR/usr/lib$SYSTEMBITS/{libXvMCgallium.*,libgsm.*,libudev.*,libunrar.*}
+rm -rf $MODULEDIR/usr/lib$SYSTEMBITS/{gdk-pixbuf-2.0,gio,gtk-2.0,gtk-3.0}
+rm -f $MODULEDIR/usr/lib$SYSTEMBITS/{libXvMCgallium.*,libgsm.*,libnvidia-gtk2.*,libudev.*,libunrar.*}
 rm -rf $MODULEDIR/usr/local
 rm -rf $MODULEDIR/usr/share/{glib-2.0,man,mime,pixmaps}
 rm -f $MODULEDIR/usr/{,local/}share/applications/mimeinfo.cache

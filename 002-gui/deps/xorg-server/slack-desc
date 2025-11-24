@@ -1,0 +1,12 @@
+           |-----handy-ruler-------------------------------------------------------|
+xorg-server: xorg-server (The Xorg server, the core of the X Window System)
+xorg-server:
+xorg-server: Xorg is a full featured X server that was originally designed for UNIX
+xorg-server: and UNIX-like operating systems running on Intel x86 hardware. It now
+xorg-server: runs on a wider range of hardware and OS platforms.  This work was
+xorg-server: derived by the X.Org Foundation from the XFree86 Project's XFree86
+xorg-server: 4.4rc2 release. The XFree86 release was originally derived from X386
+xorg-server: 1.2 by Thomas Roell which was contributed to X11R5 by Snitily Graphics
+xorg-server: Consulting Service.
+xorg-server:
+xorg-server: Homepage: https://www.x.org

@@ -65,4 +65,3 @@ index 4c05dc6e..512d1528 100644
  option('systemd_session', type: 'combo', choices: ['disable', 'enable', 'default'], value: 'default', description: 'Whether to include systemd session support and use it by default')
 -- 
 2.26.2
-

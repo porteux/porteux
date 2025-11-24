@@ -10,7 +10,6 @@ source "$BUILDERUTILSPATH/cachefiles.sh"
 source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
@@ -23,11 +22,11 @@ fi
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 cd $MODULEPATH
 
-### download packages from slackware repositories
+### download packages from slackware repository
 
 DownloadFromSlackware
 
-### packages outside Slackware repository
+### packages outside slackware repository
 
 currentPackage=audacious
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
@@ -38,14 +37,21 @@ currentPackage=audacious-plugins
 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-currentPackage=adw-gtk3
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mkdir -p package/usr/share/themes
-version=$(GetLatestVersionTagFromGithub "lassekongo83" ${currentPackage})
-wget https://github.com/lassekongo83/${currentPackage}/releases/download/${version}/${currentPackage}${version}.tar.xz || exit 1
-tar xvf ${currentPackage}${version}.tar.?z -C package/usr/share/themes || exit 1
-cd $MODULEPATH/${currentPackage}/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${version//[^0-9._]/}-$ARCH-1.txz
+currentPackage=ffmpegthumbnailer
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+installpkg $MODULEPATH/packages/libhandy*.txz || exit 1
+
+currentPackage=file-roller
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
+installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
+
+currentPackage=gnome-system-monitor
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
@@ -66,14 +72,25 @@ export PATH=$MODULEPATH/just-master/target/x86_64-unknown-linux-gnu/release/:$PA
 
 # cosmic deps
 for package in \
+	gumbo-parser \
+	jbig2dec \
+	leptonica \
+	tesseract \
 	greetd \
 	launcher \
+	dart-sass \
+	adw-gtk3 \
 	xdg-desktop-portal-gtk \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+# only required for building
+rm $MODULEPATH/packages/dart-sass*.txz
+rm $MODULEPATH/packages/leptonica*.txz
+rm $MODULEPATH/packages/tesseract*.txz
 
 # cosmic packages
 for package in \
@@ -91,6 +108,7 @@ for package in \
 	cosmic-osd \
 	cosmic-panel \
 	cosmic-randr \
+	cosmic-reader \
 	cosmic-screenshot \
 	cosmic-session \
 	cosmic-settings \
@@ -101,6 +119,8 @@ for package in \
 ; do
 sh $SCRIPTPATH/cosmic/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
+rm -fr $HOME/.cargo/git/checkouts/* # this increases build time but frees up RAM
+rm -fr $HOME/.cargo/registry/src/index.crates*/* # this increases build time but frees up RAM
 done
 
 # only required for building not for run-time
@@ -111,7 +131,7 @@ rm -fr $MODULEPATH/just-master
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
 rm *.t?z
 
-### install additional packages, including porteux utils
+### install-strip additional packages, including porteux utils
 
 InstallAdditionalPackages
 
@@ -126,11 +146,6 @@ CopyToMultiLanguage
 ### module clean up
 
 cd $MODULEPATH/packages/
-
-{
-rm etc/xdg/autostart/nm-applet.desktop
-rm usr/share/applications/nm-applet.desktop
-} >/dev/null 2>&1
 
 GenericStrip
 AggressiveStripAll

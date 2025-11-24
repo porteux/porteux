@@ -27,8 +27,6 @@ meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
-	--infodir=/usr/info \
-	--mandir=/usr/man \
 	--localstatedir=/var \
 	-Dclutter_tests=false \
 	-Dcogl_tests=false \
@@ -54,8 +52,7 @@ meson setup \
 	-Dtests=false \
 	-Dudev=true \
 	-Dwayland=true \
-	-Dwayland_eglstream=true \
-	-Dbash_completion=false
+	-Dwayland_eglstream=true
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
@@ -65,4 +62,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

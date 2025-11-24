@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=libjxl
 
 CWD=$(dirname "$0")
@@ -14,11 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "${PRGNAM}" ${PRGNAM})
-VERSION=${info#* }
-
-tar xfv $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
+wget https://github.com/${PRGNAM}/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xvf ${PRGNAM}.tar.?z
+cd ${PRGNAM}-main
+VERSION=$(date -r . +%Y%m%d)
 
 # skipping not used deps download
 sed -i "s|download_github testdata libjxl/testdata||g" deps.sh
@@ -30,42 +27,45 @@ sed -i "s|download_github third_party/libjpeg-turbo libjpeg-turbo/libjpeg-turbo|
 
 sh deps.sh
 
-cmake -B build -S $TMP/$PRGNAM-$VERSION \
-	-DBUILD_TESTING:BOOL='false' \
-	-DENABLE_FUZZERS_DEFAULT:BOOL='false' \
-	-DCMAKE_C_FLAGS:STRING="$CLANGFLAGS" \
-	-DCMAKE_CXX_FLAGS:STRING="$CLANGFLAGS" \
+LDFLAGS="$LLDFLAGS" \
+cmake -B build -S . \
+	-G Ninja \
+	-DBUILD_TESTING=false \
+	-DENABLE_FUZZERS_DEFAULT=false \
+	-DCMAKE_C_FLAGS="$CLANGFLAGS" \
+	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
 	-DBUNDLE_LIBPNG_DEFAULT='NO' \
-	-DCMAKE_BUILD_TYPE:STRING='Release' \
-	-DCMAKE_INSTALL_PREFIX:PATH='/usr' \
-	-DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib${SYSTEMBITS} \
-	-DCMAKE_INSTALL_BINDIR:PATH=/usr/bin \
-	-DCMAKE_INSTALL_MANDIR:PATH=/usr/man \
-	-DBUILD_SHARED_LIBS:BOOL='true' \
-	-DJPEGXL_ENABLE_JNI:BOOL='false' \
-	-DJPEGXL_ENABLE_JPEGLI:BOOL='false' \
-	-DJPEGXL_ENABLE_DEVTOOLS:BOOL='false' \
-	-DJPEGXL_ENABLE_DOXYGEN:BOOL='false' \
-	-DJPEGXL_ENABLE_MANPAGES:BOOL='false' \
-	-DJPEGXL_ENABLE_SKCMS:BOOL='false' \
-	-DJPEGXL_ENABLE_BENCHMARK:BOOL='false' \
-	-DJPEGXL_ENABLE_EXAMPLES:BOOL='false' \
-	-DJPEGXL_ENABLE_FUZZERS:BOOL='false' \
-	-DJPEGXL_ENABLE_PLUGINS:BOOL='true' \
-	-DJPEGXL_ENABLE_VIEWERS:BOOL='false' \
-	-DJPEGXL_ENABLE_TOOLS:BOOL='false' \
-	-DJPEGXL_ENABLE_SIZELESS_VECTORS:BOOL='false' \
-	-DJPEGXL_ENABLE_TCMALLOC:BOOL='false' \
-	-DJPEGXL_WARNINGS_AS_ERRORS:BOOL='false' \
-	-DJPEGXL_FORCE_SYSTEM_BROTLI:BOOL='false' \
-	-DJPEGXL_FORCE_SYSTEM_HWY:BOOL='false' \
-	-DJPEGXL_FORCE_SYSTEM_LCMS2:BOOL='false' \
-	-DJPEGXL_ENABLE_SJPEG:BOOL='false' \
-	-DJPEGXL_STATIC:BOOL='false' \
-	-DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+	-DCMAKE_BUILD_TYPE='Release' \
+	-DCMAKE_INSTALL_PREFIX='/usr' \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_BINDIR=/usr/bin \
+	-DBUILD_SHARED_LIBS=true \
+	-DJPEGXL_ENABLE_JNI=false \
+	-DJPEGXL_ENABLE_JPEGLI=false \
+	-DJPEGXL_ENABLE_DEVTOOLS=false \
+	-DJPEGXL_ENABLE_DOXYGEN=false \
+	-DJPEGXL_ENABLE_MANPAGES=false \
+	-DJPEGXL_ENABLE_SKCMS=false \
+	-DJPEGXL_ENABLE_BENCHMARK=false \
+	-DJPEGXL_ENABLE_EXAMPLES=false \
+	-DJPEGXL_ENABLE_FUZZERS=false \
+	-DJPEGXL_ENABLE_PLUGINS=true \
+	-DJPEGXL_ENABLE_VIEWERS=false \
+	-DJPEGXL_ENABLE_TOOLS=false \
+	-DJPEGXL_ENABLE_TCMALLOC=false \
+	-DJPEGXL_WARNINGS_AS_ERRORS=false \
+	-DJPEGXL_FORCE_SYSTEM_BROTLI=false \
+	-DJPEGXL_FORCE_SYSTEM_HWY=false \
+	-DJPEGXL_FORCE_SYSTEM_LCMS2=false \
+	-DJPEGXL_ENABLE_SJPEG=false \
+	-DJPEGXL_ENABLE_PLUGIN_GIMP210=false \
+	-DJPEGXL_STATIC=false \
+	-DCMAKE_C_COMPILER=clang \
+	-DCMAKE_CXX_COMPILER=clang++
 
-make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
 
+find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 find $PKG -name perllocal.pod -o -name ".packlist" -o -name "*.bs" | xargs rm -f || true
 
@@ -73,4 +73,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

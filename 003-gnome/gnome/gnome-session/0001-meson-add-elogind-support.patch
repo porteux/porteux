@@ -1,0 +1,71 @@
+--- a/data/meson.build	2025-08-17 02:32:41.166485749 +0200
++++ b/data/meson.build.patched	2025-08-17 02:33:10.408489330 +0200
+@@ -108,6 +108,7 @@
+   install_dir: join_paths(session_pkgdatadir, 'sessions')
+ )
+ 
++if use_systemd
+ # Generate the systemd session configuration. In this mode, gnome-session lets
+ # systemd start and manage the necessary session components. These are defined
+ # via systemd unit files. The list of required components to start comes via a
+@@ -194,6 +195,7 @@
+   rename: 'override.conf',
+   install_dir : join_paths(systemd_userunitdir, 'app-flatpak-.scope.d')
+ )
++endif
+ 
+ # Install some other misc. configuration files
+ 
+diff --git a/meson.build b/meson.build
+index 361b388c..44e3f131 100644
+--- a/meson.build
++++ b/meson.build
+@@ -90,22 +90,29 @@ session_deps = [
+   dependency('json-glib-1.0', version: '>= 0.10')
+ ]
+ 
+-libsystemd_dep = dependency('libsystemd', version: '>= 209', required: true)
+-config_h.set('SYSTEMD_STRICT_ENV',
+-              libsystemd_dep.version().version_compare('< 248'))
+-
+-session_bin_deps = session_deps + [
+-  libsystemd_dep,
+-  dependency('gio-unix-2.0', version: glib_req_version),
+-]
++session_bin_deps = session_deps + dependency('gio-unix-2.0', version: glib_req_version)
++
++# Check for systemd
++use_systemd = get_option('logind_provider') == 'systemd'
++if use_systemd
++  libsystemd_dep = dependency('libsystemd', version: '>= 209', required: true)
++  session_bin_deps += libsystemd_dep
++  libsystemd_version = libsystemd_dep.version()
++elif get_option('logind_provider') == 'elogind'
++  libelogind_dep = dependency('libelogind', version: '>= 209', required: true)
++  session_bin_deps += libelogind_dep
++  libsystemd_version = libelogind_dep.version()
++endif
+ 
+ systemd_userunitdir = get_option('systemduserunitdir')
+-if systemd_userunitdir == ''
++if systemd_userunitdir == '' and use_systemd
+   systemd_dep = dependency('systemd', version: '>= 242', required: true)
+   systemd_userunitdir = systemd_dep.get_variable(pkgconfig: 'systemduserunitdir',
+                                                  pkgconfig_define: ['prefix', session_prefix])
+ endif
+ 
++config_h.set('SYSTEMD_STRICT_ENV', libsystemd_version.version_compare('< 248'))
++
+ configure_file(
+   output: 'config.h',
+   configuration: config_h
+diff --git a/meson_options.txt b/meson_options.txt
+index 781d8eea..56798ac6 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -1,4 +1,5 @@
+ option('deprecation_flags', type: 'boolean', value: false, description: 'use *_DISABLE_DEPRECATED flags')
++option('logind_provider', type: 'combo', choices: ['systemd', 'elogind'], value: 'systemd', description: 'logind implementation')
+ option('systemduserunitdir', type: 'string', description: 'Directory for systemd user service files')
+ option('docbook', type: 'boolean', value: true, description: 'build documentation')
+ option('man', type: 'boolean', value: true, description: 'build documentation (requires xmlto)')

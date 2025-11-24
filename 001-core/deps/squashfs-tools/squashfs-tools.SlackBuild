@@ -1,0 +1,43 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=squashfs-tools
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "plougher" ${PRGNAM} "squashfs-tools|CVE")
+VERSION=${info#* }
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+cd $PRGNAM
+
+CFLAGS="$GCCFLAGS" \
+make -j${NUMBERTHREADS} \
+	GZIP_SUPPORT="1" \
+	XZ_SUPPORT="1" \
+	LZ4_SUPPORT="1" \
+	LZO_SUPPORT="1" \
+	LZMA_XZ_SUPPORT="1" \
+	ZSTD_SUPPORT="1" \
+	COMP_DEFAULT="zstd"
+
+make install INSTALL_DIR=$PKG/usr/bin
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

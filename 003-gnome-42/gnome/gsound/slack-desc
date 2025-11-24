@@ -5,4 +5,3 @@ gsound: GSound is a small library for playing system sounds. It's designed to
 gsound: be used via GObject Introspection, and is a thin wrapper around the
 gsound: libcanberra C library.
 gsound:
-

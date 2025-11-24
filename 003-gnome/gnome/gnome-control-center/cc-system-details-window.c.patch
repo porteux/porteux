@@ -1,45 +1,72 @@
---- panels/system/about/cc-system-details-window.c	2024-09-08 23:55:53.453146903 +0200
-+++ panels/system/about/cc-system-details-window.c.patched	2024-09-08 23:55:11.950144940 +0200
-@@ -657,6 +657,24 @@
+--- panels/system/about/cc-system-details-window.c	2025-10-07 18:39:10.071271947 +0200
++++ panels/system/about/cc-system-details-window.c.patched	2025-10-07 18:39:03.543271638 +0200
+@@ -674,6 +674,33 @@
      g_string_append (dst_string, " ");
  }
  
-+static char* get_gnome_shell_version() {
-+   FILE *fp = popen("gnome-shell --version | cut -d \" \" -f 3", "r");
-+   if (fp == NULL)
++static char*
++get_gnome_shell_version() {
++   FILE *file_pointer = popen("gnome-shell --version | cut -d \" \" -f 3", "r");
++   if (file_pointer == NULL)
 +       return MAJOR_VERSION;
 +
 +   char *version = NULL;
 +   size_t len = 0;
 +   ssize_t read;
 +
-+   if ((read = getline(&version, &len, fp)) != -1) {
++   char *result = NULL;
++
++   if ((read = getline(&version, &len, file_pointer)) != -1) {
 +       if (version[read - 1] == '\n')
 +           version[read - 1] = '\0';
++
++       result = strdup(version);
++   } else {
++       result = MAJOR_VERSION;
 +   }
 +
-+   pclose(fp);
-+   return version;
++   free(version);
++   pclose(file_pointer);
++
++   return result;
 +}
 +
  static void
  on_copy_button_clicked_cb (GtkWidget              *widget,
                             CcSystemDetailsWindow  *self)
-@@ -767,7 +785,7 @@
+@@ -692,6 +719,7 @@
+   g_autofree char *firmware_version_text = NULL;
+   g_autofree char *windowing_system_text = NULL;
+   g_autofree char *kernel_version_text = NULL;
++  g_autofree char *gnome_version = NULL;
+   g_autoslist(GpuData) graphics_hardware_list = NULL;
+   GSList *l;
+   g_autofree gchar *disk_capacity_string = NULL;
+@@ -785,7 +813,8 @@
  
    g_string_append (result_str, "- ");
    system_details_window_title_print_padding ("**GNOME Version:**", result_str, 0);
 -  g_string_append_printf (result_str, "%s\n", MAJOR_VERSION);
-+  g_string_append_printf (result_str, "%s\n", get_gnome_shell_version());
++  gnome_version = get_gnome_shell_version ();
++  g_string_append_printf (result_str, "%s\n", gnome_version);
  
    g_string_append (result_str, "- ");
    system_details_window_title_print_padding (_("**Windowing System:**"), result_str, 0);
-@@ -839,7 +857,7 @@
+@@ -819,6 +848,7 @@
+   g_autofree char *hardware_model_text = NULL;
+   g_autofree char *firmware_version_text = NULL;
+   g_autofree char *kernel_version_text = NULL;
++  g_autofree char *gnome_version = NULL;
+   g_autoslist(GpuData) graphics_hardware_list = NULL;
+   g_autofree gchar *disk_capacity_string = NULL;
+ 
+@@ -857,7 +887,8 @@
    os_type_text = get_os_type ();
    cc_info_entry_set_value (self->os_type_row, os_type_text);
  
 -  cc_info_entry_set_value (self->gnome_version_row, MAJOR_VERSION);
-+  cc_info_entry_set_value (self->gnome_version_row, get_gnome_shell_version());
++  gnome_version = get_gnome_shell_version ();
++  cc_info_entry_set_value (self->gnome_version_row, gnome_version);
  
    cc_info_entry_set_value (self->windowing_system_row, get_windowing_system ());
  

@@ -1,0 +1,12 @@
+      |-----handy-ruler-----------------------------------------------------|
+polkit: polkit (authentication framework)
+polkit: 
+polkit: PolicyKit is an application-level toolkit for defining and handling
+polkit: the policy that allows unprivileged processes to speak to privileged
+polkit: processes. PolicyKit is specifically targeting applications in rich
+polkit: desktop environments on multi-user UNIX-like operating systems.
+polkit:
+polkit: Homepage: http://www.freedesktop.org/wiki/Software/polkit
+polkit:
+polkit:
+polkit:
