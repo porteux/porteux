@@ -12,7 +12,7 @@ SetFlags() {
 	export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=$ARCHITECTURELEVEL -Ztune-cpu=generic -Clink-arg=-ffunction-sections -Clink-arg=-fdata-sections -Cforce-unwind-tables=no -Clto=thin -Clinker=clang -Clink-arg=-fuse-ld=lld -Clink-arg=-Wl,--gc-sections -Wl,--as-needed -Wl,--build-id=none -Clink-arg=-Wl,-O2 -Clink-arg=-Wl,--strip-all -Clink-arg=-Wl,--icf=safe -Clink-arg=-Wl,--lto-O3 -Cpanic=abort -Cdebuginfo=0 -Cembed-bitcode=yes -Cincremental=yes -Zdylib-lto -Zlocation-detail=none" # -Ccodegen-units=1
 	export RUSTC_BOOTSTRAP=1 # allows -Z unstable flags on stable compiler
 
-	export PORTEUXVERSION=$(git -C "$PWD" branch --show-current)
+	export PORTEUXVERSION=$(git -C "$PWD" branch --show-current 2>/dev/null)
 	systemFullVersion=$(cat /etc/slackware-version)
 	systemVersion=${systemFullVersion//* }
 

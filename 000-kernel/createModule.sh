@@ -172,10 +172,9 @@ mv sof ${MODULEPATH}/lib/firmware/intel
 mv sof-tplg ${MODULEPATH}/lib/firmware/intel
 
 echo "Creating symlinks of duplicate firmwares..."
-HASH_LIST=$(mktemp)
+hash_list=$(mktemp)
 declare -A seen_hashes
-find ${MODULEPATH}/lib/firmware -type f -exec sha256sum "{}" + > "$HASH_LIST"
-
+find ${MODULEPATH}/lib/firmware -type f -exec sha256sum "{}" + > "$hash_list"
 while IFS= read -r line; do
     file_hash="${line:0:64}"
     file_path="${line:65}"
@@ -195,9 +194,9 @@ while IFS= read -r line; do
     else
         seen_hashes["$file_hash"]="$file_path"
     fi
-done < "$HASH_LIST"
+done < "$hash_list"
 
-rm "$HASH_LIST"
+rm "$hash_list"
 
 cd $MODULEPATH
 
