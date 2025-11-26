@@ -57,7 +57,7 @@ rm *.t?z
 ### module clean up
 
 GenericStrip
-AggressiveStrip
+AggressiveStripAll
 
 ### set version
 
