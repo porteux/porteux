@@ -30,15 +30,15 @@ To use PorteuX in a language other than English, download the multilanguage pack
 
 To read Asian characters, download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module. Some PDFs may also require `poppler-data` package, via `getpkg` command.
 
-To run Windows applications inside PorteuX, you can find both Wine and Multilib Lite xzm modules in the app store. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
+To run Windows applications inside PorteuX, you can find both Wine and Multilib Lite XZM modules in the app store. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
 
 ## Installing new packages or applications
 
-To download a Slackware package that is not present in PorteuX and convert it to a xzm module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). After the xzm module is created, double-click to activate it. It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
+To download a Slackware package that is not present in PorteuX and convert it to a XZM module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). After the XZM module is created, double-click to activate it. It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
 
-To install new applications that are not in the Slackware repository, AppImage packages are recommended. If an application is not available in AppImage format, PorteuX provides an optional Flatpak xzm module that can be used to download and install any software available in the Flatpak repository.
+To install new applications that are not in the Slackware repository, AppImage packages are recommended. If an application is not available in AppImage format, PorteuX provides an optional Flatpak XZM module that can be used to download and install any software available in the Flatpak repository.
 
-To build anything inside PorteuX, it's recommended to download and activate the `05-devel` xzm module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate the `06-crippled-sources` xzm module.
+To build anything inside PorteuX, it's recommended to download and activate the `05-devel` XZM module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate the `06-crippled-sources` XZM module.
 
 ## Default Username and Password
 
@@ -79,7 +79,7 @@ This only needs to be done once, as these modules will be activated automaticall
 
 ## Building
 
-PorteuX can be built in a live session of Slackware 64-bit or PorteuX 64-bit. At the moment, the main scripts do not generate ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-gui, 002-xtra, 003-desktop-environment, etc).
+PorteuX can be built in a live session of Slackware 64-bit or PorteuX 64-bit. At the moment, the main scripts do not generate ISOs, but only the XZM files for each module (000-kernel, 001-core, 002-gui, 002-xtra, 003-desktop-environment, etc).
 
 To build PorteuX, run the `createModule.sh` script as root, in the exact folder order as described: <br />
 1. 000-kernel<br />
