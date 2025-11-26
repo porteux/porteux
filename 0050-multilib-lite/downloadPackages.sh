@@ -30,6 +30,7 @@ DownloadPackage "lame" &
 DownloadPackage "libcap" &
 DownloadPackage "libasyncns" &
 DownloadPackage "libcap" &
+DownloadPackage "libdisplay-info" &
 DownloadPackage "libdrm" &
 DownloadPackage "libedit" &
 DownloadPackage "libffi" &
@@ -66,7 +67,7 @@ DownloadPackage "libxshmfence" &
 DownloadPackage "libXtst" &
 DownloadPackage "libXxf86vm" &
 DownloadPackage "lm_sensors" &
-DownloadPackage "mesa" &
+DownloadPackage "lz4" &
 DownloadPackage "mpg123" &
 wait
 DownloadPackage "ncurses" &
@@ -75,6 +76,7 @@ DownloadPackage "opus" &
 DownloadPackage "pcre" &
 DownloadPackage "util-linux" &
 DownloadPackage "wayland" &
+DownloadPackage "xcb-util-keysyms" &
 DownloadPackage "xz" &
 DownloadPackage "zlib" &
 DownloadPackage "zstd" &
@@ -83,10 +85,12 @@ wait
 ### packages that require specific striping
 
 DownloadPackage "aaa_libraries" &
+DownloadPackage "eudev" &
 DownloadPackage "gcc" &
 DownloadPackage "gcc-brig" &
 DownloadPackage "gcc-g++" &
 DownloadPackage "llvm" &
+DownloadPackage "mesa" &
 DownloadPackage "pulseaudio" &
 DownloadPackage "vulkan-sdk" &
 wait
