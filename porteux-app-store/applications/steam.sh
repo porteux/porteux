@@ -31,8 +31,7 @@ chown -R "$CURRENTUSER":"$CURRENTGROUP" "$INSTALLDIR"
 
 # handle xzm module
 FULLVERSION=$(cat $INSTALLDIR/ubuntu12_32/steam-runtime/version.txt)
-VERSION=${FULLVERSION#*.}
-VERSION=${VERSION%%.*}
+VERSION=${FULLVERSION#*_}
 
 mkdir -p "$MODULEDIR/usr/share/applications"
 cp "$TEMPDIR"/usr/share/applications/steam.desktop "$MODULEDIR"/usr/share/applications
