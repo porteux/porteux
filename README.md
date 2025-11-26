@@ -36,7 +36,7 @@ To run Windows applications inside PorteuX, you can find both Wine and Multilib 
 
 To download a Slackware package that is not present in PorteuX and convert it to a xzm module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). After the xzm module is created, double-click to activate it. It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
 
-To install new applications that are not in the Slackware repository, AppImage packages are recommended. If an application is not available in AppImage format, PorteuX provides a Flatpak xzm module that can be used to download and install any software available in the Flatpak repository.
+To install new applications that are not in the Slackware repository, AppImage packages are recommended. If an application is not available in AppImage format, PorteuX provides an optional Flatpak xzm module that can be used to download and install any software available in the Flatpak repository.
 
 To build anything inside PorteuX, it's recommended to download and activate the `05-devel` xzm module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate the `06-crippled-sources` xzm module.
 
