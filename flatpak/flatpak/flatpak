@@ -24,6 +24,12 @@ is_root() {
 
 if [ -z "$RESET" ] && [ -L "/var/lib/flatpak" ] && [ -e "$(readlink -f /var/lib/flatpak)" ]; then
 	[[ " $* " == *" run "* ]] && is_root && echo "To run installed flatpak applications don't use sudo/root." && exit 1
+
+	# Required because flatpak module might be activated after boot so xdg-desktop-portal isn't aware of xdg-desktop-portal-gtk
+	if command -v /usr/libexec/xdg-desktop-portal >/dev/null; then
+		setsid /usr/libexec/xdg-desktop-portal -r > /dev/null 2>&1 &
+	fi
+
 	XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}" flatpak_ "${@}"
 	exit 0
 fi
@@ -40,8 +46,7 @@ if [ -z "$FLATPAK_STORAGE_PATH" ] || [ ! -d "$FLATPAK_STORAGE_PATH" ]; then
 fi
 
 fail() {
-	echo "Partition is not POSIX-compliant or you don't have"
-	echo "write permission."
+	echo "Partition is not POSIX-compliant or you don't have write permission."
 	rm -rf "$TMP" 2>/dev/null
 	exit 1
 }
