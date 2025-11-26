@@ -1,0 +1,69 @@
+#!/bin/sh
+
+FLATPAK_STORAGE_PATH="$1"
+
+isRoot() {
+	groupsList=$(groups)
+
+	for entry in $groupsList; do
+		if [[ "$entry" == "root" ]]; then
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+if [ -L "/var/lib/flatpak" ]; then
+	[[ " $* " == *" run "* ]] && isRoot && echo "To run installed flatpak applications don't use sudo/root." && exit 1
+	XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:$XDG_DATA_DIRS" flatpak_ "${@}"
+	exit 0
+fi
+
+if [ -z "$FLATPAK_STORAGE_PATH" ] || [ ! -d "$FLATPAK_STORAGE_PATH" ]; then
+    echo "First time running flatpak requires a POSIX path to store flatpak files."
+	echo "Example: flatpak /mnt/sda1"
+    exit 1
+fi
+
+fail() {
+    echo "Partition is not POSIX-compliant or you don't have write permission."
+    rm -rf "$TMP" 2>/dev/null
+    exit 1
+}
+
+# Test 1: ntfs is still not fully POSIX-compliant
+if command -v findmnt >/dev/null; then
+	[[ $(findmnt -no FSTYPE "$FLATPAK_STORAGE_PATH") == ntfs* ]] && fail
+fi
+
+# Test 2: folder creation
+TMP="$FLATPAK_STORAGE_PATH/.posix_test_$$"
+mkdir "$TMP" 2>/dev/null || fail
+
+# Test 3: permissions
+touch "$TMP/file" || fail
+chmod 600 "$TMP/file" 2>/dev/null || fail
+
+# Test 4: symlinks
+ln -s file "$TMP/link" 2>/dev/null || fail
+
+# Test 5: hard links
+ln "$TMP/file" "$TMP/hardlink" 2>/dev/null || fail
+
+# Test 6: fifo
+mkfifo "$TMP/fifo" 2>/dev/null || fail
+
+# Test 7: timestamps
+touch -t 200001010101 "$TMP/file" 2>/dev/null
+[ $? -eq 0 ] || fail
+
+rm -rf "$TMP" 2>/dev/null
+
+mkdir -p "$FLATPAK_STORAGE_PATH"/flatpak
+ln -sf "$FLATPAK_STORAGE_PATH"/flatpak /var/lib
+
+flatpak_ remote-add flathub https://flathub.org/repo/flathub.flatpakrepo > /dev/null 2>&1
+flatpak_ update --appstream
+
+echo -e "\n\e[36mAll set. You can now use flatpak normally.\e[0m"
