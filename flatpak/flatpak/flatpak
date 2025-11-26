@@ -31,7 +31,8 @@ fi
 FLATPAK_STORAGE_PATH="$1"
 
 if [ -z "$FLATPAK_STORAGE_PATH" ] || [ ! -d "$FLATPAK_STORAGE_PATH" ]; then
-	echo "First time running flatpak requires a POSIX path to store flatpak files."
+	echo "First time running flatpak requires a valid POSIX path"
+	echo "to store flatpak files."
 	echo
 	echo "example: flatpak /mnt/sda1"
 	echo "example: flatpak --force-setup /mnt/nvme0n1p2/"
@@ -39,7 +40,8 @@ if [ -z "$FLATPAK_STORAGE_PATH" ] || [ ! -d "$FLATPAK_STORAGE_PATH" ]; then
 fi
 
 fail() {
-	echo "Partition is not POSIX-compliant or you don't have write permission."
+	echo "Partition is not POSIX-compliant or you don't have"
+	echo "write permission."
 	rm -rf "$TMP" 2>/dev/null
 	exit 1
 }
@@ -76,6 +78,8 @@ check_posix() {
 	# Clean up
 	rm -rf "$TMP" 2>/dev/null
 }
+
+! is_root && echo "Flatpak setup requires admin's right." && exit 1
 
 check_posix
 
