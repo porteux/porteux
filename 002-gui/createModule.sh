@@ -158,15 +158,15 @@ mv ../packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
+cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped
+cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped
 cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped
 cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped > /dev/null 2>&1
 cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped
-cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
-cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -218,7 +218,6 @@ rm usr/bin/canberra*
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/Xdmx
-rm usr/bin/rsvg-convert # only for stable
 
 rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
@@ -306,7 +305,6 @@ rm -fr usr/share/X11/locale/zh*
 rm -fr usr/X11R6/include
 rm -fr usr/X11R6/man
 } >/dev/null 2>&1
-
 
 
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete

@@ -261,7 +261,7 @@ sed -i "s|^VERSION=.*|VERSION=\"${PORTEUXVERSION}\"|" $MODULEPATH/packages/etc/o
 sed -i "s|^VERSION_ID=.*|VERSION_ID=${PORTEUXVERSION}|" $MODULEPATH/packages/etc/os-release
 sed -i "s|^PRETTY_NAME=.*|PRETTY_NAME=\"PorteuX ${PORTEUXVERSION} ${PORTEUXBUILD}\"|" $MODULEPATH/packages/etc/os-release
 sed -i "s|^CPE_NAME=.*|CPE_NAME=\"cpe:/o:porteux:porteux_linux:${PORTEUXVERSION}\"|" $MODULEPATH/packages/etc/os-release
-sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUXVERSION}|" $SCRIPTPATH/../boot/boot/syslinux/help.txt
+sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUXVERSION}|" $SCRIPTPATH/../iso/boot/syslinux/help.txt
 
 ### set permissions
 
