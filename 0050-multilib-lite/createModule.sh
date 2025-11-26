@@ -68,6 +68,17 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+currentPackage=eudev
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir -p ${currentPackage}-stripped/lib
+cp -P lib/libudev*.so* ${currentPackage}-stripped/lib
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
@@ -75,6 +86,30 @@ packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 tar xvf ${currentPackage}*.txz
 mkdir -p ${currentPackage}-stripped/usr/lib
 cp usr/lib/libLLVM*.so* ${currentPackage}-stripped/usr/lib
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=mesa
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}*.txz
+rm -fr etc/OpenCL
+rm usr/lib/dri/i830*
+rm usr/lib/dri/i965*
+rm usr/lib/dri/nouveau_vieux*
+rm usr/lib/dri/r200*
+rm usr/lib/dri/radeon_dri*
+rm usr/lib/libMesaOpenCL*
+rm usr/lib/libRusticlOpenCL*
+rm -fr var/lib/pkgtools
+rm -f var/log/packages
+rm -fr var/log/pkgtools
+rm -f var/log/setup
+rm -f var/log/scripts
+mkdir ${currentPackage}-stripped
+rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -95,12 +130,15 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=vulkan-sdk
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
+mv ../packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-tar xvf ${currentPackage}*.txz
-mkdir -p ${currentPackage}-stripped/usr/lib
-cp usr/lib/libvulkan.so* ${currentPackage}-stripped/usr/lib
-cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -Pr usr/lib/cmake ${currentPackage}-stripped
+cp --parents -P usr/lib/pkgconfig/vulkan.pc ${currentPackage}-stripped
+cp --parents -P usr/lib/libvulkan.so* ${currentPackage}-stripped
+cp --parents -P usr/lib/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped
+cp --parents -P usr/lib/libSPIRV-Tools.so* ${currentPackage}-stripped
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -128,13 +166,11 @@ rm $MODULEPATH/packages/lib/libpopt*
 rm $MODULEPATH/packages/lib/libsigsegv*
 rm $MODULEPATH/packages/lib/libsysfs*
 rm $MODULEPATH/packages/lib/libtermcap*
-rm $MODULEPATH/packages/lib/libudev*
 rm $MODULEPATH/packages/usr/lib/libadm*
 rm $MODULEPATH/packages/usr/lib/libargon*
 rm $MODULEPATH/packages/usr/lib/libboost*
 rm $MODULEPATH/packages/usr/lib/libcares.*
 rm $MODULEPATH/packages/usr/lib/libcc1.*
-rm $MODULEPATH/packages/usr/lib/libclang*
 rm $MODULEPATH/packages/usr/lib/libdxcompiler.*
 rm $MODULEPATH/packages/usr/lib/libgdbm*
 rm $MODULEPATH/packages/usr/lib/libglslang.*
@@ -171,9 +207,7 @@ rm -fr $MODULEPATH/packages/etc
 rm -fr $MODULEPATH/packages/lib/e2fsprogs
 rm -fr $MODULEPATH/packages/lib/elogind
 rm -fr $MODULEPATH/packages/lib/security
-rm -fr $MODULEPATH/packages/lib/udev
 rm -fr $MODULEPATH/packages/run
-rm -fr $MODULEPATH/packages/usr/lib/clang
 rm -fr $MODULEPATH/packages/usr/lib/dbus-1.0
 rm -fr $MODULEPATH/packages/usr/lib/gcc
 rm -fr $MODULEPATH/packages/usr/lib/girepository-1.0
@@ -190,7 +224,8 @@ rm -fr $MODULEPATH/packages/var/run
 
 find $MODULEPATH/packages/sbin \( -type f -o -type l \) ! \( -name "ldconfig" -o -name "sln" \) -delete
 find $MODULEPATH/packages/bin \( -type f -o -type l \) ! -name "sln" -delete
-find $MODULEPATH/packages/usr -mindepth 1 -maxdepth 1 -type d ! -name "lib" -exec rm -rf {} +
+find $MODULEPATH/packages/usr/share -mindepth 1 -maxdepth 1 -type d ! -name "vulkan" -exec rm -rf {} +
+find $MODULEPATH/packages/usr -mindepth 1 -maxdepth 1 -type d ! -name "lib" ! -name "share" -exec rm -rf {} +
 find $MODULEPATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name "en_US.utf8" -exec rm -rf {} +
 } >/dev/null 2>&1
 
@@ -199,12 +234,24 @@ mv $MODULEPATH/packages/lib/libc.so* $MODULEPATH/
 mv $MODULEPATH/packages/lib/libc-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib/dri $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib/libgallium* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib/libvulkan* $MODULEPATH/
+mv $MODULEPATH/packages/usr/lib/libX11.so* $MODULEPATH/
 GenericStrip
 AggressiveStrip
-mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib/
-mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib/
 mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib
 mv $MODULEPATH/libc-* $MODULEPATH/packages/lib
+mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib/
+mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib/
+mv $MODULEPATH/libvulkan* $MODULEPATH/packages/usr/lib/
+mv $MODULEPATH/libX11.so* $MODULEPATH/packages/usr/lib/
+
+# specific strip
+mkdir $MODULEPATH/tostrip
+mv $MODULEPATH/packages/usr/lib/libLLVM* $MODULEPATH/tostrip
+cd $MODULEPATH/tostrip
+AggressiveStripAll
+mv $MODULEPATH/tostrip/libLLVM* $MODULEPATH/packages/usr/lib
+rm -fr $MODULEPATH/tostrip
 
 ### finalize
 
