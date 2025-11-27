@@ -25,12 +25,12 @@ is_root() {
 if [ -z "$RESET" ] && [ -L "/var/lib/flatpak" ] && [ -e "$(readlink -f /var/lib/flatpak)" ]; then
 	[[ " $* " == *" run "* ]] && is_root && echo "To run installed flatpak applications don't use sudo/root." && exit 1
 
-	# Required because flatpak module might be activated after boot so xdg-desktop-portal isn't aware of xdg-desktop-portal-gtk
+	# Required because flatpak module might be activated after boot so xdg-desktop-portal wouldn't be aware of xdg-desktop-portal-gtk
 	if command -v /usr/libexec/xdg-desktop-portal >/dev/null; then
 		setsid /usr/libexec/xdg-desktop-portal -r > /dev/null 2>&1 &
 	fi
 
-	XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}" flatpak_ "${@}"
+	exec flatpak_ "${@}"
 	exit 0
 fi
 
@@ -95,5 +95,8 @@ ln -sf "$FLATPAK_STORAGE_PATH"/flatpak /var/lib/
 # Add flathub and update
 flatpak_ remote-add flathub https://flathub.org/repo/flathub.flatpakrepo > /dev/null 2>&1
 flatpak_ update --appstream
+
+echo -e "\n\e[93mIf Flatpak module was activated after boot, applications installed"
+echo -e "\e[93mwith it will appear on the desktop in the next login.\e[0m"
 
 echo -e "\n\e[36mAll set. You can now use flatpak normally.\e[0m"
