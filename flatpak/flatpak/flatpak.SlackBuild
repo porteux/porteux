@@ -38,7 +38,7 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-rm -fr $PKG/etc/profile.d
+echo 'export XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"' > $PKG/etc/profile.d/flatpak.sh
 mv $PKG/usr/bin/flatpak $PKG/usr/bin/flatpak_
 install -Dm755 "$CWD/flatpak" $PKG/usr/bin/flatpak
 
