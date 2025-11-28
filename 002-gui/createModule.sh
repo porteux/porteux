@@ -325,14 +325,6 @@ mv $MODULEPATH/libvulkan* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libX11.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
 
-# specific strip
-mkdir $MODULEPATH/tostrip
-mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libLLVM* $MODULEPATH/tostrip
-cd $MODULEPATH/tostrip
-AggressiveStripAll
-mv $MODULEPATH/tostrip/libLLVM* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
-rm -fr $MODULEPATH/tostrip
-
 ### copy cache files
 
 PrepareFilesForCache

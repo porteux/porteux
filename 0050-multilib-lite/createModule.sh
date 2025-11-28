@@ -245,14 +245,6 @@ mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib/
 mv $MODULEPATH/libvulkan* $MODULEPATH/packages/usr/lib/
 mv $MODULEPATH/libX11.so* $MODULEPATH/packages/usr/lib/
 
-# specific strip
-mkdir $MODULEPATH/tostrip
-mv $MODULEPATH/packages/usr/lib/libLLVM* $MODULEPATH/tostrip
-cd $MODULEPATH/tostrip
-AggressiveStripAll
-mv $MODULEPATH/tostrip/libLLVM* $MODULEPATH/packages/usr/lib
-rm -fr $MODULEPATH/tostrip
-
 ### finalize
 
 Finalize
