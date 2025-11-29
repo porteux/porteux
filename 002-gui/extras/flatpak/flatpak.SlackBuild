@@ -38,9 +38,12 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-echo 'export XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"' > $PKG/etc/profile.d/flatpak.sh
+echo 'export XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share:$HOME/.local/share/applications}"' > $PKG/etc/profile.d/flatpak.sh
+cp $PKG/etc/profile.d/flatpak.sh $PKG/etc/profile.d/flatpak.csh
 mv $PKG/usr/bin/flatpak $PKG/usr/bin/flatpak_
 install -Dm755 "$CWD/flatpak" $PKG/usr/bin/flatpak
+
+rm -fr $PKG/usr/lib
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

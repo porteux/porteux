@@ -158,9 +158,6 @@ installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# required by xpdf
-installpkg $MODULEPATH/packages/libproxy*.txz || exit 1
-
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 

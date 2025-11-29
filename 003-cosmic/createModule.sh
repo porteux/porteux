@@ -80,7 +80,6 @@ for package in \
 	launcher \
 	dart-sass \
 	adw-gtk3 \
-	xdg-desktop-portal-gtk \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1

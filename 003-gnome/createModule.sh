@@ -96,9 +96,6 @@ done
 
 # gnome deps
 for package in \
-	libxmlb \
-	libfyaml \
-	appstream \
 	libstemmer \
 	bubblewrap \
 	geoclue2 \
@@ -117,7 +114,6 @@ done
 
 # only required for building not for run-time
 rm $MODULEPATH/packages/blueprint-compiler*
-rm $MODULEPATH/packages/gperf*
 
 # gnome packages
 for package in \

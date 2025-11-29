@@ -33,11 +33,14 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 	--disable-gtk-doc-html \
 	--disable-gtk-doc-pdf \
 	--disable-man \
-	--disable-man-html 
+	--disable-man-html
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm -fr $PKG/usr/lib
+rm -fr $PKG/etc/ostree
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

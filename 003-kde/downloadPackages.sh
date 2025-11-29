@@ -16,7 +16,6 @@ DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libfyaml" &
 DownloadPackage "libdmtx" &
-DownloadPackage "libproxy" &
 DownloadPackage "libqaccessibilityclient" &
 wait
 DownloadPackage "libqalculate" &
