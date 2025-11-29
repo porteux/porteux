@@ -36,8 +36,10 @@ DownloadPackage "giflib" &
 DownloadPackage "glew" &
 wait
 DownloadPackage "glibmm" &
+DownloadPackage "glib-networking" & # required by flatpak
 DownloadPackage "glu" &
 DownloadPackage "gnome-themes-extra" &
+DownloadPackage "gnupg2" & # required by flatpak
 DownloadPackage "gobject-introspection" &
 DownloadPackage "gparted" &
 DownloadPackage "graphene" & # required by libgstopengl
@@ -132,6 +134,7 @@ DownloadPackage "libogg" &
 DownloadPackage "libopusenc" &
 DownloadPackage "libpciaccess" &
 DownloadPackage "libpng" &
+DownloadPackage "libproxy" & # required by flatpak
 DownloadPackage "libsamplerate" &
 wait
 DownloadPackage "libsecret" &
@@ -162,6 +165,7 @@ DownloadPackage "mkfontscale" &
 DownloadPackage "mobile-broadband-provider-info" &
 DownloadPackage "mpg123" &
 DownloadPackage "mtdev" &
+DownloadPackage "npth" & # required by flatpak
 DownloadPackage "ocl-icd" &
 DownloadPackage "openjpeg" &
 DownloadPackage "opus" &
@@ -243,6 +247,9 @@ wait
 ### temporary packages only for building
 
 DownloadPackage "cups" & # to build gtk+3
+DownloadPackage "gperf" & # to build flatpak
+DownloadPackage "pyparsing" & # to build flatpak
+DownloadPackage "socat" & # to build flatpak
 DownloadPackage "xtrans" & # to build xorg
 wait
 

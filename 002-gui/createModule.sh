@@ -62,6 +62,18 @@ rm $MODULEPATH/packages/cups*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
+# required by flatpak
+installpkg $MODULEPATH/packages/glib-networking*.txz || exit 1
+installpkg $MODULEPATH/packages/gnupg2*.txz || exit 1
+installpkg $MODULEPATH/packages/gperf*.txz || exit 1
+rm $MODULEPATH/packages/gperf*.txz
+installpkg $MODULEPATH/packages/libproxy*.txz || exit 1
+installpkg $MODULEPATH/packages/npth*.txz || exit 1
+installpkg $MODULEPATH/packages/pyparsing*.txz || exit 1
+rm $MODULEPATH/packages/pyparsing*.txz
+installpkg $MODULEPATH/packages/socat*.txz || exit 1
+rm $MODULEPATH/packages/socat*.txz
+
 # gui deps
 for package in \
 	xorg-server \
@@ -73,6 +85,11 @@ for package in \
 	wireplumber \
 	cxxopts \
 	imlib2 \
+	libostree \
+	libfyaml \
+	libxmlb \
+	appstream \
+	xdg-desktop-portal-gtk \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
@@ -92,6 +109,7 @@ for package in \
 	wlr-randr \
 	wlrctl \
 	xdg-desktop-portal \
+	flatpak \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
@@ -218,7 +236,6 @@ rm usr/bin/canberra*
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/Xdmx
-
 rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
@@ -245,6 +262,7 @@ rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 
+rm -fr etc/gnupg
 rm -fr etc/pam.d
 rm -fr etc/rc_keymaps
 rm -fr etc/X11/xorg.conf.d
@@ -265,6 +283,7 @@ rm -fr usr/lib${SYSTEMBITS}/sigc++-*
 rm -fr usr/lib${SYSTEMBITS}/xmms
 rm -fr usr/libexec/upower/tests
 rm -fr usr/share/gdm
+rm -fr usr/share/gnupg
 rm -fr usr/share/gobject-introspection*/tests
 rm -fr usr/share/graphite2
 rm -fr usr/share/gst-plugins-base

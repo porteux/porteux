@@ -8,7 +8,6 @@ DownloadPackage "blueman" &
 DownloadPackage "ghostscript-fonts-std" &
 DownloadPackage "hunspell" &
 DownloadPackage "libdbusmenu-qt" &
-DownloadPackage "libproxy" & # required by xpdf
 DownloadPackage "libxklavier" & # required by lightdm-gtk-greeter
 wait
 

@@ -96,7 +96,4 @@ ln -sf "$FLATPAK_STORAGE_PATH"/flatpak /var/lib/
 flatpak_ remote-add flathub https://flathub.org/repo/flathub.flatpakrepo > /dev/null 2>&1
 flatpak_ update --appstream
 
-echo -e "\n\e[93mIf Flatpak module was activated after boot, applications installed"
-echo -e "\e[93mwith it will appear on the desktop in the next login.\e[0m"
-
 echo -e "\n\e[36mAll set. You can now use flatpak normally.\e[0m"
