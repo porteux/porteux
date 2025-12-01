@@ -34,9 +34,9 @@ To run Windows applications inside PorteuX, you can find both Wine and Multilib 
 
 ## Installing new applications or packages
 
-To install new applications that are not in the App Store or in the Slackware repository, AppImage packages are recommended. If an application is not available in AppImage format, PorteuX provides an optional Flatpak XZM module that can be used to download and install any software available in Flatpak.
+To install new applications that are not in the App Store or in the Slackware repository, AppImage packages are recommended. If an application is not available in AppImage format, Flatpak is avaialable by default and can be used to download and install any software available in Flatpak repositories.
 
-To download a Slackware package that is not present in PorteuX and convert it to a XZM module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). After the XZM module is created, double-click to activate it. It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
+To download a Slackware package that is not present in PorteuX and convert it to a XZM module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). After the XZM module is created, double-click or call `activate [moduleName]` to activate it. It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
 
 To build anything inside PorteuX, it's recommended to download and activate the `05-devel` XZM module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate the `06-crippled-sources` XZM module.
 
@@ -90,7 +90,6 @@ To build PorteuX, run the `createModule.sh` script as root, in the exact folder 
 6. (optional) 05-devel<br />
 7. (optional) 08-multilanguage<br />
 8. (optional) 0050-multilib-lite<br />
-9. (optional) flatpak<br />
 
 At the end, all modules will be in their respective subfolders inside /tmp/porteux-builder-[version].
 
