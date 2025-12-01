@@ -3,10 +3,8 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 GenerateRepositoryUrls
 
-DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
-DownloadPackage "libindicator" &
 DownloadPackage "libhandy" &
 DownloadPackage "libwnck3" &
 wait
