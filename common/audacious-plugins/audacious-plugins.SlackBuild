@@ -46,7 +46,7 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
-cat $CWD/${PRGNAM}-slack-desc > $PKG/install/slack-desc
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$TOOLKIT-$VERSION-$ARCH-1_porteux.txz

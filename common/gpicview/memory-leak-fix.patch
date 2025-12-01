@@ -1,0 +1,23 @@
+From 1508be4eeab5d72bcc31ba93dcab14cb17ee7041 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ball=C3=B3=20Gy=C3=B6rgy?= <ballogyor@gmail.com>
+Date: Mon, 20 Oct 2025 22:22:52 +0200
+Subject: [PATCH] Fix memory leak during animated playback
+
+Without this, the program fills the whole memory while playing
+animated GIF files.
+---
+ src/main-win.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/main-win.c b/src/main-win.c
+index ce2bbdd..e64b795 100644
+--- a/src/main-win.c
++++ b/src/main-win.c
+@@ -367,6 +367,7 @@ gboolean on_animation_timeout( MainWin* mw )
+     {
+         GdkPixbuf *current;
+         current = gdk_pixbuf_animation_iter_get_pixbuf( mw->animation_iter );
++        g_object_unref(mw->pix);
+         mw->pix = gdk_pixbuf_copy( current );
+         image_view_set_pixbuf( (ImageView*)mw->img_view, mw->pix );
+     }
