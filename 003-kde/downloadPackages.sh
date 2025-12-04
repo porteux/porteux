@@ -4,7 +4,6 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 GenerateRepositoryUrls
 
 DownloadPackage "accountsservice" &
-DownloadPackage "appstream" &
 DownloadPackage "cfitsio" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "egl-wayland" &
@@ -14,7 +13,6 @@ wait
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
-DownloadPackage "libfyaml" &
 DownloadPackage "libdmtx" &
 DownloadPackage "libqaccessibilityclient" &
 wait
