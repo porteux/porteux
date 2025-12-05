@@ -31,7 +31,7 @@ DownloadFromSlackware
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
-# xfce common
+# lxde common
 for package in \
 	audacious \
 	audacious-plugins \
@@ -43,7 +43,7 @@ for package in \
 	mate-polkit \
 	xcape \
 ; do
-SESSIONTEMPLATE=xfce sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
