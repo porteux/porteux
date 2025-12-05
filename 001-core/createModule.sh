@@ -320,7 +320,6 @@ rm -fr usr/lib/ldscripts
 rm -fr usr/lib/modprobe.d
 rm -fr usr/lib*/python*/__phello__
 rm -fr usr/lib*/python*/config-*-x86_64-linux-gnu
-rm -fr usr/lib*/python*/ensurepip
 rm -fr usr/lib*/python*/idlelib
 rm -fr usr/lib*/python*/lib2to3
 rm -fr usr/lib*/python*/site-packages/demo
