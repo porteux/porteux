@@ -59,11 +59,6 @@ rm -fr $MODULEPATH/${currentPackage}
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
-# required by mate-polkit
-installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
-
 # cinnamon common
 for package in \
 	audacious \
@@ -82,13 +77,15 @@ done
 # required from now on
 installpkg $MODULEPATH/packages/aspell*.txz || exit 1
 installpkg $MODULEPATH/packages/colord*.txz || exit 1
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
-installpkg $MODULEPATH/packages/gtksourceview4*.txz || exit 1
 installpkg $MODULEPATH/packages/gspell*.txz || exit 1
+installpkg $MODULEPATH/packages/gtksourceview4*.txz || exit 1
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libgee*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libhandy*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
