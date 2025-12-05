@@ -56,39 +56,28 @@ rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside slackware repository
 
-currentPackage=audacious
-sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=audacious-plugins
-sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=ffmpegthumbnailer
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
-
-currentPackage=lightdm
-SESSIONTEMPLATE=cinnamon sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lightdm-gtk-greeter
-ICONTHEME=Yaru-blue sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
 
 # required by mate-polkit
 installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 
-currentPackage=mate-polkit
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# cinnamon common
+for package in \
+	audacious \
+	audacious-plugins \
+	ffmpegthumbnailer \
+	lightdm \
+	lightdm-gtk-greeter \
+	mate-common \
+	mate-polkit \
+; do
+SESSIONTEMPLATE=cinnamon sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 # required from now on
 installpkg $MODULEPATH/packages/aspell*.txz || exit 1
