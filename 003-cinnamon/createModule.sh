@@ -41,15 +41,16 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-# temporary until cjs fixes compatibility with glib 2.86.0+ (https://github.com/linuxmint/cjs/issues/130)
-currentPackage=glib2
+# temporary until cjs migrates to mozjs140
+currentPackage=icu4c
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/glib2-2.84.4-x86_64-1.txz
+wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/icu4c-77.1-x86_64-1.txz
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
-cp --parents -Pr usr/lib$SYSTEMBITS/girepository-1.0 "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/lib* "${currentPackage}-stripped"
+cp --parents -P usr/lib${SYSTEMBITS}/libicudata.so.77* "${currentPackage}-stripped"
+cp --parents -P usr/lib${SYSTEMBITS}/libicui18n.so.77* "${currentPackage}-stripped"
+cp --parents -P usr/lib${SYSTEMBITS}/libicuuc.so.77* "${currentPackage}-stripped"
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -165,7 +166,7 @@ done
 cd $MODULEPATH
 pip install pysass # required by cinnamon project
 
-# temporary until cjs migrates do mozjs140
+# temporary until cjs migrates to mozjs140
 wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/mozjs128-128.14.0esr-x86_64-1.txz -P $MODULEPATH/packages
 installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 
