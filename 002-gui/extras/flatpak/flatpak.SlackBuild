@@ -40,6 +40,7 @@ find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 echo 'export XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share:$HOME/.local/share/applications}"' > $PKG/etc/profile.d/flatpak.sh
 cp $PKG/etc/profile.d/flatpak.sh $PKG/etc/profile.d/flatpak.csh
+chmod 755 $PKG/etc/profile.d/flatpak*
 mv $PKG/usr/bin/flatpak $PKG/usr/bin/flatpak_
 install -Dm755 "$CWD/flatpak" $PKG/usr/bin/flatpak
 
