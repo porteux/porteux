@@ -29,6 +29,9 @@ sed -i "s|mark_as_advanced(SCD2HTML|#mark_as_advanced(SCD2HTML|g" CMakeLists.txt
 sed -i "s|add_subdirectory(docs)|#add_subdirectory(docs)|g" CMakeLists.txt
 sed -i "s|install(FILES CONTRIBUTING.md|#install(FILES CONTRIBUTING.md|g" CMakeLists.txt
 
+# temporary fix for building 6.0.1
+sed -i "s|static rpmRC rpm::delete_key_compat|rpmRC rpm::delete_key_compat|g" lib/keystore.cc
+
 LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
