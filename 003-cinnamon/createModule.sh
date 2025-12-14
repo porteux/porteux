@@ -166,6 +166,7 @@ for package in \
 	gnome-terminal \
 	gnome-screenshot \
 	gnome-system-monitor \
+	xapp-symbolic-icons \
 	yaru-icon-theme \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
