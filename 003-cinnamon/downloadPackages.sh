@@ -53,6 +53,8 @@ wait
 
 ### temporary packages only for building
 
+DownloadPackage "cbindgen" & # required to build mozjs
+
 DownloadPackage "icu4c" & # required by gnome-terminal (only for safety in case it gets updated in Slackware repo)
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
