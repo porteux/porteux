@@ -48,6 +48,7 @@ wait
 
 ### packages that require specific striping
 
+DownloadPackage "ibus" &
 DownloadPackage "gettext-tools" & # required by extensions
 wait
 
