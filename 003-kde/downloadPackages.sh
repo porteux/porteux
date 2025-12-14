@@ -27,6 +27,7 @@ wait
 
 ### packages that require specific striping
 
+DownloadPackage "appstream" & # required by main menu
 DownloadPackage "gcc-gfortran" & # required by spectable
 DownloadPackage "opencv" & # required by spectable
 DownloadPackage "phonon" & # required by dolphin and others
