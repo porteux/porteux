@@ -41,20 +41,6 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
-# temporary until cjs migrates to mozjs140
-currentPackage=icu4c
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/icu4c-77.1-x86_64-1.txz
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib${SYSTEMBITS}/libicudata.so.77* "${currentPackage}-stripped"
-cp --parents -P usr/lib${SYSTEMBITS}/libicui18n.so.77* "${currentPackage}-stripped"
-cp --parents -P usr/lib${SYSTEMBITS}/libicuuc.so.77* "${currentPackage}-stripped"
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
 ### packages outside slackware repository
 
 # required by lightdm
@@ -94,6 +80,10 @@ installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
+# temporary to build mozjs
+installpkg $MODULEPATH/packages/cbindgen*.txz || exit 1
+rm $MODULEPATH/packages/cbindgen*.txz
+
 # required only for building
 installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
 rm $MODULEPATH/packages/icu4c*.txz
@@ -123,6 +113,7 @@ MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # cinnamon deps
 for package in \
+	mozjs128 \
 	python-tinycss2 \
 	xdotool \
 	gsound \
@@ -165,10 +156,6 @@ done
 
 cd $MODULEPATH
 pip install pysass # required by cinnamon project
-
-# temporary until cjs migrates to mozjs140
-wget https://slackware.uk/cumulative/slackware64-current/slackware64/l/mozjs128-128.14.0esr-x86_64-1.txz -P $MODULEPATH/packages
-installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 
 # cinnamon packages
 for package in \
