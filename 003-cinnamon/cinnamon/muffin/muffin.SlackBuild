@@ -34,7 +34,6 @@ meson setup \
 	-Dprofiler=false \
 	-Dwayland=true \
 	-Dnative_backend=true \
-	-Ddefault_driver=auto \
 	-Dcogl_tests=false \
 	-Dclutter_tests=false \
 	-Dcore_tests=false \

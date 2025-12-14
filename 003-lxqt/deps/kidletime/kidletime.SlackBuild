@@ -31,8 +31,6 @@ cmake .. \
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
-read -p "vai"
-
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
