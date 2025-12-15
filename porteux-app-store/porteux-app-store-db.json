@@ -627,14 +627,14 @@
         "Nvidia 5xx": {
             "script": "nvidia",
             "icon": "nvidia.png",
-            "tooltip": "Official Nvidia driver with all utilities and libraries",
-            "infoDialog": "Nvidia driver will be loaded after the system is restarted."
+            "tooltip": "Official NVIDIA driver with all utilities and libraries",
+            "infoDialog": "NVIDIA driver will be loaded after the system is restarted."
         },
         "Nvidia Lite 5xx": {
             "script": "nvidia-lite",
             "icon": "nvidia.png",
-            "tooltip": "Official Nvidia driver without some non-critical libraries",
-            "infoDialog": "Nvidia driver will be loaded after the system is restarted."
+            "tooltip": "Official NVIDIA driver without some non-critical libraries",
+            "infoDialog": "NVIDIA driver will be loaded after the system is restarted."
         }
     },
     "Development": {
@@ -845,6 +845,11 @@
             "icon": "crippled.png",
             "tooltip": "Set of kernel files for compiling drivers"
         },
+        "Deno": {
+            "script": "deno",
+            "icon": "deno.svg",
+            "tooltip": "Runtime for JavaScript required by yt-dlp"
+        },
         "Etcher": {
             "script": "etcher",
             "icon": "etcher.png",
@@ -860,12 +865,13 @@
             "script": "wine",
             "icon": "wine.svg",
             "tooltip": "Run Windows applications on Linux",
-            "infoDialog": "It's recommended to download multilib, also available in the app store."
+            "infoDialog": "It's recommended to download Multilib, also available in the app store."
         },
         "yt-dlp":{
             "script": "yt-dlp",
             "icon": "yt-dlp.png",
-            "tooltip": "Terminal application to download videos from various platforms"
+            "tooltip": "Terminal application to download videos from various platforms",
+            "infoDialog": "It's recommended to download Deno, also available in the app store."
         },
         "KeePassXC":{
             "script": "keepassxc",
