@@ -1,0 +1,112 @@
+From b4fbf34cb81900924362509530650dccc7507c36 Mon Sep 17 00:00:00 2001
+From: Nick <nickmoff@outlook.com>
+Date: Tue, 2 Dec 2025 16:07:03 -0600
+Subject: [PATCH] Add inactive-prelight state to window buttons
+
+---
+ src/client.c   |  8 +++++++-
+ src/display.h  |  2 ++
+ src/events.c   | 21 +++++++++------------
+ src/settings.c |  2 ++
+ 4 files changed, 20 insertions(+), 13 deletions(-)
+
+diff --git a/src/client.c b/src/client.c
+index caabbf6e3..18ae7548f 100644
+--- src/client.c
++++ src/client.c
+@@ -1495,7 +1495,7 @@ clientUpdateIconPix (Client *c)
+ 
+     for (i = 0; i < STATE_TOGGLED; i++)
+     {
+-        filtered_state = i != INACTIVE ? ACTIVE : INACTIVE;
++        filtered_state = (i == INACTIVE || i == INACTIVE_PRELIGHT) ? INACTIVE : ACTIVE;
+         frame_width = frameTopWidth (c, filtered_state);
+         stretch_pixmap = &screen_info->sides_stretch[SIDE_TOP][filtered_state];
+ 
+@@ -4360,6 +4360,12 @@ clientGetButtonState (Client *c, int button, int state)
+ {
+     if (state == INACTIVE)
+     {
++        if ((c->button_status[button] == BUTTON_STATE_PRELIGHT) &&
++            !xfwmPixmapNone(clientGetButtonPixmap(c, button, INACTIVE_PRELIGHT)))
++        {
++            return INACTIVE_PRELIGHT;
++        }
++
+         return (state);
+     }
+ 
+diff --git a/src/display.h b/src/display.h
+index 5a22b3ef7..2865c2b33 100644
+--- src/display.h
++++ src/display.h
+@@ -130,10 +130,12 @@ enum
+     ACTIVE = 0,
+     INACTIVE,
+     PRELIGHT,
++    INACTIVE_PRELIGHT,
+     PRESSED,
+     T_ACTIVE,
+     T_INACTIVE,
+     T_PRELIGHT,
++    T_INACTIVE_PRELIGHT,
+     T_PRESSED,
+     STATE_COUNT
+ };
+diff --git a/src/events.c b/src/events.c
+index 6fd57a28e..9674ef4cd 100644
+--- src/events.c
++++ src/events.c
+@@ -1395,23 +1395,20 @@ handleEnterNotify (DisplayInfo *display_info, XfwmEventCrossing *event)
+                 clientClearDelayedFocus ();
+             }
+         }
+-        if (c == clientGetFocus ())
++        for (b = 0; b < BUTTON_COUNT; b++)
+         {
+-            for (b = 0; b < BUTTON_COUNT; b++)
++            if (MYWINDOW_XWINDOW(c->buttons[b]) == event->meta.window)
+             {
+-                if (MYWINDOW_XWINDOW(c->buttons[b]) == event->meta.window)
++                if (!xfwmPixmapNone(clientGetButtonPixmap(c, b, PRELIGHT)))
+                 {
+-                    if (!xfwmPixmapNone(clientGetButtonPixmap(c, b, PRELIGHT)))
+-                    {
+-                        c->button_status[b] = BUTTON_STATE_PRELIGHT;
+-                        need_redraw = TRUE;
+-                    }
++                    c->button_status[b] = BUTTON_STATE_PRELIGHT;
++                    need_redraw = TRUE;
+                 }
+             }
+-            if (need_redraw)
+-            {
+-                frameQueueDraw (c, FALSE);
+-            }
++        }
++        if (need_redraw)
++        {
++            frameQueueDraw (c, FALSE);
+         }
+ 
+         /* No need to process the event any further */
+diff --git a/src/settings.c b/src/settings.c
+index 020af4bde..3ebe9aaf7 100644
+--- src/settings.c
++++ src/settings.c
+@@ -305,10 +305,12 @@ loadTheme (ScreenInfo *screen_info, Settings *rc)
+         "active",
+         "inactive",
+         "prelight",
++        "inactive-prelight",
+         "pressed",
+         "toggled-active",
+         "toggled-inactive",
+         "toggled-prelight",
++        "toggled-inactive-prelight",
+         "toggled-pressed"
+     };
+ 
+-- 
+GitLab
+
