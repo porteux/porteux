@@ -89,6 +89,7 @@ for package in \
 	libfyaml \
 	libxmlb \
 	appstream \
+	intel-gmmlib \
 	xdg-desktop-portal-gtk \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
@@ -102,6 +103,7 @@ rm $MODULEPATH/packages/cxxopts*.txz
 # gui extras
 for package in \
 	galculator \
+	intel-media-driver \
 	libjxl \
 	openbox \
 	pamixer \
