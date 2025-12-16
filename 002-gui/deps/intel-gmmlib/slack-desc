@@ -1,0 +1,12 @@
+            |-----handy-ruler------------------------------------------------------|
+intel-gmmlib: intel-gmmlib (The Intel(R) Graphics Memory Management Library)
+intel-gmmlib:
+intel-gmmlib: The Intel(R) Graphics Memory Management Library provides device
+intel-gmmlib: specific and buffer management for the Intel(R) Graphics Compute
+intel-gmmlib: Runtime for OpenCL(TM) and the Intel(R) Media Driver for VAAPI.
+intel-gmmlib:
+intel-gmmlib: https://github.com/intel/gmmlib/
+intel-gmmlib:
+intel-gmmlib:
+intel-gmmlib:
+intel-gmmlib:
