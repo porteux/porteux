@@ -103,6 +103,7 @@ rm $MODULEPATH/packages/cxxopts*.txz
 # gui extras
 for package in \
 	galculator \
+	intel-vaapi-driver \
 	intel-media-driver \
 	libjxl \
 	openbox \
@@ -141,8 +142,7 @@ rm usr/lib${SYSTEMBITS}/dri/i965*
 rm usr/lib${SYSTEMBITS}/dri/nouveau_vieux*
 rm usr/lib${SYSTEMBITS}/dri/r200*
 rm usr/lib${SYSTEMBITS}/dri/radeon_dri*
-rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
-rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
+rm usr/lib${SYSTEMBITS}/*OpenCL*
 rm -fr var/lib/pkgtools
 rm -f var/log/packages
 rm -fr var/log/pkgtools
