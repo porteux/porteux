@@ -74,7 +74,7 @@ for package in \
 	mate-common \
 	mate-polkit \
 ; do
-SESSIONTEMPLATE=cinnamon sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+SESSIONTEMPLATE=cinnamon ICONTHEME=Yaru-blue sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
