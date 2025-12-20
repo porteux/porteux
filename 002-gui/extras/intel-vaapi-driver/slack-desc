@@ -1,12 +1,9 @@
                   |-----handy-ruler------------------------------------------------------|
-intel-vaapi-driver: intel-vaapi-driver (The Intel(R) Media Driver for VAAPI)
+intel-vaapi-driver: VA-API (Video Acceleration API) user mode driver for Intel GEN
 intel-vaapi-driver:
-intel-vaapi-driver: The Intel(R) Media Driver for VAAPI is a new VA-API (Video
-intel-vaapi-driver: Acceleration API) user mode driver supporting hardware accelerated
-intel-vaapi-driver: decoding, encoding, and video post processing for GEN based graphics
-intel-vaapi-driver: hardware.
+intel-vaapi-driver: VA-API is an open-source library and API specification, which
+intel-vaapi-driver: provides access to graphics hardware acceleration capabilities for
+intel-vaapi-driver: video processing.
 intel-vaapi-driver:
-intel-vaapi-driver: https://github.com/irql-notlessorequal/intel-vaapi-driver
-intel-vaapi-driver:
-intel-vaapi-driver:
+intel-vaapi-driver: Homepage: https://github.com/irql-notlessorequal/intel-vaapi-driver
 intel-vaapi-driver:
