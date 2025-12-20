@@ -102,9 +102,11 @@ rm $MODULEPATH/packages/cxxopts*.txz
 
 # gui extras
 for package in \
+	flatpak \
 	galculator \
-	intel-vaapi-driver \
 	intel-media-driver \
+	intel-vaapi-driver \
+	labwc \
 	libjxl \
 	openbox \
 	pamixer \
@@ -112,7 +114,6 @@ for package in \
 	wlr-randr \
 	wlrctl \
 	xdg-desktop-portal \
-	flatpak \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null

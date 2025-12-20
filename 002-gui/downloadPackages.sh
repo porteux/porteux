@@ -45,9 +45,9 @@ DownloadPackage "gparted" &
 DownloadPackage "graphene" & # required by libgstopengl
 DownloadPackage "graphite2" &
 DownloadPackage "gsl" &
+wait
 DownloadPackage "gst-plugins-base" & # required by bluetooth audio
 DownloadPackage "gstreamer" & # required by bluetooth audio
-wait
 DownloadPackage "gtkmm3" &
 DownloadPackage "gvfs" &
 DownloadPackage "harfbuzz" &
@@ -55,7 +55,6 @@ DownloadPackage "hicolor-icon-theme" &
 DownloadPackage "iceauth" &
 DownloadPackage "json-c" &
 DownloadPackage "json-glib" &
-DownloadPackage "labwc" &
 DownloadPackage "lame" &
 wait
 DownloadPackage "lcms" &
