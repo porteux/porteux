@@ -3,7 +3,7 @@
 SetFlags() {
 	MODULENAME="$1"
 
-	export KERNELVERSION="6.18.1"
+	export KERNELVERSION="6.18.2"
 	export ARCHITECTURELEVEL="x86-64-v2"
 	export GCCFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -flto=auto -fno-ident -fmodulo-sched -floop-parallelize-all -fuse-linker-plugin"
 	export LDFLAGS="-Wl,--gc-sections -Wl,--as-needed -Wl,--build-id=none -Wl,-O2 -Wl,--strip-all -Wl,--sort-section=alignment -Wl,-z,pack-relative-relocs -Wl,-sort-common"
