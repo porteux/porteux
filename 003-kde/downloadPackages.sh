@@ -4,7 +4,6 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 GenerateRepositoryUrls
 
 DownloadPackage "accountsservice" &
-DownloadPackage "appstream" &
 DownloadPackage "cfitsio" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "egl-wayland" &
@@ -14,9 +13,7 @@ wait
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
-DownloadPackage "libfyaml" &
 DownloadPackage "libdmtx" &
-DownloadPackage "libproxy" &
 DownloadPackage "libqaccessibilityclient" &
 wait
 DownloadPackage "libqalculate" &
@@ -30,6 +27,7 @@ wait
 
 ### packages that require specific striping
 
+DownloadPackage "appstream" & # required by main menu
 DownloadPackage "gcc-gfortran" & # required by spectable
 DownloadPackage "opencv" & # required by spectable
 DownloadPackage "phonon" & # required by dolphin and others

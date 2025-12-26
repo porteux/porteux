@@ -14,14 +14,6 @@ wait
 [ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
 wait
 
-### slackware current only packages
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "libappindicator" &
-	DownloadPackage "libindicator" &
-	wait
-fi
-
 ### script clean up
 
 rm FILE_LIST

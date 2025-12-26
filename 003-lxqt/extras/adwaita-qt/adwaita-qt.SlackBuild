@@ -23,7 +23,7 @@ done
 
 cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=release \
-	-DCMAKE_C_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
 	-DUSE_QT6=true

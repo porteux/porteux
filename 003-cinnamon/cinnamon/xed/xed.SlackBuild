@@ -14,10 +14,12 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
-VERSION=${info#* }
+#info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
+#VERSION=${info#* }
+VERSION=3.8.5
+wget https://github.com/linuxmint/xed/archive/refs/tags/${VERSION}.tar.gz
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xvf *.tar.?z
 cd $PRGNAM-$VERSION
 
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build

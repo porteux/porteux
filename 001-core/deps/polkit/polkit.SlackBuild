@@ -21,7 +21,6 @@ tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 patch -p0 < $CWD/dont-set-wheel-group-as-admin.patch
-patch -p0 < $CWD/02_fix-polkitbackend-elogind-include.patch
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \

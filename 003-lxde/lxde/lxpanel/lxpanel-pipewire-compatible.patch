@@ -8,17 +8,16 @@
  #include <libfm/fm-gtk.h>
  
  #include "plugin.h"
-@@ -920,6 +921,26 @@
+@@ -920,6 +921,25 @@
      vol->mute_check_handler = g_signal_connect(vol->mute_check, "toggled", G_CALLBACK(volumealsa_popup_mute_toggled), vol);
  }
  
 +static int *wait_for_pipewire(void *arg)
 +{
 +    VolumeALSAPlugin *vol = (VolumeALSAPlugin *)arg;
-+    asound_initialize(vol);
 +
 +    int number_attempts = 50;
-+    while (number_attempts > 0 &&  0 != system("lsof | grep libwireplumber-module-logind > /dev/null"))
++    while (number_attempts > 0 && 0 != system("lsof | grep libwireplumber-module-logind > /dev/null"))
 +    {
 +        number_attempts--;
 +        usleep(200 * 1000);

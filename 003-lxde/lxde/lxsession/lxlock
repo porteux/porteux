@@ -1,0 +1,28 @@
+#!/bin/sh
+# Try to lock the screen with these applications (in this order):
+
+if which dm-tool >/dev/null 2>&1; then
+	dm-tool switch-to-greeter
+elif pidof light-locker >/dev/null; then
+	light-locker-command -l >/dev/null 2>&1
+elif pidof xscreensaver >/dev/null; then
+	xscreensaver-command -lock >/dev/null 2>&1
+elif pidof gnome-screensaver >/dev/null; then
+	gnome-screensaver-command --lock
+elif which slock >/dev/null 2>&1; then
+	slock &
+elif which xlock >/dev/null 2>&1; then
+	xlock $*
+elif which i3lock >/dev/null 2>&1; then
+	i3lock
+elif which slimlock >/dev/null 2>&1; then
+	slimlock
+elif which xtrlock >/dev/null 2>&1; then
+	xtrlock
+elif which xsecurelock >/dev/null 2>&1; then
+	xsecurelock
+else
+	xscreensaver -nosplash >/dev/null 2>&1 &
+	xscreensaver-command -lock >/dev/null 2>&1
+fi
+exit 0

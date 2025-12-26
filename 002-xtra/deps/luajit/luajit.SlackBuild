@@ -19,8 +19,8 @@ VERSION=$(date -r . +%Y%m%d)
 
 sed -i -e '/-DLUAJIT_ENABLE_LUA52COMPAT/s/^#//' src/Makefile
 
-CFLAGS="${GCCFLAGS/ -fno-unwind-tables -fno-asynchronous-unwind-tables/} -ffat-lto-objects" \
-CXXFLAGS="${GCCFLAGS/ -fno-unwind-tables -fno-asynchronous-unwind-tables/} -fvisibility-inlines-hidden" \
+CFLAGS="${GCCFLAGS/-fno-unwind-tables -fno-asynchronous-unwind-tables/} -ffat-lto-objects" \
+CXXFLAGS="${GCCFLAGS/-fno-unwind-tables -fno-asynchronous-unwind-tables/} -fvisibility-inlines-hidden" \
 
 make -j${NUMBERTHREADS} Q= PREFIX=/usr INSTALL_LIB=/usr/lib${SYSTEMBITS}
 make Q= PREFIX=/usr INSTALL_LIB=${PKG}/usr/lib${SYSTEMBITS} install DESTDIR=${PKG}

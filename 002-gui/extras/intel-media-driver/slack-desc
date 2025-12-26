@@ -1,0 +1,12 @@
+                  |-----handy-ruler------------------------------------------------------|
+intel-media-driver: intel-media-driver (The Intel(R) Media Driver for VAAPI)
+intel-media-driver:
+intel-media-driver: The Intel(R) Media Driver for VAAPI is a new VA-API (Video
+intel-media-driver: Acceleration API) user mode driver supporting hardware accelerated
+intel-media-driver: decoding, encoding, and video post processing for GEN based graphics
+intel-media-driver: hardware.
+intel-media-driver:
+intel-media-driver: https://github.com/intel/media-driver/
+intel-media-driver:
+intel-media-driver:
+intel-media-driver:

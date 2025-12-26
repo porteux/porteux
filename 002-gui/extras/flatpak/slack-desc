@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+flatpak: flatpak (linux application sandboxing and distribution framework)
+flatpak:
+flatpak: Flatpak is a system for building, distributing, and running
+flatpak: sandboxed desktop applications on Linux.
+flatpak: Flatpak can be used by all kinds of desktop applications, and aims
+flatpak: to be as agnostic as possible regarding how applications are built.
+flatpak: While Flatpak only runs on Linux, it can be used by applications
+flatpak: that target other operating systems, as well as those that are
+flatpak: Linux-specific.
+flatpak:
+flatpak: See also: https://flatpak.org/

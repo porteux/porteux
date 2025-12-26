@@ -29,21 +29,10 @@ DownloadFromSlackware
 ### packages outside slackware repository
 
 installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
+installpkg $MODULEPATH/packages/lua*.txz > /dev/null 2>&1
 
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
-
-if [ $SLACKWAREVERSION != "current" ]; then
-	currentPackage=meson
-	sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	upgradepkg --install-new --reinstall $MODULEPATH/packages/${currentPackage}-*.txz
-	rm -fr $MODULEPATH/${currentPackage}
-	rm $MODULEPATH/packages/meson-*.txz
-else
-	currentPackage=rpm
-	sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	rm -fr $MODULEPATH/${currentPackage}
-fi
 
 # required to build procps-ng
 installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
@@ -64,6 +53,7 @@ done
 for package in \
 	fastfetch \
 	7zip \
+	rpm \
 	procps-ng \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
@@ -77,40 +67,38 @@ installpkg $MODULEPATH/packages/zstd*.txz
 
 ## packages that require specific stripping
 
-if [ $SLACKWAREVERSION == "current" ]; then
-	currentPackage=avahi
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	mv ../packages/${currentPackage}-[0-9]* .
-	packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-	ROOT=./ installpkg ${currentPackage}-*.txz
-	mkdir ${currentPackage}-stripped
-	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped/
-	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped/
-	cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped/
-	cd ${currentPackage}-stripped
-	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-	rm -fr $MODULEPATH/${currentPackage}
+currentPackage=avahi
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}-[0-9]* .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped/
+cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped/
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
-	currentPackage=glibc
-	mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-	mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-	packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-	ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
-	rm usr/include/gnu/*-32.h
-	rm usr/libexec/getconf/*ILP32*
-	rm var/log/packages
-	rm var/log/scripts
-	rm var/log/setup
-	rm -fr lib/
-	rm -fr usr/lib/
-	rm -fr var/lib/pkgtools
-	rm -fr var/log/pkgtools
-	mkdir ${currentPackage}-stripped
-	rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
-	cd ${currentPackage}-stripped
-	makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-	rm -fr $MODULEPATH/${currentPackage}
-fi
+currentPackage=glibc
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}*.txz
+rm usr/include/gnu/*-32.h
+rm usr/libexec/getconf/*ILP32*
+rm var/log/packages
+rm var/log/scripts
+rm var/log/setup
+rm -fr lib/
+rm -fr usr/lib/
+rm -fr var/lib/pkgtools
+rm -fr var/log/pkgtools
+mkdir ${currentPackage}-stripped
+rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -153,7 +141,7 @@ currentPackage=binutils
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents usr/bin/ar ${currentPackage}-stripped/
 cp --parents usr/bin/strip ${currentPackage}-stripped/
@@ -167,7 +155,7 @@ currentPackage=fftw
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib${SYSTEMBITS}/libfftw3.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libfftw3f.* ${currentPackage}-stripped/
@@ -179,7 +167,7 @@ currentPackage=ntp
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/bin/ntpdate ${currentPackage}-stripped/
 cp --parents -P usr/sbin/ntpdate ${currentPackage}-stripped/
@@ -192,7 +180,7 @@ currentPackage=openldap
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents etc/openldap/ldap.conf.new ${currentPackage}-stripped/
 mv ${currentPackage}-stripped/etc/openldap/ldap.conf.new ${currentPackage}-stripped/etc/openldap/ldap.conf
@@ -265,13 +253,6 @@ cp -s python3 python > /dev/null 2>&1
 cd $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 cp -s libxml2.so libxml2.so.2 > /dev/null 2>&1
 
-### set CPU governor to performance -- only in stable because current is already doing it
-
-if [ $SLACKWAREVERSION != "current" ]; then
-	cd $MODULEPATH/packages
-	patch -p0 < $SCRIPTPATH/extras/rc.cpufreq.patch
-fi
-
 ### update version
 
 echo "PorteuX-v${PORTEUXVERSION}-${PORTEUXBUILD}" > $MODULEPATH/packages/etc/porteux-version
@@ -281,7 +262,7 @@ sed -i "s|^VERSION=.*|VERSION=\"${PORTEUXVERSION}\"|" $MODULEPATH/packages/etc/o
 sed -i "s|^VERSION_ID=.*|VERSION_ID=${PORTEUXVERSION}|" $MODULEPATH/packages/etc/os-release
 sed -i "s|^PRETTY_NAME=.*|PRETTY_NAME=\"PorteuX ${PORTEUXVERSION} ${PORTEUXBUILD}\"|" $MODULEPATH/packages/etc/os-release
 sed -i "s|^CPE_NAME=.*|CPE_NAME=\"cpe:/o:porteux:porteux_linux:${PORTEUXVERSION}\"|" $MODULEPATH/packages/etc/os-release
-sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUXVERSION}|" $SCRIPTPATH/../boot/boot/syslinux/help.txt
+sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUXVERSION}|" $SCRIPTPATH/../iso/boot/syslinux/help.txt
 
 ### set permissions
 
@@ -318,6 +299,7 @@ rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
 rm usr/dict
 rm usr/lib${SYSTEMBITS}/libicutest.*
+rm usr/lib${SYSTEMBITS}/libqgpgme.so*
 rm usr/libexec/samba/rpcd_*
 rm usr/share/i18n/locales/C
 rm usr/share/pixmaps/wpa_gui.png
@@ -328,6 +310,7 @@ rm -fr lib${SYSTEMBITS}/pkgconfig
 rm -fr lib/systemd
 rm -fr mnt/*
 rm -fr usr/etc
+rm -fr usr/include/qgpgme-qt5*
 rm -fr usr/lib${SYSTEMBITS}/guile
 rm -fr usr/lib${SYSTEMBITS}/krb*/plugins
 rm -fr usr/lib${SYSTEMBITS}/locale/C.utf8
@@ -338,7 +321,6 @@ rm -fr usr/lib/ldscripts
 rm -fr usr/lib/modprobe.d
 rm -fr usr/lib*/python*/__phello__
 rm -fr usr/lib*/python*/config-*-x86_64-linux-gnu
-rm -fr usr/lib*/python*/ensurepip
 rm -fr usr/lib*/python*/idlelib
 rm -fr usr/lib*/python*/lib2to3
 rm -fr usr/lib*/python*/site-packages/demo
@@ -389,14 +371,6 @@ rm -fr usr/share/terminfo/z
 rm -fr usr/x86_64-slackware-linux
 rm -fr var/mail
 rm -fr var/spool/mail
-
-if [ $SLACKWAREVERSION != "current" ]; then
-	rm usr/lib${SYSTEMBITS}/libqgpgmeqt6.so*
-	rm -fr usr/include/qgpgme-qt6*
-else
-	rm usr/lib${SYSTEMBITS}/libqgpgme.so*
-	rm -fr usr/include/qgpgme-qt5*
-fi
 
 find usr/lib${SYSTEMBITS}/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib${SYSTEMBITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +

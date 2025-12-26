@@ -1,9 +1,0 @@
-        |-----handy-ruler------------------------------------------------------|
-geoclue2: GeoClue
-geoclue2:
-geoclue2: Geoclue is a D-Bus service that provides location information. The
-geoclue2: primary goal of the Geoclue project is to make creating
-geoclue2: location-aware applications as simple as possible, while the
-geoclue2: secondary goal is to ensure that no application can access location
-geoclue2: information without explicit permission from user.
-geoclue2:

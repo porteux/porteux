@@ -1,0 +1,13 @@
+        |-----handy-ruler------------------------------------------------------|
+mozjs128: mozjs128 (Mozilla's JavaScript Engine)
+mozjs128:
+mozjs128: SpiderMonkey is Mozilla's JavaScript engine written in C/C++. It is
+mozjs128: used in various Mozilla products (including Firefox) and is available
+mozjs128: under MPL/GPL/LGPL tri-license.
+mozjs128:
+mozjs128: Homepage:
+mozjs128: https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey
+mozjs128:
+mozjs128:
+mozjs128:
+mozjs128:

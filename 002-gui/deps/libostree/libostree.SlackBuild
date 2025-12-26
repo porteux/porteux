@@ -1,0 +1,49 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=ostree
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(GetLatestVersionTagFromGithub "ostreedev" ${PRGNAM})
+wget https://github.com/ostreedev/${PRGNAM}/releases/download/${VERSION}/lib${PRGNAM}-${VERSION//[vV]}.tar.xz
+
+tar xfv lib${PRGNAM}-${VERSION//[vV]}.tar.?z*
+cd lib${PRGNAM}-${VERSION//[vV]}
+
+CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--sysconfdir=/etc \
+	--disable-installed-tests \
+	--disable-always-build-tests \
+	--disable-glibtest \
+	--disable-gtk-doc \
+	--disable-gtk-doc-html \
+	--disable-gtk-doc-pdf \
+	--disable-man \
+	--disable-man-html
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm -fr $PKG/usr/lib
+rm -fr $PKG/etc/ostree
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/lib${PRGNAM}-${VERSION//[vV]}-$ARCH-1_porteux.txz

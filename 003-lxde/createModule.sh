@@ -28,41 +28,24 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
-currentPackage=audacious
-sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=audacious-plugins
-sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=ffmpegthumbnailer
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 # required by lightdm
-installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
-currentPackage=lightdm
-SESSIONTEMPLATE=LXDE sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lightdm-gtk-greeter
-ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# temporary just to build engrampa
-currentPackage=mate-common
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-rm $MODULEPATH/packages/${currentPackage}*.txz
-
-currentPackage=xcape
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# lxde common
+for package in \
+	audacious \
+	audacious-plugins \
+	gpicview \
+	ffmpegthumbnailer \
+	lightdm \
+	lightdm-gtk-greeter \
+	mate-common \
+	xcape \
+; do
+SESSIONTEMPLATE=LXDE ICONTHEME=kora sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 # required from now on
 installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
@@ -88,12 +71,15 @@ done
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required by lxpanel
-installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
+installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
+
+# required by lxterminal
+installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
+rm $MODULEPATH/packages/icu4c*.txz
 
 # lxde packages
 for package in \
-	gpicview \
 	libfm-extra \
 	menu-cache \
 	libfm \
@@ -112,7 +98,7 @@ for package in \
 	lxpanel \
 ; do
 sh $SCRIPTPATH/lxde/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

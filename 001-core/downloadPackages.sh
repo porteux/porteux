@@ -8,6 +8,7 @@ DownloadPackage "aaa_terminfo" &
 DownloadPackage "acl" &
 DownloadPackage "acpid" &
 DownloadPackage "attr" &
+DownloadPackage "avahi" &
 DownloadPackage "bash" &
 DownloadPackage "bc" & # to perform arithmetic operations in bash
 DownloadPackage "bin" &
@@ -133,9 +134,11 @@ DownloadPackage "lmdb" &
 DownloadPackage "lm_sensors" &
 DownloadPackage "lsof" &
 DownloadPackage "lvm2" &
+DownloadPackage "lua" &
 DownloadPackage "lynx" &
 DownloadPackage "lz4" &
 DownloadPackage "lzip" &
+DownloadPackage "lzlib" &
 DownloadPackage "lzo" &
 DownloadPackage "mc" &
 DownloadPackage "mdadm" &
@@ -154,6 +157,7 @@ wait
 DownloadPackage "newt" &
 DownloadPackage "nfs-utils" &
 DownloadPackage "nghttp2" &
+DownloadPackage "nghttp3" &
 DownloadPackage "ntfs-3g" &
 DownloadPackage "openssh" &
 DownloadPackage "openssl" &
@@ -207,6 +211,7 @@ DownloadPackage "uring" &
 DownloadPackage "usb_modeswitch" &
 DownloadPackage "usbmuxd" &
 DownloadPackage "usbutils" &
+DownloadPackage "userspace-rcu" &
 DownloadPackage "utempter" &
 DownloadPackage "util-linux" &
 DownloadPackage "wget" &
@@ -225,20 +230,6 @@ wait
 ### only download if not present
 
 [ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
-
-### slackware specific version packages
-
-if [ $SLACKWAREVERSION != "current" ]; then
-	DownloadPackage "rpm" &
-	wait
-else
-	DownloadPackage "avahi" &
-	DownloadPackage "lua" &
-	DownloadPackage "lzlib" &
-	DownloadPackage "nghttp3" &
-	DownloadPackage "userspace-rcu" &
-	wait
-fi
 
 ### packages that require specific striping
 

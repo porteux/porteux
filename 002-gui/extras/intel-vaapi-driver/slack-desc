@@ -1,0 +1,9 @@
+                  |-----handy-ruler------------------------------------------------------|
+intel-vaapi-driver: VA-API (Video Acceleration API) user mode driver for Intel GEN
+intel-vaapi-driver:
+intel-vaapi-driver: VA-API is an open-source library and API specification, which
+intel-vaapi-driver: provides access to graphics hardware acceleration capabilities for
+intel-vaapi-driver: video processing.
+intel-vaapi-driver:
+intel-vaapi-driver: Homepage: https://github.com/irql-notlessorequal/intel-vaapi-driver
+intel-vaapi-driver:

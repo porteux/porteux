@@ -14,13 +14,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	VERSION="12.0.16.1"
-	wget https://github.com/FFmpeg/${PRGNAM}/releases/download/n${VERSION}/${PRGNAM}-${VERSION}.tar.gz
-else
-	info=$(DownloadLatestFromGithub "FFmpeg" ${PRGNAM})
-	VERSION=${info#* }
-fi
+info=$(DownloadLatestFromGithub "FFmpeg" ${PRGNAM})
+VERSION=${info#* }
 
 tar xvf ${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-$VERSION
