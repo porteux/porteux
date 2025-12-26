@@ -20,13 +20,11 @@ VERSION=$(date -r . +%Y%m%d)
 # this icon breaks our xzm icon, so we need to remove it
 rm ${PRGNAM}/apps/scalable/application.svg
 
-for theme in "${PRGNAM}" "${PRGNAM}-light" "${PRGNAM}-light-panel"; do
-    dest_dir="$PKG/usr/share/icons/${theme}"
-    mkdir -p "$dest_dir"
-    rm -f "${theme}/create-new-icon-theme.cache.sh"
-    cp -r "${theme}/"* "$dest_dir"
-    gtk-update-icon-cache -f "$dest_dir"
-done
+dest_dir="$PKG/usr/share/icons/${PRGNAM}"
+mkdir -p "$dest_dir"
+rm -f "${PRGNAM}/create-new-icon-theme.cache.sh"
+cp -r "${PRGNAM}/"* "$dest_dir"
+gtk-update-icon-cache -f "$dest_dir"
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
