@@ -14,8 +14,17 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "${PRGNAM}" ${PRGNAM})
-VERSION=${info#* }
+VERSION=$(GetLatestVersionTagFromGithub ${PRGNAM} ${PRGNAM})
+versions_to_ignore="${VERSION}"
+minor_version=$(echo "$VERSION" | cut -d. -f2)
+
+while (( ${minor_version} % 2 == 1 )); do
+	VERSION=$(GetLatestVersionTagFromGithub "${PRGNAM}" "${PRGNAM}" "${versions_to_ignore}|${VERSION}")
+	versions_to_ignore="${versions_to_ignore}|${VERSION}"
+	minor_version=$(echo "$VERSION" | cut -d. -f2)
+done
+
+wget https://github.com/${PRGNAM}/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
