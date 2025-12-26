@@ -253,11 +253,6 @@ cp -s python3 python > /dev/null 2>&1
 cd $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 cp -s libxml2.so libxml2.so.2 > /dev/null 2>&1
 
-### fix lua defines
-
-cd $MODULEPATH/packages
-patch -p0 < $SCRIPTPATH/deps/lua/lua.patch
-
 ### update version
 
 echo "PorteuX-v${PORTEUXVERSION}-${PORTEUXBUILD}" > $MODULEPATH/packages/etc/porteux-version
