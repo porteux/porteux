@@ -14,11 +14,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "mate-desktop" ${PRGNAM} "1.29")
-VERSION=${info#* }
+VERSION=$(GetLatestVersionTagFromGithub "mate-desktop" ${PRGNAM} "1.29")
+wget https://github.com/mate-desktop/atril/archive/refs/tags/${VERSION}.tar.gz -O ${PRGNAM}-$VERSION.tar.gz
 
 tar xvf ${PRGNAM}-$VERSION.tar.?z
-cd ${PRGNAM}-$VERSION
+cd ${PRGNAM}-${VERSION//[vV]}
 
 for i in $CWD/*.patch; do
 	patch -p0 < $i;
@@ -27,11 +27,16 @@ done
 sed -i "s|mate_desktop = dependency|#mate_desktop = dependency|g" meson.build
 sed -i "s|mate_desktop,|#mate_desktop,|g" shell/meson.build
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
-sed -i "s|subdir('test')|#subdir('test')|g" meson.build
+sed -i "s|subdir('test')|mathjax_directory = ''|g" meson.build
 
 sed -i '/^test_name =/,$d' backend/comics/meson.build
 sed -i "s|comicsdocument.atril-backend.in|comicsdocument.atril-backend.desktop.in|g" backend/comics/meson.build
 sed -i "s|'pixbuf.atril-backend.desktop.in'|'pixbufdocument.atril-backend.desktop.in'|g" backend/pixbuf/meson.build
+
+sed -i "s|^gtk_x11.*|gtk_x11 = dependency('', required: false)|g" properties/meson.build
+sed -i "s|^caja_extension.*|caja_extension = dependency('', required: false)|g" properties/meson.build
+
+sed -i "s|version: '1\.28.*|version: '${VERSION}',|g" meson.build
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
@@ -43,14 +48,13 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dintrospection=true \
-	-Dt1lib=true \
-	-Dpixbuf=true \
-	-Dcomics=true \
-	-Depub=false \
-	-Dxps=false \
+	-Dt1lib=enabled \
+	-Dpixbuf=enabled \
+	-Dcomics=enabled \
+	-Depub=disabled \
+	-Dxps=disabled \
 	-Dpreviewer=true \
-	-Dgtk_unix_print=true \
-	-Dmathjax-directory=/usr/share/mathjax
+	-Dgtk_unix_print=true
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
