@@ -44,6 +44,7 @@ GenericStrip() {
 	rm -fr usr/share/sounds
 	rm -fr usr/share/themes/HighContrast
 	rm -fr usr/share/vala
+	rm -fr usr/share/xdg-terminals
 	rm -fr usr/share/zsh
 	rm -fr usr/src
 	rm -fr var/lib/pkgtools/douninst.sh/
@@ -54,12 +55,15 @@ GenericStrip() {
 
 	find . -name '*.a' -delete
 	find . -name '*.c' -delete
+	find . -name '*.cpp' -delete
 	find . -name '*.cmake' -delete
 	find . -name '*.deps' -delete
 	find . -name '*.gir' -delete
 	find . -name '*.h' -delete
+	find . -name '*.hpp' -delete
 	find . -name '*.la' -delete
 	find . -name '*.m4' -delete
+	find . -name '*.mk' -delete
 	find . -name '*.o' -delete
 	find . -name '*.pc' -delete
 	find . -name '*.prl' -delete
