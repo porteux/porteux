@@ -34,6 +34,11 @@ fi
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
 rm *.t?z
 
+### fix cmake findLua
+
+cd $MODULEPATH/packages
+patch -p0 < $SCRIPTPATH/extras/cmake/findlua-fix.patch
+
 ### copy language files to 08-multilanguage
 
 CopyToMultiLanguage

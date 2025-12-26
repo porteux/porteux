@@ -29,6 +29,7 @@ DownloadFromSlackware
 ### packages outside slackware repository
 
 installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
+installpkg $MODULEPATH/packages/lua*.txz > /dev/null 2>&1
 
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
@@ -251,6 +252,11 @@ cd $MODULEPATH/packages/usr/bin
 cp -s python3 python > /dev/null 2>&1
 cd $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 cp -s libxml2.so libxml2.so.2 > /dev/null 2>&1
+
+### fix lua defines
+
+cd $MODULEPATH/packages
+patch -p0 < $SCRIPTPATH/deps/lua/lua.patch
 
 ### update version
 
