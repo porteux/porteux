@@ -1,0 +1,12 @@
+     |-----handy-ruler------------------------------------------------------|
+labwc: labwc (Lab Wayland Compositor)
+labwc:
+labwc: Labwc is a wlroots-based window-stacking compositor for Wayland,
+labwc: inspired by openbox. It is lightweight and independent with a focus on
+labwc: simply stacking windows well and rendering some window decorations. It
+labwc: takes a no-bling/frills approach and says no to features such as
+labwc: animations. It relies on clients for panels, screenshots, wallpapers
+labwc: and so on to create a full desktop environment.
+labwc:
+labwc: Homepage: https://github.com/labwc/labwc
+labwc:

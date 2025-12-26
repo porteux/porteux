@@ -12,12 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	VERSION=1.2.7
-else
-	VERSION=$(curl -s https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/tags | grep "/releases" | cut -d '>' -f 2 | cut -d '<' -f 1 | grep -viE 'alpha|beta|rc' | cut -d ' ' -f 1 | sort -Vr | head -1)
-fi
-
+VERSION=$(curl -s https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/tags | grep "/releases" | cut -d '>' -f 2 | cut -d '<' -f 1 | grep -viE 'alpha|beta|rc' | cut -d ' ' -f 1 | sort -Vr | head -1)
 wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xfv $PRGNAM-$VERSION.tar.?z*

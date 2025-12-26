@@ -18,11 +18,7 @@ wget https://gitlab.freedesktop.org/xorg/lib/${PRGNAM,,}/-/archive/${PRGNAM}-${V
 tar xfv ${PRGNAM,,}-$PRGNAM-$VERSION.tar.?z*
 cd ${PRGNAM,,}-$PRGNAM-$VERSION
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	sed -i "s|AC_PREREQ|#AC_PREREQ|g" configure.ac
-fi
-
-CFLAGS="${GCCFLAGS/ -flto=auto/}" \
+CFLAGS="${GCCFLAGS/-flto=auto/}" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

@@ -20,10 +20,6 @@ VERSION=${info#* }
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	sed -i "s|'>=1.3.2'|'>=1.2.2'|g" meson.build
-fi
-
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
 meson setup \

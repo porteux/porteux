@@ -48,11 +48,15 @@ wait
 
 ### packages that require specific striping
 
+DownloadPackage "ibus" &
 DownloadPackage "gettext-tools" & # required by extensions
 wait
 
 ### temporary packages only for building
 
+DownloadPackage "cbindgen" & # required to build mozjs
+
+DownloadPackage "icu4c" & # required by gnome-terminal (only for safety in case it gets updated in Slackware repo)
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
 DownloadPackage "libxklavier" &

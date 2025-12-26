@@ -6,16 +6,17 @@ Latest release direct link: https://github.com/porteux/porteux/releases/latest
 
 PorteuX is a Linux distro based on Slackware, inspired by Slax and Porteus and available to the public for free. Its main goal is to be super fast, small, portable, modular and immutable (if the user wants so).
 
-It's unique in many ways — it's not just a repackaging of programs on top of Slackware. For a list of its highlights, access the [Main Features](https://github.com/porteux/porteux/wiki/Main-Features) wiki page.
+It's unique in many ways; not just a repackaging of programs on top of Slackware. For a list of its highlights, access the [Main Features](https://github.com/porteux/porteux/wiki/Main-Features) wiki page.
 
-It's already pre-configured for basic usage, including lightweight applications for each of the 7 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, Nvidia drivers, Wine, office suite, multilib (32-bit compatibility), messengers, emulators, etc.
+It's already pre-configured for basic usage, including lightweight applications for each of the 7 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, NVIDIA drivers, Wine, office suite, multilib (32-bit compatibility), messengers, emulators, etc.
 
-Out of the box, PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or Nvidia cards (for Nvidia cards it's required to download the Nvidia driver from the app store).
+Out of the box, PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or NVIDIA cards (for Nvidia cards it's required to download the NVIDIA driver from the app store).
 
 ## How To Use
 
-PorteuX is provided in 2 main versions based on Slackware 64-bit packages: stable (safer) and current/rolling (bleeding edge). After choosing which main version you want, you should choose which desktop environment you want and [download the ISO accordingly](https://github.com/porteux/porteux/releases/latest): <br />
+PorteuX is based on Slackware 64-bit current/rolling (bleeding edge). The ISOs are available in 8 spins: <br />
 . Cinnamon<br />
+. COSMIC<br />
 . GNOME<br />
 . KDE<br />
 . LXDE<br />
@@ -27,13 +28,17 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 To use PorteuX in a language other than English, download the multilanguage package and use the PorteuX Language Switcher application to choose the desired language.
 
-To download a Slackware package that is not present in PorteuX and convert it to a .xzm module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
+To read Asian characters, download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module. Some PDFs may also require `poppler-data` package, via `getpkg` command.
 
-To build anything inside PorteuX, it's recommended to download and activate the `05-devel` xzm module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate the `06-crippled-sources` xzm module.
+To run Windows applications inside PorteuX, you can find both Wine and Multilib Lite XZM modules in the app store. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
 
-To run Windows applications inside PorteuX, you can find both Wine and Multilib Lite xzm modules in the app store. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
+## Installing new applications or packages
 
-To read Asian characters, download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module. Some PDFs may also require `poppler-data` package, also available via `getpkg` command.
+To install new applications that are not in the App Store or in the Slackware repository, AppImage format is recommended. If an application is not available in AppImage, Flatpak is avaialable by default and can be used to download and install any software available in Flatpak repositories.
+
+To download a Slackware package that is not present in PorteuX and convert it to a XZM module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). After the XZM module is created, double-click or call `activate [moduleName]` to activate it. It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
+
+To build anything inside PorteuX, it's recommended to download and activate the `05-devel` XZM module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate the `06-crippled-sources` XZM module.
 
 ## Default Username and Password
 
@@ -60,7 +65,7 @@ Sources:
 [ClearLinux40520](https://browser.geekbench.com/v6/cpu/4073056)
 [PorteuX0.9](https://browser.geekbench.com/v6/cpu/4087178)
 
-All this performance benefit is achieved without providing ancient software. This means that the kernel, desktop environments and packages are usually as new as possible in the current/rolling release.
+All this performance benefit is achieved without providing ancient software. This means that the kernel, desktop environments and packages are usually as new as possible.
 
 ## Enable OpenCL support (required by applications like DaVinci Resolve)
 
@@ -74,7 +79,7 @@ This only needs to be done once, as these modules will be activated automaticall
 
 ## Building
 
-PorteuX can be built in a live session of Slackware 64-bit or PorteuX 64-bit. At the moment, the main scripts do not generate ISOs, but only the xzm files for each module (000-kernel, 001-core, 002-gui, 002-xtra, 003-desktop-environment, etc).
+PorteuX can be built in a live session of Slackware 64-bit or PorteuX 64-bit. At the moment, the main scripts do not generate ISOs, but only the XZM files for each module (000-kernel, 001-core, 002-gui, 002-xtra, 003-desktop-environment, etc).
 
 To build PorteuX, run the `createModule.sh` script as root, in the exact folder order as described: <br />
 1. 000-kernel<br />
@@ -111,4 +116,4 @@ ncmprhnsbl (@porteus)<br />
 neko (@porteus)<br />
 patrick volkerding (@slackware)<br />
 phantom (@porteus)<br />
-tomáš matějíček (@slax)<br />
+tomas matejicek (@slax)<br />

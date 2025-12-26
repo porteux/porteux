@@ -35,7 +35,7 @@ sed -i "s|subdir('man')|#subdir('man')|g" meson.build
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -52,7 +52,7 @@ install -Dm644 "$CWD/audacious-enqueue.desktop" $PKG/usr/share/applications/auda
 sed -i "s|SingleMainWindow=true||g" $PKG/usr/share/applications/audacious.desktop
 
 mkdir -p $PKG/install
-cat $CWD/${PRGNAM}-slack-desc > $PKG/install/slack-desc
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$TOOLKIT-$VERSION-$ARCH-1_porteux.txz
