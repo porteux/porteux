@@ -34,6 +34,9 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+# workaround to fix screensaver not working -- https://github.com/flatpak/xdg-desktop-portal-gtk/issues/472
+sed -i "s|org.freedesktop.impl.portal.Inhibit;||g" $PKG/usr/share/xdg-desktop-portal/portals/gtk.portal
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
