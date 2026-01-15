@@ -18,6 +18,10 @@ VERSION=`git describe | cut -d- -f1`
 
 ./autogen.sh
 
+for i in $CWD/*.patch; do
+	patch -p0 < $i;
+done
+
 CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
 ./configure \
 	--prefix=/usr \
