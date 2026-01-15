@@ -1,0 +1,41 @@
+From 4aea3d0d831959ba0af7b9a4893af3f69652f4f6 Mon Sep 17 00:00:00 2001
+From: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>
+Date: Mon, 15 Dec 2025 19:46:18 +0000
+Subject: [PATCH] Fix AVC decode resolution check for non-macroblock-aligned
+ surfaces
+
+The previous check compared surface area (width * height) against coded
+picture area, which incorrectly failed for surfaces with dimensions that
+are not aligned to macroblock boundaries (16 pixels).
+
+For example, a video with resolution 1080x2316 would have coded dimensions
+of 1088x2320 (macroblock-aligned). The area comparison would fail:
+  1080 * 2316 = 2,501,280 < 1088 * 2320 = 2,524,160
+
+This fix aligns the surface dimensions to macroblock boundaries before
+comparison, ensuring that surfaces with valid capacity are accepted.
+
+Fixes: https://github.com/intel/media-driver/issues/1972
+Co-Authored-By: milind@cognition.ai <milind@cognition.ai>
+---
+ .../agnostic/gen12/codec/hal/codechal_decode_avc_g12.cpp   | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/media_driver/agnostic/gen12/codec/hal/codechal_decode_avc_g12.cpp b/media_driver/agnostic/gen12/codec/hal/codechal_decode_avc_g12.cpp
+index afec1b4f08..1fc2597d10 100644
+--- a/media_driver/agnostic/gen12/codec/hal/codechal_decode_avc_g12.cpp
++++ b/media_driver/agnostic/gen12/codec/hal/codechal_decode_avc_g12.cpp
+@@ -257,7 +257,12 @@ MOS_STATUS CodechalDecodeAvcG12::ErrorDetectAndConceal()
+     }
+ #endif
+ 
+-    if ((uint32_t)(m_destSurface.dwWidth * m_destSurface.dwHeight) < (m_width * m_height))
++    // Align surface dimensions to macroblock boundaries (16 pixels) for proper comparison
++    // with coded dimensions (m_width/m_height are already macroblock-aligned from pic params)
++    uint32_t alignedSurfWidth  = MOS_ALIGN_CEIL(m_destSurface.dwWidth, CODECHAL_MACROBLOCK_WIDTH);
++    uint32_t alignedSurfHeight = MOS_ALIGN_CEIL(m_destSurface.dwHeight, CODECHAL_MACROBLOCK_HEIGHT);
++
++    if (alignedSurfWidth < m_width || alignedSurfHeight < m_height)
+     {
+         // Return an error when the output size is insufficient for AVC decoding
+         CODECHAL_DECODE_ASSERTMESSAGE("Incorrect decode output allocation.")
