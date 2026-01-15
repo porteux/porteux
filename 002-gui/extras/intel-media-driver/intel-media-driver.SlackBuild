@@ -20,6 +20,10 @@ VERSION=${info#* }
 tar xvf *.tar.?z
 cd media-driver-intel-media-${VERSION}
 
+for i in $CWD/*.patch; do
+	patch -p1 < $i
+done
+
 cmake -B build -S . \
 	-G Ninja \
     -DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
