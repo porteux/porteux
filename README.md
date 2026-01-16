@@ -24,7 +24,7 @@ PorteuX is based on Slackware 64-bit current/rolling (bleeding edge). The ISOs a
 . MATE<br />
 . Xfce<br />
 
-PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run from the `boot` folder either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's that simple. Please avoid ISO installer applications like Rufus or Etcher because by default they set the bootable unit to be read-only. More details can be found in the [/boot/docs/install.txt](https://github.com/porteux/porteux/blob/main/boot/boot/docs/install.txt) file in the ISO.
+PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run from the `boot` folder either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's that simple. Please avoid ISO installer applications like Rufus or Etcher because by default they set the bootable unit to be read-only. More details can be found in the [/boot/docs/install.txt](https://github.com/porteux/porteux/blob/main/iso/boot/docs/install.txt) file in the ISO.
 
 To use PorteuX in a language other than English, download the multilanguage package and use the PorteuX Language Switcher application to choose the desired language.
 
