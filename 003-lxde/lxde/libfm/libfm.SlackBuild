@@ -21,6 +21,22 @@ sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FIL
 sed -i "s|g_file_info_get_size(inf)|g_file_info_get_attribute_uint64 (inf, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/job/fm-file-ops-job.c
 sed -i "s|g_file_info_get_size(info)|g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE)|g" src/modules/vfs-search.c
 
+sed -i "s|g_file_info_get_is_symlink(file_info)|g_file_info_get_attribute_boolean(file_info, G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK)|g" src/modules/vfs-search.c
+sed -i "s|g_file_info_get_is_symlink(inf)|g_file_info_get_attribute_boolean(inf, G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK)|g" src/base/fm-file-info.c
+
+sed -i "s|g_file_info_get_is_hidden(file_info)|g_file_info_get_attribute_boolean (file_info, G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN)|g" src/modules/vfs-search.c
+sed -i "s|g_file_info_get_is_hidden(info)|g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN)|g" src/modules/vfs-search.c
+sed -i "s|g_file_info_get_is_hidden(inf)|g_file_info_get_attribute_boolean (inf, G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN)|g" src/base/fm-file-info.c
+
+sed -i "s|g_file_info_get_is_backup(inf)|g_file_info_get_attribute_boolean (inf, G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP)|g" src/base/fm-file-info.c
+
+sed -i "s|g_file_info_get_content_type(info)|g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE)|g" src/modules/vfs-search.c
+sed -i "s|g_file_info_get_content_type(inf)|g_file_info_get_attribute_string (inf, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE)|g" src/base/fm-file-info.c
+
+sed -i "s|g_file_info_get_edit_name(inf)|g_file_info_get_attribute_byte_string (inf, G_FILE_ATTRIBUTE_STANDARD_NAME)|g" src/job/fm-file-info-job.c
+sed -i "s|g_file_info_get_edit_name(inf)|g_file_info_get_attribute_byte_string (inf, G_FILE_ATTRIBUTE_STANDARD_NAME)|g" src/gtk/fm-path-entry.c
+sed -i "s|g_file_info_get_edit_name(inf)|g_file_info_get_attribute_byte_string (inf, G_FILE_ATTRIBUTE_STANDARD_NAME)|g" src/base/fm-file-info.c
+
 ./autogen.sh
 
 CFLAGS="$GCCFLAGS -ffat-lto-objects -Wno-error=incompatible-pointer-types" \
