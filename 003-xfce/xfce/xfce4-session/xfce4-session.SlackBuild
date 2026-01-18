@@ -31,16 +31,30 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-./autogen.sh \
-	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
-	--sysconfdir=/etc \
-	--disable-static \
-	--disable-debug \
-	--build=$ARCH-porteux-linux
+if [ -f autogen.sh ]; then
+	CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+	./autogen.sh \
+		--prefix=/usr \
+		--libdir=/usr/lib${SYSTEMBITS} \
+		--sysconfdir=/etc \
+		--disable-static \
+		--disable-debug \
+		--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+	make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+else
+	mkdir build && cd build
+	CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+	meson setup \
+		--prefix=/usr \
+		--buildtype=release \
+		--libdir=/usr/lib${SYSTEMBITS} \
+		--libexecdir=/usr/libexec \
+		--sysconfdir=/etc \
+		--localstatedir=/var
+
+	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+fi
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
