@@ -205,10 +205,6 @@ rm usr/lib${SYSTEMBITS}/libsoup-gnome*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
 rm usr/share/applications/org.gnome.Vte*.desktop
-rm usr/share/applications/xfce4-file-manager.desktop
-rm usr/share/applications/xfce4-mail-reader.desktop
-rm usr/share/applications/xfce4-terminal-emulator.desktop
-rm usr/share/applications/xfce4-web-browser.desktop
 rm usr/share/backgrounds/xfce/xfce-leaves.svg
 rm usr/share/backgrounds/xfce/xfce-light.svg
 rm usr/share/backgrounds/xfce/xfce-mouserace.svg
