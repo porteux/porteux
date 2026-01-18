@@ -380,13 +380,9 @@ find usr/lib${SYSTEMBITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +
 mv $MODULEPATH/packages/lib${SYSTEMBITS}/libc.so* $MODULEPATH/
 mv $MODULEPATH/packages/lib${SYSTEMBITS}/libc-* $MODULEPATH/
 GenericStrip
+AggressiveStrip
 mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib${SYSTEMBITS}
 mv $MODULEPATH/libc-* $MODULEPATH/packages/lib${SYSTEMBITS}
-
-# move out things that don't support aggressive stripping
-mv $MODULEPATH/packages/lib${SYSTEMBITS} $MODULEPATH/
-AggressiveStrip
-mv $MODULEPATH/lib${SYSTEMBITS} $MODULEPATH/packages/
 
 ### copy cache files
 
