@@ -12,21 +12,20 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-fileName=$(curl -s $SOURCEREPOSITORY/l/ffmpeg/ | grep -oP '<a href="\K[^"]+' | grep ffmpeg- | head -n1)
-BUILDPARAMS="$CLANGFLAGS -ffat-lto-objects -Wno-error=int-conversion -Wno-error=incompatible-pointer-types"
+major_version=$(curl -s $REPOSITORY/l/ | grep ffmpeg | cut -d '"' -f 8 | cut -d '.' -f 1 | cut -d '-' -f 2 | head -n1)
+filename=$(curl -s https://ffmpeg.org/releases/ | grep ffmpeg-${major_version} | cut -d '>' -f 2 | grep .xz\" | cut -d \" -f 2 | sort -V -r | head -1)
 
-wget https://ffmpeg.org/releases/${fileName}
-VERSION=$(echo ${fileName} | cut -d '-' -f 2 | rev | cut -d '.' -f 3- | rev)
+wget https://ffmpeg.org/releases/${filename}
+VERSION=$(echo ${filename} | cut -d '-' -f 2 | rev | cut -d '.' -f 3- | rev)
 
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 sed -i "s|enabled extra_warnings |#enabled extra_warnings |g" ./configure
 patch -p0 < $CWD/add-av_stream_get_first_dts-for-chromium.patch
-EXTRAS="--enable-libplacebo --enable-lcms2"
 
 CC=clang \
-CFLAGS="$BUILDPARAMS" \
+CFLAGS="$CLANGFLAGS -ffat-lto-objects -Wno-error=int-conversion -Wno-error=incompatible-pointer-types" \
 LDFLAGS="$LLDFLAGS" \
 ./configure \
 	--prefix=/usr \
@@ -80,7 +79,8 @@ LDFLAGS="$LLDFLAGS" \
 	--enable-libsvtav1 \
 	--enable-libx264 \
 	--enable-libx265 \
-	$EXTRAS
+	--enable-libplacebo \
+	--enable-lcms2
 
 make CC=clang -j${NUMBERTHREADS} install DESTDIR=$PKG
 
