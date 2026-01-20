@@ -35,7 +35,7 @@ meson setup \
 	-Dcdda=enabled \
 	-Ddvdnav=enabled \
 	-Ddvbin=enabled \
-	-Dvulkan=disabled \
+	-Dvulkan=enabled \
 	-Dshaderc=disabled \
 	-Dlua=luajit \
 	-Dpipewire=auto \

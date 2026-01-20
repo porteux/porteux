@@ -32,8 +32,8 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Ddemos=false \
-	-Dglslang=disabled \
-	-Dvulkan=disabled \
+	-Dglslang=enabled \
+	-Dvulkan=enabled \
 	-Dshaderc=disabled \
 	-Ddovi=disabled \
 	-Dlibdovi=disabled \
