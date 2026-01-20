@@ -110,7 +110,7 @@ sed -i "s|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QUZ_A_HR_B_MO
 
 echo "Building kernel headers..."
 currentPackage=kernel-headers
-KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${SCRIPTPATH}/${currentPackage}.SlackBuild || exit 1
+KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${SCRIPTPATH}/extras/${currentPackage}.SlackBuild || exit 1
 mkdir -p ${MODULEPATH}/../05-devel/packages
 mv ${MODULEPATH}/packages/${currentPackage}*.txz ${MODULEPATH}/../05-devel/packages
 rm -fr $MODULEPATH/${currentPackage}
