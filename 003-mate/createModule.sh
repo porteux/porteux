@@ -62,6 +62,7 @@ installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
 rm $MODULEPATH/packages/icu4c*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
+rm $MODULEPATH/packages/mate-common*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 

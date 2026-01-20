@@ -71,7 +71,6 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
-	mate-common \
 	mate-polkit \
 ; do
 SESSIONTEMPLATE=cinnamon ICONTHEME=Yaru-blue sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1

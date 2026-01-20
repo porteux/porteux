@@ -39,7 +39,6 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
-	mate-common \
 	xcape \
 ; do
 SESSIONTEMPLATE=LXDE ICONTHEME=kora sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1

@@ -154,7 +154,8 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # only required for building not for run-time
-rm $MODULEPATH/packages/xfce4-dev-tools*
+rm $MODULEPATH/packages/xfce4-dev-tools*.txz
+rm $MODULEPATH/packages/mate-common*.txz
 
 ### fake root
 
