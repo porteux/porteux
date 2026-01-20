@@ -21,7 +21,7 @@ RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"
 sed -i 's|--release|--release --features autostart|g' Justfile
 
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
-just build
+just build-release
 rsync -r ./target/release ./target/
 just rootdir=$MODULEPATH/$PRGNAM/package install
 
