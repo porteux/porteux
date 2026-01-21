@@ -45,11 +45,12 @@ if [ ${CLANG:-no} = "yes" ]; then
 	rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 	COMPILER="Clang"
-	EXTRAFLAGS="LLVM=1 CC=clang"
+	EXTRAFLAGS="CC=clang LLVM=1 LLVM_IAS=1"
 	# fixing flags that are not compatible with the kernel
 	BUILDPARAMS="${CLANGFLAGS/-flto=auto/} -Wno-incompatible-pointer-types-discards-qualifiers"
 	LINKPARAMS=$(echo "$LLDFLAGS" | sed \
 		-e 's/-z,pack-relative-relocs/-z pack-relative-relocs/g' \
+		-e 's/-O2/-O1/g' \
 		-e 's/-Wl,//g' \
 		-e 's/-fuse-ld=lld//g' \
 		-e 's/--icf=safe//g' \
@@ -102,11 +103,13 @@ done
 rm -fr ../aufs_sources
 
 # temp fix -- since 6.17.x the kernel is asking for firmware versions that are still not available
-sed -i "s|#define IWL_HR_UCODE_API_MAX.*|#define IWL_HR_UCODE_API_MAX	89|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c || exit 1
-sed -i "s|#define IWL_HR_UCODE_API_MIN.*|#define IWL_HR_UCODE_API_MIN	77|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c || exit 1
-sed -i "s|IWL_QU_B_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_B_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c || exit 1
-sed -i "s|IWL_QU_C_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_C_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c || exit 1
-sed -i "s|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c || exit 1
+if [ -f drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c ]; then
+	sed -i "s|#define IWL_HR_UCODE_API_MAX.*|#define IWL_HR_UCODE_API_MAX	89|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|#define IWL_HR_UCODE_API_MIN.*|#define IWL_HR_UCODE_API_MIN	77|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|IWL_QU_B_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_B_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|IWL_QU_C_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_C_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+fi
 
 echo "Building kernel headers..."
 currentPackage=kernel-headers
@@ -118,7 +121,7 @@ rm -fr $MODULEPATH/${currentPackage}
 echo "Building vmlinuz (this may take a while)..."
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
-make -j${NUMBERTHREADS} KBUILD_LDFLAGS="${LINKPARAMS/-O2/-O1}" LDFLAGS_MODULE="$LINKPARAMS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
+make -j${NUMBERTHREADS} KBUILD_LDFLAGS="$LINKPARAMS" LDFLAGS_MODULE="$LINKPARAMS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULEPATH/vmlinuz
 
 echo "Installing modules..."
@@ -211,8 +214,7 @@ echo "Creating crippled xzm module..."
 CRIPPLEDSOURCEPATH=${MODULEPATH}/${CRIPPLEDMODULENAME}/usr/src
 mkdir -p ${CRIPPLEDSOURCEPATH}
 mv ${MODULEPATH}/linux-${KERNELVERSION} ${CRIPPLEDSOURCEPATH}
-mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/
-mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/config
+mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/config
 ln -sf linux-${KERNELVERSION} ${CRIPPLEDSOURCEPATH}/linux
 mkdir -p ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder
 ln -sf /usr/src/linux ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder/build
@@ -244,7 +246,7 @@ find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "MAINTAINERS*" -exec rm 
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "README*" -exec rm -fr {} \; -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/scripts -xtype l -delete
 
-mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/.config
+mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.config
 
 find ${CRIPPLEDSOURCEPATH} | xargs strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 
