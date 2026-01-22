@@ -31,13 +31,8 @@ WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
 create_application_temp_dir(){
-    mkdir -p $TMP/"$1" && rm -rf "${TMP:?}/$1" && mkdir -p $TMP/"$1" || exit 1
-}
-
-remove_application_temp_dir(){
     rm -rf "${TMP:?}/$1"
-    rm -f "$TMP/${1}-${2}-x86_64.txz"
-    rm -rf "${TMP:?}/package-${1}"
+    mkdir -p $TMP/"$1"
 }
 
 chromium_family_locale_striptease(){
@@ -55,8 +50,8 @@ striptease(){
 }
 
 get_module_name(){
-    local pkgver; pkgver="$2"
-    local arch; arch="$3"
+    local pkgver="$2"
+    local arch="$3"
 
     echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
@@ -65,11 +60,13 @@ finisher(){
     striptease "$APP" "$1"
 
     /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    remove_application_temp_dir "$APP" "$2"
+    rm -rf "${TMP:?}/$APP"
 }
 
 make_module_opera(){
-    if [ "$CHANNEL" != "developer" ] && [ "$CHANNEL" != "beta" ] && [ "$CHANNEL" != "stable" ]; then echo "Non-existent channel. Options: developer | beta | stable" && exit 1; fi
+    if [ "$CHANNEL" != "developer" ] && [ "$CHANNEL" != "beta" ] && [ "$CHANNEL" != "stable" ]; then
+        echo "Non-existent channel. Options: developer | beta | stable" && exit 1
+    fi
 
     local pkg_name
     local pkg_name
@@ -82,12 +79,13 @@ make_module_opera(){
     pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 
     mv $TMP/"$APP"/opera_*.rpm $TMP/"$APP"/"$pkg_name".rpm
-    mkdir -p "$TMP/$APP/$pkg_name" &&
-    rpm2cpio "$TMP/$APP/${pkg_name}.rpm" | cpio -idmv -D "$TMP/$APP/$pkg_name" &&
-    sed -i "s|TryExec=.*||g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" &&
-    sed -i "s|Exec=$product_name|Exec=$product_name --lang=$LANGUAGE|g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" &&
+    mkdir -p "$TMP/$APP/$pkg_name"
+    rpm2cpio "$TMP/$APP/${pkg_name}.rpm" | cpio -idmv -D "$TMP/$APP/$pkg_name"
+    chmod 755 "$TMP/$APP/$pkg_name"
+    sed -i "s|TryExec=.*||g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop"
+    sed -i "s|Exec=$product_name|Exec=$product_name --lang=$LANGUAGE|g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop"
 
-    finisher "$pkg_name" "$pkgver"
+    finisher "$pkg_name"
 }
 
 # Main Code

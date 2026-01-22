@@ -31,13 +31,8 @@ WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
 create_application_temp_dir(){
-    mkdir -p $TMP/"$1" && rm -rf "${TMP:?}/$1" && mkdir -p $TMP/"$1" || exit 1
-}
-
-remove_application_temp_dir(){
     rm -rf "${TMP:?}/$1"
-    rm -f "$TMP/${1}-${2}-x86_64.txz"
-    rm -rf "${TMP:?}/package-${1}"
+    mkdir -p $TMP/"$1"
 }
 
 chromium_family_locale_striptease(){
@@ -49,22 +44,21 @@ chromium_family_locale_striptease(){
 striptease(){
     local pkg_dir="$TMP/$1/$2"
 
-        declare -a targets=("executable" "shared object")
-        for target in "${targets[@]}"
-        do
-                find "$pkg_dir" -print0 | xargs -0 file | grep "$target" | grep ELF | cut -f 1 -d : | \
-                        xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment \
-                        --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
-                find "$pkg_dir" -exec file {} +
-        done
-        find "$pkg_dir" -name "chromedriver" -type f -delete
-        rm "$pkg_dir"/usr/lib64/chromium/locales/*.info
-        chromium_family_locale_striptease "$pkg_dir"/usr/lib64/chromium*/locales
+    declare -a targets=("executable" "shared object")
+    for target in "${targets[@]}"; do
+        find "$pkg_dir" -print0 | xargs -0 file | grep "$target" | grep ELF | cut -f 1 -d : | \
+                xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment \
+                --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
+        find "$pkg_dir" -exec file {} +
+    done
+    find "$pkg_dir" -name "chromedriver" -type f -delete
+    rm "$pkg_dir"/usr/lib64/chromium/locales/*.info
+    chromium_family_locale_striptease "$pkg_dir"/usr/lib64/chromium*/locales
 }
 
 get_module_name(){
-    local pkgver; pkgver="$2"
-    local arch; arch="$3"
+    local pkgver="$2"
+    local arch="$3"
 
     echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
@@ -73,12 +67,12 @@ finisher(){
     striptease "$APP" "$1"
 
     /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    remove_application_temp_dir "$APP" "$2"
+    rm -rf "${TMP:?}/$APP"
 }
 
 get_repo_version_chromium(){
     if [ "$CHANNEL" == "developer" ]; then
-        local ver; ver=$(curl -s "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media") || exit 1
+        local ver=$(curl -s "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media") || exit 1
     else
         exit 1
     fi
@@ -87,26 +81,29 @@ get_repo_version_chromium(){
 }
 
 make_module_chromium(){
-    if [ "$CHANNEL" != "developer" ]; then echo "Non-existent channel. Options: developer" && exit 1; fi
+    if [ "$CHANNEL" != "developer" ]; then
+        echo "Non-existent channel. Options: developer" && exit 1
+    fi
 
-    local pkgver; pkgver=$(get_repo_version_chromium "$CHANNEL")
-    local pkg_name; pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
-    local product_name; product_name="$APP-$CHANNEL"
+    local pkgver=$(get_repo_version_chromium "$CHANNEL")
+    local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+    local product_name="$APP-$CHANNEL"
 
     create_application_temp_dir "$APP" && mkdir -p "$TMP/$APP/$pkg_name" || exit 1
 
-    if [ "$CHANNEL" == "developer" ]; then
-        $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.zip" "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F${pkgver}%2Fchrome-linux.zip?alt=media" &&
-        unzip -a "$TMP/$APP/${pkg_name}.zip" -d "$TMP/$APP/$pkg_name" &&
-        mv -f "$TMP/$APP/$pkg_name/chrome-linux" "$TMP/$APP/$pkg_name/$APP-$CHANNEL-${pkgver}" || exit 1
-    else
-        exit 1
-    fi
+    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.zip" "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F${pkgver}%2Fchrome-linux.zip?alt=media"
+    unzip -a "$TMP/$APP/${pkg_name}.zip" -d "$TMP/$APP/$pkg_name"
+    chmod 755 "$TMP/$APP/$pkg_name"
+    mv -f "$TMP/$APP/$pkg_name/chrome-linux" "$TMP/$APP/$pkg_name/$APP-$CHANNEL-${pkgver}" || exit 1
 
-    mkdir -p "$TMP/$APP/$pkg_name/usr/bin" && mkdir -p "$TMP/$APP/$pkg_name/usr/lib64" && mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications" &&
-    mv -f "$TMP/$APP/$pkg_name/$APP-$CHANNEL-${pkgver}" "$TMP/$APP/$pkg_name/usr/lib64" &&
-    cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "$APP-$CHANNEL-${pkgver}/" "$product_name" &&
-    cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/$product_name/chrome" "$product_name" &&
+    mkdir -p "$TMP/$APP/$pkg_name/usr/bin"
+    mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"
+    mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
+    mv -f "$TMP/$APP/$pkg_name/$APP-$CHANNEL-${pkgver}" "$TMP/$APP/$pkg_name/usr/lib64"
+    cd "$TMP/$APP/$pkg_name/usr/lib64"
+    ln -sf "$APP-$CHANNEL-${pkgver}/" "$product_name"
+    cd "$TMP/$APP/$pkg_name/usr/bin"
+    ln -sf "../lib64/$product_name/chrome" "$product_name"
     cat > "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" << EOF
 [Desktop Entry]
 Exec=chromium --enable-features=NetworkServiceInProcess2 %U
@@ -117,9 +114,9 @@ Name=Chromium
 GenericName=Web Browser
 MimeType=text/html;text/xml;application/xhtml+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/mailto;x-scheme-handler/webcal;
 EOF
-    sed -i "s|Exec=$APP|Exec=env LANGUAGE=$LANGUAGE $product_name|g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" &&
+    sed -i "s|Exec=$APP|Exec=env LANGUAGE=$LANGUAGE $product_name|g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop"
 
-    finisher "$pkg_name" "$pkgver"
+    finisher "$pkg_name"
 }
 
 make_module_chromium

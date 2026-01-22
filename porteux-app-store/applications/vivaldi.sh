@@ -31,13 +31,8 @@ WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
 create_application_temp_dir(){
-    mkdir -p $TMP/"$1" && rm -rf "${TMP:?}/$1" && mkdir -p $TMP/"$1" || exit 1
-}
-
-remove_application_temp_dir(){
     rm -rf "${TMP:?}/$1"
-    rm -f "$TMP/${1}-${2}-x86_64.txz"
-    rm -rf "${TMP:?}/package-${1}"
+    mkdir -p $TMP/"$1"
 }
 
 chromium_family_locale_striptease(){
@@ -55,8 +50,8 @@ striptease(){
 }
 
 get_module_name(){
-    local pkgver; pkgver="$2"
-    local arch; arch="$3"
+    local pkgver="$2"
+    local arch="$3"
 
     echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
@@ -65,31 +60,34 @@ finisher(){
     striptease "$APP" "$1"
 
     /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    remove_application_temp_dir "$APP" "$2"
+    rm -rf "${TMP:?}/$APP"
 }
 
 get_repo_version_vivaldi(){
-    local ver; ver=$(curl -s "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/" | grep 'href=' | awk -F '"' '{print $2}' | \
+    local ver=$(curl -s "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/" | grep 'href=' | awk -F '"' '{print $2}' | \
     grep "$CHANNEL" | tail -n 1 | rev | cut -d '.' -f3- | rev | cut -d '-' -f3-) || exit 1
 
     echo "$ver"
 }
 
 make_module_vivaldi(){
-    if [ "$CHANNEL" != "snapshot" ] && [ "$CHANNEL" != "stable" ]; then echo "Non-existent channel. Options: snapshot | stable" && exit 1; fi
+    if [ "$CHANNEL" != "snapshot" ] && [ "$CHANNEL" != "stable" ]; then
+        echo "Non-existent channel. Options: snapshot | stable" && exit 1
+    fi
 
-    local pkgver; pkgver=$(get_repo_version_vivaldi "$CHANNEL")
-    local pkg_name; pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+    local pkgver=$(get_repo_version_vivaldi "$CHANNEL")
+    local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
     local product_name; product_name=$([ "$CHANNEL" == "stable" ] && echo "$APP" || echo "$APP-$CHANNEL")
 
-    create_application_temp_dir "$APP" &&
+    create_application_temp_dir "$APP"
 
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.rpm" "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/vivaldi-${CHANNEL}-${pkgver}.x86_64.rpm" &&
-    mkdir -p "$TMP/$APP/$pkg_name" &&
-    rpm2cpio "$TMP/$APP/${pkg_name}.rpm" | cpio -idmv -D "$TMP/$APP/$pkg_name" &&
+    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.rpm" "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/vivaldi-${CHANNEL}-${pkgver}.x86_64.rpm"
+    mkdir -p "$TMP/$APP/$pkg_name"
+    rpm2cpio "$TMP/$APP/${pkg_name}.rpm" | cpio -idmv -D "$TMP/$APP/$pkg_name"
+    chmod 755 "$TMP/$APP/$pkg_name"
     sed -i "s|Exec=/usr/bin/|Exec=|g" "$TMP/$APP/$pkg_name/usr/share/applications/$APP-$CHANNEL.desktop"
-    sed -i "s|Icon=.*|Icon=/opt/$product_name/product_logo_128.png|g" "$TMP/$APP/$pkg_name/usr/share/applications/$APP-$CHANNEL.desktop" &&
-    sed -i "s|Exec=$APP-$CHANNEL|Exec=env LANGUAGE=$LANGUAGE $APP-$CHANNEL|g" "$TMP/$APP/$pkg_name/usr/share/applications/$APP-$CHANNEL.desktop" &&
+    sed -i "s|Icon=.*|Icon=/opt/$product_name/product_logo_128.png|g" "$TMP/$APP/$pkg_name/usr/share/applications/$APP-$CHANNEL.desktop"
+    sed -i "s|Exec=$APP-$CHANNEL|Exec=env LANGUAGE=$LANGUAGE $APP-$CHANNEL|g" "$TMP/$APP/$pkg_name/usr/share/applications/$APP-$CHANNEL.desktop"
 
     finisher "$pkg_name" "$pkgver"
 }
