@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-major_version=$(curl -s $REPOSITORY/l/ | grep ffmpeg | cut -d '"' -f 8 | cut -d '.' -f 1 | cut -d '-' -f 2 | head -n1)
+major_version=$(curl -s $REPOSITORY/l/ | grep -o 'ffmpeg[^< ]*' | cut -d '-' -f 2 | head -n1)
 filename=$(curl -s https://ffmpeg.org/releases/ | grep ffmpeg-${major_version} | cut -d '>' -f 2 | grep .xz\" | cut -d \" -f 2 | sort -V -r | head -1)
 
 wget https://ffmpeg.org/releases/${filename}
