@@ -31,13 +31,8 @@ WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
 create_application_temp_dir(){
-    mkdir -p $TMP/"$1" && rm -rf "${TMP:?}/$1" && mkdir -p $TMP/"$1" || exit 1
-}
-
-remove_application_temp_dir(){
     rm -rf "${TMP:?}/$1"
-    rm -f "$TMP/${1}-${2}-x86_64.txz"
-    rm -rf "${TMP:?}/package-${1}"
+    mkdir -p $TMP/"$1"
 }
 
 striptease(){
@@ -47,8 +42,8 @@ striptease(){
 }
 
 get_module_name(){
-    local pkgver; pkgver="$2"
-    local arch; arch="$3"
+    local pkgver="$2"
+    local arch="$3"
 
     echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
@@ -88,33 +83,40 @@ finisher(){
     striptease "$APP" "$1"
 
     /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    remove_application_temp_dir "$APP" "$2"
+    rm -rf "${TMP:?}/$APP"
 }
 
 get_repo_version_palemoon(){
-    local temp; temp=$(curl -s "https://www.palemoon.org/download.shtml" | grep "linux-x86_64-gtk3") || exit 1
-    local ver; ver=$(echo "$temp" | cut -d'-' -f2 | sed 's/\.linux//')
+    local temp=$(curl -s "https://www.palemoon.org/download.shtml" | grep "linux-x86_64-gtk3") || exit 1
+    local ver=$(echo "$temp" | cut -d'-' -f2 | sed 's/\.linux//')
 
     echo "$ver"
 }
 
 make_module_palemoon(){
-    if [ "$CHANNEL" != "stable" ]; then echo "Non-existent channel. Options: stable" && exit 1; fi
+    if [ "$CHANNEL" != "stable" ]; then
+        echo "Non-existent channel. Options: stable" && exit 1
+    fi
 
-    local pkgver; pkgver=$(get_repo_version_palemoon "$CHANNEL")
-    local pkg_name; pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+    local pkgver=$(get_repo_version_palemoon "$CHANNEL")
+    local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 
     create_application_temp_dir "$APP" || exit 1
 
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.xz" "https://rm-us.palemoon.org/release/palemoon-${pkgver}.linux-x86_64-gtk3.tar.xz" &&
-    mkdir -p "$TMP/$APP/$pkg_name" &&
-    tar -xvf "$TMP/$APP/${pkg_name}.tar.xz" -C "$TMP/$APP/$pkg_name" &&
-    mkdir -p "$TMP/$APP/$pkg_name/usr/bin" && mkdir -p "$TMP/$APP/$pkg_name/usr/lib64" && mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications" &&
+    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.xz" "https://rm-us.palemoon.org/release/palemoon-${pkgver}.linux-x86_64-gtk3.tar.xz"
+    mkdir -p "$TMP/$APP/$pkg_name"
+    tar -xvf "$TMP/$APP/${pkg_name}.tar.xz" -C "$TMP/$APP/$pkg_name"
+    chmod 755 "$TMP/$APP/$pkg_name"
+    mkdir -p "$TMP/$APP/$pkg_name/usr/bin"
+    mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"
+    mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
 
-    mv -f "$TMP/$APP/$pkg_name/palemoon" "$TMP/$APP/$pkg_name/palemoon-${pkgver}" &&
-    mv -f "$TMP/$APP/$pkg_name/palemoon-${pkgver}" $TMP/"$APP"/"$pkg_name"/usr/lib64 &&
-    cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "palemoon-${pkgver}/" palemoon &&
-    cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/palemoon/palemoon" palemoon &&
+    mv -f "$TMP/$APP/$pkg_name/palemoon" "$TMP/$APP/$pkg_name/palemoon-${pkgver}"
+    mv -f "$TMP/$APP/$pkg_name/palemoon-${pkgver}" $TMP/"$APP"/"$pkg_name"/usr/lib64
+    cd "$TMP/$APP/$pkg_name/usr/lib64"
+    ln -sf "palemoon-${pkgver}/" palemoon
+    cd "$TMP/$APP/$pkg_name/usr/bin"
+    ln -sf "../lib64/palemoon/palemoon" palemoon
 
     set_sane_defaults "$APP" "$pkg_name"
 
@@ -136,7 +138,7 @@ MimeType=text/html;application/xhtml+xml;application/xml;application/rss+xml;app
 StartupNotify=true
 EOF
 
-    finisher "$pkg_name" "$pkgver"
+    finisher "$pkg_name"
 }
 
 # Main Code
