@@ -1,0 +1,52 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=audacious-plugins
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "audacious-media-player" ${PRGNAM})
+VERSION=${info#* }
+
+if [[ ${QT} == "5" ]]; then
+	TOOLKIT="qt5"
+	toolkitFlags="-Dgtk=false -Dqt5=true"
+elif [[ ${QT} == "6" ]]; then
+	TOOLKIT="qt6"
+	toolkitFlags="-Dgtk=false -Dqt=true"
+else
+	TOOLKIT="gtk3"
+	toolkitFlags="-Dgtk=true -Dqt5=false -Dqt=false"
+fi
+
+tar xvf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
+cd ${PRGNAM}-${PRGNAM}-$VERSION
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+meson setup \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	-Dneon=false \
+	${toolkitFlags}
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$TOOLKIT-$VERSION-$ARCH-1_porteux.txz

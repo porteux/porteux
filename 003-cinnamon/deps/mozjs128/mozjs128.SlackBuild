@@ -1,0 +1,92 @@
+#!/bin/bash
+
+PRGNAM=mozjs128
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION="128.14.0esr"
+wget https://archive.mozilla.org/pub/firefox/releases/${VERSION}/source/firefox-${VERSION}.source.tar.xz
+
+mkdir firefox-unpack
+cd firefox-unpack
+
+tar xf ../firefox-${VERSION}.source.tar.xz || exit 1
+rm ../firefox-${VERSION}.source.tar.xz
+mv * ..
+cd ..
+rm -rf firefox-unpack
+cd firefox*
+
+# Patches from Fedora:
+zcat $CWD/patches/fix-soname.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/copy-headers.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/icu_sources_data.py-Decouple-from-Mozilla-build-system.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/icu_sources_data-Write-command-output-to-our-stderr.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/emitter.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/init_patch.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/0001-Skip-failing-tests-on-ppc64-and-s390x.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/remove-sloppy-m4-detection-from-bundled-autoconf.patch.gz | patch -p1 --verbose || exit 1
+zcat $CWD/patches/spidermonkey_checks_disable.patch.gz | patch -p1 --verbose || exit 1
+
+# Remove bundled zlib directory and use system version:
+rm -rf modules/zlib
+
+cd js/src
+
+CFLAGS="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-strict-aliasing -fPIC " \
+CXXFLAGS="${CLANGFLAGS/ -flto=auto/} -fno-delete-null-pointer-checks -fno-strict-aliasing -fPIC " \
+RUSTFLAGS="-Copt-level=s -Ctarget-cpu=x86-64-v2 -Clink-arg=-ffunction-sections -Clink-arg=-fdata-sections -Cforce-unwind-tables=no -Clto=thin -Clinker=clang -Clink-arg=-fuse-ld=lld -Cpanic=abort -Cdebuginfo=0 -Cembed-bitcode=yes -Cincremental=yes -Ccodegen-units=1" \
+LDFLAGS="$LDFLAGS -Wl,--copy-dt-needed-entries" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--mandir=/usr/man \
+	--with-system-icu \
+	--with-system-zlib \
+	--disable-tests \
+	--disable-strip \
+	--with-intl-api \
+	--enable-linker=bfd \
+	--enable-readline \
+	--enable-shared-js \
+	--enable-optimize \
+	--disable-debug \
+	--enable-pie \
+	--disable-jemalloc \
+	--build=x86_64-slackware-linux
+
+make -j${NUMBERTHREADS}
+make install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+# No need for the huge static library:
+rm -f $PKG/usr/lib${SYSTEMBITS}/libjs_static.*
+
+# Don't ship -config:
+rm -f $PKG/usr/bin/js*-config
+
+# Rename shared library to have a proper soname:
+SHORTVER=$(echo $PRGNAM | cut -b 6-)
+mv $PKG/usr/lib${SYSTEMBITS}/libmozjs-${SHORTVER}.so $PKG/usr/lib${SYSTEMBITS}/libmozjs-${SHORTVER}.so.0.0.0
+
+( cd $PKG/usr/lib${SYSTEMBITS}
+	ln -sf libmozjs-${SHORTVER}.so.0.0.0 libmozjs-${SHORTVER}.so.0
+	ln -sf libmozjs-${SHORTVER}.so.0 libmozjs-${SHORTVER}.so
+)
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -23,7 +23,7 @@ sed -i "s|subdir('test')|#subdir('test')|g" meson.build
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \

@@ -20,7 +20,7 @@ wget https://github.com/Terraspace/UASM/archive/refs/tags/v${uasmVersion}r.tar.g
 tar xfv UASM-${uasmVersion}r.tar.?z*
 cd UASM-${uasmVersion}r
 
-make -j${NUMBERTHREADS} CC="gcc -O2 -std=c99 -fcommon -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-discarded-qualifiers -Wno-lto-type-mismatch -Wno-compare-distinct-pointer-types -Wno-pointer-to-int-cast" -f Makefile-Linux-GCC-64.mak
+make -j${NUMBERTHREADS} CC="gcc $GCCFLAGS -std=c99 -fcommon -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-discarded-qualifiers -Wno-lto-type-mismatch -Wno-compare-distinct-pointer-types -Wno-pointer-to-int-cast" -f Makefile-Linux-GCC-64.mak
 
 chmod +x $PWD/GccUnixR/uasm
 PATH=$PATH:$PWD/GccUnixR
@@ -36,11 +36,8 @@ cp "$CWD/meson.build.template" meson.build
 meson rewrite kwargs set project / version ${VERSION}
 
 mkdir build && cd build
-CC=clang \
-CXX=clang++ \
-CFLAGS="$CLANGFLAGS -pthread" \
-CXXFLAGS="$CLANGFLAGS -fvisibility-inlines-hidden -pthread" \
-LDFLAGS="$LLDFLAGS" \
+CFLAGS="$GCCFLAGS -pthread" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden -pthread" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

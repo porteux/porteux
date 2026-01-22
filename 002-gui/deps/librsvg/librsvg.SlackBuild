@@ -29,7 +29,7 @@ cd $PRGNAM-$VERSION
 mkdir build && cd build
 CC=clang \
 CFLAGS="$CLANGFLAGS" \
-RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}" \
+RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}" \
 LDFLAGS="$LLDFLAGS" \
 meson setup \
 	--prefix=/usr \
