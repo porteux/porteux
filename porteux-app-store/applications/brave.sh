@@ -48,6 +48,7 @@ mkdir "${BUILDDIR}" && cd "${BUILDDIR}"
 
 wget -T 15 --content-disposition "${APPLICATIONURL}" -P "${BUILDDIR}" || exit 1
 rpm2cpio "${MODULEDIR}.rpm" | cpio -idmv -D "${MODULEDIR}" || exit 1
+chmod 755 "${MODULEDIR}"
 sed -i "s|Exec=|Exec=env LANGUAGE=${LANGUAGE} |g" "${MODULEDIR}/usr/share/applications/${CURRENTPACKAGE}.desktop"
 
 striptease

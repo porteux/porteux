@@ -31,25 +31,20 @@ WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
 create_application_temp_dir(){
-    mkdir -p $TMP/"$1" && rm -rf "${TMP:?}/$1" && mkdir -p $TMP/"$1" || exit 1
-}
-
-remove_application_temp_dir(){
     rm -rf "${TMP:?}/$1"
-    rm -f "$TMP/${1}-${2}-x86_64.txz"
-    rm -rf "${TMP:?}/package-${1}"
+    mkdir -p $TMP/"$1"
 }
 
 get_module_name(){
-    local pkgver; pkgver="$2"
-    local arch; arch="$3"
+    local pkgver="$2"
+    local arch="$3"
 
     echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
 finisher(){
     /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    remove_application_temp_dir "$APP" "$2"
+    rm -rf "${TMP:?}/$APP"
 }
 
 get_repo_version_librewolf(){
@@ -62,24 +57,31 @@ get_repo_version_librewolf(){
 }
 
 make_module_librewolf(){
-    if [ "$CHANNEL" != "stable" ]; then echo "Non-existent channel. Options: stable" && exit 1; fi
+    if [ "$CHANNEL" != "stable" ]; then
+        echo "Non-existent channel. Options: stable" && exit 1
+    fi
 
-    local pkgver; pkgver=$(get_repo_version_librewolf "$CHANNEL")
-    local pkg_name; pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+    local pkgver=$(get_repo_version_librewolf "$CHANNEL")
+    local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
     local package_extension="tar.xz"
     local major_version=$(echo $pkgver | cut -f 1 -d .)
 
     create_application_temp_dir "$APP"
 
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://gitlab.com/api/v4/projects/44042130/packages/generic/librewolf/${pkgver}/librewolf-${pkgver}-linux-x86_64-package.${package_extension}" &&
-    mkdir -p "$TMP/$APP/$pkg_name" &&
-    tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name" &&
-    mkdir -p "$TMP/$APP/$pkg_name/usr/bin" && mkdir -p "$TMP/$APP/$pkg_name/usr/lib64" && mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications" &&
+    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://gitlab.com/api/v4/projects/44042130/packages/generic/librewolf/${pkgver}/librewolf-${pkgver}-linux-x86_64-package.${package_extension}"
+    mkdir -p "$TMP/$APP/$pkg_name"
+    tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name"
+    chmod 755 "$TMP/$APP/$pkg_name"
+    mkdir -p "$TMP/$APP/$pkg_name/usr/bin"
+    mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"
+    mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
 
-    mv -f "$TMP/$APP/$pkg_name/${APP}" "$TMP/$APP/$pkg_name/${APP}-${CHANNEL}" &&
-    mv -f "$TMP/$APP/$pkg_name/${APP}-${CHANNEL}" $TMP/"$APP"/"$pkg_name"/usr/lib64 &&
-    cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "${APP}-${CHANNEL}/" ${APP} &&
-    cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/${APP}/${APP}" ${APP} &&
+    mv -f "$TMP/$APP/$pkg_name/${APP}" "$TMP/$APP/$pkg_name/${APP}-${CHANNEL}"
+    mv -f "$TMP/$APP/$pkg_name/${APP}-${CHANNEL}" $TMP/"$APP"/"$pkg_name"/usr/lib64
+    cd "$TMP/$APP/$pkg_name/usr/lib64"
+    ln -sf "${APP}-${CHANNEL}/" ${APP}
+    cd "$TMP/$APP/$pkg_name/usr/bin"
+    ln -sf "../lib64/${APP}/${APP}" ${APP}
     
     mkdir -p "$TMP/$APP/$pkg_name/usr/lib64/${APP}/distribution" 2> /dev/null
     cat > "$TMP/$APP/$pkg_name/usr/share/applications/librewolf.desktop" << EOF
@@ -102,7 +104,7 @@ browser.shell.checkDefaultBrowser=false
 app.shield.optoutstudies.enabled=false
 EOF
 
-    finisher "$pkg_name" "$pkgver"
+    finisher "$pkg_name"
 }
 
 # Main Code
