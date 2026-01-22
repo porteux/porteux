@@ -16,13 +16,12 @@ git clone https://github.com/pop-os/$PRGNAM
 cd $PRGNAM
 VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
-RUSTFLAGS="${RUSTFLAGS/ -Clto=fat/}"
-
-sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
+RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"
 
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
-make -j${NUMBERTHREADS}
-make install DESTDIR=$MODULEPATH/$PRGNAM/package
+just build-release --target x86_64-unknown-linux-gnu
+rsync -r ./target/x86_64-unknown-linux-gnu/release ./target/ --remove-source-files
+just rootdir=$MODULEPATH/$PRGNAM/package install
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

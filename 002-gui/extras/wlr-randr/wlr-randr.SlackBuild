@@ -22,7 +22,7 @@ mkdir build && cd build
 CC=clang \
 CXX=clang++ \
 CFLAGS="$CLANGFLAGS" \
-CXFLAGS="$CLANGFLAGS" \
+CXFLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
 LDFLAGS="$LLDFLAGS" \
 meson setup \
 	--prefix=/usr \

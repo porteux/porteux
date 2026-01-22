@@ -30,36 +30,26 @@ DownloadFromSlackware
 
 [ ! -f /usr/bin/clang ] && (installpkg $MODULEPATH/packages/llvm*.txz || exit 1)
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	installpkg $MODULEPATH/packages/gdk-pixbuf2*.txz || exit 1
+currentPackage=gdk-pixbuf2
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz
+rm -fr $MODULEPATH/${currentPackage}
 
-	# required by xorg but not included in slackware repo in stable
-	currentPackage=libxcvt
-	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}*.txz
-	rm -fr $MODULEPATH/${currentPackage}
-else
-	currentPackage=gdk-pixbuf2
-	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/${currentPackage}*.txz
-	rm -fr $MODULEPATH/${currentPackage}
+installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 
-	installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
+installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
+rm $MODULEPATH/packages/cargo-c*
 
-	installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
-	rm $MODULEPATH/packages/cargo-c*
+# not using rust from slackware because it's much slower
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
+rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
+export PATH=$HOME/.cargo/bin/:$PATH
 
-	# not using rust from slackware because it's much slower
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
-	rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
-	export PATH=$HOME/.cargo/bin/:$PATH
-
-	# building this because the slackware package in current depends on dav1d
-	currentPackage=librsvg
-	sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-	installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
-	rm -fr $MODULEPATH/${currentPackage}
-fi
+# building this because the slackware package in current depends on dav1d
+currentPackage=librsvg
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
+rm -fr $MODULEPATH/${currentPackage}
 
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libtheora*.txz || exit 1
@@ -72,6 +62,18 @@ rm $MODULEPATH/packages/cups*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
+# required by flatpak
+installpkg $MODULEPATH/packages/glib-networking*.txz || exit 1
+installpkg $MODULEPATH/packages/gnupg2*.txz || exit 1
+installpkg $MODULEPATH/packages/gperf*.txz || exit 1
+rm $MODULEPATH/packages/gperf*.txz
+installpkg $MODULEPATH/packages/libproxy*.txz || exit 1
+installpkg $MODULEPATH/packages/npth*.txz || exit 1
+installpkg $MODULEPATH/packages/pyparsing*.txz || exit 1
+rm $MODULEPATH/packages/pyparsing*.txz
+installpkg $MODULEPATH/packages/socat*.txz || exit 1
+rm $MODULEPATH/packages/socat*.txz
+
 # gui deps
 for package in \
 	xorg-server \
@@ -83,9 +85,15 @@ for package in \
 	wireplumber \
 	cxxopts \
 	imlib2 \
+	libostree \
+	libfyaml \
+	libxmlb \
+	appstream \
+	intel-gmmlib \
+	xdg-desktop-portal-gtk \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -94,7 +102,11 @@ rm $MODULEPATH/packages/cxxopts*.txz
 
 # gui extras
 for package in \
+	flatpak \
 	galculator \
+	intel-media-driver \
+	intel-vaapi-driver \
+	labwc \
 	libjxl \
 	openbox \
 	pamixer \
@@ -113,7 +125,7 @@ currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped
 cd ${currentPackage}-stripped
@@ -124,15 +136,14 @@ currentPackage=mesa
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz && rm ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}*.txz
 rm -fr etc/OpenCL
 rm usr/lib${SYSTEMBITS}/dri/i830*
 rm usr/lib${SYSTEMBITS}/dri/i965*
 rm usr/lib${SYSTEMBITS}/dri/nouveau_vieux*
 rm usr/lib${SYSTEMBITS}/dri/r200*
 rm usr/lib${SYSTEMBITS}/dri/radeon_dri*
-rm usr/lib${SYSTEMBITS}/libMesaOpenCL*
-rm usr/lib${SYSTEMBITS}/libRusticlOpenCL*
+rm usr/lib${SYSTEMBITS}/*OpenCL*
 rm -fr var/lib/pkgtools
 rm -f var/log/packages
 rm -fr var/log/pkgtools
@@ -148,7 +159,7 @@ currentPackage=pulseaudio
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/bin/pactl ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped
@@ -166,19 +177,17 @@ currentPackage=vulkan-sdk
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}*.txz .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
+cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped
+cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped
 cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped
 cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped > /dev/null 2>&1
 cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped
-if [ $SLACKWAREVERSION == "current" ]; then
-	cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped
-	cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped
-	cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
-fi
-cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -230,12 +239,11 @@ rm usr/bin/canberra*
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/Xdmx
-rm usr/bin/rsvg-convert # only for stable
-
 rm usr/lib${SYSTEMBITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEMBITS}/libbd_vdo.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libpoppler-cpp*
+rm usr/lib${SYSTEMBITS}/libpoppler-qt5*
 rm usr/lib${SYSTEMBITS}/libxatracker*
 rm usr/lib${SYSTEMBITS}/libXaw.so.6*
 rm usr/lib${SYSTEMBITS}/libXaw6*
@@ -257,6 +265,7 @@ rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 
+rm -fr etc/gnupg
 rm -fr etc/pam.d
 rm -fr etc/rc_keymaps
 rm -fr etc/X11/xorg.conf.d
@@ -277,6 +286,7 @@ rm -fr usr/lib${SYSTEMBITS}/sigc++-*
 rm -fr usr/lib${SYSTEMBITS}/xmms
 rm -fr usr/libexec/upower/tests
 rm -fr usr/share/gdm
+rm -fr usr/share/gnupg
 rm -fr usr/share/gobject-introspection*/tests
 rm -fr usr/share/graphite2
 rm -fr usr/share/gst-plugins-base
@@ -318,7 +328,6 @@ rm -fr usr/X11R6/include
 rm -fr usr/X11R6/man
 } >/dev/null 2>&1
 
-[ $SLACKWAREVERSION == "current" ] && rm usr/lib${SYSTEMBITS}/libpoppler-qt5*
 
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
@@ -337,14 +346,6 @@ mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libvulkan* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libX11.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
-
-# specific strip
-mkdir $MODULEPATH/tostrip
-mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libLLVM* $MODULEPATH/tostrip
-cd $MODULEPATH/tostrip
-AggressiveStripAll
-mv $MODULEPATH/tostrip/libLLVM* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
-rm -fr $MODULEPATH/tostrip
 
 ### copy cache files
 

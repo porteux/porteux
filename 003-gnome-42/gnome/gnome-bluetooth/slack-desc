@@ -1,6 +1,0 @@
-               |-----handy-ruler------------------------------------------------------|
-gnome-bluetooth: GNOME Bluetooth
-gnome-bluetooth:
-gnome-bluetooth: gnome-bluetooth is a fork of bluez-gnome focused on integration with
-gnome-bluetooth: the GNOME desktop environment
-gnome-bluetooth:

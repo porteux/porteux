@@ -1,0 +1,91 @@
+~~~~~~~~~~~~~~~~~
+| Introduction: |
+~~~~~~~~~~~~~~~~~
+
+PorteuX can be installed to any media storage (including USB flash drive)
+without requiring your personal data to be erased. Partitions supported:
+ext2, ext3, ext4, FAT, exFAT, NTFS and XFS.
+
+The simplest way to do that is copying the ISO content to your media
+storage and running the installer, which will make the media bootable
+(instructions below) and will set the correct permissions, not touching
+or removing your existing data. Just make sure your partition is of type
+'msdos' or 'gpt'.
+
+For better performance, it's recommended to install PorteuX on an SSD or
+NVMe storage unit rather than a USB flash drive. Alternatively, you can
+select 'Copy to RAM' option in the boot menu. While this will increase
+RAM usage and may result in a slightly slower boot time, once the system
+is up and running, it will perform at its fastest, as it will be running
+100% in RAM.
+
+Please notice that a CPU with SSE4.2 is required to run PorteuX.
+
+It's not recommended to use any third-party ISO installer application,
+such as Rufus or Etcher because the media storage is usually set to
+read-only mode, making it impossible to write any data, including
+automatic save changes.
+
+First you need to choose between EFI or legacy boot process. Although
+legacy is easier to set as it requires less steps, it's not supported
+by all modern system. If you're in doubt, choose EFI.
+
+~~~~~~~~~~~~~~~
+| EFI System: |
+~~~~~~~~~~~~~~~
+
+1) Make sure the first partition is of type FAT32.
+2) Copy '/boot' and '/EFI' folders onto the FAT32 partition.
+3) The second partition can be either this FAT32 one or any of the
+supported ones, and it will contain '/porteux' folder.
+
+~~~~~~~~~~~~~~~~~~
+| Legacy System: |
+~~~~~~~~~~~~~~~~~~
+
+1) Copy '/boot' and '/porteux' folders onto the desired partition.
+
+-----
+
+After completing the steps above, continue to the ones below
+depending on the system you're setting the media storage.
+
+~~~~~~~~~~~~~~~~~
+| From Windows: |
+~~~~~~~~~~~~~~~~~
+
+1) Navigate into '/boot' folder that you have just copied.
+2) Run 'porteux-installer-for-windows.exe' and follow the instructions. 
+
+~~~~~~~~~~~~~~~
+| From Linux: |
+~~~~~~~~~~~~~~~
+
+1) Make sure the system has zstd installed.
+2) Navigate into '/boot' folder that you have just copied.
+3) From the terminal, run 'sh porteux-installer-for-linux.run' and follow
+the instructions.
+
+~~~~~~~~~~~~~~~
+| Conclusion: |
+~~~~~~~~~~~~~~~
+
+After running the installation program, you should be able to boot PorteuX
+from your media storage. Reboot your computer and ensure that your BIOS
+is set to boot from the media storage where '/boot' and '/EFI' have been
+copied.
+
+~~~~~~~~~~
+| Notes: |
+~~~~~~~~~~
+
+1) If your media storage is formatted with a Linux filesystem (e.g. EXT4
+or XFS), make sure that '/porteux' folder is owned by your current
+user (e.g., 'guest') before the first boot. Otherwise, changes will not be
+automatically saved.
+
+2) If your media storage is formatted with a Windows filesystem (e.g. FAT
+or NTFS), changes you make to your system will not be automatically saved.
+In this case, you can create a '.dat' file container or a module using the
+PorteuX Save Session application after booting, or use the
+'/porteux/rootcopy' folder to save only what you need (cleaner and faster).

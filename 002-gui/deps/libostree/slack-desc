@@ -1,0 +1,12 @@
+         |-----handy-ruler------------------------------------------------------|
+libostree: libostree (OS and container binary deployment and upgrades)
+libostree:
+libostree: libostree (formerly OStree) is both a shared library and suite of
+libostree: command line tools that combines a "git-like" model for committing
+libostree: and downloading bootable filesystem trees, along with a layer for
+libostree: deploying them and managing the bootloader configuration.
+libostree: Another way to think of OSTree is that it's just a more polished
+libostree: version of Linux VServer hardlinks.
+libostree:
+libostree: See also: https://ostreedev.github.io/ostree/
+libostree:

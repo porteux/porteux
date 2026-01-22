@@ -1,0 +1,44 @@
+From 1c3317370d30364a7be8683c16e9426b09a99c17 Mon Sep 17 00:00:00 2001
+From: Ruihai Zhou <zhou.ruihai@gd-linux.com>
+Date: Mon, 23 Dec 2024 10:15:53 +0800
+Subject: [PATCH] compositor: Fix X resource leak on error path in border_size
+
+XFixesSetPictureClipRegion() can cause a XError, there will be
+a X resource leak when return from error path. Destroy the region
+before return to fix it.
+
+Signed-off-by: Ruihai Zhou <zhou.ruihai@gd-linux.com>
+Closes: #824
+---
+ src/compositor.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/src/compositor.c b/src/compositor.c
+index 9b92db921..272bc259b 100644
+--- src/compositor.c
++++ src/compositor.c
+@@ -794,6 +794,11 @@ border_size (CWindow *cw)
+     myDisplayErrorTrapPush (display_info);
+     border = XFixesCreateRegionFromWindow (display_info->dpy,
+                                            cw->id, WindowRegionBounding);
++    if (myDisplayErrorTrapPop (display_info) != Success)
++    {
++        return None;
++    }
++    myDisplayErrorTrapPush (display_info);
+     XFixesSetPictureClipRegion (display_info->dpy, cw->picture, 0, 0, border);
+     XFixesTranslateRegion (display_info->dpy, border,
+                            cw->attr.x + cw->attr.border_width,
+@@ -801,6 +806,9 @@ border_size (CWindow *cw)
+ 
+     if (myDisplayErrorTrapPop (display_info) != Success)
+     {
++	if (border) {
++	       XFixesDestroyRegion(display_info->dpy, border);
++	}
+         return None;
+     }
+ 
+-- 
+GitLab
+

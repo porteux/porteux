@@ -1,0 +1,40 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=intel-gmmlib
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "intel" "gmmlib")
+VERSION=${info#* }
+
+tar xvf *.tar.?z
+cd gmmlib-intel-gmmlib-${VERSION}
+
+cmake -B build -S . \
+	-G Ninja \
+    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
+    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_BINDIR=/usr/bin \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+    -DCMAKE_BUILD_TYPE="Release" \
+    -DRUN_TEST_SUITE=OFF
+
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

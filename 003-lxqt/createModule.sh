@@ -11,8 +11,6 @@ source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
 
-[ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
-
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
@@ -35,7 +33,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Concurrent.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Core.* "${currentPackage}-stripped"
@@ -77,7 +75,7 @@ currentPackage=ghostscript-fonts-std
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* . || exit 1
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/share/fonts/Type1/d050000l.* "${currentPackage}-stripped"
 cp --parents -P usr/share/fonts/Type1/fonts.* "${currentPackage}-stripped"
@@ -103,34 +101,22 @@ rm -fr $MODULEPATH/${currentPackage}
 
 ### packages outside slackware repository
 
-currentPackage=audacious
-QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=audacious-plugins
-QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=ffmpegthumbnailer
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
 # required by lightdm
-installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
-currentPackage=lightdm
-SESSIONTEMPLATE=lxqt sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lightdm-gtk-greeter
-ICONTHEME=kora sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=xcape
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# lxde common
+for package in \
+	audacious \
+	audacious-plugins \
+	ffmpegthumbnailer \
+	lightdm \
+	lightdm-gtk-greeter \
+	xcape \
+; do
+SESSIONTEMPLATE=lxqt ICONTHEME=kora QT=6 sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 LATESTVERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
 
@@ -156,12 +142,9 @@ for package in \
 	libstatgrab \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-# required by xpdf
-installpkg $MODULEPATH/packages/libproxy*.txz || exit 1
 
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
@@ -219,7 +202,7 @@ for package in \
 	screengrab \
 ; do
 sh $SCRIPTPATH/lxqt/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

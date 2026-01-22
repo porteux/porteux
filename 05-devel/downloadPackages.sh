@@ -29,11 +29,12 @@ DownloadPackage "linuxdoc-tools" &
 DownloadPackage "m4" &
 DownloadPackage "make" &
 DownloadPackage "makedepend" &
+DownloadPackage "meson" &
 DownloadPackage "nasm" &
 DownloadPackage "ninja" &
 DownloadPackage "perl" &
 wait
-DownloadPackage "pkg-config" &
+DownloadPackage "pkgconf" & # this replaces pkg-config
 DownloadPackage "python-packaging" &
 DownloadPackage "python-setuptools" &
 DownloadPackage "util-macros" &
@@ -43,14 +44,6 @@ DownloadPackage "xcb-proto" &
 DownloadPackage "xorgproto" &
 DownloadPackage "yasm" &
 wait
-
-### slackware specific version packages
-
-if [ $SLACKWAREVERSION == "current" ]; then
-	DownloadPackage "meson" & # for stable we're building because slackware repo has an ancient version
-	DownloadPackage "pkgconf" & # this replaces pkg-config
-	wait
-fi
 
 ### script clean up
 

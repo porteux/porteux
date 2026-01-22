@@ -18,10 +18,6 @@ wget https://gitlab.freedesktop.org/pipewire/${PRGNAM}/-/archive/${VERSION}/${PR
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-if [ $SLACKWAREVERSION == "current" ]; then
-	buildWithSystemLua="-Dsystem-lua=true"
-fi
-
 mkdir build && cd build
 CC=clang \
 CFLAGS="$CLANGFLAGS" \
@@ -37,7 +33,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
-	${buildWithSystemLua} \
+	-Dsystem-lua=true \
 	-Ddoc=disabled \
 	-Dtests=false \
 	-Ddbus-tests=false

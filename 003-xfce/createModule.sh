@@ -28,22 +28,25 @@ DownloadFromSlackware
 
 ### packages outside slackware repository
 
-currentPackage=audacious
-sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
+# required by lightdm
+installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
-currentPackage=audacious-plugins
-sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=ffmpegthumbnailer
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=mate-polkit
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+# lxde common
+for package in \
+	audacious \
+	audacious-plugins \
+	gpicview \
+	ffmpegthumbnailer \
+	lightdm \
+	lightdm-gtk-greeter \
+	mate-common \
+	mate-polkit \
+	xcape \
+; do
+SESSIONTEMPLATE=xfce ICONTHEME=elementary-xfce sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 currentPackage=wlr-protocols
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
@@ -51,17 +54,6 @@ rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=gtk-layer-shell
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# temporary just to build engrampa and mate-search-tool
-currentPackage=mate-common
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-rm $MODULEPATH/packages/${currentPackage}*.txz
-
-currentPackage=xcape
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required from now on
@@ -76,7 +68,6 @@ for package in \
 	atril \
 	engrampa \
 	pavucontrol \
-	gpicview \
 	mate-search-tool \
 	network-manager-applet \
 ; do
@@ -94,16 +85,15 @@ installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 
 # required by xfce4-panel
-installpkg $MODULEPATH/packages/libwnck3-*.txz || exit 1
+installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 
 # required by xfce4-pulseaudio-plugin
 installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 
 # required by xfce4-terminal
-installpkg $MODULEPATH/packages/vte-*.txz || exit 1
-
-# required by xfce4-xkb-plugin
-installpkg $MODULEPATH/packages/libxklavier-*.txz || exit 1
+installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
+rm $MODULEPATH/packages/icu4c*.txz
+installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required by xfdesktop
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
@@ -159,21 +149,12 @@ for package in \
 	xfce4-xkb-plugin \
 ; do
 sh $SCRIPTPATH/xfce/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
 # only required for building not for run-time
 rm $MODULEPATH/packages/xfce4-dev-tools*
-
-currentPackage=lightdm
-SESSIONTEMPLATE=xfce sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=lightdm-gtk-greeter
-ICONTHEME=elementary-xfce sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
 
 ### fake root
 

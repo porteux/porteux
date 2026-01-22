@@ -14,9 +14,7 @@ DownloadPackage "enchant" &
 wait
 DownloadPackage "gexiv2" &
 DownloadPackage "hunspell" &
-DownloadPackage "glib-networking" &
 DownloadPackage "glibmm2" & # required by gnome-system-monitor
-DownloadPackage "gperf" & # required by appstream
 DownloadPackage "gst-plugins-bad-free" & # required by gtk4 plugin
 DownloadPackage "gst-plugins-good" & # required by nautilus media properties
 DownloadPackage "gst-plugins-libav" & # required by nautilus media properties
@@ -28,7 +26,6 @@ DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
 DownloadPackage "libnma" &
 wait
-DownloadPackage "libproxy" &
 DownloadPackage "libsigc++3" & # required by gnome-system-monitor
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
@@ -53,6 +50,7 @@ DownloadPackage "c-ares" &
 DownloadPackage "cups" & # required by gnome-settings-daemon
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
+DownloadPackage "icu4c" & # required by vte (only for safety in case it gets updated in Slackware repo)
 DownloadPackage "iso-codes" & # required by gnome-desktop
 DownloadPackage "krb5" &
 wait

@@ -1,6 +1,0 @@
-       |-----handy-ruler------------------------------------------------------|
-libpeas: libpeas
-libpeas:
-libpeas: libpeas is a gobject-based plugins engine, and is targetted at giving
-libpeas: every application the chance to assume its own extensibility.
-libpeas:

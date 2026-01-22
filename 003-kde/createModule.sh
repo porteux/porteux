@@ -11,8 +11,6 @@ source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
 
-[ $SLACKWAREVERSION != "current" ] && echo "This module should be built in current only" && exit 1
-
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
@@ -40,7 +38,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 rm usr/lib$SYSTEMBITS/*.prl
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Concurrent.* "${currentPackage}-stripped"
@@ -125,13 +123,26 @@ cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
 
+# required by main menu
+currentPackage=appstream
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+packageVersion=$(ls * -a | rev | cut -d'-' -f3 | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libAppStreamQt.* "${currentPackage}-stripped"
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-qt-${packageVersion}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage}
+
 # required by spectacle
 currentPackage=opencv
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libopencv_imgproc.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libopencv_core.* "${currentPackage}-stripped"
@@ -145,7 +156,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libgfortran.so* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
@@ -157,7 +168,7 @@ currentPackage=phonon
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P -r usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6* "${currentPackage}-stripped"
@@ -170,7 +181,7 @@ mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
 installpkg ${currentPackage}*.txz || exit 1
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}-*.txz
+ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libQCoro6Core.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQCoro6DBus.* "${currentPackage}-stripped"
@@ -181,12 +192,12 @@ rm -fr $MODULEPATH/${currentPackage}
 ### packages outside slackware repository
 
 currentPackage=audacious
-QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+QT=6 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
 rm -fr $MODULEPATH/${currentPackage}
 
 currentPackage=audacious-plugins
-QT=6 sh $SCRIPTPATH/../common/audacious/${currentPackage}.SlackBuild || exit 1
+QT=6 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
 # required by featherpad
@@ -202,7 +213,7 @@ for package in \
 	kimageformats \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}-*.txz || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

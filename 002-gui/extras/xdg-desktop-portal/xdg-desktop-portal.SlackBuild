@@ -14,17 +14,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-if [ $SLACKWAREVERSION != "current" ]; then
-	VERSION="1.18.4"
-	wget https://github.com/flatpak/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
-	
-	extraFlags="-Dsandboxed-image-validation=false"
-else
-	info=$(DownloadLatestFromGithub "flatpak" ${PRGNAM})
-	VERSION=${info#* }
-	
-	extraFlags="-Ddocumentation=disabled -Dtests=disabled -Dsandboxed-image-validation=disabled -Dsandboxed-sound-validation=disabled"
-fi
+info=$(DownloadLatestFromGithub "flatpak" ${PRGNAM})
+VERSION=${info#* }
+
+extraFlags="-Ddocumentation=disabled -Dtests=disabled -Dsandboxed-image-validation=disabled -Dsandboxed-sound-validation=disabled"
 
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION

@@ -20,12 +20,6 @@ VERSION=${info#* }
 tar xvf ${PRGNAM}-${VERSION}.tar.?z
 cd ${PRGNAM}-${VERSION}
 
-if [ $SLACKWAREVERSION == "current" ]; then
-	for i in $CWD/*.patch; do
-		patch -p1 < $i;
-	done
-fi
-
 cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_C_FLAGS="$GCCFLAGS" \

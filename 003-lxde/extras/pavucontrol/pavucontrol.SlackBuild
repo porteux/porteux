@@ -23,7 +23,7 @@ sed -i 's|printf("%s\\n", PACKAGE_STRING);|printf("%s %s\\n", PACKAGE_STRING, PA
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$CFLAGS -fvisibility-inlines-hidden" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

@@ -1,0 +1,53 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=flatpak
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "${PRGNAM}" ${PRGNAM})
+VERSION=${info#* }
+
+tar xfv $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
+sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
+
+mkdir build && cd build
+CFLAGS="$GCCFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	-Ddocbook_docs=disabled
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+echo 'export XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share:$HOME/.local/share/applications}"' > $PKG/etc/profile.d/flatpak.sh
+cp $PKG/etc/profile.d/flatpak.sh $PKG/etc/profile.d/flatpak.csh
+chmod 755 $PKG/etc/profile.d/flatpak*
+mv $PKG/usr/bin/flatpak $PKG/usr/bin/flatpak_
+install -Dm755 "$CWD/flatpak" $PKG/usr/bin/flatpak
+
+rm -fr $PKG/usr/lib
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

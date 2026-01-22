@@ -47,23 +47,26 @@ if [ ${CLANG:-no} = "yes" ]; then
 	COMPILER="Clang"
 	EXTRAFLAGS="LLVM=1 CC=clang"
 	# fixing flags that are not compatible with the kernel
-	BUILDPARAMS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers"
-	BUILDPARAMS="${BUILDPARAMS/-flto=auto/}"
-	LDFLAGS="${LLDFLAGS//-Wl,/}"
-	LDFLAGS="${LDFLAGS//-z,pack-relative-relocs/-z pack-relative-relocs}"
-	LDFLAGS="${LDFLAGS/--gc-sections/}"
-	LDFLAGS="${LDFLAGS/--strip-all/}"
-	LDFLAGS="${LDFLAGS/--icf=safe/}"
-	LDFLAGS="${LDFLAGS/-fuse-ld=lld/}"
+	BUILDPARAMS="${CLANGFLAGS/-flto=auto/} -Wno-incompatible-pointer-types-discards-qualifiers"
+	LINKPARAMS=$(echo "$LLDFLAGS" | sed \
+		-e 's/-z,pack-relative-relocs/-z pack-relative-relocs/g' \
+		-e 's/-Wl,//g' \
+		-e 's/-fuse-ld=lld//g' \
+		-e 's/--icf=safe//g' \
+		-e 's/--gc-sections//g' \
+		-e 's/--strip-all//g')
 else
 	COMPILER="GCC"
 	# fixing flags that are not compatible with the kernel
-	BUILDPARAMS="${GCCFLAGS/-ffunction-sections -fdata-sections/}"
-	BUILDPARAMS="${BUILDPARAMS/-flto=auto/}"
-	LDFLAGS="${LDFLAGS//-Wl,/}"
-	LDFLAGS="${LDFLAGS//-z,pack-relative-relocs/-z pack-relative-relocs}"
-	LDFLAGS="${LDFLAGS/--gc-sections/}"
-	LDFLAGS="${LDFLAGS/--strip-all/}"
+	BUILDPARAMS=$(echo "$GCCFLAGS" | sed \
+		-e 's/-ffunction-sections//g' \
+		-e 's/-fdata-sections//g' \
+		-e 's/-flto=auto//g')
+	LINKPARAMS=$(echo "$LDFLAGS" | sed \
+		-e 's/-z,pack-relative-relocs/-z pack-relative-relocs/g' \
+		-e 's/-Wl,//g' \
+		-e 's/--gc-sections//g' \
+		-e 's/--strip-all//g')
 fi
 
 echo "Building kernel ${KERNELVERSION} using ${COMPILER}..."
@@ -109,13 +112,13 @@ echo "Building kernel headers..."
 currentPackage=kernel-headers
 KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${SCRIPTPATH}/${currentPackage}.SlackBuild || exit 1
 mkdir -p ${MODULEPATH}/../05-devel/packages
-mv ${MODULEPATH}/packages/${currentPackage}-*.txz ${MODULEPATH}/../05-devel/packages
+mv ${MODULEPATH}/packages/${currentPackage}*.txz ${MODULEPATH}/../05-devel/packages
 rm -fr $MODULEPATH/${currentPackage}
 
 echo "Building vmlinuz (this may take a while)..."
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
-make -j${NUMBERTHREADS} KBUILD_LDFLAGS="$LDFLAGS" LDFLAGS_MODULE="$LDFLAGS" EXTRA_LDFLAGS="$LDFLAGS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
+make -j${NUMBERTHREADS} KBUILD_LDFLAGS="${LINKPARAMS/-O2/-O1}" LDFLAGS_MODULE="$LINKPARAMS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULEPATH/vmlinuz
 
 echo "Installing modules..."
@@ -129,8 +132,8 @@ rm $MODULEPATH/lib/modules/$kernelModulesFolder/build > /dev/null 2>&1
 echo "Installing firmwares..."
 currentPackage=kernel-firmware
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-tar xf $MODULEPATH/packages/kernel-firmware-*.txz > /dev/null 2>&1
-rm $MODULEPATH/packages/kernel-firmware-*.txz
+tar xf $MODULEPATH/packages/kernel-firmware*.txz > /dev/null 2>&1
+rm $MODULEPATH/packages/kernel-firmware*.txz
 sh install/doinst.sh > /dev/null 2>&1
 
 # manually copy intel bluetooth firmwares until kernel fixes drivers/bluetooth/btintel.c
@@ -169,10 +172,9 @@ mv sof ${MODULEPATH}/lib/firmware/intel
 mv sof-tplg ${MODULEPATH}/lib/firmware/intel
 
 echo "Creating symlinks of duplicate firmwares..."
-HASH_LIST=$(mktemp)
+hash_list=$(mktemp)
 declare -A seen_hashes
-find ${MODULEPATH}/lib/firmware -type f -exec sha256sum "{}" + > "$HASH_LIST"
-
+find ${MODULEPATH}/lib/firmware -type f -exec sha256sum "{}" + > "$hash_list"
 while IFS= read -r line; do
     file_hash="${line:0:64}"
     file_path="${line:65}"
@@ -192,9 +194,9 @@ while IFS= read -r line; do
     else
         seen_hashes["$file_hash"]="$file_path"
     fi
-done < "$HASH_LIST"
+done < "$hash_list"
 
-rm "$HASH_LIST"
+rm "$hash_list"
 
 cd $MODULEPATH
 
