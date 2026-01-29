@@ -20,13 +20,10 @@ VERSION=${info#* }
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-sed -i 's|cmake_minimum_required(VERSION 3.12 FATAL_ERROR)|cmake_minimum_required(VERSION 3.5)|g' third-party/miniupnp/miniupnpc/CMakeLists.txt
-sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/libnatpmp/CMakeLists.txt
-sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 3.5)|g' third-party/dht/CMakeLists.txt
-
 LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
+	-DCMAKE_C_COMPILER=clang \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_C_FLAGS="$CLANGFLAGS -ffat-lto-objects -fPIC" \
 	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
