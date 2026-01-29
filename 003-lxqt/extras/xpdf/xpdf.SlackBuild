@@ -38,7 +38,7 @@ make -C build -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-# Remover these since we use the poppler ones
+# Remove these since we use the poppler ones
 rm $PKG/usr/bin/pdfdetach
 rm $PKG/usr/bin/pdfinfo
 rm $PKG/usr/bin/pdftops

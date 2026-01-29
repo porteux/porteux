@@ -26,8 +26,8 @@ done
 
 cmake -B build -S . \
 	-G Ninja \
-    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
-    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
+    -DCMAKE_C_FLAGS="$GCCFLAGS" \
+    -DCMAKE_CXX_FLAGS="$GCCFLAGS" \
     -DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
 	-DCMAKE_INSTALL_BINDIR=/usr/bin \
@@ -36,9 +36,6 @@ cmake -B build -S . \
     -DCMAKE_BUILD_TYPE="Release"
 
 DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
-
-#find $PKG -type f -name "*.a" -exec rm -f {} \;
-#find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
