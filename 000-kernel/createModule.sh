@@ -206,8 +206,6 @@ cd $MODULEPATH
 echo "Creating kernel xzm module..."
 mkdir -p ${MODULEPATH}/${MODULENAME}
 mv lib ${MODULEPATH}/${MODULENAME}
-
-# create kernel module xzm module
 MakeModule ${MODULEPATH}/${MODULENAME} "${MODULENAME}-${KERNELVERSION}-$(date +%Y%m%d).xzm" > /dev/null 2>&1
 
 echo "Creating crippled xzm module..."
@@ -220,6 +218,7 @@ mkdir -p ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder
 ln -sf /usr/src/linux ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder/build
 
 # strip crippled
+{
 mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch/x86 ${CRIPPLEDSOURCEPATH}
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch
 mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch
@@ -249,8 +248,8 @@ find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/scripts -xtype l -delete
 mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.config
 
 find ${CRIPPLEDSOURCEPATH} | xargs strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+} >/dev/null 2>&1
 
-# create crippled xzm module
 MakeModule ${MODULEPATH}/${CRIPPLEDMODULENAME} ${CRIPPLEDMODULENAME}-$(date +%Y%m%d).xzm > /dev/null 2>&1
 
 echo "Cleaning up..."
