@@ -20,6 +20,10 @@ VERSION=${info#* }
 tar xfv $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+for i in $CWD/*.patch; do
+	patch -p1 < $i
+done
+
 LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
