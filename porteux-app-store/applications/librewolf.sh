@@ -50,7 +50,7 @@ finisher(){
 get_repo_version_librewolf(){
 	local ver;
 	if [ $CHANNEL = "stable" ]; then
-		ver=$(curl -s https://gitlab.com/librewolf-community/browser/bsys6/-/releases.atom | grep "<title>" | grep -v "releases" | cut -d ">" -f 2 | cut -d "<" -f 1 | sort -Vr | head -1)
+		ver=$(curl -s https://codeberg.org/librewolf/bsys6/releases | grep "librewolf/bsys6/src/tag/" | cut -d "/" -f 6 | cut -d "\"" -f 1 | sort -Vr | head -1)
     fi
 
     echo "$ver"
@@ -68,7 +68,7 @@ make_module_librewolf(){
 
     create_application_temp_dir "$APP"
 
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://gitlab.com/api/v4/projects/44042130/packages/generic/librewolf/${pkgver}/librewolf-${pkgver}-linux-x86_64-package.${package_extension}"
+    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://codeberg.org/api/packages/librewolf/generic/librewolf/${pkgver}/librewolf-${pkgver}-linux-x86_64-package.${package_extension}"
     mkdir -p "$TMP/$APP/$pkg_name"
     tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name"
     chmod 755 "$TMP/$APP/$pkg_name"
