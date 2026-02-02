@@ -1,0 +1,1125 @@
+diff --git b/gtk/Actions.cc a/gtk/Actions.cc
+index 612d2bd26..9b6d68c7b 100644
+--- b/gtk/Actions.cc
++++ a/gtk/Actions.cc
+@@ -53,7 +53,10 @@ void sort_changed_cb(Gio::SimpleAction& action, Glib::VariantBase const& value,
+     myCore->set_pref(TR_KEY_sort_mode, Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(value).get());
+ }
+ 
+-auto const show_toggle_entries = std::array<Glib::ustring, 2U>{ GTR_KEY_toggle_main_window, GTR_KEY_toggle_message_log };
++std::array<std::string_view, 2> const show_toggle_entries = {
++    "toggle-main-window"sv,
++    "toggle-message-log"sv,
++};
+ 
+ void toggle_pref_cb(Gio::SimpleAction& action, gpointer /*user_data*/)
+ {
+@@ -75,36 +78,36 @@ std::array<tr_quark, 6> const pref_toggle_entries = {
+     TR_KEY_show_toolbar, //
+ };
+ 
+-auto const entries = std::array<Glib::ustring, 29>{
+-    GTR_KEY_copy_magnet_link_to_clipboard,
+-    GTR_KEY_open_torrent_from_url,
+-    GTR_KEY_open_torrent,
+-    GTR_KEY_torrent_start,
+-    GTR_KEY_torrent_start_now,
+-    GTR_KEY_show_stats,
+-    GTR_KEY_donate,
+-    GTR_KEY_torrent_verify,
+-    GTR_KEY_torrent_stop,
+-    GTR_KEY_pause_all_torrents,
+-    GTR_KEY_start_all_torrents,
+-    GTR_KEY_relocate_torrent,
+-    GTR_KEY_remove_torrent,
+-    GTR_KEY_delete_torrent,
+-    GTR_KEY_new_torrent,
+-    GTR_KEY_quit,
+-    GTR_KEY_select_all,
+-    GTR_KEY_deselect_all,
+-    GTR_KEY_edit_preferences,
+-    GTR_KEY_show_torrent_properties,
+-    GTR_KEY_open_torrent_folder,
+-    GTR_KEY_show_about_dialog,
+-    GTR_KEY_help,
+-    GTR_KEY_torrent_reannounce,
+-    GTR_KEY_queue_move_top,
+-    GTR_KEY_queue_move_up,
+-    GTR_KEY_queue_move_down,
+-    GTR_KEY_queue_move_bottom,
+-    GTR_KEY_present_main_window,
++std::array<std::string_view, 29> const entries = {
++    "copy-magnet-link-to-clipboard"sv,
++    "open-torrent-from-url"sv,
++    "open-torrent"sv,
++    "torrent-start"sv,
++    "torrent-start-now"sv,
++    "show-stats"sv,
++    "donate"sv,
++    "torrent-verify"sv,
++    "torrent-stop"sv,
++    "pause-all-torrents"sv,
++    "start-all-torrents"sv,
++    "relocate-torrent"sv,
++    "remove-torrent"sv,
++    "delete-torrent"sv,
++    "new-torrent"sv,
++    "quit"sv,
++    "select-all"sv,
++    "deselect-all"sv,
++    "edit-preferences"sv,
++    "show-torrent-properties"sv,
++    "open-torrent-folder"sv,
++    "show-about-dialog"sv,
++    "help"sv,
++    "torrent-reannounce"sv,
++    "queue-move-top"sv,
++    "queue-move-up"sv,
++    "queue-move-down"sv,
++    "queue-move-bottom"sv,
++    "present-main-window"sv,
+ };
+ 
+ Gtk::Builder* myBuilder = nullptr;
+@@ -127,7 +130,7 @@ Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder>
+     auto const match = gtr_pref_string_get(TR_KEY_sort_mode);
+ 
+     {
+-        auto const action_name = GTR_KEY_sort_torrents;
++        auto const action_name = Glib::ustring("sort-torrents");
+         auto const action = Gio::SimpleAction::create_radio_string(action_name, match);
+         action->signal_activate().connect([a = action.get(), callback_user_data](auto const& value)
+                                           { sort_changed_cb(*a, value, callback_user_data); });
+diff --git b/gtk/Actions.h a/gtk/Actions.h
+index b6294f5d1..47bc6dd0e 100644
+--- b/gtk/Actions.h
++++ a/gtk/Actions.h
+@@ -16,40 +16,6 @@
+ #include <glibmm/ustring.h>
+ #include <gtkmm/builder.h>
+ 
+-inline auto const GTR_KEY_copy_magnet_link_to_clipboard = Glib::ustring{ "copy_magnet_link_to_clipboard" };
+-inline auto const GTR_KEY_delete_torrent = Glib::ustring{ "delete_torrent" };
+-inline auto const GTR_KEY_deselect_all = Glib::ustring{ "deselect_all" };
+-inline auto const GTR_KEY_donate = Glib::ustring{ "donate" };
+-inline auto const GTR_KEY_edit_preferences = Glib::ustring{ "edit_preferences" };
+-inline auto const GTR_KEY_help = Glib::ustring{ "help" };
+-inline auto const GTR_KEY_main_window_popup = Glib::ustring{ "main_window_popup" };
+-inline auto const GTR_KEY_new_torrent = Glib::ustring{ "new_torrent" };
+-inline auto const GTR_KEY_open_torrent = Glib::ustring{ "open_torrent" };
+-inline auto const GTR_KEY_open_torrent_folder = Glib::ustring{ "open_torrent_folder" };
+-inline auto const GTR_KEY_open_torrent_from_url = Glib::ustring{ "open_torrent_from_url" };
+-inline auto const GTR_KEY_pause_all_torrents = Glib::ustring{ "pause_all_torrents" };
+-inline auto const GTR_KEY_present_main_window = Glib::ustring{ "present_main_window" };
+-inline auto const GTR_KEY_queue_move_bottom = Glib::ustring{ "queue_move_bottom" };
+-inline auto const GTR_KEY_queue_move_down = Glib::ustring{ "queue_move_down" };
+-inline auto const GTR_KEY_queue_move_top = Glib::ustring{ "queue_move_top" };
+-inline auto const GTR_KEY_queue_move_up = Glib::ustring{ "queue_move_up" };
+-inline auto const GTR_KEY_quit = Glib::ustring{ "quit" };
+-inline auto const GTR_KEY_relocate_torrent = Glib::ustring{ "relocate_torrent" };
+-inline auto const GTR_KEY_remove_torrent = Glib::ustring{ "remove_torrent" };
+-inline auto const GTR_KEY_select_all = Glib::ustring{ "select_all" };
+-inline auto const GTR_KEY_show_about_dialog = Glib::ustring{ "show_about_dialog" };
+-inline auto const GTR_KEY_show_stats = Glib::ustring{ "show_stats" };
+-inline auto const GTR_KEY_show_torrent_properties = Glib::ustring{ "show_torrent_properties" };
+-inline auto const GTR_KEY_sort_torrents = Glib::ustring{ "sort_torrents" };
+-inline auto const GTR_KEY_start_all_torrents = Glib::ustring{ "start_all_torrents" };
+-inline auto const GTR_KEY_toggle_main_window = Glib::ustring{ "toggle_main_window" };
+-inline auto const GTR_KEY_toggle_message_log = Glib::ustring{ "toggle_message_log" };
+-inline auto const GTR_KEY_torrent_reannounce = Glib::ustring{ "torrent_reannounce" };
+-inline auto const GTR_KEY_torrent_start = Glib::ustring{ "torrent_start" };
+-inline auto const GTR_KEY_torrent_start_now = Glib::ustring{ "torrent_start_now" };
+-inline auto const GTR_KEY_torrent_stop = Glib::ustring{ "torrent_stop" };
+-inline auto const GTR_KEY_torrent_verify = Glib::ustring{ "torrent_verify" };
+-
+ class Session;
+ 
+ Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder> const& builder, gpointer callback_user_data);
+diff --git b/gtk/Application.cc a/gtk/Application.cc
+index 89630ac91..a681b521f 100644
+--- b/gtk/Application.cc
++++ a/gtk/Application.cc
+@@ -333,30 +333,30 @@ bool Application::Impl::refresh_actions()
+         auto const sel_counts = get_selected_torrent_counts();
+         bool const has_selection = sel_counts.total_count > 0;
+ 
+-        gtr_action_set_sensitive(GTR_KEY_select_all, torrent_count != 0);
+-        gtr_action_set_sensitive(GTR_KEY_deselect_all, torrent_count != 0);
+-        gtr_action_set_sensitive(GTR_KEY_pause_all_torrents, active != 0);
+-        gtr_action_set_sensitive(GTR_KEY_start_all_torrents, active != total);
+-
+-        gtr_action_set_sensitive(GTR_KEY_torrent_stop, (sel_counts.stopped_count < sel_counts.total_count));
+-        gtr_action_set_sensitive(GTR_KEY_torrent_start, (sel_counts.stopped_count) > 0);
+-        gtr_action_set_sensitive(GTR_KEY_torrent_start_now, (sel_counts.stopped_count + sel_counts.queued_count) > 0);
+-        gtr_action_set_sensitive(GTR_KEY_torrent_verify, has_selection);
+-        gtr_action_set_sensitive(GTR_KEY_remove_torrent, has_selection);
+-        gtr_action_set_sensitive(GTR_KEY_delete_torrent, has_selection);
+-        gtr_action_set_sensitive(GTR_KEY_relocate_torrent, has_selection);
+-        gtr_action_set_sensitive(GTR_KEY_queue_move_top, has_selection);
+-        gtr_action_set_sensitive(GTR_KEY_queue_move_up, has_selection);
+-        gtr_action_set_sensitive(GTR_KEY_queue_move_down, has_selection);
+-        gtr_action_set_sensitive(GTR_KEY_queue_move_bottom, has_selection);
+-        gtr_action_set_sensitive(GTR_KEY_show_torrent_properties, has_selection);
+-        gtr_action_set_sensitive(GTR_KEY_open_torrent_folder, sel_counts.total_count == 1);
+-        gtr_action_set_sensitive(GTR_KEY_copy_magnet_link_to_clipboard, sel_counts.total_count == 1);
++        gtr_action_set_sensitive("select-all", torrent_count != 0);
++        gtr_action_set_sensitive("deselect-all", torrent_count != 0);
++        gtr_action_set_sensitive("pause-all-torrents", active != 0);
++        gtr_action_set_sensitive("start-all-torrents", active != total);
++
++        gtr_action_set_sensitive("torrent-stop", (sel_counts.stopped_count < sel_counts.total_count));
++        gtr_action_set_sensitive("torrent-start", (sel_counts.stopped_count) > 0);
++        gtr_action_set_sensitive("torrent-start-now", (sel_counts.stopped_count + sel_counts.queued_count) > 0);
++        gtr_action_set_sensitive("torrent-verify", has_selection);
++        gtr_action_set_sensitive("remove-torrent", has_selection);
++        gtr_action_set_sensitive("delete-torrent", has_selection);
++        gtr_action_set_sensitive("relocate-torrent", has_selection);
++        gtr_action_set_sensitive("queue-move-top", has_selection);
++        gtr_action_set_sensitive("queue-move-up", has_selection);
++        gtr_action_set_sensitive("queue-move-down", has_selection);
++        gtr_action_set_sensitive("queue-move-bottom", has_selection);
++        gtr_action_set_sensitive("show-torrent-properties", has_selection);
++        gtr_action_set_sensitive("open-torrent-folder", sel_counts.total_count == 1);
++        gtr_action_set_sensitive("copy-magnet-link-to-clipboard", sel_counts.total_count == 1);
+ 
+         bool const can_update = wind_ != nullptr &&
+             wind_->for_each_selected_torrent_until([](auto const& torrent)
+                                                    { return tr_torrentCanManualUpdate(&torrent->get_underlying()); });
+-        gtr_action_set_sensitive(GTR_KEY_torrent_reannounce, can_update);
++        gtr_action_set_sensitive("torrent-reannounce", can_update);
+     }
+ 
+     refresh_actions_tag_.disconnect();
+@@ -458,7 +458,7 @@ bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, tr_torren
+     switch (type)
+     {
+     case TR_RPC_SESSION_CLOSE:
+-        gtr_action_activate(GTR_KEY_quit);
++        gtr_action_activate("quit");
+         break;
+ 
+     case TR_RPC_TORRENT_ADDED:
+@@ -558,7 +558,7 @@ namespace
+ gboolean signal_handler(gpointer user_data)
+ {
+     gtr_message(_("Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."));
+-    gtr_actions_handler(GTR_KEY_quit, user_data);
++    gtr_actions_handler("quit", user_data);
+     return G_SOURCE_REMOVE;
+ }
+ 
+@@ -624,7 +624,7 @@ void Application::Impl::on_startup()
+     ui_builder_ = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("transmission-ui.xml"s));
+     auto const actions = gtr_actions_init(ui_builder_, this);
+ 
+-    auto const main_menu = gtr_action_get_object<Gio::Menu>("main_window_menu");
++    auto const main_menu = gtr_action_get_object<Gio::Menu>("main-window-menu");
+     app_.set_menubar(main_menu);
+ 
+     /* create main window now to be a parent to any error dialogs */
+@@ -684,7 +684,7 @@ void Application::Impl::on_activate()
+         return;
+     }
+ 
+-    gtr_action_activate(GTR_KEY_present_main_window);
++    gtr_action_activate("present-main-window");
+ }
+ 
+ void Application::Impl::open_files(std::vector<Glib::RefPtr<Gio::File>> const& files)
+@@ -771,12 +771,12 @@ void Application::Impl::app_setup()
+     if (!start_iconified_)
+     {
+         wind_->show();
+-        gtr_action_set_toggled(GTR_KEY_toggle_main_window, true);
++        gtr_action_set_toggled("toggle-main-window", true);
+     }
+     else
+     {
+         gtr_window_set_skip_taskbar_hint(*wind_, icon_ != nullptr);
+-        gtr_action_set_toggled(GTR_KEY_toggle_main_window, false);
++        gtr_action_set_toggled("toggle-main-window", false);
+     }
+ }
+ 
+@@ -792,7 +792,7 @@ void Application::Impl::placeWindowFromPrefs()
+ 
+ void Application::Impl::presentMainWindow()
+ {
+-    gtr_action_set_toggled(GTR_KEY_toggle_main_window, true);
++    gtr_action_set_toggled("toggle-main-window", true);
+ 
+     if (is_iconified_)
+     {
+@@ -813,7 +813,7 @@ void Application::Impl::presentMainWindow()
+ 
+ void Application::Impl::hideMainWindow()
+ {
+-    gtr_action_set_toggled(GTR_KEY_toggle_main_window, false);
++    gtr_action_set_toggled("toggle-main-window", false);
+ 
+     gtr_window_set_skip_taskbar_hint(*wind_, true);
+     gtr_widget_set_visible(*wind_, false);
+@@ -836,7 +836,7 @@ bool Application::Impl::winclose()
+ {
+     if (icon_ != nullptr)
+     {
+-        gtr_action_activate(GTR_KEY_toggle_main_window);
++        gtr_action_activate("toggle-main-window");
+     }
+     else
+     {
+@@ -1502,42 +1503,42 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+ {
+     bool changed = false;
+ 
+-    if (action_name == GTR_KEY_open_torrent_from_url)
++    if (action_name == "open-torrent-from-url")
+     {
+         auto w = std::shared_ptr<TorrentUrlChooserDialog>(TorrentUrlChooserDialog::create(*wind_, core_));
+         gtr_window_on_close(*w, [w]() mutable { w.reset(); });
+         w->show();
+     }
+-    else if (action_name == GTR_KEY_open_torrent)
++    else if (action_name == "open-torrent")
+     {
+         auto w = std::shared_ptr<TorrentFileChooserDialog>(TorrentFileChooserDialog::create(*wind_, core_));
+         w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
+         w->show();
+     }
+-    else if (action_name == GTR_KEY_show_stats)
++    else if (action_name == "show-stats")
+     {
+         auto dialog = std::shared_ptr<StatsDialog>(StatsDialog::create(*wind_, core_));
+         gtr_window_on_close(*dialog, [dialog]() mutable { dialog.reset(); });
+         dialog->show();
+     }
+-    else if (action_name == GTR_KEY_donate)
++    else if (action_name == "donate")
+     {
+         gtr_open_uri("https://transmissionbt.com/donate/");
+     }
+-    else if (action_name == GTR_KEY_pause_all_torrents)
++    else if (action_name == "pause-all-torrents")
+     {
+         pause_all_torrents();
+     }
+-    else if (action_name == GTR_KEY_start_all_torrents)
++    else if (action_name == "start-all-torrents")
+     {
+         start_all_torrents();
+     }
+-    else if (action_name == GTR_KEY_copy_magnet_link_to_clipboard)
++    else if (action_name == "copy-magnet-link-to-clipboard")
+     {
+         wind_->for_each_selected_torrent_until(
+             sigc::bind_return(sigc::mem_fun(*this, &Impl::copy_magnet_link_to_clipboard), true));
+     }
+-    else if (action_name == GTR_KEY_relocate_torrent)
++    else if (action_name == "relocate-torrent")
+     {
+         auto const ids = get_selected_torrent_ids();
+ 
+@@ -1552,41 +1553,41 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+     {
+         changed = call_rpc_for_selected_torrents(*method);
+     }
+-    else if (action_name == GTR_KEY_open_torrent_folder)
++    else if (action_name == "open-torrent-folder")
+     {
+         wind_->for_each_selected_torrent([this](auto const& torrent) { core_->open_folder(torrent->get_id()); });
+     }
+-    else if (action_name == GTR_KEY_show_torrent_properties)
++    else if (action_name == "show-torrent-properties")
+     {
+         show_details_dialog_for_selected_torrents();
+     }
+-    else if (action_name == GTR_KEY_new_torrent)
++    else if (action_name == "new-torrent")
+     {
+         auto w = std::shared_ptr<MakeDialog>(MakeDialog::create(*wind_, core_));
+         gtr_window_on_close(*w, [w]() mutable { w.reset(); });
+         w->show();
+     }
+-    else if (action_name == GTR_KEY_remove_torrent)
++    else if (action_name == "remove-torrent")
+     {
+         remove_selected(false);
+     }
+-    else if (action_name == GTR_KEY_delete_torrent)
++    else if (action_name == "delete-torrent")
+     {
+         remove_selected(true);
+     }
+-    else if (action_name == GTR_KEY_quit)
++    else if (action_name == "quit")
+     {
+         on_app_exit();
+     }
+-    else if (action_name == GTR_KEY_select_all)
++    else if (action_name == "select-all")
+     {
+         wind_->select_all();
+     }
+-    else if (action_name == GTR_KEY_deselect_all)
++    else if (action_name == "deselect-all")
+     {
+         wind_->unselect_all();
+     }
+-    else if (action_name == GTR_KEY_edit_preferences)
++    else if (action_name == "edit-preferences")
+     {
+         if (prefs_ == nullptr)
+         {
+@@ -1596,7 +1597,7 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+ 
+         gtr_window_present(prefs_);
+     }
+-    else if (action_name == GTR_KEY_toggle_message_log)
++    else if (action_name == "toggle-message-log")
+     {
+         if (msgwin_ == nullptr)
+         {
+@@ -1605,11 +1606,11 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+                 *msgwin_,
+                 [this]()
+                 {
+-                    gtr_action_set_toggled(GTR_KEY_toggle_message_log, false);
++                    gtr_action_set_toggled("toggle-message-log", false);
+                     msgwin_.reset();
+                 });
+ 
+-            gtr_action_set_toggled(GTR_KEY_toggle_message_log, true);
++            gtr_action_set_toggled("toggle-message-log", true);
+             msgwin_->show();
+         }
+         else
+@@ -1617,19 +1618,19 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+             msgwin_->close();
+         }
+     }
+-    else if (action_name == GTR_KEY_show_about_dialog)
++    else if (action_name == "show-about-dialog")
+     {
+         show_about_dialog();
+     }
+-    else if (action_name == GTR_KEY_help)
++    else if (action_name == "help")
+     {
+         gtr_open_uri(gtr_get_help_uri());
+     }
+-    else if (action_name == GTR_KEY_toggle_main_window)
++    else if (action_name == "toggle-main-window")
+     {
+         toggleMainWindow();
+     }
+-    else if (action_name == GTR_KEY_present_main_window)
++    else if (action_name == "present-main-window")
+     {
+         presentMainWindow();
+     }
+diff --git b/gtk/MainWindow.cc a/gtk/MainWindow.cc
+index 4a8d9295d..e5cddfc18 100644
+--- b/gtk/MainWindow.cc
++++ a/gtk/MainWindow.cc
+@@ -180,7 +180,7 @@ void MainWindow::Impl::on_popup_menu([[maybe_unused]] double event_x, [[maybe_un
+ {
+     if (popup_menu_ == nullptr)
+     {
+-        auto const menu = gtr_action_get_object<Gio::Menu>(GTR_KEY_main_window_popup);
++        auto const menu = gtr_action_get_object<Gio::Menu>("main-window-popup");
+ 
+ #if GTKMM_CHECK_VERSION(4, 0, 0)
+         popup_menu_ = Gtk::make_managed<Gtk::PopoverMenu>(menu, Gtk::PopoverMenu::Flags::NESTED);
+@@ -275,7 +275,7 @@ void MainWindow::Impl::init_view(TorrentView* view, Glib::RefPtr<FilterBar::Mode
+     item_factory_compact_ = create_builder_list_item_factory("TorrentListItemCompact.ui"s);
+     item_factory_full_ = create_builder_list_item_factory("TorrentListItemFull.ui"s);
+ 
+-    view->signal_activate().connect([](guint /*position*/) { gtr_action_activate(GTR_KEY_show_torrent_properties); });
++    view->signal_activate().connect([](guint /*position*/) { gtr_action_activate("show-torrent-properties"); });
+ 
+     selection_ = Gtk::MultiSelection::create(model);
+     selection_->signal_selection_changed().connect([this](guint /*position*/, guint /*n_items*/)
+@@ -297,7 +297,7 @@ void MainWindow::Impl::init_view(TorrentView* view, Glib::RefPtr<FilterBar::Mode
+ 
+     view->signal_popup_menu().connect_notify([this]() { on_popup_menu(0, 0); });
+     view->signal_row_activated().connect([](auto const& /*path*/, auto* /*column*/)
+-                                         { gtr_action_activate(GTR_KEY_show_torrent_properties); });
++                                         { gtr_action_activate("show-torrent-properties"); });
+ 
+     view->set_model(model);
+ 
+diff --git b/gtk/MessageLogWindow.cc a/gtk/MessageLogWindow.cc
+index b9760e4c2..f749b0512 100644
+--- b/gtk/MessageLogWindow.cc
++++ a/gtk/MessageLogWindow.cc
+@@ -502,15 +502,15 @@ MessageLogWindow::Impl::Impl(
+ 
+     auto const action_group = Gio::SimpleActionGroup::create();
+ 
+-    auto const save_action = Gio::SimpleAction::create("save_message_log");
++    auto const save_action = Gio::SimpleAction::create("save-message-log");
+     save_action->signal_activate().connect([this](auto const& /*value*/) { onSaveRequest(); });
+     action_group->add_action(save_action);
+ 
+-    auto const clear_action = Gio::SimpleAction::create("clear_message_log");
++    auto const clear_action = Gio::SimpleAction::create("clear-message-log");
+     clear_action->signal_activate().connect([this](auto const& /*value*/) { onClearRequest(); });
+     action_group->add_action(clear_action);
+ 
+-    auto const pause_action = Gio::SimpleAction::create_bool("pause_message_log");
++    auto const pause_action = Gio::SimpleAction::create_bool("pause-message-log");
+     pause_action->signal_activate().connect([this, &action = *pause_action](auto const& /*value*/) { onPauseToggled(action); });
+     action_group->add_action(pause_action);
+ 
+diff --git b/gtk/SystemTrayIcon.cc a/gtk/SystemTrayIcon.cc
+index e747923bb..5140e7b0a 100644
+--- b/gtk/SystemTrayIcon.cc
++++ a/gtk/SystemTrayIcon.cc
+@@ -114,7 +114,7 @@ SystemTrayIcon::Impl::~Impl() = default;
+ 
+ void SystemTrayIcon::Impl::activated()
+ {
+-    gtr_action_activate(GTR_KEY_toggle_main_window);
++    gtr_action_activate("toggle-main-window");
+ }
+ 
+ void SystemTrayIcon::Impl::popup(guint /*button*/, guint /*when*/)
+diff --git b/gtk/transmission-ui.xml a/gtk/transmission-ui.xml
+index 67979d966..d7d8ed69d 100644
+--- b/gtk/transmission-ui.xml
++++ a/gtk/transmission-ui.xml
+@@ -2,26 +2,26 @@
+ <interface>
+   <requires lib="gtk+" version="3.24"/>
+ 
+-  <menu id="main_window_menu">
++  <menu id="main-window-menu">
+     <submenu>
+       <attribute name="label" translatable="true">_File</attribute>
+       <section>
+         <item>
+-          <attribute name="action">win.open_torrent</attribute>
++          <attribute name="action">win.open-torrent</attribute>
+           <attribute name="icon">document-open</attribute>
+           <attribute name="label" translatable="yes">_Open</attribute>
+           <attribute name="accel">&lt;control&gt;O</attribute>
+           <attribute name="tooltip" translatable="yes">Open a torrent</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.open_torrent_from_url</attribute>
++          <attribute name="action">win.open-torrent-from-url</attribute>
+           <attribute name="icon">document-open</attribute>
+           <attribute name="label" translatable="yes">Open _URL…</attribute>
+           <attribute name="accel">&lt;control&gt;U</attribute>
+           <attribute name="tooltip" translatable="yes">Open URL…</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.new_torrent</attribute>
++          <attribute name="action">win.new-torrent</attribute>
+           <attribute name="icon">document-new</attribute>
+           <attribute name="accel">&lt;control&gt;N</attribute>
+           <attribute name="label" translatable="yes">_New…</attribute>
+@@ -29,13 +29,13 @@
+       </section>
+       <section>
+         <item>
+-          <attribute name="action">win.start_all_torrents</attribute>
++          <attribute name="action">win.start-all-torrents</attribute>
+           <attribute name="icon">media-playback-start</attribute>
+           <attribute name="label" translatable="yes">_Start All</attribute>
+           <attribute name="tooltip" translatable="yes">Start all torrents</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.pause_all_torrents</attribute>
++          <attribute name="action">win.pause-all-torrents</attribute>
+           <attribute name="icon">media-playback-pause</attribute>
+           <attribute name="label" translatable="yes">_Pause All</attribute>
+           <attribute name="tooltip" translatable="yes">Pause all torrents</attribute>
+@@ -54,20 +54,20 @@
+       <attribute name="label" translatable="true">_Edit</attribute>
+       <section>
+         <item>
+-          <attribute name="action">win.select_all</attribute>
++          <attribute name="action">win.select-all</attribute>
+           <attribute name="icon">edit-select-all</attribute>
+           <attribute name="label" translatable="yes">Select _All</attribute>
+           <attribute name="accel">&lt;control&gt;A</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.deselect_all</attribute>
++          <attribute name="action">win.deselect-all</attribute>
+           <attribute name="label" translatable="yes">Dese_lect All</attribute>
+           <attribute name="accel">&lt;shift&gt;&lt;control&gt;A</attribute>
+         </item>
+       </section>
+       <section>
+         <item>
+-          <attribute name="action">win.edit_preferences</attribute>
++          <attribute name="action">win.edit-preferences</attribute>
+           <attribute name="icon">preferences-system</attribute>
+           <attribute name="label" translatable="yes">_Preferences</attribute>
+         </item>
+@@ -77,14 +77,14 @@
+       <attribute name="label" translatable="true">_Torrent</attribute>
+       <section>
+         <item>
+-          <attribute name="action">win.show_torrent_properties</attribute>
++          <attribute name="action">win.show-torrent-properties</attribute>
+           <attribute name="icon">document-properties</attribute>
+           <attribute name="label" translatable="yes">_Properties</attribute>
+           <attribute name="accel">&lt;alt&gt;Return</attribute>
+           <attribute name="tooltip" translatable="yes">Torrent properties</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.open_torrent_folder</attribute>
++          <attribute name="action">win.open-torrent-folder</attribute>
+           <attribute name="icon">document-open</attribute>
+           <attribute name="label" translatable="yes">Open Fold_er</attribute>
+           <attribute name="accel">&lt;control&gt;E</attribute>
+@@ -92,21 +92,21 @@
+       </section>
+       <section>
+         <item>
+-          <attribute name="action">win.torrent_start</attribute>
++          <attribute name="action">win.torrent-start</attribute>
+           <attribute name="icon">media-playback-start</attribute>
+           <attribute name="label" translatable="yes">_Start</attribute>
+           <attribute name="accel">&lt;control&gt;S</attribute>
+           <attribute name="tooltop" translatable="yes">Start torrent</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.torrent_start_now</attribute>
++          <attribute name="action">win.torrent-start-now</attribute>
+           <attribute name="icon">media-playback-start</attribute>
+           <attribute name="label" translatable="yes">Start _Now</attribute>
+           <attribute name="accel">&lt;shift&gt;&lt;control&gt;S</attribute>
+           <attribute name="tooltop" translatable="yes">Start torrent now</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.torrent_reannounce</attribute>
++          <attribute name="action">win.torrent-reannounce</attribute>
+           <attribute name="icon">network-workgroup</attribute>
+           <attribute name="label" translatable="yes">Ask Tracker for _More Peers</attribute>
+         </item>
+@@ -114,29 +114,29 @@
+           <attribute name="label" translatable="true">_Queue</attribute>
+           <section>
+             <item>
+-              <attribute name="action">win.queue_move_top</attribute>
++              <attribute name="action">win.queue-move-top</attribute>
+               <attribute name="icon">go-top</attribute>
+               <attribute name="label" translatable="yes">Move to _Top</attribute>
+             </item>
+             <item>
+-              <attribute name="action">win.queue_move_up</attribute>
++              <attribute name="action">win.queue-move-up</attribute>
+               <attribute name="icon">go-up</attribute>
+               <attribute name="label" translatable="yes">Move _Up</attribute>
+             </item>
+             <item>
+-              <attribute name="action">win.queue_move_down</attribute>
++              <attribute name="action">win.queue-move-down</attribute>
+               <attribute name="icon">go-down</attribute>
+               <attribute name="label" translatable="yes">Move _Down</attribute>
+             </item>
+             <item>
+-              <attribute name="action">win.queue_move_bottom</attribute>
++              <attribute name="action">win.queue-move-bottom</attribute>
+               <attribute name="icon">go-bottom</attribute>
+               <attribute name="label" translatable="yes">Move to _Bottom</attribute>
+             </item>
+           </section>
+         </submenu>
+         <item>
+-          <attribute name="action">win.torrent_stop</attribute>
++          <attribute name="action">win.torrent-stop</attribute>
+           <attribute name="icon">media-playback-pause</attribute>
+           <attribute name="label" translatable="yes">_Pause</attribute>
+           <attribute name="accel">&lt;control&gt;P</attribute>
+@@ -145,29 +145,29 @@
+       </section>
+       <section>
+         <item>
+-          <attribute name="action">win.relocate_torrent</attribute>
++          <attribute name="action">win.relocate-torrent</attribute>
+           <attribute name="label" translatable="yes">Set _Location…</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.torrent_verify</attribute>
++          <attribute name="action">win.torrent-verify</attribute>
+           <attribute name="label" translatable="yes">_Verify Local Data</attribute>
+           <attribute name="accel">&lt;control&gt;V</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.copy_magnet_link_to_clipboard</attribute>
++          <attribute name="action">win.copy-magnet-link-to-clipboard</attribute>
+           <attribute name="icon">edit-copy</attribute>
+           <attribute name="label" translatable="yes">Copy _Magnet Link to Clipboard</attribute>
+         </item>
+       </section>
+       <section>
+         <item>
+-          <attribute name="action">win.remove_torrent</attribute>
++          <attribute name="action">win.remove-torrent</attribute>
+           <attribute name="icon">list-remove</attribute>
+           <attribute name="label" translatable="yes">Remove torrent</attribute>
+           <attribute name="accel">Delete</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.delete_torrent</attribute>
++          <attribute name="action">win.delete-torrent</attribute>
+           <attribute name="icon">edit-delete</attribute>
+           <attribute name="label" translatable="yes">_Delete Files and Remove</attribute>
+           <attribute name="accel">&lt;shift&gt;Delete</attribute>
+@@ -199,47 +199,47 @@
+       </section>
+       <section>
+         <item>
+-          <attribute name="action">win.sort_torrents</attribute>
++          <attribute name="action">win.sort-torrents</attribute>
+           <attribute name="label" translatable="yes">Sort by _Activity</attribute>
+           <attribute name="target">sort_by_activity</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.sort_torrents</attribute>
++          <attribute name="action">win.sort-torrents</attribute>
+           <attribute name="label" translatable="yes">Sort by A_ge</attribute>
+           <attribute name="target">sort_by_age</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.sort_torrents</attribute>
++          <attribute name="action">win.sort-torrents</attribute>
+           <attribute name="label" translatable="yes">Sort by _Name</attribute>
+           <attribute name="target">sort_by_name</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.sort_torrents</attribute>
++          <attribute name="action">win.sort-torrents</attribute>
+           <attribute name="label" translatable="yes">Sort by _Progress</attribute>
+           <attribute name="target">sort_by_progress</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.sort_torrents</attribute>
++          <attribute name="action">win.sort-torrents</attribute>
+           <attribute name="label" translatable="yes">Sort by _Queue</attribute>
+           <attribute name="target">sort_by_queue</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.sort_torrents</attribute>
++          <attribute name="action">win.sort-torrents</attribute>
+           <attribute name="label" translatable="yes">Sort by Rati_o</attribute>
+           <attribute name="target">sort_by_ratio</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.sort_torrents</attribute>
++          <attribute name="action">win.sort-torrents</attribute>
+           <attribute name="label" translatable="yes">Sort by Si_ze</attribute>
+           <attribute name="target">sort_by_size</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.sort_torrents</attribute>
++          <attribute name="action">win.sort-torrents</attribute>
+           <attribute name="label" translatable="yes">Sort by Stat_e</attribute>
+           <attribute name="target">sort_by_state</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.sort_torrents</attribute>
++          <attribute name="action">win.sort-torrents</attribute>
+           <attribute name="label" translatable="yes">Sort by Time _Left</attribute>
+           <attribute name="target">sort_by_time_left</attribute>
+         </item>
+@@ -255,11 +255,11 @@
+       <attribute name="label" translatable="true">_Help</attribute>
+       <section>
+         <item>
+-          <attribute name="action">win.toggle_message_log</attribute>
++          <attribute name="action">win.toggle-message-log</attribute>
+           <attribute name="label" translatable="yes">Message _Log</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.show_stats</attribute>
++          <attribute name="action">win.show-stats</attribute>
+           <attribute name="label" translatable="yes">_Statistics</attribute>
+         </item>
+       </section>
+@@ -277,7 +277,7 @@
+           <attribute name="accel">F1</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.show_about_dialog</attribute>
++          <attribute name="action">win.show-about-dialog</attribute>
+           <attribute name="icon">help-about</attribute>
+           <attribute name="label" translatable="yes">_About</attribute>
+         </item>
+@@ -285,17 +285,17 @@
+     </submenu>
+   </menu>
+ 
+-  <menu id="main_window_popup">
++  <menu id="main-window-popup">
+     <section>
+       <item>
+-        <attribute name="action">win.show_torrent_properties</attribute>
++        <attribute name="action">win.show-torrent-properties</attribute>
+         <attribute name="icon">document-properties</attribute>
+         <attribute name="label" translatable="yes">_Properties</attribute>
+         <attribute name="accel">&lt;alt&gt;Return</attribute>
+         <attribute name="tooltip" translatable="yes">Torrent properties</attribute>
+       </item>
+       <item>
+-        <attribute name="action">win.open_torrent_folder</attribute>
++        <attribute name="action">win.open-torrent-folder</attribute>
+         <attribute name="icon">document-open</attribute>
+         <attribute name="label" translatable="yes">Open Fold_er</attribute>
+         <attribute name="accel">&lt;control&gt;E</attribute>
+@@ -306,47 +306,47 @@
+         <attribute name="label" translatable="true">_Sort Torrents By</attribute>
+         <section>
+           <item>
+-            <attribute name="action">win.sort_torrents</attribute>
++            <attribute name="action">win.sort-torrents</attribute>
+             <attribute name="label" translatable="yes">Sort by _Activity</attribute>
+             <attribute name="target">sort_by_activity</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.sort_torrents</attribute>
++            <attribute name="action">win.sort-torrents</attribute>
+             <attribute name="label" translatable="yes">Sort by A_ge</attribute>
+             <attribute name="target">sort_by_age</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.sort_torrents</attribute>
++            <attribute name="action">win.sort-torrents</attribute>
+             <attribute name="label" translatable="yes">Sort by _Name</attribute>
+             <attribute name="target">sort_by_name</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.sort_torrents</attribute>
++            <attribute name="action">win.sort-torrents</attribute>
+             <attribute name="label" translatable="yes">Sort by _Progress</attribute>
+             <attribute name="target">sort_by_progress</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.sort_torrents</attribute>
++            <attribute name="action">win.sort-torrents</attribute>
+             <attribute name="label" translatable="yes">Sort by _Queue</attribute>
+             <attribute name="target">sort_by_queue</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.sort_torrents</attribute>
++            <attribute name="action">win.sort-torrents</attribute>
+             <attribute name="label" translatable="yes">Sort by Rati_o</attribute>
+             <attribute name="target">sort_by_ratio</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.sort_torrents</attribute>
++            <attribute name="action">win.sort-torrents</attribute>
+             <attribute name="label" translatable="yes">Sort by Si_ze</attribute>
+             <attribute name="target">sort_by_size</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.sort_torrents</attribute>
++            <attribute name="action">win.sort-torrents</attribute>
+             <attribute name="label" translatable="yes">Sort by Stat_e</attribute>
+             <attribute name="target">sort_by_state</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.sort_torrents</attribute>
++            <attribute name="action">win.sort-torrents</attribute>
+             <attribute name="label" translatable="yes">Sort by Time _Left</attribute>
+             <attribute name="target">sort_by_time_left</attribute>
+           </item>
+@@ -361,21 +361,21 @@
+     </section>
+     <section>
+       <item>
+-        <attribute name="action">win.torrent_start</attribute>
++        <attribute name="action">win.torrent-start</attribute>
+         <attribute name="icon">media-playback-start</attribute>
+         <attribute name="label" translatable="yes">_Start</attribute>
+         <attribute name="accel">&lt;control&gt;S</attribute>
+         <attribute name="tooltop" translatable="yes">Start torrent</attribute>
+       </item>
+       <item>
+-        <attribute name="action">win.torrent_start_now</attribute>
++        <attribute name="action">win.torrent-start-now</attribute>
+         <attribute name="icon">media-playback-start</attribute>
+         <attribute name="label" translatable="yes">Start _Now</attribute>
+         <attribute name="accel">&lt;shift&gt;&lt;control&gt;S</attribute>
+         <attribute name="tooltop" translatable="yes">Start torrent now</attribute>
+       </item>
+       <item>
+-        <attribute name="action">win.torrent_reannounce</attribute>
++        <attribute name="action">win.torrent-reannounce</attribute>
+         <attribute name="icon">network-workgroup</attribute>
+         <attribute name="label" translatable="yes">Ask Tracker for _More Peers</attribute>
+       </item>
+@@ -383,29 +383,29 @@
+         <attribute name="label" translatable="true">_Queue</attribute>
+         <section>
+           <item>
+-            <attribute name="action">win.queue_move_top</attribute>
++            <attribute name="action">win.queue-move-top</attribute>
+             <attribute name="icon">go-top</attribute>
+             <attribute name="label" translatable="yes">Move to _Top</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.queue_move_up</attribute>
++            <attribute name="action">win.queue-move-up</attribute>
+             <attribute name="icon">go-up</attribute>
+             <attribute name="label" translatable="yes">Move _Up</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.queue_move_down</attribute>
++            <attribute name="action">win.queue-move-down</attribute>
+             <attribute name="icon">go-down</attribute>
+             <attribute name="label" translatable="yes">Move _Down</attribute>
+           </item>
+           <item>
+-            <attribute name="action">win.queue_move_bottom</attribute>
++            <attribute name="action">win.queue-move-bottom</attribute>
+             <attribute name="icon">go-bottom</attribute>
+             <attribute name="label" translatable="yes">Move to _Bottom</attribute>
+           </item>
+         </section>
+       </submenu>
+       <item>
+-        <attribute name="action">win.torrent_stop</attribute>
++        <attribute name="action">win.torrent-stop</attribute>
+         <attribute name="icon">media-playback-pause</attribute>
+         <attribute name="label" translatable="yes">_Pause</attribute>
+         <attribute name="accel">&lt;control&gt;P</attribute>
+@@ -414,29 +414,29 @@
+     </section>
+     <section>
+       <item>
+-        <attribute name="action">win.relocate_torrent</attribute>
++        <attribute name="action">win.relocate-torrent</attribute>
+         <attribute name="label" translatable="yes">Set _Location…</attribute>
+       </item>
+       <item>
+-        <attribute name="action">win.torrent_verify</attribute>
++        <attribute name="action">win.torrent-verify</attribute>
+         <attribute name="label" translatable="yes">_Verify Local Data</attribute>
+         <attribute name="accel">&lt;control&gt;V</attribute>
+       </item>
+       <item>
+-        <attribute name="action">win.copy_magnet_link_to_clipboard</attribute>
++        <attribute name="action">win.copy-magnet-link-to-clipboard</attribute>
+         <attribute name="icon">edit-copy</attribute>
+         <attribute name="label" translatable="yes">Copy _Magnet Link to Clipboard</attribute>
+       </item>
+     </section>
+     <section>
+       <item>
+-        <attribute name="action">win.remove_torrent</attribute>
++        <attribute name="action">win.remove-torrent</attribute>
+         <attribute name="icon">list-remove</attribute>
+         <attribute name="label" translatable="yes">Remove torrent</attribute>
+         <attribute name="accel">Delete</attribute>
+       </item>
+       <item>
+-        <attribute name="action">win.delete_torrent</attribute>
++        <attribute name="action">win.delete-torrent</attribute>
+         <attribute name="icon">edit-delete</attribute>
+         <attribute name="label" translatable="yes">_Delete Files and Remove</attribute>
+         <attribute name="accel">&lt;shift&gt;Delete</attribute>
+@@ -447,19 +447,19 @@
+   <menu id="icon-popup">
+     <section>
+       <item>
+-        <attribute name="action">win.toggle_main_window</attribute>
++        <attribute name="action">win.toggle-main-window</attribute>
+         <attribute name="label" translatable="yes">_Show Transmission</attribute>
+       </item>
+     </section>
+     <section>
+       <item>
+-        <attribute name="action">win.open_torrent</attribute>
++        <attribute name="action">win.open-torrent</attribute>
+         <attribute name="icon">document-open</attribute>
+         <attribute name="label" translatable="yes">_Open</attribute>
+         <attribute name="tooltip" translatable="yes">Open a torrent</attribute>
+       </item>
+       <item>
+-        <attribute name="action">win.open_torrent_from_url</attribute>
++        <attribute name="action">win.open-torrent-from-url</attribute>
+         <attribute name="icon">document-open</attribute>
+         <attribute name="label" translatable="yes">Open _URL…</attribute>
+         <attribute name="accel"></attribute>
+@@ -468,13 +468,13 @@
+     </section>
+     <section>
+       <item>
+-        <attribute name="action">win.pause_all_torrents</attribute>
++        <attribute name="action">win.pause-all-torrents</attribute>
+         <attribute name="icon">media-playback-pause</attribute>
+         <attribute name="label" translatable="yes">_Pause All</attribute>
+         <attribute name="tooltip" translatable="yes">Pause all torrents</attribute>
+       </item>
+       <item>
+-        <attribute name="action">win.start_all_torrents</attribute>
++        <attribute name="action">win.start-all-torrents</attribute>
+         <attribute name="icon">media-playback-start</attribute>
+         <attribute name="label" translatable="yes">_Start All</attribute>
+         <attribute name="tooltip" translatable="yes">Start all torrents</attribute>
+diff --git b/gtk/ui/gtk3/MainWindow.ui a/gtk/ui/gtk3/MainWindow.ui
+index b8dc0213d..51d6976bc 100644
+--- b/gtk/ui/gtk3/MainWindow.ui
++++ a/gtk/ui/gtk3/MainWindow.ui
+@@ -20,7 +20,7 @@
+                 <property name="can-focus">False</property>
+                 <property name="tooltip-text" translatable="yes">Open a torrent</property>
+                 <property name="is-important">True</property>
+-                <property name="action-name">win.open_torrent</property>
++                <property name="action-name">win.open-torrent</property>
+                 <property name="label" translatable="yes">_Open</property>
+                 <property name="use-underline">True</property>
+                 <property name="icon-name">document-open</property>
+@@ -35,7 +35,7 @@
+                 <property name="visible">True</property>
+                 <property name="can-focus">False</property>
+                 <property name="tooltip-text" translatable="yes">Start torrent</property>
+-                <property name="action-name">win.torrent_start</property>
++                <property name="action-name">win.torrent-start</property>
+                 <property name="label" translatable="yes">_Start</property>
+                 <property name="use-underline">True</property>
+                 <property name="icon-name">media-playback-start</property>
+@@ -50,7 +50,7 @@
+                 <property name="visible">True</property>
+                 <property name="can-focus">False</property>
+                 <property name="tooltip-text" translatable="yes">Pause torrent</property>
+-                <property name="action-name">win.torrent_stop</property>
++                <property name="action-name">win.torrent-stop</property>
+                 <property name="label" translatable="yes">_Pause</property>
+                 <property name="use-underline">True</property>
+                 <property name="icon-name">media-playback-pause</property>
+@@ -65,7 +65,7 @@
+                 <property name="visible">True</property>
+                 <property name="can-focus">False</property>
+                 <property name="tooltip-text" translatable="yes">Remove torrent</property>
+-                <property name="action-name">win.remove_torrent</property>
++                <property name="action-name">win.remove-torrent</property>
+                 <property name="label" translatable="yes">Remove torrent</property>
+                 <property name="use-underline">True</property>
+                 <property name="icon-name">list-remove</property>
+@@ -91,7 +91,7 @@
+                 <property name="can-focus">False</property>
+                 <property name="tooltip-text" translatable="yes">Torrent properties</property>
+                 <property name="is-important">True</property>
+-                <property name="action-name">win.show_torrent_properties</property>
++                <property name="action-name">win.show-torrent-properties</property>
+                 <property name="label" translatable="yes">_Properties</property>
+                 <property name="use-underline">True</property>
+                 <property name="icon-name">document-properties</property>
+diff --git b/gtk/ui/gtk3/MessageLogWindow.ui a/gtk/ui/gtk3/MessageLogWindow.ui
+index d187df2e8..1f3288730 100644
+--- b/gtk/ui/gtk3/MessageLogWindow.ui
++++ a/gtk/ui/gtk3/MessageLogWindow.ui
+@@ -22,7 +22,7 @@
+                 <property name="visible">True</property>
+                 <property name="can-focus">False</property>
+                 <property name="is-important">True</property>
+-                <property name="action-name">win.save_message_log</property>
++                <property name="action-name">win.save-message-log</property>
+                 <property name="label" translatable="yes">Save _As</property>
+                 <property name="use-underline">True</property>
+                 <property name="icon-name">document-save-as</property>
+@@ -37,7 +37,7 @@
+                 <property name="visible">True</property>
+                 <property name="can-focus">False</property>
+                 <property name="is-important">True</property>
+-                <property name="action-name">win.clear_message_log</property>
++                <property name="action-name">win.clear-message-log</property>
+                 <property name="label" translatable="yes">Clear</property>
+                 <property name="use-underline">True</property>
+                 <property name="icon-name">edit-clear</property>
+@@ -62,7 +62,7 @@
+                 <property name="visible">True</property>
+                 <property name="can-focus">False</property>
+                 <property name="is-important">True</property>
+-                <property name="action-name">win.pause_message_log</property>
++                <property name="action-name">win.pause-message-log</property>
+                 <property name="label" translatable="yes">P_ause</property>
+                 <property name="use-underline">True</property>
+                 <property name="icon-name">media-playback-pause</property>
+diff --git b/gtk/ui/gtk4/MainWindow.ui a/gtk/ui/gtk4/MainWindow.ui
+index 8f90fa61b..a125a90ab 100644
+--- b/gtk/ui/gtk4/MainWindow.ui
++++ a/gtk/ui/gtk4/MainWindow.ui
+@@ -14,7 +14,7 @@ horizontal]]></property>
+               <object class="GtkButton" id="open_file_button">
+                 <property name="focusable">1</property>
+                 <property name="tooltip-text" translatable="1">Open a torrent</property>
+-                <property name="action-name">win.open_torrent</property>
++                <property name="action-name">win.open-torrent</property>
+                 <child>
+                   <object class="GtkBox">
+                     <property name="halign">center</property>
+@@ -40,7 +40,7 @@ horizontal]]></property>
+               <object class="GtkButton" id="start_torrent_button">
+                 <property name="focusable">1</property>
+                 <property name="tooltip-text" translatable="1">Start torrent</property>
+-                <property name="action-name">win.torrent_start</property>
++                <property name="action-name">win.torrent-start</property>
+                 <property name="label" translatable="1">_Start</property>
+                 <property name="use-underline">1</property>
+                 <property name="icon-name">media-playback-start</property>
+@@ -50,7 +50,7 @@ horizontal]]></property>
+               <object class="GtkButton" id="pause_torrent_button">
+                 <property name="focusable">1</property>
+                 <property name="tooltip-text" translatable="1">Pause torrent</property>
+-                <property name="action-name">win.torrent_stop</property>
++                <property name="action-name">win.torrent-stop</property>
+                 <property name="label" translatable="1">_Pause</property>
+                 <property name="use-underline">1</property>
+                 <property name="icon-name">media-playback-pause</property>
+@@ -60,7 +60,7 @@ horizontal]]></property>
+               <object class="GtkButton" id="remove_torrent_button">
+                 <property name="focusable">1</property>
+                 <property name="tooltip-text" translatable="yes">Remove torrent</property>
+-                <property name="action-name">win.remove_torrent</property>
++                <property name="action-name">win.remove-torrent</property>
+                 <property name="label" translatable="1">Remove torrent</property>
+                 <property name="use-underline">1</property>
+                 <property name="icon-name">list-remove</property>
+@@ -76,7 +76,7 @@ horizontal]]></property>
+               <object class="GtkButton" id="torrent_properties_button">
+                 <property name="focusable">1</property>
+                 <property name="tooltip-text" translatable="1">Torrent properties</property>
+-                <property name="action-name">win.show_torrent_properties</property>
++                <property name="action-name">win.show-torrent-properties</property>
+                 <child>
+                   <object class="GtkBox">
+                     <property name="halign">center</property>
+diff --git b/gtk/ui/gtk4/MessageLogWindow.ui a/gtk/ui/gtk4/MessageLogWindow.ui
+index 1af7abe8f..36d7d9c36 100644
+--- b/gtk/ui/gtk4/MessageLogWindow.ui
++++ a/gtk/ui/gtk4/MessageLogWindow.ui
+@@ -15,7 +15,7 @@
+ horizontal]]></property>
+             <child>
+               <object class="GtkButton" id="save_as_button">
+-                <property name="action-name">win.save_message_log</property>
++                <property name="action-name">win.save-message-log</property>
+                 <child>
+                   <object class="GtkBox">
+                     <property name="halign">center</property>
+@@ -39,7 +39,7 @@ horizontal]]></property>
+             </child>
+             <child>
+               <object class="GtkButton" id="clear_button">
+-                <property name="action-name">win.clear_message_log</property>
++                <property name="action-name">win.clear-message-log</property>
+                 <child>
+                   <object class="GtkBox">
+                     <property name="halign">center</property>
+@@ -68,7 +68,7 @@ horizontal]]></property>
+             </child>
+             <child>
+               <object class="GtkToggleButton" id="pause_button">
+-                <property name="action-name">win.pause_message_log</property>
++                <property name="action-name">win.pause-message-log</property>
+                 <child>
+                   <object class="GtkBox">
+                     <property name="halign">center</property>
