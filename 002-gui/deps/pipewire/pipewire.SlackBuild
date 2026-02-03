@@ -21,7 +21,7 @@ cd $PRGNAM-$VERSION
 mkdir build && cd build
 CC=clang \
 CXX=clang++ \
-CFLAGS="$CLANGFLAGS" \
+CFLAGS="$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" \
 CXFLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
 LDFLAGS="$LLDFLAGS" \
 meson setup \

@@ -57,12 +57,13 @@ else
 		--localstatedir=/var
 
 	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+	
+	rm $PKG/usr/share/applications/xfce4-text-editor.desktop
 fi
 
 rm $PKG/usr/share/applications/xfce4-file-manager.desktop
 rm $PKG/usr/share/applications/xfce4-mail-reader.desktop
 rm $PKG/usr/share/applications/xfce4-terminal-emulator.desktop
-rm $PKG/usr/share/applications/xfce4-text-editor.desktop
 rm $PKG/usr/share/applications/xfce4-web-browser.desktop
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
