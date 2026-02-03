@@ -26,13 +26,15 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
-### packages outside slackware repository
+### critical libraries that need to be in sync with slackware repo before building
 
 installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/lua*.txz > /dev/null 2>&1
 
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
+
+### packages outside slackware repository
 
 # required to build procps-ng
 installpkg $MODULEPATH/packages/ncurses*.txz || exit 1

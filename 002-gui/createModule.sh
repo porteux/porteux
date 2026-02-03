@@ -26,6 +26,11 @@ cd $MODULEPATH
 
 DownloadFromSlackware
 
+### critical libraries that need to be in sync with slackware repo before building
+
+installpkg $MODULEPATH/packages/libbluray*.txz || exit 1
+installpkg $MODULEPATH/packages/libvpx*.txz || exit 1
+
 ### packages outside slackware repository
 
 [ ! -f /usr/bin/clang ] && (installpkg $MODULEPATH/packages/llvm*.txz || exit 1)
