@@ -47,11 +47,14 @@ if [ ${CLANG:-no} = "yes" ]; then
 	COMPILER="Clang"
 	EXTRAFLAGS="CC=clang LLVM=1 LLVM_IAS=1"
 	# fixing flags that are not compatible with the kernel
-	BUILDPARAMS="${CLANGFLAGS/-flto=auto/} -Wno-incompatible-pointer-types-discards-qualifiers"
+	BUILDPARAMS=$(echo "$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" | sed \
+		-e 's/-fno-plt//g' \
+		-e 's/-flto=auto//g')
 	LINKPARAMS=$(echo "$LLDFLAGS" | sed \
 		-e 's/-z,pack-relative-relocs/-z pack-relative-relocs/g' \
 		-e 's/-O2/-O1/g' \
 		-e 's/-Wl,//g' \
+		-e 's/-fno-plt//g' \
 		-e 's/-fuse-ld=lld//g' \
 		-e 's/--icf=safe//g' \
 		-e 's/--gc-sections//g' \
@@ -60,6 +63,7 @@ else
 	COMPILER="GCC"
 	# fixing flags that are not compatible with the kernel
 	BUILDPARAMS=$(echo "$GCCFLAGS" | sed \
+		-e 's/-fno-plt//g' \
 		-e 's/-ffunction-sections//g' \
 		-e 's/-fdata-sections//g' \
 		-e 's/-flto=auto//g')
