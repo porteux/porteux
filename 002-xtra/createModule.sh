@@ -117,11 +117,7 @@ rm -fr usr/share/lua-jit
 } >/dev/null 2>&1
 
 GenericStrip
-
-# move out things that don't support aggressive stripping
-mv $MODULEPATH/packages/usr/bin/transmission-gtk $MODULEPATH/
 AggressiveStrip
-mv $MODULEPATH/transmission-gtk $MODULEPATH/packages/usr/bin/
 
 ### copy cache files
 
