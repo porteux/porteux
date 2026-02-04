@@ -25,8 +25,7 @@ sed -i "s|enabled extra_warnings |#enabled extra_warnings |g" ./configure
 patch -p0 < $CWD/add-av_stream_get_first_dts-for-chromium.patch
 patch -p0 < $CWD/svt-4.0.0-build-fix.patch
 
-CC=clang \
-CFLAGS="$CLANGFLAGS -ffat-lto-objects -Wno-error=int-conversion -Wno-error=incompatible-pointer-types" \
+CFLAGS="$GCCFLAGS -ffat-lto-objects -Wno-error=int-conversion -Wno-error=incompatible-pointer-types" \
 LDFLAGS="$LLDFLAGS" \
 ./configure \
 	--prefix=/usr \
@@ -83,7 +82,7 @@ LDFLAGS="$LLDFLAGS" \
 	--enable-libplacebo \
 	--enable-lcms2
 
-make CC=clang -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
