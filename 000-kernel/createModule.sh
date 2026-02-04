@@ -171,8 +171,7 @@ filename=${info% *}
 tar xvf $filename > /dev/null 2>&1 && rm $filename
 mkdir -p ${MODULEPATH}/lib/firmware/intel
 cd ${currentPackage}*
-mv sof ${MODULEPATH}/lib/firmware/intel
-mv sof-tplg ${MODULEPATH}/lib/firmware/intel
+mv sof* ${MODULEPATH}/lib/firmware/intel
 
 echo "Creating symlinks of duplicate firmwares..."
 hash_list=$(mktemp)
