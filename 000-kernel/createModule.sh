@@ -51,7 +51,7 @@ if [ ${CLANG:-no} = "yes" ]; then
 		-e 's/-fno-plt//g' \
 		-e 's/-flto=auto//g')
 	LINKPARAMS=$(echo "$LLDFLAGS" | sed \
-		-e 's/-z,pack-relative-relocs/-z pack-relative-relocs/g' \
+		-e 's/-z,/-z /g' \
 		-e 's/-O2/-O1/g' \
 		-e 's/-Wl,//g' \
 		-e 's/-fno-plt//g' \
@@ -68,7 +68,7 @@ else
 		-e 's/-fdata-sections//g' \
 		-e 's/-flto=auto//g')
 	LINKPARAMS=$(echo "$LDFLAGS" | sed \
-		-e 's/-z,pack-relative-relocs/-z pack-relative-relocs/g' \
+		-e 's/-z,/-z /g' \
 		-e 's/-Wl,//g' \
 		-e 's/--gc-sections//g' \
 		-e 's/--strip-all//g')
