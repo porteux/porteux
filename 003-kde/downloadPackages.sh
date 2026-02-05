@@ -14,6 +14,7 @@ DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libdmtx" &
+DownloadPackage "libei" &
 DownloadPackage "libqaccessibilityclient" &
 wait
 DownloadPackage "libqalculate" &
@@ -41,8 +42,8 @@ rm serverPackages.txt
 
 ### non-slackware repository
 
-source "$BUILDERUTILSPATH/slackwarerepository.sh"
 REPOSITORY="https://slackware.halpanet.org/kde6town/stable/current/${ARCH}"
+
 GenerateRepositoryUrls
 
 DownloadPackage "ark" &
