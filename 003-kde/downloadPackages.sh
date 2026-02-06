@@ -14,10 +14,9 @@ DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libdmtx" &
-DownloadPackage "libei" &
 DownloadPackage "libqaccessibilityclient" &
-wait
 DownloadPackage "libqalculate" &
+wait
 DownloadPackage "LibRaw" &
 DownloadPackage "openblas" &
 DownloadPackage "polkit-qt" &
