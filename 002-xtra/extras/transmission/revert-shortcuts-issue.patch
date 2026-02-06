@@ -1,23 +1,65 @@
-diff --git b/gtk/Actions.cc a/gtk/Actions.cc
-index 612d2bd26..9b6d68c7b 100644
---- b/gtk/Actions.cc
-+++ a/gtk/Actions.cc
-@@ -53,7 +53,10 @@ void sort_changed_cb(Gio::SimpleAction& action, Glib::VariantBase const& value,
-     myCore->set_pref(TR_KEY_sort_mode, Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(value).get());
+From eac9bca8f6662c06afc1cd28c971ddb4104c3ae6 Mon Sep 17 00:00:00 2001
+From: Charles Kerr <charles@charleskerr.com>
+Date: Fri, 30 Jan 2026 09:34:34 -0600
+Subject: [PATCH] fix: do not use underscore in gio action names
+
+fix: do not use underscore in gio action names
+---
+ gtk/Actions.cc                  | 124 +++++++++++++--------------
+ gtk/Actions.h                   |  34 --------
+ gtk/Application.cc              | 124 ++++++++++++++-------------
+ gtk/MainWindow.cc               |   6 +-
+ gtk/MessageLogWindow.cc         |   6 +-
+ gtk/SystemTrayIcon.cc           |   2 +-
+ gtk/transmission-ui.xml         | 146 ++++++++++++++++----------------
+ gtk/ui/gtk3/MainWindow.ui       |  10 +--
+ gtk/ui/gtk3/MessageLogWindow.ui |   6 +-
+ gtk/ui/gtk4/MainWindow.ui       |  10 +--
+ gtk/ui/gtk4/MessageLogWindow.ui |   6 +-
+ 11 files changed, 224 insertions(+), 250 deletions(-)
+
+diff --git a/gtk/Actions.cc b/gtk/Actions.cc
+index 612d2bd26be..360c8c3ad65 100644
+--- a/gtk/Actions.cc
++++ b/gtk/Actions.cc
+@@ -50,61 +50,64 @@ void action_cb(Gio::SimpleAction& action, gpointer user_data)
+ void sort_changed_cb(Gio::SimpleAction& action, Glib::VariantBase const& value, gpointer /*user_data*/)
+ {
+     action.set_state(value);
+-    myCore->set_pref(TR_KEY_sort_mode, Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(value).get());
++    myCore->set_pref(TR_KEY_sort_mode, Glib::VariantBase::cast_dynamic<VariantString>(value).get());
  }
  
 -auto const show_toggle_entries = std::array<Glib::ustring, 2U>{ GTR_KEY_toggle_main_window, GTR_KEY_toggle_message_log };
-+std::array<std::string_view, 2> const show_toggle_entries = {
++constexpr std::array<std::string_view, 2U> const ShowToggleEntries = {
 +    "toggle-main-window"sv,
 +    "toggle-message-log"sv,
 +};
  
- void toggle_pref_cb(Gio::SimpleAction& action, gpointer /*user_data*/)
+-void toggle_pref_cb(Gio::SimpleAction& action, gpointer /*user_data*/)
++void toggle_pref_cb(Gio::SimpleAction& action, gpointer prefs_key)
  {
-@@ -75,36 +78,36 @@ std::array<tr_quark, 6> const pref_toggle_entries = {
-     TR_KEY_show_toolbar, //
- };
+-    auto const key = action.get_name();
+     bool val = false;
+     action.get_state(val);
++    val = !val;
  
+-    action.set_state(Glib::Variant<bool>::create(!val));
+-
+-    myCore->set_pref(tr_quark_new({ key.c_str(), key.size() }), !val);
++    action.set_state(Glib::Variant<bool>::create(val));
++    myCore->set_pref(GPOINTER_TO_INT(prefs_key), val);
+ }
+ 
+-std::array<tr_quark, 6> const pref_toggle_entries = {
+-    TR_KEY_alt_speed_enabled, //
+-    TR_KEY_compact_view, //
+-    TR_KEY_sort_reversed, //
+-    TR_KEY_show_filterbar, //
+-    TR_KEY_show_statusbar, //
+-    TR_KEY_show_toolbar, //
+-};
+-
 -auto const entries = std::array<Glib::ustring, 29>{
 -    GTR_KEY_copy_magnet_link_to_clipboard,
 -    GTR_KEY_open_torrent_from_url,
@@ -48,52 +90,108 @@ index 612d2bd26..9b6d68c7b 100644
 -    GTR_KEY_queue_move_down,
 -    GTR_KEY_queue_move_bottom,
 -    GTR_KEY_present_main_window,
-+std::array<std::string_view, 29> const entries = {
++// action-name, prefs_name
++constexpr std::array<std::pair<std::string_view, tr_quark>, 6U> const PrefToggleEntries = { {
++    { "alt-speed-enabled"sv, TR_KEY_alt_speed_enabled },
++    { "compact-view"sv, TR_KEY_compact_view },
++    { "show-filterbar"sv, TR_KEY_show_filterbar },
++    { "show-statusbar"sv, TR_KEY_show_statusbar },
++    { "show-toolbar"sv, TR_KEY_show_toolbar },
++    { "sort-reversed"sv, TR_KEY_sort_reversed },
++} };
++
++constexpr std::array<std::string_view, 29U> const Entries = {
 +    "copy-magnet-link-to-clipboard"sv,
-+    "open-torrent-from-url"sv,
-+    "open-torrent"sv,
-+    "torrent-start"sv,
-+    "torrent-start-now"sv,
-+    "show-stats"sv,
-+    "donate"sv,
-+    "torrent-verify"sv,
-+    "torrent-stop"sv,
-+    "pause-all-torrents"sv,
-+    "start-all-torrents"sv,
-+    "relocate-torrent"sv,
-+    "remove-torrent"sv,
 +    "delete-torrent"sv,
-+    "new-torrent"sv,
-+    "quit"sv,
-+    "select-all"sv,
 +    "deselect-all"sv,
++    "donate"sv,
 +    "edit-preferences"sv,
-+    "show-torrent-properties"sv,
-+    "open-torrent-folder"sv,
-+    "show-about-dialog"sv,
 +    "help"sv,
-+    "torrent-reannounce"sv,
++    "new-torrent"sv,
++    "open-torrent"sv,
++    "open-torrent-folder"sv,
++    "open-torrent-from-url"sv,
++    "pause-all-torrents"sv,
++    "present-main-window"sv,
++    "queue-move-bottom"sv,
++    "queue-move-down"sv,
 +    "queue-move-top"sv,
 +    "queue-move-up"sv,
-+    "queue-move-down"sv,
-+    "queue-move-bottom"sv,
-+    "present-main-window"sv,
++    "quit"sv,
++    "relocate-torrent"sv,
++    "remove-torrent"sv,
++    "select-all"sv,
++    "show-about-dialog"sv,
++    "show-stats"sv,
++    "show-torrent-properties"sv,
++    "start-all-torrents"sv,
++    "torrent-reannounce"sv,
++    "torrent-start"sv,
++    "torrent-start-now"sv,
++    "torrent-stop"sv,
++    "torrent-verify"sv,
  };
  
  Gtk::Builder* myBuilder = nullptr;
-@@ -127,7 +130,7 @@ Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder>
-     auto const match = gtr_pref_string_get(TR_KEY_sort_mode);
+@@ -124,20 +127,18 @@ Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder>
  
+     auto action_group = Gio::SimpleActionGroup::create();
+ 
+-    auto const match = gtr_pref_string_get(TR_KEY_sort_mode);
+-
      {
 -        auto const action_name = GTR_KEY_sort_torrents;
-+        auto const action_name = Glib::ustring("sort-torrents");
-         auto const action = Gio::SimpleAction::create_radio_string(action_name, match);
-         action->signal_activate().connect([a = action.get(), callback_user_data](auto const& value)
-                                           { sort_changed_cb(*a, value, callback_user_data); });
-diff --git b/gtk/Actions.h a/gtk/Actions.h
-index b6294f5d1..47bc6dd0e 100644
---- b/gtk/Actions.h
-+++ a/gtk/Actions.h
+-        auto const action = Gio::SimpleAction::create_radio_string(action_name, match);
+-        action->signal_activate().connect([a = action.get(), callback_user_data](auto const& value)
+-                                          { sort_changed_cb(*a, value, callback_user_data); });
++        auto const action_name = Glib::ustring{ "sort-torrents" };
++        auto const current_val = gtr_pref_string_get(TR_KEY_sort_mode);
++        auto const action = Gio::SimpleAction::create_radio_string(action_name, current_val);
++        action->signal_activate().connect([a = action.get()](auto const& value) { sort_changed_cb(*a, value, nullptr); });
+         action_group->add_action(action);
+         key_to_action.try_emplace(action_name, action);
+     }
+ 
+-    for (auto const& action_name_view : show_toggle_entries)
++    for (auto const& action_name_view : ShowToggleEntries)
+     {
+-        auto const action_name = Glib::ustring(std::string(action_name_view));
++        auto const action_name = Glib::ustring{ std::string{ action_name_view } };
+         auto const action = Gio::SimpleAction::create_bool(action_name);
+         action->signal_activate().connect([a = action.get(), callback_user_data](auto const& /*value*/)
+                                           { action_cb(*a, callback_user_data); });
+@@ -145,20 +146,19 @@ Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder>
+         key_to_action.try_emplace(action_name, action);
+     }
+ 
+-    for (auto const action_name_quark : pref_toggle_entries)
++    for (auto const& [action_name_view, prefs_name_quark] : PrefToggleEntries)
+     {
+-        auto const action_name_sv = tr_quark_get_string_view(action_name_quark);
+-        auto const action_name = Glib::ustring{ std::data(action_name_sv), std::size(action_name_sv) };
+-        auto const action = Gio::SimpleAction::create_bool(action_name, gtr_pref_flag_get(action_name_quark));
+-        action->signal_activate().connect([a = action.get(), callback_user_data](auto const& /*value*/)
+-                                          { toggle_pref_cb(*a, callback_user_data); });
++        auto const action_name = Glib::ustring{ std::string{ action_name_view } };
++        auto const action = Gio::SimpleAction::create_bool(action_name, gtr_pref_flag_get(prefs_name_quark));
++        auto const key_ptr = GINT_TO_POINTER(prefs_name_quark);
++        action->signal_activate().connect([a = action.get(), key_ptr](auto const& /*value*/) { toggle_pref_cb(*a, key_ptr); });
+         action_group->add_action(action);
+         key_to_action.try_emplace(action_name, action);
+     }
+ 
+-    for (auto const& action_name_view : entries)
++    for (auto const& action_name_view : Entries)
+     {
+-        auto const action_name = Glib::ustring(std::string(action_name_view));
++        auto const action_name = Glib::ustring{ std::string{ action_name_view } };
+         auto const action = Gio::SimpleAction::create(action_name);
+         action->signal_activate().connect([a = action.get(), callback_user_data](auto const& /*value*/)
+                                           { action_cb(*a, callback_user_data); });
+diff --git a/gtk/Actions.h b/gtk/Actions.h
+index b6294f5d1ec..47bc6dd0e96 100644
+--- a/gtk/Actions.h
++++ b/gtk/Actions.h
 @@ -16,40 +16,6 @@
  #include <glibmm/ustring.h>
  #include <gtkmm/builder.h>
@@ -135,10 +233,10 @@ index b6294f5d1..47bc6dd0e 100644
  class Session;
  
  Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder> const& builder, gpointer callback_user_data);
-diff --git b/gtk/Application.cc a/gtk/Application.cc
-index 89630ac91..a681b521f 100644
---- b/gtk/Application.cc
-+++ a/gtk/Application.cc
+diff --git a/gtk/Application.cc b/gtk/Application.cc
+index f2c29e9d683..a45bdaf1ecb 100644
+--- a/gtk/Application.cc
++++ b/gtk/Application.cc
 @@ -333,30 +333,30 @@ bool Application::Impl::refresh_actions()
          auto const sel_counts = get_selected_torrent_counts();
          bool const has_selection = sel_counts.total_count > 0;
@@ -268,7 +366,32 @@ index 89630ac91..a681b521f 100644
      }
      else
      {
-@@ -1502,42 +1503,42 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+@@ -1470,13 +1470,21 @@ void gtr_actions_handler(Glib::ustring const& action_name, gpointer user_data)
+ namespace
+ {
+ 
+-[[nodiscard]] std::optional<tr_quark> get_rpc_method(std::string_view const str)
++[[nodiscard]] std::optional<tr_quark> action_name_to_torrent_rpc_method(std::string_view const action_name)
+ {
+-    if (auto quark = tr_quark_lookup(str))
++    // action-name -> rpc_method
++    auto action_to_rpc = [](std::string_view const in)
++    {
++        auto out = std::string{ in };
++        std::transform(std::begin(out), std::end(out), std::begin(out), [](auto const ch) { return ch == '-' ? '_' : ch; });
++        return out;
++    };
++
++    if (auto quark = tr_quark_lookup(action_to_rpc(action_name)))
+     {
+         switch (*quark)
+         {
+-        // method_name
++        // supported methods
+         case TR_KEY_queue_move_bottom:
+         case TR_KEY_queue_move_down:
+         case TR_KEY_queue_move_top:
+@@ -1502,42 +1510,42 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
  {
      bool changed = false;
  
@@ -319,7 +442,12 @@ index 89630ac91..a681b521f 100644
      {
          auto const ids = get_selected_torrent_ids();
  
-@@ -1552,41 +1553,41 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+@@ -1548,45 +1556,45 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+             w->show();
+         }
+     }
+-    else if (auto const method = get_rpc_method(action_name.raw()))
++    else if (auto const method = action_name_to_torrent_rpc_method(action_name.raw()))
      {
          changed = call_rpc_for_selected_torrents(*method);
      }
@@ -370,7 +498,7 @@ index 89630ac91..a681b521f 100644
      {
          if (prefs_ == nullptr)
          {
-@@ -1596,7 +1597,7 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+@@ -1596,7 +1604,7 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
  
          gtr_window_present(prefs_);
      }
@@ -379,7 +507,7 @@ index 89630ac91..a681b521f 100644
      {
          if (msgwin_ == nullptr)
          {
-@@ -1605,11 +1606,11 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+@@ -1605,11 +1613,11 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
                  *msgwin_,
                  [this]()
                  {
@@ -393,7 +521,7 @@ index 89630ac91..a681b521f 100644
              msgwin_->show();
          }
          else
-@@ -1617,19 +1618,19 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
+@@ -1617,25 +1625,25 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
              msgwin_->close();
          }
      }
@@ -417,10 +545,17 @@ index 89630ac91..a681b521f 100644
      {
          presentMainWindow();
      }
-diff --git b/gtk/MainWindow.cc a/gtk/MainWindow.cc
-index 4a8d9295d..e5cddfc18 100644
---- b/gtk/MainWindow.cc
-+++ a/gtk/MainWindow.cc
+     else
+     {
+-        gtr_error(fmt::format("Unhandled action: {}", action_name));
++        gtr_warning(fmt::format("Unhandled action: {}", action_name));
+     }
+ 
+     if (changed)
+diff --git a/gtk/MainWindow.cc b/gtk/MainWindow.cc
+index 4a8d9295ddc..e5cddfc1866 100644
+--- a/gtk/MainWindow.cc
++++ b/gtk/MainWindow.cc
 @@ -180,7 +180,7 @@ void MainWindow::Impl::on_popup_menu([[maybe_unused]] double event_x, [[maybe_un
  {
      if (popup_menu_ == nullptr)
@@ -448,10 +583,10 @@ index 4a8d9295d..e5cddfc18 100644
  
      view->set_model(model);
  
-diff --git b/gtk/MessageLogWindow.cc a/gtk/MessageLogWindow.cc
-index b9760e4c2..f749b0512 100644
---- b/gtk/MessageLogWindow.cc
-+++ a/gtk/MessageLogWindow.cc
+diff --git a/gtk/MessageLogWindow.cc b/gtk/MessageLogWindow.cc
+index b9760e4c2af..f749b051256 100644
+--- a/gtk/MessageLogWindow.cc
++++ b/gtk/MessageLogWindow.cc
 @@ -502,15 +502,15 @@ MessageLogWindow::Impl::Impl(
  
      auto const action_group = Gio::SimpleActionGroup::create();
@@ -471,10 +606,10 @@ index b9760e4c2..f749b0512 100644
      pause_action->signal_activate().connect([this, &action = *pause_action](auto const& /*value*/) { onPauseToggled(action); });
      action_group->add_action(pause_action);
  
-diff --git b/gtk/SystemTrayIcon.cc a/gtk/SystemTrayIcon.cc
-index e747923bb..5140e7b0a 100644
---- b/gtk/SystemTrayIcon.cc
-+++ a/gtk/SystemTrayIcon.cc
+diff --git a/gtk/SystemTrayIcon.cc b/gtk/SystemTrayIcon.cc
+index e747923bb2b..5140e7b0a8a 100644
+--- a/gtk/SystemTrayIcon.cc
++++ b/gtk/SystemTrayIcon.cc
 @@ -114,7 +114,7 @@ SystemTrayIcon::Impl::~Impl() = default;
  
  void SystemTrayIcon::Impl::activated()
@@ -484,10 +619,10 @@ index e747923bb..5140e7b0a 100644
  }
  
  void SystemTrayIcon::Impl::popup(guint /*button*/, guint /*when*/)
-diff --git b/gtk/transmission-ui.xml a/gtk/transmission-ui.xml
-index 67979d966..d7d8ed69d 100644
---- b/gtk/transmission-ui.xml
-+++ a/gtk/transmission-ui.xml
+diff --git a/gtk/transmission-ui.xml b/gtk/transmission-ui.xml
+index 67979d96647..d8dea0c0cc3 100644
+--- a/gtk/transmission-ui.xml
++++ b/gtk/transmission-ui.xml
 @@ -2,26 +2,26 @@
  <interface>
    <requires lib="gtk+" version="3.24"/>
@@ -671,7 +806,32 @@ index 67979d966..d7d8ed69d 100644
            <attribute name="icon">edit-delete</attribute>
            <attribute name="label" translatable="yes">_Delete Files and Remove</attribute>
            <attribute name="accel">&lt;shift&gt;Delete</attribute>
-@@ -199,47 +199,47 @@
+@@ -178,75 +178,75 @@
+       <attribute name="label" translatable="true">_View</attribute>
+       <section>
+         <item>
+-          <attribute name="action">win.compact_view</attribute>
++          <attribute name="action">win.compact-view</attribute>
+           <attribute name="label" translatable="yes">_Compact View</attribute>
+           <attribute name="accel">&lt;alt&gt;C</attribute>
+         </item>
+       </section>
+       <section>
+         <item>
+-          <attribute name="action">win.show_toolbar</attribute>
++          <attribute name="action">win.show-toolbar</attribute>
+           <attribute name="label" translatable="yes">_Toolbar</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.show_filterbar</attribute>
++          <attribute name="action">win.show-filterbar</attribute>
+           <attribute name="label" translatable="yes">_Filterbar</attribute>
+         </item>
+         <item>
+-          <attribute name="action">win.show_statusbar</attribute>
++          <attribute name="action">win.show-statusbar</attribute>
+           <attribute name="label" translatable="yes">_Statusbar</attribute>
+         </item>
        </section>
        <section>
          <item>
@@ -728,6 +888,14 @@ index 67979d966..d7d8ed69d 100644
            <attribute name="label" translatable="yes">Sort by Time _Left</attribute>
            <attribute name="target">sort_by_time_left</attribute>
          </item>
+       </section>
+       <section>
+         <item>
+-          <attribute name="action">win.sort_reversed</attribute>
++          <attribute name="action">win.sort-reversed</attribute>
+           <attribute name="label" translatable="yes">Re_verse Sort Order</attribute>
+         </item>
+       </section>
 @@ -255,11 +255,11 @@
        <attribute name="label" translatable="true">_Help</attribute>
        <section>
@@ -772,7 +940,7 @@ index 67979d966..d7d8ed69d 100644
          <attribute name="icon">document-open</attribute>
          <attribute name="label" translatable="yes">Open Fold_er</attribute>
          <attribute name="accel">&lt;control&gt;E</attribute>
-@@ -306,47 +306,47 @@
+@@ -306,54 +306,54 @@
          <attribute name="label" translatable="true">_Sort Torrents By</attribute>
          <section>
            <item>
@@ -829,6 +997,14 @@ index 67979d966..d7d8ed69d 100644
              <attribute name="label" translatable="yes">Sort by Time _Left</attribute>
              <attribute name="target">sort_by_time_left</attribute>
            </item>
+         </section>
+         <section>
+           <item>
+-            <attribute name="action">win.sort_reversed</attribute>
++            <attribute name="action">win.sort-reversed</attribute>
+             <attribute name="label" translatable="yes">Re_verse Sort Order</attribute>
+           </item>
+         </section>
 @@ -361,21 +361,21 @@
      </section>
      <section>
@@ -963,10 +1139,19 @@ index 67979d966..d7d8ed69d 100644
          <attribute name="icon">media-playback-start</attribute>
          <attribute name="label" translatable="yes">_Start All</attribute>
          <attribute name="tooltip" translatable="yes">Start all torrents</attribute>
-diff --git b/gtk/ui/gtk3/MainWindow.ui a/gtk/ui/gtk3/MainWindow.ui
-index b8dc0213d..51d6976bc 100644
---- b/gtk/ui/gtk3/MainWindow.ui
-+++ a/gtk/ui/gtk3/MainWindow.ui
+@@ -482,7 +482,7 @@
+     </section>
+     <section>
+       <item>
+-        <attribute name="action">win.alt_speed_enabled</attribute>
++        <attribute name="action">win.alt-speed-enabled</attribute>
+         <attribute name="label" translatable="yes">Enable Alternative Speed _Limits</attribute>
+       </item>
+     </section>
+diff --git a/gtk/ui/gtk3/MainWindow.ui b/gtk/ui/gtk3/MainWindow.ui
+index b8dc0213d99..51d6976bcc0 100644
+--- a/gtk/ui/gtk3/MainWindow.ui
++++ b/gtk/ui/gtk3/MainWindow.ui
 @@ -20,7 +20,7 @@
                  <property name="can-focus">False</property>
                  <property name="tooltip-text" translatable="yes">Open a torrent</property>
@@ -1012,10 +1197,10 @@ index b8dc0213d..51d6976bc 100644
                  <property name="label" translatable="yes">_Properties</property>
                  <property name="use-underline">True</property>
                  <property name="icon-name">document-properties</property>
-diff --git b/gtk/ui/gtk3/MessageLogWindow.ui a/gtk/ui/gtk3/MessageLogWindow.ui
-index d187df2e8..1f3288730 100644
---- b/gtk/ui/gtk3/MessageLogWindow.ui
-+++ a/gtk/ui/gtk3/MessageLogWindow.ui
+diff --git a/gtk/ui/gtk3/MessageLogWindow.ui b/gtk/ui/gtk3/MessageLogWindow.ui
+index d187df2e820..1f328873034 100644
+--- a/gtk/ui/gtk3/MessageLogWindow.ui
++++ b/gtk/ui/gtk3/MessageLogWindow.ui
 @@ -22,7 +22,7 @@
                  <property name="visible">True</property>
                  <property name="can-focus">False</property>
@@ -1043,10 +1228,10 @@ index d187df2e8..1f3288730 100644
                  <property name="label" translatable="yes">P_ause</property>
                  <property name="use-underline">True</property>
                  <property name="icon-name">media-playback-pause</property>
-diff --git b/gtk/ui/gtk4/MainWindow.ui a/gtk/ui/gtk4/MainWindow.ui
-index 8f90fa61b..a125a90ab 100644
---- b/gtk/ui/gtk4/MainWindow.ui
-+++ a/gtk/ui/gtk4/MainWindow.ui
+diff --git a/gtk/ui/gtk4/MainWindow.ui b/gtk/ui/gtk4/MainWindow.ui
+index 8f90fa61bb5..a125a90ab7d 100644
+--- a/gtk/ui/gtk4/MainWindow.ui
++++ b/gtk/ui/gtk4/MainWindow.ui
 @@ -14,7 +14,7 @@ horizontal]]></property>
                <object class="GtkButton" id="open_file_button">
                  <property name="focusable">1</property>
@@ -1092,10 +1277,10 @@ index 8f90fa61b..a125a90ab 100644
                  <child>
                    <object class="GtkBox">
                      <property name="halign">center</property>
-diff --git b/gtk/ui/gtk4/MessageLogWindow.ui a/gtk/ui/gtk4/MessageLogWindow.ui
-index 1af7abe8f..36d7d9c36 100644
---- b/gtk/ui/gtk4/MessageLogWindow.ui
-+++ a/gtk/ui/gtk4/MessageLogWindow.ui
+diff --git a/gtk/ui/gtk4/MessageLogWindow.ui b/gtk/ui/gtk4/MessageLogWindow.ui
+index 1af7abe8fe0..36d7d9c3670 100644
+--- a/gtk/ui/gtk4/MessageLogWindow.ui
++++ b/gtk/ui/gtk4/MessageLogWindow.ui
 @@ -15,7 +15,7 @@
  horizontal]]></property>
              <child>
