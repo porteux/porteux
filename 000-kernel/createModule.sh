@@ -122,6 +122,11 @@ mkdir -p ${MODULEPATH}/../05-devel/packages
 mv ${MODULEPATH}/packages/${currentPackage}*.txz ${MODULEPATH}/../05-devel/packages
 rm -fr $MODULEPATH/${currentPackage}
 
+if [ ${ONLYHEADERS:-no} = "yes" ]; then
+	rm -fr ${MODULEPATH}
+	exit 0
+fi
+
 echo "Building vmlinuz (this may take a while)..."
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
