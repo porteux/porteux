@@ -26,7 +26,8 @@ cd $MODULEPATH
 DownloadFromSlackware
 
 if [ ! -f $MODULEPATH/packages/kernel-headers*.txz ]; then
-	wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNELVERSION-x86-1.txz -P $MODULEPATH/packages || exit 1
+	cd ${SCRIPTPATH}/../000-kernel
+	ONLYHEADERS=yes sh createModule.sh || wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNELVERSION-x86-1.txz -P $MODULEPATH/packages || exit 1
 fi
 
 ### fake root
