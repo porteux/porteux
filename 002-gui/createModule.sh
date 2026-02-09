@@ -91,6 +91,7 @@ for package in \
 	cxxopts \
 	imlib2 \
 	libostree \
+	libei \
 	libfyaml \
 	libxmlb \
 	appstream \

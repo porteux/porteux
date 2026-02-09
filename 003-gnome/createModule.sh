@@ -98,7 +98,6 @@ for package in \
 	bubblewrap \
 	geoclue2 \
 	colord-gtk \
-	libei \
 	libportal \
 	libcloudproviders \
 	glycin \

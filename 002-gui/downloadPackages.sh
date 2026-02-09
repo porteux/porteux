@@ -111,7 +111,6 @@ DownloadPackage "libdrm" &
 DownloadPackage "libdvdnav" &
 DownloadPackage "libdvdread" &
 DownloadPackage "libedit" &
-DownloadPackage "libei" &
 wait
 DownloadPackage "libepoxy" &
 DownloadPackage "libevdev" &
