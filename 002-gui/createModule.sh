@@ -242,7 +242,6 @@ rm etc/asound.state
 rm etc/rc_maps.cfg
 rm etc/xdg/autostart/at-spi-dbus-bus.desktop
 rm usr/bin/canberra*
-rm usr/bin/ei-debug-events
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/Xdmx

@@ -147,8 +147,8 @@ ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents usr/bin/ar ${currentPackage}-stripped/
 cp --parents usr/bin/strip ${currentPackage}-stripped/
-cp --parents -P usr/lib$SYSTEMBITS/libbfd* ${currentPackage}-stripped/
-cp --parents -P usr/lib$SYSTEMBITS/libsframe* ${currentPackage}-stripped/
+cp --parents -P usr/lib$SYSTEMBITS/libbfd*.so ${currentPackage}-stripped/
+cp --parents -P usr/lib$SYSTEMBITS/libsframe.so* ${currentPackage}-stripped/
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
