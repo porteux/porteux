@@ -65,6 +65,8 @@ rm -fr usr/share/icons
 rm -fr usr/share/locale
 rm -fr usr/share/valadoc-*
 rm -fr usr/x86_64-slackware-linux
+rm -fr var/lib/pkgtools/douninst.sh
+rm -fr var/lib/pkgtools/setup
 rm -fr var/log/pkgtools
 rm -fr var/log/setup
 
