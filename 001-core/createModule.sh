@@ -41,6 +41,7 @@ installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
 
 # core deps
 for package in \
+	glibc \
 	zstd \
 	squashfs-tools \
 	sysvinit \
@@ -78,26 +79,6 @@ mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped/
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=glibc
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}*.txz
-rm usr/include/gnu/*-32.h
-rm usr/libexec/getconf/*ILP32*
-rm var/log/packages
-rm var/log/scripts
-rm var/log/setup
-rm -fr lib/
-rm -fr usr/lib/
-rm -fr var/lib/pkgtools
-rm -fr var/log/pkgtools
-mkdir ${currentPackage}-stripped
-rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}

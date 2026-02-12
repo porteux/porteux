@@ -238,7 +238,6 @@ DownloadPackage "binutils" &
 DownloadPackage "fftw" & # required by pulse plugins
 DownloadPackage "gcc" & # required by aaa_libraries
 DownloadPackage "gcc-g++" & # required by aaa_libraries
-DownloadPackage "glibc" &
 DownloadPackage "ntp" &
 DownloadPackage "openldap" &
 wait
