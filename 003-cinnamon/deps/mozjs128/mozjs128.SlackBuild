@@ -63,7 +63,7 @@ LDFLAGS="$LDFLAGS -Wl,--copy-dt-needed-entries" \
 	--disable-debug \
 	--enable-pie \
 	--disable-jemalloc \
-	--build=x86_64-slackware-linux
+	--build=x86_64-porteux-linux
 
 make -j${NUMBERTHREADS}
 make install DESTDIR=$PKG
