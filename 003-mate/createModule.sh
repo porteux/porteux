@@ -39,6 +39,7 @@ for package in \
 	lightdm \
 	lightdm-gtk-greeter \
 	mate-common \
+	mate-polkit \
 	xcape \
 ; do
 SESSIONTEMPLATE=mate ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -90,7 +91,6 @@ for package in \
 	libmatekbd \
 	caja \
 	caja-extensions \
-	mate-polkit \
 	marco \
 	libmatemixer \
 	mate-settings-daemon \
