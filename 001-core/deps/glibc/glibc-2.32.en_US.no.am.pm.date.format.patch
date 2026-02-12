@@ -1,0 +1,14 @@
+--- ./localedata/locales/en_US.orig	2021-01-16 18:40:31.050990981 -0600
++++ ./localedata/locales/en_US	2021-01-16 18:42:44.784983583 -0600
+@@ -121,7 +121,10 @@
+ % different from d_t_fmt for historical reasons and has been different
+ % since 2000 when date_fmt was added as a GNU extension.  At the end
+ % of 2018 it was adjusted to use 12H time (bug 24046) instead of 24H.
+-date_fmt "%a %b %e %r %Z %Y"
++% [ Slackware editor's note - no thank you, US users
++% of UNIX-like systems expect a 24 hour clock, just
++% like users in the vast majority of other locales. ]
++%date_fmt "%a %d %b %Y %r %Z"
+ %
+ % Strings for AM/PM
+ %

@@ -1,0 +1,12 @@
+     |-----handy-ruler------------------------------------------------------|
+glibc: glibc (GNU C libraries)
+glibc:
+glibc: This package contains the GNU C libraries and header files. You'll
+glibc: need this package to compile programs.
+glibc:
+glibc: The GNU C library was originally authored by Roland McGrath.
+glibc:
+glibc: Homepage: https://www.gnu.org/software/libc/
+glibc:
+glibc:
+glibc:
