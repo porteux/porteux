@@ -334,7 +334,6 @@ rm -fr usr/X11R6/include
 rm -fr usr/X11R6/man
 } >/dev/null 2>&1
 
-
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
 find $MODULEPATH/packages/usr/lib${SYSTEMBITS}/dri -name '*.la' -delete

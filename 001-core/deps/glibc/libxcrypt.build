@@ -43,3 +43,5 @@ mv libcrypt*so* ../../lib${SYSTEMBITS}
 # Add .so symlinks for libcrypt and libxcrypt:
 ln -sf ../../lib${SYSTEMBITS}/libcrypt.so.2 libcrypt.so
 ln -sf ../../lib${SYSTEMBITS}/libcrypt.so.2 libxcrypt.so
+
+rm -fr $TMP
