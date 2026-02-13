@@ -62,5 +62,7 @@ install -Dm644 "$CWD/wave.svg" "$PKG/usr/share/backgrounds/wave.svg"
 install -Dm644 "$CWD/lightdm-gtk-greeter.conf" $PKG/etc/lightdm/
 sed -i "s|ICONTHEMETEMPLATE|$ICONTHEME|g" $PKG/etc/lightdm/lightdm-gtk-greeter.conf
 
+rm -fr $PKG/usr/share/doc
+
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

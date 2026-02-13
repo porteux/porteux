@@ -35,10 +35,8 @@ sed 's:<ncursesw/:<:g' -i src/watch.c
 echo $VERSION > .version
 echo $VERSION > .tarball-version
 
-./autogen.sh
-
 CFLAGS="$GCCFLAGS" \
-./configure \
+./autogen.sh && ./configure \
 	--prefix=/ \
 	--bindir=/bin \
 	--sbindir=/sbin \
@@ -74,12 +72,7 @@ mkdir -p $PKG/lib${SYSTEMBITS}
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-# It seems that upstream has shuffled the location of many tools with the
-# 3.3.11 release. To me, this just doesn't make sense to break any existing
-# scripts that might be using an absolute path, or to move tools that might
-# be needed before /usr is mounted into /usr. So, we will make sure that
-# everything is moved back to where the Slackware locations have always been.
-# These tools belong in /bin:
+# Upstream has shuffled the location of tools since 3.3.11 release.
 mkdir -p $PKG/bin
 for file in free killall ps ; do
 	find $PKG -name $file -exec mv "{}" $PKG/bin \;
@@ -110,16 +103,8 @@ mkdir -p $PKG/etc/sysctl.d
 
 cd ../psmisc-$PSMISCVER
 
-if [ ! -r configure ]; then
-	if [ -x ./autogen.sh ]; then
-		NOCONFIGURE=1 ./autogen.sh
-	else
-		autoreconf -vif
-	fi
-fi
-
 CFLAGS="$GCCFLAGS" \
-./configure \
+./autogen.sh && ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
@@ -147,6 +132,8 @@ CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/doc
+rm -fr $PKG/usr/share/man
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
