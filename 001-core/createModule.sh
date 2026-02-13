@@ -47,8 +47,10 @@ for package in \
 	sysvinit \
 	duktape \
 	polkit \
+	procps-ng \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -57,16 +59,10 @@ for package in \
 	fastfetch \
 	7zip \
 	rpm \
-	procps-ng \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-# required by other modules
-installpkg $MODULEPATH/packages/procps-ng*.txz
-installpkg $MODULEPATH/packages/squashfs-tools*.txz
-installpkg $MODULEPATH/packages/zstd*.txz
 
 ## packages that require specific stripping
 
