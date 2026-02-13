@@ -41,6 +41,7 @@ for package in \
 	lightdm-gtk-greeter \
 	mate-common \
 	mate-polkit \
+	atril \
 	xcape \
 ; do
 SESSIONTEMPLATE=xfce ICONTHEME=elementary-xfce sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -65,7 +66,6 @@ installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 
 # xfce extras
 for package in \
-	atril \
 	engrampa \
 	pavucontrol \
 	mate-search-tool \

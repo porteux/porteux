@@ -40,6 +40,7 @@ for package in \
 	lightdm-gtk-greeter \
 	mate-common \
 	mate-polkit \
+	atril \
 	xcape \
 ; do
 SESSIONTEMPLATE=mate ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -107,7 +108,6 @@ for package in \
 	mate-media \
 	mate-power-manager \
 	mate-system-monitor \
-	atril \
 	mozo \
 	pluma \
 ; do

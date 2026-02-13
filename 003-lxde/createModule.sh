@@ -39,6 +39,7 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	atril \
 	xcape \
 ; do
 SESSIONTEMPLATE=LXDE ICONTHEME=kora sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -54,7 +55,6 @@ installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 
 # lxde extras
 for package in \
-	atril \
 	engrampa \
 	pavucontrol \
 	l3afpad \
