@@ -356,11 +356,9 @@ find usr/lib${SYSTEMBITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +
 } >/dev/null 2>&1
 
 # move out libc because it can't be stripped at all
-mv $MODULEPATH/packages/lib${SYSTEMBITS}/libc.so* $MODULEPATH/
 mv $MODULEPATH/packages/lib${SYSTEMBITS}/libc-* $MODULEPATH/
 GenericStrip
 AggressiveStrip
-mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib${SYSTEMBITS}
 mv $MODULEPATH/libc-* $MODULEPATH/packages/lib${SYSTEMBITS}
 
 ### copy cache files
