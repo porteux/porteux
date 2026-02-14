@@ -215,8 +215,8 @@ DownloadPackage "userspace-rcu" &
 DownloadPackage "utempter" &
 DownloadPackage "util-linux" &
 DownloadPackage "wget" &
-DownloadPackage "which" &
 wait
+DownloadPackage "which" &
 DownloadPackage "whois" &
 DownloadPackage "wireless_tools" &
 DownloadPackage "wpa_supplicant" &
@@ -224,7 +224,6 @@ DownloadPackage "xfsdump" &
 DownloadPackage "xfsprogs" &
 DownloadPackage "xxHash" &
 DownloadPackage "xz" &
-DownloadPackage "zlib" &
 wait
 
 ### only download if not present
