@@ -42,6 +42,7 @@ installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
 # core deps
 for package in \
 	glibc \
+	zlib-ng \
 	zstd \
 	squashfs-tools \
 	sysvinit \
