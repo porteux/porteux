@@ -29,6 +29,7 @@ DownloadPackage "curl" &
 DownloadPackage "cyrus-sasl" &
 DownloadPackage "dbus" &
 DownloadPackage "dbus-glib" &
+DownloadPackage "dbus-python" &
 DownloadPackage "dcron" &
 DownloadPackage "devs" &
 DownloadPackage "dhcpcd" &
