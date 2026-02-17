@@ -239,7 +239,6 @@ wait
 DownloadPackage "llvm" &
 DownloadPackage "mesa" &
 DownloadPackage "pulseaudio" &
-DownloadPackage "vulkan-sdk" &
 wait
 
 ### temporary packages only for building
