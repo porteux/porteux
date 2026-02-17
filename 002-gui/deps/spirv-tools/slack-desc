@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+spirv-tools: spirv-tools (Vulkan ICD Loader and Validation Layers)
+spirv-tools:
+spirv-tools: Provides an API and commands for processing SPIR-V modules.
+spirv-tools: Includes an assembler, binary module parser, disassembler, validator,
+spirv-tools: and optimizer for SPIR-V.
+spirv-tools:
+spirv-tools:
+spirv-tools:
+spirv-tools: https://github.com/KhronosGroup/SPIRV-Tools
+spirv-tools:
+spirv-tools:

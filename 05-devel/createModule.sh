@@ -30,6 +30,16 @@ if [ ! -f $MODULEPATH/packages/kernel-headers*.txz ]; then
 	ONLYHEADERS=yes sh createModule.sh || wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNELVERSION-x86-1.txz -P $MODULEPATH/packages || exit 1
 fi
 
+### packages outside slackware repository
+
+currentPackage=vulkan-headers
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
+currentPackage=spirv-headers
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z

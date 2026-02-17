@@ -79,8 +79,24 @@ rm $MODULEPATH/packages/pyparsing*.txz
 installpkg $MODULEPATH/packages/socat*.txz || exit 1
 rm $MODULEPATH/packages/socat*.txz
 
+# required by vulkan-icd-loader
+currentPackage=vulkan-headers
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+rm $MODULEPATH/packages/${currentPackage}-*.t?z
+
+# required by spirv-tools
+currentPackage=spirv-headers
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}-*.txz || exit 1
+rm -fr $MODULEPATH/${currentPackage}
+rm $MODULEPATH/packages/${currentPackage}-*.t?z
+
 # gui deps
 for package in \
+	vulkan-icd-loader \
+	spirv-tools \
 	xorg-server \
 	xf86-input-libinput \
 	libX11 \
@@ -108,6 +124,7 @@ rm $MODULEPATH/packages/cxxopts*.txz
 
 # gui extras
 for package in \
+	vulkan-tools \
 	flatpak \
 	galculator \
 	intel-media-driver \
@@ -175,25 +192,6 @@ cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-
 cp --parents -Pr usr/lib$SYSTEMBITS/cmake/* ${currentPackage}-stripped
 cp --parents -Pr usr/lib$SYSTEMBITS/pkgconfig/* ${currentPackage}-stripped
 cp --parents -Pr usr/include/* ${currentPackage}-stripped
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=vulkan-sdk
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}*.txz .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped
-cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped
-cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped
-cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped > /dev/null 2>&1
-cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
