@@ -59,6 +59,7 @@ DownloadPackage "libwnck3" &
 DownloadPackage "openldap" & # required by appstream
 DownloadPackage "python-pip" &
 DownloadPackage "sassc" & # required by libadwaita
+DownloadPackage "vulkan-sdk" & # required by gtksourceview
 DownloadPackage "xtrans" &
 wait
 
