@@ -38,6 +38,8 @@ installpkg $MODULEPATH/packages/python-Jinja2-*.t?z || exit 1
 rm $MODULEPATH/packages/python-Jinja2-*.t?z
 installpkg $MODULEPATH/packages/python-MarkupSafe-*.t?z || exit 1
 rm $MODULEPATH/packages/python-MarkupSafe-*.t?z
+installpkg $MODULEPATH/packages/vulkan-sdk-*.t?z || exit 1
+rm $MODULEPATH/packages/vulkan-sdk-*.t?z
 
 cd $MODULEPATH
 pip install glad2 || exit 1
@@ -50,12 +52,6 @@ installpkg $MODULEPATH/packages/frei0r-plugins*.t?z || exit 1
 rm $MODULEPATH/packages/frei0r-plugins-*.t?z || exit 1
 installpkg $MODULEPATH/packages/opencl-headers*.t?z || exit 1
 rm $MODULEPATH/packages/opencl-headers-*.t?z || exit 1
-
-# required by libplacebo
-currentPackage=vulkan-headers
-sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-rm $MODULEPATH/packages/${currentPackage}-*.t?z
 
 # xtra deps
 for package in \
