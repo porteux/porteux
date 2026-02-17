@@ -53,7 +53,7 @@ popd
 
 mkdir -p $PKG/bin $PKG/etc/profile.d
 ( cd $PKG/bin; ln -sf /sbin/sln sln )
-install -m755 $CWD/*.new $PKG/etc/profile.d/
+install -m755 $CWD/glibc.csh $CWD/glibc.sh $PKG/etc/profile.d/
 
 ( cd $PKG/lib${SYSTEMBITS}
 	# Since glibc-2.34 shared objects are using their ABI sonames directly, which is not a good idea
