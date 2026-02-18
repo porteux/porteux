@@ -21,7 +21,6 @@ tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 CC=clang \
-CXX=clang++ \
 LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \

@@ -18,10 +18,10 @@ wget https://ftp.gnu.org/gnu/glibc/glibc-${VERSION}.tar.xz
 tar xvf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
+cp -f $CWD/SUPPORTED localedata
 patch -p1 < $CWD/glibc.locale.no-archive.patch
 patch -p1 < $CWD/glibc-2.32.en_US.no.am.pm.date.format.patch
 [[ $ARCHITECTURELEVEL == "x86-64-v3" ]] || [[ $ARCHITECTURELEVEL == "x86-64-v4" ]] && patch -p0 < $CWD/improve-performance-avx2.patch
-cp -f $CWD/SUPPORTED localedata
 
 mkdir build-glibc-$VERSION
 cd build-glibc-$VERSION
@@ -33,7 +33,7 @@ CXXFLAGS="${GCCFLAGS} -fvisibility-inlines-hidden -fPIC" \
 ../configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
-	--enable-kernel=4.4 \
+	--enable-kernel=6.1 \
 	--with-headers=/usr/include \
 	--with-tls \
 	--with-__thread \
