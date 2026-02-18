@@ -861,6 +861,12 @@
             "tooltip": "Set of essential libraries for 32bit compatibility"
 
         },
+        "TLP":{
+            "script": "tlp",
+            "icon": "preferences-system-power.svg",
+            "tooltip": "Optimize system for lower power consumption",
+            "infoDialog": "TLP requires Perl, also available in the app store in the devel module."
+        },
         "Wine":{
             "script": "wine",
             "icon": "wine.svg",
