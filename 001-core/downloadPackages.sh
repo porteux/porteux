@@ -29,7 +29,7 @@ DownloadPackage "curl" &
 DownloadPackage "cyrus-sasl" &
 DownloadPackage "dbus" &
 DownloadPackage "dbus-glib" &
-DownloadPackage "dbus-python" &
+DownloadPackage "dbus-python" & # required by TLP (via AppStore)
 DownloadPackage "dcron" &
 DownloadPackage "devs" &
 DownloadPackage "dhcpcd" &

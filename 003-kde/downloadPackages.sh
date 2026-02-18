@@ -166,8 +166,8 @@ DownloadPackage "okular" &
 DownloadPackage "oxygen" &
 DownloadPackage "plasma5support" &
 DownloadPackage "plasma-activities" &
-DownloadPackage "plasma-activities-stats" &
 wait
+DownloadPackage "plasma-activities-stats" &
 DownloadPackage "plasma-browser-integration" &
 DownloadPackage "plasma-desktop" &
 DownloadPackage "plasma-integration" &
@@ -183,9 +183,9 @@ DownloadPackage "prison" &
 DownloadPackage "pulseaudio-qt" &
 DownloadPackage "purpose" &
 DownloadPackage "qca" &
-wait
 DownloadPackage "qcoro" &
 DownloadPackage "qqc2-desktop-style" &
+wait
 DownloadPackage "sddm" &
 DownloadPackage "sddm-kcm" &
 DownloadPackage "solid" &
