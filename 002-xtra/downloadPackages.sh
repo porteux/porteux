@@ -14,12 +14,13 @@ wait
 
 ### temporary packages only for building
 
-DownloadPackage "frei0r-plugins" & # temporary to build ffmpeg
-DownloadPackage "opencl-headers" & # temporary to build ffmpeg
-DownloadPackage "python-Jinja2" & # temporary to build libplacebo
-DownloadPackage "python-MarkupSafe" & # temporary to build libplacebo
-DownloadPackage "python-pip" & # temporary to build libplacebo
-DownloadPackage "vulkan-sdk" & # temporary to build libplacebo
+DownloadPackage "frei0r-plugins" & # to build ffmpeg
+DownloadPackage "krb5" & # to build ffmpeg
+DownloadPackage "opencl-headers" & # to build ffmpeg
+DownloadPackage "python-Jinja2" & # to build libplacebo
+DownloadPackage "python-MarkupSafe" & # to build libplacebo
+DownloadPackage "python-pip" & # to build libplacebo
+DownloadPackage "vulkan-sdk" & # to build libplacebo
 wait
 
 ### script clean up

@@ -67,7 +67,7 @@ install -m755 $CWD/glibc.csh $CWD/glibc.sh $PKG/etc/profile.d/
 )
 
 find $PKG | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
-find $PKG | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip -g 2> /dev/null
+find $PKG | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
 
 rm $PKG/etc/ld.so.cache
 rm -fr $PKG/usr/share/i18n/charmaps
