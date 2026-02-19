@@ -49,9 +49,11 @@ installpkg $MODULEPATH/packages/openal-soft-*.t?z || exit 1
 installpkg $MODULEPATH/packages/vid.stab-*.t?z || exit 1
 
 installpkg $MODULEPATH/packages/frei0r-plugins*.t?z || exit 1
-rm $MODULEPATH/packages/frei0r-plugins-*.t?z || exit 1
+rm $MODULEPATH/packages/frei0r-plugins-*.t?z
+installpkg $MODULEPATH/packages/krb5-*.t?z || exit 1
+rm $MODULEPATH/packages/krb5-*.t?z
 installpkg $MODULEPATH/packages/opencl-headers*.t?z || exit 1
-rm $MODULEPATH/packages/opencl-headers-*.t?z || exit 1
+rm $MODULEPATH/packages/opencl-headers-*.t?z
 
 # xtra deps
 for package in \
