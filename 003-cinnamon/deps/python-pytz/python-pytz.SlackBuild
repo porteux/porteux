@@ -19,7 +19,7 @@ VERSION=$(curl -s https://github.com/${repository}/${project}/tags/ | grep "/${r
 
 wget -c https://github.com/$repository/$project/releases/download/release_$VERSION/pytz-$VERSION.tar.gz
 
-tar xvf pytz-$VERSION.tar.?z
+tar xf pytz-$VERSION.tar.?z
 cd pytz-$VERSION
 
 python setup.py install --root=$PKG

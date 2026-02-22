@@ -14,7 +14,7 @@ cd $TMP
 
 wget https://dl.xpdfreader.com/xpdf-latest.tar.gz
 
-tar xvf $PRGNAM-latest.tar.?z
+tar xf $PRGNAM-latest.tar.?z
 VERSION=$(ls -d xpdf-*/ 2>/dev/null | head -n1 | cut -d "-" -f2 | cut -d "/" -f1)
 
 cd $PRGNAM-$VERSION

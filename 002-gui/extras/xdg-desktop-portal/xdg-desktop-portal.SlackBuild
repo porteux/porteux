@@ -26,7 +26,7 @@ done
 
 wget https://github.com/flatpak/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build

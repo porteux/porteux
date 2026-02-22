@@ -18,7 +18,7 @@ filename=$(curl -s https://ffmpeg.org/releases/ | grep ffmpeg-${major_version} |
 wget https://ffmpeg.org/releases/${filename}
 VERSION=$(echo ${filename} | cut -d '-' -f 2 | rev | cut -d '.' -f 3- | rev)
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 sed -i "s|enabled extra_warnings |#enabled extra_warnings |g" ./configure

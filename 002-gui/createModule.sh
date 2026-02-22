@@ -7,9 +7,9 @@ source "$PWD/../builder-utils/setflags.sh"
 SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/cachefiles.sh"
-source "$BUILDERUTILSPATH/slackwarerepository.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
@@ -110,7 +110,6 @@ rm $MODULEPATH/packages/cxxopts*.txz
 for package in \
 	flatpak \
 	galculator \
-	intel-media-driver \
 	intel-vaapi-driver \
 	labwc \
 	libjxl \

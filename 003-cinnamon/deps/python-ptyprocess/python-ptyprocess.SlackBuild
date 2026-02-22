@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "pexpect" "ptyprocess")
 VERSION=${info#* }
 
-tar xfv ptyprocess-$VERSION.tar.?z*
+tar xf ptyprocess-$VERSION.tar.?z*
 cd ptyprocess-$VERSION
 
 python -m build --wheel --no-isolation

@@ -15,7 +15,7 @@ cd $TMP
 VERSION=$(curl -s https://gitlab.com/pipewire/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | sort -Vr | head -1)
 wget https://gitlab.freedesktop.org/pipewire/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build

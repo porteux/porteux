@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "dvarrazzo" "py-setproctitle")
 VERSION=${info#* }
 
-tar xvf py-setproctitle-version-$VERSION.tar.?z
+tar xf py-setproctitle-version-$VERSION.tar.?z
 cd py-setproctitle-version-$VERSION
 
 python setup.py install --root=$PKG

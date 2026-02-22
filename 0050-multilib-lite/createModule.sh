@@ -8,9 +8,9 @@ source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$BUILDERUTILSPATH/slackwarerepository.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
@@ -69,7 +69,7 @@ currentPackage=llvm
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-tar xvf ${currentPackage}*.txz
+tar xf ${currentPackage}*.txz
 mkdir -p ${currentPackage}-stripped/usr/lib
 cp usr/lib/libLLVM*.so* ${currentPackage}-stripped/usr/lib
 cd ${currentPackage}-stripped

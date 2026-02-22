@@ -19,7 +19,7 @@ project="python3-xapp"
 info=$(DownloadLatestFromGithub "linuxmint" ${project} "master.")
 VERSION=${info#* }
 
-tar xvf $project-$VERSION.tar.?z
+tar xf $project-$VERSION.tar.?z
 cd $project-$VERSION
 
 mkdir build && cd build

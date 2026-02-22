@@ -14,7 +14,7 @@ cd $TMP
 
 wget https://github.com/pantoniou/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}-master.tar.gz 
 
-tar xvf ${PRGNAM}-master.tar.?z
+tar xf ${PRGNAM}-master.tar.?z
 cd ${PRGNAM}-master
 
 VERSION=$(date -r . +%Y%m%d)

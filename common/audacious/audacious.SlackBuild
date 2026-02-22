@@ -28,7 +28,7 @@ else
 	toolkitFlags="-Dgtk=true -Dqt5=false -Dqt=false"
 fi
 
-tar xvf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
+tar xf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-${PRGNAM}-$VERSION
 
 sed -i "s|subdir('man')|#subdir('man')|g" meson.build

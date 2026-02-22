@@ -13,7 +13,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 wget https://github.com/${PRGNAM}/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
-tar xvf ${PRGNAM}.tar.?z
+tar xf ${PRGNAM}.tar.?z
 cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 

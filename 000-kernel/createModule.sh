@@ -6,9 +6,9 @@ MODULENAME="000-kernel"
 
 SetFlags "${MODULENAME}"
 
-source "$BUILDERUTILSPATH/slackwarerepository.sh"
 source "$BUILDERUTILSPATH/helper.sh"
 source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
@@ -175,9 +175,8 @@ cd $MODULEPATH
 echo "Downloading and installing sof for Intel..."
 currentPackage=sof-bin
 info=$(DownloadLatestFromGithub "thesofproject" "sof-bin")
-version=${info#* }
 filename=${info% *}
-tar xvf $filename > /dev/null 2>&1 && rm $filename
+tar xf $filename > /dev/null 2>&1 && rm $filename
 mkdir -p ${MODULEPATH}/lib/firmware/intel
 cd ${currentPackage}*
 mv sof* ${MODULEPATH}/lib/firmware/intel

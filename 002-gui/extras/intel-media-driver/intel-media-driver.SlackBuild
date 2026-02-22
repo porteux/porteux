@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "intel" "media-driver")
 VERSION=${info#* }
 
-tar xvf *.tar.?z
+tar xf *.tar.?z
 cd media-driver-intel-media-${VERSION}
 
 for i in $CWD/*.patch; do

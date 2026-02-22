@@ -22,9 +22,9 @@ wget https://gitlab.com/psmisc/psmisc/-/archive/${PSMISCVER}/psmisc-${PSMISCVER}
 
 PROCINFONGVER=${PROCINFONGVER:-2.0.304}
 
-tar xvf $PRGNAMDOWNLOAD-${downloadedVersion}.tar.?z
-tar xvf psmisc-$PSMISCVER.tar.?z
-tar xvf $CWD/procinfo-ng-$PROCINFONGVER.tar.?z
+tar xf $PRGNAMDOWNLOAD-${downloadedVersion}.tar.?z
+tar xf psmisc-$PSMISCVER.tar.?z
+tar xf $CWD/procinfo-ng-$PROCINFONGVER.tar.?z
 
 cd $PRGNAMDOWNLOAD-${downloadedVersion}
 

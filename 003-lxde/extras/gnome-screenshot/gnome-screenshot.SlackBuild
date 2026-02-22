@@ -17,7 +17,7 @@ cd $TMP
 VERSION=3.36.0 # higher than this will require libhandy
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-tar xvf ${PRGNAM}-${VERSION}.tar.?z
+tar xf ${PRGNAM}-${VERSION}.tar.?z
 cd ${PRGNAM}-${VERSION}
 
 sed -i "s|i18n.merge_file('desktop',|i18n.merge_file(|g" src/meson.build

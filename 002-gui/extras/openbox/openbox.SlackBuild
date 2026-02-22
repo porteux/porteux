@@ -17,7 +17,7 @@ cd $TMP
 VERSION="3.6.1"
 wget https://openbox.org/dist/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 patch -p1 < $CWD/py2-to-py3.patch

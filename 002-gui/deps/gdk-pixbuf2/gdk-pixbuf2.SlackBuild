@@ -23,7 +23,7 @@ VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/tags?format=atom |
 })
 wget https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd gdk-pixbuf-$VERSION*
 
 mkdir build && cd build
