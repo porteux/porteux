@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "Kozea" "tinycss2")
 VERSION=${info#* }
 
-tar xvf tinycss2-$VERSION.tar.?z
+tar xf tinycss2-$VERSION.tar.?z
 cd tinycss2-$VERSION
 
 python -m build --no-isolation

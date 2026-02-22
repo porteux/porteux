@@ -7,9 +7,9 @@ source "$PWD/../builder-utils/setflags.sh"
 SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/cachefiles.sh"
-source "$BUILDERUTILSPATH/slackwarerepository.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
@@ -64,7 +64,7 @@ export PATH=$HOME/.cargo/bin/:$PATH
 
 currentPackage=just
 wget https://github.com/casey/${currentPackage}/archive/refs/heads/master.tar.gz -O ${currentPackage}.tar.gz
-tar xfv ${currentPackage}.tar.gz
+tar xf ${currentPackage}.tar.gz
 cd ${currentPackage}-master
 cargo build --release --target x86_64-unknown-linux-gnu || exit 1
 export PATH=$MODULEPATH/just-master/target/x86_64-unknown-linux-gnu/release/:$PATH

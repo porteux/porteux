@@ -17,7 +17,7 @@ cd $TMP
 VERSION=$(GetLatestVersionTagFromGithub "mate-desktop" ${PRGNAM} "1.29")
 wget https://github.com/mate-desktop/atril/archive/refs/tags/${VERSION}.tar.gz -O ${PRGNAM}-$VERSION.tar.gz
 
-tar xvf ${PRGNAM}-$VERSION.tar.?z
+tar xf ${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-${VERSION//[vV]}
 
 for i in $CWD/*.patch; do

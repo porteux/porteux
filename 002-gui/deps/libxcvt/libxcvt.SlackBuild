@@ -14,7 +14,7 @@ cd $TMP
 
 VERSION=$(curl -s https://gitlab.freedesktop.org/xorg/lib/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v wayland | rev | cut -d "-" -f 1 | rev | sort -Vr | head -1)
 wget https://gitlab.freedesktop.org/xorg/lib/${PRGNAM}/-/archive/${PRGNAM}-${VERSION}/${PRGNAM}-${PRGNAM}-${VERSION}.tar.gz
-tar xfv $PRGNAM-$PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$PRGNAM-$VERSION
 
 sed -i "s|subdir('man')|#subdir('man')|g" meson.build

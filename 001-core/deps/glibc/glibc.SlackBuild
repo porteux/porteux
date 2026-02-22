@@ -15,7 +15,7 @@ cd $TMP
 VERSION=$(curl -s https://ftp.gnu.org/gnu/glibc/ | grep "glibc-[0-9]" | grep ".tar.xz" | grep -Ev "sig" | cut -d "=" -f 5 | cut -d "\"" -f 2 | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
 wget https://ftp.gnu.org/gnu/glibc/glibc-${VERSION}.tar.xz
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 cp -f $CWD/SUPPORTED localedata

@@ -17,7 +17,7 @@ cd $TMP
 VERSION=$(GetLatestVersionTagFromGithub "sass" ${PRGNAM} "sass")
 wget https://github.com/sass/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}-linux-x64.tar.gz
 
-tar xvf ${PRGNAM}-${VERSION}-linux-x64.tar.?z
+tar xf ${PRGNAM}-${VERSION}-linux-x64.tar.?z
 
 mkdir -p $PKG/usr/bin
 cp -r ${PRGNAM}/* $PKG/usr/bin

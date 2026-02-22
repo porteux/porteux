@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "lxqt" $PRGNAM)
 VERSION=${info#* }
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 patch -p0 < $CWD/remove-screensaver-entry.patch

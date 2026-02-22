@@ -19,7 +19,7 @@ VERSION=$(echo $VERSION | cut -d "-" -f2)
 
 wget https://github.com/rpm-software-management/${PRGNAM}/releases/download/${PRGNAM}-${VERSION}-release/${PRGNAM}-${VERSION}.tar.bz2
 
-tar xvf ${PRGNAM}*.tar.?z*
+tar xf ${PRGNAM}*.tar.?z*
 cd ${PRGNAM}*/
 
 sed -i "s|find_program(SCDOC|#find_program(SCDOC|g" CMakeLists.txt

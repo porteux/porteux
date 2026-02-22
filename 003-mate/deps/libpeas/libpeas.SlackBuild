@@ -15,7 +15,7 @@ cd $TMP
 VERSION="1.36.0"
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${PRGNAM}-${VERSION}/${PRGNAM}-${PRGNAM}-${VERSION}.tar.gz
 
-tar xfv $PRGNAM-$PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$PRGNAM-$VERSION
 
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build

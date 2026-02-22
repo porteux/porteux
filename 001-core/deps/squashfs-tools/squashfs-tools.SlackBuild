@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "plougher" ${PRGNAM} "squashfs-tools|CVE")
 VERSION=${info#* }
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 cd $PRGNAM

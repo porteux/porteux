@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "polkit-org" ${PRGNAM})
 VERSION=${info#* }
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 patch -p0 < $CWD/dont-set-wheel-group-as-admin.patch

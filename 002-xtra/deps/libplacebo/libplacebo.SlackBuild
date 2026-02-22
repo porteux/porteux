@@ -15,7 +15,7 @@ cd $TMP
 VERSION=$(curl -s https://code.videolan.org/videolan/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 wget https://code.videolan.org/videolan/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-tar xvf ${PRGNAM}-${VERSION}.tar.?z
+tar xf ${PRGNAM}-${VERSION}.tar.?z
 cd ${PRGNAM}-${VERSION}
 
 mkdir build && cd build
