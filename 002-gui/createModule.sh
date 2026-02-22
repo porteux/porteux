@@ -110,6 +110,7 @@ rm $MODULEPATH/packages/cxxopts*.txz
 for package in \
 	flatpak \
 	galculator \
+	intel-media-driver \
 	intel-vaapi-driver \
 	labwc \
 	libjxl \
