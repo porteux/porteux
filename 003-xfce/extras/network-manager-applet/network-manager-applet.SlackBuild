@@ -16,8 +16,8 @@ VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | 
 		while read -r version; do
 			minor=$(echo "$version" | cut -d. -f2)
 			if (( minor % 2 == 0 )); then
-				echo "$version";
-				break;
+				echo "$version"
+				break
 			fi
 		done
 })
