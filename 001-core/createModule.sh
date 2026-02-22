@@ -187,7 +187,7 @@ cd $MODULEPATH/packages/etc/ssl/certs
 cp -s ../../../usr/share/ca-certificates/mozilla/* .
 
 for i in *.crt; do
-	sed -e '$a\' "$i" >> "$TEMPBUNDLE";
+	sed -e '$a\' "$i" >> "$TEMPBUNDLE"
 	rename crt pem "$i"
 done
 
