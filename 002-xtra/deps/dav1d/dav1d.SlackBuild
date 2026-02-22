@@ -18,7 +18,9 @@ cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$CLANGFLAGS" \
+LDFLAGS="$LLDFLAGS" \
+CC=clang \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
