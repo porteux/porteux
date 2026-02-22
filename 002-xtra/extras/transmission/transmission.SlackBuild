@@ -29,17 +29,15 @@ cmake -B build -S . \
 	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_BUILD_TYPE=release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_SYSCONFDIR=/etc \
 	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DENABLE_TESTS=OFF \
 	-DWITH_APPINDICATOR=OFF \
 	-DENABLE_QT=OFF \
-	-DINSTALL_DOC=OF
+	-DINSTALL_DOC=OFF
 
 cmake --build build -j${NUMBERTHREADS}
 DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
 
-rm -fr $PKG/usr/share/doc
 rm -fr $PKG/usr/share/man
 
 mkdir -p $PKG/install
