@@ -97,10 +97,6 @@ installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
-# temporary to build mozjs
-installpkg $MODULEPATH/packages/cbindgen*.txz || exit 1
-rm $MODULEPATH/packages/cbindgen*.txz
-
 # required only for building
 installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
 rm $MODULEPATH/packages/icu4c*.txz
@@ -130,7 +126,6 @@ MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # cinnamon deps
 for package in \
-	mozjs128 \
 	python-tinycss2 \
 	xdotool \
 	gsound \
@@ -174,6 +169,8 @@ done
 
 cd $MODULEPATH
 pip install pysass # required by cinnamon project
+
+installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 
 # cinnamon packages
 for package in \

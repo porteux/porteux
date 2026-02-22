@@ -31,7 +31,7 @@ wait
 DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-#DownloadPackage "mozjs140" &
+DownloadPackage "mozjs140" &
 DownloadPackage "network-manager-applet" &
 DownloadPackage "python-certifi" &
 DownloadPackage "python-charset-normalizer" &
@@ -53,8 +53,6 @@ DownloadPackage "gettext-tools" & # required by extensions
 wait
 
 ### temporary packages only for building
-
-DownloadPackage "cbindgen" & # required to build mozjs
 
 DownloadPackage "icu4c" & # required by gnome-terminal (only for safety in case it gets updated in Slackware repo)
 DownloadPackage "iso-codes" &
