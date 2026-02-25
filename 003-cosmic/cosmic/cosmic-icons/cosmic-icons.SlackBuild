@@ -18,10 +18,18 @@ VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
 just rootdir=$MODULEPATH/$PRGNAM/package install
 
+# merge with pop-icon-theme
+ROOT=./ installpkg $SCRIPTPATH/packages/pop-icon-theme-*.txz
+rm $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic/*/apps/browser.* # remove this to not mess with our AppStore icon
+cp -r $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic/* usr/share/icons/Pop/
+rm -fr $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic/*
+mv usr/share/icons/Pop/* $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic/
+
 gtk-update-icon-cache $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
+echo "Generating icon package. This may take a while..."
 cd $MODULEPATH/$PRGNAM/package
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz > /dev/null 2>&1
