@@ -68,7 +68,15 @@ rm $MODULEPATH/packages/mate-common*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
-LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "1.29" | head -1)
+LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | {
+	while read -r version; do
+		minor=$(echo "$version" | cut -d. -f2)
+		if (( minor % 2 == 0 )); then
+			echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
+			break
+		fi
+	done
+})
 
 echo "Building MATE ${LATESTVERSION}..."
 MODULENAME=$MODULENAME-${LATESTVERSION}
