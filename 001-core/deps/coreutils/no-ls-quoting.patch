@@ -1,0 +1,11 @@
+--- ./src/ls.c.orig	2021-09-24 06:31:05.000000000 -0500
++++ ./src/ls.c	2021-09-24 19:47:32.230001419 -0500
+@@ -2342,7 +2342,7 @@
+     qs = getenv_quoting_style ();
+   if (qs < 0)
+     qs = (ls_mode == LS_LS
+-          ? (stdout_isatty () ? shell_escape_quoting_style : -1)
++          ? (stdout_isatty () ? escape_quoting_style : -1)
+           : escape_quoting_style);
+   if (0 <= qs)
+     set_quoting_style (NULL, qs);
