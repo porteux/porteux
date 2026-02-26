@@ -12,8 +12,8 @@ DownloadPackage "avahi" &
 DownloadPackage "bash" &
 DownloadPackage "bc" & # to perform arithmetic operations in bash
 DownloadPackage "bin" &
-DownloadPackage "bluez" &
 wait
+DownloadPackage "bluez" &
 DownloadPackage "bluez-firmware" &
 DownloadPackage "bridge-utils" &
 DownloadPackage "brotli" &
@@ -22,7 +22,6 @@ DownloadPackage "bzip2" &
 DownloadPackage "ca-certificates" &
 DownloadPackage "cdrtools" &
 DownloadPackage "cifs-utils" &
-DownloadPackage "coreutils" &
 wait
 DownloadPackage "cpio" &
 DownloadPackage "curl" &

@@ -12,8 +12,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://ftp.gnu.org/gnu/glibc/ | grep "glibc-[0-9]" | grep ".tar.xz" | grep -Ev "sig" | cut -d "=" -f 5 | cut -d "\"" -f 2 | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
-wget https://ftp.gnu.org/gnu/glibc/glibc-${VERSION}.tar.xz
+VERSION=$(curl -s https://ftp.gnu.org/gnu/${PRGNAM}/ | grep "${PRGNAM}-[0-9]" | grep ".tar.xz" | grep -Ev "sig" | cut -d "=" -f 5 | cut -d "\"" -f 2 | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
+wget https://ftp.gnu.org/gnu/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
