@@ -17,6 +17,23 @@ if ! isRoot; then
 	exit
 fi
 
+LATESTVERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^xfce-|pre' | sort -Vr | {
+	if [[ "$ALLOWTEST" == "yes" ]]; then
+		version=$(head -1)
+		echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
+	else
+		while read -r version; do
+			minor=$(echo "$version" | cut -d. -f2)
+			if (( minor % 2 == 0 )); then
+				echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
+				break
+			fi
+		done
+	fi
+})
+echo "Building Xfce ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}..."
+MODULENAME=$MODULENAME-${LATESTVERSION}
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -24,7 +41,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
@@ -97,24 +114,6 @@ installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required by xfdesktop
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
-
-LATESTVERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^xfce-|pre' | sort -Vr | {
-	if [[ "$ALLOWTEST" == "yes" ]]; then
-		version=$(head -1)
-		echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
-	else
-		while read -r version; do
-			minor=$(echo "$version" | cut -d. -f2)
-			if (( minor % 2 == 0 )); then
-				echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
-				break
-			fi
-		done
-	fi
-})
-
-echo "Building Xfce ${LATESTVERSION}..."
-MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # xfce packages
 for package in \

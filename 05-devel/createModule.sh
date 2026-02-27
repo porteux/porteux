@@ -16,6 +16,8 @@ if ! isRoot; then
 	exit
 fi
 
+echo -e "Building ${MODULENAME} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -23,7 +25,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 if [ ! -f $MODULEPATH/packages/kernel-headers*.txz ]; then
 	cd ${SCRIPTPATH}/../000-kernel

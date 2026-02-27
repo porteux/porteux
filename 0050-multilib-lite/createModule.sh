@@ -18,6 +18,8 @@ if ! isRoot; then
 	exit
 fi
 
+echo -e "Building ${MODULENAME} based on Slackware ${SLACKWAREVERSION} i686...\n"
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -25,7 +27,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages that require specific stripping
 

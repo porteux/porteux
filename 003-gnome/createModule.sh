@@ -24,9 +24,19 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
+
+if [[ ${ALLOWTEST:-no} == no ]]; then
+	export TESTRELEASES="grep -Ev '\.rc|\.beta|\.alpha'"
+else
+	export TESTRELEASES="grep ''"
+fi
+
+LATESTVERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
+echo "Building GNOME ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}......"
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # gnome common
 for package in \
@@ -71,17 +81,6 @@ pip install pygments || exit 1
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
 rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
 export PATH=$HOME/.cargo/bin/:$PATH
-
-if [[ ${ALLOWTEST:-no} == no ]]; then
-	export TESTRELEASES="grep -Ev '\.rc|\.beta|\.alpha'"
-else
-	export TESTRELEASES="grep ''"
-fi
-
-LATESTVERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
-
-echo "Building GNOME ${LATESTVERSION}..."
-MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # gnome extras
 for package in \
