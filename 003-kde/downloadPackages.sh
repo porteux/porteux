@@ -31,6 +31,7 @@ DownloadPackage "appstream" & # required by main menu
 DownloadPackage "gcc-gfortran" & # required by spectable
 DownloadPackage "opencv" & # required by spectable
 DownloadPackage "phonon" & # required by dolphin and others
+DownloadPackage "qcoro" &
 DownloadPackage "qt6" &
 wait
 
@@ -177,17 +178,15 @@ DownloadPackage "plasma-systemmonitor" &
 DownloadPackage "plasma-workspace" &
 wait
 DownloadPackage "polkit-kde-agent" &
-DownloadPackage "polkit-qt" &
 DownloadPackage "powerdevil" &
 DownloadPackage "prison" &
 DownloadPackage "pulseaudio-qt" &
 DownloadPackage "purpose" &
 DownloadPackage "qca" &
-DownloadPackage "qcoro" &
 DownloadPackage "qqc2-desktop-style" &
-wait
 DownloadPackage "sddm" &
 DownloadPackage "sddm-kcm" &
+wait
 DownloadPackage "solid" &
 DownloadPackage "sonnet" &
 DownloadPackage "spectacle" &

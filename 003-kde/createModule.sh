@@ -17,10 +17,6 @@ if ! isRoot; then
 	exit
 fi
 
-LATESTVERSION=$(ls -a $MODULEPATH/packages/plasma-desktop-* | rev | cut -d - -f 3 | rev)
-echo "Building KDE Plasma ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}..."
-MODULENAME=$MODULENAME-${LATESTVERSION}
-
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -31,6 +27,10 @@ cd $MODULEPATH
 sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages that require specific stripping
+
+LATESTVERSION=$(ls -a $MODULEPATH/packages/plasma-desktop-* | rev | cut -d - -f 3 | rev)
+echo "Building KDE Plasma ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}..."
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 currentPackage=qt6
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -86,6 +86,7 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt6Svg.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6SvgWidgets.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6TextToSpeech.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandClient.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandCompositor.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandEglCompositorHwIntegration.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Widgets.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6XcbQpa.* "${currentPackage}-stripped"
@@ -270,6 +271,61 @@ rm usr/lib${SYSTEMBITS}/libphonon4qt5*
 rm usr/lib${SYSTEMBITS}/libpolkit-qt5*
 rm usr/lib${SYSTEMBITS}/libqca-qt5*
 rm usr/lib${SYSTEMBITS}/libQCoro5*
+rm usr/lib${SYSTEMBITS}/qt6/plugins/designer/phonon4qt6widgets.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/egldeviceintegrations/libqeglfs-emu-integration.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/egldeviceintegrations/libqeglfs-kms-egldevice-integration.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/egldeviceintegrations/libqeglfs-x11-integration.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/imageformats/libqmng.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/imageformats/libqpdf.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/platforminputcontexts/libqtvirtualkeyboardplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/platforms/libqeglfs.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/qmltooling/libqmldbg_quick3dprofiler.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/sqldrivers/libqsqlmysql.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/sqldrivers/libqsqlodbc.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/styles/breeze5.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/texttospeech/libqtexttospeech_speechd.so
+rm usr/lib${SYSTEMBITS}/qt6/plugins/wayland-shell-integration/libwl-shell-plugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/Qt/labs/animation/liblabsanimationplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/Qt/labs/lottieqt/liblottieplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/Qt/labs/lottieqt/VectorImageHelpers/liblottievectorimagehelpersplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/Qt/labs/settings/libqmlsettingsplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/Qt/labs/sharedimage/libsharedimageplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/Qt/labs/synchronizer/liblabssynchronizerplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/Qt/labs/wavefrontmesh/libqmlwavefrontmeshplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtPositioning/libpositioningquickplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQml/StateMachine/libqtqmlstatemachineplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQml/XmlListModel/libqmlxmllistmodelplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Controls/FluentWinUI3/impl/libqtquickcontrols2fluentwinui3styleimplplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Controls/FluentWinUI3/libqtquickcontrols2fluentwinui3styleplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Controls/Imagine/impl/libqtquickcontrols2imaginestyleimplplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Controls/Imagine/libqtquickcontrols2imaginestyleplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Controls/Material/impl/libqtquickcontrols2materialstyleimplplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Controls/Material/libqtquickcontrols2materialstyleplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Controls/Universal/impl/libqtquickcontrols2universalstyleimplplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Controls/Universal/libqtquickcontrols2universalstyleplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/LocalStorage/libqmllocalstorageplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Pdf/libpdfquickplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Scene2D/libqtquickscene2dplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Scene3D/libqtquickscene3dplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Shapes/DesignHelpers/libqtquickshapesdesignhelpersplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Timeline/BlendTrees/libqtquicktimelineblendtreesplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/Timeline/libqtquicktimelineplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/VectorImage/Helpers/libqquickvectorimagehelpersplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick/VectorImage/libqquickvectorimageplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick3D/AssetUtils/libqtquick3dassetutilsplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick3D/Effects/libqtquick3deffectplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick3D/Helpers/impl/libqtquick3dhelpersimplplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick3D/Helpers/libqtquick3dhelpersplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick3D/libqquick3dplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick3D/ParticleEffects/libqtquick3dparticleeffectsplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick3D/Particles3D/libqtquick3dparticles3dplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick3D/Physics/Helpers/libqtquick3dphysicshelpersplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick3D/Physics/libqquick3dphysicsplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtQuick3D/SpatialAudio/libquick3dspatialaudioplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtSensors/libsensorsquickplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtWebChannel/libwebchannelquickplugin.so
+rm usr/lib${SYSTEMBITS}/qt6/qml/QtWebSockets/libqmlwebsocketsplugin.so
 rm usr/share/applications/org.kde.dolphinsu.desktop
 rm usr/share/applications/org.kde.kuserfeedback-console.desktop
 rm usr/share/applications/org.kde.kwalletd*.desktop
