@@ -17,6 +17,18 @@ if ! isRoot; then
 	exit
 fi
 
+LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | {
+	while read -r version; do
+		minor=$(echo "$version" | cut -d. -f2)
+		if (( minor % 2 == 0 )); then
+			echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
+			break
+		fi
+	done
+})
+echo "Building MATE ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}..."
+MODULENAME=$MODULENAME-${LATESTVERSION}
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -24,7 +36,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
@@ -67,19 +79,6 @@ rm $MODULEPATH/packages/iso-codes*.txz
 rm $MODULEPATH/packages/mate-common*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
-
-LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | {
-	while read -r version; do
-		minor=$(echo "$version" | cut -d. -f2)
-		if (( minor % 2 == 0 )); then
-			echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
-			break
-		fi
-	done
-})
-
-echo "Building MATE ${LATESTVERSION}..."
-MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # mate deps
 for package in \

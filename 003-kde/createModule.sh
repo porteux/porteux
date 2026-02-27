@@ -17,6 +17,10 @@ if ! isRoot; then
 	exit
 fi
 
+LATESTVERSION=$(ls -a $MODULEPATH/packages/plasma-desktop-* | rev | cut -d - -f 3 | rev)
+echo "Building KDE Plasma ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}..."
+MODULENAME=$MODULENAME-${LATESTVERSION}
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -24,12 +28,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
-
-LATESTVERSION=$(ls -a $MODULEPATH/packages/plasma-desktop-* | rev | cut -d - -f 3 | rev)
-
-echo "Building KDE Plasma ${LATESTVERSION}..."
-MODULENAME=$MODULENAME-${LATESTVERSION}
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages that require specific stripping
 

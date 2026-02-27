@@ -34,7 +34,7 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### set compiler and linker
 

@@ -17,6 +17,10 @@ if ! isRoot; then
 	exit
 fi
 
+LATESTVERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
+echo "Building LXQt ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}..."
+MODULENAME=$MODULENAME-${LATESTVERSION}
+
 ### create module folder
 
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
@@ -24,7 +28,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages that require specific stripping
 
@@ -117,11 +121,6 @@ SESSIONTEMPLATE=lxqt ICONTHEME=kora QT=6 sh $SCRIPTPATH/../common/${package}/${p
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-LATESTVERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
-
-echo "Building LXQt ${LATESTVERSION}..."
-MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # lxqt deps
 for package in \
