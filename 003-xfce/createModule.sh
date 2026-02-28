@@ -31,7 +31,7 @@ LATESTVERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=
 		done
 	fi
 })
-echo "Building Xfce ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}..."
+echo -e "Building Xfce ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### create module folder

@@ -26,7 +26,7 @@ LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | gre
 		fi
 	done
 })
-echo "Building MATE ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}..."
+echo -e "Building MATE ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### create module folder
