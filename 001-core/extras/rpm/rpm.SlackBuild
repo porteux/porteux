@@ -14,10 +14,12 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "rpm-software-management" ${PRGNAM})
-VERSION=${info#* }
+VERSION=$(GetLatestVersionTagFromGithub "rpm-software-management" ${PRGNAM})
+VERSION=$(echo $VERSION | cut -d "-" -f2)
 
-tar xvf ${PRGNAM}*.tar.?z*
+wget https://github.com/rpm-software-management/${PRGNAM}/releases/download/${PRGNAM}-${VERSION}-release/${PRGNAM}-${VERSION}.tar.bz2
+
+tar xf ${PRGNAM}*.tar.?z*
 cd ${PRGNAM}*/
 
 sed -i "s|find_program(SCDOC|#find_program(SCDOC|g" CMakeLists.txt
@@ -29,21 +31,15 @@ sed -i "s|mark_as_advanced(SCD2HTML|#mark_as_advanced(SCD2HTML|g" CMakeLists.txt
 sed -i "s|add_subdirectory(docs)|#add_subdirectory(docs)|g" CMakeLists.txt
 sed -i "s|install(FILES CONTRIBUTING.md|#install(FILES CONTRIBUTING.md|g" CMakeLists.txt
 
-# temporary fix for building 6.0.1
-sed -i "s|static rpmRC rpm::delete_key_compat|rpmRC rpm::delete_key_compat|g" lib/keystore.cc
-
-LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
-	-DCMAKE_CXX_COMPILER=clang++ \
-	-DCMAKE_C_FLAGS="$CLANGFLAGS -ffat-lto-objects" \
-	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
+	-DCMAKE_C_FLAGS="$GCCFLAGS -ffat-lto-objects" \
+	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DWITH_AUDIT=OFF \
 	-DWITH_SELINUX=OFF \
 	-DWITH_SEQUOIA=OFF \
-	-DENABLE_OPENMP=OFF \
 	-DENABLE_TESTSUITE=OFF
 
 DESTDIR="$PKG" ninja -C build install -j${NUMBERTHREADS}

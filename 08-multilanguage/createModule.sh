@@ -6,14 +6,16 @@ source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi
+
+echo -e "Building ${MODULENAME} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 
 ### create module folder
 
@@ -22,7 +24,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### fake root
 

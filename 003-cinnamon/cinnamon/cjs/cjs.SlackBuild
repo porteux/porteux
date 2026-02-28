@@ -17,11 +17,13 @@ cd $TMP
 info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
 VERSION=${info#* }
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 sed -i "s|meson.build_root|meson.project_build_root|g" meson.build
 sed -i "s|extra_args: '--warn-error'|fatal_warnings: get_option('werror')|g" meson.build
+
+patch -p1 < $CWD/mozjs140-support.patch
 
 [ ! -e build ] && mkdir build
 cd build

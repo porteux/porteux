@@ -6,15 +6,17 @@ source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi
+
+echo -e "Building ${MODULENAME} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 
 ### create module folder
 
@@ -23,10 +25,11 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 if [ ! -f $MODULEPATH/packages/kernel-headers*.txz ]; then
-	wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNELVERSION-x86-1.txz -P $MODULEPATH/packages || exit 1
+	cd ${SCRIPTPATH}/../000-kernel
+	ONLYHEADERS=yes sh createModule.sh || wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNELVERSION-x86-1.txz -P $MODULEPATH/packages || exit 1
 fi
 
 ### fake root
@@ -64,6 +67,8 @@ rm -fr usr/share/icons
 rm -fr usr/share/locale
 rm -fr usr/share/valadoc-*
 rm -fr usr/x86_64-slackware-linux
+rm -fr var/lib/pkgtools/douninst.sh
+rm -fr var/lib/pkgtools/setup
 rm -fr var/log/pkgtools
 rm -fr var/log/setup
 

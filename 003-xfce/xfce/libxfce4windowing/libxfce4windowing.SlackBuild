@@ -14,7 +14,7 @@ cd $TMP
 
 DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^xfce-|pre' | sort -Vr | {
 	if [[ "$ALLOWTEST" == "yes" ]]; then
-		head -1 && echo "$version"
+		head -1
 	else
 		while read -r version; do
 			minor=$(echo "$version" | cut -d. -f2)
@@ -28,7 +28,7 @@ DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=a
 VERSION=$(echo $DOWNLOADVERSION | rev | cut -d '-' -f 1 | rev)
 wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNAM}-${DOWNLOADVERSION}.tar.gz
 
-tar xfv $PRGNAM-$DOWNLOADVERSION.tar.?z*
+tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
 sed -i "s|subdir('docs'|#subdir('docs'|g" meson.build

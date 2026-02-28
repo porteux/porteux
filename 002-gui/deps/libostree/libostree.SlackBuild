@@ -17,7 +17,7 @@ cd $TMP
 VERSION=$(GetLatestVersionTagFromGithub "ostreedev" ${PRGNAM})
 wget https://github.com/ostreedev/${PRGNAM}/releases/download/${VERSION}/lib${PRGNAM}-${VERSION//[vV]}.tar.xz
 
-tar xfv lib${PRGNAM}-${VERSION//[vV]}.tar.?z*
+tar xf lib${PRGNAM}-${VERSION//[vV]}.tar.?z*
 cd lib${PRGNAM}-${VERSION//[vV]}
 
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \

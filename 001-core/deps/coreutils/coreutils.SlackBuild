@@ -1,0 +1,49 @@
+#!/bin/bash
+
+PRGNAM=coreutils
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://ftp.gnu.org/gnu/${PRGNAM}/ | grep "${PRGNAM}-[0-9]" | grep ".tar.xz" | grep -Ev "sig" | cut -d "=" -f 5 | cut -d "\"" -f 2 | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
+wget https://ftp.gnu.org/gnu/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
+
+tar xf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+# Patch uname to correctly display CPU information
+patch -p1 < $CWD/fix-cpu-info.patch
+
+# Revert change to ls quoting style introduced in coreutils-8.25
+patch -p1 < $CWD/no-ls-quoting.patch
+
+FORCE_UNSAFE_CONFIGURE=1 \
+CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+./configure \
+  --prefix=/usr \
+  --bindir=/bin \
+  --enable-install-program=arch \
+  --with-openssl=no \
+  --enable-no-install-program=hostname,kill,uptime \
+  --build=$ARCH-slackware-linux
+
+make $NUMJOBS install DESTDIR=$PKG
+
+rm -rf $PKG/usr/share/info
+rm -rf $PKG/usr/share/man
+
+# We don't need this as it stomps on files in the ksh93 package
+rm -rf $PKG/usr/share/locale/*/LC_TIME
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

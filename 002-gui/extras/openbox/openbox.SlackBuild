@@ -17,7 +17,7 @@ cd $TMP
 VERSION="3.6.1"
 wget https://openbox.org/dist/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 patch -p1 < $CWD/py2-to-py3.patch
@@ -39,8 +39,10 @@ rm $PKG/usr/bin/gdm-control
 rm $PKG/usr/bin/gnome-panel-control
 rm $PKG/usr/share/xsessions/openbox-gnome.desktop
 rm $PKG/usr/share/xsessions/openbox-kde.desktop
+rm -fr $PKG/usr/share/doc
 rm -fr $PKG/usr/share/gnome
 rm -fr $PKG/usr/share/gnome-session
+rm -fr $PKG/usr/share/man
 
 install -Dm755 "$CWD/xinitrc.openbox" $PKG/etc/X11/xinit/xinitrc.openbox
 cd $PKG/etc/X11/xinit/

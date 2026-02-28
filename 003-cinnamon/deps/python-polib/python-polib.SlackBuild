@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "izimobil" "polib")
 VERSION=${info#* }
 
-tar xfv polib-$VERSION.tar.?z*
+tar xf polib-$VERSION.tar.?z*
 cd polib-$VERSION
 
 python setup.py install --root=$PKG

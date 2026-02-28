@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "xapp-project" ${PRGNAM})
 VERSION=${info#* }
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build

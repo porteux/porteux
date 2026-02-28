@@ -7,15 +7,32 @@ source "$PWD/../builder-utils/setflags.sh"
 SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/cachefiles.sh"
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi
+
+LATESTVERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^xfce-|pre' | sort -Vr | {
+	if [[ "$ALLOWTEST" == "yes" ]]; then
+		version=$(head -1)
+		echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
+	else
+		while read -r version; do
+			minor=$(echo "$version" | cut -d. -f2)
+			if (( minor % 2 == 0 )); then
+				echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
+				break
+			fi
+		done
+	fi
+})
+echo -e "Building Xfce ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### create module folder
 
@@ -24,7 +41,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
@@ -41,6 +58,7 @@ for package in \
 	lightdm-gtk-greeter \
 	mate-common \
 	mate-polkit \
+	atril \
 	xcape \
 ; do
 SESSIONTEMPLATE=xfce ICONTHEME=elementary-xfce sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -65,7 +83,6 @@ installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 
 # xfce extras
 for package in \
-	atril \
 	engrampa \
 	pavucontrol \
 	mate-search-tool \
@@ -97,24 +114,6 @@ installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required by xfdesktop
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
-
-LATESTVERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^xfce-|pre' | sort -Vr | {
-	if [[ "$ALLOWTEST" == "yes" ]]; then
-		version=$(head -1)
-		echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
-	else
-		while read -r version; do
-			minor=$(echo "$version" | cut -d. -f2)
-			if (( minor % 2 == 0 )); then
-				echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
-				break
-			fi
-		done
-	fi
-})
-
-echo "Building Xfce ${LATESTVERSION}..."
-MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # xfce packages
 for package in \
@@ -154,7 +153,8 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # only required for building not for run-time
-rm $MODULEPATH/packages/xfce4-dev-tools*
+rm $MODULEPATH/packages/xfce4-dev-tools*.txz
+rm $MODULEPATH/packages/mate-common*.txz
 
 ### fake root
 
@@ -169,7 +169,6 @@ InstallAdditionalPackages
 
 sed -i "s|Core;||g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|Graphics;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
-sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -z -i "s|OnlyShowIn=MATE;\\n||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
 sed -i "s|MATE;||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
 sed -i "s|MATE ||g" $MODULEPATH/packages/usr/share/applications/mate-search-tool.desktop
@@ -205,10 +204,6 @@ rm usr/lib${SYSTEMBITS}/libsoup-gnome*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
 rm usr/share/applications/org.gnome.Vte*.desktop
-rm usr/share/applications/xfce4-file-manager.desktop
-rm usr/share/applications/xfce4-mail-reader.desktop
-rm usr/share/applications/xfce4-terminal-emulator.desktop
-rm usr/share/applications/xfce4-web-browser.desktop
 rm usr/share/backgrounds/xfce/xfce-leaves.svg
 rm usr/share/backgrounds/xfce/xfce-light.svg
 rm usr/share/backgrounds/xfce/xfce-mouserace.svg

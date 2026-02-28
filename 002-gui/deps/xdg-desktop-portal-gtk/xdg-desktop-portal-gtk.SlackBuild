@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "flatpak" ${PRGNAM})
 VERSION=${info#* }
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
@@ -33,6 +33,9 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+# workaround to fix screensaver not working -- https://github.com/flatpak/xdg-desktop-portal-gtk/issues/472
+sed -i "s|org.freedesktop.impl.portal.Inhibit;||g" $PKG/usr/share/xdg-desktop-portal/portals/gtk.portal
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

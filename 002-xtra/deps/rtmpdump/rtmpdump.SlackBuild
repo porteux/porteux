@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-git clone http://git.ffmpeg.org/${PRGNAM}
+git clone  git://git.ffmpeg.org/${PRGNAM}.git
 cd $PRGNAM
 VERSION=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 
