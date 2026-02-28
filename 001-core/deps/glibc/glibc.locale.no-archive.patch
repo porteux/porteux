@@ -1,0 +1,10 @@
+--- ./localedata/Makefile.orig	2019-02-16 14:05:01.794154302 -0600
++++ ./localedata/Makefile	2019-02-16 14:06:25.744146460 -0600
+@@ -413,6 +413,7 @@
+ 	echo -n '...'; \
+ 	input=`echo $$locale | sed 's/\([^.]*\)[^@]*\(.*\)/\1\2/'`; \
+ 	$(LOCALEDEF) $$flags --alias-file=../intl/locale.alias \
++		     --no-archive \
+ 		     -i locales/$$input -f charmaps/$$charset \
+ 		     $(addprefix --prefix=,$(install_root)) $$locale \
+ 	&& echo ' done';

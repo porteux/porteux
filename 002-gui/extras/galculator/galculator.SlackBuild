@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub ${PRGNAM} ${PRGNAM})
 VERSION=${info#* }
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 CFLAGS="$GCCFLAGS -fcommon -std=c99 -Wno-implicit-function-declaration" \
@@ -26,7 +26,8 @@ CFLAGS="$GCCFLAGS -fcommon -std=c99 -Wno-implicit-function-declaration" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--enable-static=no
+	--enable-static=no \
+	--disable-quadmath
 
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 

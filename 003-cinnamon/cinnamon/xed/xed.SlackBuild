@@ -19,7 +19,7 @@ cd $TMP
 VERSION=3.8.5
 wget https://github.com/linuxmint/xed/archive/refs/tags/${VERSION}.tar.gz
 
-tar xvf *.tar.?z
+tar xf *.tar.?z
 cd $PRGNAM-$VERSION
 
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build

@@ -1,0 +1,82 @@
+#!/bin/bash
+
+PRGNAM=glibc
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://ftp.gnu.org/gnu/${PRGNAM}/ | grep "${PRGNAM}-[0-9]" | grep ".tar.xz" | grep -Ev "sig" | cut -d "=" -f 5 | cut -d "\"" -f 2 | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
+wget https://ftp.gnu.org/gnu/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
+
+tar xf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+cp -f $CWD/SUPPORTED localedata
+patch -p1 < $CWD/glibc.locale.no-archive.patch
+patch -p1 < $CWD/glibc-2.32.en_US.no.am.pm.date.format.patch
+[[ $ARCHITECTURELEVEL == "x86-64-v3" ]] || [[ $ARCHITECTURELEVEL == "x86-64-v4" ]] && patch -p0 < $CWD/improve-performance-avx2.patch
+
+mkdir build-glibc-$VERSION
+cd build-glibc-$VERSION
+
+LDFLAGS="${LDFLAGS/-Wl,--gc-sections/}"
+
+CFLAGS="${GCCFLAGS/-flto=auto/} -fPIC" \
+CXXFLAGS="${GCCFLAGS} -fvisibility-inlines-hidden -fPIC" \
+../configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--enable-kernel=6.1 \
+	--with-headers=/usr/include \
+	--with-tls \
+	--with-__thread \
+	--without-cvs \
+	--disable-nscd \
+	--disable-profile \
+	--disable-werror \
+	$ARCH-porteux-linux
+
+make -j$NUMBERTHREADS
+make -j$NUMBERTHREADS install install_root=$PKG
+make -j$NUMBERTHREADS localedata/install-locales install_root=$PKG DESTDIR=$PKG
+
+pushd $CWD
+PKG=$PKG sh libxcrypt.build
+popd
+
+mkdir -p $PKG/bin $PKG/etc/profile.d
+( cd $PKG/bin; ln -sf /sbin/sln sln )
+install -m755 $CWD/glibc.csh $CWD/glibc.sh $PKG/etc/profile.d/
+
+( cd $PKG/lib${SYSTEMBITS}
+	# Since glibc-2.34 shared objects are using their ABI sonames directly, which is not a good idea
+	for cryptlib in libcrypt.so.* ; do
+		CRYPTSO=$(echo $cryptlib | cut -f 3 -d .)
+		mv $cryptlib libcrypt${CRYPTSO}-${VERSION}.so
+	done
+	for library in *.so.* ; do
+		mv $library $(echo $library | cut -f 1 -d .)-${VERSION}.so
+	done
+)
+
+find $PKG | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
+find $PKG | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
+
+rm $PKG/etc/ld.so.cache
+rm -fr $PKG/usr/share/i18n/charmaps
+rm -fr $PKG/usr/share/locale
+find $PKG/lib${SYSTEMBITS} -type l -exec rm {} \+
+find $PKG/usr/share/i18n/locales -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en_US" -o -name "POSIX" \) -delete
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

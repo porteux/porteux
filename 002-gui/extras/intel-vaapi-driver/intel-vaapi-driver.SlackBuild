@@ -17,12 +17,12 @@ cd $TMP
 info=$(DownloadLatestFromGithub "irql-notlessorequal" $PRGNAM)
 VERSION=${info#* }
 
-tar xvf *.tar.?z
+tar xf *.tar.?z
 cd ${PRGNAM}-${VERSION}
 
 mkdir build && cd build
-CFLAGS="$GCCGFLAGS" \
-CXXFLAGS="$GCCGFLAGS" \
+CFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

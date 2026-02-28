@@ -17,14 +17,14 @@ cd $TMP
 info=$(DownloadLatestFromGithub "${PRGNAM}" ${PRGNAM})
 VERSION=${info#* }
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 sed -i "s|subdir('doc|#subdir('doc|g" meson.build
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

@@ -15,11 +15,12 @@ cd $TMP
 VERSION=$(curl -s https://code.videolan.org/videolan/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | head -1 | cut -d '>' -f 2 | cut -d '<' -f 1)
 wget https://code.videolan.org/videolan/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-tar xvf ${PRGNAM}-${VERSION}.tar.?z
+tar xf ${PRGNAM}-${VERSION}.tar.?z
 cd ${PRGNAM}-${VERSION}
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -33,7 +34,7 @@ meson setup \
 	--buildtype=release \
 	-Ddemos=false \
 	-Dglslang=disabled \
-	-Dvulkan=disabled \
+	-Dvulkan=enabled \
 	-Dshaderc=disabled \
 	-Ddovi=disabled \
 	-Dlibdovi=disabled \

@@ -13,7 +13,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 wget https://github.com/${PRGNAM}/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
-tar xvf ${PRGNAM}.tar.?z
+tar xf ${PRGNAM}.tar.?z
 cd ${PRGNAM}-main
 VERSION=$(date -r . +%Y%m%d)
 
@@ -37,7 +37,7 @@ cmake -B build -S . \
 	-DBUNDLE_LIBPNG_DEFAULT='NO' \
 	-DCMAKE_BUILD_TYPE='Release' \
 	-DCMAKE_INSTALL_PREFIX='/usr' \
-	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DCMAKE_INSTALL_BINDIR=/usr/bin \
 	-DBUILD_SHARED_LIBS=true \
 	-DJPEGXL_ENABLE_JNI=false \

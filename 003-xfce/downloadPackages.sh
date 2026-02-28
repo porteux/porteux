@@ -26,7 +26,7 @@ wait
 
 DownloadPackage "icu4c" & # required by xfce4-terminal (only for safety in case it gets updated in Slackware repo)
 DownloadPackage "glade" & # required by libxfce4ui to provide more system information (e.g. nvidia cards)
-DownloadPackage "libyaml" & # to build xfdesktop with desktop iconslibnma
+DownloadPackage "libyaml" & # to build xfdesktop with desktop icons
 wait
 
 ### script clean up

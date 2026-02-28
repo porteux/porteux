@@ -1,0 +1,51 @@
+From 6ceffedac405ccc5fc89e198cff5c9124c2afc55 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Timo=20Ter=C3=A4s?= <timo.teras@iki.fi>
+Date: Sun, 5 May 2024 12:06:00 +0300
+Subject: [PATCH] compositor: render full screen after startup
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+There is a history of artifacts after startup. Commit 554e5c7a
+was applied to clear the frame buffer so that "undefined" data
+would not be used. That "undefined" data often was latest rendered
+image, and it was actually masking the underlying problem.
+
+On startup, a full paint of the screen is never scheduled for
+the frame buffer. This causes parts of the render buffer to remain
+untouched (now black). And when executing a flip, those areas are
+now black instead of "undefined" or "likely old image".
+
+The problem is clearly visible, when you have background set, and you
+execute xfwm4 --replace from a terminal. Most of the background will
+be black instead of the background image. When moving the terminal
+around it will "fix" the areas it moves over.
+
+Another visible glitch is flash of black screen when logging in
+from lightdm or other display manager which preloads the users
+background image as root tile before starting the window manager.
+
+Fix this be scheduling a full rendering of the screen once it
+becomes managed by the compositor.
+
+Signed-off-by: Timo Teräs <timo.teras@iki.fi>
+Closes: https://gitlab.xfce.org/xfce/xfwm4/-/issues/684
+---
+ src/compositor.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/compositor.c b/src/compositor.c
+index 9b92db921..74fed8731 100644
+--- src/compositor.c
++++ src/compositor.c
+@@ -4977,6 +4977,8 @@ compositorManageScreen (ScreenInfo *screen_info)
+                              screen_info->xroot,
+                              XFixesDisplayCursorNotifyMask);
+ 
++    damage_screen (screen_info);
++
+     return TRUE;
+ #else
+     return FALSE;
+-- 
+GitLab
