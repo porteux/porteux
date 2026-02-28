@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULENAME=003-lxde-0.11.1
+MODULENAME=003-lxde
 
 source "$PWD/../builder-utils/setflags.sh"
 
@@ -18,7 +18,7 @@ if ! isRoot; then
 fi
 
 LATESTVERSION="0.11.1"
-echo "Building LXDE 0.11.1 based on Slackware ${SLACKWAREVERSION} ${ARCH}..."
+echo -e "Building LXDE ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### create module folder

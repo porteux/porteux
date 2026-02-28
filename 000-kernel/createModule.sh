@@ -74,7 +74,7 @@ else
 		-e 's/--strip-all//g')
 fi
 
-echo "Building kernel ${KERNELVERSION} using ${COMPILER}..."
+echo -e "Building kernel ${KERNELVERSION} using ${COMPILER}...\n"
 
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH}/packages 2>/dev/null

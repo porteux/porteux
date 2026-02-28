@@ -18,7 +18,7 @@ if ! isRoot; then
 fi
 
 LATESTVERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
-echo "Building LXQt ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}..."
+echo -e "Building LXQt ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### create module folder
