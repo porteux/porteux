@@ -21,7 +21,7 @@ LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | gre
 	while read -r version; do
 		minor=$(echo "$version" | cut -d. -f2)
 		if (( minor % 2 == 0 )); then
-			echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
+			echo "$version"
 			break
 		fi
 	done
