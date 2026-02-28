@@ -16,14 +16,14 @@ git clone https://github.com/pop-os/$PRGNAM
 cd $PRGNAM
 VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
-just rootdir=$MODULEPATH/$PRGNAM/package install
+just rootdir=$PKG install
 
 # merge with pop-icon-theme
 ROOT=./ installpkg $SCRIPTPATH/packages/pop-icon-theme-*.txz
-rm $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic/*/apps/browser.* # remove this to not mess with our AppStore icon
-cp -r $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic/* usr/share/icons/Pop/
-rm -fr $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic/*
-mv usr/share/icons/Pop/* $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic/
+rm usr/share/icons/Pop/*/apps/browser.* # remove this to not mess with our AppStore icon
+cp -r $PKG/usr/share/icons/Cosmic/* usr/share/icons/Pop/
+rm -fr $PKG/usr/share/icons/Cosmic/*
+mv usr/share/icons/Pop/* $PKG/usr/share/icons/Cosmic/
 
 gtk-update-icon-cache $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic
 
