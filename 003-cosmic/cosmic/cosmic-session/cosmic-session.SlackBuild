@@ -23,10 +23,10 @@ sed -i 's|--release|--release --features autostart|g' Justfile
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 just build-release
 rsync -r ./target/release ./target/
-just rootdir=$MODULEPATH/$PRGNAM/package install
+just rootdir=$PKG install
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
-cd $MODULEPATH/$PRGNAM/package
+cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz
