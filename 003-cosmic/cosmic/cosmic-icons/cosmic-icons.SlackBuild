@@ -25,7 +25,7 @@ cp -r $PKG/usr/share/icons/Cosmic/* usr/share/icons/Pop/
 rm -fr $PKG/usr/share/icons/Cosmic/*
 mv usr/share/icons/Pop/* $PKG/usr/share/icons/Cosmic/
 
-gtk-update-icon-cache $MODULEPATH/$PRGNAM/package/usr/share/icons/Cosmic
+gtk-update-icon-cache $PKG/usr/share/icons/Cosmic
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
