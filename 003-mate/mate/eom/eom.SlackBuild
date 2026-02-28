@@ -20,23 +20,24 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-sed -i 's| man | |g' Makefile.am
-sed -i 's| help | |g' Makefile.am
-sed -i 's| doc||g' Makefile.am
-sed -i 's| man | |g' Makefile.in
-sed -i 's| help | |g' Makefile.in
-sed -i 's| doc||g' Makefile.in
+for i in $CWD/*.patch; do
+	patch -p0 < $i;
+done
 
+sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
+sed -i "s|subdir('help')|#subdir('help')|g" meson.build
+sed -i "s|subdir('man')|#subdir('man')|g" meson.build
+
+mkdir build && cd build
 CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-./configure \
-	--prefix=/usr \
+meson setup \
+	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
-	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--enable-thumbnailer \
-	--build=$ARCH-porteux-linux
+	--prefix=/usr \
+	--sysconfdir=/etc
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
