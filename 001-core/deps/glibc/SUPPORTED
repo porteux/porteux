@@ -1,0 +1,6 @@
+# This file names the currently supported and somewhat tested locales.
+# If you have any additions please file a glibc bug report.
+SUPPORTED-LOCALES=\
+C.UTF-8/UTF-8 \
+en_US.UTF-8/UTF-8 \
+en_US/ISO-8859-1 \

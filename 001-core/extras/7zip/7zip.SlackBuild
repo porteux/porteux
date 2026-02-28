@@ -17,7 +17,7 @@ cd $TMP
 uasmVersion=2.57
 wget https://github.com/Terraspace/UASM/archive/refs/tags/v${uasmVersion}r.tar.gz -O UASM-${uasmVersion}r.tar.gz
 
-tar xfv UASM-${uasmVersion}r.tar.?z*
+tar xf UASM-${uasmVersion}r.tar.?z*
 cd UASM-${uasmVersion}r
 
 make -j${NUMBERTHREADS} CC="gcc $GCCFLAGS -std=c99 -fcommon -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-discarded-qualifiers -Wno-lto-type-mismatch -Wno-compare-distinct-pointer-types -Wno-pointer-to-int-cast" -f Makefile-Linux-GCC-64.mak
@@ -29,7 +29,7 @@ cd ..
 info=$(DownloadLatestFromGithub "ip7z" ${PRGNAM})
 VERSION=${info#* }
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 cp "$CWD/meson.build.template" meson.build
@@ -53,6 +53,7 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/doc
 
 cd $PKG/usr/bin
 cp -s 7zz 7z

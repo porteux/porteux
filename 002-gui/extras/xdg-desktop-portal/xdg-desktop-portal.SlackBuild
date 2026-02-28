@@ -14,12 +14,19 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "flatpak" ${PRGNAM})
-VERSION=${info#* }
+VERSION=$(GetLatestVersionTagFromGithub "flatpak" ${PRGNAM})
+versions_to_ignore="${VERSION}"
+minor_version=$(echo "$VERSION" | cut -d. -f2)
 
-extraFlags="-Ddocumentation=disabled -Dtests=disabled -Dsandboxed-image-validation=disabled -Dsandboxed-sound-validation=disabled"
+while (( ${minor_version} % 2 == 1 )); do
+	VERSION=$(GetLatestVersionTagFromGithub "flatpak" ${PRGNAM} "${versions_to_ignore}|${VERSION}")
+	versions_to_ignore="${versions_to_ignore}|${VERSION}"
+	minor_version=$(echo "$VERSION" | cut -d. -f2)
+done
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+wget https://github.com/flatpak/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
+
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
@@ -35,7 +42,10 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
-	${extraFlags} \
+	-Ddocumentation=disabled \
+	-Dtests=disabled \
+	-Dsandboxed-image-validation=disabled \
+	-Dsandboxed-sound-validation=disabled \
 	-Dflatpak-interfaces=disabled \
 	-Dgeoclue=disabled \
 	-Dsystemd=disabled \

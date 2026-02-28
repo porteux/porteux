@@ -7,15 +7,19 @@ source "$PWD/../builder-utils/setflags.sh"
 SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/cachefiles.sh"
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi
+
+LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "master." | head -1)
+echo -e "Building Cinnamon ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### create module folder
 
@@ -24,7 +28,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages that require specific stripping
 
@@ -71,7 +75,6 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
-	mate-common \
 	mate-polkit \
 ; do
 SESSIONTEMPLATE=cinnamon ICONTHEME=Yaru-blue sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -98,10 +101,6 @@ installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
-# temporary to build mozjs
-installpkg $MODULEPATH/packages/cbindgen*.txz || exit 1
-rm $MODULEPATH/packages/cbindgen*.txz
-
 # required only for building
 installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
 rm $MODULEPATH/packages/icu4c*.txz
@@ -124,14 +123,8 @@ rm $MODULEPATH/packages/python-wheel*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
-LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "master." | head -1)
-
-echo "Building Cinnamon ${LATESTVERSION}..."
-MODULENAME=$MODULENAME-${LATESTVERSION}
-
 # cinnamon deps
 for package in \
-	mozjs128 \
 	python-tinycss2 \
 	xdotool \
 	gsound \
@@ -175,6 +168,8 @@ done
 
 cd $MODULEPATH
 pip install pysass # required by cinnamon project
+
+installpkg $MODULEPATH/packages/mozjs*.txz || exit 1
 
 # cinnamon packages
 for package in \

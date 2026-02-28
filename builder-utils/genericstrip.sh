@@ -63,6 +63,7 @@ GenericStrip() {
 	find . -name '*.hpp' -delete
 	find . -name '*.la' -delete
 	find . -name '*.m4' -delete
+	find . -name '*.make' -delete
 	find . -name '*.mk' -delete
 	find . -name '*.o' -delete
 	find . -name '*.pc' -delete

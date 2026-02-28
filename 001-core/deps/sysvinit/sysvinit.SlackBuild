@@ -15,7 +15,7 @@ cd $TMP
 VERSION="3.15"
 wget https://github.com/slicer69/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz -O ${PRGNAM}-${VERSION}.tar.gz
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 # Fix failure to show program version:

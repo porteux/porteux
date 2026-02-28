@@ -1,0 +1,142 @@
+#!/bin/bash
+
+PRGNAM=procps-ng
+PRGNAMDOWNLOAD=procps
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+downloadedVersion=$(curl -s https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | sort -Vr | head -1)
+VERSION=${downloadedVersion//[vV]}
+wget https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/archive/${downloadedVersion}/${PRGNAMDOWNLOAD}-${downloadedVersion}.tar.gz
+
+PSMISCVER=$(curl -s https://gitlab.com/psmisc/psmisc/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | sort -Vr | head -1)
+wget https://gitlab.com/psmisc/psmisc/-/archive/${PSMISCVER}/psmisc-${PSMISCVER}.tar.gz
+
+PROCINFONGVER=${PROCINFONGVER:-2.0.304}
+
+tar xf $PRGNAMDOWNLOAD-${downloadedVersion}.tar.?z
+tar xf psmisc-$PSMISCVER.tar.?z
+tar xf $CWD/procinfo-ng-$PROCINFONGVER.tar.?z
+
+cd $PRGNAMDOWNLOAD-${downloadedVersion}
+
+# Fix for wide-only ncurses:
+sed 's:<ncursesw/:<:g' -i src/watch.c
+
+# Fix Gitlab tar not containing version files
+echo $VERSION > .version
+echo $VERSION > .tarball-version
+
+CFLAGS="$GCCFLAGS" \
+./autogen.sh && ./configure \
+	--prefix=/ \
+	--bindir=/bin \
+	--sbindir=/sbin \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--includedir=/usr/include \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--datarootdir=/usr/share \
+	--enable-static=no \
+	--disable-silent-rules \
+	--disable-rpath \
+	--enable-watch8bit \
+	--enable-skill \
+	--enable-sigwinch \
+	--enable-w-from \
+	--disable-kill \
+	--without-systemd \
+	--with-elogind \
+	--disable-modern-top \
+	--build=$ARCH-porteux-linux
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+# Move the shared library to $PKG/lib${SYSTEMBITS}:
+mkdir -p $PKG/lib${SYSTEMBITS}
+( cd $PKG/usr/lib${SYSTEMBITS}
+	for file in lib*.so.?.* ; do
+		mv $file ../../lib${SYSTEMBITS}
+		ln -sf ../../lib${SYSTEMBITS}/$file .
+	done
+	cp -a lib*.so.? ../../lib${SYSTEMBITS}
+)
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+# Upstream has shuffled the location of tools since 3.3.11 release.
+mkdir -p $PKG/bin
+for file in free killall ps ; do
+	find $PKG -name $file -exec mv "{}" $PKG/bin \;
+done
+# These tools belong in /sbin:
+mkdir -p $PKG/sbin
+for file in pidof sysctl ; do
+	find $PKG -name $file -exec mv "{}" $PKG/sbin \;
+done
+mkdir -p $PKG/usr/bin
+# These tools belong in /usr/bin:
+for file in fuser lsdev peekfd pgrep pkill pmap procinfo prtstat pstree pwdx skill slabtop snice socklist tload top uptime vmstat w watch ; do
+	find $PKG -name $file -exec mv "{}" $PKG/usr/bin \;
+done
+# These symlinks belong in /bin:
+rm -f $PKG/bin/pidof
+ln -sf /sbin/pidof $PKG/bin/pidof
+# These symlinks belong in /usr/bin:
+rm -f $PKG/usr/bin/free $PKG/usr/bin/pidof $PKG/usr/bin/ps
+ln -sf /bin/free $PKG/usr/bin/free
+ln -sf /sbin/pidof $PKG/usr/bin/pidof
+ln -sf /bin/ps $PKG/usr/bin/ps
+# WTF changing the name of this
+( cd $PKG/bin ; ln -sf pidwait pwait )
+
+# Create /etc/sysctl.d:
+mkdir -p $PKG/etc/sysctl.d
+
+cd ../psmisc-$PSMISCVER
+
+CFLAGS="$GCCFLAGS" \
+./autogen.sh && ./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--disable-silent-rules \
+	--disable-rpath \
+	--build=$ARCH-porteux-linux
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+# Move "killall" to the traditional location:
+mv $PKG/usr/bin/killall $PKG/bin
+ln -s /bin/killall $PKG/usr/bin/killall
+
+cd ../procinfo-ng-$PROCINFONGVER
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--enable-maintainer-mode \
+	--build=$ARCH-porteux-linux
+
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/doc
+rm -fr $PKG/usr/share/man
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION}-$ARCH-1_porteux.txz

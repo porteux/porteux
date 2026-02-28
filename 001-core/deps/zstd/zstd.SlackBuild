@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "facebook" ${PRGNAM} "kernel")
 VERSION=${info#* }
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 cd build/cmake
@@ -29,7 +29,7 @@ cmake -B build -S . \
 	-DCMAKE_C_FLAGS="$CLANGFLAGS" \
 	-DCMAKE_CXX_FLAGS="$CLANGFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DBUILD_SHARED_LIBS=ON \
 	-DZSTD_BUILD_STATIC=OFF \
 	-DZSTD_PROGRAMS_LINK_SHARED=ON \

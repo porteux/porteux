@@ -17,14 +17,14 @@ cd $TMP
 info=$(DownloadLatestFromGithub "jarro2783" ${PRGNAM})
 VERSION=${info#* }
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 cmake -B build -S $TMP/$PRGNAM-$VERSION \
 	-G Ninja \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DCXXOPTS_BUILD_EXAMPLES=OFF \
 	-DCXXOPTS_BUILD_TESTS=OFF
 

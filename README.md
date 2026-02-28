@@ -8,9 +8,9 @@ PorteuX is a Linux distro based on Slackware, inspired by Slax and Porteus and a
 
 It's unique in many ways; not just a repackaging of programs on top of Slackware. For a list of its highlights, access the [Main Features](https://github.com/porteux/porteux/wiki/Main-Features) wiki page.
 
-It's already pre-configured for basic usage, including lightweight applications for each of the 7 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, NVIDIA drivers, Wine, office suite, multilib (32-bit compatibility), messengers, emulators, etc.
+It's already pre-configured for basic usage, including lightweight applications for each of the 8 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, NVIDIA drivers, Wine, office suite, multilib (32-bit compatibility), messengers, emulators, etc.
 
-Out of the box, PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or NVIDIA cards (for Nvidia cards it's required to download the NVIDIA driver from the app store).
+Out of the box, PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or NVIDIA cards (for NVIDIA cards it's required to download the driver from the app store).
 
 ## How To Use
 
@@ -24,7 +24,7 @@ PorteuX is based on Slackware 64-bit current/rolling (bleeding edge). The ISOs a
 . MATE<br />
 . Xfce<br />
 
-PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run from the `boot` folder either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's that simple. Please avoid ISO installer applications like Rufus or Etcher because by default they set the bootable unit to be read-only. More details can be found in the [/boot/docs/install.txt](https://github.com/porteux/porteux/blob/main/boot/boot/docs/install.txt) file in the ISO.
+PorteuX is a modular system so it doesn't require a normal setup/installer. You can simply copy the ISO content to your media storage and run from the `boot` folder either `porteux-installer-for-linux.run` or `porteux-installer-for-windows.exe` (depending on which system you're running) to make the unit bootable. It's that simple. Please avoid ISO installer applications like Rufus or Etcher because by default they set the bootable unit to be read-only. More details can be found in the [/boot/docs/install.txt](https://github.com/porteux/porteux/blob/main/iso/boot/docs/install.txt) file in the ISO.
 
 To use PorteuX in a language other than English, download the multilanguage package and use the PorteuX Language Switcher application to choose the desired language.
 
@@ -70,10 +70,9 @@ All this performance benefit is achieved without providing ancient software. Thi
 ## Enable OpenCL support (required by applications like DaVinci Resolve)
 
 In the terminal, run the following commands: <br />
-1. `su` (password: toor) <br />
-2. `cd $PORTDIR/modules` <br />
-3. `getpkg -m libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk`<br />
-4. `activate -q libclc*.xzm llvm*.xzm mesa*.xzm ocl-icd*.xzm spirv-llvm-translator*.xzm vulkan-sdk*.xzm` <br />
+1. `cd $PORTDIR/modules` <br />
+2. `sudo getpkg -m libclc llvm mesa spirv-llvm-translator vulkan-sdk`<br />
+3. `sudo activate -q libclc*.xzm llvm*.xzm mesa*.xzm spirv-llvm-translator*.xzm vulkan-sdk*.xzm` <br />
 
 This only needs to be done once, as these modules will be activated automatically every time the machine boots.
 

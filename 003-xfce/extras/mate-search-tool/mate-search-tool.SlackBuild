@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "mate-desktop" "mate-utils" "1.29")
 VERSION=${info#* }
 
-tar xvf mate-utils-$VERSION.tar.?z
+tar xf mate-utils-$VERSION.tar.?z
 cd mate-utils-$VERSION
 
 patch -p0 < $CWD/configure.ac.patch

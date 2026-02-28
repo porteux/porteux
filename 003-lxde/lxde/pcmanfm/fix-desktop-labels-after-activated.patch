@@ -1,0 +1,54 @@
+--- src/desktop.c	2026-01-15 12:45:41.838846864 +0100
++++ src/desktop.c.patched	2026-01-15 12:45:02.730845014 +0100
+@@ -59,6 +59,7 @@
+ struct _FmDesktopItem
+ {
+     FmFileInfo* fi;
++    char *disp_name;   /* cached display name */
+     GdkRectangle area; /* position of the item on the desktop */
+     GdkRectangle icon_rect;
+     GdkRectangle text_rect;
+@@ -162,6 +163,7 @@
+     FmPath *path;
+     FmFileInfo *fi;
+     FmFileInfoJob *job;
++    char *disp_name;   /* cached display name */
+ } FmDesktopExtraItem;
+ 
+ static FmDesktopExtraItem *documents = NULL;
+@@ -202,6 +204,8 @@
+     fm_folder_model_set_item_userdata(model, it, item);
+     gtk_tree_model_get(GTK_TREE_MODEL(model), it, FM_FOLDER_MODEL_COL_INFO, &item->fi, -1);
+     fm_file_info_ref(item->fi);
++    item->fi = fm_file_info_ref(item->fi);
++    item->disp_name = g_strdup(fm_file_info_get_disp_name(item->fi));
+ #if FM_CHECK_VERSION(1, 2, 0)
+     if ((trash_can && trash_can->fi == item->fi) ||
+         (documents && documents->fi == item->fi))
+@@ -221,6 +225,7 @@
+ {
+     if(item->fi)
+         fm_file_info_unref(item->fi);
++    g_free(item->disp_name);
+     g_slice_free(FmDesktopItem, item);
+ }
+ 
+@@ -1849,7 +1854,8 @@
+     pango_layout_set_width(self->pl, self->pango_text_w);
+     pango_layout_set_height(self->pl, self->pango_text_h);
+ 
+-    pango_layout_set_text(self->pl, fm_file_info_get_disp_name(item->fi), -1);
++    pango_layout_set_text(self->pl, item->disp_name ? item->disp_name : fm_file_info_get_disp_name(item->fi), -1);
++    
+ 
+     /* FIXME: do we need to cache this? */
+     text_x = item->area.x + (self->cell_w - self->text_w)/2 + 2;
+@@ -1901,7 +1907,7 @@
+                         item->text_rect.x, item->text_rect.y, item->text_rect.width, item->text_rect.height);
+ 
+     if(item == self->hover_item) /* hovered */
+-        g_object_set(G_OBJECT(self), "tooltip-text", fm_file_info_get_disp_name(item->fi), NULL);
++        g_object_set(G_OBJECT(self), "tooltip-text", item->disp_name ? item->disp_name : fm_file_info_get_disp_name(item->fi), NULL);
+     else
+         g_object_set(G_OBJECT(self), "tooltip-text", NULL, NULL);
+ 

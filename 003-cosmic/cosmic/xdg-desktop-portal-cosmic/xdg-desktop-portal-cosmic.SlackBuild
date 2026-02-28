@@ -16,10 +16,6 @@ git clone https://github.com/pop-os/$PRGNAM
 cd $PRGNAM
 VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
-for i in $CWD/*.patch; do
-	patch -p0 < $i
-done
-
 RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"
 
 sed -i "s|license = {|#license = {|g" Cargo.toml
@@ -27,7 +23,7 @@ sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
 
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 make -j${NUMBERTHREADS}
-make install DESTDIR=$MODULEPATH/$PRGNAM/package
+make install DESTDIR=$PKG
 
-cd $MODULEPATH/$PRGNAM/package
+cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz

@@ -7,15 +7,17 @@ source "$PWD/../builder-utils/setflags.sh"
 SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/cachefiles.sh"
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi
+
+echo -e "Building ${MODULENAME} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 
 ### create module folder
 
@@ -24,9 +26,9 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
-### packages outside slackware repository
+### critical libraries that need to be in sync with slackware repo before building
 
 installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/lua*.txz > /dev/null 2>&1
@@ -34,18 +36,25 @@ installpkg $MODULEPATH/packages/lua*.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
+### packages outside slackware repository
+
 # required to build procps-ng
 installpkg $MODULEPATH/packages/ncurses*.txz || exit 1
 
 # core deps
 for package in \
+	glibc \
+	coreutils \
+	zlib-ng \
 	zstd \
 	squashfs-tools \
 	sysvinit \
 	duktape \
 	polkit \
+	procps-ng \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -54,16 +63,10 @@ for package in \
 	fastfetch \
 	7zip \
 	rpm \
-	procps-ng \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-# required by other modules
-installpkg $MODULEPATH/packages/procps-ng*.txz
-installpkg $MODULEPATH/packages/squashfs-tools*.txz
-installpkg $MODULEPATH/packages/zstd*.txz
 
 ## packages that require specific stripping
 
@@ -76,26 +79,6 @@ mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped/
 cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped/
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
-
-currentPackage=glibc
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}*.txz
-rm usr/include/gnu/*-32.h
-rm usr/libexec/getconf/*ILP32*
-rm var/log/packages
-rm var/log/scripts
-rm var/log/setup
-rm -fr lib/
-rm -fr usr/lib/
-rm -fr var/lib/pkgtools
-rm -fr var/log/pkgtools
-mkdir ${currentPackage}-stripped
-rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -145,8 +128,8 @@ ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents usr/bin/ar ${currentPackage}-stripped/
 cp --parents usr/bin/strip ${currentPackage}-stripped/
-cp --parents -P usr/lib$SYSTEMBITS/libbfd* ${currentPackage}-stripped/
-cp --parents -P usr/lib$SYSTEMBITS/libsframe* ${currentPackage}-stripped/
+cp --parents -P usr/lib$SYSTEMBITS/libbfd*.so ${currentPackage}-stripped/
+cp --parents -P usr/lib$SYSTEMBITS/libsframe.so* ${currentPackage}-stripped/
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage}
@@ -207,7 +190,7 @@ cd $MODULEPATH/packages/etc/ssl/certs
 cp -s ../../../usr/share/ca-certificates/mozilla/* .
 
 for i in *.crt; do
-	sed -e '$a\' "$i" >> "$TEMPBUNDLE";
+	sed -e '$a\' "$i" >> "$TEMPBUNDLE"
 	rename crt pem "$i"
 done
 
@@ -377,16 +360,10 @@ find usr/lib${SYSTEMBITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +
 } >/dev/null 2>&1
 
 # move out libc because it can't be stripped at all
-mv $MODULEPATH/packages/lib${SYSTEMBITS}/libc.so* $MODULEPATH/
 mv $MODULEPATH/packages/lib${SYSTEMBITS}/libc-* $MODULEPATH/
 GenericStrip
-mv $MODULEPATH/libc.so* $MODULEPATH/packages/lib${SYSTEMBITS}
-mv $MODULEPATH/libc-* $MODULEPATH/packages/lib${SYSTEMBITS}
-
-# move out things that don't support aggressive stripping
-mv $MODULEPATH/packages/lib${SYSTEMBITS} $MODULEPATH/
 AggressiveStrip
-mv $MODULEPATH/lib${SYSTEMBITS} $MODULEPATH/packages/
+mv $MODULEPATH/libc-* $MODULEPATH/packages/lib${SYSTEMBITS}
 
 ### copy cache files
 

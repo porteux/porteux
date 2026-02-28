@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "lxqt" $PRGNAM)
 VERSION=${info#* }
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 patch -p0 < $CWD/remove-screensaver-entry.patch
@@ -26,7 +26,7 @@ cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=release \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS}
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS}
 
 make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 

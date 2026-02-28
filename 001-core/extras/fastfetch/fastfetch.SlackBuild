@@ -17,7 +17,7 @@ cd $TMP
 info=$(DownloadLatestFromGithub "fastfetch-cli" ${PRGNAM})
 VERSION=${info#* }
 
-tar xvf ${PRGNAM}-${VERSION}.tar.gz
+tar xf ${PRGNAM}-${VERSION}.tar.gz
 cd ${PRGNAM}-${VERSION}
 
 cmake -B build -S . \

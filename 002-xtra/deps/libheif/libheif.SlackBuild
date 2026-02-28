@@ -17,17 +17,28 @@ cd $TMP
 info=$(DownloadLatestFromGithub "strukturag" ${PRGNAM})
 VERSION=${info#* }
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 cmake -B build -S . \
 	-G Ninja \
-	-DCMAKE_C_FLAGS="$GCCGFLAGS" \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS -ffat-lto-objects -fvisibility-inlines-hidden" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DWITH_EXAMPLES=OFF \
 	-DWITH_EXAMPLE_HEIF_VIEW=OFF \
+	-DWITH_SvtEnc=OFF \
+	-DWITH_X265=OFF \
+	-DWITH_X264=OFF \
+	-DWITH_AOM_ENCODER=OFF \
+	-DWITH_RAV1E=OFF \
+	-DWITH_JPEG_ENCODER=OFF \
+	-DWITH_OpenJPEG_ENCODER=OFF \
+	-DWITH_OPENJPH_ENCODER=OFF \
+	-DWITH_KVAZAAR=OFF \
+	-DWITH_UVG266=OFF \
+	-DWITH_VVENC=OFF \
 	-DBUILD_TESTING=OFF \
 	--preset=release
 

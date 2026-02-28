@@ -1,21 +1,25 @@
 #!/bin/bash
 
-MODULENAME=003-lxde-0.11.1
+MODULENAME=003-lxde
 
 source "$PWD/../builder-utils/setflags.sh"
 
 SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/cachefiles.sh"
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi
+
+LATESTVERSION="0.11.1"
+echo -e "Building LXDE ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### create module folder
 
@@ -24,7 +28,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
@@ -39,7 +43,7 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
-	mate-common \
+	atril \
 	xcape \
 ; do
 SESSIONTEMPLATE=LXDE ICONTHEME=kora sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -55,7 +59,6 @@ installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 
 # lxde extras
 for package in \
-	atril \
 	engrampa \
 	pavucontrol \
 	l3afpad \
@@ -117,7 +120,6 @@ InstallAdditionalPackages
 ### fix some .desktop files
 
 sed -i "s|Core;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
-sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|;Settings;|;|g" $MODULEPATH/packages/usr/share/applications/pavucontrol.desktop
 sed -i "s|System;|Utility;|g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
 

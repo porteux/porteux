@@ -7,15 +7,27 @@ source "$PWD/../builder-utils/setflags.sh"
 SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/cachefiles.sh"
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi
+
+LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | {
+	while read -r version; do
+		minor=$(echo "$version" | cut -d. -f2)
+		if (( minor % 2 == 0 )); then
+			echo "$version"
+			break
+		fi
+	done
+})
+echo -e "Building MATE ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### create module folder
 
@@ -24,7 +36,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
@@ -39,6 +51,8 @@ for package in \
 	lightdm \
 	lightdm-gtk-greeter \
 	mate-common \
+	mate-polkit \
+	atril \
 	xcape \
 ; do
 SESSIONTEMPLATE=mate ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -62,13 +76,9 @@ installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
 rm $MODULEPATH/packages/icu4c*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
+rm $MODULEPATH/packages/mate-common*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
-
-LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "1.29" | head -1)
-
-echo "Building MATE ${LATESTVERSION}..."
-MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # mate deps
 for package in \
@@ -89,7 +99,6 @@ for package in \
 	libmatekbd \
 	caja \
 	caja-extensions \
-	mate-polkit \
 	marco \
 	libmatemixer \
 	mate-settings-daemon \
@@ -106,7 +115,6 @@ for package in \
 	mate-media \
 	mate-power-manager \
 	mate-system-monitor \
-	atril \
 	mozo \
 	pluma \
 ; do

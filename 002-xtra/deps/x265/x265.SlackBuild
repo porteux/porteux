@@ -13,7 +13,7 @@ mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
 
 wget https://bitbucket.org/multicoreware/${PRGNAM}_git/get/HEAD.tar.gz
-tar xvf HEAD.tar.gz && rm HEAD.tar.gz
+tar xf HEAD.tar.gz && rm HEAD.tar.gz
 cd multicoreware-${PRGNAM}*
 VERSION=$(date -r . +%Y%m%d)
 

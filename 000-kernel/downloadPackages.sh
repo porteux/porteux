@@ -14,8 +14,7 @@ if [ ${CLANG:-no} = "yes" ]; then
 fi
 
 if [ ! -f ${SCRIPTPATH}/kernel-firmware*.txz ]; then
-	# always download firmware from current
-	wget -r -nd --no-parent -w 2 ${SLACKWAREDOMAIN}/slackware/slackware64-current/slackware64/a/ -A kernel-firmware*.txz
+	DownloadPackage "kernel-firmware"
 fi
 
 ### script clean up
