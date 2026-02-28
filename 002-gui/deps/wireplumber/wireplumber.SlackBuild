@@ -15,7 +15,7 @@ cd $TMP
 VERSION=$(curl -s https://gitlab.com/pipewire/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | sort -Vr | head -1)
 wget https://gitlab.freedesktop.org/pipewire/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-tar xfv $PRGNAM-$VERSION.tar.?z*
+tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
@@ -41,6 +41,9 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/bash-completion
+rm -fr $PKG/usr/share/doc
+rm -fr $PKG/usr/share/zsh
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

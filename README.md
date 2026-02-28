@@ -10,7 +10,7 @@ It's unique in many ways; not just a repackaging of programs on top of Slackware
 
 It's already pre-configured for basic usage, including lightweight applications for each of the 8 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, NVIDIA drivers, Wine, office suite, multilib (32-bit compatibility), messengers, emulators, etc.
 
-Out of the box, PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or NVIDIA cards (for Nvidia cards it's required to download the NVIDIA driver from the app store).
+Out of the box, PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or NVIDIA cards (for NVIDIA cards it's required to download the driver from the app store).
 
 ## How To Use
 
@@ -70,10 +70,9 @@ All this performance benefit is achieved without providing ancient software. Thi
 ## Enable OpenCL support (required by applications like DaVinci Resolve)
 
 In the terminal, run the following commands: <br />
-1. `su` (password: toor) <br />
-2. `cd $PORTDIR/modules` <br />
-3. `getpkg -m libclc llvm mesa ocl-icd spirv-llvm-translator vulkan-sdk`<br />
-4. `activate -q libclc*.xzm llvm*.xzm mesa*.xzm ocl-icd*.xzm spirv-llvm-translator*.xzm vulkan-sdk*.xzm` <br />
+1. `cd $PORTDIR/modules` <br />
+2. `sudo getpkg -m libclc llvm mesa spirv-llvm-translator vulkan-sdk`<br />
+3. `sudo activate -q libclc*.xzm llvm*.xzm mesa*.xzm spirv-llvm-translator*.xzm vulkan-sdk*.xzm` <br />
 
 This only needs to be done once, as these modules will be activated automatically every time the machine boots.
 

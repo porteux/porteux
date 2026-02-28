@@ -7,15 +7,19 @@ source "$PWD/../builder-utils/setflags.sh"
 SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/cachefiles.sh"
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi
+
+LATESTVERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
+echo -e "Building LXQt ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
+MODULENAME=$MODULENAME-${LATESTVERSION}
 
 ### create module folder
 
@@ -24,7 +28,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages that require specific stripping
 
@@ -117,11 +121,6 @@ SESSIONTEMPLATE=lxqt ICONTHEME=kora QT=6 sh $SCRIPTPATH/../common/${package}/${p
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-LATESTVERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
-
-echo "Building LXQt ${LATESTVERSION}..."
-MODULENAME=$MODULENAME-${LATESTVERSION}
 
 # lxqt deps
 for package in \

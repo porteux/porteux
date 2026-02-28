@@ -12,8 +12,8 @@ DownloadPackage "avahi" &
 DownloadPackage "bash" &
 DownloadPackage "bc" & # to perform arithmetic operations in bash
 DownloadPackage "bin" &
-DownloadPackage "bluez" &
 wait
+DownloadPackage "bluez" &
 DownloadPackage "bluez-firmware" &
 DownloadPackage "bridge-utils" &
 DownloadPackage "brotli" &
@@ -22,13 +22,13 @@ DownloadPackage "bzip2" &
 DownloadPackage "ca-certificates" &
 DownloadPackage "cdrtools" &
 DownloadPackage "cifs-utils" &
-DownloadPackage "coreutils" &
 wait
 DownloadPackage "cpio" &
 DownloadPackage "curl" &
 DownloadPackage "cyrus-sasl" &
 DownloadPackage "dbus" &
 DownloadPackage "dbus-glib" &
+DownloadPackage "dbus-python" & # required by TLP (via AppStore)
 DownloadPackage "dcron" &
 DownloadPackage "devs" &
 DownloadPackage "dhcpcd" &
@@ -215,8 +215,8 @@ DownloadPackage "userspace-rcu" &
 DownloadPackage "utempter" &
 DownloadPackage "util-linux" &
 DownloadPackage "wget" &
-DownloadPackage "which" &
 wait
+DownloadPackage "which" &
 DownloadPackage "whois" &
 DownloadPackage "wireless_tools" &
 DownloadPackage "wpa_supplicant" &
@@ -224,7 +224,6 @@ DownloadPackage "xfsdump" &
 DownloadPackage "xfsprogs" &
 DownloadPackage "xxHash" &
 DownloadPackage "xz" &
-DownloadPackage "zlib" &
 wait
 
 ### only download if not present
@@ -238,7 +237,6 @@ DownloadPackage "binutils" &
 DownloadPackage "fftw" & # required by pulse plugins
 DownloadPackage "gcc" & # required by aaa_libraries
 DownloadPackage "gcc-g++" & # required by aaa_libraries
-DownloadPackage "glibc" &
 DownloadPackage "ntp" &
 DownloadPackage "openldap" &
 wait

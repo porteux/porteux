@@ -20,7 +20,7 @@ VERSION="${VERSION#_}"
 VERSION="${VERSION//_/.}"
 filename=${info% *}
 
-tar xvf $filename
+tar xf $filename
 cd ${PRGNAM}*/
 
 ./autogen.sh

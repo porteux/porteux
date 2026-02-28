@@ -16,7 +16,7 @@ cd $TMP
 VERSION=$(curl -s https://invent.kde.org/plasma/${SRCNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -viE 'alpha|beta|rc' | sort -Vr | head -1)
 wget https://invent.kde.org/plasma/${SRCNAM}/-/archive/${VERSION}/${SRCNAM}-${VERSION}.tar.gz
 
-tar xvf $SRCNAM-$VERSION.tar.?z
+tar xf $SRCNAM-$VERSION.tar.?z
 cd $SRCNAM-$VERSION
 
 mkdir build && cd build

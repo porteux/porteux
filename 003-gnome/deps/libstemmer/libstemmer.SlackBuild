@@ -17,7 +17,7 @@ rm -rf $SRCNAM
 VERSION="2.2.0"
 wget https://snowballstem.org/dist/${SRCNAM}-${VERSION}.tar.gz
 
-tar xfv $SRCNAM-$VERSION.tar.?z*
+tar xf $SRCNAM-$VERSION.tar.?z*
 cd $SRCNAM-$VERSION
 
 patch -Np0 -i $CWD/libstemmer_c-shared-library.patch

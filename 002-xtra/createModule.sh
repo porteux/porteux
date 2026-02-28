@@ -7,15 +7,17 @@ source "$PWD/../builder-utils/setflags.sh"
 SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/cachefiles.sh"
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi
+
+echo -e "Building ${MODULENAME} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 
 ### create module folder
 
@@ -24,7 +26,7 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
@@ -49,9 +51,11 @@ installpkg $MODULEPATH/packages/openal-soft-*.t?z || exit 1
 installpkg $MODULEPATH/packages/vid.stab-*.t?z || exit 1
 
 installpkg $MODULEPATH/packages/frei0r-plugins*.t?z || exit 1
-rm $MODULEPATH/packages/frei0r-plugins-*.t?z || exit 1
+rm $MODULEPATH/packages/frei0r-plugins-*.t?z
+installpkg $MODULEPATH/packages/krb5-*.t?z || exit 1
+rm $MODULEPATH/packages/krb5-*.t?z
 installpkg $MODULEPATH/packages/opencl-headers*.t?z || exit 1
-rm $MODULEPATH/packages/opencl-headers-*.t?z || exit 1
+rm $MODULEPATH/packages/opencl-headers-*.t?z
 
 # xtra deps
 for package in \

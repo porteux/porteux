@@ -1,0 +1,12 @@
+         |-----handy-ruler------------------------------------------------------|
+coreutils: coreutils (core GNU utilities)
+coreutils:
+coreutils: These are the GNU core utilities, the basic command line programs
+coreutils: such as 'mkdir', 'ls', and 'rm' that are needed for the system to
+coreutils: run. This package is the union of the GNU fileutils, sh-utils, and
+coreutils: textutils packages. Most of these programs have significant
+coreutils: advantages over their Unix counterparts, such as greater speed,
+coreutils: additional options, and fewer arbitrary limits.
+coreutils:
+coreutils:
+coreutils:

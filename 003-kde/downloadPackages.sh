@@ -15,8 +15,8 @@ DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libdmtx" &
 DownloadPackage "libqaccessibilityclient" &
-wait
 DownloadPackage "libqalculate" &
+wait
 DownloadPackage "LibRaw" &
 DownloadPackage "openblas" &
 DownloadPackage "polkit-qt" &
@@ -31,6 +31,7 @@ DownloadPackage "appstream" & # required by main menu
 DownloadPackage "gcc-gfortran" & # required by spectable
 DownloadPackage "opencv" & # required by spectable
 DownloadPackage "phonon" & # required by dolphin and others
+DownloadPackage "qcoro" &
 DownloadPackage "qt6" &
 wait
 
@@ -41,8 +42,8 @@ rm serverPackages.txt
 
 ### non-slackware repository
 
-source "$BUILDERUTILSPATH/slackwarerepository.sh"
 REPOSITORY="https://slackware.halpanet.org/kde6town/stable/current/${ARCH}"
+
 GenerateRepositoryUrls
 
 DownloadPackage "ark" &
@@ -166,8 +167,8 @@ DownloadPackage "okular" &
 DownloadPackage "oxygen" &
 DownloadPackage "plasma5support" &
 DownloadPackage "plasma-activities" &
-DownloadPackage "plasma-activities-stats" &
 wait
+DownloadPackage "plasma-activities-stats" &
 DownloadPackage "plasma-browser-integration" &
 DownloadPackage "plasma-desktop" &
 DownloadPackage "plasma-integration" &
@@ -177,17 +178,15 @@ DownloadPackage "plasma-systemmonitor" &
 DownloadPackage "plasma-workspace" &
 wait
 DownloadPackage "polkit-kde-agent" &
-DownloadPackage "polkit-qt" &
 DownloadPackage "powerdevil" &
 DownloadPackage "prison" &
 DownloadPackage "pulseaudio-qt" &
 DownloadPackage "purpose" &
 DownloadPackage "qca" &
-wait
-DownloadPackage "qcoro" &
 DownloadPackage "qqc2-desktop-style" &
 DownloadPackage "sddm" &
 DownloadPackage "sddm-kcm" &
+wait
 DownloadPackage "solid" &
 DownloadPackage "sonnet" &
 DownloadPackage "spectacle" &

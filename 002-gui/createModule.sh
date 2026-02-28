@@ -7,15 +7,17 @@ source "$PWD/../builder-utils/setflags.sh"
 SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/cachefiles.sh"
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/genericstrip.sh"
 source "$BUILDERUTILSPATH/helper.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
 	su -c "$0 $1"
 	exit
 fi
+
+echo -e "Building ${MODULENAME} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 
 ### create module folder
 
@@ -24,7 +26,12 @@ cd $MODULEPATH
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
+
+### critical libraries that need to be in sync with slackware repo before building
+
+installpkg $MODULEPATH/packages/libbluray*.txz || exit 1
+installpkg $MODULEPATH/packages/libvpx*.txz || exit 1
 
 ### packages outside slackware repository
 
@@ -86,6 +93,7 @@ for package in \
 	cxxopts \
 	imlib2 \
 	libostree \
+	libei \
 	libfyaml \
 	libxmlb \
 	appstream \
@@ -327,7 +335,6 @@ rm -fr usr/share/X11/locale/zh*
 rm -fr usr/X11R6/include
 rm -fr usr/X11R6/man
 } >/dev/null 2>&1
-
 
 find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 

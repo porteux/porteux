@@ -15,7 +15,7 @@ cd $TMP
 VERSION="0.4.6"
 wget https://launchpad.net/ubuntu/+archive/primary/+files/${PRGNAM}_${VERSION}.tar.gz
 
-tar xfv ${PRGNAM}_${VERSION}.tar.?z*
+tar xf ${PRGNAM}_${VERSION}.tar.?z*
 cd $PRGNAM-$VERSION
 
 autoreconf -vfi

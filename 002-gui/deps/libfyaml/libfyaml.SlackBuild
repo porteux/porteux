@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
 PRGNAM=libfyaml
 
 CWD=$(dirname "$0")
@@ -12,26 +14,23 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget https://github.com/pantoniou/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}-master.tar.gz 
+info=$(DownloadLatestFromGithub "pantoniou" "$PRGNAM")
+VERSION=${info#* }
 
-tar xvf ${PRGNAM}-master.tar.?z
-cd ${PRGNAM}-master
-
-VERSION=$(date -r . +%Y%m%d)
-
-./bootstrap.sh
+tar xf *.tar.?z
+cd ${PRGNAM}-${VERSION}
 
 CFLAGS="${GCCFLAGS} -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
-	--sysconfdir=/etc \
-	--localstatedir=/var
+	--libdir=/usr/lib${SYSTEMBITS}
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm -rf $PKG/usr/share/man
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

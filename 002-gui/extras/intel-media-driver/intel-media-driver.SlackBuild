@@ -17,24 +17,25 @@ cd $TMP
 info=$(DownloadLatestFromGithub "intel" "media-driver")
 VERSION=${info#* }
 
-tar xvf *.tar.?z
+tar xf *.tar.?z
 cd media-driver-intel-media-${VERSION}
+
+for i in $CWD/*.patch; do
+	patch -p1 < $i
+done
 
 cmake -B build -S . \
 	-G Ninja \
-    -DCMAKE_C_FLAGS:STRING="$GCCFLAGS" \
-    -DCMAKE_CXX_FLAGS:STRING="$GCCFLAGS" \
+    -DCMAKE_C_FLAGS="$GCCFLAGS" \
+    -DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
     -DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DCMAKE_INSTALL_BINDIR=/usr/bin \
     -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
     -DMEDIA_BUILD_FATAL_WARNINGS=OFF \
     -DCMAKE_BUILD_TYPE="Release"
 
 DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
-
-#find $PKG -type f -name "*.a" -exec rm -f {} \;
-#find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

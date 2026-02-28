@@ -13,7 +13,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 wget https://gitlab.freedesktop.org/wlroots/${PRGNAM}/-/archive/master/${PRGNAM}-master.tar.gz
-tar xfv $PRGNAM-master.tar.?z*
+tar xf $PRGNAM-master.tar.?z*
 cd $PRGNAM-master
 
 make install

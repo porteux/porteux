@@ -15,7 +15,7 @@ cd $TMP
 VERSION=$(curl -s https://codeberg.org/gumbo-parser/gumbo-parser/tags | grep tar.gz | cut -d '"' -f 4 | rev | cut -d '/' -f -1 | cut -d '.' -f 3- | rev | grep -Ev '^v' | sort -Vr | head -1)
 wget https://codeberg.org/gumbo-parser/gumbo-parser/archive/${VERSION}.tar.gz -O $PRGNAM-$VERSION.tar.gz
 
-tar xvf $PRGNAM-$VERSION.tar.?z
+tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM
 
 mkdir build && cd build

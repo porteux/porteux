@@ -1,0 +1,47 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=libxcrypt
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP
+cd $TMP
+
+info=$(DownloadLatestFromGithub "besser82" ${PRGNAM})
+VERSION=${info#* }
+
+tar xvf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+CFLAGS="$GCCFLAGS -Wno-error=discarded-qualifiers" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--disable-static \
+	--enable-hashes=strong,glibc \
+	--enable-obsolete-api=no \
+	--disable-failure-tokens \
+	--build=$ARCH-slackware-linux
+
+make -j$NUMBERTHREADS install DESTDIR=$PKG
+
+rm -f $PKG/{,usr/}lib${SYSTEMBITS}/libcrypt*.la
+rm -fr $PKG/usr/share/man
+
+# Move libraries out of /usr:
+mkdir -p $PKG/lib${SYSTEMBITS}
+cd $PKG/usr/lib${SYSTEMBITS}
+rm libcrypt*.so
+mv libcrypt*so* ../../lib${SYSTEMBITS}
+
+# Add .so symlinks for libcrypt and libxcrypt:
+ln -sf ../../lib${SYSTEMBITS}/libcrypt.so.2 libcrypt.so
+ln -sf ../../lib${SYSTEMBITS}/libcrypt.so.2 libxcrypt.so
+
+rm -fr $TMP

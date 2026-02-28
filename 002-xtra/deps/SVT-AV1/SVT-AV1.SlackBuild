@@ -15,7 +15,7 @@ cd $TMP
 VERSION=$(curl -s https://gitlab.com/AOMediaCodec/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | sort -Vr | head -1)
 wget https://gitlab.com/AOMediaCodec/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
-tar xvf ${PRGNAM}-${VERSION}.tar.?z
+tar xf ${PRGNAM}-${VERSION}.tar.?z
 cd ${PRGNAM}-${VERSION}
 
 cmake -B build -S . \
@@ -24,7 +24,7 @@ cmake -B build -S . \
 	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=/usr/lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DBUILD_TESTING=OFF \
 	-DBUILD_APPS=OFF
 

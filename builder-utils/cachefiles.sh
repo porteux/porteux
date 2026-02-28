@@ -22,7 +22,7 @@ PrepareFilesForCache() {
 	mkdir $PORTEUXBUILDERPATH/caches/schemas > /dev/null 2>&1
 	cp $MODULEPATH/packages/usr/share/glib-2.0/schemas/*.xml $PORTEUXBUILDERPATH/caches/schemas/ > /dev/null 2>&1
 
-	# copy gdkpixbuf files to build /usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders.cache
+	# copy gdkpixbuf files to build /usr/lib$SYSTEMBITS/gdk-pixbuf-2.0/2.10.0/loaders.cache
 	mkdir -p $PORTEUXBUILDERPATH/caches/gdk-pixbuf-2.0/2.10.0/loaders > /dev/null 2>&1
 	cp $MODULEPATH/packages/usr/lib$SYSTEMBITS/gdk-pixbuf-2.0/2.10.0/loaders/*.so $PORTEUXBUILDERPATH/caches/gdk-pixbuf-2.0/2.10.0/loaders > /dev/null 2>&1
 }
@@ -34,19 +34,27 @@ GenerateCachesDE() {
 }
 
 GenerateCaches() {
-	mkdir -p $MODULEPATH/packages/usr/share/mime > /dev/null 2>&1
-	update-mime-database $PORTEUXBUILDERPATH/caches/mime
-	cp $PORTEUXBUILDERPATH/caches/mime/mime.cache $MODULEPATH/packages/usr/share/mime/
+	if [ "$(ls -A $PORTEUXBUILDERPATH/caches/mime)" ]; then
+		mkdir -p $MODULEPATH/packages/usr/share/mime > /dev/null 2>&1
+		update-mime-database $PORTEUXBUILDERPATH/caches/mime
+		cp $PORTEUXBUILDERPATH/caches/mime/mime.cache $MODULEPATH/packages/usr/share/mime/
+	fi
 
-	mkdir -p $MODULEPATH/packages/usr/share/applications > /dev/null 2>&1
-	update-desktop-database $PORTEUXBUILDERPATH/caches/applications
-	cp -r $PORTEUXBUILDERPATH/caches/applications/mimeinfo.cache $MODULEPATH/packages/usr/share/applications/
+	if [ "$(ls -A $PORTEUXBUILDERPATH/caches/applications)" ]; then
+		mkdir -p $MODULEPATH/packages/usr/share/applications > /dev/null 2>&1
+		update-desktop-database $PORTEUXBUILDERPATH/caches/applications
+		cp -r $PORTEUXBUILDERPATH/caches/applications/mimeinfo.cache $MODULEPATH/packages/usr/share/applications/
+	fi
 
-	mkdir -p $MODULEPATH/packages/usr/share/glib-2.0/schemas > /dev/null 2>&1
-	glib-compile-schemas $PORTEUXBUILDERPATH/caches/schemas
-	cp -r $PORTEUXBUILDERPATH/caches/schemas/gschemas.compiled $MODULEPATH/packages/usr/share/glib-2.0/schemas/
+	if [ "$(ls -A $PORTEUXBUILDERPATH/caches/schemas)" ]; then
+		mkdir -p $MODULEPATH/packages/usr/share/glib-2.0/schemas > /dev/null 2>&1
+		glib-compile-schemas $PORTEUXBUILDERPATH/caches/schemas
+		cp -r $PORTEUXBUILDERPATH/caches/schemas/gschemas.compiled $MODULEPATH/packages/usr/share/glib-2.0/schemas/
+	fi
 
-	mkdir -p $MODULEPATH/packages/usr/lib$SYSTEMBITS/gdk-pixbuf-2.0/2.10.0 > /dev/null 2>&1
-	gdk-pixbuf-query-loaders $PORTEUXBUILDERPATH/caches/gdk-pixbuf-2.0/2.10.0/loaders/*.so > $MODULEPATH/packages/usr/lib$SYSTEMBITS/gdk-pixbuf-2.0/2.10.0/loaders.cache
-	sed -i "s|$PORTEUXBUILDERPATH/caches|/usr/lib$SYSTEMBITS|g" $MODULEPATH/packages/usr/lib$SYSTEMBITS/gdk-pixbuf-2.0/2.10.0/loaders.cache
+	if [ "$(ls -A $PORTEUXBUILDERPATH/caches/gdk-pixbuf-2.0/2.10.0/loaders)" ]; then
+		mkdir -p $MODULEPATH/packages/usr/lib$SYSTEMBITS/gdk-pixbuf-2.0/2.10.0 > /dev/null 2>&1
+		gdk-pixbuf-query-loaders $PORTEUXBUILDERPATH/caches/gdk-pixbuf-2.0/2.10.0/loaders/*.so > $MODULEPATH/packages/usr/lib$SYSTEMBITS/gdk-pixbuf-2.0/2.10.0/loaders.cache
+		sed -i "s|$PORTEUXBUILDERPATH/caches|/usr/lib$SYSTEMBITS|g" $MODULEPATH/packages/usr/lib$SYSTEMBITS/gdk-pixbuf-2.0/2.10.0/loaders.cache
+	fi
 }

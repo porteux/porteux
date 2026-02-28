@@ -25,7 +25,7 @@ is_root() {
 if [ -z "$RESET" ] && [ -L "/var/lib/flatpak" ] && [ -e "$(readlink -f /var/lib/flatpak)" ]; then
 	[[ " $* " == *" run "* ]] && is_root && echo "To run installed flatpak applications don't use sudo/root." && exit 1
 
-	# Required because flatpak module might be activated after boot so xdg-desktop-portal wouldn't be aware of xdg-desktop-portal-gtk
+	# Make sure xdg-desktop-portal is running
 	if command -v /usr/libexec/xdg-desktop-portal >/dev/null; then
 		setsid /usr/libexec/xdg-desktop-portal -r > /dev/null 2>&1 &
 	fi
@@ -37,8 +37,8 @@ fi
 FLATPAK_STORAGE_PATH="$1"
 
 if [ -z "$FLATPAK_STORAGE_PATH" ] || [ ! -d "$FLATPAK_STORAGE_PATH" ]; then
-	echo "First time running flatpak requires a valid POSIX path"
-	echo "to store flatpak files."
+	echo "First time running flatpak requires a valid POSIX path to store"
+	echo "flatpak files."
 	echo
 	echo "example: flatpak /mnt/sda1"
 	echo "example: flatpak --force-setup /mnt/nvme0n1p2/"

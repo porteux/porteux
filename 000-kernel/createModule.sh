@@ -6,9 +6,9 @@ MODULENAME="000-kernel"
 
 SetFlags "${MODULENAME}"
 
-source "$BUILDERUTILSPATH/downloadfromslackware.sh"
 source "$BUILDERUTILSPATH/helper.sh"
 source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 if ! isRoot; then
 	echo "Please enter admin's password below:"
@@ -34,7 +34,7 @@ mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 ### download packages from slackware repository
 
-DownloadFromSlackware
+sh $SCRIPTPATH/downloadPackages.sh
 
 ### set compiler and linker
 
@@ -45,12 +45,16 @@ if [ ${CLANG:-no} = "yes" ]; then
 	rm $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
 
 	COMPILER="Clang"
-	EXTRAFLAGS="LLVM=1 CC=clang"
+	EXTRAFLAGS="CC=clang LLVM=1 LLVM_IAS=1"
 	# fixing flags that are not compatible with the kernel
-	BUILDPARAMS="${CLANGFLAGS/-flto=auto/} -Wno-incompatible-pointer-types-discards-qualifiers"
+	BUILDPARAMS=$(echo "$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" | sed \
+		-e 's/-fno-plt//g' \
+		-e 's/-flto=auto//g')
 	LINKPARAMS=$(echo "$LLDFLAGS" | sed \
-		-e 's/-z,pack-relative-relocs/-z pack-relative-relocs/g' \
+		-e 's/-z,/-z /g' \
+		-e 's/-O2/-O1/g' \
 		-e 's/-Wl,//g' \
+		-e 's/-fno-plt//g' \
 		-e 's/-fuse-ld=lld//g' \
 		-e 's/--icf=safe//g' \
 		-e 's/--gc-sections//g' \
@@ -59,17 +63,18 @@ else
 	COMPILER="GCC"
 	# fixing flags that are not compatible with the kernel
 	BUILDPARAMS=$(echo "$GCCFLAGS" | sed \
+		-e 's/-fno-plt//g' \
 		-e 's/-ffunction-sections//g' \
 		-e 's/-fdata-sections//g' \
 		-e 's/-flto=auto//g')
 	LINKPARAMS=$(echo "$LDFLAGS" | sed \
-		-e 's/-z,pack-relative-relocs/-z pack-relative-relocs/g' \
+		-e 's/-z,/-z /g' \
 		-e 's/-Wl,//g' \
 		-e 's/--gc-sections//g' \
 		-e 's/--strip-all//g')
 fi
 
-echo "Building kernel ${KERNELVERSION} using ${COMPILER}..."
+echo -e "Building kernel ${KERNELVERSION} using ${COMPILER}...\n"
 
 cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH}/packages 2>/dev/null
@@ -102,23 +107,30 @@ done
 rm -fr ../aufs_sources
 
 # temp fix -- since 6.17.x the kernel is asking for firmware versions that are still not available
-sed -i "s|#define IWL_HR_UCODE_API_MAX.*|#define IWL_HR_UCODE_API_MAX	89|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c || exit 1
-sed -i "s|#define IWL_HR_UCODE_API_MIN.*|#define IWL_HR_UCODE_API_MIN	77|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c || exit 1
-sed -i "s|IWL_QU_B_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_B_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c || exit 1
-sed -i "s|IWL_QU_C_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_C_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c || exit 1
-sed -i "s|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c || exit 1
+if [ -f drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c ]; then
+	sed -i "s|#define IWL_HR_UCODE_API_MAX.*|#define IWL_HR_UCODE_API_MAX	89|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|#define IWL_HR_UCODE_API_MIN.*|#define IWL_HR_UCODE_API_MIN	77|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|IWL_QU_B_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_B_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|IWL_QU_C_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_C_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+fi
 
 echo "Building kernel headers..."
 currentPackage=kernel-headers
-KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${SCRIPTPATH}/${currentPackage}.SlackBuild || exit 1
+KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${SCRIPTPATH}/extras/${currentPackage}.SlackBuild || exit 1
 mkdir -p ${MODULEPATH}/../05-devel/packages
 mv ${MODULEPATH}/packages/${currentPackage}*.txz ${MODULEPATH}/../05-devel/packages
 rm -fr $MODULEPATH/${currentPackage}
 
+if [ ${ONLYHEADERS:-no} = "yes" ]; then
+	rm -fr ${MODULEPATH}
+	exit 0
+fi
+
 echo "Building vmlinuz (this may take a while)..."
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
-make -j${NUMBERTHREADS} KBUILD_LDFLAGS="${LINKPARAMS/-O2/-O1}" LDFLAGS_MODULE="$LINKPARAMS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
+make -j${NUMBERTHREADS} KBUILD_LDFLAGS="$LINKPARAMS" LDFLAGS_MODULE="$LINKPARAMS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULEPATH/vmlinuz
 
 echo "Installing modules..."
@@ -163,13 +175,11 @@ cd $MODULEPATH
 echo "Downloading and installing sof for Intel..."
 currentPackage=sof-bin
 info=$(DownloadLatestFromGithub "thesofproject" "sof-bin")
-version=${info#* }
 filename=${info% *}
-tar xvf $filename > /dev/null 2>&1 && rm $filename
+tar xf $filename > /dev/null 2>&1 && rm $filename
 mkdir -p ${MODULEPATH}/lib/firmware/intel
 cd ${currentPackage}*
-mv sof ${MODULEPATH}/lib/firmware/intel
-mv sof-tplg ${MODULEPATH}/lib/firmware/intel
+mv sof* ${MODULEPATH}/lib/firmware/intel
 
 echo "Creating symlinks of duplicate firmwares..."
 hash_list=$(mktemp)
@@ -203,21 +213,19 @@ cd $MODULEPATH
 echo "Creating kernel xzm module..."
 mkdir -p ${MODULEPATH}/${MODULENAME}
 mv lib ${MODULEPATH}/${MODULENAME}
-
-# create kernel module xzm module
 MakeModule ${MODULEPATH}/${MODULENAME} "${MODULENAME}-${KERNELVERSION}-$(date +%Y%m%d).xzm" > /dev/null 2>&1
 
 echo "Creating crippled xzm module..."
 CRIPPLEDSOURCEPATH=${MODULEPATH}/${CRIPPLEDMODULENAME}/usr/src
 mkdir -p ${CRIPPLEDSOURCEPATH}
 mv ${MODULEPATH}/linux-${KERNELVERSION} ${CRIPPLEDSOURCEPATH}
-mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/
-mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/config
+mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/config
 ln -sf linux-${KERNELVERSION} ${CRIPPLEDSOURCEPATH}/linux
 mkdir -p ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder
 ln -sf /usr/src/linux ${MODULEPATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernelModulesFolder/build
 
 # strip crippled
+{
 mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch/x86 ${CRIPPLEDSOURCEPATH}
 rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch
 mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/arch
@@ -244,11 +252,11 @@ find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "MAINTAINERS*" -exec rm 
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION} -name "README*" -exec rm -fr {} \; -print > /dev/null 2>&1
 find ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/scripts -xtype l -delete
 
-mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/build/.config
+mv ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/config ${CRIPPLEDSOURCEPATH}/linux-${KERNELVERSION}/.config
 
 find ${CRIPPLEDSOURCEPATH} | xargs strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+} >/dev/null 2>&1
 
-# create crippled xzm module
 MakeModule ${MODULEPATH}/${CRIPPLEDMODULENAME} ${CRIPPLEDMODULENAME}-$(date +%Y%m%d).xzm > /dev/null 2>&1
 
 echo "Cleaning up..."
