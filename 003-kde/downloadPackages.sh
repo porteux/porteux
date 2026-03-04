@@ -16,10 +16,11 @@ DownloadPackage "keybinder3" &
 DownloadPackage "libdmtx" &
 DownloadPackage "libqaccessibilityclient" &
 DownloadPackage "libqalculate" &
-wait
 DownloadPackage "LibRaw" &
+wait
 DownloadPackage "openblas" &
 DownloadPackage "polkit-qt" &
+DownloadPackage "qca" &
 DownloadPackage "qrencode" &
 DownloadPackage "xdpyinfo" &
 DownloadPackage "zxing-cpp" &
@@ -42,7 +43,8 @@ rm serverPackages.txt
 
 ### non-slackware repository
 
-REPOSITORY="https://slackware.halpanet.org/kde6town/stable/current/${ARCH}"
+#REPOSITORY="https://slackware.halpanet.org/kde6town/stable/current/${ARCH}"
+REPOSITORY="https://slackware.nl/alien-kde/current/testing/${ARCH}"
 
 GenerateRepositoryUrls
 
@@ -71,7 +73,8 @@ DownloadPackage "kauth" &
 DownloadPackage "kbookmarks" &
 DownloadPackage "kcmutils" &
 DownloadPackage "kcodecs" &
-DownloadPackage "kColorPicker" &
+DownloadPackage "kColorPicker" & # luckycyborg repo
+DownloadPackage "kcolorpicker" & # alienbob repo
 DownloadPackage "kcolorscheme" &
 DownloadPackage "kcompletion" &
 DownloadPackage "kconfig" &
@@ -98,7 +101,8 @@ DownloadPackage "kholidays" &
 DownloadPackage "ki18n" &
 DownloadPackage "kiconthemes" &
 DownloadPackage "kidletime" &
-DownloadPackage "kImageAnnotator" &
+DownloadPackage "kImageAnnotator" & # luckycyborg repo
+DownloadPackage "kimageannotator" & # alienbob repo
 DownloadPackage "kinfocenter" &
 wait
 DownloadPackage "kio" &
@@ -182,7 +186,6 @@ DownloadPackage "powerdevil" &
 DownloadPackage "prison" &
 DownloadPackage "pulseaudio-qt" &
 DownloadPackage "purpose" &
-DownloadPackage "qca" &
 DownloadPackage "qqc2-desktop-style" &
 DownloadPackage "sddm" &
 DownloadPackage "sddm-kcm" &
