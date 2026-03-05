@@ -1,0 +1,47 @@
+#!/bin/bash
+
+PRGNAM=freetype
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSIONDOWNLOAD=$(curl -s https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -viE 'alpha|beta|rc' | sort -Vr | head -1)
+VERSION=$(echo "${VERSIONDOWNLOAD//-/.}" | cut -d "." -f 2-)
+wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/${VERSIONDOWNLOAD}/${PRGNAM}-${VERSIONDOWNLOAD}.tar.gz
+
+tar xf $PRGNAM-$VERSIONDOWNLOAD.tar.?z*
+cd $PRGNAM-$VERSIONDOWNLOAD
+
+mkdir build && cd build
+CC=clang \
+CFLAGS="$CLANGFLAGS" \
+LDFLAGS="$LLDFLAGS" \
+meson setup \
+	--buildtype=release \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--localstatedir=/var \
+	--prefix=/usr \
+	--sysconfdir=/etc
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+rm -fr $PKG/usr/bin
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.a" -exec rm -f {} \;
+
+mkdir -p $PKG/etc/profile.d/
+install -Dm755 "$CWD/freetype.csh" $PKG/etc/profile.d/
+install -Dm755 "$CWD/freetype.sh" $PKG/etc/profile.d/
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz
