@@ -28,7 +28,6 @@ DownloadPackage "exiv2" &
 DownloadPackage "flac" &
 DownloadPackage "fontconfig" &
 DownloadPackage "freeglut" &
-DownloadPackage "freetype" &
 DownloadPackage "fribidi" &
 DownloadPackage "gcr" &
 DownloadPackage "gcr4" & # required by gvfs 1.54+

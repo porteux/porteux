@@ -83,6 +83,7 @@ rm $MODULEPATH/packages/socat*.txz
 
 # gui deps
 for package in \
+	freetype \
 	xorg-server \
 	xf86-input-libinput \
 	libX11 \

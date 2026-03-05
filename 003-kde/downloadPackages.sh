@@ -132,6 +132,7 @@ DownloadPackage "kplotting" &
 DownloadPackage "kpty" &
 DownloadPackage "kqtquickcharts" &
 DownloadPackage "kquickcharts" &
+DownloadPackage "kquickimageeditor" &
 DownloadPackage "krunner" &
 DownloadPackage "kscreen" &
 DownloadPackage "kscreenlocker" &
