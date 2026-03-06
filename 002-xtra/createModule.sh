@@ -66,12 +66,12 @@ for package in \
 	libass \
 	faad2 \
 	faac \
-	SVT-AV1 \
+	svt-av1 \
 	dav1d \
 	libheif \
 	libplacebo \
 	nv-codec-headers \
-	AMF-headers \
+	amf-headers \
 	ffmpeg \
 	luajit \
 ; do
