@@ -19,6 +19,10 @@ wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/${VERSIONDOWNL
 tar xf $PRGNAM-$VERSIONDOWNLOAD.tar.?z*
 cd $PRGNAM-$VERSIONDOWNLOAD
 
+for i in $CWD/*.patch; do
+	patch -p0 < $i
+done
+
 mkdir build && cd build
 CC=clang \
 CFLAGS="$CLANGFLAGS" \
