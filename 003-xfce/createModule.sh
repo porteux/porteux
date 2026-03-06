@@ -48,6 +48,13 @@ sh $SCRIPTPATH/downloadPackages.sh
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
+# required from now on
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libnma*.txz || exit 1
+
 # lxde common
 for package in \
 	audacious \
@@ -56,6 +63,7 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	network-manager-applet \
 	mate-common \
 	mate-polkit \
 	atril \
@@ -74,19 +82,11 @@ currentPackage=gtk-layer-shell
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage}
 
-# required from now on
-installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
-installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libnma*.txz || exit 1
-
 # xfce extras
 for package in \
 	engrampa \
 	pavucontrol \
 	mate-search-tool \
-	network-manager-applet \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null

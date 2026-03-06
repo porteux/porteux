@@ -18,13 +18,12 @@ DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
-DownloadPackage "libindicator" &
 wait
+DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
 DownloadPackage "libsoup" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-DownloadPackage "network-manager-applet" &
 DownloadPackage "vte" &
 DownloadPackage "xtrans" &
 wait

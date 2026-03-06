@@ -43,6 +43,12 @@ sh $SCRIPTPATH/downloadPackages.sh
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
+# required from now on
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libnma*.txz || exit 1
+
 # mate common
 for package in \
 	audacious \
@@ -50,6 +56,7 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	network-manager-applet \
 	mate-common \
 	mate-polkit \
 	atril \
@@ -61,15 +68,12 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # required from now on
-installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
-installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 installpkg $MODULEPATH/packages/vte*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 
 # required just for building
 installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
