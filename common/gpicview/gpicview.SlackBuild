@@ -35,6 +35,7 @@ make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl;image/webp|g" $PKG/usr/share/applications/gpicview.desktop
+sed -i "s|Core;|Utility;|g" $PKG/usr/share/applications/gpicview.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

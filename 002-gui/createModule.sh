@@ -216,7 +216,6 @@ InstallAdditionalPackages
 
 ### fix applications shortcuts
 
-sed -i "s|^Exec=.*|Exec=dbus-run-session -- labwc|g" $MODULEPATH/packages/usr/share/wayland-sessions/labwc.desktop
 sed -i "s|^Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULEPATH/packages/usr/share/applications/gparted.desktop
 
 ### add xzm to freedesktop.org.xml
@@ -258,8 +257,6 @@ rm usr/lib${SYSTEMBITS}/libXaw.so.6*
 rm usr/lib${SYSTEMBITS}/libXaw6*
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
-rm usr/share/applications/gtk3-icon-browser.desktop
-rm usr/share/applications/gtk3-widget-factory.desktop
 rm usr/share/applications/mimeinfo.cache
 rm usr/share/applications/qv4l2.desktop
 rm usr/share/applications/qvidcap.desktop
@@ -277,7 +274,6 @@ rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 rm -fr etc/gnupg
 rm -fr etc/pam.d
 rm -fr etc/rc_keymaps
-rm -fr etc/X11/xorg.conf.d
 rm -fr etc/xdg/Xwayland-session.d
 rm -fr usr/lib${SYSTEMBITS}/atkmm-*
 rm -fr usr/lib${SYSTEMBITS}/cairomm-*

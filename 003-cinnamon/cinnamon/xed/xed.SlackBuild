@@ -37,6 +37,7 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/xed/gir-1.0
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

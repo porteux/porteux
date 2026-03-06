@@ -241,13 +241,10 @@ cd $MODULEPATH/packages/
 {
 rm etc/xdg/autostart/blueman.desktop
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
-rm usr/share/icons/hicolor/scalable/apps/pcmanfm-qt.svg
 rm usr/share/nm-tray/nm-tray*.qm
 
-rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0/
 rm -fr usr/lib${SYSTEMBITS}/gtk-2.0/
 rm -fr usr/lib${SYSTEMBITS}/qt*/mkspecs
-rm -fr usr/share/featherpad
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
 rm -fr usr/share/libfm-qt/translations

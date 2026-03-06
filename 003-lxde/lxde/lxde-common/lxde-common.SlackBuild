@@ -31,6 +31,8 @@ CFLAGS="$GCCFLAGS" \
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm $PKG/usr/share/lxde/wallpapers/lxde_green.jpg
+rm $PKG/usr/share/lxde/wallpapers/lxde_red.jpg
 
 sed -i "s|Onyx|Porteux|g" $PKG/etc/xdg/openbox/LXDE/rc.xml
 

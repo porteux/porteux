@@ -35,6 +35,7 @@ CFLAGS="$GCCFLAGS" \
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/clutter-1.0
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

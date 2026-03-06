@@ -32,10 +32,13 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-
-mkdir -p $PKG/etc/profile.d/
-mv $PKG/etc/X11/xinit/xinitrc.d/80xapp-gtk3-module.sh $PKG/etc/profile.d/
-[ -e $TMP ] && rm -rf $TMP/etc/X11/
+rm $PKG/etc/X11/xinit/xinitrc.d/80xapp-gtk3-module.sh
+rm $PKG/etc/xdg/autostart/xapp-sn-watcher.desktop
+rm $PKG/usr/bin/pastebin
+rm $PKG/usr/bin/xfce4-set-wallpaper
+rm $PKG/usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py
+rm $PKG/usr/share/dbus-1/services/org.mate.panel.applet.MateXAppStatusAppletFactory.service
+rm -fr $PKG/usr/share/mate-panel
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

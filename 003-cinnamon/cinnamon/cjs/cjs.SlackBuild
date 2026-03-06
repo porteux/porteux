@@ -42,9 +42,9 @@ meson setup \
  
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-rm -fr $PKG/usr/libexec/installed-tests
-
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/libexec/installed-tests
+rm -fr $PKG/usr/share/cjs-1.0
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

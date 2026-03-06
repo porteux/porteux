@@ -35,6 +35,8 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+rm $PKG/etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 

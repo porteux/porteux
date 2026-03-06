@@ -45,6 +45,8 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 install -Dm644 "$CWD/org.gnome.Shell.desktop" $PKG/usr/share/applications/
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm $PKG/usr/share/dbus-1/services/org.gnome.ScreenSaver.service
+rm $PKG/usr/share/dbus-1/services/org.gnome.Shell.PortalHelper.service
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -35,6 +35,7 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/engrampa
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
