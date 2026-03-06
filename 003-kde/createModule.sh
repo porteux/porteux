@@ -344,7 +344,6 @@ rm -fr usr/lib${SYSTEMBITS}/qt6/qml/QtTest
 rm -fr usr/lib${SYSTEMBITS}/qt6/mkspecs
 rm -fr usr/share/chromium
 rm -fr usr/share/emoticons/EmojiOne
-rm -fr usr/share/featherpad
 rm -fr usr/share/gdb
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome

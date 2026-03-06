@@ -52,6 +52,11 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
+rm $PKG/usr/share/backgrounds/xfce/xfce-leaves.svg
+rm $PKG/usr/share/backgrounds/xfce/xfce-light.svg
+rm $PKG/usr/share/backgrounds/xfce/xfce-mouserace.svg
+rm $PKG/usr/share/backgrounds/xfce/xfce-shapes.svg
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 

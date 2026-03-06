@@ -234,25 +234,15 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm usr/bin/vte-*-gtk4
-rm etc/profile.d/80xapp-gtk3-module.sh
 rm etc/xdg/autostart/blueman.desktop
-rm etc/xdg/autostart/caribou-autostart.desktop
-rm etc/xdg/autostart/xapp-sn-watcher.desktop
+rm usr/bin/vte-*-gtk4
 rm usr/bin/js[0-9]*
-rm usr/bin/pastebin
-rm usr/bin/xfce4-set-wallpaper
 rm usr/lib${SYSTEMBITS}/libappindicator.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
-rm usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py
 rm usr/libexec/indicator-loader
 rm usr/share/applications/org.gnome.Vte*.desktop
-rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
-rm usr/share/dbus-1/services/org.gnome.Caribou.Daemon.service
-rm usr/share/dbus-1/services/org.gnome.FileRoller.service
-rm usr/share/dbus-1/services/org.mate.panel.applet.MateXAppStatusAppletFactory.service
 
 rm -fr etc/dbus-1/system.d
 rm -fr etc/dconf
@@ -264,20 +254,14 @@ rm -fr usr/lib${SYSTEMBITS}/graphene-1.0
 rm -fr usr/lib${SYSTEMBITS}/gtk-2.0
 rm -fr usr/lib*/python*/site-packages/pip*
 rm -fr usr/lib*/python*/site-packages/psutil/tests
-rm -fr usr/share/cjs-1.0
-rm -fr usr/share/clutter-1.0
-rm -fr usr/share/cogl
 rm -fr usr/share/gdm
 rm -fr usr/share/glade/pixmaps
 rm -fr usr/share/gnome
 rm -fr usr/share/gtksourceview-2.0
 rm -fr usr/share/gtksourceview-3.0
 rm -fr usr/share/libdbusmenu
-rm -fr usr/share/mate-panel
 rm -fr usr/share/pixmaps
 rm -fr usr/share/Thunar
-rm -fr usr/share/xed/gir-1.0
-rm -fr usr/share/xviewer/gir-1.0
 rm -fr var/lib/AccountsService
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null

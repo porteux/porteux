@@ -193,8 +193,6 @@ cd $MODULEPATH/packages/
 {
 rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
-rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
-rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
 rm usr/lib${SYSTEMBITS}/libappindicator.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
@@ -204,18 +202,13 @@ rm usr/lib${SYSTEMBITS}/libsoup-gnome*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
 rm usr/share/applications/org.gnome.Vte*.desktop
-rm usr/share/backgrounds/xfce/xfce-leaves.svg
-rm usr/share/backgrounds/xfce/xfce-light.svg
-rm usr/share/backgrounds/xfce/xfce-mouserace.svg
-rm usr/share/backgrounds/xfce/xfce-shapes.svg
 rm usr/share/icons/hicolor/scalable/status/computer.svg
 rm usr/share/icons/hicolor/scalable/status/keyboard.svg
 rm usr/share/icons/hicolor/scalable/status/phone.svg
 
-rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
-rm -fr usr/share/engrampa
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
+rm -fr usr/share/libindicator
 rm -fr usr/share/themes/Default/balou
 rm -fr usr/share/Thunar
 

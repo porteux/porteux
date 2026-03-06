@@ -117,12 +117,6 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### fix some .desktop files
-
-sed -i "s|Core;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
-sed -i "s|;Settings;|;|g" $MODULEPATH/packages/usr/share/applications/pavucontrol.desktop
-sed -i "s|System;|Utility;|g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
-
 ### copy build files to 05-devel
 
 CopyToDevel
@@ -145,10 +139,7 @@ rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
 rm usr/share/applications/org.gnome.Vte*.desktop
-rm usr/share/lxde/wallpapers/lxde_green.jpg
-rm usr/share/lxde/wallpapers/lxde_red.jpg
 
-rm -fr usr/share/engrampa
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
 rm -fr usr/share/Thunar

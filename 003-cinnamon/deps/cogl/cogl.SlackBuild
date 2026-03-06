@@ -40,6 +40,7 @@ CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/cogl
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

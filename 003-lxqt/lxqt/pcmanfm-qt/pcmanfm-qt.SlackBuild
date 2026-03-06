@@ -30,6 +30,8 @@ cmake -B build -S . \
 
 make -C build -j${NUMBERTHREADS} DESTDIR="$PKG" install
 
+rm $PKG/usr/share/icons/hicolor/scalable/apps/pcmanfm-qt.svg
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
