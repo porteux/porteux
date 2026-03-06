@@ -35,6 +35,12 @@ sh $SCRIPTPATH/downloadPackages.sh
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
+# required from now on
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libnma*.txz || exit 1
+
 # lxde common
 for package in \
 	audacious \
@@ -43,6 +49,7 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	network-manager-applet \
 	atril \
 	xcape \
 ; do
@@ -51,19 +58,12 @@ installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# required from now on
-installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libnma*.txz || exit 1
-
 # lxde extras
 for package in \
 	engrampa \
 	pavucontrol \
 	l3afpad \
 	gnome-screenshot \
-	network-manager-applet \
 	kora-icon-theme \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
