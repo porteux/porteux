@@ -52,9 +52,6 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-rm $PKG/usr/share/applications/gtk3-icon-browser.desktop
-rm $PKG/usr/share/applications/gtk3-widget-factory.desktop
-
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
