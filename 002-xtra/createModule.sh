@@ -82,7 +82,7 @@ done
 
 # only required for building
 rm $MODULEPATH/packages/nv-codec-headers*.txz
-rm $MODULEPATH/packages/AMF-headers*.txz
+rm $MODULEPATH/packages/amf-headers*.txz
 
 currentPackage=mpv
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
