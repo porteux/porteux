@@ -23,4 +23,4 @@ mkdir -p $PKG/usr/include
 cp -r ${PRGNAM,,}-${VERSION}/AMF $PKG/usr/include
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-noarch-1_porteux.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM,,}-${VERSION//[vV]}-noarch-1_porteux.txz
