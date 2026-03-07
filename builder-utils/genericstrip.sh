@@ -53,26 +53,28 @@ GenericStrip() {
 	rm -fr var/log/setup
 	rm -fr var/man
 
-	find . -name '*.a' -delete
-	find . -name '*.c' -delete
-	find . -name '*.cpp' -delete
-	find . -name '*.cmake' -delete
-	find . -name '*.deps' -delete
-	find . -name '*.gir' -delete
-	find . -name '*.h' -delete
-	find . -name '*.hpp' -delete
-	find . -name '*.la' -delete
-	find . -name '*.m4' -delete
-	find . -name '*.make' -delete
-	find . -name '*.mk' -delete
-	find . -name '*.o' -delete
-	find . -name '*.pc' -delete
-	find . -name '*.prl' -delete
-	find . -name '*.vapi' -delete
-	find . -name 'AUTHORS*' -delete
-	find . -name 'COPYING*' -delete
-	find . -name 'LICENSE*' -delete
-	find . -name 'README*' -delete
+	find . \( \
+		-name '*.a' -o \
+		-name '*.c' -o \
+		-name '*.cpp' -o \
+		-name '*.cmake' -o \
+		-name '*.deps' -o \
+		-name '*.gir' -o \
+		-name '*.h' -o \
+		-name '*.hpp' -o \
+		-name '*.la' -o \
+		-name '*.m4' -o \
+		-name '*.make' -o \
+		-name '*.mk' -o \
+		-name '*.o' -o \
+		-name '*.pc' -o \
+		-name '*.prl' -o \
+		-name '*.vapi' -o \
+		-name 'AUTHORS*' -o \
+		-name 'COPYING*' -o \
+		-name 'LICENSE*' -o \
+		-name 'README*' \
+	\) -delete
 
 	find usr/ -type d -empty -delete
 

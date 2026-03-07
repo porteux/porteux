@@ -221,6 +221,7 @@ sed -i "s|,libcares||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
 ### set NetworkManager to use internal dhcp
 
 sed -i "s|dhcp=dhclient|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/NetworkManager.conf || exit 1
+sed -i "s|^dhcp=|#dhcp=|g" $MODULEPATH/packages/etc/NetworkManager/conf.d/00-dhcp-client.conf || exit 1
 sed -i "s|#dhcp=internal|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/conf.d/00-dhcp-client.conf || exit 1
 
 ### fix timeconfig missing folder
