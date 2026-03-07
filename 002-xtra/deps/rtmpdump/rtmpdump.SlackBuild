@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-git clone  git://git.ffmpeg.org/${PRGNAM}.git
+git clone git://git.ffmpeg.org/${PRGNAM}.git
 cd $PRGNAM
 VERSION=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 
@@ -21,9 +21,9 @@ patch -p1 < $CWD/librtmp-makefile.patch
 
 # use gnutls instead of openssl
 sed -i \
-  -e 's/^CRYPTO=OPENSSL/#CRYPTO=OPENSSL/' \
-  -e 's/#CRYPTO=GNUTLS/CRYPTO=GNUTLS/' \
-  Makefile librtmp/Makefile
+	-e 's/^CRYPTO=OPENSSL/#CRYPTO=OPENSSL/' \
+	-e 's/#CRYPTO=GNUTLS/CRYPTO=GNUTLS/' \
+	Makefile librtmp/Makefile
 
 CFLAGS="$GCCFLAGS" \
 make -j${NUMBERTHREADS} \

@@ -27,7 +27,7 @@ meson setup \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Dtests=false \
-    -Dstrip=true
+	-Dstrip=true
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
