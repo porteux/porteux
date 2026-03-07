@@ -8,9 +8,9 @@ PorteuX is a Linux distro based on Slackware, inspired by Slax and Porteus and a
 
 It's unique in many ways; not just a repackaging of programs on top of Slackware. For a list of its highlights, access the [Main Features](https://github.com/porteux/porteux/wiki/Main-Features) wiki page.
 
-It's already pre-configured for basic usage, including lightweight applications for each of the 8 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, NVIDIA drivers, Wine, office suite, multilib (32-bit compatibility), messengers, emulators, etc.
+It's already pre-configured for basic usage, including lightweight applications for each of the 8 desktop environments available. No browser is included, but an App Store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, NVIDIA drivers, Wine, office suite, multilib (32-bit compatibility), messengers, emulators, etc.
 
-Out of the box, PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or NVIDIA cards (for NVIDIA cards it's required to download the driver from the app store).
+Out of the box, PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or NVIDIA cards (for NVIDIA cards it's required to download the driver from the App Store).
 
 ## How To Use
 
@@ -28,9 +28,9 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 To use PorteuX in a language other than English, download the multilanguage package and use the PorteuX Language Switcher application to choose the desired language.
 
-To read Asian characters, download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module. Some PDFs may also require `poppler-data` package, via `getpkg` command.
+To read Asian characters, download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module. Some PDFs may also require `poppler-data` package, which can be downloaded via `getpkg` command.
 
-To run Windows applications inside PorteuX, you can find both Wine and Multilib Lite XZM modules in the app store. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
+To run Windows applications inside PorteuX, you can find both Wine and Multilib Lite XZM modules in the App Store. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
 
 ## Installing new applications or packages
 
