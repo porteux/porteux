@@ -128,3 +128,46 @@
  		                                           APP_INDICATOR_CATEGORY_SYSTEM_SERVICES);
  		if (!applet->app_indicator)
  			return FALSE;
+--- src/applet-device-ethernet.c	2024-01-02 14:29:22.000000000 +0100
++++ src/applet-device-ethernet.c.patched	2025-11-08 14:11:57.305006900 +0100
+@@ -123,7 +123,7 @@
+ 	applet_do_notify (applet,
+ 	                  _("Connection Established"),
+ 	                  msg ? msg : _("You are now connected to the ethernet network."),
+-	                  "nm-device-wired",
++	                  "nm-device-wired-symbolic",
+ 	                  PREF_DISABLE_CONNECTED_NOTIFICATIONS);
+ }
+ 
+@@ -162,7 +162,7 @@
+ 		*tip = g_strdup_printf (_("Requesting an ethernet network address for “%s”…"), id);
+ 		break;
+ 	case NM_DEVICE_STATE_ACTIVATED:
+-		*out_icon_name = "nm-device-wired";
++		*out_icon_name = "nm-device-wired-symbolic";
+ 		*tip = g_strdup_printf (_("Ethernet network connection “%s” active"), id);
+ 		break;
+ 	default:
+--- src/mobile-helpers.c	2024-01-02 14:29:22.000000000 +0100
++++ src/mobile-helpers.c.patched	2025-11-08 14:11:38.713006000 +0100
+@@ -93,15 +93,15 @@
+ mobile_helper_get_quality_icon_name (guint32 quality)
+ {
+ 	if (quality > 80)
+-		return "nm-signal-100";
++		return "nm-signal-100-symbolic";
+ 	else if (quality > 55)
+-		return "nm-signal-75";
++		return "nm-signal-75-symbolic";
+ 	else if (quality > 30)
+-		return "nm-signal-50";
++		return "nm-signal-50-symbolic";
+ 	else if (quality > 5)
+-		return "nm-signal-25";
++		return "nm-signal-25-symbolic";
+ 	else
+-		return "nm-signal-00";
++		return "nm-signal-00-symbolic";
+ }
+ 
+ const char *
