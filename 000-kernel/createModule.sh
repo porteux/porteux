@@ -49,7 +49,8 @@ if [ ${CLANG:-no} = "yes" ]; then
 	# fixing flags that are not compatible with the kernel
 	BUILDPARAMS=$(echo "$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" | sed \
 		-e 's/-fno-plt//g' \
-		-e 's/-flto=auto//g')
+		-e 's/-flto=auto//g' \
+		-e 's/-mpclmul//g')
 	LINKPARAMS=$(echo "$LLDFLAGS" | sed \
 		-e 's/-z,/-z /g' \
 		-e 's/-O2/-O1/g' \
@@ -66,7 +67,8 @@ else
 		-e 's/-fno-plt//g' \
 		-e 's/-ffunction-sections//g' \
 		-e 's/-fdata-sections//g' \
-		-e 's/-flto=auto//g')
+		-e 's/-flto=auto//g' \
+		-e 's/-mpclmul//g')
 	LINKPARAMS=$(echo "$LDFLAGS" | sed \
 		-e 's/-z,/-z /g' \
 		-e 's/-Wl,//g' \
