@@ -46,7 +46,7 @@ if [ ${CLANG:-no} = "yes" ]; then
 
 	COMPILER="Clang"
 	EXTRAFLAGS="CC=clang LLVM=1 LLVM_IAS=1"
-	# fixing flags that are not compatible with the kernel
+	# remove flags that are not compatible with the kernel
 	BUILDPARAMS=$(echo "$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" | sed \
 		-e 's/-fno-plt//g' \
 		-e 's/-flto=auto//g' \
@@ -62,7 +62,7 @@ if [ ${CLANG:-no} = "yes" ]; then
 		-e 's/--strip-all//g')
 else
 	COMPILER="GCC"
-	# fixing flags that are not compatible with the kernel
+	# remove flags that are not compatible with the kernel
 	BUILDPARAMS=$(echo "$GCCFLAGS" | sed \
 		-e 's/-fno-plt//g' \
 		-e 's/-ffunction-sections//g' \
