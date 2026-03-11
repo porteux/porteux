@@ -58,12 +58,12 @@ Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
 [https://youtu.be/DJd38Nch6rQ](https://youtu.be/DJd38Nch6rQ)
 
-Clear Linux, considered the fastest Linux distro, is slower than PorteuX in Geekbench 6:
-![clear-linux-40520-vs-porteux-0 9](https://github.com/porteux/porteux/assets/126424580/8ff3cb62-91a0-4171-8c05-133e75845c6b)
+CachyOS, considered the fastest Linux distro, is slower than PorteuX in Geekbench 6:
+<img width="2254" height="1375" alt="geekbench" src="https://github.com/user-attachments/assets/679c56fa-3024-4167-b843-81d83857934d" />
 
 Sources:
-[ClearLinux40520](https://browser.geekbench.com/v6/cpu/4073056)
-[PorteuX0.9](https://browser.geekbench.com/v6/cpu/4087178)
+[CachyOS-260308](https://browser.geekbench.com/v6/cpu/17010269)
+[PorteuX2.7](https://browser.geekbench.com/v6/cpu/17010360)
 
 All this performance benefit is achieved without providing ancient software. This means that the kernel, desktop environments and packages are usually as new as possible.
 
