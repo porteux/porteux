@@ -1,0 +1,10 @@
+--- src/theme.rs	2026-03-13 14:23:20.142586182 +0100
++++ src/theme.rs.patched	2026-03-13 14:29:23.487562190 +0100
+@@ -624,6 +624,7 @@
+ }
+ 
+ fn set_flatpak_overrides() {
++    return;
+     let paths_to_expose = vec![
+         "xdg-config/gtk-4.0:ro",
+         "xdg-config/gtk-3.0:ro",
