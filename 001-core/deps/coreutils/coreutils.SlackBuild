@@ -46,7 +46,7 @@ rm -rf $PKG/usr/share/locale/*/LC_TIME
 mkdir -p $PKG/usr/bin
 ( cd $PKG/usr/bin
   for file in ../../bin/* ; do
-    ln --verbose -sf $file .
+    ln -sf $file .
   done
 )
 
