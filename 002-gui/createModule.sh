@@ -61,6 +61,10 @@ rm -fr $MODULEPATH/${currentPackage}
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libtheora*.txz || exit 1
 
+# required by appstream
+installpkg $MODULEPATH/packages/ngtcp2*.txz || exit 1
+rm $MODULEPATH/packages/ngtcp2*.txz
+
 # required by gtk+3
 installpkg $MODULEPATH/packages/cups*.txz || exit 1
 rm $MODULEPATH/packages/cups*.txz

@@ -245,6 +245,7 @@ wait
 
 DownloadPackage "cups" & # to build gtk+3
 DownloadPackage "gperf" & # to build flatpak
+DownloadPackage "ngtcp2" & # to build appstream
 DownloadPackage "pyparsing" & # to build flatpak
 DownloadPackage "socat" & # to build flatpak
 DownloadPackage "xtrans" & # to build xorg
