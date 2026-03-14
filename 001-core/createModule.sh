@@ -199,7 +199,7 @@ c_rehash . > /dev/null
 chmod 0644 "$TEMPBUNDLE"
 mv -f "$TEMPBUNDLE" ca-certificates.crt
 
-### install kbd fonts
+### extract kbd map files
 
 cd $MODULEPATH/packages
 find usr/share/kbd -type f -name "*.gz" -exec gunzip {} \;
@@ -213,7 +213,7 @@ sed -i '/^ca::ctrlaltdel/c\ca::ctrlaltdel:/sbin/shutdown -r now 2>/dev/null' $MO
 sed -i "s|password    requisite     pam_pwquality.so|#password    requisite     pam_pwquality.so|g" $MODULEPATH/packages/etc/pam.d/system-auth
 sed -i "s|try_first_pass use_authtok||g" $MODULEPATH/packages/etc/pam.d/system-auth
 
-### remove fake curl deps
+### remove fake curl dependencies
 
 sed -i "s|,mit-krb5-gssapi||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
 sed -i "s|,libcares||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
@@ -285,7 +285,9 @@ rm usr/dict
 rm usr/lib${SYSTEMBITS}/libicutest.*
 rm usr/lib${SYSTEMBITS}/libqgpgme.so*
 rm usr/libexec/samba/rpcd_*
+rm usr/sbin/make-kernel-backup
 rm usr/share/i18n/locales/C
+rm usr/share/kbd/keymaps/i386/qwertz/sr-latin.map.gz
 rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
 
@@ -356,6 +358,7 @@ rm -fr usr/x86_64-slackware-linux
 rm -fr var/mail
 rm -fr var/spool/mail
 
+find usr/share/terminfo/ -xtype l -delete
 find usr/lib${SYSTEMBITS}/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib${SYSTEMBITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +
 } >/dev/null 2>&1
