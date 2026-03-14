@@ -2,6 +2,7 @@
 
 GenericStrip() {
 	rm usr/share/pixmaps/*.xpm
+	rm usr/X11/man
 	rm var/log/removed_packages
 	rm var/log/removed_scripts
 	rm var/log/removed_uninstall_scripts
