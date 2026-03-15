@@ -53,13 +53,5 @@ Finalize() {
 }
 
 isRoot() {
-	groupsList=$(groups)
-
-	for entry in $groupsList; do
-		if [[ "$entry" == "root" ]]; then
-			return 0
-		fi
-	done
-
-	return 1
+	[ "$(id -u)" -eq 0 ]
 }
