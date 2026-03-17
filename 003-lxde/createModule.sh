@@ -49,6 +49,7 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	vte \
 	network-manager-applet \
 	atril \
 	xcape \
@@ -70,16 +71,9 @@ sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# required by lxterminal
-installpkg $MODULEPATH/packages/vte*.txz || exit 1
-
 # required by lxpanel
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
-
-# required by lxterminal
-installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
-rm $MODULEPATH/packages/icu4c*.txz
 
 # lxde packages
 for package in \
@@ -131,14 +125,11 @@ cd $MODULEPATH/packages/
 
 {
 rm etc/xdg/autostart/blueman.desktop
-rm usr/bin/vte-*-gtk4
 rm usr/lib${SYSTEMBITS}/libappindicator.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*
-rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
-rm usr/share/applications/org.gnome.Vte*.desktop
 
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome

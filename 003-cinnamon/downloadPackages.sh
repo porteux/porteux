@@ -43,7 +43,6 @@ DownloadPackage "python-psutil" &
 DownloadPackage "python-requests" &
 DownloadPackage "python-six" &
 DownloadPackage "python-webencodings" &
-DownloadPackage "vte" &
 wait
 
 ### packages that require specific striping
@@ -54,7 +53,6 @@ wait
 
 ### temporary packages only for building
 
-DownloadPackage "icu4c" & # required by gnome-terminal (only for safety in case it gets updated in Slackware repo)
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
 DownloadPackage "libxklavier" &

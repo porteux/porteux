@@ -56,6 +56,7 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	vte \
 	network-manager-applet \
 	mate-common \
 	mate-polkit \
@@ -72,12 +73,9 @@ installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
-installpkg $MODULEPATH/packages/vte*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
 
 # required just for building
-installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
-rm $MODULEPATH/packages/icu4c*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 rm $MODULEPATH/packages/mate-common*.txz
@@ -153,7 +151,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
 rm usr/lib${SYSTEMBITS}/libappindicator.*
@@ -161,9 +158,7 @@ rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libsoup-gnome*
-rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
-rm usr/share/applications/org.gnome.Vte*.desktop
 
 rm -fr run/
 rm -fr usr/lib*/python*/site-packages/pip*

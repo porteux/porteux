@@ -24,13 +24,7 @@ DownloadPackage "libnma" &
 DownloadPackage "libsoup" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-DownloadPackage "vte" &
 DownloadPackage "xtrans" &
-wait
-
-### temporary packages only for building
-
-DownloadPackage "icu4c" & # required by mate-terminal (only for safety in case it gets updated in Slackware repo)
 wait
 
 ### script clean up

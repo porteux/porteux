@@ -58,7 +58,6 @@ rm $MODULEPATH/packages/c-ares*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
-rm $MODULEPATH/packages/icu4c*
 rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
@@ -142,7 +141,7 @@ for package in \
 	loupe \
 	papers \
 	gnome-system-monitor \
-	vte \
+	vte-gtk4 \
 	ptyxis \
 	gnome-user-share \
 	gnome-backgrounds \
@@ -236,7 +235,6 @@ rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 rm usr/share/applications/org.gtk.PrintEditor4.desktop
 rm usr/share/applications/org.gtk.Shaper.desktop
 rm usr/share/applications/org.gtk.WidgetFactory4.desktop
-rm usr/share/applications/vte-gtk4.desktop
 rm usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
 rm usr/share/glib-2.0/schemas/org.gtk.Demo4.gschema.xml
 rm usr/share/icons/hicolor/symbolic/apps/org.gtk.Demo4-symbolic.svg
