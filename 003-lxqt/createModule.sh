@@ -108,7 +108,7 @@ rm -fr $MODULEPATH/${currentPackage}
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
-# lxde common
+# lxqt common
 for package in \
 	audacious \
 	audacious-plugins \

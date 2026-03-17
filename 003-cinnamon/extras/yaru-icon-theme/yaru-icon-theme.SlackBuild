@@ -18,6 +18,7 @@ cd yaru-master
 VERSION=$(date -r . +%Y%m%d)
 
 rm -fr icons/Yaru/cursor*
+rm -fr icons/Yaru/scalable-max-32
 rm -fr icons/Yaru/*@2x
 rm -fr icons/Yaru-blue/*@2x
 
