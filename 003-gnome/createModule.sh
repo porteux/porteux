@@ -213,6 +213,7 @@ rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
 rm usr/bin/gtk4-encode-symbolic-svg
 rm usr/bin/gtk4-icon-browser
+rm usr/bin/gtk4-icon-editor
 rm usr/bin/gtk4-launch
 rm usr/bin/gtk4-print-editor
 rm usr/bin/gtk4-widget-factory
@@ -229,9 +230,11 @@ rm usr/lib${SYSTEMBITS}/gstreamer-1.0/libgstzxing.*
 rm usr/lib${SYSTEMBITS}/libcanberra-gtk.*
 rm usr/lib${SYSTEMBITS}/libgstopencv-1.0.*
 rm usr/lib${SYSTEMBITS}/libgstwebrtcnice.*
+rm usr/share/applications/org.freedesktop.IBus*.desktop
 rm usr/share/applications/org.gtk.Demo4.desktop
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop
 rm usr/share/applications/org.gtk.PrintEditor4.desktop
+rm usr/share/applications/org.gtk.Shaper.desktop
 rm usr/share/applications/org.gtk.WidgetFactory4.desktop
 rm usr/share/applications/vte-gtk4.desktop
 rm usr/share/dbus-1/services/org.freedesktop.ColorHelper.service
