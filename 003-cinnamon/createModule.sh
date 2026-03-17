@@ -75,6 +75,7 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	vte \
 	mate-polkit \
 ; do
 SESSIONTEMPLATE=cinnamon ICONTHEME=Yaru-blue sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -99,11 +100,8 @@ installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
-installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required only for building
-installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
-rm $MODULEPATH/packages/icu4c*.txz
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
@@ -235,14 +233,11 @@ cd $MODULEPATH/packages/
 
 {
 rm etc/xdg/autostart/blueman.desktop
-rm usr/bin/vte-*-gtk4
 rm usr/bin/js[0-9]*
 rm usr/lib${SYSTEMBITS}/libappindicator.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
-rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
-rm usr/share/applications/org.gnome.Vte*.desktop
 
 rm -fr etc/dbus-1/system.d
 rm -fr etc/dconf

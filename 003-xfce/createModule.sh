@@ -55,7 +55,7 @@ installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 
-# lxde common
+# xfce common
 for package in \
 	audacious \
 	audacious-plugins \
@@ -63,6 +63,7 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	vte \
 	network-manager-applet \
 	mate-common \
 	mate-polkit \
@@ -106,11 +107,6 @@ installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 
 # required by xfce4-pulseaudio-plugin
 installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
-
-# required by xfce4-terminal
-installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
-rm $MODULEPATH/packages/icu4c*.txz
-installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required by xfdesktop
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
@@ -191,7 +187,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
 rm usr/lib${SYSTEMBITS}/libappindicator.*
@@ -199,7 +194,6 @@ rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libsoup-gnome*
-rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
 rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/icons/hicolor/scalable/status/computer.svg
