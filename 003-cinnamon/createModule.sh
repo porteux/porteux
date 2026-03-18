@@ -43,7 +43,7 @@ cp --parents -P usr/lib$SYSTEMBITS/libgettextlib* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libgettextsrc* "${currentPackage}-stripped"
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=ibus
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -61,7 +61,7 @@ mkdir ${currentPackage}-stripped
 rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 ### packages outside slackware repository
 

@@ -123,7 +123,7 @@ cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWebChannel/* "${currentPackage}-str
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWebSockets/* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required by main menu
 currentPackage=appstream
@@ -136,7 +136,7 @@ mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libAppStreamQt.* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-qt-${packageVersion}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required by spectacle
 currentPackage=opencv
@@ -150,7 +150,7 @@ cp --parents -P usr/lib$SYSTEMBITS/libopencv_imgproc.* "${currentPackage}-stripp
 cp --parents -P usr/lib$SYSTEMBITS/libopencv_core.* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # also required by spectacle
 currentPackage=gcc-gfortran
@@ -163,7 +163,7 @@ mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libgfortran.so* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required by dolphin and others
 currentPackage=phonon
@@ -176,7 +176,7 @@ cp --parents -P -r usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=qcoro
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -189,25 +189,25 @@ cp --parents -P usr/lib$SYSTEMBITS/libQCoro6Core.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQCoro6DBus.* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 ### packages outside slackware repository
 
 currentPackage=audacious
 QT=6 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=audacious-plugins
 QT=6 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
 currentPackage=featherpad
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # kde deps
 for package in \

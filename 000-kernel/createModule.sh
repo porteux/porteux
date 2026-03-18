@@ -122,7 +122,7 @@ currentPackage=kernel-headers
 KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${SCRIPTPATH}/extras/${currentPackage}.SlackBuild || exit 1
 mkdir -p ${MODULEPATH}/../05-devel/packages
 mv ${MODULEPATH}/packages/${currentPackage}*.txz ${MODULEPATH}/../05-devel/packages
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 if [ ${ONLYHEADERS:-no} = "yes" ]; then
 	rm -fr ${MODULEPATH}
