@@ -20,21 +20,17 @@ VERSION=${info#* }
 tar xf $PRGNAM-$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$PRGNAM-$VERSION
 
-./bootstrap
-
+mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
-./configure \
+meson setup \
 	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--enable-shared=yes \
-	--enable-static=no \
-	--enable-year2038
+	--libdir=/usr/lib${SYSTEMBITS} \
+	-Dbuildtype=release
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.a" -exec rm -f {} \;
 
 rm -fr $PKG/usr/bin
 
