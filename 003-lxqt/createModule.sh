@@ -72,7 +72,7 @@ cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/xcbglintegrations/* "${currentPac
 rm ${currentPackage}-stripped/usr/lib$SYSTEMBITS/*.prl
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required by xpdf
 currentPackage=ghostscript-fonts-std
@@ -101,7 +101,7 @@ mkdir ghostscript && cd ghostscript
 ln -s ../fonts/Type1 fonts
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 ### packages outside slackware repository
 
