@@ -10,28 +10,27 @@ DownloadPackage "colord" &
 DownloadPackage "cracklib" # required by gnome-control-center
 DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
-DownloadPackage "enchant" &
 wait
-DownloadPackage "gexiv2" &
-DownloadPackage "hunspell" &
+DownloadPackage "enchant" &
 DownloadPackage "glibmm2" & # required by gnome-system-monitor
 DownloadPackage "gst-plugins-bad-free" & # required by gtk4 plugin
 DownloadPackage "gst-plugins-good" & # required by nautilus media properties
 DownloadPackage "gst-plugins-libav" & # required by nautilus media properties
-wait
 DownloadPackage "gtk4" &
 DownloadPackage "gtkmm4" & # required by gnome-system-monitor
+wait
+DownloadPackage "hunspell" &
 DownloadPackage "hyphen" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
 DownloadPackage "libnma" &
+DownloadPackage "libpwquality" & # required by gnome-control-center
 wait
 DownloadPackage "libsigc++3" & # required by gnome-system-monitor
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &
 DownloadPackage "mozjs140" &
 DownloadPackage "pangomm2" & # required by gnome-system-monitor
-DownloadPackage "libpwquality" & # required by gnome-control-center
 DownloadPackage "woff2" &
 wait
 

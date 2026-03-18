@@ -22,9 +22,8 @@ DownloadPackage "db48" & # required by bluez (obexd)
 DownloadPackage "dejavu-fonts-ttf" &
 DownloadPackage "desktop-file-utils" &
 DownloadPackage "djvulibre" &
-DownloadPackage "esound" &
 wait
-DownloadPackage "exiv2" &
+DownloadPackage "esound" &
 DownloadPackage "flac" &
 DownloadPackage "fontconfig" &
 DownloadPackage "freeglut" &
