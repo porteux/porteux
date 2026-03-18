@@ -92,6 +92,7 @@ done
 
 # gnome deps
 for package in \
+	exiv2 \
 	libstemmer \
 	bubblewrap \
 	geoclue2 \
@@ -132,6 +133,7 @@ for package in \
 	gnome-session \
 	tinysparql \
 	localsearch \
+	gexiv2 \
 	nautilus \
 	nautilus-python \
 	gdm \

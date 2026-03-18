@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PRGNAM=gnome-control-center
+PRGNAM=gexiv2
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -19,13 +19,9 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-for i in $CWD/*.patch; do
-	patch -p0 < $i;
-done
-
-if [ ! -f subprojects/gvc/meson.build ]; then
-	git clone https://gitlab.gnome.org/GNOME/libgnome-volume-control subprojects/gvc || git clone https://github.com/GNOME/libgnome-volume-control subprojects/gvc
-fi
+sed -i "s|subdir('docs')|#subdir('docs')|g" meson.build
+sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
+sed -i "s|subdir('tools')|#subdir('tools')|g" meson.build
 
 mkdir build && cd build
 CFLAGS="$GCCFLAGS" \
@@ -35,11 +31,7 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
-	--localstatedir=/var \
-	-Ddefault_library=shared \
-	-Dtests=false \
-	-Dmalcontent=false \
-	-Ddocumentation=false
+	--localstatedir=/var
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
