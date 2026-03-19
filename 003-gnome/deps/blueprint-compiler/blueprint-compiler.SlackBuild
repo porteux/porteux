@@ -35,6 +35,8 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+sed -i 's|T.Generator\[TextEdit\]:|T.Generator[TextEdit, None, None]:|g' $PKG/usr/lib/python3.*/site-packages/blueprintcompiler/ast_utils.py
+
 mkdir -p $PKG/install
 
 cd $PKG
