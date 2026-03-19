@@ -13,7 +13,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
-VERSION=49.2
+#VERSION=49.2
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 [ ! -s ${PRGNAM}-${VERSION}.tar.gz ] && wget https://github.com/GNOME/${PRGNAM}/archive/refs/tags/$VERSION.tar.gz -O $PRGNAM-$VERSION.tar.gz
 
@@ -23,6 +23,8 @@ cd $PRGNAM-$VERSION
 for i in $CWD/*.patch; do
 	patch -p0 < $i
 done
+
+patch -p1 < $CWD/307.patch1
 
 sed -i "s|subdir('docs')|#subdir('docs')|g" meson.build
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
