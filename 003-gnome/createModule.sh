@@ -131,9 +131,9 @@ for package in \
 	gjs \
 	gnome-shell \
 	gnome-session \
+	gexiv2 \
 	tinysparql \
 	localsearch \
-	gexiv2 \
 	nautilus \
 	nautilus-python \
 	gdm \
@@ -257,8 +257,7 @@ rm -fr usr/share/pixmaps
 rm -fr var/lib/AccountsService
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
-find usr/share/backgrounds/gnome/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
-find usr/share/gnome-background-properties/ -mindepth 1 -maxdepth 1 ! \( -name "adwaita*" \) -exec rm -rf '{}' \; 2>/dev/null
+
 } >/dev/null 2>&1
 
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/

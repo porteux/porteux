@@ -20,16 +20,14 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
-meson setup \
-	--buildtype=release \
-	--libdir=/usr/lib${SYSTEMBITS} \
-	--localstatedir=/var \
-	--prefix=/usr \
-	--sysconfdir=/etc
+cmake -B build -S . \
+	-G Ninja \
+	-DCMAKE_BUILD_TYPE=release \
+	-DCMAKE_C_FLAGS="$GCCFLAGS" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS}
 
-DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
