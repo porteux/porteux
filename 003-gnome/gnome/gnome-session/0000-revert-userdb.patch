@@ -1,6 +1,6 @@
-diff -ruN 50/gnome-session-50.0.orig/data/gnome-session-failed.service.in work/data/gnome-session-failed.service.in
---- a/data/gnome-session-failed.service.in	1970-01-01 00:00:00.000000000 +0000
-+++ b/data/gnome-session-failed.service.in	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/data/gnome-session-failed.service.in gnome50-patched/data/gnome-session-failed.service.in
+--- gnome50/data/gnome-session-failed.service.in	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/data/gnome-session-failed.service.in	2026-03-19 22:41:00.772927002 +0000
 @@ -0,0 +1,19 @@
 +[Unit]
 +Description=GNOME Session Failed lockdown screen (user)
@@ -21,9 +21,9 @@ diff -ruN 50/gnome-session-50.0.orig/data/gnome-session-failed.service.in work/d
 +ExecStart=@libexecdir@/gnome-session-failed --allow-logout
 +# The fail whale doesn't trigger a shutdown itself, so do it here
 +ExecStopPost=-@libexecdir@/gnome-session-ctl --shutdown
-diff -ruN 50/gnome-session-50.0.orig/data/gnome-session-failed.target work/data/gnome-session-failed.target
---- a/data/gnome-session-failed.target	1970-01-01 00:00:00.000000000 +0000
-+++ b/data/gnome-session-failed.target	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/data/gnome-session-failed.target gnome50-patched/data/gnome-session-failed.target
+--- gnome50/data/gnome-session-failed.target	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/data/gnome-session-failed.target	2026-03-19 22:41:00.773927002 +0000
 @@ -0,0 +1,12 @@
 +[Unit]
 +Description=GNOME Session Failed
@@ -37,9 +37,9 @@ diff -ruN 50/gnome-session-50.0.orig/data/gnome-session-failed.target work/data/
 +
 +BindsTo=gnome-session-failed.service
 +After=gnome-session-failed.service
-diff -ruN 50/gnome-session-50.0.orig/data/gnome-session-manager@.service.in work/data/gnome-session-manager@.service.in
---- a/data/gnome-session-manager@.service.in	2026-03-19 12:52:17.000000000 +0000
-+++ b/data/gnome-session-manager@.service.in	2026-03-19 12:54:32.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/data/gnome-session-manager@.service.in gnome50-patched/data/gnome-session-manager@.service.in
+--- gnome50/data/gnome-session-manager@.service.in	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/data/gnome-session-manager@.service.in	2026-03-19 22:41:00.773927002 +0000
 @@ -15,5 +15,5 @@
  
  [Service]
@@ -47,9 +47,9 @@ diff -ruN 50/gnome-session-50.0.orig/data/gnome-session-manager@.service.in work
 -ExecStart=@libexecdir@/gnome-session-service --session=%i
 +ExecStart=@libexecdir@/gnome-session-binary --systemd-service --session=%i
  ExecStopPost=-@libexecdir@/gnome-session-ctl --shutdown
-diff -ruN 50/gnome-session-50.0.orig/data/gnome-session-shutdown.target work/data/gnome-session-shutdown.target
---- a/data/gnome-session-shutdown.target	2026-03-19 12:52:17.000000000 +0000
-+++ b/data/gnome-session-shutdown.target	2026-03-19 12:54:40.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/data/gnome-session-shutdown.target gnome50-patched/data/gnome-session-shutdown.target
+--- gnome50/data/gnome-session-shutdown.target	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/data/gnome-session-shutdown.target	2026-03-19 22:41:00.774927001 +0000
 @@ -14,8 +14,8 @@
  Conflicts=gnome-session.target gnome-session-manager.target
  After=gnome-session.target gnome-session-manager.target
@@ -61,9 +61,9 @@ diff -ruN 50/gnome-session-50.0.orig/data/gnome-session-shutdown.target work/dat
  
  # We need to make sure this unit is stopped; primarily so that the tree of
  # units that we created is completely cleaned.
-diff -ruN 50/gnome-session-50.0.orig/data/gnome-session.target work/data/gnome-session.target
---- a/data/gnome-session.target	2026-03-19 12:52:17.000000000 +0000
-+++ b/data/gnome-session.target	2026-03-19 12:54:50.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/data/gnome-session.target gnome50-patched/data/gnome-session.target
+--- gnome50/data/gnome-session.target	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/data/gnome-session.target	2026-03-19 22:41:00.775927001 +0000
 @@ -1,7 +1,7 @@
  [Unit]
  Description=GNOME Session
@@ -74,9 +74,9 @@ diff -ruN 50/gnome-session-50.0.orig/data/gnome-session.target work/data/gnome-s
  DefaultDependencies=no
  RefuseManualStart=yes
  RefuseManualStop=yes
-diff -ruN 50/gnome-session-50.0.orig/data/gnome-session@.target work/data/gnome-session@.target
---- a/data/gnome-session@.target	2026-03-19 12:52:17.000000000 +0000
-+++ b/data/gnome-session@.target	2026-03-19 12:54:58.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/data/gnome-session@.target gnome50-patched/data/gnome-session@.target
+--- gnome50/data/gnome-session@.target	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/data/gnome-session@.target	2026-03-19 22:41:00.775927001 +0000
 @@ -6,8 +6,8 @@
  # Stop happens by starting gnome-session-shutdown.target
  RefuseManualStop=yes
@@ -88,9 +88,9 @@ diff -ruN 50/gnome-session-50.0.orig/data/gnome-session@.target work/data/gnome-
  
  Conflicts=shutdown.target gnome-session-shutdown.target
  PartOf=graphical-session.target
-diff -ruN 50/gnome-session-50.0.orig/data/gnome.session.conf.in work/data/gnome.session.conf.in
---- a/data/gnome.session.conf.in	1970-01-01 00:00:00.000000000 +0000
-+++ b/data/gnome.session.conf.in	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/data/gnome.session.conf.in gnome50-patched/data/gnome.session.conf.in
+--- gnome50/data/gnome.session.conf.in	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/data/gnome.session.conf.in	2026-03-19 22:41:00.776927001 +0000
 @@ -0,0 +1,6 @@
 +[Unit]
 +@wants_components@
@@ -98,23 +98,23 @@ diff -ruN 50/gnome-session-50.0.orig/data/gnome.session.conf.in work/data/gnome.
 +Wants=localsearch-3.service
 +
 +@requires_components@
-diff -ruN 50/gnome-session-50.0.orig/data/gnome.session.desktop work/data/gnome.session.desktop
---- a/data/gnome.session.desktop	2026-03-19 12:52:17.000000000 +0000
-+++ b/data/gnome.session.desktop	1970-01-01 00:00:00.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/data/gnome.session.desktop gnome50-patched/data/gnome.session.desktop
+--- gnome50/data/gnome.session.desktop	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/data/gnome.session.desktop	1970-01-01 00:00:00.000000000 +0000
 @@ -1,2 +0,0 @@
 -[GNOME Session]
 -Name=GNOME
-diff -ruN 50/gnome-session-50.0.orig/data/gnome.session.desktop.in.in work/data/gnome.session.desktop.in.in
---- a/data/gnome.session.desktop.in.in	1970-01-01 00:00:00.000000000 +0000
-+++ b/data/gnome.session.desktop.in.in	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/data/gnome.session.desktop.in.in gnome50-patched/data/gnome.session.desktop.in.in
+--- gnome50/data/gnome.session.desktop.in.in	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/data/gnome.session.desktop.in.in	2026-03-19 22:41:00.777927001 +0000
 @@ -0,0 +1,4 @@
 +[GNOME Session]
 +Name=GNOME
 +# Must be in sync with gnome-session@gnome.target.d/gnome.session.conf drop-in
 +RequiredComponents=@required_components@;
-diff -ruN 50/gnome-session-50.0.orig/data/meson.build work/data/meson.build
---- a/data/meson.build	2026-03-19 12:52:17.000000000 +0000
-+++ b/data/meson.build	2026-03-19 12:55:43.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/data/meson.build gnome50-patched/data/meson.build
+--- gnome50/data/meson.build	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/data/meson.build	2026-03-19 22:41:00.777927001 +0000
 @@ -15,18 +15,87 @@
    install_dir: session_datadir / 'wayland-sessions',
  )
@@ -237,9 +237,9 @@ diff -ruN 50/gnome-session-50.0.orig/data/meson.build work/data/meson.build
  install_data(
    'org.gnome.SessionManager.gschema.xml',
    install_dir: join_paths(session_datadir, 'glib-2.0', 'schemas'),
-diff -ruN 50/gnome-session-50.0.orig/doc/gnome-session.xml work/doc/gnome-session.xml
---- a/doc/gnome-session.xml	2026-03-19 12:52:17.000000000 +0000
-+++ b/doc/gnome-session.xml	2026-03-19 12:55:58.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/doc/gnome-session.xml gnome50-patched/doc/gnome-session.xml
+--- gnome50/doc/gnome-session.xml	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/doc/gnome-session.xml	2026-03-19 22:41:00.778927001 +0000
 @@ -37,7 +37,9 @@
      </partintro>
  
@@ -250,9 +250,9 @@ diff -ruN 50/gnome-session-50.0.orig/doc/gnome-session.xml work/doc/gnome-sessio
      <xi:include href="ref-org.gnome.SessionManager.Inhibitor.xml"/>
      <xi:include href="ref-org.gnome.SessionManager.Presence.xml"/>
    </part>
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gdm-log.c work/gnome-session/gdm-log.c
---- a/gnome-session/gdm-log.c	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gdm-log.c	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gdm-log.c gnome50-patched/gnome-session/gdm-log.c
+--- gnome50/gnome-session/gdm-log.c	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gdm-log.c	2026-03-19 22:41:00.779927000 +0000
 @@ -0,0 +1,205 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -459,9 +459,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gdm-log.c work/gnome-session/
 +        initialized = FALSE;
 +}
 +
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gdm-log.h work/gnome-session/gdm-log.h
---- a/gnome-session/gdm-log.h	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gdm-log.h	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gdm-log.h gnome50-patched/gnome-session/gdm-log.h
+--- gnome50/gnome-session/gdm-log.h	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gdm-log.h	2026-03-19 22:41:00.779927000 +0000
 @@ -0,0 +1,50 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -513,9 +513,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gdm-log.h work/gnome-session/
 +G_END_DECLS
 +
 +#endif /* __GDM_LOG_H */
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gnome-session.in work/gnome-session/gnome-session.in
---- a/gnome-session/gnome-session.in	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gnome-session.in	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gnome-session.in gnome50-patched/gnome-session/gnome-session.in
+--- gnome50/gnome-session/gnome-session.in	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gnome-session.in	2026-03-19 22:41:00.780927000 +0000
 @@ -0,0 +1,39 @@
 +#!/bin/sh
 +
@@ -556,9 +556,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gnome-session.in work/gnome-s
 +fi
 +
 +exec @libexecdir@/gnome-session-binary "$@"
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-app.c work/gnome-session/gsm-app.c
---- a/gnome-session/gsm-app.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-app.c	2026-03-19 12:54:23.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-app.c gnome50-patched/gnome-session/gsm-app.c
+--- gnome50/gnome-session/gsm-app.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-app.c	2026-03-19 22:41:00.781927000 +0000
 @@ -21,46 +21,174 @@
  #include "config.h"
  #endif
@@ -1214,9 +1214,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-app.c work/gnome-session/
 +        g_debug ("Saving app: %s", priv->id);
 +        return GSM_APP_GET_CLASS (app)->impl_save_to_keyfile (app, keyfile, error);
  }
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-app.h work/gnome-session/gsm-app.h
---- a/gnome-session/gsm-app.h	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-app.h	2026-03-19 12:54:23.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-app.h gnome50-patched/gnome-session/gsm-app.h
+--- gnome50/gnome-session/gsm-app.h	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-app.h	2026-03-19 22:41:00.781927000 +0000
 @@ -21,27 +21,98 @@
  #define __GSM_APP_H__
  
@@ -1323,9 +1323,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-app.h work/gnome-session/
  
  G_END_DECLS
  
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-autostart-app.c work/gnome-session/gsm-autostart-app.c
---- a/gnome-session/gsm-autostart-app.c	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-autostart-app.c	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-autostart-app.c gnome50-patched/gnome-session/gsm-autostart-app.c
+--- gnome50/gnome-session/gsm-autostart-app.c	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-autostart-app.c	2026-03-19 22:41:00.782927000 +0000
 @@ -0,0 +1,1505 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -2832,9 +2832,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-autostart-app.c work/gnom
 +                                         "mask-systemd", mask_systemd,
 +                                         NULL);
 +}
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-autostart-app.h work/gnome-session/gsm-autostart-app.h
---- a/gnome-session/gsm-autostart-app.h	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-autostart-app.h	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-autostart-app.h gnome50-patched/gnome-session/gsm-autostart-app.h
+--- gnome50/gnome-session/gsm-autostart-app.h	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-autostart-app.h	2026-03-19 22:41:00.783927000 +0000
 @@ -0,0 +1,59 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -2895,9 +2895,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-autostart-app.h work/gnom
 +G_END_DECLS
 +
 +#endif /* __GSM_AUTOSTART_APP_H__ */
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-client.c work/gnome-session/gsm-client.c
---- a/gnome-session/gsm-client.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-client.c	2026-03-19 12:54:23.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-client.c gnome50-patched/gnome-session/gsm-client.c
+--- gnome50/gnome-session/gsm-client.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-client.c	2026-03-19 22:41:00.784926999 +0000
 @@ -19,32 +19,29 @@
  
  #include "config.h"
@@ -3591,9 +3591,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-client.c work/gnome-sessi
 +        g_signal_emit (client, signals[END_SESSION_RESPONSE], 0,
 +                       is_ok, do_last, cancel, reason);
  }
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-client.h work/gnome-session/gsm-client.h
---- a/gnome-session/gsm-client.h	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-client.h	2026-03-19 12:54:23.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-client.h gnome50-patched/gnome-session/gsm-client.h
+--- gnome50/gnome-session/gsm-client.h	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-client.h	2026-03-19 22:41:00.784926999 +0000
 @@ -26,24 +26,88 @@
  
  G_BEGIN_DECLS
@@ -3713,9 +3713,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-client.h work/gnome-sessi
  G_END_DECLS
  
  #endif /* __GSM_CLIENT_H__ */
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-dbus-client.c work/gnome-session/gsm-dbus-client.c
---- a/gnome-session/gsm-dbus-client.c	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-dbus-client.c	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-dbus-client.c gnome50-patched/gnome-session/gsm-dbus-client.c
+--- gnome50/gnome-session/gsm-dbus-client.c	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-dbus-client.c	2026-03-19 22:41:00.785926999 +0000
 @@ -0,0 +1,439 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -4156,9 +4156,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-dbus-client.c work/gnome-
 +
 +        return GSM_CLIENT (client);
 +}
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-dbus-client.h work/gnome-session/gsm-dbus-client.h
---- a/gnome-session/gsm-dbus-client.h	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-dbus-client.h	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-dbus-client.h gnome50-patched/gnome-session/gsm-dbus-client.h
+--- gnome50/gnome-session/gsm-dbus-client.h	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-dbus-client.h	2026-03-19 22:41:00.786926999 +0000
 @@ -0,0 +1,35 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -4195,9 +4195,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-dbus-client.h work/gnome-
 +G_END_DECLS
 +
 +#endif /* __GSM_DBUS_CLIENT_H__ */
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-fail-whale-dialog.c work/gnome-session/gsm-fail-whale-dialog.c
---- a/gnome-session/gsm-fail-whale-dialog.c	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-fail-whale-dialog.c	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-fail-whale-dialog.c gnome50-patched/gnome-session/gsm-fail-whale-dialog.c
+--- gnome50/gnome-session/gsm-fail-whale-dialog.c	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-fail-whale-dialog.c	2026-03-19 22:41:00.786926999 +0000
 @@ -0,0 +1,195 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -4394,9 +4394,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-fail-whale-dialog.c work/
 +        return 0;
 +}
 +
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-fail-whale.c work/gnome-session/gsm-fail-whale.c
---- a/gnome-session/gsm-fail-whale.c	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-fail-whale.c	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-fail-whale.c gnome50-patched/gnome-session/gsm-fail-whale.c
+--- gnome50/gnome-session/gsm-fail-whale.c	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-fail-whale.c	2026-03-19 22:41:00.787926999 +0000
 @@ -0,0 +1,66 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + * gsm-fail-whale.c
@@ -4464,9 +4464,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-fail-whale.c work/gnome-s
 +                           (GChildWatchFunc)on_fail_whale_failed,
 +                           NULL);
 +}
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-fail-whale.h work/gnome-session/gsm-fail-whale.h
---- a/gnome-session/gsm-fail-whale.h	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-fail-whale.h	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-fail-whale.h gnome50-patched/gnome-session/gsm-fail-whale.h
+--- gnome50/gnome-session/gsm-fail-whale.h	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-fail-whale.h	2026-03-19 22:41:00.787926999 +0000
 @@ -0,0 +1,34 @@
 +/* gsm-fail-whale.h
 + * Copyright (C) 2012 Red Hat, Inc.
@@ -4502,9 +4502,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-fail-whale.h work/gnome-s
 +
 +#endif /* __GSM_FAIL_WHALE_H__ */
 +
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-icon-names.h work/gnome-session/gsm-icon-names.h
---- a/gnome-session/gsm-icon-names.h	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-icon-names.h	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-icon-names.h gnome50-patched/gnome-session/gsm-icon-names.h
+--- gnome50/gnome-session/gsm-icon-names.h	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-icon-names.h	2026-03-19 22:41:00.788926998 +0000
 @@ -0,0 +1,28 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -4534,9 +4534,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-icon-names.h work/gnome-s
 +#define GSM_ICON_XSMP_DEFAULT        "system-run"
 +
 +#endif /*__GSM_ICON_NAMES_H__ */
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-inhibitor.c work/gnome-session/gsm-inhibitor.c
---- a/gnome-session/gsm-inhibitor.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-inhibitor.c	2026-03-19 12:55:57.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-inhibitor.c gnome50-patched/gnome-session/gsm-inhibitor.c
+--- gnome50/gnome-session/gsm-inhibitor.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-inhibitor.c	2026-03-19 22:41:00.789926998 +0000
 @@ -39,6 +39,7 @@
          char *client_id;
          char *reason;
@@ -4664,9 +4664,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-inhibitor.c work/gnome-se
                                    "cookie", cookie,
                                    NULL);
  
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-inhibitor.h work/gnome-session/gsm-inhibitor.h
---- a/gnome-session/gsm-inhibitor.h	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-inhibitor.h	2026-03-19 12:55:57.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-inhibitor.h gnome50-patched/gnome-session/gsm-inhibitor.h
+--- gnome50/gnome-session/gsm-inhibitor.h	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-inhibitor.h	2026-03-19 22:41:00.789926998 +0000
 @@ -62,6 +62,7 @@
  GType          gsm_inhibitor_get_type             (void) G_GNUC_CONST;
  
@@ -4683,9 +4683,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-inhibitor.h work/gnome-se
  
  G_END_DECLS
  
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-session/gsm-manager.c
---- a/gnome-session/gsm-manager.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-manager.c	2026-03-19 15:22:39.116021904 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-manager.c gnome50-patched/gnome-session/gsm-manager.c
+--- gnome50/gnome-session/gsm-manager.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-manager.c	2026-03-19 22:41:00.792926997 +0000
 @@ -44,65 +44,108 @@
  
  #include <systemd/sd-daemon.h>
@@ -5863,7 +5863,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
          query_end_session_complete (manager);
  
-@@ -733,81 +1308,112 @@
+@@ -733,81 +1308,113 @@
  static void
  do_phase_query_end_session (GsmManager *manager)
  {
@@ -5994,6 +5994,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
 -                gsm_exported_manager_emit_session_over (manager->skeleton);
 +                sd_notify (0, "STOPPING=1");
 +
++                gsm_exported_manager_emit_session_over (priv->skeleton);
                  do_phase_end_session (manager);
                  break;
          case GSM_MANAGER_PHASE_EXIT:
@@ -6003,7 +6004,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  do_phase_exit (manager);
                  break;
          default:
-@@ -821,9 +1427,19 @@
+@@ -821,9 +1428,19 @@
                        GsmApp     *app,
                        gpointer    data)
  {
@@ -6025,7 +6026,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
          return FALSE;
  }
-@@ -831,39 +1447,80 @@
+@@ -831,39 +1448,80 @@
  static void
  debug_app_summary (GsmManager *manager)
  {
@@ -6126,7 +6127,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  }
  
  static gboolean
-@@ -889,23 +1546,109 @@
+@@ -889,23 +1547,109 @@
          return matches;
  }
  
@@ -6241,7 +6242,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          case GSM_MANAGER_PHASE_QUERY_END_SESSION:
                  /* Instead of answering our end session query, the client just exited.
                   * Treat that as an "okay, end the session" answer.
-@@ -913,15 +1656,18 @@
+@@ -913,15 +1657,18 @@
                   * This call implicitly removes any inhibitors for the client, along
                   * with removing the client from the pending query list.
                   */
@@ -6267,7 +6268,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                          /* the client sent its EndSessionResponse and we already
                           * processed it.
                           */
-@@ -934,17 +1680,54 @@
+@@ -934,17 +1681,54 @@
                   * in library code after the callback. Or maybe the application
                   * crashed while handling EndSession. Or it was lazy.
                   */
@@ -6328,7 +6329,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          g_object_unref (client);
  }
  
-@@ -960,13 +1743,17 @@
+@@ -960,13 +1744,17 @@
  {
          const char *name;
  
@@ -6347,7 +6348,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          if (IS_STRING_EMPTY (name)) {
                  return FALSE;
          }
-@@ -992,96 +1779,195 @@
+@@ -992,96 +1780,195 @@
  remove_clients_for_connection (GsmManager *manager,
                                 const char *service_name)
  {
@@ -6568,7 +6569,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          GsmClient *client;
  
          g_debug ("GsmManager: Client added: %s", id);
-@@ -1093,7 +1979,7 @@
+@@ -1093,7 +1980,7 @@
                            G_CALLBACK (on_client_end_session_response),
                            manager);
  
@@ -6577,7 +6578,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          /* FIXME: disconnect signal handler */
  }
  
-@@ -1102,9 +1988,51 @@
+@@ -1102,9 +1989,51 @@
                           const char *id,
                           GsmManager *manager)
  {
@@ -6630,7 +6631,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  }
  
  static void
-@@ -1113,7 +2041,26 @@
+@@ -1113,7 +2042,26 @@
                            const GValue  *value,
                            GParamSpec    *pspec)
  {
@@ -6658,7 +6659,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  }
  
  static void
-@@ -1123,10 +2070,20 @@
+@@ -1123,10 +2071,20 @@
                            GParamSpec *pspec)
  {
          GsmManager *self = GSM_MANAGER (object);
@@ -6680,7 +6681,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  break;
          default:
                  G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-@@ -1134,6 +2091,14 @@
+@@ -1134,6 +2092,14 @@
          }
  }
  
@@ -6695,7 +6696,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  static GObject *
  gsm_manager_constructor (GType                  type,
                           guint                  n_construct_properties,
-@@ -1151,21 +2116,25 @@
+@@ -1151,21 +2117,25 @@
  update_inhibited_actions (GsmManager *manager,
                            GsmInhibitorFlag new_inhibited_actions)
  {
@@ -6727,7 +6728,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  }
  
  static void
-@@ -1173,6 +2142,7 @@
+@@ -1173,6 +2143,7 @@
                            const char *id,
                            GsmManager *manager)
  {
@@ -6735,7 +6736,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          GsmInhibitor *i;
          GsmInhibitorFlag new_inhibited_actions;
  
-@@ -1180,12 +2150,12 @@
+@@ -1180,12 +2151,12 @@
  
          i = GSM_INHIBITOR (gsm_store_lookup (store, id));
  
@@ -6750,7 +6751,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
          update_idle (manager);
  }
-@@ -1207,21 +2177,22 @@
+@@ -1207,21 +2178,22 @@
                              const char *id,
                              GsmManager *manager)
  {
@@ -6776,7 +6777,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  end_session_or_show_shell_dialog (manager);
          }
  }
-@@ -1230,51 +2201,57 @@
+@@ -1230,51 +2202,57 @@
  gsm_manager_dispose (GObject *object)
  {
          GsmManager *manager = GSM_MANAGER (object);
@@ -6858,7 +6859,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
          G_OBJECT_CLASS (gsm_manager_parent_class)->dispose (object);
  }
-@@ -1289,6 +2266,29 @@
+@@ -1289,6 +2267,29 @@
          object_class->constructor = gsm_manager_constructor;
          object_class->dispose = gsm_manager_dispose;
  
@@ -6888,7 +6889,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          g_object_class_install_property (object_class,
                                           PROP_SESSION_NAME,
                                           g_param_spec_string ("session-name",
-@@ -1296,6 +2296,36 @@
+@@ -1296,6 +2297,36 @@
                                                                NULL,
                                                                NULL,
                                                                G_PARAM_READABLE));
@@ -6925,7 +6926,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  }
  
  static void
-@@ -1314,20 +2344,23 @@
+@@ -1314,20 +2345,23 @@
  static void
  on_gsm_system_active_changed (GsmSystem  *system,
                                GParamSpec *pspec,
@@ -6953,7 +6954,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                                         KEY_DISABLE_LOG_OUT);
  }
  
-@@ -1344,16 +2377,60 @@
+@@ -1344,16 +2378,60 @@
                  g_dbus_method_invocation_return_value (invocation, NULL);
  }
  
@@ -7015,7 +7016,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  g_dbus_method_invocation_return_error (invocation,
                                                         GSM_MANAGER_ERROR,
                                                         GSM_MANAGER_ERROR_NOT_IN_RUNNING,
-@@ -1369,18 +2446,12 @@
+@@ -1369,18 +2447,12 @@
                  return TRUE;
          }
  
@@ -7037,7 +7038,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
          return TRUE;
  }
-@@ -1390,11 +2461,12 @@
+@@ -1390,11 +2462,12 @@
                      GDBusMethodInvocation *invocation,
                      GsmManager            *manager)
  {
@@ -7051,7 +7052,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  g_dbus_method_invocation_return_error (invocation,
                                                         GSM_MANAGER_ERROR,
                                                         GSM_MANAGER_ERROR_NOT_IN_RUNNING,
-@@ -1410,18 +2482,12 @@
+@@ -1410,18 +2483,12 @@
                  return TRUE;
          }
  
@@ -7073,7 +7074,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
          return TRUE;
  }
-@@ -1431,8 +2497,10 @@
+@@ -1431,8 +2498,10 @@
                       GDBusMethodInvocation *invocation,
                       GsmManager            *manager)
  {
@@ -7085,7 +7086,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          gsm_exported_manager_complete_suspend (skeleton, invocation);
          return TRUE;
  }
-@@ -1442,12 +2510,13 @@
+@@ -1442,12 +2511,13 @@
                            GDBusMethodInvocation *invocation,
                            GsmManager            *manager)
  {
@@ -7100,7 +7101,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          else
                  availability = GSM_ACTION_UNAVAILABLE;
  
-@@ -1460,12 +2529,13 @@
+@@ -1460,12 +2530,13 @@
                          GDBusMethodInvocation *invocation,
                          GsmManager            *manager)
  {
@@ -7115,7 +7116,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          else
                  availability = GSM_ACTION_UNAVAILABLE;
  
-@@ -1478,27 +2548,28 @@
+@@ -1478,27 +2549,28 @@
                           GDBusMethodInvocation *invocation,
                           GsmManager            *manager)
  {
@@ -7147,7 +7148,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
          gsm_exported_manager_complete_can_reboot_to_firmware_setup (skeleton, invocation, reboot_to_firmware_available);
  
-@@ -1511,9 +2582,11 @@
+@@ -1511,9 +2583,11 @@
                                            gboolean               enable,
                                            GsmManager            *manager)
  {
@@ -7160,7 +7161,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
          gsm_exported_manager_complete_set_reboot_to_firmware_setup (skeleton, invocation);
  
-@@ -1527,11 +2600,13 @@
+@@ -1527,11 +2601,13 @@
                      const char            *value,
                      GsmManager            *manager)
  {
@@ -7176,7 +7177,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          } else {
                  gsm_util_setenv (variable, value);
                  gsm_exported_manager_complete_setenv (skeleton, invocation);
-@@ -1545,23 +2620,32 @@
+@@ -1545,23 +2621,32 @@
                           GDBusMethodInvocation *invocation,
                           GsmManager            *manager)
  {
@@ -7215,7 +7216,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
                  gsm_exported_manager_complete_initialized (skeleton, invocation);
          }
-@@ -1638,7 +2722,9 @@
+@@ -1638,7 +2723,9 @@
                                    gboolean               fatal,
                                    GsmManager            *manager)
  {
@@ -7226,7 +7227,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  g_dbus_method_invocation_return_error (invocation,
                                                         GSM_MANAGER_ERROR,
                                                         GSM_MANAGER_ERROR_NOT_IN_INITIALIZATION,
-@@ -1652,12 +2738,29 @@
+@@ -1652,12 +2739,29 @@
          return TRUE;
  }
  
@@ -7257,7 +7258,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  g_set_error (error,
                               GSM_MANAGER_ERROR,
                               GSM_MANAGER_ERROR_NOT_IN_RUNNING,
-@@ -1675,13 +2778,9 @@
+@@ -1675,13 +2779,9 @@
  
          switch (logout_mode) {
          case GSM_MANAGER_LOGOUT_MODE_NORMAL:
@@ -7272,7 +7273,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  break;
  
          default:
-@@ -1694,21 +2793,6 @@
+@@ -1694,21 +2794,6 @@
                  return FALSE;
          }
  
@@ -7294,7 +7295,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          return TRUE;
  }
  
-@@ -1735,17 +2819,21 @@
+@@ -1735,17 +2820,21 @@
  gsm_manager_register_client (GsmExportedManager    *skeleton,
                               GDBusMethodInvocation *invocation,
                               const char            *app_id,
@@ -7319,7 +7320,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  g_debug ("Unable to register client: shutting down");
  
                  g_dbus_method_invocation_return_error (invocation,
-@@ -1755,8 +2843,39 @@
+@@ -1755,8 +2844,39 @@
                  return TRUE;
          }
  
@@ -7360,7 +7361,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          if (client == NULL) {
                  g_debug ("Unable to create client");
  
-@@ -1767,14 +2886,29 @@
+@@ -1767,14 +2887,29 @@
                  return TRUE;
          }
  
@@ -7392,7 +7393,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          gsm_exported_manager_complete_register_client (skeleton, invocation, gsm_client_peek_id (client));
  
          return TRUE;
-@@ -1786,94 +2920,28 @@
+@@ -1786,94 +2921,28 @@
                                 const char            *client_id,
                                 GsmManager            *manager)
  {
@@ -7503,7 +7504,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          return TRUE;
  }
  
-@@ -1881,41 +2949,62 @@
+@@ -1881,41 +2950,62 @@
  gsm_manager_inhibit (GsmExportedManager    *skeleton,
                       GDBusMethodInvocation *invocation,
                       const char            *app_id,
@@ -7583,7 +7584,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          g_object_unref (inhibitor);
  
          gsm_exported_manager_complete_inhibit (skeleton, invocation, cookie);
-@@ -1929,11 +3018,12 @@
+@@ -1929,11 +3019,12 @@
                         guint                  cookie,
                         GsmManager            *manager)
  {
@@ -7597,7 +7598,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                                                      (GsmStoreFunc)_find_by_cookie,
                                                      &cookie);
          if (inhibitor == NULL) {
-@@ -1947,13 +3037,14 @@
+@@ -1947,13 +3038,14 @@
                  return TRUE;
          }
  
@@ -7614,7 +7615,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
          gsm_exported_manager_complete_uninhibit (skeleton, invocation);
  
-@@ -1966,14 +3057,15 @@
+@@ -1966,14 +3058,15 @@
                            guint                  flags,
                            GsmManager            *manager)
  {
@@ -7633,7 +7634,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                                                               (GsmStoreFunc)inhibitor_has_flag,
                                                               GUINT_TO_POINTER (flags));
                  if (inhibitor == NULL) {
-@@ -1998,14 +3090,36 @@
+@@ -1998,14 +3091,36 @@
  }
  
  static gboolean
@@ -7671,7 +7672,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                             (GsmStoreFunc) listify_store_ids,
                             &inhibitors);
          g_ptr_array_add (inhibitors, NULL);
-@@ -2018,17 +3132,53 @@
+@@ -2018,17 +3133,53 @@
  }
  
  static gboolean
@@ -7731,7 +7732,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          return TRUE;
  }
  
-@@ -2038,15 +3188,21 @@
+@@ -2038,15 +3189,21 @@
                                GError *error,
                                gpointer user_data)
  {
@@ -7755,7 +7756,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          GDBusConnection *connection;
          GsmExportedManager *skeleton;
          GError *error = NULL;
-@@ -2074,12 +3230,16 @@
+@@ -2074,12 +3231,16 @@
  
          g_signal_connect (skeleton, "handle-can-reboot-to-firmware-setup",
                            G_CALLBACK (gsm_manager_can_reboot_to_firmware_setup), manager);
@@ -7774,7 +7775,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          g_signal_connect (skeleton, "handle-get-inhibitors",
                            G_CALLBACK (gsm_manager_get_inhibitors), manager);
          g_signal_connect (skeleton, "handle-get-locale",
-@@ -2088,6 +3248,8 @@
+@@ -2088,6 +3249,8 @@
                            G_CALLBACK (gsm_manager_inhibit), manager);
          g_signal_connect (skeleton, "handle-initialization-error",
                            G_CALLBACK (gsm_manager_initialization_error), manager);
@@ -7783,7 +7784,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          g_signal_connect (skeleton, "handle-is-inhibited",
                            G_CALLBACK (gsm_manager_is_inhibited), manager);
          g_signal_connect (skeleton, "handle-is-session-running",
-@@ -2096,14 +3258,8 @@
+@@ -2096,14 +3259,8 @@
                            G_CALLBACK (gsm_manager_logout_dbus), manager);
          g_signal_connect (skeleton, "handle-reboot",
                            G_CALLBACK (gsm_manager_reboot), manager);
@@ -7798,7 +7799,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          g_signal_connect (skeleton, "handle-set-reboot-to-firmware-setup",
                            G_CALLBACK (gsm_manager_set_reboot_to_firmware_setup), manager);
          g_signal_connect (skeleton, "handle-setenv",
-@@ -2116,21 +3272,19 @@
+@@ -2116,21 +3273,19 @@
                            G_CALLBACK (gsm_manager_uninhibit), manager);
          g_signal_connect (skeleton, "handle-unregister-client",
                            G_CALLBACK (gsm_manager_unregister_client), manager);
@@ -7825,7 +7826,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  
          return TRUE;
  }
-@@ -2151,50 +3305,43 @@
+@@ -2151,50 +3306,43 @@
  static void
  gsm_manager_init (GsmManager *manager)
  {
@@ -7892,7 +7893,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  }
  
  GsmManager *
-@@ -2204,18 +3351,23 @@
+@@ -2204,18 +3352,23 @@
  }
  
  GsmManager *
@@ -7919,7 +7920,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  res = register_manager (manager_object);
                  if (! res) {
                          g_object_unref (manager_object);
-@@ -2229,16 +3381,37 @@
+@@ -2229,16 +3382,37 @@
  static void
  disconnect_shell_dialog_signals (GsmManager *manager)
  {
@@ -7967,7 +7968,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  }
  
  static void
-@@ -2250,29 +3423,27 @@
+@@ -2250,29 +3424,27 @@
  }
  
  static void
@@ -8015,7 +8016,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
          end_phase (manager);
  }
  
-@@ -2280,55 +3451,60 @@
+@@ -2280,55 +3452,60 @@
  on_shell_end_session_dialog_confirmed_logout (GsmShell   *shell,
                                                GsmManager *manager)
  {
@@ -8090,7 +8091,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                                    "end-session-dialog-confirmed-reboot",
                                    G_CALLBACK (on_shell_end_session_dialog_confirmed_reboot),
                                    manager);
-@@ -2338,14 +3514,15 @@
+@@ -2338,14 +3515,15 @@
  show_shell_end_session_dialog (GsmManager                   *manager,
                                 GsmShellEndSessionDialogType  type)
  {
@@ -8111,7 +8112,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  }
  
  /*
-@@ -2359,58 +3536,152 @@
+@@ -2359,58 +3537,152 @@
  gsm_manager_set_phase (GsmManager      *manager,
                         GsmManagerPhase  phase)
  {
@@ -8273,7 +8274,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
  gsm_manager_add_autostart_apps_from_dir (GsmManager *manager,
                                           const char *path)
  {
-@@ -2449,17 +3720,19 @@
+@@ -2449,17 +3721,19 @@
                        gboolean    success,
                        GsmManager *manager)
  {
@@ -8296,7 +8297,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
                  /* back to running phase */
                  cancel_end_session (manager);
          }
-@@ -2468,14 +3741,33 @@
+@@ -2468,14 +3742,33 @@
  static gboolean
  do_query_end_session_exit (GsmManager *manager)
  {
@@ -8339,9 +8340,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.c work/gnome-sess
 -        return FALSE; /* don't leave query end session yet */
 +        return TRUE; /* go to end session phase */
  }
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.h work/gnome-session/gsm-manager.h
---- a/gnome-session/gsm-manager.h	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-manager.h	2026-03-19 12:55:57.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-manager.h gnome50-patched/gnome-session/gsm-manager.h
+--- gnome50/gnome-session/gsm-manager.h	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-manager.h	2026-03-19 22:41:00.793926997 +0000
 @@ -28,25 +28,41 @@
  
  G_BEGIN_DECLS
@@ -8440,9 +8441,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-manager.h work/gnome-sess
  G_END_DECLS
  
  #endif /* __GSM_MANAGER_H */
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-process-helper.c work/gnome-session/gsm-process-helper.c
---- a/gnome-session/gsm-process-helper.c	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-process-helper.c	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-process-helper.c gnome50-patched/gnome-session/gsm-process-helper.c
+--- gnome50/gnome-session/gsm-process-helper.c	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-process-helper.c	2026-03-19 22:41:00.794926997 +0000
 @@ -0,0 +1,113 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -8557,9 +8558,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-process-helper.c work/gno
 +        g_clear_object (&helper.process);
 +        return ret;
 +}
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-process-helper.h work/gnome-session/gsm-process-helper.h
---- a/gnome-session/gsm-process-helper.h	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-process-helper.h	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-process-helper.h gnome50-patched/gnome-session/gsm-process-helper.h
+--- gnome50/gnome-session/gsm-process-helper.h	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-process-helper.h	2026-03-19 22:41:00.794926997 +0000
 @@ -0,0 +1,32 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -8593,10 +8594,10 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-process-helper.h work/gno
 +G_END_DECLS
 +
 +#endif /* __GSM_PROCESS_HELPER_H */
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-session-fill.c work/gnome-session/gsm-session-fill.c
---- a/gnome-session/gsm-session-fill.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-session-fill.c	2026-03-19 12:55:57.000000000 +0000
-@@ -23,33 +23,117 @@
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-session-fill.c gnome50-patched/gnome-session/gsm-session-fill.c
+--- gnome50/gnome-session/gsm-session-fill.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-session-fill.c	2026-03-19 22:45:56.816862728 +0000
+@@ -23,8 +23,94 @@
  
  #include "gsm-system.h"
  #include "gsm-manager.h"
@@ -8691,49 +8692,23 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-session-fill.c work/gnome
  
  static void
  load_standard_apps (GsmManager *manager,
-                     GKeyFile   *keyfile)
- {
--        char *dir;
--        const char * const *system_dirs;
--        int    i;
+@@ -34,6 +120,15 @@
+         const char * const *system_dirs;
+         int    i;
+ 
 +        g_debug ("fill: *** Adding required components");
 +        handle_required_components (keyfile,
 +                                    append_required_components_helper,
 +                                    manager);
 +        g_debug ("fill: *** Done adding required components");
 +
-+        if (!gsm_manager_get_failsafe (manager)) {
-+                char **autostart_dirs;
-+                int    i;
++        if (gsm_manager_get_failsafe (manager))
++                return;
 +
-+                autostart_dirs = gsm_util_get_autostart_dirs ();
-+
-+                for (i = 0; autostart_dirs[i]; i++) {
-+                        gsm_manager_add_autostart_apps_from_dir (manager,
-+                                                                 autostart_dirs[i]);
-+                }
- 
--        dir = g_build_filename (g_get_user_config_dir (), "autostart", NULL);
--        gsm_manager_add_autostart_apps_from_dir (manager, dir);
--        g_free (dir);
--
--        system_dirs = g_get_system_data_dirs ();
--        for (i = 0; system_dirs[i]; i++) {
--                dir = g_build_filename (system_dirs[i], "gnome", "autostart", NULL);
--                gsm_manager_add_autostart_apps_from_dir (manager, dir);
--                g_free (dir);
--        }
--
--        system_dirs = g_get_system_config_dirs ();
--        for (i = 0; system_dirs[i]; i++) {
--                dir = g_build_filename (system_dirs[i], "autostart", NULL);
--                gsm_manager_add_autostart_apps_from_dir (manager, dir);
--                g_free (dir);
-+                g_strfreev (autostart_dirs);
-         }
- }
- 
-@@ -57,6 +141,8 @@
+         dir = g_build_filename (g_get_user_config_dir (), "autostart", NULL);
+         gsm_manager_add_autostart_apps_from_dir (manager, dir);
+         g_free (dir);
+@@ -57,6 +152,8 @@
  get_session_keyfile_if_valid (const char *path)
  {
          GKeyFile  *keyfile;
@@ -8742,7 +8717,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-session-fill.c work/gnome
  
          g_debug ("fill: *** Looking if %s is a valid session file", path);
  
-@@ -72,6 +158,15 @@
+@@ -72,6 +169,15 @@
                  goto error;
          }
  
@@ -8758,7 +8733,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-session-fill.c work/gnome
          return keyfile;
  
  error:
-@@ -128,11 +223,68 @@
+@@ -128,11 +234,68 @@
  }
  
  static GKeyFile *
@@ -8828,7 +8803,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-session-fill.c work/gnome
          return keyfile;
  }
  
-@@ -140,20 +292,22 @@
+@@ -140,20 +303,22 @@
  gsm_session_fill (GsmManager  *manager,
                    const char  *session)
  {
@@ -8859,9 +8834,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-session-fill.c work/gnome
  
          return TRUE;
  }
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-shell-extensions.c work/gnome-session/gsm-shell-extensions.c
---- a/gnome-session/gsm-shell-extensions.c	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-shell-extensions.c	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-shell-extensions.c gnome50-patched/gnome-session/gsm-shell-extensions.c
+--- gnome50/gnome-session/gsm-shell-extensions.c	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-shell-extensions.c	2026-03-19 22:41:00.795926997 +0000
 @@ -0,0 +1,197 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
@@ -9060,9 +9035,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-shell-extensions.c work/g
 +
 +  return self->priv->num_extensions;
 +}
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-shell-extensions.h work/gnome-session/gsm-shell-extensions.h
---- a/gnome-session/gsm-shell-extensions.h	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/gsm-shell-extensions.h	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-shell-extensions.h gnome50-patched/gnome-session/gsm-shell-extensions.h
+--- gnome50/gnome-session/gsm-shell-extensions.h	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-shell-extensions.h	2026-03-19 22:41:00.796926997 +0000
 @@ -0,0 +1,61 @@
 +/* -*- mode: C; c-file-style: "gnu"; indent-tabs-mode: nil; -*- */
 +/*
@@ -9125,9 +9100,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-shell-extensions.h work/g
 +G_END_DECLS
 +
 +#endif /* __GSM_SHELL_EXTENSIONS_H */
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-system.c work/gnome-session/gsm-system.c
---- a/gnome-session/gsm-system.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-system.c	2026-03-19 15:19:20.202633604 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-system.c gnome50-patched/gnome-session/gsm-system.c
+--- gnome50/gnome-session/gsm-system.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-system.c	2026-03-19 22:41:00.797926996 +0000
 @@ -65,6 +65,7 @@
  
  static void do_nothing (void) { }
@@ -9164,9 +9139,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-system.c work/gnome-sessi
  GsmSystem *
  gsm_get_system (void)
  {
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-system.h work/gnome-session/gsm-system.h
---- a/gnome-session/gsm-system.h	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-system.h	2026-03-19 15:18:06.857121691 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-system.h gnome50-patched/gnome-session/gsm-system.h
+--- gnome50/gnome-session/gsm-system.h	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-system.h	2026-03-19 22:41:00.797926996 +0000
 @@ -62,6 +62,8 @@
          void     (* prepare_shutdown) (GsmSystem   *system,
                                         gboolean     restart);
@@ -9187,9 +9162,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-system.h work/gnome-sessi
  void       gsm_system_set_inhibitors   (GsmSystem        *system,
                                          GsmInhibitorFlag  flags);
  
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-systemd.c work/gnome-session/gsm-systemd.c
---- a/gnome-session/gsm-systemd.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-systemd.c	2026-03-19 15:20:19.978050805 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-systemd.c gnome50-patched/gnome-session/gsm-systemd.c
+--- gnome50/gnome-session/gsm-systemd.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-systemd.c	2026-03-19 22:41:00.798926996 +0000
 @@ -818,6 +818,91 @@
          drop_delay_inhibitor (systemd);
  }
@@ -9291,9 +9266,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-systemd.c work/gnome-sess
  }
  
  GsmSystemd *
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-util.c work/gnome-session/gsm-util.c
---- a/gnome-session/gsm-util.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-util.c	2026-03-19 12:55:57.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-util.c gnome50-patched/gnome-session/gsm-util.c
+--- gnome50/gnome-session/gsm-util.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-util.c	2026-03-19 22:45:39.738866436 +0000
 @@ -30,9 +30,6 @@
  #include <glib/gstdio.h>
  #include <gio/gio.h>
@@ -9697,16 +9672,7 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-util.c work/gnome-session
  void
  gsm_util_setenv (const char *variable,
                   const char *value)
-@@ -475,8 +837,6 @@
- const char * const *
- gsm_util_listenv (void)
- {
--        if (child_environment == NULL)
--                child_environment = g_listenv ();
-         return (const char * const *) child_environment;
- 
- }
-@@ -486,64 +846,3 @@
+@@ -486,64 +848,3 @@
  {
          return variable_blacklist;
  }
@@ -9771,9 +9737,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-util.c work/gnome-session
 -
 -        return success;
 -}
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-util.h work/gnome-session/gsm-util.h
---- a/gnome-session/gsm-util.h	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/gsm-util.h	2026-03-19 12:55:57.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/gsm-util.h gnome50-patched/gnome-session/gsm-util.h
+--- gnome50/gnome-session/gsm-util.h	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/gsm-util.h	2026-03-19 22:41:00.799926996 +0000
 @@ -19,20 +19,28 @@
  #define __GSM_UTIL_H__
  
@@ -9823,9 +9789,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/gsm-util.h work/gnome-session
  
  G_END_DECLS
  
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/main.c work/gnome-session/main.c
---- a/gnome-session/main.c	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/main.c	2026-03-19 12:54:23.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/main.c gnome50-patched/gnome-session/main.c
+--- gnome50/gnome-session/main.c	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/main.c	2026-03-19 22:41:00.800926996 +0000
 @@ -0,0 +1,635 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -10462,9 +10428,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/main.c work/gnome-session/mai
 +
 +        return 0;
 +}
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/meson.build work/gnome-session/meson.build
---- a/gnome-session/meson.build	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/meson.build	2026-03-19 12:56:45.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/meson.build gnome50-patched/gnome-session/meson.build
+--- gnome50/gnome-session/meson.build	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/meson.build	2026-03-19 22:41:00.801926996 +0000
 @@ -1,22 +1,21 @@
 -sources = files(
 -  'gsm-util.c',
@@ -10585,9 +10551,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/meson.build work/gnome-sessio
  ]
  
  foreach unit: units
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/org.gnome.SessionManager.App.xml work/gnome-session/org.gnome.SessionManager.App.xml
---- a/gnome-session/org.gnome.SessionManager.App.xml	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/org.gnome.SessionManager.App.xml	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/org.gnome.SessionManager.App.xml gnome50-patched/gnome-session/org.gnome.SessionManager.App.xml
+--- gnome50/gnome-session/org.gnome.SessionManager.App.xml	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/org.gnome.SessionManager.App.xml	2026-03-19 22:41:00.801926996 +0000
 @@ -0,0 +1,46 @@
 +<?xml version="1.0" encoding="UTF-8" ?>
 +<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
@@ -10635,9 +10601,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/org.gnome.SessionManager.App.
 +
 +  </interface>
 +</node>
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/org.gnome.SessionManager.Client.xml work/gnome-session/org.gnome.SessionManager.Client.xml
---- a/gnome-session/org.gnome.SessionManager.Client.xml	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/org.gnome.SessionManager.Client.xml	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/org.gnome.SessionManager.Client.xml gnome50-patched/gnome-session/org.gnome.SessionManager.Client.xml
+--- gnome50/gnome-session/org.gnome.SessionManager.Client.xml	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/org.gnome.SessionManager.Client.xml	2026-03-19 22:41:00.802926995 +0000
 @@ -0,0 +1,77 @@
 +<?xml version="1.0" encoding="UTF-8" ?>
 +<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
@@ -10716,9 +10682,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/org.gnome.SessionManager.Clie
 +    <method name="Stop"/>
 +  </interface>
 +</node>
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/org.gnome.SessionManager.Inhibitor.xml work/gnome-session/org.gnome.SessionManager.Inhibitor.xml
---- a/gnome-session/org.gnome.SessionManager.Inhibitor.xml	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/org.gnome.SessionManager.Inhibitor.xml	2026-03-19 12:55:57.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/org.gnome.SessionManager.Inhibitor.xml gnome50-patched/gnome-session/org.gnome.SessionManager.Inhibitor.xml
+--- gnome50/gnome-session/org.gnome.SessionManager.Inhibitor.xml	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/org.gnome.SessionManager.Inhibitor.xml	2026-03-19 22:41:00.802926995 +0000
 @@ -56,5 +56,16 @@
        <arg type="u" name="flags" direction="out"/>
      </method>
@@ -10736,9 +10702,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/org.gnome.SessionManager.Inhi
 +
    </interface>
  </node>
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/org.gnome.SessionManager.xml work/gnome-session/org.gnome.SessionManager.xml
---- a/gnome-session/org.gnome.SessionManager.xml	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/org.gnome.SessionManager.xml	2026-03-19 15:27:09.859911463 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/org.gnome.SessionManager.xml gnome50-patched/gnome-session/org.gnome.SessionManager.xml
+--- gnome50/gnome-session/org.gnome.SessionManager.xml	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/org.gnome.SessionManager.xml	2026-03-19 22:41:00.803926995 +0000
 @@ -277,6 +277,30 @@
      </method>
  
@@ -10770,9 +10736,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/org.gnome.SessionManager.xml 
        Shutdown:
  
        Request a shutdown dialog.
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/service-main.c work/gnome-session/service-main.c
---- a/gnome-session/service-main.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/service-main.c	1970-01-01 00:00:00.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/service-main.c gnome50-patched/gnome-session/service-main.c
+--- gnome50/gnome-session/service-main.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/service-main.c	1970-01-01 00:00:00.000000000 +0000
 @@ -1,187 +0,0 @@
 -/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 - *
@@ -10961,9 +10927,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/service-main.c work/gnome-ses
 -        g_bus_unown_name (name_owner_id);
 -        return 0;
 -}
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/test-client-dbus.c work/gnome-session/test-client-dbus.c
---- a/gnome-session/test-client-dbus.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/gnome-session/test-client-dbus.c	2026-03-19 12:55:58.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/test-client-dbus.c gnome50-patched/gnome-session/test-client-dbus.c
+--- gnome50/gnome-session/test-client-dbus.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/gnome-session/test-client-dbus.c	2026-03-19 22:41:00.804926995 +0000
 @@ -143,16 +143,22 @@
  {
          GError     *error;
@@ -10988,9 +10954,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/test-client-dbus.c work/gnome
                                                        G_DBUS_CALL_FLAGS_NONE,
                                                        -1, NULL, &error);
  
-diff -ruN 50/gnome-session-50.0.orig/gnome-session/test-process-helper.c work/gnome-session/test-process-helper.c
---- a/gnome-session/test-process-helper.c	1970-01-01 00:00:00.000000000 +0000
-+++ b/gnome-session/test-process-helper.c	2026-03-19 12:53:47.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/gnome-session/test-process-helper.c gnome50-patched/gnome-session/test-process-helper.c
+--- gnome50/gnome-session/test-process-helper.c	1970-01-01 00:00:00.000000000 +0000
++++ gnome50-patched/gnome-session/test-process-helper.c	2026-03-19 22:41:00.805926995 +0000
 @@ -0,0 +1,56 @@
 +/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
 + *
@@ -11048,9 +11014,9 @@ diff -ruN 50/gnome-session-50.0.orig/gnome-session/test-process-helper.c work/gn
 +
 +        return 0;
 +}
-diff -ruN 50/gnome-session-50.0.orig/meson.build work/meson.build
---- a/meson.build	2026-03-19 12:52:17.000000000 +0000
-+++ b/meson.build	2026-03-19 13:19:40.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/meson.build gnome50-patched/meson.build
+--- gnome50/meson.build	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/meson.build	2026-03-19 22:41:00.805926995 +0000
 @@ -76,14 +76,16 @@
  
  add_project_arguments(common_flags + compiler_flags, language: 'c')
@@ -11069,9 +11035,9 @@ diff -ruN 50/gnome-session-50.0.orig/meson.build work/meson.build
  ]
  
  libsystemd_dep = dependency('libsystemd', version: '>= 209', required: true)
-diff -ruN 50/gnome-session-50.0.orig/po/POTFILES.in work/po/POTFILES.in
---- a/po/POTFILES.in	2026-03-19 12:52:17.000000000 +0000
-+++ b/po/POTFILES.in	2026-03-19 12:57:11.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/po/POTFILES.in gnome50-patched/po/POTFILES.in
+--- gnome50/po/POTFILES.in	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/po/POTFILES.in	2026-03-19 22:41:00.806926995 +0000
 @@ -1,12 +1,13 @@
  # List of source files containing translatable strings.
  # Please keep this file sorted alphabetically.
@@ -11089,9 +11055,9 @@ diff -ruN 50/gnome-session-50.0.orig/po/POTFILES.in work/po/POTFILES.in
  tools/gnome-session-ctl.c
  tools/gnome-session-inhibit.c
  tools/gnome-session-quit.c
-diff -ruN 50/gnome-session-50.0.orig/tools/gnome-session-ctl.c work/tools/gnome-session-ctl.c
---- a/tools/gnome-session-ctl.c	2026-03-19 12:52:17.000000000 +0000
-+++ b/tools/gnome-session-ctl.c	2026-03-19 12:55:58.000000000 +0000
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' gnome50/tools/gnome-session-ctl.c gnome50-patched/tools/gnome-session-ctl.c
+--- gnome50/tools/gnome-session-ctl.c	2026-03-13 22:03:51.000000000 +0000
++++ gnome50-patched/tools/gnome-session-ctl.c	2026-03-19 22:41:00.807926994 +0000
 @@ -248,7 +248,7 @@
                  { "monitor", '\0', 0, G_OPTION_ARG_NONE, &opt_monitor, N_("Start gnome-session-shutdown.target when receiving EOF or a single byte on stdin"), NULL },
                  { "signal-init", '\0', 0, G_OPTION_ARG_NONE, &opt_signal_init, N_("Signal initialization done to gnome-session"), NULL },
