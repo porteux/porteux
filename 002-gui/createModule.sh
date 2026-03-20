@@ -274,6 +274,7 @@ rm usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf
 rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
+rm usr/share/xsessions/xwmconfig.desktop
 
 rm -fr etc/gnupg
 rm -fr etc/pam.d
