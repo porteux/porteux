@@ -21,10 +21,8 @@ tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 for i in $CWD/*.patch; do
-	patch -p0 < $i
+	patch -p1 < $i
 done
-
-patch -p1 < $CWD/307.patch1
 
 sed -i "s|subdir('docs')|#subdir('docs')|g" meson.build
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
@@ -42,7 +40,6 @@ meson setup \
 	-Ddbus-sys="/usr/share/dbus-1/system.d" \
 	-Ddefault-pam-config=none \
 	-Dpam-mod-dir="/lib${SYSTEMBITS}/security" \
-	-Dgdm-xsession=true \
 	-Drun-dir=/run/gdm \
 	-Dlogind-provider=elogind \
 	-Dsystemd-journal=false \
@@ -54,17 +51,12 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 mkdir -p $PKG/etc/pam.d
-cat $CWD/gdm-autologin.pam > $PKG/etc/pam.d/gdm-autologin
-cat $CWD/gdm-password.pam > $PKG/etc/pam.d/gdm-password
-cat $CWD/gdm-launch-environment.pam > $PKG/etc/pam.d/gdm-launch-environment
-cat $CWD/wayland-session > $PKG/etc/gdm/wayland-session
-chmod 755 $PKG/etc/gdm/wayland-session
-
-# Handle /etc/gdm/custom.conf a little nicer:
-mv $PKG/etc/gdm/{custom.conf,custom.conf.new}
+install -Dm644 $CWD/*.pam $PKG/etc/pam.d/
+install -Dm644 $CWD/custom.conf $PKG/etc/gdm/
+install -Dm755 $CWD/wayland-session $PKG/etc/gdm/
 
 mkdir -p $PKG/install
-cat $CWD/slack-desc > $PKG/install/slack-desc
+cp $CWD/slack-desc $PKG/install/
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz
