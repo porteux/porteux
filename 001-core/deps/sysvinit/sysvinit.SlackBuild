@@ -12,8 +12,9 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="3.15"
-wget https://github.com/slicer69/${PRGNAM}/archive/refs/tags/${VERSION}.tar.gz -O ${PRGNAM}-${VERSION}.tar.gz
+# this has to be hardcoded as we need to match 'init' which is statically built using buildroot
+VERSION="3.16"
+wget https://codeberg.org/thejessesmith/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
@@ -35,22 +36,11 @@ CFLAGS="$GCCFLAGS" make -j${NUMBERTHREADS}
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-mkdir -p $PKG/etc/inittab.d
 mkdir -p $PKG/sbin
 for program in halt init killall5 shutdown runlevel ; do
-	strip --strip-unneeded $program
-	cat $program > $PKG/sbin/$program
-	chmod 755 $PKG/sbin/$program
-	chown root:root $PKG/sbin/$program
+	install -Dm755 $program $PKG/sbin/
 done
-mkdir -p $PKG/usr/bin
-for program in last ; do
-	strip --strip-unneeded $program
-	cat $program > $PKG/usr/bin/$program
-	chmod 755 $PKG/usr/bin/$program
-	chown root:root $PKG/usr/bin/$program
-done
-( cd $PKG/usr/bin ; ln -sf last lastb )
+
 ( cd $PKG/sbin ; rm -rf telinit )
 ( cd $PKG/sbin ; ln -sf init telinit )
 ( cd $PKG/sbin ; rm -rf reboot )
@@ -58,10 +48,7 @@ done
 ( cd $PKG/sbin ; rm -rf poweroff )
 ( cd $PKG/sbin ; ln -sf halt poweroff )
 
-install -Dm755 "$CWD/init" "$PKG/sbin/init"
-
-# already included in util-linux
-rm $PKG/usr/bin/last
+install -Dm755 "$CWD/init" "$PKG/sbin/"
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
