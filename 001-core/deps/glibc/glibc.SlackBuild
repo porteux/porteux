@@ -29,7 +29,7 @@ cd build-glibc-$VERSION
 LDFLAGS="${LDFLAGS/-Wl,--gc-sections/}"
 
 CFLAGS="${GCCFLAGS/-flto=auto/} -fPIC" \
-CXXFLAGS="${GCCFLAGS} -fvisibility-inlines-hidden" \
+CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
 ../configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
