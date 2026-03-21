@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-CFLAGS="$GCCFLAGS -fcommon -std=c99 -Wno-implicit-function-declaration" \
+CFLAGS="$GCC_CFLAGS -fcommon -std=c99 -Wno-implicit-function-declaration" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

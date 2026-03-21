@@ -22,7 +22,7 @@ done
 
 ./autogen.sh
 
-CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
+CFLAGS="$GCC_CFLAGS -Wno-error=incompatible-pointer-types" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \

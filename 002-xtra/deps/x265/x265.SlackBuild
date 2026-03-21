@@ -17,7 +17,7 @@ tar xf HEAD.tar.gz && rm HEAD.tar.gz
 cd multicoreware-${PRGNAM}*
 VERSION=$(date -r . +%Y%m%d)
 
-BUILDPARAMS="${CLANGFLAGS} -ffat-lto-objects -fvisibility-inlines-hidden"
+BUILDPARAMS="${CLANG_CXXFLAGS} -ffat-lto-objects"
 
 patch -p0 < $CWD/build-fix.patch
 

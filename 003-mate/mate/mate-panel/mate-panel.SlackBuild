@@ -25,7 +25,7 @@ sed -i 's|yelp-build|ls|g' autogen.sh
 sed -i 's|doc\t.*|\\|g' Makefile.am
 sed -i 's|help\t.*|\\|g' Makefile.am
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

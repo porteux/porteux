@@ -22,7 +22,7 @@ cd $PRGNAM-$VERSION
 sed -i "s|subdir('test')|#subdir('test')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--datadir=/usr/share \

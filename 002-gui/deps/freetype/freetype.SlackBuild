@@ -25,7 +25,7 @@ done
 
 mkdir build && cd build
 CC=clang \
-CFLAGS="$CLANGFLAGS" \
+CFLAGS="$CLANG_CFLAGS" \
 LDFLAGS="$LLDFLAGS" \
 meson setup \
 	--buildtype=release \

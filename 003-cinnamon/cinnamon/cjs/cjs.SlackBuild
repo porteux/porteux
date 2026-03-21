@@ -27,8 +27,8 @@ patch -p1 < $CWD/mozjs140-support.patch
 
 [ ! -e build ] && mkdir build
 cd build
-CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CFLAGS="$GCC_CFLAGS" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \

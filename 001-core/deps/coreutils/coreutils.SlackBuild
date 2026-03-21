@@ -25,7 +25,7 @@ patch -p1 < $CWD/fix-cpu-info.patch
 patch -p1 < $CWD/no-ls-quoting.patch
 
 FORCE_UNSAFE_CONFIGURE=1 \
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--bindir=/bin \

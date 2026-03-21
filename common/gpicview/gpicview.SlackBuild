@@ -22,7 +22,7 @@ done
 
 ./autogen.sh 
 
-CFLAGS="$GCCFLAGS -ffast-math" \
+CFLAGS="$GCC_CFLAGS -ffast-math" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

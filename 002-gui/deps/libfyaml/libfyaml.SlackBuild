@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xf *.tar.?z
 cd ${PRGNAM}-${VERSION}
 
-CFLAGS="${GCCFLAGS} -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

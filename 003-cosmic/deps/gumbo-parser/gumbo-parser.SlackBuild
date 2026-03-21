@@ -19,7 +19,7 @@ tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \

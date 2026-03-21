@@ -22,7 +22,7 @@ cd $PRGNAM-$VERSION
 sed -i 's|gitlab.gnome.org|github.com|g' subprojects/libgxdp.wrap
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \

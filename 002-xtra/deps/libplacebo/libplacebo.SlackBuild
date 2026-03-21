@@ -19,8 +19,8 @@ tar xf ${PRGNAM}-${VERSION}.tar.?z
 cd ${PRGNAM}-${VERSION}
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CFLAGS="$GCC_CFLAGS" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

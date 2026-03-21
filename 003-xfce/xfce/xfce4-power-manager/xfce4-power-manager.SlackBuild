@@ -32,7 +32,7 @@ tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
 if [ -f autogen.sh ]; then
-	CFLAGS="$GCCFLAGS -ffat-lto-objects -fPIC" \
+	CFLAGS="$GCC_CFLAGS -ffat-lto-objects -fPIC" \
 	./autogen.sh \
 		--prefix=/usr \
 		--libdir=/usr/lib${SYSTEMBITS} \
@@ -48,7 +48,7 @@ if [ -f autogen.sh ]; then
 	make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 else
 	mkdir build && cd build
-	CFLAGS="$GCCFLAGS -ffat-lto-objects -fPIC" \
+	CFLAGS="$GCC_CFLAGS -ffat-lto-objects -fPIC" \
 	meson setup \
 		--prefix=/usr \
 		--buildtype=release \
