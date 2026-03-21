@@ -37,7 +37,7 @@ echo $VERSION > .tarball-version
 
 ./autogen.sh
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/ \
 	--bindir=/bin \
@@ -107,7 +107,7 @@ cd ../psmisc-$PSMISCVER
 
 ./autogen.sh
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -124,7 +124,7 @@ mv $PKG/usr/bin/killall $PKG/bin
 ln -s /bin/killall $PKG/usr/bin/killall
 
 cd ../procinfo-ng-$PROCINFONGVER
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

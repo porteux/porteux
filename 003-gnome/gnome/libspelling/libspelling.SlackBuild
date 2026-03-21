@@ -23,7 +23,7 @@ sed -i "s|subdir('test')|#subdir('test')|g" meson.build
 sed -i "s|subdir('testsuite')|#subdir('testsuite')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

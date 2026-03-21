@@ -27,7 +27,7 @@ done
 sed -i "s| docs help||g" Makefile.am
 sed -i "s| docs help||g" Makefile.in
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

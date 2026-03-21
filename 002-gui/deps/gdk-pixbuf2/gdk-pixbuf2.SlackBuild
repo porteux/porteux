@@ -27,7 +27,7 @@ tar xf $PRGNAM-$VERSION.tar.?z*
 cd gdk-pixbuf-$VERSION*
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

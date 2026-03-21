@@ -18,7 +18,7 @@ VERSION=`git describe | cut -d- -f1`
 
 ./autogen.sh
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \

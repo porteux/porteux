@@ -23,7 +23,7 @@ cd $PRGNAM-$VERSION
 sed -i 's|docs \\|\\|g' Makefile.am
 sed -i 's|test \\|\\|g' Makefile.am
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

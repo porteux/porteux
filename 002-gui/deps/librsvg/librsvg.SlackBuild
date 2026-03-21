@@ -28,7 +28,7 @@ cd $PRGNAM-$VERSION
 
 mkdir build && cd build
 CC=clang \
-CFLAGS="$CLANGFLAGS" \
+CFLAGS="$CLANG_CFLAGS" \
 RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}" \
 LDFLAGS="$LLDFLAGS" \
 meson setup \

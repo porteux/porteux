@@ -28,7 +28,7 @@ if [ ! -f subprojects/gvc/meson.build ]; then
 fi
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

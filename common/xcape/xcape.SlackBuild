@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xf ${PRGNAM}-${VERSION}.tar.?z
 cd ${PRGNAM}-${VERSION}
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 make -j${NUMBERTHREADS}
 make install -j${NUMBERTHREADS} MANDIR=/man DESTDIR=$PKG
 

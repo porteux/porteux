@@ -22,8 +22,8 @@ cd $PRGNAM-$VERSION
 
 ./autogen.sh
 
-CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CFLAGS="$GCC_CFLAGS" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

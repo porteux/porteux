@@ -22,8 +22,8 @@ cd $PRGNAM-$VERSION
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CFLAGS="$GCC_CFLAGS" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

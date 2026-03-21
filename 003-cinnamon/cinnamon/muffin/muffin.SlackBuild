@@ -23,7 +23,7 @@ cd $PRGNAM-$VERSION
 sed -i "s|subdir('doc/man')|#subdir('doc/man')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -Wno-incompatible-pointer-types" \
+CFLAGS="$GCC_CFLAGS -Wno-incompatible-pointer-types" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \

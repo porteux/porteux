@@ -25,7 +25,7 @@ sed -i \
 	-e 's/#CRYPTO=GNUTLS/CRYPTO=GNUTLS/' \
 	Makefile librtmp/Makefile
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 make -j${NUMBERTHREADS} \
 	prefix=/usr \
 	libdir=/usr/lib${SYSTEMBITS} \

@@ -18,7 +18,7 @@ wget https://sourceforge.net/projects/enlightenment/files/${PRGNAM}-src/${VERSIO
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

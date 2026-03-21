@@ -27,8 +27,8 @@ for i in $CWD/*.patch; do
 done
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CFLAGS="$GCC_CFLAGS" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
