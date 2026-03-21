@@ -36,7 +36,7 @@ To run Windows applications inside PorteuX, you can find both Wine and Multilib 
 
 To install new applications that are not in the App Store or in the Slackware repository, AppImage format is recommended. If an application is not available in AppImage, Flatpak is available by default and can be used to download and install any software available in Flatpak repositories.
 
-To download a Slackware package that is not present in PorteuX and convert it to a XZM module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). After the XZM module is created, double-click or call `activate [moduleName]` to activate it. It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
+To download a Slackware package that is not present in PorteuX and convert it to a XZM module, run the command `getpkg -m [packageName]` (e.g. `getpkg -m gimp`). After the XZM module is created, double-click or call `activate [moduleName]` to activate it. It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
 
 To build anything inside PorteuX, it's recommended to download and activate the `05-devel` XZM module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate the `06-crippled-sources` XZM module.
 
@@ -50,9 +50,9 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines (as long as they support SSE4.2), it is on high-end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small, and memory RAM consumption is highly optimized.
+PorteuX is lightweight and snappy. Although it can run on old machines (as long as they support SSE4.2), it is on high-end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small, and RAM consumption is highly optimized.
 
-For better performance, it's recommended to have PorteuX installed on a SSD/NVMe storage unit instead of a USB flash drive, or to select the 'Copy To RAM' option in the boot menu. The latter will result in a slower boot time, but after booting the system will run 100% in RAM, which is the fastest way possible.
+For better performance, it's recommended to have PorteuX installed on an SSD/NVMe storage unit instead of a USB flash drive, or to select the 'Copy To RAM' option in the boot menu. The latter will result in a slower boot time, but after booting the system will run 100% in RAM, which is the fastest way possible.
 
 Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
