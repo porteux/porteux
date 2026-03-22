@@ -224,6 +224,11 @@ sed -i "s|dhcp=dhclient|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager
 sed -i "s|^dhcp=|#dhcp=|g" $MODULEPATH/packages/etc/NetworkManager/conf.d/00-dhcp-client.conf || exit 1
 sed -i "s|#dhcp=internal|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManager/conf.d/00-dhcp-client.conf || exit 1
 
+### fix udev rules
+
+sed -i "s|^KERNEL==\"kvm\"|KERNEL==\"kvm\", GROUP=\"kvm\", MODE=\"0666\", OPTIONS+=\"static_node=kvm\"|g" $MODULEPATH/packages/lib/udev/rules.d/50-udev-default.rules || exit 1
+sed -i "s|^KERNEL==\"vhost-net\"|KERNEL==\"vhost-net\", GROUP=\"kvm\", MODE=\"0666\", OPTIONS+=\"static_node=vhost-net\"|g" $MODULEPATH/packages/lib/udev/rules.d/50-udev-default.rules || exit 1
+
 ### fix timeconfig missing folder
 
 sed -i '/^TMP=\/var\/log\/setup\/tmp$/a [ ! -d \$TMP ] && mkdir -p \$TMP' $MODULEPATH/packages/usr/sbin/timeconfig
