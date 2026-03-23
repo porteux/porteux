@@ -23,6 +23,8 @@ for i in $CWD/*.patch; do
 	patch -p1 < $i
 done
 
+git clone https://github.com/fulalas/gnome-session-sysvinit .
+
 mkdir build && cd build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
@@ -37,8 +39,6 @@ meson setup \
 	-Dman=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
-
-chmod 755 $PKG/usr/bin/gnome-session
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
