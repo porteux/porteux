@@ -1,14 +1,14 @@
 --- a/data/meson.build	2025-08-17 02:32:41.166485749 +0200
 +++ b/data/meson.build.patched	2025-08-17 02:33:10.408489330 +0200
-@@ -108,6 +108,7 @@
-   install_dir: join_paths(session_pkgdatadir, 'sessions')
+@@ -15,6 +15,7 @@
+   install_dir: session_datadir / 'wayland-sessions',
  )
  
 +if use_systemd
- # Generate the systemd session configuration. In this mode, gnome-session lets
- # systemd start and manage the necessary session components. These are defined
- # via systemd unit files. The list of required components to start comes via a
-@@ -194,6 +195,7 @@
+ # Next, let's install the necessary systemd scaffolding
+ 
+ install_data(
+@@ -73,6 +74,7 @@
    rename: 'override.conf',
    install_dir : join_paths(systemd_userunitdir, 'app-flatpak-.scope.d')
  )

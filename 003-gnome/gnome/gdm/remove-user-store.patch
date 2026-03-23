@@ -1,0 +1,561 @@
+diff -ru a/daemon/gdm-display.c b/daemon/gdm-display.c
+--- a/daemon/gdm-display.c	2026-03-23 21:05:37.256201059 +0100
++++ b/daemon/gdm-display.c	2026-03-23 21:05:37.257201059 +0100
+@@ -1205,32 +1205,6 @@
+         return enabled;
+ }
+ 
+-gboolean
+-gdm_display_prepare_greeter_session (GdmDisplay          *self,
+-                                     GdmDynamicUserStore *dyn_user_store,
+-                                     uid_t               *ret_uid)
+-{
+-        g_autoptr (GError) error = NULL;
+-        GdmDisplayPrivate *priv;
+-        uid_t uid;
+-
+-        g_return_val_if_fail (GDM_IS_DISPLAY (self), FALSE);
+-        priv = gdm_display_get_instance_private (self);
+-        g_return_val_if_fail (g_strcmp0 (priv->session_class, "greeter") == 0, FALSE);
+-
+-        if (!gdm_launch_environment_ensure_uid (priv->launch_environment,
+-                                                dyn_user_store, &uid, &error)) {
+-                g_warning ("GdmDisplay: Failed to allocate UID for greeter: %s",
+-                           error->message);
+-                return FALSE;
+-        }
+-
+-        if (ret_uid != NULL)
+-                *ret_uid = uid;
+-
+-        return TRUE;
+-}
+-
+ void
+ gdm_display_start_greeter_session (GdmDisplay *self)
+ {
+diff -ru a/daemon/gdm-display.h b/daemon/gdm-display.h
+--- a/daemon/gdm-display.h	2026-03-23 21:05:37.258201059 +0100
++++ b/daemon/gdm-display.h	2026-03-23 21:05:37.259201059 +0100
+@@ -25,8 +25,6 @@
+ #include <glib-object.h>
+ #include <gio/gio.h>
+ 
+-#include "gdm-dynamic-user-store.h"
+-
+ G_BEGIN_DECLS
+ 
+ #define GDM_TYPE_DISPLAY (gdm_display_get_type ())
+@@ -86,9 +84,6 @@
+                                                                 gboolean    *initial,
+                                                                 GError     **error);
+ 
+-gboolean            gdm_display_prepare_greeter_session        (GdmDisplay          *display,
+-                                                                GdmDynamicUserStore *dyn_user_store,
+-                                                                uid_t               *ret_uid);
+ void                gdm_display_start_greeter_session          (GdmDisplay  *display);
+ void                gdm_display_stop_greeter_session           (GdmDisplay  *display);
+ 
+diff -ru a/daemon/gdm-launch-environment.c b/daemon/gdm-launch-environment.c
+--- a/daemon/gdm-launch-environment.c	2026-03-23 21:05:37.260201059 +0100
++++ b/daemon/gdm-launch-environment.c	2026-03-23 21:05:37.261201059 +0100
+@@ -27,6 +27,8 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <string.h>
++#include <pwd.h>
++#include <grp.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #include <errno.h>
+@@ -51,14 +53,9 @@
+ #include "gdm-settings-keys.h"
+ 
+ #define GDM_GREETER_SESSION "gnome-greeter"
+-#define GDM_GREETER_USERNAME "gdm-greeter"
+-#define GDM_GREETER_DISP_NAME "GDM Greeter"
+ 
+ #define INITIAL_SETUP_SESSION "gnome-initial-setup"
+ #define INITIAL_SETUP_USERNAME "gnome-initial-setup"
+-#define INITIAL_SETUP_DISP_NAME "GNOME Initial Setup"
+-#define INITIAL_SETUP_GROUPNAME "gnome-initial-setup"
+-#define INITIAL_SETUP_DCONF_PROFILE "gnome-initial-setup"
+ 
+ extern char **environ;
+ 
+@@ -69,15 +66,8 @@
+         char           *session_name;
+         GPid            pid;
+ 
+-        GdmDynamicUserStore *dyn_user_store;
+-        char                *preferred_user_name;
+-        char                *user_disp_name;
+-        char                *user_member_of;
+-        char                *dyn_user_name;
+-        uid_t                dyn_uid;
+-        char                *dyn_user_home;
++        char           *user_name;
+ 
+-        char           *dconf_profile;
+         char           *session_id;
+         char           *display_seat_id;
+         char           *display_hostname;
+@@ -89,10 +79,7 @@
+         PROP_DISPLAY_SEAT_ID,
+         PROP_DISPLAY_HOSTNAME,
+         PROP_DISPLAY_IS_LOCAL,
+-        PROP_PREFERRED_USER_NAME,
+-        PROP_USER_DISP_NAME,
+-        PROP_USER_MEMBER_OF,
+-        PROP_DCONF_PROFILE,
++        PROP_USER_NAME,
+         PROP_SESSION_NAME,
+ };
+ 
+@@ -297,10 +284,10 @@
+                                      g_strdup (g_getenv (optional_environment[i])));
+         }
+ 
+-        if (launch_environment->dconf_profile != NULL) {
+-                g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup (launch_environment->dconf_profile));
++        if (launch_environment->user_name != NULL) {
++                g_hash_table_insert (hash, g_strdup ("DCONF_PROFILE"), g_strdup (launch_environment->user_name));
+ 
+-                is_initial_setup = strcmp (launch_environment->dconf_profile, INITIAL_SETUP_DCONF_PROFILE) == 0;
++                is_initial_setup = g_strcmp0 (launch_environment->session_name, INITIAL_SETUP_SESSION) == 0;
+ 
+                 if (!is_initial_setup) {
+ 			/* gvfs is needed for fetching remote avatars in the initial setup. Disable it otherwise. */
+@@ -314,16 +301,28 @@
+         if (debug)
+                 g_hash_table_insert (hash, g_strdup ("GNOME_SESSION_DEBUG"), g_strdup ("1"));
+ 
+-        g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (launch_environment->dyn_user_name));
+-        g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (launch_environment->dyn_user_name));
+-        g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (launch_environment->dyn_user_name));
++        g_hash_table_insert (hash, g_strdup ("LOGNAME"), g_strdup (launch_environment->user_name));
++        g_hash_table_insert (hash, g_strdup ("USER"), g_strdup (launch_environment->user_name));
++        g_hash_table_insert (hash, g_strdup ("USERNAME"), g_strdup (launch_environment->user_name));
+ 
+         g_hash_table_insert (hash, g_strdup ("GDM_VERSION"), g_strdup (VERSION));
+         g_hash_table_remove (hash, "MAIL");
+ 
+-        g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup (launch_environment->dyn_user_home));
+-        g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup (launch_environment->dyn_user_home));
+-        g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup (NOLOGIN_PATH));
++        {
++                struct passwd *pw;
++                g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup ("/"));
++                g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup ("/"));
++                g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup ("/bin/sh"));
++                gdm_get_pwent_for_name (launch_environment->user_name, &pw);
++                if (pw != NULL) {
++                        if (pw->pw_dir != NULL && pw->pw_dir[0] != '\0') {
++                                g_hash_table_insert (hash, g_strdup ("HOME"), g_strdup (pw->pw_dir));
++                                g_hash_table_insert (hash, g_strdup ("PWD"), g_strdup (pw->pw_dir));
++                        }
++                        if (pw->pw_shell != NULL && pw->pw_shell[0] != '\0')
++                                g_hash_table_insert (hash, g_strdup ("SHELL"), g_strdup (pw->pw_shell));
++                }
++        }
+ 
+         if (start_session && launch_environment->display_seat_id != NULL) {
+                 char *seat_id;
+@@ -334,10 +333,17 @@
+ 
+                 g_hash_table_insert (hash, g_strdup ("GDM_SEAT_ID"), g_strdup (seat_id));
+ 
+-                if (!is_initial_setup &&
+-                    setup_seat_persist_dirs(seat_id, launch_environment->dyn_uid, &config_dir, &state_dir)) {
+-                        g_hash_table_insert (hash, g_strdup ("XDG_CONFIG_HOME"), config_dir);
+-                        g_hash_table_insert (hash, g_strdup ("XDG_STATE_HOME"), state_dir);
++                {
++                        struct passwd *pw_seat;
++                        uid_t seat_uid = 0;
++                        gdm_get_pwent_for_name (launch_environment->user_name, &pw_seat);
++                        if (pw_seat != NULL)
++                                seat_uid = pw_seat->pw_uid;
++                        if (!is_initial_setup &&
++                            setup_seat_persist_dirs(seat_id, seat_uid, &config_dir, &state_dir)) {
++                                g_hash_table_insert (hash, g_strdup ("XDG_CONFIG_HOME"), config_dir);
++                                g_hash_table_insert (hash, g_strdup ("XDG_STATE_HOME"), state_dir);
++                        }
+                 }
+         }
+ 
+@@ -381,10 +387,15 @@
+         g_autofree char *environment_conf = NULL;
+         g_autoptr(GFile) file = NULL;
+         g_autoptr(GFileOutputStream) file_stream = NULL;
+-        uid_t uid = launch_environment->dyn_uid;
++        struct passwd *pwent;
++        uid_t uid;
+         gid_t gid = GID_NOBODY;
+ 
+-        config_dir = g_build_filename (launch_environment->dyn_user_home, ".config", NULL);
++        if (!gdm_get_pwent_for_name (launch_environment->user_name, &pwent) || pwent == NULL)
++                return NULL;
++        uid = pwent->pw_uid;
++
++        config_dir = g_build_filename (pwent->pw_dir, ".config", NULL);
+         if (!gdm_ensure_dir (config_dir, uid, gid, 0700, FALSE, error))
+                 return NULL;
+ 
+@@ -507,7 +518,7 @@
+ 
+         gdm_session_setup_for_program (launch_environment->session,
+                                        "gdm-launch-environment",
+-                                       launch_environment->dyn_user_name,
++                                       launch_environment->user_name,
+                                        log_path);
+ }
+ 
+@@ -532,34 +543,6 @@
+         }
+ }
+ 
+-gboolean
+-gdm_launch_environment_ensure_uid (GdmLaunchEnvironment  *launch_environment,
+-                                   GdmDynamicUserStore   *dyn_user_store,
+-                                   uid_t                 *uid,
+-                                   GError               **error)
+-{
+-        if (launch_environment->dyn_uid != 0) {
+-                *uid = launch_environment->dyn_uid;
+-                return TRUE;
+-        }
+-
+-        if (!gdm_dynamic_user_store_create (dyn_user_store,
+-                                            launch_environment->preferred_user_name,
+-                                            launch_environment->user_disp_name,
+-                                            launch_environment->user_member_of,
+-                                            &launch_environment->dyn_user_name,
+-                                            &launch_environment->dyn_uid,
+-                                            &launch_environment->dyn_user_home,
+-                                            error))
+-                return FALSE;
+-
+-        /* We've allocated the UID, so let's make sure we can deallocate later */
+-        g_set_object (&launch_environment->dyn_user_store, dyn_user_store);
+-
+-        *uid = launch_environment->dyn_uid;
+-        return TRUE;
+-}
+-
+ /**
+  * gdm_launch_environment_start:
+  * @disp: Pointer to a GdmDisplay structure
+@@ -569,15 +552,22 @@
+ gboolean
+ gdm_launch_environment_start (GdmLaunchEnvironment *launch_environment)
+ {
+-        g_autoptr(GError) error = NULL;
++        struct passwd *passwd_entry;
++        uid_t uid;
+ 
+         g_return_val_if_fail (GDM_IS_LAUNCH_ENVIRONMENT (launch_environment), FALSE);
+-        g_return_val_if_fail (launch_environment->dyn_uid != 0, FALSE);
+ 
+         g_debug ("GdmLaunchEnvironment: Starting...");
+ 
++        if (!gdm_get_pwent_for_name (launch_environment->user_name, &passwd_entry)) {
++                g_critical ("GdmLaunchEnvironment: Unknown greeter user '%s'",
++                            launch_environment->user_name);
++                return FALSE;
++        }
++        uid = passwd_entry->pw_uid;
++
+         launch_environment->session = gdm_session_new (GDM_SESSION_VERIFICATION_MODE_LOGIN,
+-                                                       launch_environment->dyn_uid,
++                                                       uid,
+                                                        launch_environment->display_hostname,
+                                                        NULL,
+                                                        launch_environment->display_seat_id,
+@@ -645,12 +635,6 @@
+                 g_clear_object (&launch_environment->session);
+         }
+ 
+-        if (launch_environment->dyn_uid != 0) {
+-                gdm_dynamic_user_store_remove (launch_environment->dyn_user_store,
+-                                               launch_environment->dyn_uid);
+-                launch_environment->dyn_uid = 0;
+-        }
+-
+         g_signal_emit (G_OBJECT (launch_environment), signals [STOPPED], 0);
+ 
+         return TRUE;
+@@ -696,35 +680,11 @@
+ }
+ 
+ static void
+-_gdm_launch_environment_set_preferred_user_name (GdmLaunchEnvironment *launch_environment,
+-                                                 const char           *name)
+-{
+-        g_free (launch_environment->preferred_user_name);
+-        launch_environment->preferred_user_name = g_strdup (name);
+-}
+-
+-static void
+-_gdm_launch_environment_set_user_disp_name (GdmLaunchEnvironment *launch_environment,
+-                                            const char           *disp_name)
++_gdm_launch_environment_set_user_name (GdmLaunchEnvironment *launch_environment,
++                                       const char           *name)
+ {
+-        g_free (launch_environment->user_disp_name);
+-        launch_environment->user_disp_name = g_strdup (disp_name);
+-}
+-
+-static void
+-_gdm_launch_environment_set_user_member_of (GdmLaunchEnvironment *launch_environment,
+-                                            const char           *member_of)
+-{
+-        g_free (launch_environment->user_member_of);
+-        launch_environment->user_member_of = g_strdup (member_of);
+-}
+-
+-static void
+-_gdm_launch_environment_set_dconf_profile (GdmLaunchEnvironment *launch_environment,
+-                                            const char           *profile)
+-{
+-        g_free (launch_environment->dconf_profile);
+-        launch_environment->dconf_profile = g_strdup (profile);
++        g_free (launch_environment->user_name);
++        launch_environment->user_name = g_strdup (name);
+ }
+ 
+ static void
+@@ -754,17 +714,8 @@
+         case PROP_DISPLAY_IS_LOCAL:
+                 _gdm_launch_environment_set_display_is_local (self, g_value_get_boolean (value));
+                 break;
+-        case PROP_PREFERRED_USER_NAME:
+-                _gdm_launch_environment_set_preferred_user_name (self, g_value_get_string (value));
+-                break;
+-        case PROP_USER_DISP_NAME:
+-                _gdm_launch_environment_set_user_disp_name (self, g_value_get_string (value));
+-                break;
+-        case PROP_USER_MEMBER_OF:
+-                _gdm_launch_environment_set_user_member_of (self, g_value_get_string (value));
+-                break;
+-        case PROP_DCONF_PROFILE:
+-                _gdm_launch_environment_set_dconf_profile (self, g_value_get_string (value));
++        case PROP_USER_NAME:
++                _gdm_launch_environment_set_user_name (self, g_value_get_string (value));
+                 break;
+         case PROP_SESSION_NAME:
+                 _gdm_launch_environment_set_session_name (self, g_value_get_string (value));
+@@ -795,17 +746,8 @@
+         case PROP_DISPLAY_IS_LOCAL:
+                 g_value_set_boolean (value, self->display_is_local);
+                 break;
+-        case PROP_PREFERRED_USER_NAME:
+-                g_value_set_string (value, self->preferred_user_name);
+-                break;
+-        case PROP_USER_DISP_NAME:
+-                g_value_set_string (value, self->user_disp_name);
+-                break;
+-        case PROP_USER_MEMBER_OF:
+-                g_value_set_string (value, self->user_member_of);
+-                break;
+-        case PROP_DCONF_PROFILE:
+-                g_value_set_string (value, self->dconf_profile);
++        case PROP_USER_NAME:
++                g_value_set_string (value, self->user_name);
+                 break;
+         case PROP_SESSION_NAME:
+                 g_value_set_string (value, self->session_name);
+@@ -847,32 +789,11 @@
+                                                                FALSE,
+                                                                G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS));
+         g_object_class_install_property (object_class,
+-                                         PROP_PREFERRED_USER_NAME,
+-                                         g_param_spec_string ("preferred-user-name",
+-                                                              "preferred user name",
+-                                                              "preferred user name",
+-                                                              NULL,
+-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+-        g_object_class_install_property (object_class,
+-                                         PROP_USER_DISP_NAME,
+-                                         g_param_spec_string ("user-display-name",
+-                                                              "user display name",
+-                                                              "user display name",
+-                                                              NULL,
+-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+-        g_object_class_install_property (object_class,
+-                                         PROP_USER_MEMBER_OF,
+-                                         g_param_spec_string ("user-member-of",
+-                                                              "user member of",
+-                                                              "user member of",
+-                                                              NULL,
+-                                                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+-        g_object_class_install_property (object_class,
+-                                         PROP_DCONF_PROFILE,
+-                                         g_param_spec_string ("dconf-profile",
+-                                                              "dconf profile",
+-                                                              "dconf profile",
+-                                                              NULL,
++                                         PROP_USER_NAME,
++                                         g_param_spec_string ("user-name",
++                                                              "user name",
++                                                              "greeter user name",
++                                                              GDM_GROUPNAME,
+                                                               G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+         g_object_class_install_property (object_class,
+                                          PROP_SESSION_NAME,
+@@ -959,18 +880,11 @@
+         }
+ 
+         g_free (launch_environment->session_name);
+-        g_free (launch_environment->preferred_user_name);
+-        g_free (launch_environment->dyn_user_name);
+-        g_free (launch_environment->dyn_user_home);
+-        g_free (launch_environment->user_disp_name);
+-        g_free (launch_environment->user_member_of);
+-        g_free (launch_environment->dconf_profile);
++        g_free (launch_environment->user_name);
+         g_free (launch_environment->display_seat_id);
+         g_free (launch_environment->display_hostname);
+         g_free (launch_environment->session_id);
+ 
+-        g_clear_object (&launch_environment->dyn_user_store);
+-
+         G_OBJECT_CLASS (gdm_launch_environment_parent_class)->finalize (object);
+ }
+ 
+@@ -981,10 +895,7 @@
+ {
+         return g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
+                              "session-name", GDM_GREETER_SESSION,
+-                             "preferred-user-name", GDM_GREETER_USERNAME,
+-                             "user-display-name", GDM_GREETER_DISP_NAME,
+-                             "user-member-of", GDM_GROUPNAME,
+-                             "dconf-profile", GDM_DCONF_PROFILE,
++                             "user-name", GDM_GROUPNAME,
+                              "display-seat-id", seat_id,
+                              "display-hostname", display_hostname,
+                              "display-is-local", display_is_local,
+@@ -998,10 +909,7 @@
+ {
+         return g_object_new (GDM_TYPE_LAUNCH_ENVIRONMENT,
+                              "session-name", INITIAL_SETUP_SESSION,
+-                             "preferred-user-name", INITIAL_SETUP_USERNAME,
+-                             "user-display-name", INITIAL_SETUP_DISP_NAME,
+-                             "user-member-of", INITIAL_SETUP_GROUPNAME,
+-                             "dconf-profile", INITIAL_SETUP_DCONF_PROFILE,
++                             "user-name", INITIAL_SETUP_USERNAME,
+                              "display-seat-id", seat_id,
+                              "display-hostname", display_hostname,
+                              "display-is-local", display_is_local,
+diff -ru a/daemon/gdm-launch-environment.h b/daemon/gdm-launch-environment.h
+--- a/daemon/gdm-launch-environment.h	2026-03-23 21:05:37.263201059 +0100
++++ b/daemon/gdm-launch-environment.h	2026-03-23 21:05:37.264201059 +0100
+@@ -25,17 +25,12 @@
+ #include <glib-object.h>
+ 
+ #include "gdm-session.h"
+-#include "gdm-dynamic-user-store.h"
+ 
+ G_BEGIN_DECLS
+ 
+ #define GDM_TYPE_LAUNCH_ENVIRONMENT (gdm_launch_environment_get_type ())
+ G_DECLARE_FINAL_TYPE (GdmLaunchEnvironment, gdm_launch_environment, GDM, LAUNCH_ENVIRONMENT, GObject)
+ 
+-gboolean              gdm_launch_environment_ensure_uid         (GdmLaunchEnvironment  *launch_environment,
+-                                                                 GdmDynamicUserStore   *dyn_user_store,
+-                                                                 uid_t                 *uid,
+-                                                                 GError               **error);
+ gboolean              gdm_launch_environment_start              (GdmLaunchEnvironment *launch_environment);
+ gboolean              gdm_launch_environment_stop               (GdmLaunchEnvironment *launch_environment);
+ GdmSession *          gdm_launch_environment_get_session        (GdmLaunchEnvironment *launch_environment);
+diff -ru a/daemon/gdm-manager.c b/daemon/gdm-manager.c
+--- a/daemon/gdm-manager.c	2026-03-23 21:05:37.265201059 +0100
++++ b/daemon/gdm-manager.c	2026-03-23 21:05:37.266201059 +0100
+@@ -46,7 +46,6 @@
+ #include "gdm-manager-glue.h"
+ #include "gdm-display-store.h"
+ #include "gdm-display-factory.h"
+-#include "gdm-dynamic-user-store.h"
+ #include "gdm-launch-environment.h"
+ #include "gdm-local-display.h"
+ #include "gdm-local-display-factory.h"
+@@ -75,7 +74,6 @@
+ struct _GdmManager
+ {
+         GdmDBusManagerSkeleton parent;
+-        GdmDynamicUserStore    *dyn_user_store;
+         GdmDisplayStore        *display_store;
+         GdmLocalDisplayFactory *local_factory;
+         GdmRemoteDisplayFactory *remote_factory;
+@@ -1266,15 +1264,21 @@
+ set_up_greeter_session (GdmManager *manager,
+                         GdmDisplay *display)
+ {
+-        uid_t greeter_uid;
++        gboolean doing_initial_setup = FALSE;
++        const char *username;
++        struct passwd *passwd_entry;
++
++        g_object_get (G_OBJECT (display), "doing-initial-setup", &doing_initial_setup, NULL);
++        username = doing_initial_setup ? "gnome-initial-setup" : GDM_GROUPNAME;
+ 
+-        if (!gdm_display_prepare_greeter_session (display, manager->dyn_user_store, &greeter_uid)) {
++        if (!gdm_get_pwent_for_name (username, &passwd_entry)) {
++                g_warning ("GdmManager: greeter user '%s' not found", username);
+                 gdm_display_unmanage (display);
+                 gdm_display_finish (display);
+                 return;
+         }
+ 
+-        create_user_session_for_display (manager, display, greeter_uid);
++        create_user_session_for_display (manager, display, passwd_entry->pw_uid);
+         gdm_display_start_greeter_session (display);
+ }
+ 
+@@ -2490,7 +2494,6 @@
+ static void
+ gdm_manager_init (GdmManager *manager)
+ {
+-        manager->dyn_user_store = gdm_dynamic_user_store_new ();
+         manager->display_store = gdm_display_store_new ();
+         manager->user_sessions = NULL;
+         manager->open_reauthentication_requests = g_hash_table_new_full (NULL,
+@@ -2590,7 +2593,6 @@
+         g_clear_object (&manager->connection);
+         g_clear_object (&manager->object_manager);
+         g_clear_object (&manager->display_store);
+-        g_clear_object (&manager->dyn_user_store);
+ 
+         G_OBJECT_CLASS (gdm_manager_parent_class)->dispose (object);
+ }
+diff -ru a/daemon/meson.build b/daemon/meson.build
+--- a/daemon/meson.build	2026-03-23 21:05:37.267201059 +0100
++++ b/daemon/meson.build	2026-03-23 21:05:37.268201059 +0100
+@@ -183,7 +183,6 @@
+   'gdm-display-factory.c',
+   'gdm-display-store.c',
+   'gdm-display.c',
+-  'gdm-dynamic-user-store.c',
+   'gdm-launch-environment.c',
+   'gdm-local-display-factory.c',
+   'gdm-local-display.c',
+
+diff -ru a/data/gnome-greeter.desktop.in b/data/gnome-greeter.desktop.in
+--- a/data/gnome-greeter.desktop.in	2025-01-01 00:00:00.000000000 +0000
++++ b/data/gnome-greeter.desktop.in	2026-03-23 00:00:00.000000000 +0000
+@@ -1,7 +1,7 @@
+ [Desktop Entry]
+ Name=GNOME Greeter
+ Comment=The default GNOME Greeter session
+-Exec=gnome-session
++Exec=gnome-session --session=gnome-login
+ TryExec=gnome-session
+ Type=Application
+ DesktopNames=GNOME-Greeter:GNOME
+diff -ru a/data/gnome-login.session b/data/gnome-login.session
+--- a/data/gnome-login.session	2025-01-01 00:00:00.000000000 +0000
++++ b/data/gnome-login.session	2026-03-23 00:00:00.000000000 +0000
+@@ -1,4 +1,4 @@
+ [GNOME Session]
+ Name=GNOME Display Manager
+-Kiosk=true
++RequiredComponents=org.gnome.Shell;

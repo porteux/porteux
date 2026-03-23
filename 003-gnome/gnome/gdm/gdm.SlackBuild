@@ -50,9 +50,10 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 mkdir -p $PKG/etc/pam.d
-install -Dm644 $CWD/*.pam $PKG/etc/pam.d/
+install -Dm644 $CWD/gdm-autologin.pam $PKG/etc/pam.d/gdm-autologin
+install -Dm644 $CWD/gdm-launch-environment.pam $PKG/etc/pam.d/gdm-launch-environment
+install -Dm644 $CWD/gdm-password.pam $PKG/etc/pam.d/gdm-password
 install -Dm644 $CWD/custom.conf $PKG/etc/gdm/
-install -Dm755 $CWD/wayland-session $PKG/etc/gdm/
 
 mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install/
