@@ -12,6 +12,9 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
+wget https://github.com/fulalas/gnome-session-sysvinit/archive/refs/heads/main.tar.gz
+tar xf main.tar.gz
+
 VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 [ ! -s ${PRGNAM}-${VERSION}.tar.gz ] && wget https://github.com/GNOME/${PRGNAM}/archive/refs/tags/$VERSION.tar.gz -O $PRGNAM-$VERSION.tar.gz
@@ -19,11 +22,7 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-for i in $CWD/*.patch; do
-	patch -p1 < $i
-done
-
-git clone https://github.com/fulalas/gnome-session-sysvinit .
+cp -rf ../gnome-session-sysvinit-main/* .
 
 mkdir build && cd build
 CFLAGS="$GCC_CFLAGS" \
@@ -33,7 +32,6 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	-Dlogind_provider=elogind \
 	-Dmimeapps=false \
 	-Ddocbook=false \
 	-Dman=false
