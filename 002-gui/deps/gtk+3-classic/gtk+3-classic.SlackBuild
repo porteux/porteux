@@ -30,10 +30,6 @@ for i in gtk3-classic-master/*.patch; do
 	patch -p1 < $i
 done
 
-for i in $CWD/*.patch; do
-	patch -p0 < $i
-done
-
 mkdir build && cd build
 CC=clang \
 CFLAGS="$CLANG_CFLAGS" \
