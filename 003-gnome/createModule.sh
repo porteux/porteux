@@ -92,6 +92,8 @@ done
 
 # gnome deps
 for package in \
+	dart-sass \
+	adw-gtk3 \
 	exiv2 \
 	libstemmer \
 	bubblewrap \
@@ -109,8 +111,9 @@ installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# only required for building not for run-time
+# only required for building
 rm $MODULEPATH/packages/blueprint-compiler*
+rm $MODULEPATH/packages/dart-sass*.txz
 
 # gnome packages
 for package in \
