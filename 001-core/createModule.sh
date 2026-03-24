@@ -226,8 +226,8 @@ sed -i "s|#dhcp=internal|dhcp=internal|g" $MODULEPATH/packages/etc/NetworkManage
 
 ### fix udev rules
 
-sed -i "s|^KERNEL==\"kvm\"|KERNEL==\"kvm\", GROUP=\"kvm\", MODE=\"0666\", OPTIONS+=\"static_node=kvm\"|g" $MODULEPATH/packages/lib/udev/rules.d/50-udev-default.rules || exit 1
-sed -i "s|^KERNEL==\"vhost-net\"|KERNEL==\"vhost-net\", GROUP=\"kvm\", MODE=\"0666\", OPTIONS+=\"static_node=vhost-net\"|g" $MODULEPATH/packages/lib/udev/rules.d/50-udev-default.rules || exit 1
+sed -i "s|^KERNEL==\"kvm\".*|KERNEL==\"kvm\", GROUP=\"kvm\", MODE=\"0666\", OPTIONS+=\"static_node=kvm\"|g" $MODULEPATH/packages/lib/udev/rules.d/50-udev-default.rules || exit 1
+sed -i "s|^KERNEL==\"vhost-net\".*|KERNEL==\"vhost-net\", GROUP=\"kvm\", MODE=\"0666\", OPTIONS+=\"static_node=vhost-net\"|g" $MODULEPATH/packages/lib/udev/rules.d/50-udev-default.rules || exit 1
 
 ### fix timeconfig missing folder
 
