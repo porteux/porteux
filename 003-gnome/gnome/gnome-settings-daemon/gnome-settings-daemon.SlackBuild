@@ -48,7 +48,7 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-# Don't auto-suspend by default on AC power (Gentoo)
+# Don't auto-suspend by default on AC power
 install -Dm644 "$CWD/org.gnome.settings-daemon.plugins.power.gschema.override" $PKG/usr/share/glib-2.0/schemas/
 
 install -Dm644 "$CWD/org.gnome.SettingsDaemon.Housekeeping.desktop" $PKG/etc/xdg/autostart/
