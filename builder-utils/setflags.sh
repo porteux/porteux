@@ -16,7 +16,7 @@ SetFlags() {
 	
 	current_folder=$(dirname "$(realpath "$0")")
 	git config --global --add safe.directory "${current_folder}"/.. > /dev/null 2>&1
-	export PORTEUXVERSION=$(git -C "${current_folder}"/.. branch --show-current)
+	export PORTEUXVERSION=$(git -C "${current_folder}"/.. branch --show-current 2>/dev/null)
 	[ ! $PORTEUXVERSION ] && PORTEUXVERSION=$(date -r . +%Y%m%d)
 	slackware_full_version=$(cat /etc/slackware-version)
 	slackware_version=${slackware_full_version//* }

@@ -27,7 +27,6 @@ DownloadPackage "keyutils" &
 wait
 DownloadPackage "krb5" &
 DownloadPackage "lame" &
-DownloadPackage "libcap" &
 DownloadPackage "libasyncns" &
 DownloadPackage "libcap" &
 DownloadPackage "libdisplay-info" &

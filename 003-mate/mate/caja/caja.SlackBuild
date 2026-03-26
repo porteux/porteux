@@ -30,7 +30,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--disable-static \
-	--libexecdir=/usr/lib${SYSTEMBITS}/caja \
+	--libexecdir=/usr/libexec/caja \
 	--disable-update-mimedb \
 	--enable-introspection \
 	--build=$ARCH-porteux-linux

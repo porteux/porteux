@@ -29,7 +29,7 @@ meson setup \
 	--prefix=/usr \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
-	--libexecdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
 	-Dselinux=false \
 	-Dtracker=false \
 	-Dxmp=false
