@@ -26,7 +26,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--libexecdir=/usr/bin \
+	--libexecdir=/usr/libexec \
 	--disable-static \
 	--build=$ARCH-porteux-linux
 

@@ -32,7 +32,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--disable-static \
-	--libexecdir=/usr/lib${SYSTEMBITS}/mate-panel \
+	--libexecdir=/usr/libexec/mate-panel \
 	--enable-introspection=yes \
 	--enable-x11 \
 	--enable-wayland \

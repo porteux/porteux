@@ -29,7 +29,7 @@ cmake -B build -S . \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_C_FLAGS="-O3 -flto=auto -fPIC" \
 	-DCMAKE_CXX_FLAGS="-O3 -flto=auto -fvisibility-inlines-hidden" \
-	-DCMAKE_BUILD_TYPE=release \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DENABLE_TESTS=OFF \
