@@ -13,7 +13,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 # this has to be hardcoded as we need to match 'init' which is statically built using buildroot
-VERSION="3.16"
+VERSION="3.18"
 wget https://codeberg.org/thejessesmith/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xf $PRGNAM-$VERSION.tar.?z
