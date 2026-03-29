@@ -20,8 +20,7 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-#patch -p1 < $CWD/fix-memory-leak.patch
-
+# transmission crashes if we build with fancy flags, so let's keep it simple
 LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
