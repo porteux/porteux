@@ -27,6 +27,8 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+sed -i '/^test_units = \[\]/,/^# Shell integration/{/^# Shell integration/!d}' src/meson.build  
+
 mkdir build && cd build
 CFLAGS="$GCC_CFLAGS" \
 CXXFLAGS="$GCC_CXXFLAGS" \

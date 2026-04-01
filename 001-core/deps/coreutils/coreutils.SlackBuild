@@ -44,10 +44,11 @@ rm -rf $PKG/usr/share/locale/*/LC_TIME
 
 # Make sure old third-party applications won't break
 mkdir -p $PKG/usr/bin
-( cd $PKG/usr/bin
-  for file in ../../bin/* ; do
-    ln -sf $file .
-  done
+(
+	cd $PKG/usr/bin
+	for file in ../../bin/* ; do
+		ln -sf $file .
+	done
 )
 
 mkdir -p $PKG/install
