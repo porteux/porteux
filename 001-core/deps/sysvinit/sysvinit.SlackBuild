@@ -12,8 +12,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-# this has to be hardcoded as we need to match 'init' which is statically built using buildroot
-VERSION="3.18"
+# this has to be in sync with version in 'init' which is statically built using buildroot
+VERSION=$(strings $CWD/init | grep version | head -1 | cut -d " " -f 2)
 wget https://codeberg.org/thejessesmith/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xf $PRGNAM-$VERSION.tar.?z
