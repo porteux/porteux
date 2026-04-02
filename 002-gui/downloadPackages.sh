@@ -48,7 +48,6 @@ DownloadPackage "gst-plugins-base" & # required by bluetooth audio
 DownloadPackage "gstreamer" & # required by bluetooth audio
 DownloadPackage "gtkmm3" &
 DownloadPackage "gvfs" &
-DownloadPackage "harfbuzz" &
 DownloadPackage "hicolor-icon-theme" &
 DownloadPackage "iceauth" &
 DownloadPackage "json-c" &
