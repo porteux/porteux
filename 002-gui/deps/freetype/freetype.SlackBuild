@@ -32,7 +32,8 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
 	--prefix=/usr \
-	--sysconfdir=/etc
+	--sysconfdir=/etc \
+	-Dharfbuzz=dynamic
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
