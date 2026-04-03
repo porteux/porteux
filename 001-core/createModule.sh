@@ -215,8 +215,8 @@ sed -i "s|try_first_pass use_authtok||g" $MODULEPATH/packages/etc/pam.d/system-a
 
 ### remove fake curl dependencies
 
-sed -i "s|,mit-krb5-gssapi||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
-sed -i "s|,libcares||g" $MODULEPATH/packages/usr/lib64/pkgconfig/libcurl.pc
+sed -i "s|,mit-krb5-gssapi||g" $MODULEPATH/packages/usr/lib${SYSTEMBITS}/pkgconfig/libcurl.pc
+sed -i "s|,libcares||g" $MODULEPATH/packages/usr/lib${SYSTEMBITS}/pkgconfig/libcurl.pc
 
 ### set NetworkManager to use internal dhcp
 
