@@ -1,10 +1,10 @@
 #!/bin/bash
 
+MODULENAME=000-kernel
+
 source "$PWD/../builder-utils/setflags.sh"
 
-MODULENAME="000-kernel"
-
-SetFlags "${MODULENAME}"
+SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/helper.sh"
 source "$BUILDERUTILSPATH/latestfromgithub.sh"
