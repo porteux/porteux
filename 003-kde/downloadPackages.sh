@@ -9,15 +9,14 @@ DownloadPackage "editorconfig-core-c" &
 DownloadPackage "egl-wayland" &
 DownloadPackage "eglexternalplatform" &
 DownloadPackage "gst-plugins-good" &
-wait
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libdmtx" &
+wait
 DownloadPackage "libqaccessibilityclient" &
 DownloadPackage "libqalculate" &
 DownloadPackage "LibRaw" &
-wait
 DownloadPackage "openblas" &
 DownloadPackage "polkit-qt" &
 DownloadPackage "qca" &
@@ -68,8 +67,8 @@ DownloadPackage "kactivitymanagerd" &
 DownloadPackage "kapidox" &
 DownloadPackage "karchive" &
 DownloadPackage "kauth" &
-wait
 DownloadPackage "kbookmarks" &
+wait
 DownloadPackage "kcmutils" &
 DownloadPackage "kcodecs" &
 DownloadPackage "kColorPicker" & # luckycyborg repo
@@ -78,9 +77,9 @@ DownloadPackage "kcolorscheme" &
 DownloadPackage "kcompletion" &
 DownloadPackage "kconfig" &
 DownloadPackage "kconfigwidgets" &
-wait
 DownloadPackage "kcoreaddons" &
 DownloadPackage "kcrash" &
+wait
 DownloadPackage "kdbusaddons" &
 DownloadPackage "kdeclarative" &
 DownloadPackage "kde-cli-tools" &
@@ -90,8 +89,8 @@ DownloadPackage "kde-gtk-config" &
 DownloadPackage "kdenetwork-filesharing" &
 DownloadPackage "kdeplasma-addons" &
 DownloadPackage "kdesu" &
-wait
 DownloadPackage "kdnssd" &
+wait
 DownloadPackage "kfilemetadata" &
 DownloadPackage "kglobalaccel" &
 DownloadPackage "kglobalacceld" &
@@ -102,8 +101,8 @@ DownloadPackage "kiconthemes" &
 DownloadPackage "kidletime" &
 DownloadPackage "kImageAnnotator" & # luckycyborg repo
 DownloadPackage "kimageannotator" & # alienbob repo
-DownloadPackage "kinfocenter" &
 wait
+DownloadPackage "kinfocenter" &
 DownloadPackage "kio" &
 DownloadPackage "kio-admin" &
 DownloadPackage "kio-extras" &
@@ -113,8 +112,8 @@ DownloadPackage "kirigami" &
 DownloadPackage "kirigami-addons" &
 DownloadPackage "kitemmodels" &
 DownloadPackage "kitemviews" &
-DownloadPackage "kjobwidgets" &
 wait
+DownloadPackage "kjobwidgets" &
 DownloadPackage "kmenuedit" &
 DownloadPackage "knewstuff" &
 DownloadPackage "knighttime" &
@@ -124,9 +123,9 @@ DownloadPackage "konsole" &
 DownloadPackage "kpackage" &
 DownloadPackage "kparts" &
 DownloadPackage "kpeople" &
+wait
 DownloadPackage "kpeoplevcard" &
 DownloadPackage "kpipewire" &
-wait
 DownloadPackage "kplotting" &
 DownloadPackage "kpty" &
 DownloadPackage "kqtquickcharts" &
@@ -135,10 +134,10 @@ DownloadPackage "kquickimageeditor" &
 DownloadPackage "krunner" &
 DownloadPackage "kscreen" &
 DownloadPackage "kscreenlocker" &
+wait
 DownloadPackage "kservice" &
 DownloadPackage "ksshaskpass" &
 DownloadPackage "kstatusnotifieritem" &
-wait
 DownloadPackage "ksvg" &
 DownloadPackage "ksystemstats" &
 DownloadPackage "ktexteditor" &
@@ -146,10 +145,10 @@ DownloadPackage "ktextwidgets" &
 DownloadPackage "kunitconversion" &
 DownloadPackage "kuserfeedback" &
 DownloadPackage "kwallet" &
+wait
 DownloadPackage "kwayland" &
 DownloadPackage "kwayland-integration" &
 DownloadPackage "kwidgetsaddons" &
-wait
 DownloadPackage "kwin" &
 DownloadPackage "kwin-x11" &
 DownloadPackage "kwindowsystem" &
@@ -157,21 +156,21 @@ DownloadPackage "kwrited" &
 DownloadPackage "kxmlgui" &
 DownloadPackage "layer-shell-qt" &
 DownloadPackage "libkdcraw" &
+wait
 DownloadPackage "libkexiv2" &
 DownloadPackage "libkipi" &
 DownloadPackage "libkscreen" &
 DownloadPackage "libksysguard" &
-wait
 DownloadPackage "libplasma" &
 DownloadPackage "libqaccessibilityclient" &
 DownloadPackage "milou" &
 DownloadPackage "modemmanager-qt" &
 DownloadPackage "networkmanager-qt" &
 DownloadPackage "okular" &
+wait
 DownloadPackage "oxygen" &
 DownloadPackage "plasma5support" &
 DownloadPackage "plasma-activities" &
-wait
 DownloadPackage "plasma-activities-stats" &
 DownloadPackage "plasma-browser-integration" &
 DownloadPackage "plasma-desktop" &
@@ -179,8 +178,8 @@ DownloadPackage "plasma-integration" &
 DownloadPackage "plasma-nm" &
 DownloadPackage "plasma-pa" &
 DownloadPackage "plasma-systemmonitor" &
-DownloadPackage "plasma-workspace" &
 wait
+DownloadPackage "plasma-workspace" &
 DownloadPackage "polkit-kde-agent" &
 DownloadPackage "powerdevil" &
 DownloadPackage "prison" &
@@ -189,8 +188,8 @@ DownloadPackage "purpose" &
 DownloadPackage "qqc2-desktop-style" &
 DownloadPackage "sddm" &
 DownloadPackage "sddm-kcm" &
-wait
 DownloadPackage "solid" &
+wait
 DownloadPackage "sonnet" &
 DownloadPackage "spectacle" &
 DownloadPackage "syndication" &

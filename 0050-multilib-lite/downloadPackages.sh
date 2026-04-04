@@ -4,8 +4,8 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 GenerateRepositoryUrls
 
 DownloadPackage "alsa-lib" &
-DownloadPackage "brotli" &
 DownloadPackage "alsa-plugins" &
+DownloadPackage "brotli" &
 DownloadPackage "bzip2" &
 DownloadPackage "dbus" &
 DownloadPackage "e2fsprogs" &
@@ -35,8 +35,8 @@ DownloadPackage "libedit" &
 DownloadPackage "libffi" &
 DownloadPackage "libglvnd" &
 DownloadPackage "libICE" &
-DownloadPackage "libjpeg-turbo" &
 wait
+DownloadPackage "libjpeg-turbo" &
 DownloadPackage "libnsl" &
 DownloadPackage "libogg" &
 DownloadPackage "libpciaccess" &
@@ -46,8 +46,8 @@ DownloadPackage "libsndfile" &
 DownloadPackage "libtirpc" &
 DownloadPackage "libvorbis" &
 DownloadPackage "libX11" &
-DownloadPackage "libXau" &
 wait
+DownloadPackage "libXau" &
 DownloadPackage "libxcb" &
 DownloadPackage "libXcomposite" &
 DownloadPackage "libXcursor" &
@@ -57,9 +57,9 @@ DownloadPackage "libXext" &
 DownloadPackage "libXfixes" &
 DownloadPackage "libXft" &
 DownloadPackage "libXi" &
+wait
 DownloadPackage "libXinerama" &
 DownloadPackage "libXrandr" &
-wait
 DownloadPackage "libXrender" &
 DownloadPackage "libxml2" &
 DownloadPackage "libxshmfence" &

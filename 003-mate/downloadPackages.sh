@@ -3,22 +3,21 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 GenerateRepositoryUrls
 
-DownloadPackage "blueman" &
 DownloadPackage "accountsservice" &
 DownloadPackage "aspell" &
 DownloadPackage "babl" &
+DownloadPackage "blueman" &
 DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
-wait
 DownloadPackage "hunspell" &
 DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
+wait
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
 DownloadPackage "libgtop" &
-wait
 DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
 DownloadPackage "libsoup" &

@@ -4,13 +4,14 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 GenerateRepositoryUrls
 
 DownloadPackage "libcue" &
-DownloadPackage "vid.stab" &
 DownloadPackage "openal-soft" &
+DownloadPackage "vid.stab" &
 wait
 
 ### only download if not present
 
 [ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
+wait
 
 ### temporary packages only for building
 

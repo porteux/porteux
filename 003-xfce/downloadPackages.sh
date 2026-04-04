@@ -11,9 +11,9 @@ DownloadPackage "enchant" &
 DownloadPackage "gspell" &
 DownloadPackage "gtksourceview4" &
 DownloadPackage "keybinder3" &
-wait
 DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
+wait
 DownloadPackage "libgtop" &
 DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
