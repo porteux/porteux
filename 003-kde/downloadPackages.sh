@@ -43,8 +43,8 @@ rm serverPackages.txt
 
 ### non-slackware repository
 
-#REPOSITORY="https://slackware.halpanet.org/kde6town/stable/current/${ARCH}"
-REPOSITORY="https://slackware.nl/alien-kde/current/testing/${ARCH}"
+REPOSITORY="https://slackware.halpanet.org/kde6town/stable/current/${ARCH}"
+#REPOSITORY="https://slackware.nl/alien-kde/current/testing/${ARCH}"
 
 GenerateRepositoryUrls
 
@@ -59,7 +59,6 @@ DownloadPackage "breeze-grub" &
 DownloadPackage "breeze-gtk" &
 DownloadPackage "breeze-icons" &
 wait
-DownloadPackage "ddcutil" &
 DownloadPackage "dolphin" &
 DownloadPackage "dolphin-plugins" &
 DownloadPackage "ffmpegthumbs" &
@@ -67,9 +66,9 @@ DownloadPackage "frameworkintegration" &
 DownloadPackage "gwenview" &
 DownloadPackage "kactivitymanagerd" &
 DownloadPackage "kapidox" &
-wait
 DownloadPackage "karchive" &
 DownloadPackage "kauth" &
+wait
 DownloadPackage "kbookmarks" &
 DownloadPackage "kcmutils" &
 DownloadPackage "kcodecs" &
