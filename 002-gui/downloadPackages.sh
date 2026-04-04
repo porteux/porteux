@@ -12,8 +12,8 @@ DownloadPackage "at-spi2-core" &
 DownloadPackage "atk" &
 DownloadPackage "atkmm" &
 DownloadPackage "audiofile" &
-wait
 DownloadPackage "cairo" &
+wait
 DownloadPackage "cairomm" &
 DownloadPackage "cargo-c" & # required by librsvg
 DownloadPackage "cdparanoia-III" &
@@ -22,9 +22,9 @@ DownloadPackage "db48" & # required by bluez (obexd)
 DownloadPackage "dejavu-fonts-ttf" &
 DownloadPackage "desktop-file-utils" &
 DownloadPackage "djvulibre" &
-wait
 DownloadPackage "esound" &
 DownloadPackage "flac" &
+wait
 DownloadPackage "fontconfig" &
 DownloadPackage "freeglut" &
 DownloadPackage "fribidi" &
@@ -32,10 +32,10 @@ DownloadPackage "gcr" &
 DownloadPackage "gcr4" & # required by gvfs 1.54+
 DownloadPackage "giflib" &
 DownloadPackage "glew" &
-wait
-DownloadPackage "glibmm" &
 DownloadPackage "glib-networking" & # required by flatpak
+DownloadPackage "glibmm" &
 DownloadPackage "glu" &
+wait
 DownloadPackage "gnome-themes-extra" &
 DownloadPackage "gnupg2" & # required by flatpak
 DownloadPackage "gobject-introspection" &
@@ -43,65 +43,65 @@ DownloadPackage "gparted" &
 DownloadPackage "graphene" & # required by libgstopengl
 DownloadPackage "graphite2" &
 DownloadPackage "gsl" &
-wait
 DownloadPackage "gst-plugins-base" & # required by bluetooth audio
 DownloadPackage "gstreamer" & # required by bluetooth audio
 DownloadPackage "gtkmm3" &
+wait
 DownloadPackage "gvfs" &
 DownloadPackage "hicolor-icon-theme" &
 DownloadPackage "iceauth" &
 DownloadPackage "json-c" &
 DownloadPackage "json-glib" &
 DownloadPackage "lame" &
-wait
 DownloadPackage "lcms" &
 DownloadPackage "lcms2" &
 DownloadPackage "libICE" &
 DownloadPackage "libSM" &
+wait
 DownloadPackage "libXau" &
-DownloadPackage "libXScrnSaver" &
 DownloadPackage "libXaw" &
 DownloadPackage "libXcomposite" &
 DownloadPackage "libXcursor" &
 DownloadPackage "libXdamage" &
-wait
 DownloadPackage "libXdmcp" &
 DownloadPackage "libXevie" &
 DownloadPackage "libXext" &
 DownloadPackage "libXfixes" &
 DownloadPackage "libXfont2" &
+wait
 DownloadPackage "libXfontcache" &
 DownloadPackage "libXft" &
 DownloadPackage "libXi" &
 DownloadPackage "libXinerama" &
 DownloadPackage "libXmu" &
-wait
 DownloadPackage "libXp" &
 DownloadPackage "libXpm" &
 DownloadPackage "libXpresent" &
 DownloadPackage "libXrandr" &
 DownloadPackage "libXrender" &
+wait
 DownloadPackage "libXres" &
+DownloadPackage "libXScrnSaver" &
 DownloadPackage "libXt" &
 DownloadPackage "libXtst" &
 DownloadPackage "libXv" &
 DownloadPackage "libXvMC" &
-wait
 DownloadPackage "libXxf86dga" &
 DownloadPackage "libXxf86misc" &
 DownloadPackage "libXxf86vm" &
 DownloadPackage "libao" &
+wait
 DownloadPackage "libasyncns" &
 DownloadPackage "libatasmart" &
 DownloadPackage "libblockdev" &
 DownloadPackage "libbluray" &
 DownloadPackage "libbytesize" &
 DownloadPackage "libcanberra" & # required by pipewire
-wait
 DownloadPackage "libcddb" &
 DownloadPackage "libcdio" &
 DownloadPackage "libcdio-paranoia" &
 DownloadPackage "libdecor" & # required by xorg-server-xwayland
+wait
 DownloadPackage "libdeflate" & # required by libtiff
 DownloadPackage "libdisplay-info" & # required by some DEs and mpv to have vaapi
 DownloadPackage "libdmx" &
@@ -109,10 +109,10 @@ DownloadPackage "libdrm" &
 DownloadPackage "libdvdnav" &
 DownloadPackage "libdvdread" &
 DownloadPackage "libedit" &
-wait
 DownloadPackage "libepoxy" &
 DownloadPackage "libevdev" &
 DownloadPackage "libevent" &
+wait
 DownloadPackage "libexif" &
 DownloadPackage "libfontenc" &
 DownloadPackage "libglade" &
@@ -120,10 +120,10 @@ DownloadPackage "libglvnd" &
 DownloadPackage "libgphoto2" &
 DownloadPackage "libical" &
 DownloadPackage "libinput" &
-wait
 DownloadPackage "libjpeg-turbo" &
 DownloadPackage "libmad" &
 DownloadPackage "libmtp" &
+wait
 DownloadPackage "libnotify" &
 DownloadPackage "libnvme" & # required by udisks 2.10.0+
 DownloadPackage "libogg" &
@@ -132,9 +132,9 @@ DownloadPackage "libpciaccess" &
 DownloadPackage "libpng" &
 DownloadPackage "libproxy" & # required by flatpak
 DownloadPackage "libsamplerate" &
-wait
 DownloadPackage "libsecret" &
 DownloadPackage "libsfdo" & # required by labwc
+wait
 DownloadPackage "libsigc++" &
 DownloadPackage "libsndfile" &
 DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
@@ -143,20 +143,20 @@ DownloadPackage "libtheora" &
 DownloadPackage "libtiff" &
 DownloadPackage "libunwind" &
 DownloadPackage "libva" &
-wait
 DownloadPackage "libvdpau" &
 DownloadPackage "libvisual" &
+wait
 DownloadPackage "libvorbis" &
 DownloadPackage "libvpx" &
 DownloadPackage "libwacom" &
 DownloadPackage "libwebp" &
+DownloadPackage "libxcb" &
 DownloadPackage "libxcvt" &
 DownloadPackage "libxkbcommon" &
 DownloadPackage "libxkbfile" &
-DownloadPackage "libxcb" &
 DownloadPackage "libxshmfence" &
-wait
 DownloadPackage "libxslt" &
+wait
 DownloadPackage "mkfontscale" &
 DownloadPackage "mobile-broadband-provider-info" &
 DownloadPackage "mpg123" &

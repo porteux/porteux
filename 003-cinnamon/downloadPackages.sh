@@ -10,25 +10,24 @@ DownloadPackage "colord" &
 DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
-wait
 DownloadPackage "gnome-keyring" & # required by nm-applet to ask for password
 DownloadPackage "gspell" &
 DownloadPackage "gtksourceview4" &
+wait
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
-wait
 DownloadPackage "libgee" &
 DownloadPackage "libgpod" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
 DownloadPackage "libhandy" &
+wait
 DownloadPackage "libindicator" &
 DownloadPackage "libnma" &
 DownloadPackage "libsoup" & # required by settings -> Date&Time
-wait
 DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
@@ -48,8 +47,8 @@ wait
 
 ### packages that require specific striping
 
-DownloadPackage "ibus" &
 DownloadPackage "gettext-tools" & # required by extensions
+DownloadPackage "ibus" &
 wait
 
 ### temporary packages only for building
@@ -59,7 +58,6 @@ DownloadPackage "libgsf" &
 DownloadPackage "libxklavier" &
 DownloadPackage "python-build" &
 DownloadPackage "python-flit-core" &
-wait
 DownloadPackage "python-installer" &
 DownloadPackage "python-pip" &
 DownloadPackage "python-pyproject-hooks" &
