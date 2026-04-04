@@ -213,6 +213,7 @@ rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 for package in \
 	extra-cmake-modules \
 	kimageformats \
+	exiv2 \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1

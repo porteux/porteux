@@ -101,6 +101,7 @@ wait
 DownloadPackage "libcddb" &
 DownloadPackage "libcdio" &
 DownloadPackage "libcdio-paranoia" &
+DownloadPackage "libdecor" & # required by xorg-server-xwayland
 DownloadPackage "libdeflate" & # required by libtiff
 DownloadPackage "libdisplay-info" & # required by some DEs and mpv to have vaapi
 DownloadPackage "libdmx" &
