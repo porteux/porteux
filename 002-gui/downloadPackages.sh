@@ -236,6 +236,7 @@ wait
 
 DownloadPackage "llvm" &
 DownloadPackage "mesa" &
+DownloadPackage "noto-fonts-ttf" &
 DownloadPackage "pulseaudio" &
 DownloadPackage "vulkan-sdk" &
 wait
