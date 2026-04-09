@@ -55,7 +55,7 @@
 +    return found;
 +}
 +
-+static int *wait_for_pipewire(void *arg)
++static int wait_for_pipewire(void *arg)
 +{
 +    VolumeALSAPlugin *vol = (VolumeALSAPlugin *)arg;
 +
