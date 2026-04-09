@@ -15,8 +15,7 @@ SetFlags() {
 	export RUSTC_BOOTSTRAP=1 # allows -Z unstable flags on stable compiler
 	
 	current_folder=$(dirname "$(realpath "$0")")
-	git config --global --add safe.directory "${current_folder}"/.. > /dev/null 2>&1
-	export PORTEUXVERSION=$(git -C "${current_folder}"/.. branch --show-current 2>/dev/null)
+	export PORTEUXVERSION=$(git -C "${current_folder}"/.. -c safe.directory="${current_folder}"/.. branch --show-current)
 	[ ! $PORTEUXVERSION ] && PORTEUXVERSION=$(date -r . +%Y%m%d)
 	slackware_full_version=$(cat /etc/slackware-version)
 	slackware_version=${slackware_full_version//* }
