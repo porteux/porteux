@@ -81,12 +81,11 @@ DownloadPackage "zlib" &
 DownloadPackage "zstd" &
 wait
 
-### packages that require specific striping
+### packages that require specific stripping
 
 DownloadPackage "aaa_libraries" &
 DownloadPackage "eudev" &
 DownloadPackage "gcc" &
-DownloadPackage "gcc-brig" &
 DownloadPackage "gcc-g++" &
 DownloadPackage "llvm" &
 DownloadPackage "mesa" &

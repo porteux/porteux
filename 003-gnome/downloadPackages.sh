@@ -38,7 +38,7 @@ wait
 [ ! -f /usr/bin/clang ] && DownloadPackage "llvm" & # required by glycin and others
 wait
 
-### packages that require specific striping
+### packages that require specific stripping
 
 DownloadPackage "ibus" & # required by gtk4 to allow accented characters
 wait

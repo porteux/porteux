@@ -25,11 +25,11 @@ DownloadPackage "xdpyinfo" &
 DownloadPackage "zxing-cpp" &
 wait
 
-### packages that require specific striping
+### packages that require specific stripping
 
 DownloadPackage "appstream" & # required by main menu
-DownloadPackage "gcc-gfortran" & # required by spectable
-DownloadPackage "opencv" & # required by spectable
+DownloadPackage "gcc-gfortran" & # required by spectacle
+DownloadPackage "opencv" & # required by spectacle
 DownloadPackage "phonon" & # required by dolphin and others
 DownloadPackage "qcoro" &
 DownloadPackage "qt6" &

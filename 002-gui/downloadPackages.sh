@@ -232,7 +232,7 @@ DownloadPackage "xterm" &
 DownloadPackage "xvinfo" &
 wait
 
-### packages that require specific striping
+### packages that require specific stripping
 
 DownloadPackage "llvm" &
 DownloadPackage "mesa" &

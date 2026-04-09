@@ -45,7 +45,7 @@ DownloadPackage "python-six" &
 DownloadPackage "python-webencodings" &
 wait
 
-### packages that require specific striping
+### packages that require specific stripping
 
 DownloadPackage "gettext-tools" & # required by extensions
 DownloadPackage "ibus" &
