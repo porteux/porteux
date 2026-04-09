@@ -20,9 +20,6 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-wget https://patch-diff.githubusercontent.com/raw/linuxmint/cinnamon/pull/13474.patch
-patch -p1 < 13474.patch
-
 mkdir build && cd build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
