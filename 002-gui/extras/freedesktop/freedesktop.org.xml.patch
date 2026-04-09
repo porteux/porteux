@@ -8,7 +8,7 @@
 +    <comment>XZM archive</comment>
 +    <comment xml:lang="en_GB">XZM archive</comment>
 +    <acronym>XZM</acronym>
-+    <expanded-acronym>Lempel-Ziv-Oberhumer</expanded-acronym>
++    <expanded-acronym>XZ Module</expanded-acronym>
 +    <generic-icon name="cdr"/>
 +    <magic priority="50">
 +      <match value="\x89\x4c\x5a\x4f\x00\x0d\x0a\x1a\x0a" type="string" offset="0"/>

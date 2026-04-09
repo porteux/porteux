@@ -230,7 +230,7 @@ DownloadPackage "xz" &
 [ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
 wait
 
-### packages that require specific striping
+### packages that require specific stripping
 
 DownloadPackage "aaa_libraries" &
 DownloadPackage "binutils" &

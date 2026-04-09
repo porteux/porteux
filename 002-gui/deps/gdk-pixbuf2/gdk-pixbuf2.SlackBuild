@@ -37,7 +37,6 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Dothers=enabled \
-	-Ddocumentation=false \
 	-Dtests=false \
 	-Dinstalled_tests=false \
 	-Dglycin=disabled \
