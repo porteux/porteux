@@ -1,27 +1,22 @@
 #!/bin/bash
 
-if [ "$(uname -m)" != "x86_64" ]; then
-    echo "Unsupported system architecture"
-    exit 1
-fi
-
 isRoot() {
-    [ "$(id -u)" -eq 0 ]
+	[ "$(id -u)" -eq 0 ]
 }
 
 if ! isRoot; then
-    echo "Please enter root's password below:"
-    su -c "/opt/porteux-scripts/porteux-app-store/applications/palemoon.sh $1 $2 $3"
-    exit 0
+	echo "Please enter root's password below:"
+	su -c "$0 $1 $2 $3"
+	exit 0
 fi
 
 if [ "$#" -lt 1 ]; then
-    echo "Usage:   $0 [channel] [language] [optional: --activate-module]"
-    echo "If no language is specified, en-US will be set"
-    echo "Channels available: stable"
-    echo ""
-    echo "Example: $0 stable en-US"
-    exit 1
+	echo "Usage: $0 [channel] [language] [optional: --activate-module]"
+	echo "If no language is specified, en-US will be set"
+	echo "Channels available: stable"
+	echo ""
+	echo "Example: $0 stable en-US"
+	exit 1
 fi
 
 # Global variables
@@ -35,29 +30,29 @@ WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
 create_application_temp_dir() {
-    rm -fr "${TMP:?}/$1"
-    mkdir -p "$TMP/$1"
+	rm -fr "${TMP:?}/$1"
+	mkdir -p "$TMP/$1"
 }
 
 striptease() {
-    local pkg_dir="$TMP/$1/$2"
+	local pkg_dir="$TMP/$1/$2"
 
-    rm -fv "$pkg_dir"/usr/lib64/palemoon/update*
+	rm -fv "$pkg_dir"/usr/lib64/palemoon/update*
 }
 
 get_module_name() {
-    local pkgver="$2"
-    local arch="$3"
+	local pkgver="$2"
+	local arch="$3"
 
-    echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
+	echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
 set_sane_defaults() {
-    local pkg_dir="$TMP/$1/$2"
-    local porteux_version=$(cat /etc/os-release | grep VERSION= | cut -d \" -f 2)
+	local pkg_dir="$TMP/$1/$2"
+	local porteux_version=$(cat /etc/os-release | grep VERSION= | cut -d \" -f 2)
 
-    mkdir -p "$pkg_dir"/usr/lib64/${APP}/distribution/
-    cat >> "$pkg_dir"/usr/lib64/${APP}/distribution/distribution.ini << EOF
+	mkdir -p "$pkg_dir"/usr/lib64/${APP}/distribution/
+	cat >> "$pkg_dir"/usr/lib64/${APP}/distribution/distribution.ini << EOF
 [Global]
 id=PorteuX
 version=${porteux_version}
@@ -70,63 +65,63 @@ EOF
 }
 
 add_language_pack() {
-    if [ ! ${LANGUAGE} = "en-US" ]; then
-        local pkg_dir="$TMP/$1/$2"
-        mkdir -p "$pkg_dir"/usr/lib64/${APP}/distribution/extensions
+	if [ ! ${LANGUAGE} = "en-US" ]; then
+		local pkg_dir="$TMP/$1/$2"
+		mkdir -p "$pkg_dir"/usr/lib64/${APP}/distribution/extensions
 
-        curl --silent --user-agent 'PaleMoon' --output "$pkg_dir/usr/lib64/${APP}/distribution/extensions/langpack-${LANGUAGE}@palemoon.org.xpi" "https://addons.palemoon.org/?component=download&id=langpack-${LANGUAGE}@palemoon.org"
-        chmod 644 "$pkg_dir/usr/lib64/${APP}/distribution/extensions/langpack-${LANGUAGE}@palemoon.org.xpi"
+		curl --silent --user-agent 'PaleMoon' --output "$pkg_dir/usr/lib64/${APP}/distribution/extensions/langpack-${LANGUAGE}@palemoon.org.xpi" "https://addons.palemoon.org/?component=download&id=langpack-${LANGUAGE}@palemoon.org"
+		chmod 644 "$pkg_dir/usr/lib64/${APP}/distribution/extensions/langpack-${LANGUAGE}@palemoon.org.xpi"
 
-        cat >> "$pkg_dir"/usr/lib64/${APP}/distribution/distribution.ini << EOF
+		cat >> "$pkg_dir"/usr/lib64/${APP}/distribution/distribution.ini << EOF
 general.useragent.locale="${LANGUAGE}"
 EOF
-    fi
+	fi
 }
 
 finisher() {
-    striptease "$APP" "$1"
+	striptease "$APP" "$1"
 
-    /opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    rm -fr "${TMP:?}/$APP"
+	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+	rm -fr "${TMP:?}/$APP"
 }
 
 get_repo_version_palemoon() {
-    local temp=$(curl -s "https://www.palemoon.org/download.shtml" | grep "linux-x86_64-gtk3") || exit 1
-    local ver=$(echo "$temp" | cut -d'-' -f2 | sed 's/\.linux//')
+	local temp=$(curl -s "https://www.palemoon.org/download.shtml" | grep "linux-x86_64-gtk3") || exit 1
+	local ver=$(echo "$temp" | cut -d'-' -f2 | sed 's/\.linux//')
 
-    echo "$ver"
+	echo "$ver"
 }
 
 make_module_palemoon() {
-    if [ "$CHANNEL" != "stable" ]; then
-        echo "Non-existent channel. Options: stable" && exit 1
-    fi
+	if [ "$CHANNEL" != "stable" ]; then
+		echo "Non-existent channel. Options: stable" && exit 1
+	fi
 
-    local pkgver=$(get_repo_version_palemoon "$CHANNEL")
-    local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+	local pkgver=$(get_repo_version_palemoon "$CHANNEL")
+	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 
-    create_application_temp_dir "$APP" || exit 1
+	create_application_temp_dir "$APP" || exit 1
 
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.xz" "https://rm-us.palemoon.org/release/palemoon-${pkgver}.linux-x86_64-gtk3.tar.xz"
-    mkdir -p "$TMP/$APP/$pkg_name"
-    tar -xvf "$TMP/$APP/${pkg_name}.tar.xz" -C "$TMP/$APP/$pkg_name"
-    chmod 755 "$TMP/$APP/$pkg_name"
-    mkdir -p "$TMP/$APP/$pkg_name/usr/bin"
-    mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"
-    mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
+	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.xz" "https://rm-us.palemoon.org/release/palemoon-${pkgver}.linux-x86_64-gtk3.tar.xz"
+	mkdir -p "$TMP/$APP/$pkg_name"
+	tar -xvf "$TMP/$APP/${pkg_name}.tar.xz" -C "$TMP/$APP/$pkg_name"
+	chmod 755 "$TMP/$APP/$pkg_name"
+	mkdir -p "$TMP/$APP/$pkg_name/usr/bin"
+	mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"
+	mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
 
-    mv -f "$TMP/$APP/$pkg_name/palemoon" "$TMP/$APP/$pkg_name/palemoon-${pkgver}"
-    mv -f "$TMP/$APP/$pkg_name/palemoon-${pkgver}" "$TMP/$APP/$pkg_name/usr/lib64"
-    cd "$TMP/$APP/$pkg_name/usr/lib64"
-    ln -sf "palemoon-${pkgver}/" palemoon
-    cd "$TMP/$APP/$pkg_name/usr/bin"
-    ln -sf "../lib64/palemoon/palemoon" palemoon
+	mv -f "$TMP/$APP/$pkg_name/palemoon" "$TMP/$APP/$pkg_name/palemoon-${pkgver}"
+	mv -f "$TMP/$APP/$pkg_name/palemoon-${pkgver}" "$TMP/$APP/$pkg_name/usr/lib64"
+	cd "$TMP/$APP/$pkg_name/usr/lib64"
+	ln -sf "palemoon-${pkgver}/" palemoon
+	cd "$TMP/$APP/$pkg_name/usr/bin"
+	ln -sf "../lib64/palemoon/palemoon" palemoon
 
-    set_sane_defaults "$APP" "$pkg_name"
+	set_sane_defaults "$APP" "$pkg_name"
 
-    add_language_pack "$APP" "$pkg_name"
+	add_language_pack "$APP" "$pkg_name"
 
-    cat > "$TMP/$APP/$pkg_name/usr/share/applications/$APP.desktop" << EOF
+	cat > "$TMP/$APP/$pkg_name/usr/share/applications/$APP.desktop" << EOF
 [Desktop Entry]
 Version=1.0
 Name=Pale Moon Web Browser
@@ -142,7 +137,7 @@ MimeType=text/html;application/xhtml+xml;application/xml;application/rss+xml;app
 StartupNotify=true
 EOF
 
-    finisher "$pkg_name"
+	finisher "$pkg_name"
 }
 
 # Main Code

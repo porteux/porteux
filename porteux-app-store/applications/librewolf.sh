@@ -1,27 +1,22 @@
 #!/bin/bash
 
-if [ "$(uname -m)" != "x86_64" ]; then
-    echo "Unsupported system architecture"
-    exit 1
-fi
-
 isRoot() {
-    [ "$(id -u)" -eq 0 ]
+	[ "$(id -u)" -eq 0 ]
 }
 
 if ! isRoot; then
-    echo "Please enter root's password below:"
-    su -c "/opt/porteux-scripts/porteux-app-store/applications/librewolf.sh $1 $2 $3"
-    exit 0
+	echo "Please enter root's password below:"
+	su -c "$0 $1 $2 $3"
+	exit 0
 fi
 
 if [ "$#" -lt 1 ]; then
-    echo "Usage:   $0 [channel] [language] [optional: --activate-module]"
-    echo "If no language is specified, en-US will be set"
-    echo "Channels available: stable"
-    echo ""
-    echo "Example: $0 stable en-US"
-    exit 1
+	echo "Usage: $0 [channel] [language] [optional: --activate-module]"
+	echo "If no language is specified, en-US will be set"
+	echo "Channels available: stable"
+	echo ""
+	echo "Example: $0 stable en-US"
+	exit 1
 fi
 
 # Global variables
@@ -35,60 +30,60 @@ WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
 create_application_temp_dir() {
-    rm -fr "${TMP:?}/$1"
-    mkdir -p "$TMP/$1"
+	rm -fr "${TMP:?}/$1"
+	mkdir -p "$TMP/$1"
 }
 
 get_module_name() {
-    local pkgver="$2"
-    local arch="$3"
+	local pkgver="$2"
+	local arch="$3"
 
-    echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
+	echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
 finisher() {
-    /opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    rm -fr "${TMP:?}/$APP"
+	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+	rm -fr "${TMP:?}/$APP"
 }
 
 get_repo_version_librewolf() {
 	local ver;
 	if [ $CHANNEL = "stable" ]; then
 		ver=$(curl -s https://codeberg.org/librewolf/bsys6/releases | grep "librewolf/bsys6/src/tag/" | cut -d "/" -f 6 | cut -d "\"" -f 1 | sort -Vr | head -1)
-    fi
+	fi
 
-    echo "$ver"
+	echo "$ver"
 }
 
 make_module_librewolf() {
-    if [ "$CHANNEL" != "stable" ]; then
-        echo "Non-existent channel. Options: stable" && exit 1
-    fi
+	if [ "$CHANNEL" != "stable" ]; then
+		echo "Non-existent channel. Options: stable" && exit 1
+	fi
 
-    local pkgver=$(get_repo_version_librewolf "$CHANNEL")
-    local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
-    local package_extension="tar.xz"
-    local major_version=$(echo $pkgver | cut -f 1 -d .)
+	local pkgver=$(get_repo_version_librewolf "$CHANNEL")
+	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+	local package_extension="tar.xz"
+	local major_version=$(echo $pkgver | cut -f 1 -d .)
 
-    create_application_temp_dir "$APP"
+	create_application_temp_dir "$APP"
 
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://codeberg.org/api/packages/librewolf/generic/librewolf/${pkgver}/librewolf-${pkgver}-linux-x86_64-package.${package_extension}"
-    mkdir -p "$TMP/$APP/$pkg_name"
-    tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name"
-    chmod 755 "$TMP/$APP/$pkg_name"
-    mkdir -p "$TMP/$APP/$pkg_name/usr/bin"
-    mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"
-    mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
+	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://codeberg.org/api/packages/librewolf/generic/librewolf/${pkgver}/librewolf-${pkgver}-linux-x86_64-package.${package_extension}"
+	mkdir -p "$TMP/$APP/$pkg_name"
+	tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name"
+	chmod 755 "$TMP/$APP/$pkg_name"
+	mkdir -p "$TMP/$APP/$pkg_name/usr/bin"
+	mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"
+	mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
 
-    mv -f "$TMP/$APP/$pkg_name/${APP}" "$TMP/$APP/$pkg_name/${APP}-${CHANNEL}"
-    mv -f "$TMP/$APP/$pkg_name/${APP}-${CHANNEL}" $TMP/"$APP"/"$pkg_name"/usr/lib64
-    cd "$TMP/$APP/$pkg_name/usr/lib64"
-    ln -sf "${APP}-${CHANNEL}/" ${APP}
-    cd "$TMP/$APP/$pkg_name/usr/bin"
-    ln -sf "../lib64/${APP}/${APP}" ${APP}
-    
-    mkdir -p "$TMP/$APP/$pkg_name/usr/lib64/${APP}/distribution" 2> /dev/null
-    cat > "$TMP/$APP/$pkg_name/usr/share/applications/librewolf.desktop" << EOF
+	mv -f "$TMP/$APP/$pkg_name/${APP}" "$TMP/$APP/$pkg_name/${APP}-${CHANNEL}"
+	mv -f "$TMP/$APP/$pkg_name/${APP}-${CHANNEL}" $TMP/"$APP"/"$pkg_name"/usr/lib64
+	cd "$TMP/$APP/$pkg_name/usr/lib64"
+	ln -sf "${APP}-${CHANNEL}/" ${APP}
+	cd "$TMP/$APP/$pkg_name/usr/bin"
+	ln -sf "../lib64/${APP}/${APP}" ${APP}
+	
+	mkdir -p "$TMP/$APP/$pkg_name/usr/lib64/${APP}/distribution" 2> /dev/null
+	cat > "$TMP/$APP/$pkg_name/usr/share/applications/librewolf.desktop" << EOF
 [Desktop Entry]
 Exec=librewolf %u
 Icon=librewolf
@@ -99,7 +94,7 @@ GenericName=Web Browser
 MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;application/x-xpinstall;application/pdf;application/json;
 EOF
 
-    cat > "$TMP/$APP/$pkg_name/usr/lib64/librewolf/distribution/distribution.ini" << EOF
+	cat > "$TMP/$APP/$pkg_name/usr/lib64/librewolf/distribution/distribution.ini" << EOF
 [Preferences]
 app.update.auto=false
 app.update.enabled=false
@@ -108,7 +103,7 @@ browser.shell.checkDefaultBrowser=false
 app.shield.optoutstudies.enabled=false
 EOF
 
-    finisher "$pkg_name"
+	finisher "$pkg_name"
 }
 
 # Main Code
