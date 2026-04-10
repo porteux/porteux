@@ -1,5 +1,16 @@
 #!/bin/bash
 
+isRoot() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/virtualbox-guestadditions.sh $*"
+    exit 0
+fi
+
+
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ] || [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*06-crippled?sources*")" ]; then
     echo "Both 'devel' and 'crippled-sources' modules need to be activated."
     exit 1

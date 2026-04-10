@@ -1,5 +1,15 @@
 #!/bin/bash
 
+isRoot() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/steam.sh $*"
+    exit 0
+fi
+
 CURRENTPACKAGE=steam
 APPLICATIONURL=https://repo.steampowered.com/steam/archive/precise/steam_latest.deb
 ARCH=i586
@@ -7,6 +17,20 @@ OUTPUTDIR="$PORTDIR/modules/"
 BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
 MODULEDIR="$BUILDDIR/$CURRENTPACKAGE-module"
 INSTALLDIR="$1"
+
+# Parameter validation
+if [ -z "$INSTALLDIR" ]; then
+    echo "Usage: $0 <installation_directory> [--activate-module]"
+    echo "Installation directory is required."
+    exit 1
+fi
+
+# Check if directory exists and is writable
+if [ ! -w "$INSTALLDIR" ] 2>/dev/null; then
+    echo "Directory $INSTALLDIR is not writable. Cannot create $INSTALLDIR."
+    exit 1
+fi
+
 CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
 CURRENTGROUP=$(id -gn "$CURRENTUSER")
 [ ! "$CURRENTUSER" ] && CURRENTUSER=guest

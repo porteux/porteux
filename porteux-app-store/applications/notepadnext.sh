@@ -1,5 +1,16 @@
 #!/bin/bash
 
+isRoot() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/notepadnext.sh $*"
+    exit 0
+fi
+
+
 CURRENTPACKAGE=notepadnext
 FRIENDLYNAME="Notepad++ (Next)"
 CATEGORY=Utility
