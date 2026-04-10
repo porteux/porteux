@@ -14,7 +14,7 @@ fi
 if [ "$#" -lt 1 ]; then
     echo "Usage:   $0 [channel] [language] [optional: --activate-module]"
     echo "If no language is specified, en-US will be set"
-    echo "Channels available: developer | stable"
+    echo "Channels available: snapshot | stable"
     echo ""
     echo "Example: $0 stable pt-BR"
     exit 1
