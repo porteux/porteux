@@ -1,15 +1,14 @@
 #!/bin/bash
 
 isRoot() {
-    [ "$(id -u)" -eq 0 ]
+	[ "$(id -u)" -eq 0 ]
 }
 
 if ! isRoot; then
-    echo "Please enter root's password below:"
-    su -c "/opt/porteux-scripts/porteux-app-store/applications/libreoffice.sh $*"
-    exit 0
+	echo "Please enter root's password below:"
+	su -c "$0 $*"
+	exit 0
 fi
-
 
 CURRENTPACKAGE=libreoffice
 ARCH=$(uname -m)
@@ -48,25 +47,25 @@ rm -fr "$BUILDDIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_helppack_"$LANGUAGE"
 rm -f "$BUILDDIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_helppack_"$LANGUAGE".tar.gz
 
 if [[ "$LANGUAGE" != 'en-US' ]]; then
-    # download langpack
-    wget -T 15 -q --show-progress "http://download.documentfoundation.org/libreoffice/$CHANNEL/$MAJORVERSION/rpm/$ARCH/LibreOffice_${VERSION}_Linux_x86-64_rpm_langpack_${LANGUAGE}.tar.gz"
-    tar -xf LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE".tar.gz
-    mv "$BUILDDIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE"/RPMS/* "$MODULEDIR"
-    rm -fr "$BUILDDIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE"
-    rm -f "$BUILDDIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE".tar.gz
+	# download langpack
+	wget -T 15 -q --show-progress "http://download.documentfoundation.org/libreoffice/$CHANNEL/$MAJORVERSION/rpm/$ARCH/LibreOffice_${VERSION}_Linux_x86-64_rpm_langpack_${LANGUAGE}.tar.gz"
+	tar -xf LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE".tar.gz
+	mv "$BUILDDIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE"/RPMS/* "$MODULEDIR"
+	rm -fr "$BUILDDIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE"
+	rm -f "$BUILDDIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE".tar.gz
 
-    mkdir -p "$MODULEDIR/root/.config/libreoffice/4/user/"
-    cat > "$MODULEDIR/root/.config/libreoffice/4/user/registrymodifications.xcu" << EOF
+	mkdir -p "$MODULEDIR/root/.config/libreoffice/4/user/"
+	cat > "$MODULEDIR/root/.config/libreoffice/4/user/registrymodifications.xcu" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <oor:items xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <item oor:path="/org.openoffice.Office.Linguistic/General"><prop oor:name="UILocale" oor:op="fuse"><value>${LANGUAGE}</value></prop></item>
 </oor:items>
 EOF
 
-    mkdir -p "$MODULEDIR/${USERHOMEFOLDER}/.config/libreoffice/4/user"
-    cp "$MODULEDIR/root/.config/libreoffice/4/user/registrymodifications.xcu" "$MODULEDIR/${USERHOMEFOLDER}/.config/libreoffice/4/user"
+	mkdir -p "$MODULEDIR/${USERHOMEFOLDER}/.config/libreoffice/4/user"
+	cp "$MODULEDIR/root/.config/libreoffice/4/user/registrymodifications.xcu" "$MODULEDIR/${USERHOMEFOLDER}/.config/libreoffice/4/user"
 
-    chown -R "$CURRENTUSER":"$CURRENTGROUP" "$MODULEDIR/${USERHOMEFOLDER}"
+	chown -R "$CURRENTUSER":"$CURRENTGROUP" "$MODULEDIR/${USERHOMEFOLDER}"
 fi
 
 # extract all rpm

@@ -1,15 +1,14 @@
 #!/bin/bash
 
 isRoot() {
-    [ "$(id -u)" -eq 0 ]
+	[ "$(id -u)" -eq 0 ]
 }
 
 if ! isRoot; then
-    echo "Please enter root's password below:"
-    su -c "/opt/porteux-scripts/porteux-app-store/applications/vscode.sh $*"
-    exit 0
+	echo "Please enter root's password below:"
+	su -c "$0 $*"
+	exit 0
 fi
-
 
 CURRENTPACKAGE=codium
 FULLVERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/VSCodium/vscodium/releases/latest | rev | cut -d / -f 1 | rev)
@@ -27,17 +26,17 @@ mkdir "$BUILDDIR" && cd "$BUILDDIR"
 wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
 
 if [ ! -w "$OUTPUTDIR" ]; then
-    deb2xzm "$INPUTFILE" -o="/tmp/$MODULEFILENAME" -q &>/dev/null
-    echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
+	deb2xzm "$INPUTFILE" -o="/tmp/$MODULEFILENAME" -q &>/dev/null
+	echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
 elif [ ! -f "$OUTPUTDIR/$MODULEFILENAME" ]; then
-    deb2xzm "$INPUTFILE" -o="$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
-    echo "Module placed in $OUTPUTDIR"
-    if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULEFILENAME" ]; then
-        activate "$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
-    fi
+	deb2xzm "$INPUTFILE" -o="$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
+	echo "Module placed in $OUTPUTDIR"
+	if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULEFILENAME" ]; then
+		activate "$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
+	fi
 else
-    deb2xzm "$INPUTFILE" -o="/tmp/$MODULEFILENAME" -q &>/dev/null
-    echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
+	deb2xzm "$INPUTFILE" -o="/tmp/$MODULEFILENAME" -q &>/dev/null
+	echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
 fi
 
 # cleanup

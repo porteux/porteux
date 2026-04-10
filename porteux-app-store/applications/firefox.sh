@@ -1,27 +1,22 @@
 #!/bin/bash
 
-if [ "$(uname -m)" != "x86_64" ]; then
-    echo "Unsupported system architecture"
-    exit 1
-fi
-
 isRoot() {
-    [ "$(id -u)" -eq 0 ]
+	[ "$(id -u)" -eq 0 ]
 }
 
 if ! isRoot; then
-    echo "Please enter root's password below:"
-    su -c "/opt/porteux-scripts/porteux-app-store/applications/firefox.sh $1 $2 $3"
-    exit 0
+	echo "Please enter root's password below:"
+	su -c "$0 $1 $2 $3"
+	exit 0
 fi
 
 if [ "$#" -lt 1 ]; then
-    echo "Usage:   $0 [channel] [language] [optional: --activate-module]"
-    echo "If no language is specified, en-US will be set"
-    echo "Channels available: stable | esr | beta"
-    echo ""
-    echo "Example: $0 esr en-US"
-    exit 1
+	echo "Usage: $0 [channel] [language] [optional: --activate-module]"
+	echo "If no language is specified, en-US will be set"
+	echo "Channels available: stable | esr | beta"
+	echo ""
+	echo "Example: $0 esr en-US"
+	exit 1
 fi
 
 # Global variables
@@ -35,20 +30,20 @@ WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
 create_application_temp_dir() {
-    rm -fr "${TMP:?}/$1"
-    mkdir -p "$TMP/$1"
+	rm -fr "${TMP:?}/$1"
+	mkdir -p "$TMP/$1"
 }
 
 get_module_name() {
-    local pkgver="$2"
-    local arch="$3"
+	local pkgver="$2"
+	local arch="$3"
 
-    echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
+	echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
 finisher() {
-    /opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    rm -fr "${TMP:?}/$APP"
+	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+	rm -fr "${TMP:?}/$APP"
 }
 
 get_repo_version_firefox() {
@@ -59,41 +54,41 @@ get_repo_version_firefox() {
 		ver=$(curl -s https://ftp.mozilla.org/pub/firefox/releases/ | grep -oP '(?<=releases/)\d[^/]+(?=/")' | grep 'esr' | sort -V -r | head -1)
 	elif [ $CHANNEL = "beta" ]; then
 		ver=$(curl -s https://ftp.mozilla.org/pub/firefox/releases/ | grep -oP '(?<=releases/)\d[^/]+(?=/")' | grep 'b[0-9]$' | sort -V -r | head -1)
-    fi
+	fi
 
-    echo "$ver"
+	echo "$ver"
 }
 
 make_module_firefox() {
-    if [ "$CHANNEL" != "stable" ] && [ "$CHANNEL" != "esr" ] && [ "$CHANNEL" != "beta" ]; then
-        echo "Non-existent channel. Options: stable | esr | beta" && exit 1
-    fi
+	if [ "$CHANNEL" != "stable" ] && [ "$CHANNEL" != "esr" ] && [ "$CHANNEL" != "beta" ]; then
+		echo "Non-existent channel. Options: stable | esr | beta" && exit 1
+	fi
 
-    local pkgver=$(get_repo_version_firefox "$CHANNEL")
-    local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
-    local package_extension="tar.xz"
-    local major_version=$(echo $pkgver | cut -f 1 -d .)
-    
-    if [ "$major_version" -le 128 ]; then
-        package_extension="tar.bz2"
-    fi
+	local pkgver=$(get_repo_version_firefox "$CHANNEL")
+	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+	local package_extension="tar.xz"
+	local major_version=$(echo $pkgver | cut -f 1 -d .)
+	
+	if [ "$major_version" -le 128 ]; then
+		package_extension="tar.bz2"
+	fi
 
-    create_application_temp_dir "$APP"
+	create_application_temp_dir "$APP"
 
-    $WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://ftp.mozilla.org/pub/firefox/releases/${pkgver}/linux-x86_64/${LANGUAGE}/firefox-${pkgver}.${package_extension}"
+	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://ftp.mozilla.org/pub/firefox/releases/${pkgver}/linux-x86_64/${LANGUAGE}/firefox-${pkgver}.${package_extension}"
 
-    mkdir -p "$TMP/$APP/$pkg_name"
-    tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name"
-    chmod 755 "$TMP/$APP/$pkg_name"
-    mkdir -p "$TMP/$APP/$pkg_name/usr/bin"
-    mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"
-    mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
+	mkdir -p "$TMP/$APP/$pkg_name"
+	tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name"
+	chmod 755 "$TMP/$APP/$pkg_name"
+	mkdir -p "$TMP/$APP/$pkg_name/usr/bin"
+	mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"
+	mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
 
-    mv -f "$TMP/$APP/$pkg_name/firefox" "$TMP/$APP/$pkg_name/firefox-${CHANNEL}"
-    mv -f "$TMP/$APP/$pkg_name/firefox-${CHANNEL}" $TMP/"$APP"/"$pkg_name"/usr/lib64
-    cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "firefox-${CHANNEL}/" firefox
-    cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/firefox/firefox" firefox
-    cat > "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop" << EOF    
+	mv -f "$TMP/$APP/$pkg_name/firefox" "$TMP/$APP/$pkg_name/firefox-${CHANNEL}"
+	mv -f "$TMP/$APP/$pkg_name/firefox-${CHANNEL}" $TMP/"$APP"/"$pkg_name"/usr/lib64
+	cd "$TMP/$APP/$pkg_name/usr/lib64" && ln -sf "firefox-${CHANNEL}/" firefox
+	cd "$TMP/$APP/$pkg_name/usr/bin" && ln -sf "../lib64/firefox/firefox" firefox
+	cat > "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop" << EOF	
 [Desktop Entry]
 Exec=firefox %u
 Icon=firefox
@@ -104,17 +99,17 @@ GenericName=Web Browser
 MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
 EOF
 
-    if [ "$CHANNEL" != "stable" ]; then
-        if [ "$CHANNEL" = "esr" ]; then
-            sed -i "s/^Name.*/& ${CHANNEL^^}/" "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop"
-        else
-            sed -i "s/^Name.*/& ${CHANNEL^}/" "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop"
-        fi
-        mv "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop" "$TMP/$APP/$pkg_name/usr/share/applications/firefox-${CHANNEL}.desktop"
-    fi
-    
-    mkdir -p "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution" 2> /dev/null
-    cat > "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution/policies.json" << EOF
+	if [ "$CHANNEL" != "stable" ]; then
+		if [ "$CHANNEL" = "esr" ]; then
+			sed -i "s/^Name.*/& ${CHANNEL^^}/" "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop"
+		else
+			sed -i "s/^Name.*/& ${CHANNEL^}/" "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop"
+		fi
+		mv "$TMP/$APP/$pkg_name/usr/share/applications/firefox.desktop" "$TMP/$APP/$pkg_name/usr/share/applications/firefox-${CHANNEL}.desktop"
+	fi
+	
+	mkdir -p "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution" 2> /dev/null
+	cat > "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution/policies.json" << EOF
 {
 "policies":
 {
@@ -125,7 +120,7 @@ EOF
 }
 EOF
 
-    cat > "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution/distribution.ini" << EOF
+	cat > "$TMP/$APP/$pkg_name/usr/lib64/firefox/distribution/distribution.ini" << EOF
 [Preferences]
 app.update.auto=false
 app.update.enabled=false
@@ -134,7 +129,7 @@ browser.shell.checkDefaultBrowser=false
 app.shield.optoutstudies.enabled=false
 EOF
 
-    finisher "$pkg_name"
+	finisher "$pkg_name"
 }
 
 # Main Code
