@@ -5,7 +5,11 @@ if [ "$(uname -m)" != "x86_64" ]; then
     exit 1
 fi
 
-if [ `whoami` != root ]; then
+isRoot() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
     echo "Please enter root's password below:"
     su -c "/opt/porteux-scripts/porteux-app-store/applications/librewolf.sh $1 $2 $3"
     exit 0
@@ -30,24 +34,24 @@ TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
-create_application_temp_dir(){
-    rm -rf "${TMP:?}/$1"
-    mkdir -p $TMP/"$1"
+create_application_temp_dir() {
+    rm -fr "${TMP:?}/$1"
+    mkdir -p "$TMP/$1"
 }
 
-get_module_name(){
+get_module_name() {
     local pkgver="$2"
     local arch="$3"
 
     echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
-finisher(){
-    /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    rm -rf "${TMP:?}/$APP"
+finisher() {
+    /opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+    rm -fr "${TMP:?}/$APP"
 }
 
-get_repo_version_librewolf(){
+get_repo_version_librewolf() {
 	local ver;
 	if [ $CHANNEL = "stable" ]; then
 		ver=$(curl -s https://codeberg.org/librewolf/bsys6/releases | grep "librewolf/bsys6/src/tag/" | cut -d "/" -f 6 | cut -d "\"" -f 1 | sort -Vr | head -1)
@@ -56,7 +60,7 @@ get_repo_version_librewolf(){
     echo "$ver"
 }
 
-make_module_librewolf(){
+make_module_librewolf() {
     if [ "$CHANNEL" != "stable" ]; then
         echo "Non-existent channel. Options: stable" && exit 1
     fi

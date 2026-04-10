@@ -1,12 +1,9 @@
 #!/bin/bash
 
 CURRENTPACKAGE=codium
-CATEGORY=Development
 FULLVERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/VSCodium/vscodium/releases/latest | rev | cut -d / -f 1 | rev)
 VERSION="${FULLVERSION//[vV]}"
 APPLICATIONURL="https://github.com/VSCodium/vscodium/releases/latest/download/codium_${VERSION}_amd64.deb"
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
-
 ARCH=$(uname -m)
 OUTPUTDIR="$PORTDIR/modules"
 BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
@@ -33,4 +30,4 @@ else
 fi
 
 # cleanup
-rm -fr "$BUILDDIR" 2> /dev/null
+rm -fr "$BUILDDIR" &>/dev/null
