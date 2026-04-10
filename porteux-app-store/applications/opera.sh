@@ -69,7 +69,6 @@ make_module_opera(){
     fi
 
     local pkg_name
-    local pkg_name
     local product_name; product_name=$([ "$CHANNEL" == "stable" ] && echo "$APP" || echo "$APP-$CHANNEL")
 
     create_application_temp_dir "$APP" || exit 1
