@@ -5,7 +5,11 @@ if [ "$(uname -m)" != "x86_64" ]; then
     exit 1
 fi
 
-if [ `whoami` != root ]; then
+isRoot() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
     echo "Please enter root's password below:"
     su -c "/opt/porteux-scripts/porteux-app-store/applications/opera.sh $1 $2 $3"
     exit 0
@@ -30,40 +34,40 @@ TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
-create_application_temp_dir(){
-    rm -rf "${TMP:?}/$1"
-    mkdir -p $TMP/"$1"
+create_application_temp_dir() {
+    rm -fr "${TMP:?}/$1"
+    mkdir -p "$TMP/$1"
 }
 
-chromium_family_locale_striptease(){
+chromium_family_locale_striptease() {
     local locale_dir="$1"
 
     find "$locale_dir" -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en-US.*" -o -name "en_US.*" -o -name "$LANGUAGE.*" \) -delete
 }
 
-striptease(){
+striptease() {
     local pkg_dir="$TMP/$1/$2"
 
-    rm -rf "$pkg_dir"/usr/lib/
-    rm -rf "$pkg_dir"/usr/lib64/opera*/opera_autoupdate*
+    rm -fr "$pkg_dir/usr/lib/"
+    rm -fr "$pkg_dir"/usr/lib64/opera*/opera_autoupdate*
     chromium_family_locale_striptease "$pkg_dir"/usr/lib64/opera*/localization
 }
 
-get_module_name(){
+get_module_name() {
     local pkgver="$2"
     local arch="$3"
 
     echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
-finisher(){
+finisher() {
     striptease "$APP" "$1"
 
-    /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    rm -rf "${TMP:?}/$APP"
+    /opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+    rm -fr "${TMP:?}/$APP"
 }
 
-make_module_opera(){
+make_module_opera() {
     if [ "$CHANNEL" != "developer" ] && [ "$CHANNEL" != "beta" ] && [ "$CHANNEL" != "stable" ]; then
         echo "Non-existent channel. Options: developer | beta | stable" && exit 1
     fi
@@ -73,11 +77,11 @@ make_module_opera(){
 
     create_application_temp_dir "$APP" || exit 1
 
-    $WGET_WITH_TIME_OUT -P $TMP/"$APP"/ -r -nd --no-parent https://rpm.opera.com/rpm/ -A opera_"$CHANNEL"-*.rpm || exit 1
-    pkgver=$(find $TMP/"$APP" -name "opera_*.rpm" -exec basename {} \; | cut -d '-' -f2)
+    $WGET_WITH_TIME_OUT -P "$TMP/$APP/" -r -nd --no-parent https://rpm.opera.com/rpm/ -A opera_"$CHANNEL"-*.rpm || exit 1
+    pkgver=$(find "$TMP/$APP" -name "opera_*.rpm" -exec basename {} \; | cut -d '-' -f2)
     pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 
-    mv $TMP/"$APP"/opera_*.rpm $TMP/"$APP"/"$pkg_name".rpm
+    mv "$TMP/$APP"/opera_*.rpm "$TMP/$APP/$pkg_name.rpm"
     mkdir -p "$TMP/$APP/$pkg_name"
     rpm2cpio "$TMP/$APP/${pkg_name}.rpm" | cpio -idmv -D "$TMP/$APP/$pkg_name"
     chmod 755 "$TMP/$APP/$pkg_name"
