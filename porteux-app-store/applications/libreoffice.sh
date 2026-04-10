@@ -1,5 +1,16 @@
 #!/bin/bash
 
+isRoot() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/libreoffice.sh $*"
+    exit 0
+fi
+
+
 CURRENTPACKAGE=libreoffice
 ARCH=$(uname -m)
 CHANNEL=$([ "$1" ] && echo "$1" || echo "stable")

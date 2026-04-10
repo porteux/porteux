@@ -1,5 +1,16 @@
 #!/bin/bash
 
+isRoot() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/devel.sh $*"
+    exit 0
+fi
+
+
 CURRENTPACKAGE=devel
 PORTEUXFULLVERSION=$(cat /etc/porteux-version)
 PORTEUXVERSION=${PORTEUXFULLVERSION#*-}

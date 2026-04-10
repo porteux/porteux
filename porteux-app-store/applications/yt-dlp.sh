@@ -1,5 +1,16 @@
 #!/bin/bash
 
+isRoot() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
+    echo "Please enter root's password below:"
+    su -c "/opt/porteux-scripts/porteux-app-store/applications/yt-dlp.sh $*"
+    exit 0
+fi
+
+
 CURRENTPACKAGE=yt-dlp
 VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/yt-dlp/yt-dlp/releases/latest | rev | cut -d / -f 1 | rev)
 APPLICATIONURL="https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
