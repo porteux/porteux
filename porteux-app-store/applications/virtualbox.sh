@@ -1,8 +1,18 @@
 #!/bin/bash
 
+isRoot() {
+	[ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
+	echo "Please enter root's password below:"
+	su -c "$0 $*"
+	exit 0
+fi
+
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ] || [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*06-crippled?sources*")" ]; then
-    echo "Both 'devel' and 'crippled-sources' modules need to be activated."
-    exit 1
+	echo "Both 'devel' and 'crippled-sources' modules need to be activated."
+	exit 1
 fi
 
 CURRENTPACKAGE=virtualbox
@@ -23,17 +33,17 @@ mkdir "$BUILDDIR"
 mkdir "$MODULEDIR"
 
 if [[ ! "$1" || "$1" == "--activate-module" ]]; then
-    # download the latest version
-    REPOSITORY="http://download.virtualbox.org/virtualbox"
-    wget -T 15 -P "$BUILDDIR" "$REPOSITORY/LATEST.TXT"
-    CURRENTVERSION=$(cat "$BUILDDIR/LATEST.TXT")
-    LATESTFILE=$(curl -s "$REPOSITORY/$CURRENTVERSION/" | grep .run | cut -d "\"" -f2)
-    wget -T 15 -P "$BUILDDIR" "$REPOSITORY/$CURRENTVERSION/$LATESTFILE"
-    INSTALLERPATH="$BUILDDIR/$LATESTFILE"
+	# download the latest version
+	REPOSITORY="http://download.virtualbox.org/virtualbox"
+	wget -T 15 -P "$BUILDDIR" "$REPOSITORY/LATEST.TXT"
+	CURRENTVERSION=$(cat "$BUILDDIR/LATEST.TXT")
+	LATESTFILE=$(curl -s "$REPOSITORY/$CURRENTVERSION/" | grep .run | cut -d "\"" -f2)
+	wget -T 15 -P "$BUILDDIR" "$REPOSITORY/$CURRENTVERSION/$LATESTFILE"
+	INSTALLERPATH="$BUILDDIR/$LATESTFILE"
 else
-    # use file provided by the user
-    INSTALLERPATH="$1"
-    CURRENTVERSION=$(ls "$INSTALLERPATH" -a | cut -d'-' -f2)
+	# use file provided by the user
+	INSTALLERPATH="$1"
+	CURRENTVERSION=$(ls "$INSTALLERPATH" -a | cut -d'-' -f2)
 fi
 
 # install
@@ -55,17 +65,17 @@ find /etc /lib /usr /sbin | grep -E "vbox|virtualbox|VBox|VirtualBox" | xargs -i
 cp -r --parents /sbin/{vbox*,rcvbox*} "$MODULEDIR/"
 cp -r --parents /opt/VirtualBox "$MODULEDIR/"
 for a in $(seq 0 6); do
-    cp -r --parents /etc/rc.d/rc${a}.d/{K[0-9][0-9]vbox*,S[0-9][0-9]vbox*} "$MODULEDIR/" &>/dev/null
+	cp -r --parents /etc/rc.d/rc${a}.d/{K[0-9][0-9]vbox*,S[0-9][0-9]vbox*} "$MODULEDIR/" &>/dev/null
 done
 mkdir -p "$MODULEDIR/${USERHOMEFOLDER}/.config/VirtualBox/"
 cat > "$MODULEDIR/${USERHOMEFOLDER}/.config/VirtualBox/VirtualBox.xml" << EOF
 <?xml version="1.0"?>
 <VirtualBox xmlns="http://www.virtualbox.org/" version="1.12-linux">
-  <Global>
-    <ExtraData>
-      <ExtraDataItem name="GUI/UpdateDate" value="never"/>
-    </ExtraData>
-  </Global>
+ <Global>
+	<ExtraData>
+	 <ExtraDataItem name="GUI/UpdateDate" value="never"/>
+	</ExtraData>
+ </Global>
 </VirtualBox>
 EOF
 chown -R "$CURRENTUSER":"$CURRENTGROUP" "$MODULEDIR/${USERHOMEFOLDER}"
