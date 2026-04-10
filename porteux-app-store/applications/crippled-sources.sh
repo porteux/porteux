@@ -1,13 +1,13 @@
 #!/bin/bash
 
 isRoot() {
-    [ "$(id -u)" -eq 0 ]
+	[ "$(id -u)" -eq 0 ]
 }
 
 if ! isRoot; then
-    echo "Please enter root's password below:"
-    su -c "/opt/porteux-scripts/porteux-app-store/applications/crippled-sources.sh $*"
-    exit 0
+	echo "Please enter root's password below:"
+	su -c "$0 $*"
+	exit 0
 fi
 
 CURRENTPACKAGE=crippled-sources
@@ -26,17 +26,17 @@ MODULEFILENAME=$(unzip -Z1 "$BUILDDIR/$CURRENTPACKAGE.zip") || exit 1
 unzip "$BUILDDIR/$CURRENTPACKAGE.zip" -d "$BUILDDIR" &>/dev/null || exit 1
 
 if [ ! -w "$OUTPUTDIR" ]; then
-    mv "$BUILDDIR/$MODULEFILENAME" /tmp &>/dev/null
-    echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
+	mv "$BUILDDIR/$MODULEFILENAME" /tmp &>/dev/null
+	echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
 elif [ ! -f "$OUTPUTDIR/$MODULEFILENAME" ]; then
-    mv "$BUILDDIR/$MODULEFILENAME" "$OUTPUTDIR" &>/dev/null
-    echo "Module placed in $OUTPUTDIR"
-    if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULEFILENAME" ]; then
-        activate "$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
-    fi
+	mv "$BUILDDIR/$MODULEFILENAME" "$OUTPUTDIR" &>/dev/null
+	echo "Module placed in $OUTPUTDIR"
+	if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULEFILENAME" ]; then
+		activate "$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
+	fi
 else
-    mv "$BUILDDIR/$MODULEFILENAME" /tmp &>/dev/null
-    echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
+	mv "$BUILDDIR/$MODULEFILENAME" /tmp &>/dev/null
+	echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
 fi
 
 # cleanup

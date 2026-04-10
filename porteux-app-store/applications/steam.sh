@@ -1,13 +1,13 @@
 #!/bin/bash
 
 isRoot() {
-    [ "$(id -u)" -eq 0 ]
+	[ "$(id -u)" -eq 0 ]
 }
 
 if ! isRoot; then
-    echo "Please enter root's password below:"
-    su -c "/opt/porteux-scripts/porteux-app-store/applications/steam.sh $*"
-    exit 0
+	echo "Please enter root's password below:"
+	su -c "$0 $*"
+	exit 0
 fi
 
 CURRENTPACKAGE=steam
@@ -20,15 +20,15 @@ INSTALLDIR="$1"
 
 # Parameter validation
 if [ -z "$INSTALLDIR" ]; then
-    echo "Usage: $0 <installation_directory> [--activate-module]"
-    echo "Installation directory is required."
-    exit 1
+	echo "Usage: $0 [installation_directory] [optional: --activate-module]"
+	echo "Installation directory is required."
+	exit 1
 fi
 
 # Check if directory exists and is writable
 if [ ! -w "$INSTALLDIR" ] 2>/dev/null; then
-    echo "Directory $INSTALLDIR is not writable. Cannot create $INSTALLDIR."
-    exit 1
+	echo "Directory $INSTALLDIR is not writable. Cannot create $INSTALLDIR."
+	exit 1
 fi
 
 CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)

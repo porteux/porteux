@@ -1,19 +1,18 @@
 #!/bin/bash
 
 isRoot() {
-    [ "$(id -u)" -eq 0 ]
+	[ "$(id -u)" -eq 0 ]
 }
 
 if ! isRoot; then
-    echo "Please enter root's password below:"
-    su -c "/opt/porteux-scripts/porteux-app-store/applications/virtualbox-guestadditions.sh $*"
-    exit 0
+	echo "Please enter root's password below:"
+	su -c "$0 $*"
+	exit 0
 fi
 
-
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ] || [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*06-crippled?sources*")" ]; then
-    echo "Both 'devel' and 'crippled-sources' modules need to be activated."
-    exit 1
+	echo "Both 'devel' and 'crippled-sources' modules need to be activated."
+	exit 1
 fi
 
 CURRENTPACKAGE=virtualbox-guestadditions
@@ -31,17 +30,17 @@ mkdir "$MOUNTDIR"
 mkdir "$MODULEDIR"
 
 if [[ ! "$1" || "$1" == "--activate-module" ]]; then
-    # download the latest version
-    REPOSITORY="http://download.virtualbox.org/virtualbox"
-    wget -T 15 -P "$BUILDDIR" "$REPOSITORY/LATEST.TXT"
-    CURRENTVERSION=$(cat "$BUILDDIR/LATEST.TXT")
-    LATESTFILE="VBoxGuestAdditions_${CURRENTVERSION}.iso"
-    wget -T 15 -P "$BUILDDIR" "$REPOSITORY/$CURRENTVERSION/$LATESTFILE"
-    INSTALLERPATH="$BUILDDIR/$LATESTFILE"
+	# download the latest version
+	REPOSITORY="http://download.virtualbox.org/virtualbox"
+	wget -T 15 -P "$BUILDDIR" "$REPOSITORY/LATEST.TXT"
+	CURRENTVERSION=$(cat "$BUILDDIR/LATEST.TXT")
+	LATESTFILE="VBoxGuestAdditions_${CURRENTVERSION}.iso"
+	wget -T 15 -P "$BUILDDIR" "$REPOSITORY/$CURRENTVERSION/$LATESTFILE"
+	INSTALLERPATH="$BUILDDIR/$LATESTFILE"
 else
-    # use file provided by the user
-    INSTALLERPATH="$1"
-    CURRENTVERSION=$(find "$INSTALLERPATH" -name "*.[0-9]*" | sort -V | tail -n 1)
+	# use file provided by the user
+	INSTALLERPATH="$1"
+	CURRENTVERSION=$(find "$INSTALLERPATH" -name "*.[0-9]*" | sort -V | tail -n 1)
 fi
 
 # mount and install
@@ -52,7 +51,7 @@ sh "$MOUNTDIR/VBoxLinuxAdditions.run" --nox11
 cp -r --parents /etc/rc.d/{rc.vboxadd,rc.vboxadd-service,rc.vboxadd-x11} "$MODULEDIR/" &>/dev/null
 cp -r --parents /etc/rc.d/init.d/{vboxdrv,vboxballoonctrl-service,vboxautostart-service,vboxweb-service} "$MODULEDIR/" &>/dev/null
 for a in $(seq 0 6); do
-    cp -r --parents /etc/rc.d/rc${a}.d/{K[0-9][0-9]vbox*,S[0-9][0-9]vbox*} "$MODULEDIR/" &>/dev/null
+	cp -r --parents /etc/rc.d/rc${a}.d/{K[0-9][0-9]vbox*,S[0-9][0-9]vbox*} "$MODULEDIR/" &>/dev/null
 done
 cp -r --parents /etc/vbox/vbox.cfg "$MODULEDIR/" &>/dev/null
 cp -r --parents /etc/vbox/filelist "$MODULEDIR/" &>/dev/null
