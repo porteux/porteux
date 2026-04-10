@@ -20,19 +20,14 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-# transmission crashes if we build with fancy flags, so let's keep it simple
-LDFLAGS="$LLDFLAGS" \
 cmake -B build -S . \
 	-G Ninja \
-	-DCMAKE_C_COMPILER=clang \
-	-DCMAKE_CXX_COMPILER=clang++ \
-	-DCMAKE_C_FLAGS="-O3 -flto=auto -fPIC" \
-	-DCMAKE_CXX_FLAGS="-O3 -flto=auto -fvisibility-inlines-hidden" \
+	-DCMAKE_C_FLAGS="$GCC_CGFLAGS -ffat-lto-objects -fPIC" \
+	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DENABLE_TESTS=OFF \
-	-DRUN_CLANG_TIDY=OFF \
 	-DWITH_APPINDICATOR=OFF \
 	-DENABLE_QT=OFF \
 	-DINSTALL_DOC=OFF
