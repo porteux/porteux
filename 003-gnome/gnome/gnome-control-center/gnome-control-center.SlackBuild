@@ -31,7 +31,7 @@ mkdir build && cd build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
-	--buildtype=optimized \
+	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
