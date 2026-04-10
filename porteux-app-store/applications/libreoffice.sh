@@ -11,7 +11,7 @@ VERSION=$(echo $LATESTPACKAGE | cut -d _ -f 2)
 TMP=/tmp/$PRGNAM-builder
 PKG=$TMP/$PRGNAM-module
 OUTPUTDIR="$PORTDIR/modules"
-MODULEFILENAME=$PRGNAM-$CHANNEL-$VERSION-$ARCH-$LANGUAGE_porteux.xzm
+MODULEFILENAME=$PRGNAM-$CHANNEL-$VERSION-$ARCH-${LANGUAGE}_porteux.xzm
 MODULEPATH=$OUTPUTDIR/$MODULEFILENAME
 
 CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
@@ -45,18 +45,18 @@ if [[ "$LANGUAGE" != 'en-US' ]]; then
     rm -rf $TMP/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE"
     rm -f $TMP/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE".tar.gz
 
-    mkdir -p "$MODULEDIR/root/.config/libreoffice/4/user/"
-    cat > "$MODULEDIR/root/.config/libreoffice/4/user/registrymodifications.xcu" << EOF
+    mkdir -p "$PKG/root/.config/libreoffice/4/user/"
+    cat > "$PKG/root/.config/libreoffice/4/user/registrymodifications.xcu" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <oor:items xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <item oor:path="/org.openoffice.Office.Linguistic/General"><prop oor:name="UILocale" oor:op="fuse"><value>${LANGUAGE}</value></prop></item>
 </oor:items>
 EOF
 
-    mkdir -p "$MODULEDIR/${USERHOMEFOLDER}/.config/libreoffice/4/user"
-    cp "$MODULEDIR/root/.config/libreoffice/4/user/registrymodifications.xcu" "$MODULEDIR/${USERHOMEFOLDER}/.config/libreoffice/4/user"
+    mkdir -p "$PKG/${USERHOMEFOLDER}/.config/libreoffice/4/user"
+    cp "$PKG/root/.config/libreoffice/4/user/registrymodifications.xcu" "$PKG/${USERHOMEFOLDER}/.config/libreoffice/4/user"
 
-    chown -R "$CURRENTUSER":"$CURRENTGROUP" "$MODULEDIR/${USERHOMEFOLDER}"
+    chown -R "$CURRENTUSER":"$CURRENTGROUP" "$PKG/${USERHOMEFOLDER}"
 fi
 
 # extract all rpm
