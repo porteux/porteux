@@ -1,5 +1,15 @@
 #!/bin/bash
 
+isRoot() {
+	[ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
+	echo "Please enter root's password below:"
+	su -c "$0 $*"
+	exit 0
+fi
+
 CURRENTPACKAGE=nvidia-driver
 PORTEUXFULLVERSION=$(cat /etc/porteux-version)
 PORTEUXVERSION=${PORTEUXFULLVERSION#*-}
@@ -9,9 +19,9 @@ systemFullVersion=$(cat /etc/slackware-version)
 SLACKWAREVERSION=${systemFullVersion//* }
 
 if [[ "$SLACKWAREVERSION" == *"+" ]]; then
-    SLACKWAREVERSION=current
+	SLACKWAREVERSION=current
 else
-    SLACKWAREVERSION=stable
+	SLACKWAREVERSION=stable
 fi
 
 ZIPFILENAME="$CURRENTPACKAGE-$SLACKWAREVERSION.zip"
@@ -37,17 +47,17 @@ find "$EXTRACTEDMODULEPATH" \( -type f -name "libnvidia-compiler*" -o -name "lib
 MODULEFILENAME="${MODULEFILENAME/nvidia/nvidia-lite}"
 
 if [ ! -w "$OUTPUTDIR" ]; then
-    dir2xzm -q "$BUILDDIR/$MODULEDIR" -o="/tmp/$MODULEFILENAME"
-    echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
+	dir2xzm -q "$BUILDDIR/$MODULEDIR" -o="/tmp/$MODULEFILENAME"
+	echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
 elif [ ! -f "$OUTPUTDIR/$MODULEFILENAME" ]; then
-    dir2xzm -q "$BUILDDIR/$MODULEDIR" -o="$OUTPUTDIR/$MODULEFILENAME"
-    echo "Module placed in $OUTPUTDIR"
-    if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULEFILENAME" ]; then
-        activate "$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
-    fi
+	dir2xzm -q "$BUILDDIR/$MODULEDIR" -o="$OUTPUTDIR/$MODULEFILENAME"
+	echo "Module placed in $OUTPUTDIR"
+	if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULEFILENAME" ]; then
+		activate "$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
+	fi
 else
-    dir2xzm -q "$BUILDDIR/$MODULEDIR" -o="/tmp/$MODULEFILENAME"
-    echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
+	dir2xzm -q "$BUILDDIR/$MODULEDIR" -o="/tmp/$MODULEFILENAME"
+	echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
 fi
 
 # cleanup
