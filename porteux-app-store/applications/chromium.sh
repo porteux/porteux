@@ -49,7 +49,6 @@ striptease(){
         find "$pkg_dir" -print0 | xargs -0 file | grep "$target" | grep ELF | cut -f 1 -d : | \
                 xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment \
                 --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
-        find "$pkg_dir" -exec file {} +
     done
     find "$pkg_dir" -name "chromedriver" -type f -delete
     rm "$pkg_dir"/usr/lib64/chromium/locales/*.info
