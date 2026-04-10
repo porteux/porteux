@@ -35,7 +35,5 @@ else
     echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
 fi
 
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
-
 # cleanup
 rm -fr "$BUILDDIR" 2> /dev/null
