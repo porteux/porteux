@@ -5,7 +5,11 @@ if [ "$(uname -m)" != "x86_64" ]; then
     exit 1
 fi
 
-if [ `whoami` != root ]; then
+isRoot() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
     echo "Please enter root's password below:"
     su -c "/opt/porteux-scripts/porteux-app-store/applications/vivaldi.sh $1 $2 $3"
     exit 0
@@ -30,47 +34,47 @@ TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
-create_application_temp_dir(){
-    rm -rf "${TMP:?}/$1"
-    mkdir -p $TMP/"$1"
+create_application_temp_dir() {
+    rm -fr "${TMP:?}/$1"
+    mkdir -p "$TMP/$1"
 }
 
-chromium_family_locale_striptease(){
+chromium_family_locale_striptease() {
     local locale_dir="$1"
 
     find "$locale_dir" -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en-US.*" -o -name "en_US.*" -o -name "$LANGUAGE.*" \) -delete
 }
 
-striptease(){
+striptease() {
     local pkg_dir="$TMP/$1/$2"
 
-    rm -rf "$pkg_dir/opt/vivaldi*/resources/vivaldi/default-bookmarks"
+    rm -fr "$pkg_dir/opt/vivaldi*/resources/vivaldi/default-bookmarks"
     chromium_family_locale_striptease "$pkg_dir"/opt/vivaldi*/locales
-    find "$pkg_dir"/opt/vivaldi*/resources/vivaldi/_locales -mindepth 1 -maxdepth 1 -type d ! \( -name "en" -o -name "${LANGUAGE//-/_}" \) -exec rm -rf {} +
+    find "$pkg_dir"/opt/vivaldi*/resources/vivaldi/_locales -mindepth 1 -maxdepth 1 -type d ! \( -name "en" -o -name "${LANGUAGE//-/_}" \) -exec rm -fr {} +
 }
 
-get_module_name(){
+get_module_name() {
     local pkgver="$2"
     local arch="$3"
 
     echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
-finisher(){
+finisher() {
     striptease "$APP" "$1"
 
-    /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    rm -rf "${TMP:?}/$APP"
+    /opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+    rm -fr "${TMP:?}/$APP"
 }
 
-get_repo_version_vivaldi(){
+get_repo_version_vivaldi() {
     local ver=$(curl -s "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/" | grep 'href=' | awk -F '"' '{print $2}' | \
     grep "$CHANNEL" | tail -n 1 | rev | cut -d '.' -f3- | rev | cut -d '-' -f3-) || exit 1
 
     echo "$ver"
 }
 
-make_module_vivaldi(){
+make_module_vivaldi() {
     if [ "$CHANNEL" != "snapshot" ] && [ "$CHANNEL" != "stable" ]; then
         echo "Non-existent channel. Options: snapshot | stable" && exit 1
     fi
