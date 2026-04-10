@@ -5,7 +5,11 @@ if [ "$(uname -m)" != "x86_64" ]; then
     exit 1
 fi
 
-if [ `whoami` != root ]; then
+isRoot() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+if ! isRoot; then
     echo "Please enter root's password below:"
     su -c "/opt/porteux-scripts/porteux-app-store/applications/palemoon.sh $1 $2 $3"
     exit 0
@@ -30,25 +34,25 @@ TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
-create_application_temp_dir(){
-    rm -rf "${TMP:?}/$1"
-    mkdir -p $TMP/"$1"
+create_application_temp_dir() {
+    rm -fr "${TMP:?}/$1"
+    mkdir -p "$TMP/$1"
 }
 
-striptease(){
+striptease() {
     local pkg_dir="$TMP/$1/$2"
 
     rm -fv "$pkg_dir"/usr/lib64/palemoon/update*
 }
 
-get_module_name(){
+get_module_name() {
     local pkgver="$2"
     local arch="$3"
 
     echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
-set_sane_defaults(){
+set_sane_defaults() {
     local pkg_dir="$TMP/$1/$2"
     local porteux_version=$(cat /etc/os-release | grep VERSION= | cut -d \" -f 2)
 
@@ -65,7 +69,7 @@ app.update.enabled=false
 EOF
 }
 
-add_language_pack(){
+add_language_pack() {
     if [ ! ${LANGUAGE} = "en-US" ]; then
         local pkg_dir="$TMP/$1/$2"
         mkdir -p "$pkg_dir"/usr/lib64/${APP}/distribution/extensions
@@ -79,21 +83,21 @@ EOF
     fi
 }
 
-finisher(){
+finisher() {
     striptease "$APP" "$1"
 
-    /opt/porteux-scripts/porteux-app-store/module-builder.sh $TMP/"$APP"/"$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
-    rm -rf "${TMP:?}/$APP"
+    /opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+    rm -fr "${TMP:?}/$APP"
 }
 
-get_repo_version_palemoon(){
+get_repo_version_palemoon() {
     local temp=$(curl -s "https://www.palemoon.org/download.shtml" | grep "linux-x86_64-gtk3") || exit 1
     local ver=$(echo "$temp" | cut -d'-' -f2 | sed 's/\.linux//')
 
     echo "$ver"
 }
 
-make_module_palemoon(){
+make_module_palemoon() {
     if [ "$CHANNEL" != "stable" ]; then
         echo "Non-existent channel. Options: stable" && exit 1
     fi
@@ -112,7 +116,7 @@ make_module_palemoon(){
     mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
 
     mv -f "$TMP/$APP/$pkg_name/palemoon" "$TMP/$APP/$pkg_name/palemoon-${pkgver}"
-    mv -f "$TMP/$APP/$pkg_name/palemoon-${pkgver}" $TMP/"$APP"/"$pkg_name"/usr/lib64
+    mv -f "$TMP/$APP/$pkg_name/palemoon-${pkgver}" "$TMP/$APP/$pkg_name/usr/lib64"
     cd "$TMP/$APP/$pkg_name/usr/lib64"
     ln -sf "palemoon-${pkgver}/" palemoon
     cd "$TMP/$APP/$pkg_name/usr/bin"
