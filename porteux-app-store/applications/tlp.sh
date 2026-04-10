@@ -1,18 +1,18 @@
 #!/bin/bash
 
 isRoot() {
-    [ "$(id -u)" -eq 0 ]
+	[ "$(id -u)" -eq 0 ]
 }
 
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ]; then
-    echo "The 'devel' module needs to be activated to build and run TLP."
-    exit 1
+	echo "The 'devel' module needs to be activated to build and run TLP."
+	exit 1
 fi
 
 if ! isRoot; then
-    echo "Please enter root's password below:"
-    su -c "/opt/porteux-scripts/porteux-app-store/applications/tlp.sh $*"
-    exit 0
+	echo "Please enter root's password below:"
+	su -c "$0 $*"
+	exit 0
 fi
 
 CURRENTPACKAGE=TLP
@@ -26,11 +26,11 @@ BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
 MODULEDIR="$BUILDDIR/$CURRENTPACKAGE-$VERSION-1.$ARCH"
 
 striptease() {
-    rm -fr "$MODULEDIR/usr/lib/systemd"
-    rm -fr "$MODULEDIR/usr/share/bash-completion"
-    rm -fr "$MODULEDIR/usr/share/fish"
-    rm -fr "$MODULEDIR/usr/share/metainfo"
-    rm -fr "$MODULEDIR/usr/share/zsh"
+	rm -fr "$MODULEDIR/usr/lib/systemd"
+	rm -fr "$MODULEDIR/usr/share/bash-completion"
+	rm -fr "$MODULEDIR/usr/share/fish"
+	rm -fr "$MODULEDIR/usr/share/metainfo"
+	rm -fr "$MODULEDIR/usr/share/zsh"
 }
 
 rm -fr "$BUILDDIR"
