@@ -36,4 +36,4 @@ else
 fi
 
 # cleanup
-rm -fr "$BUILDDIR" 2> /dev/null
+rm -fr "$BUILDDIR" &>/dev/null
