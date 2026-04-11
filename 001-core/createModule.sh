@@ -304,7 +304,6 @@ rm -fr usr/etc
 rm -fr usr/include/qgpgme-qt5*
 rm -fr usr/lib${SYSTEMBITS}/guile
 rm -fr usr/lib${SYSTEMBITS}/krb*/plugins
-rm -fr usr/lib${SYSTEMBITS}/locale/C.utf8
 rm -fr usr/lib${SYSTEMBITS}/sasl2
 rm -fr usr/lib${SYSTEMBITS}/services
 rm -fr usr/lib${SYSTEMBITS}/systemd
