@@ -14,9 +14,13 @@ SetFlags() {
 	export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=$ARCHITECTURELEVEL -Ztune-cpu=generic -Cstrip=symbols -Clink-arg=-ffunction-sections -Clink-arg=-fdata-sections -Cforce-unwind-tables=no -Clto=fat -Clinker=clang -Clink-arg=-fuse-ld=lld -Clink-arg=-Wl,--gc-sections -Clink-arg=-Wl,-O2 -Clink-arg=-Wl,--strip-all -Clink-arg=-Wl,--icf=safe -Clink-arg=-Wl,--lto-O3 -Clink-arg=-Wl,--lto-whole-program-visibility -Clink-arg=-Wl,-z,pack-relative-relocs -Cllvm-args=-enable-dfa-jump-thread -Cpanic=unwind -Cdebuginfo=0 -Cembed-bitcode=yes -Zdylib-lto -Zlocation-detail=none -Zfmt-debug=shallow -Ccodegen-units=1"
 	export RUSTC_BOOTSTRAP=1 # allows -Z unstable flags on stable compiler
 	
-	current_folder=$(dirname "$(realpath "$0")")
-	export PORTEUXVERSION=$(git -C "${current_folder}"/.. -c safe.directory="${current_folder}"/.. branch --show-current)
-	[ ! $PORTEUXVERSION ] && PORTEUXVERSION=$(date -r . +%Y%m%d)
+	if [ -d ../.git ]; then
+		current_folder=$(dirname "$(realpath "$0")")
+		export PORTEUXVERSION=$(git -C "${current_folder}"/.. -c safe.directory="${current_folder}"/.. branch --show-current)
+	else
+		export PORTEUXVERSION=$(date -r . +%Y%m%d)
+	fi
+
 	slackware_full_version=$(cat /etc/slackware-version)
 	slackware_version=${slackware_full_version//* }
 
