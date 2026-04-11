@@ -5,10 +5,10 @@ SetFlags() {
 
 	export KERNELVERSION="6.19.6"
 	export ARCHITECTURELEVEL="x86-64-v2"
-	export GCC_CFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -flto=auto -fno-plt -mpclmul -fipa-pta -fno-ident -fmodulo-sched -fuse-linker-plugin"
+	export GCC_CFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -flto=auto -fno-plt -fipa-pta -fno-ident -fmodulo-sched -fuse-linker-plugin"
 	export GCC_CXXFLAGS="$GCC_CFLAGS -fvisibility-inlines-hidden"
 	export LDFLAGS="-Wl,--gc-sections -Wl,--as-needed -Wl,--build-id=none -Wl,-O2 -Wl,--strip-all -Wl,--sort-common -Wl,--sort-section=alignment -Wl,-z,pack-relative-relocs -Wl,--rosegment"
-	export CLANG_CFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -flto=auto -fno-plt -mpclmul -fno-common -faddrsig -Wno-unused-command-line-argument -mllvm -enable-dfa-jump-thread"
+	export CLANG_CFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -flto=auto -fno-plt -fno-common -faddrsig -Wno-unused-command-line-argument -mllvm -enable-dfa-jump-thread"
 	export CLANG_CXXFLAGS="$CLANG_CFLAGS -fvisibility-inlines-hidden -fwhole-program-vtables -fvirtual-function-elimination"
 	export LLDFLAGS="${LDFLAGS/-Wl,--sort-common/} -fuse-ld=lld -Wl,--icf=safe -Wl,--lto-O3 -Wl,--pack-dyn-relocs=relr -Wl,-z,rodynamic"
 	export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=$ARCHITECTURELEVEL -Ztune-cpu=generic -Cstrip=symbols -Clink-arg=-ffunction-sections -Clink-arg=-fdata-sections -Cforce-unwind-tables=no -Clto=fat -Clinker=clang -Clink-arg=-fuse-ld=lld -Clink-arg=-Wl,--gc-sections -Clink-arg=-Wl,-O2 -Clink-arg=-Wl,--strip-all -Clink-arg=-Wl,--icf=safe -Clink-arg=-Wl,--lto-O3 -Clink-arg=-Wl,--lto-whole-program-visibility -Clink-arg=-Wl,-z,pack-relative-relocs -Cllvm-args=-enable-dfa-jump-thread -Cpanic=unwind -Cdebuginfo=0 -Cembed-bitcode=yes -Zdylib-lto -Zlocation-detail=none -Zfmt-debug=shallow -Ccodegen-units=1"
