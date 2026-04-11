@@ -13,7 +13,7 @@ if [ ${CLANG:-no} = "yes" ]; then
 	fi
 fi
 
-if [ ! -f ${SCRIPTPATH}/kernel-firmware*.txz ]; then
+if ls ${SCRIPTPATH}/kernel-firmware*.txz 1> /dev/null 2>&1; then
 	DownloadPackage "kernel-firmware"
 fi
 

@@ -84,7 +84,7 @@ cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH}/packages 2>/dev/null
 
 echo "Downloading kernel source code..."
-if [ ! -f linux-${KERNELVERSION}.tar.?z ]; then
+if ls linux-${KERNELVERSION}.tar.?z 1> /dev/null 2>&1; then
 	wget -P ${MODULEPATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNELMAJORVERSION}.x/linux-${KERNELVERSION}.tar.xz > /dev/null 2>&1 || { echo "Fail to download kernel source code."; exit 1; }
 fi
 
