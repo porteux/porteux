@@ -132,6 +132,7 @@ if [ ${ONLYHEADERS:-no} = "yes" ]; then
 fi
 
 echo "Building vmlinuz (this may take a while)..."
+cd $MODULEPATH/linux-${KERNELVERSION}
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
 make -j${NUMBERTHREADS} KBUILD_LDFLAGS="$LINKPARAMS" LDFLAGS_MODULE="$LINKPARAMS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
