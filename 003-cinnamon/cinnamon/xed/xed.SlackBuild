@@ -16,7 +16,7 @@ cd $TMP
 
 #info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
 #VERSION=${info#* }
-VERSION=3.8.5
+VERSION=3.8.5 # higher than this won't compile: https://github.com/linuxmint/xed/issues/734
 wget https://github.com/linuxmint/xed/archive/refs/tags/${VERSION}.tar.gz
 
 tar xf *.tar.?z
