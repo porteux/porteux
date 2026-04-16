@@ -39,6 +39,9 @@ make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+# fix for invisible text cursor (caret) when renaming files
+echo -e ".caja-desktop .entry,\n.caja-navigation-window .view .entry {\n    caret-color: #000000;\n}" >> $PKG/usr/share/caja/caja.css
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
