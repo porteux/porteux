@@ -93,10 +93,6 @@ sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# required by libxfce4ui
-installpkg $MODULEPATH/packages/glade*.txz || exit 1
-rm $MODULEPATH/packages/glade*.txz || exit 1
-
 # required by mousepad
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/gspell*.txz || exit 1

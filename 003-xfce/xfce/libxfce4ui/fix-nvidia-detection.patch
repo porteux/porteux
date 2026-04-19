@@ -1,0 +1,241 @@
+--- xfce4-about/system-info.c	2026-04-18 00:45:28.000000000 +0200
++++ xfce4-about/system-info-patched.c	2026-04-18 22:16:11.367940454 +0200
+@@ -20,6 +20,8 @@
+ #include <stdlib.h>
+ #endif
+ 
++#include <dlfcn.h>
++
+ #include <gdk/gdkx.h>
+ #include <libxfce4util/libxfce4util.h>
+ #include <sys/utsname.h>
+@@ -375,6 +377,218 @@
+ 
+ 
+ 
++/*
++ * NVIDIA GPU detection and enrichment via NVML (libnvidia-ml), loaded at
++ * runtime so the binary has no hard dependency on the proprietary driver.
++ *
++ * The function serves double duty:
++ *   • ENRICH  – if a GPU is already in the list (detected via epoxy/gudev),
++ *               fill in any still-missing name or memory data.
++ *   • DETECT  – if a GPU is not yet in the list at all (Wayland session,
++ *               no DRM render node, missing udev properties …), create a
++ *               fresh GPUInfo entry from NVML data.
++ *
++ * Only NVIDIA cards (PCI vendor 0x10de) are touched; every other GPU
++ * continues to rely on the epoxy / gudev paths above.
++ * With the nouveau driver libnvidia-ml is absent, so dlopen() fails and
++ * the function returns the list unchanged – the existing fallback code
++ * therefore works unmodified for nouveau.
++ */
++
++/* Minimal NVML type definitions – nvml.h is not required at build time. */
++#define XFCE_NVML_SUCCESS            0
++#define XFCE_NVML_DEVICE_NAME_BUFSZ  96
++
++/* nvmlPciInfo_v3 layout (stable since NVML 7.0) */
++typedef struct
++{
++  char         busIdLegacy[16]; // ← this field comes FIRST (16 bytes, legacy short form)
++  unsigned int domain;
++  unsigned int bus;
++  unsigned int device;
++  unsigned int pciDeviceId;     // ← now at the correct offset
++  unsigned int pciSubSystemId;
++  char         busId[32];       // ← full form comes LAST (v3 extension)
++} XfceNvmlPciInfo;
++
++typedef struct
++{
++  unsigned long long total;
++  unsigned long long free;
++  unsigned long long used;
++} XfceNvmlMemory;
++
++typedef void *XfceNvmlDevice;
++typedef int   XfceNvmlReturn;
++
++typedef XfceNvmlReturn (*xfce_nvmlInit_f)                      (void);
++typedef XfceNvmlReturn (*xfce_nvmlShutdown_f)                  (void);
++typedef XfceNvmlReturn (*xfce_nvmlDeviceGetCount_f)            (unsigned int       *count);
++typedef XfceNvmlReturn (*xfce_nvmlDeviceGetHandleByIndex_f)    (unsigned int        index,
++                                                                XfceNvmlDevice     *device);
++typedef XfceNvmlReturn (*xfce_nvmlDeviceGetPciInfo_f)          (XfceNvmlDevice      device,
++                                                                XfceNvmlPciInfo    *pci);
++typedef XfceNvmlReturn (*xfce_nvmlDeviceGetMemoryInfo_f)       (XfceNvmlDevice      device,
++                                                                XfceNvmlMemory     *memory);
++typedef XfceNvmlReturn (*xfce_nvmlDeviceGetName_f)             (XfceNvmlDevice      device,
++                                                                char               *name,
++                                                                unsigned int        length);
++
++/*
++ * detect_or_enrich_nvidia_gpus_nvml:
++ *
++ * Walk every GPU exposed by NVML.  For each NVIDIA device:
++ *   - If an entry with a matching pci_id already exists → enrich it
++ *     (fill name and/or memory only when still missing).
++ *   - If no such entry exists → create a new GPUInfo from NVML data
++ *     and append it via append_gpu_info().
++ *
++ * Returns the (potentially modified or extended) GPU list.
++ * On any failure (no proprietary driver, init error …) the original
++ * list is returned unchanged.
++ */
++static GList *
++detect_or_enrich_nvidia_gpus_nvml (GList *gpus)
++{
++  void                              *lib        = NULL;
++  xfce_nvmlInit_f                    fn_init    = NULL;
++  xfce_nvmlShutdown_f                fn_shutdown = NULL;
++  xfce_nvmlDeviceGetCount_f          fn_count   = NULL;
++  xfce_nvmlDeviceGetHandleByIndex_f  fn_handle  = NULL;
++  xfce_nvmlDeviceGetPciInfo_f        fn_pci     = NULL;
++  xfce_nvmlDeviceGetMemoryInfo_f     fn_mem     = NULL;
++  xfce_nvmlDeviceGetName_f           fn_name    = NULL;
++  unsigned int                       count      = 0;
++  unsigned int                       i;
++
++  /* With nouveau there is no libnvidia-ml → dlopen fails → we return
++   * immediately and the caller's epoxy/gudev results are preserved. */
++  lib = dlopen ("libnvidia-ml.so.1", RTLD_LAZY | RTLD_LOCAL);
++  if (!lib)
++    lib = dlopen ("libnvidia-ml.so", RTLD_LAZY | RTLD_LOCAL);
++  if (!lib)
++    return gpus;
++
++#define XFCE_NVML_SYM(var, sym)    \
++  (var) = dlsym (lib, (sym));      \
++  if (!(var)) { dlclose (lib); return gpus; }
++
++  XFCE_NVML_SYM (fn_init,    "nvmlInit_v2")
++  XFCE_NVML_SYM (fn_shutdown, "nvmlShutdown")
++  XFCE_NVML_SYM (fn_count,   "nvmlDeviceGetCount_v2")
++  XFCE_NVML_SYM (fn_handle,  "nvmlDeviceGetHandleByIndex_v2")
++  XFCE_NVML_SYM (fn_pci,     "nvmlDeviceGetPciInfo_v3")
++  XFCE_NVML_SYM (fn_mem,     "nvmlDeviceGetMemoryInfo")
++  XFCE_NVML_SYM (fn_name,    "nvmlDeviceGetName")
++#undef XFCE_NVML_SYM
++
++  if (fn_init () != XFCE_NVML_SUCCESS)
++    {
++      dlclose (lib);
++      return gpus;
++    }
++
++  if (fn_count (&count) != XFCE_NVML_SUCCESS)
++    goto out;
++
++  for (i = 0; i < count; i++)
++    {
++      XfceNvmlDevice  device;
++      XfceNvmlPciInfo pci_info;
++      char            pci_id_buf[16];
++      unsigned int    nvml_vid, nvml_did;
++      GList          *l;
++      GPUInfo        *existing = NULL;
++
++      if (fn_handle (i, &device) != XFCE_NVML_SUCCESS)
++        continue;
++
++      if (fn_pci (device, &pci_info) != XFCE_NVML_SUCCESS)
++        continue;
++
++      /* pciDeviceId layout: (deviceId << 16) | vendorId */
++      nvml_vid = pci_info.pciDeviceId & 0xFFFFu;
++      nvml_did = (pci_info.pciDeviceId >> 16) & 0xFFFFu;
++
++      /* Extra safety: only handle NVIDIA (vendor 0x10de) */
++      if (nvml_vid != 0x10de)
++        continue;
++
++      /* Canonical "vid:did" string in the same format used by both the
++       * epoxy (GLX_MESA_query_renderer) and gudev (PCI_ID) paths. */
++      g_snprintf (pci_id_buf, sizeof (pci_id_buf), "%04x:%04x", nvml_vid, nvml_did);
++
++      /* Check whether this GPU is already known */
++      for (l = gpus; l != NULL; l = l->next)
++        {
++          GPUInfo *info = (GPUInfo *) l->data;
++          if (info->pci_id && strcmp (info->pci_id, pci_id_buf) == 0)
++            {
++              existing = info;
++              break;
++            }
++        }
++
++      if (existing != NULL)
++        {
++          /* ── ENRICH: fill in whatever is still missing ── */
++          if (!existing->name)
++            {
++              char name_buf[XFCE_NVML_DEVICE_NAME_BUFSZ];
++              if (fn_name (device, name_buf, sizeof (name_buf)) == XFCE_NVML_SUCCESS)
++                existing->name = info_cleanup (name_buf);
++            }
++
++          if (existing->memory_size_mib == 0)
++            {
++              XfceNvmlMemory mem;
++              if (fn_mem (device, &mem) == XFCE_NVML_SUCCESS && mem.total > 0)
++                existing->memory_size_mib = (gint) (mem.total >> 20);
++            }
++        }
++      else
++        {
++          /* ── DETECT: GPU not yet in the list at all.
++           *
++           * This branch is reached when:
++           *   • The epoxy GL-context path failed (Wayland session,
++           *     gdk_get_default_root_window returns nothing useful).
++           *   • gudev found no DRM render node (no nvidia-drm KMS, older
++           *     driver without modesetting enabled).
++           *   • gudev found the node but ID_MODEL_FROM_DATABASE was
++           *     unavailable, so no entry was ever created.
++           *
++           * append_gpu_info() will also clean up any pre-existing entry
++           * that has no pci_id (e.g. an epoxy-only entry whose context
++           * was created on a different screen). ── */
++          GPUInfo *gpu = g_new0 (GPUInfo, 1);
++
++          gpu->pci_id = g_strdup (pci_id_buf);
++
++          {
++            char name_buf[XFCE_NVML_DEVICE_NAME_BUFSZ];
++            if (fn_name (device, name_buf, sizeof (name_buf)) == XFCE_NVML_SUCCESS)
++              gpu->name = info_cleanup (name_buf);
++          }
++
++          {
++            XfceNvmlMemory mem;
++            if (fn_mem (device, &mem) == XFCE_NVML_SUCCESS && mem.total > 0)
++              gpu->memory_size_mib = (gint) (mem.total >> 20);
++          }
++
++          gpus = append_gpu_info (gpus, gpu);
++        }
++    }
++
++out:
++  fn_shutdown ();
++  dlclose (lib);
++  return gpus;
++}
++
++
++
+ /**
+  * Returns a string containing all detected GPUs.
+  * If the machine has multiple GPUs, they are separated by the newline '\n' character.
+@@ -477,6 +691,10 @@
+   gpus = get_drm_cards (gpus);
+ #endif
+ 
++  /* Detect or enrich NVIDIA GPUs using NVML (proprietary driver only).
++   * With nouveau, libnvidia-ml is absent and this is a silent no-op. */
++  gpus = detect_or_enrich_nvidia_gpus_nvml (gpus);
++
+   if (gpus)
+     {
+       GList *gpu;
