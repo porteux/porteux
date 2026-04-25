@@ -40,7 +40,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--enable-no-install-program=hostname,kill,uptime \
 	--build=$ARCH-slackware-linux
 
-make $NUMJOBS install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 rm -rf $PKG/usr/share/info
 rm -rf $PKG/usr/share/man

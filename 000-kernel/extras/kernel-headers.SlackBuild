@@ -21,7 +21,7 @@ VERSION=$(echo "${KERNEL_SOURCE}" | rev | cut -d "-" -f 1 | rev)
 
 cd ${KERNEL_SOURCE}
 
-make headers_install ARCH="x86" INSTALL_HDR_PATH=$PKG/usr > /dev/null 2>&1
+make -j${NUMBERTHREADS} headers_install ARCH="x86" INSTALL_HDR_PATH=$PKG/usr > /dev/null 2>&1
 cd $PKG/usr/include
 
 rm -rf drm
