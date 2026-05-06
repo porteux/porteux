@@ -60,6 +60,7 @@ done
 
 # core extras
 for package in \
+	ntfsprogs-plus \
 	fastfetch \
 	7zip \
 	rpm \
