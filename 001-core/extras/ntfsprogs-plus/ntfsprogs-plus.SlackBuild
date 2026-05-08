@@ -17,6 +17,9 @@ tar xf ${PRGNAM}.tar.?z
 cd ${PRGNAM}-main
 VERSION=$(date -r . +%Y%m%d)
 
+# only create lost+found folder when finding orphan files
+patch -p1 < $CWD/fix-lost-found-folder.patch
+
 ./autogen.sh
 
 CFLAGS="$GCC_CFLAGS" \
