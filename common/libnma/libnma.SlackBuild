@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '-dev' | sort -Vr | head -1)
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '\-dev' | sort -Vr | head -1)
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 [ ! -s ${PRGNAM}-${VERSION}.tar.gz ] && wget https://github.com/GNOME/${PRGNAM}/archive/refs/tags/$VERSION.tar.gz -O $PRGNAM-$VERSION.tar.gz
 
