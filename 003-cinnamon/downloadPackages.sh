@@ -26,7 +26,6 @@ DownloadPackage "libgusb" &
 DownloadPackage "libhandy" &
 wait
 DownloadPackage "libindicator" &
-DownloadPackage "libnma" &
 DownloadPackage "libsoup" & # required by settings -> Date&Time
 DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &

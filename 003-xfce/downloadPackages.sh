@@ -16,7 +16,6 @@ DownloadPackage "libdbusmenu" &
 wait
 DownloadPackage "libgtop" &
 DownloadPackage "libindicator" &
-DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 wait
@@ -24,6 +23,7 @@ wait
 ### temporary packages only for building
 
 DownloadPackage "libyaml" & # to build xfdesktop with desktop icons
+DownloadPackage "iso-codes" & # to build libnma
 wait
 
 ### script clean up
