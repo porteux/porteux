@@ -65,6 +65,10 @@ rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 ### packages outside slackware repository
 
+# required by libnma
+installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
+rm $MODULEPATH/packages/iso-codes*.txz
+
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
@@ -76,6 +80,7 @@ for package in \
 	lightdm \
 	lightdm-gtk-greeter \
 	vte \
+	libnma \
 	mate-polkit \
 ; do
 SESSIONTEMPLATE=cinnamon ICONTHEME=Yaru-blue sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -95,15 +100,12 @@ installpkg $MODULEPATH/packages/libgee*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libhandy*.txz || exit 1
 installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
 
 # required only for building
-installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
-rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
 rm $MODULEPATH/packages/libgsf*.txz
 installpkg $MODULEPATH/packages/python-build*.txz || exit 1

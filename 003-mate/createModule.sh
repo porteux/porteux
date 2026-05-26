@@ -44,10 +44,10 @@ sh $SCRIPTPATH/downloadPackages.sh
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
 # required from now on
+installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 
 # mate common
 for package in \
@@ -57,6 +57,7 @@ for package in \
 	lightdm \
 	lightdm-gtk-greeter \
 	vte \
+	libnma \
 	network-manager-applet \
 	mate-common \
 	mate-polkit \
@@ -75,9 +76,6 @@ installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
 
-# required just for building
-installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
-rm $MODULEPATH/packages/iso-codes*.txz
 rm $MODULEPATH/packages/mate-common*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
