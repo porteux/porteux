@@ -126,7 +126,6 @@ for package in \
 	pamixer \
 	webp-pixbuf-loader \
 	wlr-randr \
-	wlrctl \
 	xdg-desktop-portal \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
