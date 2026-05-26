@@ -34,6 +34,9 @@ make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
+# remove broken .ad files -- only used to theme legacy applications
+rm -fr $PKG/etc/xrdb/
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
