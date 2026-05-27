@@ -3,7 +3,7 @@
 SetFlags() {
 	MODULENAME="$1"
 
-	export KERNELVERSION="6.19.6"
+	export KERNELVERSION="7.1-rc5"
 	export ARCHITECTURELEVEL="x86-64-v2"
 	export GCC_CFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -ftree-vectorize -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -flto=auto -fno-plt -fipa-pta -fno-ident -fmodulo-sched -fuse-linker-plugin"
 	export GCC_CXXFLAGS="$GCC_CFLAGS -fvisibility-inlines-hidden"
