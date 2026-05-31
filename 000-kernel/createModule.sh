@@ -29,7 +29,7 @@ CRIPPLEDMODULENAME="06-crippled-sources-${KERNELVERSION}"
 
 ### create module folder
 
-rm -fr ${MODULEPATH}
+rm -fr "${MODULEPATH:?MODULEPATH is unset}"
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 ### download packages from slackware repository
