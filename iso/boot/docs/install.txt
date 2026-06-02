@@ -9,8 +9,7 @@ ext2, ext3, ext4, FAT, exFAT, NTFS and XFS.
 The simplest way to do that is copying the ISO content to your media
 storage and running the installer, which will make the media bootable
 (instructions below) and will set the correct permissions, not touching
-or removing your existing data. Just make sure your partition is of type
-'msdos' or 'gpt'.
+or removing your existing data.
 
 For better performance, it's recommended to install PorteuX on an SSD or
 NVMe storage unit rather than a USB flash drive. Alternatively, you can
@@ -34,16 +33,18 @@ by all modern system. If you're in doubt, choose EFI.
 | EFI System: |
 ~~~~~~~~~~~~~~~
 
-1) Make sure the first partition is of type FAT32.
-2) Copy '/boot' and '/EFI' folders onto the FAT32 partition.
-3) The second partition can be either this FAT32 one or any of the
+1) Make sure your partition table is of type 'GPT'.
+2) Make sure the first partition is of type FAT32.
+3) Copy '/boot' and '/EFI' folders onto the FAT32 partition.
+4) The second partition can be either this FAT32 one or any of the
 supported ones, and it will contain '/porteux' folder.
 
 ~~~~~~~~~~~~~~~~~~
 | Legacy System: |
 ~~~~~~~~~~~~~~~~~~
 
-1) Copy '/boot' and '/porteux' folders onto the desired partition.
+1) Make sure your partition table is of type 'MS-DOS'.
+2) Copy '/boot' and '/porteux' folders onto the desired partition.
 
 -----
 
