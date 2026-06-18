@@ -14,11 +14,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "nemo-|unstable")
+info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "nemo-${TESTRELEASES}")
 VERSION=${info#* }
 
-tar xf $PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+tar xf $PRGNAM-$VERSION*.tar.?z
+cd $PRGNAM-$VERSION*/
 
 cd nemo-fileroller
 mkdir build && cd build
