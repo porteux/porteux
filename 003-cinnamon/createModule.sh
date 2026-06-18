@@ -17,7 +17,13 @@ if ! isRoot; then
 	exit
 fi
 
-LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "master." | head -1)
+if [[ ${ALLOWTEST:-no} == no ]]; then
+	export TESTRELEASES="alpha|beta|rc[0-9]|unstable"
+else
+	export TESTRELEASES=
+fi
+
+LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -Ev "master.|${TESTRELEASES}" | head -1)
 echo -e "Building Cinnamon ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
