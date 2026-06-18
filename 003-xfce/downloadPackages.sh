@@ -22,8 +22,8 @@ wait
 
 ### temporary packages only for building
 
-DownloadPackage "libyaml" & # to build xfdesktop with desktop icons
 DownloadPackage "iso-codes" & # to build libnma
+DownloadPackage "libyaml" & # to build xfdesktop with desktop icons
 wait
 
 ### script clean up

@@ -7,10 +7,10 @@ DownloadPackage "a52dec" &
 DownloadPackage "alsa-lib" &
 DownloadPackage "alsa-plugins" &
 DownloadPackage "alsa-utils" &
-DownloadPackage "at-spi2-atk" &
-DownloadPackage "at-spi2-core" &
 DownloadPackage "atk" &
 DownloadPackage "atkmm" &
+DownloadPackage "at-spi2-atk" &
+DownloadPackage "at-spi2-core" &
 DownloadPackage "audiofile" &
 DownloadPackage "cairo" &
 wait
@@ -32,8 +32,8 @@ DownloadPackage "gcr" &
 DownloadPackage "gcr4" & # required by gvfs 1.54+
 DownloadPackage "giflib" &
 DownloadPackage "glew" &
-DownloadPackage "glib-networking" & # required by flatpak
 DownloadPackage "glibmm" &
+DownloadPackage "glib-networking" & # required by flatpak
 DownloadPackage "glu" &
 wait
 DownloadPackage "gnome-themes-extra" &
@@ -55,43 +55,9 @@ DownloadPackage "json-glib" &
 DownloadPackage "lame" &
 DownloadPackage "lcms" &
 DownloadPackage "lcms2" &
-DownloadPackage "libICE" &
-DownloadPackage "libSM" &
-wait
-DownloadPackage "libXau" &
-DownloadPackage "libXaw" &
-DownloadPackage "libXcomposite" &
-DownloadPackage "libXcursor" &
-DownloadPackage "libXdamage" &
-DownloadPackage "libXdmcp" &
-DownloadPackage "libXevie" &
-DownloadPackage "libXext" &
-DownloadPackage "libXfixes" &
-DownloadPackage "libXfont2" &
-wait
-DownloadPackage "libXfontcache" &
-DownloadPackage "libXft" &
-DownloadPackage "libXi" &
-DownloadPackage "libXinerama" &
-DownloadPackage "libXmu" &
-DownloadPackage "libXp" &
-DownloadPackage "libXpm" &
-DownloadPackage "libXpresent" &
-DownloadPackage "libXrandr" &
-DownloadPackage "libXrender" &
-wait
-DownloadPackage "libXres" &
-DownloadPackage "libXScrnSaver" &
-DownloadPackage "libXt" &
-DownloadPackage "libXtst" &
-DownloadPackage "libXv" &
-DownloadPackage "libXvMC" &
-DownloadPackage "libXxf86dga" &
-DownloadPackage "libXxf86misc" &
-DownloadPackage "libXxf86vm" &
 DownloadPackage "libao" &
-wait
 DownloadPackage "libasyncns" &
+wait
 DownloadPackage "libatasmart" &
 DownloadPackage "libblockdev" &
 DownloadPackage "libbluray" &
@@ -101,8 +67,8 @@ DownloadPackage "libcddb" &
 DownloadPackage "libcdio" &
 DownloadPackage "libcdio-paranoia" &
 DownloadPackage "libdecor" & # required by xorg-server-xwayland
-wait
 DownloadPackage "libdeflate" & # required by libtiff
+wait
 DownloadPackage "libdisplay-info" & # required by some DEs and mpv to have vaapi
 DownloadPackage "libdmx" &
 DownloadPackage "libdrm" &
@@ -112,13 +78,14 @@ DownloadPackage "libedit" &
 DownloadPackage "libepoxy" &
 DownloadPackage "libevdev" &
 DownloadPackage "libevent" &
-wait
 DownloadPackage "libexif" &
+wait
 DownloadPackage "libfontenc" &
 DownloadPackage "libglade" &
 DownloadPackage "libglvnd" &
 DownloadPackage "libgphoto2" &
 DownloadPackage "libical" &
+DownloadPackage "libICE" &
 DownloadPackage "libinput" &
 DownloadPackage "libjpeg-turbo" &
 DownloadPackage "libmad" &
@@ -136,6 +103,7 @@ DownloadPackage "libsecret" &
 DownloadPackage "libsfdo" & # required by labwc
 wait
 DownloadPackage "libsigc++" &
+DownloadPackage "libSM" &
 DownloadPackage "libsndfile" &
 DownloadPackage "libsoup3" & # required by gvfs (gvfsd-http)
 DownloadPackage "libssh" &
@@ -144,18 +112,50 @@ DownloadPackage "libtiff" &
 DownloadPackage "libunwind" &
 DownloadPackage "libva" &
 DownloadPackage "libvdpau" &
-DownloadPackage "libvisual" &
 wait
+DownloadPackage "libvisual" &
 DownloadPackage "libvorbis" &
 DownloadPackage "libvpx" &
 DownloadPackage "libwacom" &
 DownloadPackage "libwebp" &
+DownloadPackage "libXau" &
+DownloadPackage "libXaw" &
 DownloadPackage "libxcb" &
+DownloadPackage "libXcomposite" &
+DownloadPackage "libXcursor" &
+wait
 DownloadPackage "libxcvt" &
+DownloadPackage "libXdamage" &
+DownloadPackage "libXdmcp" &
+DownloadPackage "libXevie" &
+DownloadPackage "libXext" &
+DownloadPackage "libXfixes" &
+DownloadPackage "libXfont2" &
+DownloadPackage "libXfontcache" &
+DownloadPackage "libXft" &
+DownloadPackage "libXi" &
+wait
+DownloadPackage "libXinerama" &
 DownloadPackage "libxkbcommon" &
 DownloadPackage "libxkbfile" &
+DownloadPackage "libXmu" &
+DownloadPackage "libXp" &
+DownloadPackage "libXpm" &
+DownloadPackage "libXpresent" &
+DownloadPackage "libXrandr" &
+DownloadPackage "libXrender" &
+DownloadPackage "libXres" &
+wait
+DownloadPackage "libXScrnSaver" &
 DownloadPackage "libxshmfence" &
 DownloadPackage "libxslt" &
+DownloadPackage "libXt" &
+DownloadPackage "libXtst" &
+DownloadPackage "libXv" &
+DownloadPackage "libXvMC" &
+DownloadPackage "libXxf86dga" &
+DownloadPackage "libXxf86misc" &
+DownloadPackage "libXxf86vm" &
 wait
 DownloadPackage "mkfontscale" &
 DownloadPackage "mobile-broadband-provider-info" &
@@ -165,8 +165,8 @@ DownloadPackage "npth" & # required by flatpak
 DownloadPackage "ocl-icd" &
 DownloadPackage "openjpeg" &
 DownloadPackage "opus" &
-DownloadPackage "opus-tools" &
 DownloadPackage "opusfile" &
+DownloadPackage "opus-tools" &
 wait
 DownloadPackage "orc" &
 DownloadPackage "pango" &
