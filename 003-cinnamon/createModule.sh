@@ -18,12 +18,12 @@ if ! isRoot; then
 fi
 
 if [[ ${ALLOWTEST:-no} == no ]]; then
-	export TESTRELEASES="alpha|beta|rc[0-9]|unstable"
+	export TESTRELEASES="master.|alpha|beta|rc[0-9]|unstable"
 else
-	export TESTRELEASES=
+	export TESTRELEASES="master."
 fi
 
-LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -Ev "master.|${TESTRELEASES}" | head -1)
+LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -Ev "cjs-|${TESTRELEASES}" | sort -Vr | head -1)
 echo -e "Building Cinnamon ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 MODULENAME=$MODULENAME-${LATESTVERSION}
 

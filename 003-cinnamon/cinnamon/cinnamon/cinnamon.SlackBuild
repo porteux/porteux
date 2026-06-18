@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "cjs|master.|${TESTRELEASES}")
+info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "cjs|${TESTRELEASES}")
 VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION*.tar.?z
