@@ -11,9 +11,10 @@ DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "gnome-keyring" & # required by nm-applet to ask for password
+DownloadPackage "gpgmepp" & # required by xreader
 DownloadPackage "gspell" &
-DownloadPackage "gtksourceview4" &
 wait
+DownloadPackage "gtksourceview4" &
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
@@ -23,8 +24,8 @@ DownloadPackage "libgee" &
 DownloadPackage "libgpod" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
-DownloadPackage "libhandy" &
 wait
+DownloadPackage "libhandy" &
 DownloadPackage "libindicator" &
 DownloadPackage "libsoup" & # required by settings -> Date&Time
 DownloadPackage "libspectre" &

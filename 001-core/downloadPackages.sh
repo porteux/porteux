@@ -129,11 +129,11 @@ DownloadPackage "libusb-compat" &
 DownloadPackage "libusbmuxd" &
 DownloadPackage "libxml2" &
 DownloadPackage "libzip" &
-DownloadPackage "lm_sensors" &
 DownloadPackage "lmdb" &
+DownloadPackage "lm_sensors" &
 DownloadPackage "lsof" &
-DownloadPackage "lvm2" &
 DownloadPackage "lua" &
+DownloadPackage "lvm2" &
 wait
 DownloadPackage "lynx" &
 DownloadPackage "lz4" &
@@ -149,8 +149,8 @@ wait
 DownloadPackage "mpfr" &
 DownloadPackage "nano" &
 DownloadPackage "ncurses" &
-DownloadPackage "net-tools" &
 DownloadPackage "nettle" &
+DownloadPackage "net-tools" &
 DownloadPackage "NetworkManager" &
 DownloadPackage "network-scripts" &
 DownloadPackage "newt" &
@@ -160,14 +160,14 @@ wait
 DownloadPackage "nghttp3" &
 DownloadPackage "ngtcp2" &
 DownloadPackage "openssh" &
-DownloadPackage "openvpn" &
 DownloadPackage "openssl" &
+DownloadPackage "openvpn" &
 DownloadPackage "p11-kit" &
 DownloadPackage "pam" &
 DownloadPackage "parted" &
 DownloadPackage "patch" &
-wait
 DownloadPackage "pciutils" &
+wait
 DownloadPackage "pcre" &
 DownloadPackage "pcre2" &
 DownloadPackage "pkgtools" &
@@ -177,8 +177,8 @@ DownloadPackage "pptp" &
 DownloadPackage "python3" &
 DownloadPackage "python-urllib3" &
 DownloadPackage "readline" &
-wait
 DownloadPackage "rpcbind" &
+wait
 DownloadPackage "rpm2tgz" &
 DownloadPackage "rp-pppoe" &
 DownloadPackage "rsync" &
@@ -188,8 +188,8 @@ DownloadPackage "sed" &
 DownloadPackage "sg3_utils" &
 DownloadPackage "shadow" &
 DownloadPackage "slackpkg" &
-wait
 DownloadPackage "smartmontools" &
+wait
 DownloadPackage "sqlite" &
 DownloadPackage "sshfs" &
 DownloadPackage "sudo" &
@@ -199,8 +199,8 @@ DownloadPackage "sysvinit-functions" &
 DownloadPackage "sysvinit-scripts" &
 DownloadPackage "talloc" &
 DownloadPackage "tar" &
-wait
 DownloadPackage "tcl" &
+wait
 DownloadPackage "tdb" &
 DownloadPackage "telnet" &
 DownloadPackage "tevent" &
@@ -210,8 +210,8 @@ DownloadPackage "usb_modeswitch" &
 DownloadPackage "usbmuxd" &
 DownloadPackage "usbutils" &
 DownloadPackage "userspace-rcu" &
-wait
 DownloadPackage "utempter" &
+wait
 DownloadPackage "util-linux" &
 DownloadPackage "wget" &
 DownloadPackage "which" &
@@ -221,8 +221,8 @@ DownloadPackage "wpa_supplicant" &
 DownloadPackage "xfsdump" &
 DownloadPackage "xfsprogs" &
 DownloadPackage "xxHash" &
-wait
 DownloadPackage "xz" &
+wait
 
 ### only download if not present
 
@@ -234,8 +234,8 @@ wait
 DownloadPackage "aaa_libraries" &
 DownloadPackage "binutils" &
 DownloadPackage "fftw" & # required by pulse plugins
-DownloadPackage "gcc" & # required by aaa_libraries
 DownloadPackage "gcc-g++" & # required by aaa_libraries
+DownloadPackage "gcc" & # required by aaa_libraries
 DownloadPackage "ntp" &
 DownloadPackage "openldap" &
 wait

@@ -59,9 +59,9 @@ DownloadPackage "libXft" &
 DownloadPackage "libXi" &
 wait
 DownloadPackage "libXinerama" &
+DownloadPackage "libxml2" &
 DownloadPackage "libXrandr" &
 DownloadPackage "libXrender" &
-DownloadPackage "libxml2" &
 DownloadPackage "libxshmfence" &
 DownloadPackage "libXtst" &
 DownloadPackage "libXxf86vm" &
