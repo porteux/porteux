@@ -166,8 +166,7 @@ mv ../packages/${currentPackage}-[0-9]* .
 packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
-cp --parents etc/openldap/ldap.conf.new ${currentPackage}-stripped/
-mv ${currentPackage}-stripped/etc/openldap/ldap.conf.new ${currentPackage}-stripped/etc/openldap/ldap.conf
+cp --parents etc/openldap/ldap.conf ${currentPackage}-stripped/
 cp --parents usr/include/* ${currentPackage}-stripped/
 cp --parents -P usr/lib$SYSTEMBITS/libl* ${currentPackage}-stripped/
 cd ${currentPackage}-stripped

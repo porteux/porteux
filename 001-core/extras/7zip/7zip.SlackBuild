@@ -36,8 +36,8 @@ cp "$CWD/meson.build.template" meson.build
 meson rewrite kwargs set project / version ${VERSION}
 
 mkdir build && cd build
-CFLAGS="$GCC_CFLAGS -pthread" \
-CXXFLAGS="$GCC_CXXFLAGS -pthread" \
+CFLAGS="${GCC_CFLAGS/-fipa-reorder-for-locality/} -pthread" \
+CXXFLAGS="${GCC_CXXFLAGS/-fipa-reorder-for-locality/} -pthread" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
