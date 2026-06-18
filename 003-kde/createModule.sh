@@ -125,6 +125,32 @@ cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
+# required by network tray
+currentPackage=qtkeychain
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+packageVersion=$(ls * -a | rev | cut -d'-' -f3 | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libqt6keychain.* "${currentPackage}-stripped"
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${packageVersion}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+
+# required by clipboard tray
+currentPackage=zint
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+packageVersion=$(ls * -a | rev | cut -d'-' -f3 | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libzint.* "${currentPackage}-stripped"
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${packageVersion}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+
 # required by main menu
 currentPackage=appstream
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
