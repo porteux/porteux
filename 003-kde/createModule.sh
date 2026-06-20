@@ -260,6 +260,7 @@ InstallAdditionalPackages
 
 ### fix some .desktop files
 
+sed -i "s|Documentation;||g" $MODULEPATH/packages/usr/share/applications/org.kde.kinfocenter.desktop
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
 sed -i "s|image/png|image/png;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.kde.gwenview.desktop
 
