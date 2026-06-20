@@ -178,11 +178,13 @@ wait
 
 DownloadPackage "appstream" & # required by main menu
 DownloadPackage "gcc-gfortran" & # required by spectacle
+DownloadPackage "leptonica" & # required by spectacle
 DownloadPackage "opencv" & # required by spectacle
 DownloadPackage "phonon" & # required by dolphin and others
 DownloadPackage "qcoro" &
 DownloadPackage "qt6" &
 DownloadPackage "qtkeychain" & # required by network tray
+DownloadPackage "tesseract" & # required by spectacle
 DownloadPackage "zint" & # required by clipboard tray
 wait
 
