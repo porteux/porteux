@@ -23,14 +23,14 @@ cd $PRGNAM-$VERSION
 sed -i 's|docs \\|\\|g' Makefile.am
 sed -i 's|test \\|\\|g' Makefile.am
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--disable-static \
-	--libexecdir=/usr/lib${SYSTEMBITS}/caja \
+	--libexecdir=/usr/libexec/caja \
 	--disable-update-mimedb \
 	--enable-introspection \
 	--build=$ARCH-porteux-linux
@@ -38,6 +38,9 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+# fix for invisible text cursor (caret) when renaming files
+echo -e ".caja-desktop .entry,\n.caja-navigation-window .view .entry {\n    caret-color: #000000;\n}" >> $PKG/usr/share/caja/caja.css
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

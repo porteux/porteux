@@ -7,7 +7,7 @@ GenerateRepositoryUrls() {
 	cd $MODULEPATH/packages
 	
 	# Get repository packages list
-	wget $REPOSITORY/FILE_LIST -O FILE_LIST -q > /dev/null 2>&1 || wget $REPOSITORY/FILELIST.TXT -O FILE_LIST -q > /dev/null 2>&1 || exit
+	wget --tries=3 --retry-connrefused $REPOSITORY/FILE_LIST -O FILE_LIST -q > /dev/null 2>&1 || wget --tries=3 --retry-connrefused $REPOSITORY/FILELIST.TXT -O FILE_LIST -q > /dev/null 2>&1 || exit
 	rm serverPackages.txt > /dev/null 2>&1
 
 	# Cleanup server packages list
@@ -32,6 +32,6 @@ DownloadPackage() {
 	packageUrl=$(grep "/${1}[-_][0-9]\+" serverPackages.txt)
 	if [ ! -z $packageUrl ]; then
 		echo "Downloading: $packageUrl..."
-		wget $REPOSITORY/$packageUrl -q > /dev/null 2>&1 || exit
+		wget --tries=3 --retry-connrefused $REPOSITORY/$packageUrl -q > /dev/null 2>&1 || exit
 	fi
 }

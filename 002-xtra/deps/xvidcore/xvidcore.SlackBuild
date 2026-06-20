@@ -18,7 +18,7 @@ wget https://downloads.xvid.com/downloads/${PRGNAM}-${VERSION}.tar.gz
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM/build/generic
 
-CFLAGS="$GCCFLAGS -std=c99" \
+CFLAGS="$GCC_CFLAGS -std=c99" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

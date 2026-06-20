@@ -35,8 +35,10 @@ sed 's:<ncursesw/:<:g' -i src/watch.c
 echo $VERSION > .version
 echo $VERSION > .tarball-version
 
-CFLAGS="$GCCFLAGS" \
-./autogen.sh && ./configure \
+./autogen.sh
+
+CFLAGS="$GCC_CFLAGS" \
+./configure \
 	--prefix=/ \
 	--bindir=/bin \
 	--sbindir=/sbin \
@@ -103,8 +105,10 @@ mkdir -p $PKG/etc/sysctl.d
 
 cd ../psmisc-$PSMISCVER
 
-CFLAGS="$GCCFLAGS" \
-./autogen.sh && ./configure \
+./autogen.sh
+
+CFLAGS="$GCC_CFLAGS" \
+./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
@@ -120,7 +124,7 @@ mv $PKG/usr/bin/killall $PKG/bin
 ln -s /bin/killall $PKG/usr/bin/killall
 
 cd ../procinfo-ng-$PROCINFONGVER
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

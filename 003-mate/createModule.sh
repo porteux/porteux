@@ -43,6 +43,12 @@ sh $SCRIPTPATH/downloadPackages.sh
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
+# required from now on
+installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
+
 # mate common
 for package in \
 	audacious \
@@ -50,6 +56,9 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	vte \
+	libnma \
+	network-manager-applet \
 	mate-common \
 	mate-polkit \
 	atril \
@@ -61,21 +70,12 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 # required from now on
-installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
-installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/dconf*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck*.txz || exit 1
-installpkg $MODULEPATH/packages/vte*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup-2*.txz || exit 1
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 
-# required just for building
-installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
-rm $MODULEPATH/packages/icu4c*.txz
-installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
-rm $MODULEPATH/packages/iso-codes*.txz
 rm $MODULEPATH/packages/mate-common*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
@@ -149,7 +149,6 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
 rm usr/lib${SYSTEMBITS}/libappindicator.*
@@ -157,20 +156,13 @@ rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libsoup-gnome*
-rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
-rm usr/share/applications/org.gnome.Vte*.desktop
 
 rm -fr run/
 rm -fr usr/lib*/python*/site-packages/pip*
-rm -fr usr/share/engrampa
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
-rm -fr usr/share/icons/ContrastHigh
-rm -fr usr/share/icons/mate
-rm -fr usr/share/icons/mate-black
-rm -fr usr/share/mate-media/icons
-rm -fr usr/share/mate-power-manager/icons
+rm -fr usr/share/libindicator/
 rm -fr usr/share/Thunar
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null

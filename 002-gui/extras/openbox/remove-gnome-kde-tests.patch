@@ -1,0 +1,687 @@
+--- a/Makefile.in	2015-07-01 11:23:48.000000000 +0200
++++ b/Makefile.in.patched	2026-04-05 14:09:42.974075577 +0200
+@@ -56,18 +56,12 @@
+ build_triplet = @build@
+ host_triplet = @host@
+ check_PROGRAMS = obrender/rendertest$(EXEEXT)
+-bin_PROGRAMS = openbox/openbox$(EXEEXT) \
+-	tools/gdm-control/gdm-control$(EXEEXT) \
+-	tools/gnome-panel-control/gnome-panel-control$(EXEEXT) \
+-	tools/obxprop/obxprop$(EXEEXT)
+-noinst_PROGRAMS = obt/obt_unittests$(EXEEXT)
++bin_PROGRAMS = openbox/openbox$(EXEEXT)
+ subdir = .
+ DIST_COMMON = README $(am__configure_deps) $(dist_apps_DATA) \
+ 	$(dist_artwizboxed_theme_DATA) $(dist_bear2_theme_DATA) \
+ 	$(dist_clearlooks34_theme_DATA) $(dist_clearlooks_theme_DATA) \
+ 	$(dist_clearlooksolive_theme_DATA) $(dist_doc_DATA) \
+-	$(dist_docxbm_DATA) $(dist_gnomesession_DATA) \
+-	$(dist_gnomewmfiles_DATA) $(dist_libexec_SCRIPTS) \
+ 	$(dist_mikachu_theme_DATA) $(dist_natura_theme_DATA) \
+ 	$(dist_noinst_DATA) $(dist_onyx_theme_DATA) \
+ 	$(dist_onyxcitrus_theme_DATA) $(dist_orang_theme_DATA) \
+@@ -135,8 +129,6 @@
+ 	"$(DESTDIR)$(clearlooks34_themedir)" \
+ 	"$(DESTDIR)$(clearlooks_themedir)" \
+ 	"$(DESTDIR)$(clearlooksolive_themedir)" "$(DESTDIR)$(docdir)" \
+-	"$(DESTDIR)$(docxbmdir)" "$(DESTDIR)$(gnomesessiondir)" \
+-	"$(DESTDIR)$(gnomewmfilesdir)" "$(DESTDIR)$(mikachu_themedir)" \
+ 	"$(DESTDIR)$(natura_themedir)" "$(DESTDIR)$(onyx_themedir)" \
+ 	"$(DESTDIR)$(onyxcitrus_themedir)" \
+ 	"$(DESTDIR)$(orang_themedir)" "$(DESTDIR)$(pixmapdir)" \
+@@ -192,15 +184,6 @@
+ 	obrender/libobrender.la $(am__DEPENDENCIES_1) \
+ 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+ 	$(am__DEPENDENCIES_1)
+-am_obt_obt_unittests_OBJECTS =  \
+-	obt/obt_obt_unittests-unittest_base.$(OBJEXT) \
+-	obt/obt_obt_unittests-bsearch_unittest.$(OBJEXT)
+-obt_obt_unittests_OBJECTS = $(am_obt_obt_unittests_OBJECTS)
+-obt_obt_unittests_DEPENDENCIES = $(am__DEPENDENCIES_1) obt/libobt.la
+-obt_obt_unittests_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+-	$(AM_CFLAGS) $(CFLAGS) $(obt_obt_unittests_LDFLAGS) $(LDFLAGS) \
+-	-o $@
+ am_openbox_openbox_OBJECTS =  \
+ 	openbox/actions/openbox_openbox-all.$(OBJEXT) \
+ 	openbox/actions/openbox_openbox-addremovedesktop.$(OBJEXT) \
+@@ -288,21 +271,6 @@
+ 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+ 	$(AM_CFLAGS) $(CFLAGS) $(openbox_openbox_LDFLAGS) $(LDFLAGS) \
+ 	-o $@
+-am_tools_gdm_control_gdm_control_OBJECTS = tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.$(OBJEXT)
+-tools_gdm_control_gdm_control_OBJECTS =  \
+-	$(am_tools_gdm_control_gdm_control_OBJECTS)
+-tools_gdm_control_gdm_control_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+-am_tools_gnome_panel_control_gnome_panel_control_OBJECTS = tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.$(OBJEXT)
+-tools_gnome_panel_control_gnome_panel_control_OBJECTS =  \
+-	$(am_tools_gnome_panel_control_gnome_panel_control_OBJECTS)
+-tools_gnome_panel_control_gnome_panel_control_DEPENDENCIES =  \
+-	$(am__DEPENDENCIES_1)
+-am_tools_obxprop_obxprop_OBJECTS =  \
+-	tools/obxprop/tools_obxprop_obxprop-obxprop.$(OBJEXT)
+-tools_obxprop_obxprop_OBJECTS = $(am_tools_obxprop_obxprop_OBJECTS)
+-tools_obxprop_obxprop_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+-	$(am__DEPENDENCIES_1)
+ SCRIPTS = $(dist_libexec_SCRIPTS) $(dist_rc_SCRIPTS) \
+ 	$(nodist_bin_SCRIPTS) $(nodist_libexec_SCRIPTS) \
+ 	$(nodist_rc_SCRIPTS)
+@@ -333,17 +301,10 @@
+ am__v_GEN_ = $(am__v_GEN_@AM_DEFAULT_V@)
+ am__v_GEN_0 = @echo "  GEN   " $@;
+ SOURCES = $(obrender_libobrender_la_SOURCES) $(obt_libobt_la_SOURCES) \
+-	$(obrender_rendertest_SOURCES) $(obt_obt_unittests_SOURCES) \
+-	$(openbox_openbox_SOURCES) \
+-	$(tools_gdm_control_gdm_control_SOURCES) \
+-	$(tools_gnome_panel_control_gnome_panel_control_SOURCES) \
+-	$(tools_obxprop_obxprop_SOURCES)
++	$(obrender_rendertest_SOURCES) \
++	$(openbox_openbox_SOURCES)
+ DIST_SOURCES = $(obrender_libobrender_la_SOURCES) \
+-	$(obt_libobt_la_SOURCES) $(obrender_rendertest_SOURCES) \
+-	$(obt_obt_unittests_SOURCES) $(openbox_openbox_SOURCES) \
+-	$(tools_gdm_control_gdm_control_SOURCES) \
+-	$(tools_gnome_panel_control_gnome_panel_control_SOURCES) \
+-	$(tools_obxprop_obxprop_SOURCES)
++	$(obt_libobt_la_SOURCES) $(obrender_rendertest_SOURCES)
+ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
+ 	html-recursive info-recursive install-data-recursive \
+ 	install-dvi-recursive install-exec-recursive \
+@@ -363,8 +324,8 @@
+ 	$(dist_bear2_theme_DATA) $(dist_clearlooks34_theme_DATA) \
+ 	$(dist_clearlooks_theme_DATA) \
+ 	$(dist_clearlooksolive_theme_DATA) $(dist_doc_DATA) \
+-	$(dist_docxbm_DATA) $(dist_gnomesession_DATA) \
+-	$(dist_gnomewmfiles_DATA) $(dist_mikachu_theme_DATA) \
++	$(dist_docxbm_DATA) \
++	$(dist_mikachu_theme_DATA) \
+ 	$(dist_natura_theme_DATA) $(dist_noinst_DATA) \
+ 	$(dist_onyx_theme_DATA) $(dist_onyxcitrus_theme_DATA) \
+ 	$(dist_orang_theme_DATA) $(dist_pixmap_DATA) $(dist_rc_DATA) \
+@@ -618,8 +579,6 @@
+ configdir = $(sysconfdir)/xdg
+ rcdir = $(configdir)/openbox
+ xsessionsdir = $(datadir)/xsessions
+-gnomesessiondir = $(datadir)/gnome-session/sessions
+-gnomewmfilesdir = $(datadir)/gnome/wm-properties
+ pkgconfigdir = $(libdir)/pkgconfig
+ obtpubincludedir = $(includedir)/openbox/@OBT_VERSION@/obt
+ rrpubincludedir = $(includedir)/openbox/@RR_VERSION@/obrender
+@@ -635,9 +594,7 @@
+ 	obrender/libobrender.la
+ 
+ nodist_bin_SCRIPTS = \
+-	data/xsession/openbox-session \
+-	data/xsession/openbox-gnome-session \
+-	data/xsession/openbox-kde-session
++	data/xsession/openbox-session
+ 
+ dist_rc_SCRIPTS = \
+ 	data/environment
+@@ -908,56 +865,6 @@
+ 	openbox/window.c \
+ 	openbox/window.h
+ 
+-obt_obt_unittests_CPPFLAGS = \
+-	$(GLIB_CFLAGS) \
+-	-DLOCALEDIR=\"$(localedir)\" \
+-	-DDATADIR=\"$(datadir)\" \
+-	-DCONFIGDIR=\"$(configdir)\" \
+-	-DG_LOG_DOMAIN=\"Obt-Unittests\"
+-
+-obt_obt_unittests_LDADD = \
+-	$(GLIB_LIBS) \
+-	obt/libobt.la
+-
+-obt_obt_unittests_LDFLAGS = -export-dynamic
+-obt_obt_unittests_SOURCES = \
+-	obt/unittest_base.h \
+-	obt/unittest_base.c \
+-	obt/bsearch_unittest.c
+-
+-tools_gnome_panel_control_gnome_panel_control_CPPFLAGS = \
+-	$(X_CFLAGS)
+-
+-tools_gnome_panel_control_gnome_panel_control_LDADD = \
+-	$(X_LIBS)
+-
+-tools_gnome_panel_control_gnome_panel_control_SOURCES = \
+-	tools/gnome-panel-control/gnome-panel-control.c
+-
+-tools_obxprop_obxprop_CPPFLAGS = \
+-	$(GLIB_CFLAGS) \
+-	$(X_CFLAGS)
+-
+-tools_obxprop_obxprop_LDADD = \
+-	$(GLIB_LIBS) \
+-	$(X_LIBS)
+-
+-tools_obxprop_obxprop_SOURCES = \
+-	tools/obxprop/obxprop.c
+-
+-tools_gdm_control_gdm_control_CPPFLAGS = \
+-	$(XAUTH_CFLAGS) \
+-	$(X_CFLAGS) \
+-	$(GLIB_CFLAGS)
+-
+-tools_gdm_control_gdm_control_LDADD = \
+-	$(XAUTH_LIBS) \
+-	$(X_LIBS) \
+-	$(GLIB_LIBS)
+-
+-tools_gdm_control_gdm_control_SOURCES = \
+-	tools/gdm-control/gdm-control.c
+-
+ dist_docxbm_DATA = \
+         data/xbm/bullet.xbm \
+         data/xbm/close.xbm \
+@@ -1090,17 +997,8 @@
+ 	-e 's!@libexecdir\@!$(libexecdir)!' \
+ 	-e 's!@bindir\@!$(bindir)!'
+ 
+-dist_gnomewmfiles_DATA = \
+-	data/gnome-wm-properties/openbox.desktop
+-
+ nodist_xsessions_DATA = \
+-	data/xsession/openbox.desktop \
+-	data/xsession/openbox-gnome.desktop \
+-	data/xsession/openbox-kde.desktop
+-
+-dist_gnomesession_DATA = \
+-	data/gnome-session/openbox-gnome.session \
+-	data/gnome-session/openbox-gnome-fallback.session
++	data/xsession/openbox.desktop
+ 
+ dist_noinst_DATA = \
+ 	data/rc.xsd \
+@@ -1108,21 +1006,11 @@
+ 	data/autostart/autostart.in \
+ 	data/autostart/openbox-autostart.in \
+ 	data/xsession/openbox.desktop.in \
+-	data/xsession/openbox-gnome.desktop.in \
+-	data/xsession/openbox-kde.desktop.in \
+ 	data/xsession/openbox-session.in \
+-	data/xsession/openbox-gnome-session.in \
+-	data/xsession/openbox-kde-session.in \
+ 	doc/openbox.1.sgml \
+ 	doc/openbox.1.in \
+ 	doc/openbox-session.1.sgml \
+ 	doc/openbox-session.1.in \
+-	doc/openbox-gnome-session.1.sgml \
+-	doc/openbox-gnome-session.1.in \
+-	doc/openbox-kde-session.1.sgml \
+-	doc/openbox-kde-session.1.in \
+-	doc/obxprop.1.sgml \
+-	doc/obxprop.1.in \
+ 	obrender/version.h.in \
+ 	obrender/obrender-3.5.pc.in \
+ 	obt/obt-3.5.pc.in \
+@@ -1157,10 +1045,7 @@
+ 
+ nodist_man_MANS = \
+ 	doc/openbox.1 \
+-	doc/openbox-session.1 \
+-	doc/openbox-gnome-session.1 \
+-	doc/openbox-kde-session.1 \
+-	doc/obxprop.1
++	doc/openbox-session.1
+ 
+ EXTRA_DIST = \
+ 	config.rpath
+@@ -1378,13 +1263,6 @@
+ obrender/rendertest$(EXEEXT): $(obrender_rendertest_OBJECTS) $(obrender_rendertest_DEPENDENCIES) $(EXTRA_obrender_rendertest_DEPENDENCIES) obrender/$(am__dirstamp)
+ 	@rm -f obrender/rendertest$(EXEEXT)
+ 	$(AM_V_CCLD)$(LINK) $(obrender_rendertest_OBJECTS) $(obrender_rendertest_LDADD) $(LIBS)
+-obt/obt_obt_unittests-unittest_base.$(OBJEXT): obt/$(am__dirstamp) \
+-	obt/$(DEPDIR)/$(am__dirstamp)
+-obt/obt_obt_unittests-bsearch_unittest.$(OBJEXT): obt/$(am__dirstamp) \
+-	obt/$(DEPDIR)/$(am__dirstamp)
+-obt/obt_unittests$(EXEEXT): $(obt_obt_unittests_OBJECTS) $(obt_obt_unittests_DEPENDENCIES) $(EXTRA_obt_obt_unittests_DEPENDENCIES) obt/$(am__dirstamp)
+-	@rm -f obt/obt_unittests$(EXEEXT)
+-	$(AM_V_CCLD)$(obt_obt_unittests_LINK) $(obt_obt_unittests_OBJECTS) $(obt_obt_unittests_LDADD) $(LIBS)
+ openbox/actions/$(am__dirstamp):
+ 	@$(MKDIR_P) openbox/actions
+ 	@: > openbox/actions/$(am__dirstamp)
+@@ -1589,42 +1467,6 @@
+ openbox/openbox$(EXEEXT): $(openbox_openbox_OBJECTS) $(openbox_openbox_DEPENDENCIES) $(EXTRA_openbox_openbox_DEPENDENCIES) openbox/$(am__dirstamp)
+ 	@rm -f openbox/openbox$(EXEEXT)
+ 	$(AM_V_CCLD)$(openbox_openbox_LINK) $(openbox_openbox_OBJECTS) $(openbox_openbox_LDADD) $(LIBS)
+-tools/gdm-control/$(am__dirstamp):
+-	@$(MKDIR_P) tools/gdm-control
+-	@: > tools/gdm-control/$(am__dirstamp)
+-tools/gdm-control/$(DEPDIR)/$(am__dirstamp):
+-	@$(MKDIR_P) tools/gdm-control/$(DEPDIR)
+-	@: > tools/gdm-control/$(DEPDIR)/$(am__dirstamp)
+-tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.$(OBJEXT):  \
+-	tools/gdm-control/$(am__dirstamp) \
+-	tools/gdm-control/$(DEPDIR)/$(am__dirstamp)
+-tools/gdm-control/gdm-control$(EXEEXT): $(tools_gdm_control_gdm_control_OBJECTS) $(tools_gdm_control_gdm_control_DEPENDENCIES) $(EXTRA_tools_gdm_control_gdm_control_DEPENDENCIES) tools/gdm-control/$(am__dirstamp)
+-	@rm -f tools/gdm-control/gdm-control$(EXEEXT)
+-	$(AM_V_CCLD)$(LINK) $(tools_gdm_control_gdm_control_OBJECTS) $(tools_gdm_control_gdm_control_LDADD) $(LIBS)
+-tools/gnome-panel-control/$(am__dirstamp):
+-	@$(MKDIR_P) tools/gnome-panel-control
+-	@: > tools/gnome-panel-control/$(am__dirstamp)
+-tools/gnome-panel-control/$(DEPDIR)/$(am__dirstamp):
+-	@$(MKDIR_P) tools/gnome-panel-control/$(DEPDIR)
+-	@: > tools/gnome-panel-control/$(DEPDIR)/$(am__dirstamp)
+-tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.$(OBJEXT):  \
+-	tools/gnome-panel-control/$(am__dirstamp) \
+-	tools/gnome-panel-control/$(DEPDIR)/$(am__dirstamp)
+-tools/gnome-panel-control/gnome-panel-control$(EXEEXT): $(tools_gnome_panel_control_gnome_panel_control_OBJECTS) $(tools_gnome_panel_control_gnome_panel_control_DEPENDENCIES) $(EXTRA_tools_gnome_panel_control_gnome_panel_control_DEPENDENCIES) tools/gnome-panel-control/$(am__dirstamp)
+-	@rm -f tools/gnome-panel-control/gnome-panel-control$(EXEEXT)
+-	$(AM_V_CCLD)$(LINK) $(tools_gnome_panel_control_gnome_panel_control_OBJECTS) $(tools_gnome_panel_control_gnome_panel_control_LDADD) $(LIBS)
+-tools/obxprop/$(am__dirstamp):
+-	@$(MKDIR_P) tools/obxprop
+-	@: > tools/obxprop/$(am__dirstamp)
+-tools/obxprop/$(DEPDIR)/$(am__dirstamp):
+-	@$(MKDIR_P) tools/obxprop/$(DEPDIR)
+-	@: > tools/obxprop/$(DEPDIR)/$(am__dirstamp)
+-tools/obxprop/tools_obxprop_obxprop-obxprop.$(OBJEXT):  \
+-	tools/obxprop/$(am__dirstamp) \
+-	tools/obxprop/$(DEPDIR)/$(am__dirstamp)
+-tools/obxprop/obxprop$(EXEEXT): $(tools_obxprop_obxprop_OBJECTS) $(tools_obxprop_obxprop_DEPENDENCIES) $(EXTRA_tools_obxprop_obxprop_DEPENDENCIES) tools/obxprop/$(am__dirstamp)
+-	@rm -f tools/obxprop/obxprop$(EXEEXT)
+-	$(AM_V_CCLD)$(LINK) $(tools_obxprop_obxprop_OBJECTS) $(tools_obxprop_obxprop_LDADD) $(LIBS)
+ install-dist_libexecSCRIPTS: $(dist_libexec_SCRIPTS)
+ 	@$(NORMAL_INSTALL)
+ 	@list='$(dist_libexec_SCRIPTS)'; test -n "$(libexecdir)" || list=; \
+@@ -1842,8 +1684,6 @@
+ 	-rm -f obt/obt_libobt_la-xml.lo
+ 	-rm -f obt/obt_libobt_la-xqueue.$(OBJEXT)
+ 	-rm -f obt/obt_libobt_la-xqueue.lo
+-	-rm -f obt/obt_obt_unittests-bsearch_unittest.$(OBJEXT)
+-	-rm -f obt/obt_obt_unittests-unittest_base.$(OBJEXT)
+ 	-rm -f openbox/actions/openbox_openbox-addremovedesktop.$(OBJEXT)
+ 	-rm -f openbox/actions/openbox_openbox-all.$(OBJEXT)
+ 	-rm -f openbox/actions/openbox_openbox-breakchroot.$(OBJEXT)
+@@ -1919,9 +1759,6 @@
+ 	-rm -f openbox/openbox_openbox-startupnotify.$(OBJEXT)
+ 	-rm -f openbox/openbox_openbox-translate.$(OBJEXT)
+ 	-rm -f openbox/openbox_openbox-window.$(OBJEXT)
+-	-rm -f tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.$(OBJEXT)
+-	-rm -f tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.$(OBJEXT)
+-	-rm -f tools/obxprop/tools_obxprop_obxprop-obxprop.$(OBJEXT)
+ 
+ distclean-compile:
+ 	-rm -f *.tab.c
+@@ -1946,8 +1783,6 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@obt/$(DEPDIR)/obt_libobt_la-signal.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@obt/$(DEPDIR)/obt_libobt_la-xml.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@obt/$(DEPDIR)/obt_libobt_la-xqueue.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@obt/$(DEPDIR)/obt_obt_unittests-bsearch_unittest.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@obt/$(DEPDIR)/obt_obt_unittests-unittest_base.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@openbox/$(DEPDIR)/openbox_openbox-actions.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@openbox/$(DEPDIR)/openbox_openbox-client.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@openbox/$(DEPDIR)/openbox_openbox-client_list_combined_menu.Po@am__quote@
+@@ -2023,9 +1858,6 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@openbox/actions/$(DEPDIR)/openbox_openbox-showdesktop.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@openbox/actions/$(DEPDIR)/openbox_openbox-showmenu.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@openbox/actions/$(DEPDIR)/openbox_openbox-unfocus.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@tools/gdm-control/$(DEPDIR)/tools_gdm_control_gdm_control-gdm-control.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@tools/gnome-panel-control/$(DEPDIR)/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@tools/obxprop/$(DEPDIR)/tools_obxprop_obxprop-obxprop.Po@am__quote@
+ 
+ .c.o:
+ @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@@ -2198,34 +2030,6 @@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(obrender_rendertest_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o obrender/obrender_rendertest-test.obj `if test -f 'obrender/test.c'; then $(CYGPATH_W) 'obrender/test.c'; else $(CYGPATH_W) '$(srcdir)/obrender/test.c'; fi`
+ 
+-obt/obt_obt_unittests-unittest_base.o: obt/unittest_base.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(obt_obt_unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT obt/obt_obt_unittests-unittest_base.o -MD -MP -MF obt/$(DEPDIR)/obt_obt_unittests-unittest_base.Tpo -c -o obt/obt_obt_unittests-unittest_base.o `test -f 'obt/unittest_base.c' || echo '$(srcdir)/'`obt/unittest_base.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) obt/$(DEPDIR)/obt_obt_unittests-unittest_base.Tpo obt/$(DEPDIR)/obt_obt_unittests-unittest_base.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='obt/unittest_base.c' object='obt/obt_obt_unittests-unittest_base.o' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(obt_obt_unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o obt/obt_obt_unittests-unittest_base.o `test -f 'obt/unittest_base.c' || echo '$(srcdir)/'`obt/unittest_base.c
+-
+-obt/obt_obt_unittests-unittest_base.obj: obt/unittest_base.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(obt_obt_unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT obt/obt_obt_unittests-unittest_base.obj -MD -MP -MF obt/$(DEPDIR)/obt_obt_unittests-unittest_base.Tpo -c -o obt/obt_obt_unittests-unittest_base.obj `if test -f 'obt/unittest_base.c'; then $(CYGPATH_W) 'obt/unittest_base.c'; else $(CYGPATH_W) '$(srcdir)/obt/unittest_base.c'; fi`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) obt/$(DEPDIR)/obt_obt_unittests-unittest_base.Tpo obt/$(DEPDIR)/obt_obt_unittests-unittest_base.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='obt/unittest_base.c' object='obt/obt_obt_unittests-unittest_base.obj' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(obt_obt_unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o obt/obt_obt_unittests-unittest_base.obj `if test -f 'obt/unittest_base.c'; then $(CYGPATH_W) 'obt/unittest_base.c'; else $(CYGPATH_W) '$(srcdir)/obt/unittest_base.c'; fi`
+-
+-obt/obt_obt_unittests-bsearch_unittest.o: obt/bsearch_unittest.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(obt_obt_unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT obt/obt_obt_unittests-bsearch_unittest.o -MD -MP -MF obt/$(DEPDIR)/obt_obt_unittests-bsearch_unittest.Tpo -c -o obt/obt_obt_unittests-bsearch_unittest.o `test -f 'obt/bsearch_unittest.c' || echo '$(srcdir)/'`obt/bsearch_unittest.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) obt/$(DEPDIR)/obt_obt_unittests-bsearch_unittest.Tpo obt/$(DEPDIR)/obt_obt_unittests-bsearch_unittest.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='obt/bsearch_unittest.c' object='obt/obt_obt_unittests-bsearch_unittest.o' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(obt_obt_unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o obt/obt_obt_unittests-bsearch_unittest.o `test -f 'obt/bsearch_unittest.c' || echo '$(srcdir)/'`obt/bsearch_unittest.c
+-
+-obt/obt_obt_unittests-bsearch_unittest.obj: obt/bsearch_unittest.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(obt_obt_unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT obt/obt_obt_unittests-bsearch_unittest.obj -MD -MP -MF obt/$(DEPDIR)/obt_obt_unittests-bsearch_unittest.Tpo -c -o obt/obt_obt_unittests-bsearch_unittest.obj `if test -f 'obt/bsearch_unittest.c'; then $(CYGPATH_W) 'obt/bsearch_unittest.c'; else $(CYGPATH_W) '$(srcdir)/obt/bsearch_unittest.c'; fi`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) obt/$(DEPDIR)/obt_obt_unittests-bsearch_unittest.Tpo obt/$(DEPDIR)/obt_obt_unittests-bsearch_unittest.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='obt/bsearch_unittest.c' object='obt/obt_obt_unittests-bsearch_unittest.obj' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(obt_obt_unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o obt/obt_obt_unittests-bsearch_unittest.obj `if test -f 'obt/bsearch_unittest.c'; then $(CYGPATH_W) 'obt/bsearch_unittest.c'; else $(CYGPATH_W) '$(srcdir)/obt/bsearch_unittest.c'; fi`
+-
+ openbox/actions/openbox_openbox-all.o: openbox/actions/all.c
+ @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(openbox_openbox_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT openbox/actions/openbox_openbox-all.o -MD -MP -MF openbox/actions/$(DEPDIR)/openbox_openbox-all.Tpo -c -o openbox/actions/openbox_openbox-all.o `test -f 'openbox/actions/all.c' || echo '$(srcdir)/'`openbox/actions/all.c
+ @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) openbox/actions/$(DEPDIR)/openbox_openbox-all.Tpo openbox/actions/$(DEPDIR)/openbox_openbox-all.Po
+@@ -3276,48 +3080,6 @@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(openbox_openbox_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o openbox/openbox_openbox-window.obj `if test -f 'openbox/window.c'; then $(CYGPATH_W) 'openbox/window.c'; else $(CYGPATH_W) '$(srcdir)/openbox/window.c'; fi`
+ 
+-tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.o: tools/gdm-control/gdm-control.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_gdm_control_gdm_control_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.o -MD -MP -MF tools/gdm-control/$(DEPDIR)/tools_gdm_control_gdm_control-gdm-control.Tpo -c -o tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.o `test -f 'tools/gdm-control/gdm-control.c' || echo '$(srcdir)/'`tools/gdm-control/gdm-control.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tools/gdm-control/$(DEPDIR)/tools_gdm_control_gdm_control-gdm-control.Tpo tools/gdm-control/$(DEPDIR)/tools_gdm_control_gdm_control-gdm-control.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tools/gdm-control/gdm-control.c' object='tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.o' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_gdm_control_gdm_control_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.o `test -f 'tools/gdm-control/gdm-control.c' || echo '$(srcdir)/'`tools/gdm-control/gdm-control.c
+-
+-tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.obj: tools/gdm-control/gdm-control.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_gdm_control_gdm_control_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.obj -MD -MP -MF tools/gdm-control/$(DEPDIR)/tools_gdm_control_gdm_control-gdm-control.Tpo -c -o tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.obj `if test -f 'tools/gdm-control/gdm-control.c'; then $(CYGPATH_W) 'tools/gdm-control/gdm-control.c'; else $(CYGPATH_W) '$(srcdir)/tools/gdm-control/gdm-control.c'; fi`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tools/gdm-control/$(DEPDIR)/tools_gdm_control_gdm_control-gdm-control.Tpo tools/gdm-control/$(DEPDIR)/tools_gdm_control_gdm_control-gdm-control.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tools/gdm-control/gdm-control.c' object='tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.obj' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_gdm_control_gdm_control_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tools/gdm-control/tools_gdm_control_gdm_control-gdm-control.obj `if test -f 'tools/gdm-control/gdm-control.c'; then $(CYGPATH_W) 'tools/gdm-control/gdm-control.c'; else $(CYGPATH_W) '$(srcdir)/tools/gdm-control/gdm-control.c'; fi`
+-
+-tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.o: tools/gnome-panel-control/gnome-panel-control.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_gnome_panel_control_gnome_panel_control_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.o -MD -MP -MF tools/gnome-panel-control/$(DEPDIR)/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.Tpo -c -o tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.o `test -f 'tools/gnome-panel-control/gnome-panel-control.c' || echo '$(srcdir)/'`tools/gnome-panel-control/gnome-panel-control.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tools/gnome-panel-control/$(DEPDIR)/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.Tpo tools/gnome-panel-control/$(DEPDIR)/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tools/gnome-panel-control/gnome-panel-control.c' object='tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.o' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_gnome_panel_control_gnome_panel_control_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.o `test -f 'tools/gnome-panel-control/gnome-panel-control.c' || echo '$(srcdir)/'`tools/gnome-panel-control/gnome-panel-control.c
+-
+-tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.obj: tools/gnome-panel-control/gnome-panel-control.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_gnome_panel_control_gnome_panel_control_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.obj -MD -MP -MF tools/gnome-panel-control/$(DEPDIR)/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.Tpo -c -o tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.obj `if test -f 'tools/gnome-panel-control/gnome-panel-control.c'; then $(CYGPATH_W) 'tools/gnome-panel-control/gnome-panel-control.c'; else $(CYGPATH_W) '$(srcdir)/tools/gnome-panel-control/gnome-panel-control.c'; fi`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tools/gnome-panel-control/$(DEPDIR)/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.Tpo tools/gnome-panel-control/$(DEPDIR)/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tools/gnome-panel-control/gnome-panel-control.c' object='tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.obj' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_gnome_panel_control_gnome_panel_control_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tools/gnome-panel-control/tools_gnome_panel_control_gnome_panel_control-gnome-panel-control.obj `if test -f 'tools/gnome-panel-control/gnome-panel-control.c'; then $(CYGPATH_W) 'tools/gnome-panel-control/gnome-panel-control.c'; else $(CYGPATH_W) '$(srcdir)/tools/gnome-panel-control/gnome-panel-control.c'; fi`
+-
+-tools/obxprop/tools_obxprop_obxprop-obxprop.o: tools/obxprop/obxprop.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_obxprop_obxprop_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tools/obxprop/tools_obxprop_obxprop-obxprop.o -MD -MP -MF tools/obxprop/$(DEPDIR)/tools_obxprop_obxprop-obxprop.Tpo -c -o tools/obxprop/tools_obxprop_obxprop-obxprop.o `test -f 'tools/obxprop/obxprop.c' || echo '$(srcdir)/'`tools/obxprop/obxprop.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tools/obxprop/$(DEPDIR)/tools_obxprop_obxprop-obxprop.Tpo tools/obxprop/$(DEPDIR)/tools_obxprop_obxprop-obxprop.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tools/obxprop/obxprop.c' object='tools/obxprop/tools_obxprop_obxprop-obxprop.o' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_obxprop_obxprop_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tools/obxprop/tools_obxprop_obxprop-obxprop.o `test -f 'tools/obxprop/obxprop.c' || echo '$(srcdir)/'`tools/obxprop/obxprop.c
+-
+-tools/obxprop/tools_obxprop_obxprop-obxprop.obj: tools/obxprop/obxprop.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_obxprop_obxprop_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT tools/obxprop/tools_obxprop_obxprop-obxprop.obj -MD -MP -MF tools/obxprop/$(DEPDIR)/tools_obxprop_obxprop-obxprop.Tpo -c -o tools/obxprop/tools_obxprop_obxprop-obxprop.obj `if test -f 'tools/obxprop/obxprop.c'; then $(CYGPATH_W) 'tools/obxprop/obxprop.c'; else $(CYGPATH_W) '$(srcdir)/tools/obxprop/obxprop.c'; fi`
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) tools/obxprop/$(DEPDIR)/tools_obxprop_obxprop-obxprop.Tpo tools/obxprop/$(DEPDIR)/tools_obxprop_obxprop-obxprop.Po
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tools/obxprop/obxprop.c' object='tools/obxprop/tools_obxprop_obxprop-obxprop.obj' libtool=no @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tools_obxprop_obxprop_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o tools/obxprop/tools_obxprop_obxprop-obxprop.obj `if test -f 'tools/obxprop/obxprop.c'; then $(CYGPATH_W) 'tools/obxprop/obxprop.c'; else $(CYGPATH_W) '$(srcdir)/tools/obxprop/obxprop.c'; fi`
+-
+ mostlyclean-libtool:
+ 	-rm -f *.lo
+ 
+@@ -3326,9 +3088,6 @@
+ 	-rm -rf obrender/.libs obrender/_libs
+ 	-rm -rf obt/.libs obt/_libs
+ 	-rm -rf openbox/.libs openbox/_libs
+-	-rm -rf tools/gdm-control/.libs tools/gdm-control/_libs
+-	-rm -rf tools/gnome-panel-control/.libs tools/gnome-panel-control/_libs
+-	-rm -rf tools/obxprop/.libs tools/obxprop/_libs
+ 
+ distclean-libtool:
+ 	-rm -f libtool config.lt
+@@ -3543,63 +3302,6 @@
+ 	@list='$(dist_docxbm_DATA)'; test -n "$(docxbmdir)" || list=; \
+ 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+ 	dir='$(DESTDIR)$(docxbmdir)'; $(am__uninstall_files_from_dir)
+-install-dist_gnomesessionDATA: $(dist_gnomesession_DATA)
+-	@$(NORMAL_INSTALL)
+-	@list='$(dist_gnomesession_DATA)'; test -n "$(gnomesessiondir)" || list=; \
+-	if test -n "$$list"; then \
+-	  echo " $(MKDIR_P) '$(DESTDIR)$(gnomesessiondir)'"; \
+-	  $(MKDIR_P) "$(DESTDIR)$(gnomesessiondir)" || exit 1; \
+-	fi; \
+-	for p in $$list; do \
+-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+-	  echo "$$d$$p"; \
+-	done | $(am__base_list) | \
+-	while read files; do \
+-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(gnomesessiondir)'"; \
+-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(gnomesessiondir)" || exit $$?; \
+-	done
+-
+-uninstall-dist_gnomesessionDATA:
+-	@$(NORMAL_UNINSTALL)
+-	@list='$(dist_gnomesession_DATA)'; test -n "$(gnomesessiondir)" || list=; \
+-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+-	dir='$(DESTDIR)$(gnomesessiondir)'; $(am__uninstall_files_from_dir)
+-install-dist_gnomewmfilesDATA: $(dist_gnomewmfiles_DATA)
+-	@$(NORMAL_INSTALL)
+-	@list='$(dist_gnomewmfiles_DATA)'; test -n "$(gnomewmfilesdir)" || list=; \
+-	if test -n "$$list"; then \
+-	  echo " $(MKDIR_P) '$(DESTDIR)$(gnomewmfilesdir)'"; \
+-	  $(MKDIR_P) "$(DESTDIR)$(gnomewmfilesdir)" || exit 1; \
+-	fi; \
+-	for p in $$list; do \
+-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+-	  echo "$$d$$p"; \
+-	done | $(am__base_list) | \
+-	while read files; do \
+-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(gnomewmfilesdir)'"; \
+-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(gnomewmfilesdir)" || exit $$?; \
+-	done
+-
+-uninstall-dist_gnomewmfilesDATA:
+-	@$(NORMAL_UNINSTALL)
+-	@list='$(dist_gnomewmfiles_DATA)'; test -n "$(gnomewmfilesdir)" || list=; \
+-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+-	dir='$(DESTDIR)$(gnomewmfilesdir)'; $(am__uninstall_files_from_dir)
+-install-dist_mikachu_themeDATA: $(dist_mikachu_theme_DATA)
+-	@$(NORMAL_INSTALL)
+-	@list='$(dist_mikachu_theme_DATA)'; test -n "$(mikachu_themedir)" || list=; \
+-	if test -n "$$list"; then \
+-	  echo " $(MKDIR_P) '$(DESTDIR)$(mikachu_themedir)'"; \
+-	  $(MKDIR_P) "$(DESTDIR)$(mikachu_themedir)" || exit 1; \
+-	fi; \
+-	for p in $$list; do \
+-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+-	  echo "$$d$$p"; \
+-	done | $(am__base_list) | \
+-	while read files; do \
+-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(mikachu_themedir)'"; \
+-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(mikachu_themedir)" || exit $$?; \
+-	done
+ 
+ uninstall-dist_mikachu_themeDATA:
+ 	@$(NORMAL_UNINSTALL)
+@@ -4182,7 +3884,7 @@
+ 
+ installdirs: installdirs-recursive
+ installdirs-am:
+-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(rcdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(rcdir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(artwizboxed_themedir)" "$(DESTDIR)$(bear2_themedir)" "$(DESTDIR)$(clearlooks34_themedir)" "$(DESTDIR)$(clearlooks_themedir)" "$(DESTDIR)$(clearlooksolive_themedir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(docxbmdir)" "$(DESTDIR)$(gnomesessiondir)" "$(DESTDIR)$(gnomewmfilesdir)" "$(DESTDIR)$(mikachu_themedir)" "$(DESTDIR)$(natura_themedir)" "$(DESTDIR)$(onyx_themedir)" "$(DESTDIR)$(onyxcitrus_themedir)" "$(DESTDIR)$(orang_themedir)" "$(DESTDIR)$(pixmapdir)" "$(DESTDIR)$(rcdir)" "$(DESTDIR)$(syscrash_themedir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(xsessionsdir)" "$(DESTDIR)$(obtpubincludedir)" "$(DESTDIR)$(rrpubincludedir)"; do \
++	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(rcdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(rcdir)" "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(artwizboxed_themedir)" "$(DESTDIR)$(bear2_themedir)" "$(DESTDIR)$(clearlooks34_themedir)" "$(DESTDIR)$(clearlooks_themedir)" "$(DESTDIR)$(clearlooksolive_themedir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(docxbmdir)" "$(DESTDIR)$(mikachu_themedir)" "$(DESTDIR)$(natura_themedir)" "$(DESTDIR)$(onyx_themedir)" "$(DESTDIR)$(onyxcitrus_themedir)" "$(DESTDIR)$(orang_themedir)" "$(DESTDIR)$(pixmapdir)" "$(DESTDIR)$(rcdir)" "$(DESTDIR)$(syscrash_themedir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(xsessionsdir)" "$(DESTDIR)$(obtpubincludedir)" "$(DESTDIR)$(rrpubincludedir)"; do \
+ 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+ 	done
+ install: install-recursive
+@@ -4220,12 +3922,6 @@
+ 	-rm -f openbox/$(am__dirstamp)
+ 	-rm -f openbox/actions/$(DEPDIR)/$(am__dirstamp)
+ 	-rm -f openbox/actions/$(am__dirstamp)
+-	-rm -f tools/gdm-control/$(DEPDIR)/$(am__dirstamp)
+-	-rm -f tools/gdm-control/$(am__dirstamp)
+-	-rm -f tools/gnome-panel-control/$(DEPDIR)/$(am__dirstamp)
+-	-rm -f tools/gnome-panel-control/$(am__dirstamp)
+-	-rm -f tools/obxprop/$(DEPDIR)/$(am__dirstamp)
+-	-rm -f tools/obxprop/$(am__dirstamp)
+ 
+ maintainer-clean-generic:
+ 	@echo "This command is intended for maintainers to use"
+@@ -4238,7 +3934,7 @@
+ 
+ distclean: distclean-recursive
+ 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
+-	-rm -rf obrender/$(DEPDIR) obt/$(DEPDIR) openbox/$(DEPDIR) openbox/actions/$(DEPDIR) tools/gdm-control/$(DEPDIR) tools/gnome-panel-control/$(DEPDIR) tools/obxprop/$(DEPDIR)
++	-rm -rf obrender/$(DEPDIR) obt/$(DEPDIR) openbox/$(DEPDIR) openbox/actions/$(DEPDIR)
+ 	-rm -f Makefile
+ distclean-am: clean-am distclean-compile distclean-generic \
+ 	distclean-libtool distclean-local distclean-tags
+@@ -4261,8 +3957,6 @@
+ 	install-dist_clearlooks34_themeDATA \
+ 	install-dist_clearlooks_themeDATA \
+ 	install-dist_clearlooksolive_themeDATA install-dist_docDATA \
+-	install-dist_docxbmDATA install-dist_gnomesessionDATA \
+-	install-dist_gnomewmfilesDATA install-dist_mikachu_themeDATA \
+ 	install-dist_natura_themeDATA install-dist_onyx_themeDATA \
+ 	install-dist_onyxcitrus_themeDATA install-dist_orang_themeDATA \
+ 	install-dist_pixmapDATA install-dist_rcDATA \
+@@ -4302,7 +3996,7 @@
+ maintainer-clean: maintainer-clean-recursive
+ 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
+ 	-rm -rf $(top_srcdir)/autom4te.cache
+-	-rm -rf obrender/$(DEPDIR) obt/$(DEPDIR) openbox/$(DEPDIR) openbox/actions/$(DEPDIR) tools/gdm-control/$(DEPDIR) tools/gnome-panel-control/$(DEPDIR) tools/obxprop/$(DEPDIR)
++	-rm -rf obrender/$(DEPDIR) obt/$(DEPDIR) openbox/$(DEPDIR) openbox/actions/$(DEPDIR)
+ 	-rm -f Makefile
+ maintainer-clean-am: distclean-am maintainer-clean-generic
+ 
+@@ -4326,8 +4020,6 @@
+ 	uninstall-dist_clearlooks_themeDATA \
+ 	uninstall-dist_clearlooksolive_themeDATA \
+ 	uninstall-dist_docDATA uninstall-dist_docxbmDATA \
+-	uninstall-dist_gnomesessionDATA \
+-	uninstall-dist_gnomewmfilesDATA uninstall-dist_libexecSCRIPTS \
+ 	uninstall-dist_mikachu_themeDATA \
+ 	uninstall-dist_natura_themeDATA uninstall-dist_onyx_themeDATA \
+ 	uninstall-dist_onyxcitrus_themeDATA \
+@@ -4360,8 +4052,6 @@
+ 	install-dist_clearlooks34_themeDATA \
+ 	install-dist_clearlooks_themeDATA \
+ 	install-dist_clearlooksolive_themeDATA install-dist_docDATA \
+-	install-dist_docxbmDATA install-dist_gnomesessionDATA \
+-	install-dist_gnomewmfilesDATA install-dist_libexecSCRIPTS \
+ 	install-dist_mikachu_themeDATA install-dist_natura_themeDATA \
+ 	install-dist_onyx_themeDATA install-dist_onyxcitrus_themeDATA \
+ 	install-dist_orang_themeDATA install-dist_pixmapDATA \
+@@ -4385,8 +4075,6 @@
+ 	uninstall-dist_clearlooks_themeDATA \
+ 	uninstall-dist_clearlooksolive_themeDATA \
+ 	uninstall-dist_docDATA uninstall-dist_docxbmDATA \
+-	uninstall-dist_gnomesessionDATA \
+-	uninstall-dist_gnomewmfilesDATA uninstall-dist_libexecSCRIPTS \
+ 	uninstall-dist_mikachu_themeDATA \
+ 	uninstall-dist_natura_themeDATA uninstall-dist_onyx_themeDATA \
+ 	uninstall-dist_onyxcitrus_themeDATA \
+
+--- a/Makefile.am	2015-03-04 01:06:02.000000000 +0100
++++ b/Makefile.am.patched	2026-04-05 13:40:48.054993506 +0200
+@@ -31,18 +31,10 @@
+ 	obrender/libobrender.la
+ 
+ bin_PROGRAMS = \
+-	openbox/openbox \
+-	tools/gdm-control/gdm-control \
+-	tools/gnome-panel-control/gnome-panel-control \
+-	tools/obxprop/obxprop
+-
+-noinst_PROGRAMS = \
+-	obt/obt_unittests
++	openbox/openbox
+ 
+ nodist_bin_SCRIPTS = \
+-	data/xsession/openbox-session \
+-	data/xsession/openbox-gnome-session \
+-	data/xsession/openbox-kde-session
++	data/xsession/openbox-session
+ 
+ dist_rc_SCRIPTS = \
+ 	data/environment
+@@ -311,57 +303,6 @@
+ 	openbox/window.c \
+ 	openbox/window.h
+ 
+-## obt_unittests ##
+-
+-obt_obt_unittests_CPPFLAGS = \
+-	$(GLIB_CFLAGS) \
+-	-DLOCALEDIR=\"$(localedir)\" \
+-	-DDATADIR=\"$(datadir)\" \
+-	-DCONFIGDIR=\"$(configdir)\" \
+-	-DG_LOG_DOMAIN=\"Obt-Unittests\"
+-obt_obt_unittests_LDADD = \
+-	$(GLIB_LIBS) \
+-	obt/libobt.la
+-obt_obt_unittests_LDFLAGS = -export-dynamic
+-obt_obt_unittests_SOURCES = \
+-	obt/unittest_base.h \
+-	obt/unittest_base.c \
+-	obt/bsearch_unittest.c
+-
+-## gnome-panel-control ##
+-
+-tools_gnome_panel_control_gnome_panel_control_CPPFLAGS = \
+-	$(X_CFLAGS)
+-tools_gnome_panel_control_gnome_panel_control_LDADD = \
+-	$(X_LIBS)
+-tools_gnome_panel_control_gnome_panel_control_SOURCES = \
+-	tools/gnome-panel-control/gnome-panel-control.c
+-
+-## obxprop ##
+-
+-tools_obxprop_obxprop_CPPFLAGS = \
+-	$(GLIB_CFLAGS) \
+-	$(X_CFLAGS)
+-tools_obxprop_obxprop_LDADD = \
+-	$(GLIB_LIBS) \
+-	$(X_LIBS)
+-tools_obxprop_obxprop_SOURCES = \
+-	tools/obxprop/obxprop.c
+-
+-## gdm-control ##
+-
+-tools_gdm_control_gdm_control_CPPFLAGS = \
+-	$(XAUTH_CFLAGS) \
+-	$(X_CFLAGS) \
+-	$(GLIB_CFLAGS)
+-tools_gdm_control_gdm_control_LDADD = \
+-	$(XAUTH_LIBS) \
+-	$(X_LIBS) \
+-	$(GLIB_LIBS)
+-tools_gdm_control_gdm_control_SOURCES = \
+-	tools/gdm-control/gdm-control.c
+-
+-
+ ## default button masks ##
+ dist_docxbm_DATA = \
+         data/xbm/bullet.xbm \
+@@ -535,9 +476,7 @@
+ 	data/gnome-wm-properties/openbox.desktop
+ 
+ nodist_xsessions_DATA = \
+-	data/xsession/openbox.desktop \
+-	data/xsession/openbox-gnome.desktop \
+-	data/xsession/openbox-kde.desktop
++	data/xsession/openbox.desktop
+ 
+ dist_gnomesession_DATA = \
+ 	data/gnome-session/openbox-gnome.session \
+@@ -549,21 +488,11 @@
+ 	data/autostart/autostart.in \
+ 	data/autostart/openbox-autostart.in \
+ 	data/xsession/openbox.desktop.in \
+-	data/xsession/openbox-gnome.desktop.in \
+-	data/xsession/openbox-kde.desktop.in \
+ 	data/xsession/openbox-session.in \
+-	data/xsession/openbox-gnome-session.in \
+-	data/xsession/openbox-kde-session.in \
+ 	doc/openbox.1.sgml \
+ 	doc/openbox.1.in \
+ 	doc/openbox-session.1.sgml \
+ 	doc/openbox-session.1.in \
+-	doc/openbox-gnome-session.1.sgml \
+-	doc/openbox-gnome-session.1.in \
+-	doc/openbox-kde-session.1.sgml \
+-	doc/openbox-kde-session.1.in \
+-	doc/obxprop.1.sgml \
+-	doc/obxprop.1.in \
+ 	obrender/version.h.in \
+ 	obrender/obrender-3.5.pc.in \
+ 	obt/obt-3.5.pc.in \
+@@ -598,10 +527,7 @@
+ 
+ nodist_man_MANS = \
+ 	doc/openbox.1 \
+-	doc/openbox-session.1 \
+-	doc/openbox-gnome-session.1 \
+-	doc/openbox-kde-session.1 \
+-	doc/obxprop.1
++	doc/openbox-session.1
+ 
+ EXTRA_DIST = \
+ 	config.rpath

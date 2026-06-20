@@ -29,8 +29,8 @@ sed -i 's|seat_set_supports_multi_session|//seat_set_supports_multi_session|g' s
 export LIGHTDM_USER=gdm
 export LIGHTDM_GROUP=gdm
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

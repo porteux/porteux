@@ -1,10 +1,10 @@
 #!/bin/bash
 
+MODULENAME=000-kernel
+
 source "$PWD/../builder-utils/setflags.sh"
 
-MODULENAME="000-kernel"
-
-SetFlags "${MODULENAME}"
+SetFlags "$MODULENAME"
 
 source "$BUILDERUTILSPATH/helper.sh"
 source "$BUILDERUTILSPATH/latestfromgithub.sh"
@@ -29,12 +29,14 @@ CRIPPLEDMODULENAME="06-crippled-sources-${KERNELVERSION}"
 
 ### create module folder
 
-rm -fr ${MODULEPATH}
+rm -fr "${MODULEPATH:?MODULEPATH is unset}"
 mkdir -p $MODULEPATH/packages > /dev/null 2>&1
 
 ### download packages from slackware repository
 
-sh $SCRIPTPATH/downloadPackages.sh
+if [ ${ONLYHEADERS:-no} != "yes" ]; then
+	sh $SCRIPTPATH/downloadPackages.sh
+fi
 
 ### set compiler and linker
 
@@ -46,10 +48,11 @@ if [ ${CLANG:-no} = "yes" ]; then
 
 	COMPILER="Clang"
 	EXTRAFLAGS="CC=clang LLVM=1 LLVM_IAS=1"
-	# fixing flags that are not compatible with the kernel
-	BUILDPARAMS=$(echo "$CLANGFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" | sed \
+	# remove flags that are not compatible with the kernel
+	BUILDPARAMS=$(echo "$CLANG_CFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" | sed \
 		-e 's/-fno-plt//g' \
-		-e 's/-flto=auto//g')
+		-e 's/-flto=auto//g' \
+		-e 's/-mpclmul//g')
 	LINKPARAMS=$(echo "$LLDFLAGS" | sed \
 		-e 's/-z,/-z /g' \
 		-e 's/-O2/-O1/g' \
@@ -61,12 +64,13 @@ if [ ${CLANG:-no} = "yes" ]; then
 		-e 's/--strip-all//g')
 else
 	COMPILER="GCC"
-	# fixing flags that are not compatible with the kernel
-	BUILDPARAMS=$(echo "$GCCFLAGS" | sed \
+	# remove flags that are not compatible with the kernel
+	BUILDPARAMS=$(echo "$GCC_CFLAGS" | sed \
 		-e 's/-fno-plt//g' \
 		-e 's/-ffunction-sections//g' \
 		-e 's/-fdata-sections//g' \
-		-e 's/-flto=auto//g')
+		-e 's/-flto=auto//g' \
+		-e 's/-mpclmul//g')
 	LINKPARAMS=$(echo "$LDFLAGS" | sed \
 		-e 's/-z,/-z /g' \
 		-e 's/-Wl,//g' \
@@ -80,7 +84,7 @@ cp ${SCRIPTPATH}/linux-${KERNELVERSION}.tar.?z ${MODULEPATH} 2>/dev/null
 cp ${SCRIPTPATH}/kernel-firmware*.txz ${MODULEPATH}/packages 2>/dev/null
 
 echo "Downloading kernel source code..."
-if [ ! -f linux-${KERNELVERSION}.tar.?z ]; then
+if ! ls linux-${KERNELVERSION}.tar.?z 1> /dev/null 2>&1; then
 	wget -P ${MODULEPATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNELMAJORVERSION}.x/linux-${KERNELVERSION}.tar.xz > /dev/null 2>&1 || { echo "Fail to download kernel source code."; exit 1; }
 fi
 
@@ -120,7 +124,7 @@ currentPackage=kernel-headers
 KERNEL_SOURCE=${MODULEPATH}/linux-${KERNELVERSION} sh ${SCRIPTPATH}/extras/${currentPackage}.SlackBuild || exit 1
 mkdir -p ${MODULEPATH}/../05-devel/packages
 mv ${MODULEPATH}/packages/${currentPackage}*.txz ${MODULEPATH}/../05-devel/packages
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 if [ ${ONLYHEADERS:-no} = "yes" ]; then
 	rm -fr ${MODULEPATH}
@@ -128,6 +132,7 @@ if [ ${ONLYHEADERS:-no} = "yes" ]; then
 fi
 
 echo "Building vmlinuz (this may take a while)..."
+cd $MODULEPATH/linux-${KERNELVERSION}
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
 make -j${NUMBERTHREADS} KBUILD_LDFLAGS="$LINKPARAMS" LDFLAGS_MODULE="$LINKPARAMS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }

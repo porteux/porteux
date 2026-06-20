@@ -29,6 +29,5 @@ gtk-update-icon-cache -f "$dest_dir"
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
-echo "Generating icon package. This may take a while..."
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-icon-theme-$VERSION-noarch-1_porteux.txz > /dev/null 2>&1

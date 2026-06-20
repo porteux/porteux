@@ -45,10 +45,20 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
+# required by libnma
+installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
+rm $MODULEPATH/packages/iso-codes*.txz
+
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
-# lxde common
+# required from now on
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
+
+# xfce common
 for package in \
 	audacious \
 	audacious-plugins \
@@ -56,6 +66,9 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	vte \
+	libnma \
+	network-manager-applet \
 	mate-common \
 	mate-polkit \
 	atril \
@@ -68,33 +81,21 @@ done
 
 currentPackage=wlr-protocols
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=gtk-layer-shell
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
-
-# required from now on
-installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
-installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libnma*.txz || exit 1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # xfce extras
 for package in \
 	engrampa \
 	pavucontrol \
 	mate-search-tool \
-	network-manager-applet \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-# required by libxfce4ui
-installpkg $MODULEPATH/packages/glade*.txz || exit 1
-rm $MODULEPATH/packages/glade*.txz || exit 1
 
 # required by mousepad
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
@@ -106,11 +107,6 @@ installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 
 # required by xfce4-pulseaudio-plugin
 installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
-
-# required by xfce4-terminal
-installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
-rm $MODULEPATH/packages/icu4c*.txz
-installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required by xfdesktop
 installpkg $MODULEPATH/packages/libyaml*.txz || exit 1
@@ -191,31 +187,22 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm usr/bin/vte-*-gtk4
 rm etc/xdg/autostart/blueman.desktop
-rm etc/xdg/autostart/xfce4-clipman-plugin-autostart.desktop
-rm etc/xdg/autostart/xscreensaver.desktop
 rm usr/lib${SYSTEMBITS}/girepository-1.0/SoupGNOME*
 rm usr/lib${SYSTEMBITS}/libappindicator.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*
 rm usr/lib${SYSTEMBITS}/libsoup-gnome*
-rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
 rm usr/share/applications/org.gnome.Vte*.desktop
-rm usr/share/backgrounds/xfce/xfce-leaves.svg
-rm usr/share/backgrounds/xfce/xfce-light.svg
-rm usr/share/backgrounds/xfce/xfce-mouserace.svg
-rm usr/share/backgrounds/xfce/xfce-shapes.svg
 rm usr/share/icons/hicolor/scalable/status/computer.svg
 rm usr/share/icons/hicolor/scalable/status/keyboard.svg
 rm usr/share/icons/hicolor/scalable/status/phone.svg
 
-rm -fr usr/lib${SYSTEMBITS}/gnome-settings-daemon-3.0
-rm -fr usr/share/engrampa
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
+rm -fr usr/share/libindicator
 rm -fr usr/share/themes/Default/balou
 rm -fr usr/share/Thunar
 

@@ -20,14 +20,17 @@ VERSION=${info#* }
 tar xf *.tar.?z
 cd ${PRGNAM}-${VERSION}
 
-CFLAGS="${GCCFLAGS} -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS}
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--disable-dependency-tracking \
+	--disable-devmode \
+	--disable-network \
+	--disable-static
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
-find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 rm -rf $PKG/usr/share/man

@@ -14,6 +14,12 @@ wait
 [ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
 wait
 
+### temporary packages only for building
+
+DownloadPackage "leptonica" & # required by cosmic-reader
+DownloadPackage "tesseract" & # required by cosmic-reader
+wait
+
 ### script clean up
 
 rm FILE_LIST

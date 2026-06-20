@@ -11,7 +11,7 @@ DownloadPackage "libdbusmenu-qt" &
 DownloadPackage "libxklavier" & # required by lightdm-gtk-greeter
 wait
 
-### packages that require specific striping
+### packages that require specific stripping
 
 DownloadPackage "qt6" &
 wait

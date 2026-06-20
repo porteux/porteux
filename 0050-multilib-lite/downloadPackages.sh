@@ -4,8 +4,8 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 GenerateRepositoryUrls
 
 DownloadPackage "alsa-lib" &
-DownloadPackage "brotli" &
 DownloadPackage "alsa-plugins" &
+DownloadPackage "brotli" &
 DownloadPackage "bzip2" &
 DownloadPackage "dbus" &
 DownloadPackage "e2fsprogs" &
@@ -27,7 +27,6 @@ DownloadPackage "keyutils" &
 wait
 DownloadPackage "krb5" &
 DownloadPackage "lame" &
-DownloadPackage "libcap" &
 DownloadPackage "libasyncns" &
 DownloadPackage "libcap" &
 DownloadPackage "libdisplay-info" &
@@ -36,8 +35,8 @@ DownloadPackage "libedit" &
 DownloadPackage "libffi" &
 DownloadPackage "libglvnd" &
 DownloadPackage "libICE" &
-DownloadPackage "libjpeg-turbo" &
 wait
+DownloadPackage "libjpeg-turbo" &
 DownloadPackage "libnsl" &
 DownloadPackage "libogg" &
 DownloadPackage "libpciaccess" &
@@ -47,8 +46,8 @@ DownloadPackage "libsndfile" &
 DownloadPackage "libtirpc" &
 DownloadPackage "libvorbis" &
 DownloadPackage "libX11" &
-DownloadPackage "libXau" &
 wait
+DownloadPackage "libXau" &
 DownloadPackage "libxcb" &
 DownloadPackage "libXcomposite" &
 DownloadPackage "libXcursor" &
@@ -58,11 +57,11 @@ DownloadPackage "libXext" &
 DownloadPackage "libXfixes" &
 DownloadPackage "libXft" &
 DownloadPackage "libXi" &
-DownloadPackage "libXinerama" &
-DownloadPackage "libXrandr" &
 wait
-DownloadPackage "libXrender" &
+DownloadPackage "libXinerama" &
 DownloadPackage "libxml2" &
+DownloadPackage "libXrandr" &
+DownloadPackage "libXrender" &
 DownloadPackage "libxshmfence" &
 DownloadPackage "libXtst" &
 DownloadPackage "libXxf86vm" &
@@ -82,12 +81,11 @@ DownloadPackage "zlib" &
 DownloadPackage "zstd" &
 wait
 
-### packages that require specific striping
+### packages that require specific stripping
 
 DownloadPackage "aaa_libraries" &
 DownloadPackage "eudev" &
 DownloadPackage "gcc" &
-DownloadPackage "gcc-brig" &
 DownloadPackage "gcc-g++" &
 DownloadPackage "llvm" &
 DownloadPackage "mesa" &

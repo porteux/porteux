@@ -39,7 +39,7 @@ sed -i "s|g_file_info_get_edit_name(inf)|g_file_info_get_attribute_byte_string (
 
 ./autogen.sh
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \

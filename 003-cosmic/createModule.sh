@@ -73,8 +73,6 @@ export PATH=$MODULEPATH/just-master/target/x86_64-unknown-linux-gnu/release/:$PA
 for package in \
 	gumbo-parser \
 	jbig2dec \
-	leptonica \
-	tesseract \
 	greetd \
 	launcher \
 	dart-sass \
@@ -85,9 +83,13 @@ installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# only required for building
+# required for building adw-gtk3
 rm $MODULEPATH/packages/dart-sass*.txz
+
+# required by cosmic-reader
+installpkg $MODULEPATH/packages/leptonica*.txz
 rm $MODULEPATH/packages/leptonica*.txz
+installpkg $MODULEPATH/packages/tesseract*.txz
 rm $MODULEPATH/packages/tesseract*.txz
 
 # cosmic packages
