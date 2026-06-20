@@ -12,8 +12,14 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://ftp.gnu.org/gnu/${PRGNAM}/ | grep "${PRGNAM}-[0-9]" | grep ".tar.xz" | grep -Ev "sig" | cut -d "=" -f 5 | cut -d "\"" -f 2 | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
-wget https://ftp.gnu.org/gnu/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
+# Select working GNU mirror
+BASE_URL="https://ftp.gnu.org/gnu"
+if ! curl -Is --max-time 5 "$BASE_URL" >/dev/null; then
+	BASE_URL="https://ftp.gnu.org.uk/gnu"
+fi
+
+VERSION=$(curl -s ${BASE_URL}/${PRGNAM}/ | grep "${PRGNAM}-[0-9]" | grep "${PRGNAM}-[0-9]" | grep ".tar.xz" | grep -Ev "sig" | grep -oP 'href="\K[^"]+' | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
+wget ${BASE_URL}/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
@@ -28,8 +34,8 @@ cd build-glibc-$VERSION
 
 LDFLAGS="${LDFLAGS/-Wl,--gc-sections/}"
 
-CFLAGS="${GCCFLAGS/-flto=auto/} -fPIC" \
-CXXFLAGS="${GCCFLAGS} -fvisibility-inlines-hidden -fPIC" \
+CFLAGS="${GCC_CFLAGS/-flto=auto/} -fPIC" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 ../configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

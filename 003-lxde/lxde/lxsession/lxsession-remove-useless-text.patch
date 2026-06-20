@@ -16,7 +16,7 @@
 -
 -        if (version_id)
 -            prompt = g_strdup_printf(_("<b><big>Logout %s %s session?</big></b>"), session_name, version_id);
-+        if (current_user == NULL || current_user == "")
++        if (current_user == NULL || current_user[0] == '\0')
 +            prompt = g_strdup_printf(_("<b><big>Log out current session</big></b>"));
          else
 -            prompt = g_strdup_printf(_("<b><big>Logout %s session?</big></b>"), session_name);

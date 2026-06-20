@@ -17,7 +17,13 @@ if ! isRoot; then
 	exit
 fi
 
-LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | grep -v "master." | head -1)
+if [[ ${ALLOWTEST:-no} == no ]]; then
+	export TESTRELEASES="master.|alpha|beta|rc[0-9]|unstable"
+else
+	export TESTRELEASES="master."
+fi
+
+LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -Ev "cjs-|${TESTRELEASES}" | sort -Vr | head -1)
 echo -e "Building Cinnamon ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
@@ -43,7 +49,7 @@ cp --parents -P usr/lib$SYSTEMBITS/libgettextlib* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libgettextsrc* "${currentPackage}-stripped"
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=ibus
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -61,9 +67,13 @@ mkdir ${currentPackage}-stripped
 rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 ### packages outside slackware repository
+
+# required by libnma
+installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
+rm $MODULEPATH/packages/iso-codes*.txz
 
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
@@ -75,6 +85,8 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	vte \
+	libnma \
 	mate-polkit \
 ; do
 SESSIONTEMPLATE=cinnamon ICONTHEME=Yaru-blue sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
@@ -94,18 +106,12 @@ installpkg $MODULEPATH/packages/libgee*.txz || exit 1
 installpkg $MODULEPATH/packages/libgtop*.txz || exit 1
 installpkg $MODULEPATH/packages/libhandy*.txz || exit 1
 installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libnma*.txz || exit 1
 installpkg $MODULEPATH/packages/libsoup*.txz || exit 1
 installpkg $MODULEPATH/packages/libspectre*.txz || exit 1
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/python-six*.txz || exit 1
-installpkg $MODULEPATH/packages/vte*.txz || exit 1
 
 # required only for building
-installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
-rm $MODULEPATH/packages/icu4c*.txz
-installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
-rm $MODULEPATH/packages/iso-codes*.txz
 installpkg $MODULEPATH/packages/libgsf*.txz || exit 1
 rm $MODULEPATH/packages/libgsf*.txz
 installpkg $MODULEPATH/packages/python-build*.txz || exit 1
@@ -234,25 +240,12 @@ CopyToMultiLanguage
 cd $MODULEPATH/packages/
 
 {
-rm usr/bin/vte-*-gtk4
-rm etc/profile.d/80xapp-gtk3-module.sh
 rm etc/xdg/autostart/blueman.desktop
-rm etc/xdg/autostart/caribou-autostart.desktop
-rm etc/xdg/autostart/xapp-sn-watcher.desktop
 rm usr/bin/js[0-9]*
-rm usr/bin/pastebin
-rm usr/bin/xfce4-set-wallpaper
 rm usr/lib${SYSTEMBITS}/libappindicator.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
-rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
-rm usr/lib${SYSTEMBITS}/xapps/mate-xapp-status-applet.py
 rm usr/libexec/indicator-loader
-rm usr/share/applications/org.gnome.Vte*.desktop
-rm usr/share/dbus-1/services/org.gnome.Caribou.Antler.service
-rm usr/share/dbus-1/services/org.gnome.Caribou.Daemon.service
-rm usr/share/dbus-1/services/org.gnome.FileRoller.service
-rm usr/share/dbus-1/services/org.mate.panel.applet.MateXAppStatusAppletFactory.service
 
 rm -fr etc/dbus-1/system.d
 rm -fr etc/dconf
@@ -264,20 +257,14 @@ rm -fr usr/lib${SYSTEMBITS}/graphene-1.0
 rm -fr usr/lib${SYSTEMBITS}/gtk-2.0
 rm -fr usr/lib*/python*/site-packages/pip*
 rm -fr usr/lib*/python*/site-packages/psutil/tests
-rm -fr usr/share/cjs-1.0
-rm -fr usr/share/clutter-1.0
-rm -fr usr/share/cogl
 rm -fr usr/share/gdm
 rm -fr usr/share/glade/pixmaps
 rm -fr usr/share/gnome
 rm -fr usr/share/gtksourceview-2.0
 rm -fr usr/share/gtksourceview-3.0
 rm -fr usr/share/libdbusmenu
-rm -fr usr/share/mate-panel
 rm -fr usr/share/pixmaps
 rm -fr usr/share/Thunar
-rm -fr usr/share/xed/gir-1.0
-rm -fr usr/share/xviewer/gir-1.0
 rm -fr var/lib/AccountsService
 
 [ "$SYSTEMBITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null

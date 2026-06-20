@@ -1,0 +1,45 @@
+#!/bin/bash
+
+source "$BUILDERUTILSPATH/latestfromgithub.sh"
+
+PRGNAM=harfbuzz
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(DownloadLatestFromGithub "harfbuzz" ${PRGNAM})
+VERSION=${info#* }
+
+tar xf $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+
+mkdir build && cd build
+CC=clang \
+CXX=clang++ \
+CFLAGS="$CLANG_CFLAGS" \
+CXXFLAGS="$CLANG_CXXFLAGS" \
+LDFLAGS="$LLDFLAGS" \
+meson setup \
+	--buildtype=release \
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--prefix=/usr \
+	-Ddocs=disabled \
+	-Dtests=disabled \
+	-Dutilities=disabled
+
+DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

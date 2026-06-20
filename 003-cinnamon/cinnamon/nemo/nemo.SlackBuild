@@ -14,22 +14,22 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
+info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "${TESTRELEASES}")
 VERSION=${info#* }
 
-tar xf $PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+tar xf $PRGNAM-$VERSION*.tar.?z
+cd $PRGNAM-$VERSION*/
 
 sed -i "s|subdir('test')|#subdir('test')|g" meson.build
 sed -i "s|subdir('docs')|#subdir('docs')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
-	--libexecdir=/usr/lib${SYSTEMBITS} \
+	--libexecdir=/usr/libexec \
 	-Dselinux=false \
 	-Dtracker=false \
 	-Dxmp=false

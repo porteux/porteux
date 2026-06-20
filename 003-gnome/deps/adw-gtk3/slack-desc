@@ -1,0 +1,11 @@
+        |-----handy-ruler------------------------------------------------------|
+adw-gtk3: adw-gtk3
+adw-gtk3:
+adw-gtk3: An unofficial GTK3 port of libadwaita.
+adw-gtk3: 
+adw-gtk3: This port does not claim to be a 100% look-a-like of libadwaita.
+adw-gtk3: There are some limitations to what GTK3 can do.
+adw-gtk3:
+adw-gtk3: https://github.com/lassekongo83/adw-gtk3
+adw-gtk3:
+adw-gtk3:

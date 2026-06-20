@@ -12,20 +12,17 @@ DownloadPackage "gspell" &
 DownloadPackage "gtksourceview4" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
-wait
 DownloadPackage "libdbusmenu" &
+wait
 DownloadPackage "libgtop" &
 DownloadPackage "libindicator" &
-DownloadPackage "libnma" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
-DownloadPackage "vte" &
 wait
 
 ### temporary packages only for building
 
-DownloadPackage "icu4c" & # required by xfce4-terminal (only for safety in case it gets updated in Slackware repo)
-DownloadPackage "glade" & # required by libxfce4ui to provide more system information (e.g. nvidia cards)
+DownloadPackage "iso-codes" & # to build libnma
 DownloadPackage "libyaml" & # to build xfdesktop with desktop icons
 wait
 

@@ -18,7 +18,7 @@ wget https://sourceforge.net/projects/enlightenment/files/${PRGNAM}-src/${VERSIO
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -27,6 +27,7 @@ CFLAGS="$GCCFLAGS" \
 	--enable-static=no \
 	--enable-progs=no
 
+make -j${NUMBERTHREADS}
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;

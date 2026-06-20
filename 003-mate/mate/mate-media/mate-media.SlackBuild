@@ -23,7 +23,7 @@ cd $PRGNAM-$VERSION
 sed -i "s|subdir('man')|#subdir('man')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -34,10 +34,7 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-
-# Remove unnecessary old GNOME stuff -- confirmed with upstream
-[ -e $TMP ] && rm -rf $TMP/usr/share/omf/mate-mixer_applet2
-[ -e $TMP ] && rm -rf $TMP/usr/share/omf/mate-volume-control
+rm -fr $PKG/usr/share/mate-media/icons
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

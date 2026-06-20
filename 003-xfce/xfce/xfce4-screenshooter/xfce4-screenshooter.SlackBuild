@@ -20,7 +20,7 @@ tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffat-lto-objects -ffast-math" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects -ffast-math" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+PRGNAM=ntfsprogs-plus
+
+CWD=$(dirname "$0")
+TMP=$MODULEPATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+wget https://github.com/${PRGNAM}/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xf ${PRGNAM}.tar.?z
+cd ${PRGNAM}-main
+VERSION=$(date -r . +%Y%m%d)
+
+# only create lost+found folder when finding orphan files
+patch -p1 < $CWD/fix-lost-found-folder.patch
+
+./autogen.sh
+
+CFLAGS="$GCC_CFLAGS" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib$SYSTEMBITS \
+	--localstatedir=/var \
+	--disable-static
+
+make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -1,0 +1,13 @@
+diff --git a/src/ntfsck.c b/src/ntfsck.c
+index 1234567..abcdefg 100644
+--- a/src/ntfsck.c
++++ b/src/ntfsck.c
+@@ -4439,7 +4439,7 @@ static int ntfsck_check_orphaned_mft(ntfs_volume *vol)
+ 	progress_init(&prog, 0, orphan_cnt + 1, 1000, pb_flags);
+
+ 	/* check lost found directory */
+-	if (!vol->lost_found) {
++	if (!vol->lost_found && orphan_cnt > 0) {
+ 		root_ni = ntfsck_open_inode(vol, FILE_root);
+ 		if (!root_ni) {
+ 			ntfs_log_error("Failed to open root inode\n");

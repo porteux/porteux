@@ -22,18 +22,18 @@ mkdir build && cd build
 cmake .. \
 	-DBUILD_TESTING=OFF \
 	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_C_FLAGS="$GCCFLAGS" \
-	-DCMAKE_CXX_FLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+	-DCMAKE_C_FLAGS="$GCC_CFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
 	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
-	-DCMAKE_INSTALL_PREFIX=/usr
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DKIMAGEFORMATS_HEIF=ON
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-find $PKG/usr/lib${SYSTEMBITS}/qt*/plugins/imageformats/ -mindepth 1 -maxdepth 1 ! \( -name "kimg_jxl*" -o -name "kimg_tga*" \) -exec rm '{}' \; 2>/dev/null
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-extra-${VERSION//[vV]}-$ARCH-1_porteux.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1_porteux.txz

@@ -22,7 +22,7 @@ done
 
 ./autogen.sh
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \

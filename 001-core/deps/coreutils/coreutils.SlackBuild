@@ -12,8 +12,14 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://ftp.gnu.org/gnu/${PRGNAM}/ | grep "${PRGNAM}-[0-9]" | grep ".tar.xz" | grep -Ev "sig" | cut -d "=" -f 5 | cut -d "\"" -f 2 | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
-wget https://ftp.gnu.org/gnu/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
+# Select working GNU mirror
+BASE_URL="https://ftp.gnu.org/gnu"
+if ! curl -Is --max-time 5 "$BASE_URL" >/dev/null; then
+	BASE_URL="https://ftp.gnu.org.uk/gnu"
+fi
+
+VERSION=$(curl -s ${BASE_URL}/${PRGNAM}/ | grep "${PRGNAM}-[0-9]" | grep "${PRGNAM}-[0-9]" | grep ".tar.xz" | grep -Ev "sig" | grep -oP 'href="\K[^"]+' | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
+wget ${BASE_URL}/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
 
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
@@ -25,22 +31,31 @@ patch -p1 < $CWD/fix-cpu-info.patch
 patch -p1 < $CWD/no-ls-quoting.patch
 
 FORCE_UNSAFE_CONFIGURE=1 \
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
-  --prefix=/usr \
-  --bindir=/bin \
-  --enable-install-program=arch \
-  --with-openssl=no \
-  --enable-no-install-program=hostname,kill,uptime \
-  --build=$ARCH-slackware-linux
+	--prefix=/usr \
+	--bindir=/bin \
+	--enable-install-program=arch \
+	--with-openssl=no \
+	--enable-no-install-program=hostname,kill,uptime \
+	--build=$ARCH-slackware-linux
 
-make $NUMJOBS install DESTDIR=$PKG
+make -j${NUMBERTHREADS} install DESTDIR=$PKG
 
 rm -rf $PKG/usr/share/info
 rm -rf $PKG/usr/share/man
 
 # We don't need this as it stomps on files in the ksh93 package
 rm -rf $PKG/usr/share/locale/*/LC_TIME
+
+# Make sure old third-party applications won't break
+mkdir -p $PKG/usr/bin
+(
+	cd $PKG/usr/bin
+	for file in ../../bin/* ; do
+		ln -sf $file .
+	done
+)
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -27,7 +27,7 @@ done
 sed -i "s| docs help||g" Makefile.am
 sed -i "s| docs help||g" Makefile.in
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -40,6 +40,9 @@ CFLAGS="$GCCFLAGS -ffat-lto-objects" \
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+# fix empty files not opening with pluma
+sed -i '/^MimeType=/ s/$/application\/x-zerosize;/' $PKG/usr/share/applications/pluma.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -12,37 +12,31 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES}" | head -1)
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+[ ! -s ${PRGNAM}-${VERSION}.tar.gz ] && wget https://github.com/GNOME/${PRGNAM}/archive/refs/tags/$VERSION.tar.gz -O $PRGNAM-$VERSION.tar.gz
 
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-for i in $CWD/*.patch; do
-	patch -p1 < $i
-done
+# update gnome-session to be sysvinit compatible
+wget https://github.com/fulalas/gnome-session-sysvinit/archive/refs/heads/main.tar.gz
+tar xf main.tar.gz
+cp -rf gnome-session-sysvinit-main/* .
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	-Dlogind_provider=elogind \
-	-Dx11=true \
 	-Dmimeapps=false \
 	-Ddocbook=false \
 	-Dman=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
-
-find $PKG -type f -name "*.la" -exec rm -f {} \;
-
-install -Dm755 "$CWD/xinitrc.gnome" $PKG/etc/X11/xinit/xinitrc.gnome
-cd $PKG/etc/X11/xinit/
-cp -s xinitrc.gnome xinitrc
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

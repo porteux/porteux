@@ -24,5 +24,8 @@ ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 make -j${NUMBERTHREADS}
 make install DESTDIR=$PKG
 
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz
