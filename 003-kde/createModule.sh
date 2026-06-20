@@ -437,8 +437,10 @@ find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o
 GenericStrip
 
 # move out things that don't support aggressive stripping
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libexiv2.so* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libgwenviewlib.so* $MODULEPATH/
 AggressiveStripAll
+mv $MODULEPATH/libexiv2.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 mv $MODULEPATH/libgwenviewlib.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files
