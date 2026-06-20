@@ -39,7 +39,7 @@ sed -i "s|^caja_extension.*|caja_extension = dependency('', required: false)|g" 
 sed -i "s|version: '1\.28.*|version: '${VERSION}',|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

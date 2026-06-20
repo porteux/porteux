@@ -38,7 +38,7 @@ sed -i "s|define DEFAULT_POPDOWN_SPEED (25)|define DEFAULT_POPDOWN_SPEED (10)|g"
 sed -i "s|define DEFAULT_POPUP_DELAY (225)|define DEFAULT_POPUP_DELAY (10)|g" panel/panel-window.c
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

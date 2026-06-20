@@ -22,8 +22,8 @@ cd $PRGNAM-$VERSION
 
 cmake -B build -S . \
 	-G Ninja \
-	-DCMAKE_C_FLAGS="$GCCFLAGS" \
-	-DCMAKE_CXX_FLAGS="$GCCFLAGS -ffat-lto-objects -fvisibility-inlines-hidden" \
+	-DCMAKE_C_FLAGS="$GCC_CFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
 	-DWITH_EXAMPLES=OFF \

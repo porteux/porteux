@@ -40,7 +40,7 @@ installpkg $MODULEPATH/packages/libvpx*.txz || exit 1
 currentPackage=gdk-pixbuf2
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
 
@@ -56,10 +56,14 @@ export PATH=$HOME/.cargo/bin/:$PATH
 currentPackage=librsvg
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libtheora*.txz || exit 1
+
+# required by appstream
+installpkg $MODULEPATH/packages/ngtcp2*.txz || exit 1
+rm $MODULEPATH/packages/ngtcp2*.txz
 
 # required by gtk+3
 installpkg $MODULEPATH/packages/cups*.txz || exit 1
@@ -83,6 +87,8 @@ rm $MODULEPATH/packages/socat*.txz
 
 # gui deps
 for package in \
+	freetype \
+	harfbuzz \
 	xorg-server \
 	xf86-input-libinput \
 	libX11 \
@@ -120,7 +126,6 @@ for package in \
 	pamixer \
 	webp-pixbuf-loader \
 	wlr-randr \
-	wlrctl \
 	xdg-desktop-portal \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
@@ -138,7 +143,7 @@ mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=mesa
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -161,7 +166,18 @@ mkdir ${currentPackage}-stripped
 rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+
+currentPackage=noto-fonts-ttf
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv ../packages/${currentPackage}*.txz .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/share/fonts/TTF/NotoSansSymbols*-Regular.ttf ${currentPackage}-stripped
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=pulseaudio
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -179,7 +195,7 @@ cp --parents -Pr usr/lib$SYSTEMBITS/pkgconfig/* ${currentPackage}-stripped
 cp --parents -Pr usr/include/* ${currentPackage}-stripped
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=vulkan-sdk
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -198,10 +214,11 @@ cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stri
 cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
-### install poppler so it can be used by next modules
+### install poppler and its deps so they can be used by next modules
 
+installpkg $MODULEPATH/packages/gpgmepp*.txz
 installpkg $MODULEPATH/packages/poppler*.txz
 
 ### fake root
@@ -215,7 +232,6 @@ InstallAdditionalPackages
 
 ### fix applications shortcuts
 
-sed -i "s|^Exec=.*|Exec=dbus-run-session -- labwc|g" $MODULEPATH/packages/usr/share/wayland-sessions/labwc.desktop
 sed -i "s|^Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULEPATH/packages/usr/share/applications/gparted.desktop
 
 ### add xzm to freedesktop.org.xml
@@ -257,8 +273,6 @@ rm usr/lib${SYSTEMBITS}/libXaw.so.6*
 rm usr/lib${SYSTEMBITS}/libXaw6*
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
-rm usr/share/applications/gtk3-icon-browser.desktop
-rm usr/share/applications/gtk3-widget-factory.desktop
 rm usr/share/applications/mimeinfo.cache
 rm usr/share/applications/qv4l2.desktop
 rm usr/share/applications/qvidcap.desktop
@@ -272,11 +286,11 @@ rm usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf
 rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
+rm usr/share/xsessions/xwmconfig.desktop
 
 rm -fr etc/gnupg
 rm -fr etc/pam.d
 rm -fr etc/rc_keymaps
-rm -fr etc/X11/xorg.conf.d
 rm -fr etc/xdg/Xwayland-session.d
 rm -fr usr/lib${SYSTEMBITS}/atkmm-*
 rm -fr usr/lib${SYSTEMBITS}/cairomm-*

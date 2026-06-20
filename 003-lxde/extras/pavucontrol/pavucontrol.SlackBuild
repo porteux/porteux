@@ -22,8 +22,8 @@ sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
 sed -i 's|printf("%s\\n", PACKAGE_STRING);|printf("%s %s\\n", PACKAGE_STRING, PACKAGE_VERSION);|g' src/pavuapplication.cc
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CFLAGS="$GCC_CFLAGS" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
@@ -36,6 +36,8 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+sed -i "s|;Settings;|;|g" $PKG/usr/share/applications/pavucontrol.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

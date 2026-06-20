@@ -12,8 +12,9 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
-wget https://download.gnome.org/sources/${PRGNAM}/${VERSION%%.*}/${PRGNAM}-${VERSION}.tar.xz
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES}" | head -1)
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+[ ! -s ${PRGNAM}-${VERSION}.tar.gz ] && wget https://github.com/GNOME/${PRGNAM}/archive/refs/tags/$VERSION.tar.gz -O $PRGNAM-$VERSION.tar.gz
 
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
@@ -27,8 +28,12 @@ for i in $CWD/*.patch; do
 	patch -p0 < $i
 done
 
+if [ ! -f subprojects/gvc/meson.build ]; then
+	git clone https://gitlab.gnome.org/GNOME/libgnome-volume-control subprojects/gvc || git clone https://github.com/GNOME/libgnome-volume-control subprojects/gvc
+fi
+
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
@@ -39,12 +44,11 @@ meson setup \
 	-Dcolord=false \
 	-Ddefault_library=shared \
 	-Dsystemd=false \
-	-Delogind=true \
-	-Dx11=true
+	-Delogind=true
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-# Don't auto-suspend by default on AC power (Gentoo)
+# Don't auto-suspend by default on AC power
 install -Dm644 "$CWD/org.gnome.settings-daemon.plugins.power.gschema.override" $PKG/usr/share/glib-2.0/schemas/
 
 install -Dm644 "$CWD/org.gnome.SettingsDaemon.Housekeeping.desktop" $PKG/etc/xdg/autostart/

@@ -32,8 +32,17 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
+# required by libnma
+installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
+rm $MODULEPATH/packages/iso-codes*.txz
+
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
+
+# required from now on
+installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
 
 # lxde common
 for package in \
@@ -43,6 +52,9 @@ for package in \
 	ffmpegthumbnailer \
 	lightdm \
 	lightdm-gtk-greeter \
+	vte \
+	libnma \
+	network-manager-applet \
 	atril \
 	xcape \
 ; do
@@ -51,35 +63,21 @@ installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# required from now on
-installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
-installpkg $MODULEPATH/packages/libindicator*.txz || exit 1
-installpkg $MODULEPATH/packages/libnma*.txz || exit 1
-
 # lxde extras
 for package in \
 	engrampa \
 	pavucontrol \
 	l3afpad \
 	gnome-screenshot \
-	network-manager-applet \
 	kora-icon-theme \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# required by lxterminal
-installpkg $MODULEPATH/packages/vte*.txz || exit 1
-
 # required by lxpanel
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
-
-# required by lxterminal
-installpkg $MODULEPATH/packages/icu4c*.txz || exit 1
-rm $MODULEPATH/packages/icu4c*.txz
 
 # lxde packages
 for package in \
@@ -117,12 +115,6 @@ rm *.t?z
 
 InstallAdditionalPackages
 
-### fix some .desktop files
-
-sed -i "s|Core;|Utility;|g" $MODULEPATH/packages/usr/share/applications/gpicview.desktop
-sed -i "s|;Settings;|;|g" $MODULEPATH/packages/usr/share/applications/pavucontrol.desktop
-sed -i "s|System;|Utility;|g" $MODULEPATH/packages/usr/share/applications/pcmanfm.desktop
-
 ### copy build files to 05-devel
 
 CopyToDevel
@@ -137,18 +129,12 @@ cd $MODULEPATH/packages/
 
 {
 rm etc/xdg/autostart/blueman.desktop
-rm usr/bin/vte-*-gtk4
 rm usr/lib${SYSTEMBITS}/libappindicator.*
 rm usr/lib${SYSTEMBITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEMBITS}/libindicator.*
 rm usr/lib${SYSTEMBITS}/libkeybinder.*
-rm usr/lib${SYSTEMBITS}/libvte-*-gtk4*
 rm usr/libexec/indicator-loader
-rm usr/share/applications/org.gnome.Vte*.desktop
-rm usr/share/lxde/wallpapers/lxde_green.jpg
-rm usr/share/lxde/wallpapers/lxde_red.jpg
 
-rm -fr usr/share/engrampa
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
 rm -fr usr/share/Thunar

@@ -20,7 +20,7 @@ wget https://github.com/ostreedev/${PRGNAM}/releases/download/${VERSION}/lib${PR
 tar xf lib${PRGNAM}-${VERSION//[vV]}.tar.?z*
 cd lib${PRGNAM}-${VERSION//[vV]}
 
-CFLAGS="$GCCFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

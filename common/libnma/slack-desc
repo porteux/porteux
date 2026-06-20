@@ -1,0 +1,12 @@
+      |-----handy-ruler------------------------------------------------------|
+libnma: libnma (NetworkManager GUI client library)
+libnma:
+libnma: The libnma library provides an API used to create dialogs for
+libnma: NetworkManager clients such as network-manager-applet.
+libnma:
+libnma: https://gitlab.gnome.org/GNOME/libnma
+libnma:
+libnma:
+libnma:
+libnma:
+libnma:

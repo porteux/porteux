@@ -27,7 +27,7 @@ cd $MODULEPATH
 
 sh $SCRIPTPATH/downloadPackages.sh
 
-if [ ! -f $MODULEPATH/packages/kernel-headers*.txz ]; then
+if ! ls $MODULEPATH/packages/kernel-headers*.txz 1> /dev/null 2>&1; then
 	cd ${SCRIPTPATH}/../000-kernel
 	ONLYHEADERS=yes sh createModule.sh || wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNELVERSION-x86-1.txz -P $MODULEPATH/packages || exit 1
 fi

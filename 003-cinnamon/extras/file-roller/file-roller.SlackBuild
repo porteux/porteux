@@ -21,7 +21,7 @@ cd $PRGNAM-$VERSION
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
@@ -39,6 +39,8 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm $PKG/usr/share/dbus-1/services/org.gnome.ArchiveManager1.service
+rm $PKG/usr/share/dbus-1/services/org.gnome.FileRoller.service
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

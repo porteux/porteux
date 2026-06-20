@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xf ${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-$VERSION
 
-make -j${NUMBERTHREADS} PREFIX=/usr LIBDIR=/lib${SYSTEMBITS} DESTDIR=$PKG install
+make -j${NUMBERTHREADS} PREFIX=/usr LIBDIR=lib${SYSTEMBITS} DESTDIR=$PKG install
 
 cd $PKG
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-noarch-1_porteux.txz

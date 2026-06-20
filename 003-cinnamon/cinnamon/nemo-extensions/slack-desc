@@ -1,12 +1,9 @@
-    |-----handy-ruler------------------------------------------------------|
-nemo: nemo (File Manager)
-nemo:
-nemo: nemo is the file manager for the Cinnamon desktop environment. 
-nemo:
-nemo:
-nemo:
-nemo: Project URL: https://github.com/linuxmint/nemo
-nemo:
-nemo:
-nemo:
-nemo:
+               |-----handy-ruler------------------------------------------------------|
+nemo-extensions: A set of extensions for Nemo (File Manager)
+nemo-extensions:
+nemo-extensions:
+nemo-extensions:
+nemo-extensions:
+nemo-extensions:
+nemo-extensions: https://github.com/linuxmint/nemo-extensions
+nemo-extensions:

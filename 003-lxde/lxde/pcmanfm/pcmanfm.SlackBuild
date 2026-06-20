@@ -16,13 +16,13 @@ git clone https://github.com/lxde/${PRGNAM}
 cd ${PRGNAM}
 VERSION=`git describe | cut -d- -f1`
 
-./autogen.sh
-
 for i in $CWD/*.patch; do
 	patch -p0 < $i;
 done
 
-CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
+./autogen.sh
+
+CFLAGS="$GCC_CFLAGS -Wno-error=incompatible-pointer-types" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEMBITS \
@@ -35,6 +35,8 @@ CFLAGS="$GCCFLAGS -Wno-error=incompatible-pointer-types" \
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+sed -i "s|System;|Utility;|g" $PKG/usr/share/applications/pcmanfm.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -22,7 +22,7 @@ cd $PRGNAM-$DOWNLOADVERSION
 sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

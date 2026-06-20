@@ -84,6 +84,7 @@ cp --parents -P usr/lib$SYSTEMBITS/libQt6ShaderTools.* "${currentPackage}-stripp
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Sql.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6Svg.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6SvgWidgets.* "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libQt6Test.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6TextToSpeech.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandClient.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandCompositor.* "${currentPackage}-stripped"
@@ -122,7 +123,33 @@ cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWebChannel/* "${currentPackage}-str
 cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWebSockets/* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+
+# required by network tray
+currentPackage=qtkeychain
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+packageVersion=$(ls * -a | rev | cut -d'-' -f3 | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libqt6keychain.* "${currentPackage}-stripped"
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${packageVersion}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+
+# required by clipboard tray
+currentPackage=zint
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+packageVersion=$(ls * -a | rev | cut -d'-' -f3 | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libzint.* "${currentPackage}-stripped"
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${packageVersion}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required by main menu
 currentPackage=appstream
@@ -135,7 +162,7 @@ mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libAppStreamQt.* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-qt-${packageVersion}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required by spectacle
 currentPackage=opencv
@@ -149,7 +176,7 @@ cp --parents -P usr/lib$SYSTEMBITS/libopencv_imgproc.* "${currentPackage}-stripp
 cp --parents -P usr/lib$SYSTEMBITS/libopencv_core.* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # also required by spectacle
 currentPackage=gcc-gfortran
@@ -162,7 +189,34 @@ mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libgfortran.so* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+
+# also required by spectacle
+currentPackage=tesseract
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libtesseract.so* "${currentPackage}-stripped"
+cp --parents -P -r usr/share/tessdata/* "${currentPackage}-stripped"
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+
+# also required by spectacle
+currentPackage=leptonica
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+installpkg ${currentPackage}*.txz || exit 1
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P usr/lib$SYSTEMBITS/libleptonica.so* "${currentPackage}-stripped"
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required by dolphin and others
 currentPackage=phonon
@@ -175,7 +229,7 @@ cp --parents -P -r usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=qcoro
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -188,30 +242,31 @@ cp --parents -P usr/lib$SYSTEMBITS/libQCoro6Core.* "${currentPackage}-stripped"
 cp --parents -P usr/lib$SYSTEMBITS/libQCoro6DBus.* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 ### packages outside slackware repository
 
 currentPackage=audacious
 QT=6 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=audacious-plugins
 QT=6 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
 currentPackage=featherpad
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # kde deps
 for package in \
 	extra-cmake-modules \
 	kimageformats \
+	exiv2 \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
@@ -232,6 +287,7 @@ InstallAdditionalPackages
 
 ### fix some .desktop files
 
+sed -i "s|Documentation;||g" $MODULEPATH/packages/usr/share/applications/org.kde.kinfocenter.desktop
 sed -i "s|Graphics;||g" $MODULEPATH/packages/usr/share/applications/org.kde.okular.desktop
 sed -i "s|image/png|image/png;image/jxl|g" $MODULEPATH/packages/usr/share/applications/org.kde.gwenview.desktop
 
@@ -343,7 +399,6 @@ rm -fr usr/lib${SYSTEMBITS}/qt6/qml/QtTest
 rm -fr usr/lib${SYSTEMBITS}/qt6/mkspecs
 rm -fr usr/share/chromium
 rm -fr usr/share/emoticons/EmojiOne
-rm -fr usr/share/featherpad
 rm -fr usr/share/gdb
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
@@ -382,8 +437,10 @@ find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o
 GenericStrip
 
 # move out things that don't support aggressive stripping
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libexiv2.so* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libgwenviewlib.so* $MODULEPATH/
 AggressiveStripAll
+mv $MODULEPATH/libexiv2.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 mv $MODULEPATH/libgwenviewlib.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
 ### copy cache files

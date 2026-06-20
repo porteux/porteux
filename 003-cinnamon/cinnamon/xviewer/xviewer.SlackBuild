@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
+info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "${TESTRELEASES}")
 VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION.tar.?z
@@ -23,7 +23,7 @@ cd $PRGNAM-$VERSION
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -35,6 +35,7 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/xviewer/gir-1.0
 
 sed -i "s|image/jpg|image/jpg;image/jxl|g" $PKG/usr/share/applications/xviewer.desktop
 

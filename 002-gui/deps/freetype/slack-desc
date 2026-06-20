@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+freetype: freetype (A free, high-quality, and portable font engine)
+freetype:
+freetype: FreeType is a free and portable font rendering engine. It has been
+freetype: developed to provide support for a number of font formats, including
+freetype: TrueType, Type 1, and OpenType, and is designed to be small,
+freetype: efficient, highly customizable, and portable while capable of
+freetype: producing high-quality output.
+freetype:
+freetype: https://gitlab.freedesktop.org/freetype/freetype
+freetype:
+freetype:

@@ -66,12 +66,12 @@ for package in \
 	libass \
 	faad2 \
 	faac \
-	SVT-AV1 \
+	svt-av1 \
 	dav1d \
 	libheif \
 	libplacebo \
 	nv-codec-headers \
-	AMF-headers \
+	amf-headers \
 	ffmpeg \
 	luajit \
 ; do
@@ -82,15 +82,15 @@ done
 
 # only required for building
 rm $MODULEPATH/packages/nv-codec-headers*.txz
-rm $MODULEPATH/packages/AMF-headers*.txz
+rm $MODULEPATH/packages/amf-headers*.txz
 
 currentPackage=mpv
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 currentPackage=transmission
 sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage}
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 ### fake root
 
@@ -116,8 +116,6 @@ cd $MODULEPATH/packages/
 {
 rm usr/bin/alsoft-config
 rm usr/share/applications/mimeinfo.cache
-
-rm -fr usr/share/lua-jit
 } >/dev/null 2>&1
 
 GenericStrip
