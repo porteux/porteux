@@ -20,6 +20,7 @@ tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
+sed -i 's|<property name="show-close-button">True</property>|<property name="show-close-button">False</property>|g' data/interface.ui
 
 mkdir build && cd build
 CFLAGS="$GCC_CFLAGS" \
@@ -40,7 +41,6 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 rm -f $PKG/usr/share/applications/gnome-system-monitor-kde.desktop
-sed -i -E 's/^Exec=(.*)$/Exec=env GTK_CSD=0 \1/' $PKG/usr/share/applications/gnome-system-monitor.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
