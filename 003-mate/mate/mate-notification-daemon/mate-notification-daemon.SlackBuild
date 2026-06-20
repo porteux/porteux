@@ -20,14 +20,14 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--disable-static \
-	--libexecdir=/usr/lib${SYSTEMBITS}/mate-notification-daemon \
+	--libexecdir=/usr/libexec/mate-notification-daemon \
 	--build=$ARCH-porteux-linux
 
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG

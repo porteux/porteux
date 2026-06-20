@@ -18,7 +18,7 @@ cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 
 CC=clang \
-CFLAGS="$CLANGFLAGS" \
+CFLAGS="$CLANG_CFLAGS" \
 LDFLAGS="$LLDFLAGS" \
 ./configure \
 	--prefix=/usr \

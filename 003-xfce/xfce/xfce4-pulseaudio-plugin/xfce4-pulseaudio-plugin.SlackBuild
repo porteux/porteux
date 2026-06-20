@@ -23,7 +23,7 @@ sed -i "s|reconnect in 5 seconds|reconnect in 1 second|g" panel-plugin/pulseaudi
 sed -i "s|(5, pulseaudio_volume_reconnect_timeout, volume)|(1, pulseaudio_volume_reconnect_timeout, volume)|g" panel-plugin/pulseaudio-volume.c
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

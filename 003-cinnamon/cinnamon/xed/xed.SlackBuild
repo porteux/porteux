@@ -16,7 +16,7 @@ cd $TMP
 
 #info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
 #VERSION=${info#* }
-VERSION=3.8.5
+VERSION=3.8.5 # higher than this won't compile: https://github.com/linuxmint/xed/issues/734
 wget https://github.com/linuxmint/xed/archive/refs/tags/${VERSION}.tar.gz
 
 tar xf *.tar.?z
@@ -26,7 +26,7 @@ sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 sed -i "s|subdir('test')|#subdir('test')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -37,6 +37,7 @@ meson setup \
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/xed/gir-1.0
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

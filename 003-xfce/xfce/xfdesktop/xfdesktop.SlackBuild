@@ -39,7 +39,7 @@ sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(siz
 sed -i "s|size_string = g_format_size(size)|size_string = g_format_size_full(size, G_FORMAT_SIZE_IEC_UNITS)|g" src/xfdesktop-volume-icon.c
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -ffast-math" \
+CFLAGS="$GCC_CFLAGS -ffast-math" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
@@ -51,6 +51,11 @@ meson setup \
 	-Ddefault-backdrop-filename=/usr/share/backgrounds/xfce/xfce-x.svg
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+rm $PKG/usr/share/backgrounds/xfce/xfce-leaves.svg
+rm $PKG/usr/share/backgrounds/xfce/xfce-light.svg
+rm $PKG/usr/share/backgrounds/xfce/xfce-mouserace.svg
+rm $PKG/usr/share/backgrounds/xfce/xfce-shapes.svg
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

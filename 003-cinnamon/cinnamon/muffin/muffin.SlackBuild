@@ -14,16 +14,16 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "master.")
+info=$(DownloadLatestFromGithub "linuxmint" ${PRGNAM} "${TESTRELEASES}")
 VERSION=${info#* }
 
-tar xf $PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+tar xf $PRGNAM-$VERSION*.tar.?z
+cd $PRGNAM-$VERSION*/
 
 sed -i "s|subdir('doc/man')|#subdir('doc/man')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS -Wno-incompatible-pointer-types" \
+CFLAGS="$GCC_CFLAGS -Wno-incompatible-pointer-types" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \

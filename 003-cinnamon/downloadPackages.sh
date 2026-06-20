@@ -10,24 +10,23 @@ DownloadPackage "colord" &
 DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
-wait
+DownloadPackage "gnome-keyring" & # required by nm-applet to ask for password
 DownloadPackage "gspell" &
+wait
 DownloadPackage "gtksourceview4" &
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &
-wait
 DownloadPackage "libgee" &
 DownloadPackage "libgpod" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
+wait
 DownloadPackage "libhandy" &
 DownloadPackage "libindicator" &
-DownloadPackage "libnma" &
 DownloadPackage "libsoup" & # required by settings -> Date&Time
-wait
 DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
@@ -43,24 +42,21 @@ DownloadPackage "python-psutil" &
 DownloadPackage "python-requests" &
 DownloadPackage "python-six" &
 DownloadPackage "python-webencodings" &
-DownloadPackage "vte" &
 wait
 
-### packages that require specific striping
+### packages that require specific stripping
 
-DownloadPackage "ibus" &
 DownloadPackage "gettext-tools" & # required by extensions
+DownloadPackage "ibus" &
 wait
 
 ### temporary packages only for building
 
-DownloadPackage "icu4c" & # required by gnome-terminal (only for safety in case it gets updated in Slackware repo)
 DownloadPackage "iso-codes" &
 DownloadPackage "libgsf" &
 DownloadPackage "libxklavier" &
 DownloadPackage "python-build" &
 DownloadPackage "python-flit-core" &
-wait
 DownloadPackage "python-installer" &
 DownloadPackage "python-pip" &
 DownloadPackage "python-pyproject-hooks" &

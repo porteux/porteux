@@ -8,9 +8,9 @@ PorteuX is a Linux distro based on Slackware, inspired by Slax and Porteus and a
 
 It's unique in many ways; not just a repackaging of programs on top of Slackware. For a list of its highlights, access the [Main Features](https://github.com/porteux/porteux/wiki/Main-Features) wiki page.
 
-It's already pre-configured for basic usage, including lightweight applications for each of the 8 desktop environments available. No browser is included, but an app store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, NVIDIA drivers, Wine, office suite, multilib (32-bit compatibility), messengers, emulators, etc.
+It's already pre-configured for basic usage, including lightweight applications for each of the 8 desktop environments available. No browser is included, but an App Store is provided so you can download the most popular browsers, as well as Steam, VirtualBox, NVIDIA drivers, Wine, office suite, multilib (32-bit compatibility), messengers, emulators, etc.
 
-Out of the box, PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or NVIDIA cards (for NVIDIA cards it's required to download the driver from the app store).
+Out of the box, PorteuX can open basically any multimedia file. Hardware acceleration is enabled by default for machines with Intel, AMD or NVIDIA cards (for NVIDIA cards it's required to download the driver from the App Store).
 
 ## How To Use
 
@@ -28,15 +28,15 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 To use PorteuX in a language other than English, download the multilanguage package and use the PorteuX Language Switcher application to choose the desired language.
 
-To read Asian characters, download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module. Some PDFs may also require `poppler-data` package, via `getpkg` command.
+To read Asian characters, download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module. Some PDFs may also require `poppler-data` package, which can be downloaded via `getpkg` command.
 
-To run Windows applications inside PorteuX, you can find both Wine and Multilib Lite XZM modules in the app store. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
+To run Windows applications inside PorteuX, you can find both Wine and Multilib Lite XZM modules in the App Store. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
 
 ## Installing new applications or packages
 
-To install new applications that are not in the App Store or in the Slackware repository, AppImage format is recommended. If an application is not available in AppImage, Flatpak is avaialable by default and can be used to download and install any software available in Flatpak repositories.
+To install new applications that are not in the App Store or in the Slackware repository, AppImage format is recommended. If an application is not available in AppImage, Flatpak is available by default and can be used to download and install any software available in Flatpak repositories.
 
-To download a Slackware package that is not present in PorteuX and convert it to a XZM module, run the command `getpkg -m [packageName]` (e.g `getpkg -m gimp`). After the XZM module is created, double-click or call `activate [moduleName]` to activate it. It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
+To download a Slackware package that is not present in PorteuX and convert it to a XZM module, run the command `getpkg -m [packageName]` (e.g. `getpkg -m gimp`). After the XZM module is created, double-click or call `activate [moduleName]` to activate it. It's recommended to move the module to the `porteux/modules` folder to ensure it is automatically loaded after boot.
 
 To build anything inside PorteuX, it's recommended to download and activate the `05-devel` XZM module, which includes compilers, git, make, headers, etc. To build a driver (e.g. VirtualBox or any physical device), also download and activate the `06-crippled-sources` XZM module.
 
@@ -50,20 +50,20 @@ password: toor<br />
 
 ## Performance
 
-PorteuX is lightweight and snappy. Although it can run on old machines (as long as they support SSE4.2), it is on high-end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small, and memory RAM consumption is highly optimized.
+PorteuX is lightweight and snappy. Although it can run on old machines (as long as they support SSE4.2), it is on high-end machines that the user will experience everything PorteuX can offer in terms of performance. The ISOs are small, and RAM consumption is highly optimized.
 
-For better performance, it's recommended to have PorteuX installed on a SSD/NVMe storage unit instead of a USB flash drive, or to select the 'Copy To RAM' option in the boot menu. The latter will result in a slower boot time, but after booting the system will run 100% in RAM, which is the fastest way possible.
+For better performance, it's recommended to have PorteuX installed on an SSD/NVMe storage unit instead of a USB flash drive, or to select the 'Copy To RAM' option in the boot menu. The latter will result in a slower boot time, but after booting the system will run 100% in RAM, which is the fastest way possible.
 
 Boot times are really fast. LXQt, for instance, can boot in only 3 seconds:
 
 [https://youtu.be/DJd38Nch6rQ](https://youtu.be/DJd38Nch6rQ)
 
-Clear Linux, considered the fastest Linux distro, is slower than PorteuX in Geekbench 6:
-![clear-linux-40520-vs-porteux-0 9](https://github.com/porteux/porteux/assets/126424580/8ff3cb62-91a0-4171-8c05-133e75845c6b)
+CachyOS, considered the fastest Linux distro, is slower than PorteuX in Geekbench 6:
+<img width="2254" height="1375" alt="geekbench" src="https://github.com/user-attachments/assets/679c56fa-3024-4167-b843-81d83857934d" />
 
 Sources:
-[ClearLinux40520](https://browser.geekbench.com/v6/cpu/4073056)
-[PorteuX0.9](https://browser.geekbench.com/v6/cpu/4087178)
+[CachyOS-260308](https://browser.geekbench.com/v6/cpu/17010269)
+[PorteuX2.7](https://browser.geekbench.com/v6/cpu/17010360)
 
 All this performance benefit is achieved without providing ancient software. This means that the kernel, desktop environments and packages are usually as new as possible.
 
@@ -85,7 +85,7 @@ To build PorteuX, run the `createModule.sh` script as root, in the exact folder 
 2. 001-core<br />
 3. 002-gui<br />
 4. 002-xtra<br />
-5. 003-desktopenvironment (where 'desktopenvironment' is your preferred environment, like 003-lxde)<br />
+5. 003-desktop-environment (where 'desktop-environment' is your preferred environment, like 003-lxde)<br />
 6. (optional) 05-devel<br />
 7. (optional) 08-multilanguage<br />
 8. (optional) 0050-multilib-lite<br />

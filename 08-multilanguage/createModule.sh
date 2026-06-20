@@ -38,6 +38,7 @@ rm $MODULEPATH/packages/var/log/removed_packages
 rm $MODULEPATH/packages/var/log/removed_scripts
 rm $MODULEPATH/packages/var/log/removed_uninstall_scripts
 
+rm -fr $MODULEPATH/packages/usr/lib/
 rm -fr $MODULEPATH/packages/var/lib/pkgtools/douninst.sh/
 rm -fr $MODULEPATH/packages/var/lib/pkgtools/setup
 rm -fr $MODULEPATH/packages/var/log/pkgtools

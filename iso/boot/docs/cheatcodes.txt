@@ -281,7 +281,7 @@ login=username
 
 mopt
 
-   ... Allow you to customize your filesystem  mount options. By default,
+   ... Allow you to customize your filesystem mount options. By default,
        the mount options for all filesystems in PorteuX are:
        'noatime,nodiratime,suid,dev,exec,async'. Each option must be
        separated by commas (',') with no spaces between any character.

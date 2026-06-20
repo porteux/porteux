@@ -34,8 +34,8 @@ cd ${PRGNAM}-${PRGNAM}-$VERSION
 sed -i "s|subdir('man')|#subdir('man')|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CFLAGS="$GCC_CFLAGS" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

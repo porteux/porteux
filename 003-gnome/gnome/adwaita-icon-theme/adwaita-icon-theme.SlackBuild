@@ -12,14 +12,15 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-grep -Ev '\.rc|\.beta|\.alpha'}" | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./' | head -1)
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES}" | head -1)
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
+[ ! -s ${PRGNAM}-${VERSION}.tar.gz ] && wget https://github.com/GNOME/${PRGNAM}/archive/refs/tags/$VERSION.tar.gz -O $PRGNAM-$VERSION.tar.gz
 
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -30,14 +31,18 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
-rm -fr $PKG/usr/share/licenses
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/icons/Adwaita/8x8
+rm -fr $PKG/usr/share/icons/Adwaita/96x96
+rm -fr $PKG/usr/share/icons/Adwaita/256x256
+rm -fr $PKG/usr/share/icons/Adwaita/512x512
 rm -fr $PKG/usr/share/icons/Adwaita/cursors
+rm -fr $PKG/usr/share/licenses
 
 # Remove icon caches -- it will be generated during module build
 find $PKG -name icon-theme.cache -exec rm "{}" \+
 find $PKG -name .icon-theme.cache -exec rm "{}" \+
-
-find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

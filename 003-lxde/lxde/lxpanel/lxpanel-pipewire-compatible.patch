@@ -1,23 +1,66 @@
---- plugins/volumealsa/volumealsa.c	2024-04-01 15:09:45.357033200 +0200
-+++ plugins/volumealsa/volumealsa-patched.c	2024-04-01 15:11:39.391695400 +0200
-@@ -69,6 +69,7 @@
+--- plugins/volumealsa/volumealsa.c	2026-03-26 13:33:38.433622682 +0000
++++ plugins/volumealsa/volumealsa-patched2.c	2026-03-26 13:36:36.895829786 +0000
+@@ -68,7 +68,9 @@
+ #include <alsa/asoundlib.h>
  #include <poll.h>
  #endif
++#include <dirent.h>
  #include <math.h>
 +#include <threads.h>
  #include <libfm/fm-gtk.h>
  
  #include "plugin.h"
-@@ -920,6 +921,25 @@
+@@ -931,6 +933,66 @@
      vol->mute_check_handler = g_signal_connect(vol->mute_check, "toggled", G_CALLBACK(volumealsa_popup_mute_toggled), vol);
  }
  
-+static int *wait_for_pipewire(void *arg)
++/* Scan /proc/<pid>/maps for every running process and return TRUE if any of
++ * them has libwireplumber-module-logind mapped in.  Much lighter than lsof:
++ * no fork, no pipe, no PATH lookup – just open(2) and read(2) on procfs. */
++static gboolean wireplumber_is_running(void)
++{
++    DIR *proc = opendir("/proc");
++    if (!proc)
++        return FALSE;
++
++    gboolean found = FALSE;
++    struct dirent *entry;
++
++    while (!found && (entry = readdir(proc)) != NULL)
++    {
++        /* Only numeric entries are PIDs. */
++        if (entry->d_name[0] < '1' || entry->d_name[0] > '9')
++            continue;
++
++        char maps_path[64];
++        snprintf(maps_path, sizeof(maps_path), "/proc/%s/maps", entry->d_name);
++
++        FILE *f = fopen(maps_path, "r");
++        if (!f)
++            continue;
++
++        char line[256];
++        while (fgets(line, sizeof(line), f))
++        {
++            if (strstr(line, "libwireplumber-module-logind"))
++            {
++                found = TRUE;
++                break;
++            }
++        }
++        fclose(f);
++    }
++
++    closedir(proc);
++    return found;
++}
++
++static int wait_for_pipewire(void *arg)
 +{
 +    VolumeALSAPlugin *vol = (VolumeALSAPlugin *)arg;
 +
 +    int number_attempts = 50;
-+    while (number_attempts > 0 && 0 != system("lsof | grep libwireplumber-module-logind > /dev/null"))
++    while (number_attempts > 0 && !wireplumber_is_running())
 +    {
 +        number_attempts--;
 +        usleep(200 * 1000);
@@ -34,7 +77,7 @@
  /* Plugin constructor. */
  static GtkWidget *volumealsa_constructor(LXPanel *panel, config_setting_t *settings)
  {
-@@ -962,12 +983,9 @@
+@@ -973,12 +1035,9 @@
      if (config_setting_lookup_string(settings, "VolumeMuteKey", &tmp_str))
          lxpanel_apply_hotkey(&vol->hotkey_mute, tmp_str, volume_mute, vol, FALSE);
  

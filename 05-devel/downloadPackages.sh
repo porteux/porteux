@@ -3,17 +3,17 @@ source "$BUILDERUTILSPATH/slackwarerepository.sh"
 
 GenerateRepositoryUrls
 
-DownloadPackage "automake" &
 DownloadPackage "autoconf" &
 DownloadPackage "autoconf-archive" &
+DownloadPackage "automake" &
 DownloadPackage "binutils" &
 DownloadPackage "bison" &
 DownloadPackage "cmake" &
 DownloadPackage "gc" &
 DownloadPackage "gcc" &
 DownloadPackage "gcc-g++" &
-wait
 DownloadPackage "gettext-tools" &
+wait
 DownloadPackage "git" &
 DownloadPackage "gmp" &
 DownloadPackage "guile" &
@@ -22,9 +22,9 @@ DownloadPackage "intltool" &
 DownloadPackage "isl" &
 DownloadPackage "itstool" &
 DownloadPackage "libmpc" &
-wait
 DownloadPackage "libpthread-stubs" &
 DownloadPackage "libtool" &
+wait
 DownloadPackage "linuxdoc-tools" &
 DownloadPackage "m4" &
 DownloadPackage "make" &
@@ -33,9 +33,9 @@ DownloadPackage "meson" &
 DownloadPackage "nasm" &
 DownloadPackage "ninja" &
 DownloadPackage "perl" &
-wait
 DownloadPackage "pkgconf" & # this replaces pkg-config
 DownloadPackage "python-packaging" &
+wait
 DownloadPackage "python-setuptools" &
 DownloadPackage "util-macros" &
 DownloadPackage "vala" &

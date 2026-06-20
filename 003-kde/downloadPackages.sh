@@ -6,46 +6,24 @@ GenerateRepositoryUrls
 DownloadPackage "accountsservice" &
 DownloadPackage "cfitsio" &
 DownloadPackage "editorconfig-core-c" &
-DownloadPackage "egl-wayland" &
 DownloadPackage "eglexternalplatform" &
+DownloadPackage "egl-wayland" &
 DownloadPackage "gst-plugins-good" &
-wait
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libdmtx" &
+wait
 DownloadPackage "libqaccessibilityclient" &
 DownloadPackage "libqalculate" &
-wait
 DownloadPackage "LibRaw" &
 DownloadPackage "openblas" &
 DownloadPackage "polkit-qt" &
+DownloadPackage "qca" &
 DownloadPackage "qrencode" &
 DownloadPackage "xdpyinfo" &
 DownloadPackage "zxing-cpp" &
 wait
-
-### packages that require specific striping
-
-DownloadPackage "appstream" & # required by main menu
-DownloadPackage "gcc-gfortran" & # required by spectable
-DownloadPackage "opencv" & # required by spectable
-DownloadPackage "phonon" & # required by dolphin and others
-DownloadPackage "qcoro" &
-DownloadPackage "qt6" &
-wait
-
-### script clean up
-
-rm FILE_LIST
-rm serverPackages.txt
-
-### non-slackware repository
-
-REPOSITORY="https://slackware.halpanet.org/kde6town/stable/current/${ARCH}"
-
-GenerateRepositoryUrls
-
 DownloadPackage "ark" &
 DownloadPackage "attica" &
 DownloadPackage "baloo" &
@@ -57,7 +35,6 @@ DownloadPackage "breeze-grub" &
 DownloadPackage "breeze-gtk" &
 DownloadPackage "breeze-icons" &
 wait
-DownloadPackage "ddcutil" &
 DownloadPackage "dolphin" &
 DownloadPackage "dolphin-plugins" &
 DownloadPackage "ffmpegthumbs" &
@@ -65,10 +42,10 @@ DownloadPackage "frameworkintegration" &
 DownloadPackage "gwenview" &
 DownloadPackage "kactivitymanagerd" &
 DownloadPackage "kapidox" &
-wait
 DownloadPackage "karchive" &
 DownloadPackage "kauth" &
 DownloadPackage "kbookmarks" &
+wait
 DownloadPackage "kcmutils" &
 DownloadPackage "kcodecs" &
 DownloadPackage "kColorPicker" &
@@ -76,10 +53,10 @@ DownloadPackage "kcolorscheme" &
 DownloadPackage "kcompletion" &
 DownloadPackage "kconfig" &
 DownloadPackage "kconfigwidgets" &
-wait
 DownloadPackage "kcoreaddons" &
 DownloadPackage "kcrash" &
 DownloadPackage "kdbusaddons" &
+wait
 DownloadPackage "kdeclarative" &
 DownloadPackage "kde-cli-tools" &
 DownloadPackage "kdecoration" &
@@ -88,9 +65,9 @@ DownloadPackage "kde-gtk-config" &
 DownloadPackage "kdenetwork-filesharing" &
 DownloadPackage "kdeplasma-addons" &
 DownloadPackage "kdesu" &
-wait
 DownloadPackage "kdnssd" &
 DownloadPackage "kfilemetadata" &
+wait
 DownloadPackage "kglobalaccel" &
 DownloadPackage "kglobalacceld" &
 DownloadPackage "kguiaddons" &
@@ -100,8 +77,8 @@ DownloadPackage "kiconthemes" &
 DownloadPackage "kidletime" &
 DownloadPackage "kImageAnnotator" &
 DownloadPackage "kinfocenter" &
-wait
 DownloadPackage "kio" &
+wait
 DownloadPackage "kio-admin" &
 DownloadPackage "kio-extras" &
 DownloadPackage "kio-gdrive" &
@@ -111,8 +88,8 @@ DownloadPackage "kirigami-addons" &
 DownloadPackage "kitemmodels" &
 DownloadPackage "kitemviews" &
 DownloadPackage "kjobwidgets" &
-wait
 DownloadPackage "kmenuedit" &
+wait
 DownloadPackage "knewstuff" &
 DownloadPackage "knighttime" &
 DownloadPackage "knotifications" &
@@ -128,13 +105,14 @@ DownloadPackage "kplotting" &
 DownloadPackage "kpty" &
 DownloadPackage "kqtquickcharts" &
 DownloadPackage "kquickcharts" &
+DownloadPackage "kquickimageeditor" &
 DownloadPackage "krunner" &
 DownloadPackage "kscreen" &
 DownloadPackage "kscreenlocker" &
 DownloadPackage "kservice" &
 DownloadPackage "ksshaskpass" &
-DownloadPackage "kstatusnotifieritem" &
 wait
+DownloadPackage "kstatusnotifieritem" &
 DownloadPackage "ksvg" &
 DownloadPackage "ksystemstats" &
 DownloadPackage "ktexteditor" &
@@ -144,20 +122,20 @@ DownloadPackage "kuserfeedback" &
 DownloadPackage "kwallet" &
 DownloadPackage "kwayland" &
 DownloadPackage "kwayland-integration" &
-DownloadPackage "kwidgetsaddons" &
 wait
+DownloadPackage "kwidgetsaddons" &
 DownloadPackage "kwin" &
-DownloadPackage "kwin-x11" &
 DownloadPackage "kwindowsystem" &
+DownloadPackage "kwin-x11" &
 DownloadPackage "kwrited" &
 DownloadPackage "kxmlgui" &
 DownloadPackage "layer-shell-qt" &
 DownloadPackage "libkdcraw" &
 DownloadPackage "libkexiv2" &
 DownloadPackage "libkipi" &
+wait
 DownloadPackage "libkscreen" &
 DownloadPackage "libksysguard" &
-wait
 DownloadPackage "libplasma" &
 DownloadPackage "libqaccessibilityclient" &
 DownloadPackage "milou" &
@@ -166,8 +144,8 @@ DownloadPackage "networkmanager-qt" &
 DownloadPackage "okular" &
 DownloadPackage "oxygen" &
 DownloadPackage "plasma5support" &
-DownloadPackage "plasma-activities" &
 wait
+DownloadPackage "plasma-activities" &
 DownloadPackage "plasma-activities-stats" &
 DownloadPackage "plasma-browser-integration" &
 DownloadPackage "plasma-desktop" &
@@ -176,25 +154,38 @@ DownloadPackage "plasma-nm" &
 DownloadPackage "plasma-pa" &
 DownloadPackage "plasma-systemmonitor" &
 DownloadPackage "plasma-workspace" &
-wait
 DownloadPackage "polkit-kde-agent" &
+wait
 DownloadPackage "powerdevil" &
 DownloadPackage "prison" &
 DownloadPackage "pulseaudio-qt" &
 DownloadPackage "purpose" &
-DownloadPackage "qca" &
 DownloadPackage "qqc2-desktop-style" &
 DownloadPackage "sddm" &
 DownloadPackage "sddm-kcm" &
-wait
 DownloadPackage "solid" &
 DownloadPackage "sonnet" &
 DownloadPackage "spectacle" &
+wait
 DownloadPackage "syndication" &
 DownloadPackage "syntax-highlighting" &
 DownloadPackage "systemsettings" &
 DownloadPackage "threadweaver" &
 DownloadPackage "xdg-desktop-portal-kde" &
+wait
+
+### packages that require specific stripping
+
+DownloadPackage "appstream" & # required by main menu
+DownloadPackage "gcc-gfortran" & # required by spectacle
+DownloadPackage "leptonica" & # required by spectacle
+DownloadPackage "opencv" & # required by spectacle
+DownloadPackage "phonon" & # required by dolphin and others
+DownloadPackage "qcoro" &
+DownloadPackage "qt6" &
+DownloadPackage "qtkeychain" & # required by network tray
+DownloadPackage "tesseract" & # required by spectacle
+DownloadPackage "zint" & # required by clipboard tray
 wait
 
 rm FILE_LIST

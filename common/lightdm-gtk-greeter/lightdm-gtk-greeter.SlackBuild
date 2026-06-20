@@ -21,7 +21,7 @@ if ! which xdt-csource > /dev/null 2>&1; then
 	tar xf $DEVTOOLS-$DEVTOOLSVERSION.tar.?z*
 	cd $DEVTOOLS-$DEVTOOLSVERSION
 
-	CFLAGS="$GCCFLAGS" \
+	CFLAGS="$GCC_CFLAGS" \
 	./autogen.sh \
 		--prefix=/usr \
 		--libdir=/usr/lib${SYSTEMBITS} \
@@ -40,8 +40,8 @@ tar xf master.tar.?z
 cd ${PRGNAM}-master
 VERSION=$(date -r . +%Y%m%d)
 
-CFLAGS="$GCCFLAGS -Wno-declaration-after-statement" \
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CFLAGS="$GCC_CFLAGS -Wno-declaration-after-statement" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \

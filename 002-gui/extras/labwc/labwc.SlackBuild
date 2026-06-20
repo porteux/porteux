@@ -23,8 +23,8 @@ cd $PRGNAM-$VERSION
 sed -i "s|subdir('doc|#subdir('doc|g" meson.build
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
-CXXFLAGS="$GCCFLAGS -fvisibility-inlines-hidden" \
+CFLAGS="$GCC_CFLAGS" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
@@ -34,6 +34,8 @@ meson setup \
 	--localstatedir=/var
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+
+sed -i "s|^Exec=.*|Exec=dbus-run-session -- labwc|g" $PKG/usr/share/wayland-sessions/labwc.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

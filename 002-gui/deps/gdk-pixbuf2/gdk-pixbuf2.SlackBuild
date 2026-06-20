@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -Vr | { 
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gdk-pixbuf/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | sort -Vr | {
 	while read -r version; do
 		minor=$(echo "$version" | cut -d. -f2)
 		if (( minor % 2 == 0 )); then
@@ -27,7 +27,7 @@ tar xf $PRGNAM-$VERSION.tar.?z*
 cd gdk-pixbuf-$VERSION*
 
 mkdir build && cd build
-CFLAGS="$GCCFLAGS" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
@@ -37,7 +37,6 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Dothers=enabled \
-	-Ddocumentation=false \
 	-Dtests=false \
 	-Dinstalled_tests=false \
 	-Dglycin=disabled \
