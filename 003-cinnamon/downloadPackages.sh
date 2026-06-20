@@ -11,7 +11,6 @@ DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "gnome-keyring" & # required by nm-applet to ask for password
-DownloadPackage "gpgmepp" & # required by xreader
 DownloadPackage "gspell" &
 wait
 DownloadPackage "gtksourceview4" &

@@ -40,6 +40,7 @@ DownloadPackage "gnome-themes-extra" &
 DownloadPackage "gnupg2" & # required by flatpak
 DownloadPackage "gobject-introspection" &
 DownloadPackage "gparted" &
+DownloadPackage "gpgmepp" & # required by poppler-glib
 DownloadPackage "graphene" & # required by libgstopengl
 DownloadPackage "graphite2" &
 DownloadPackage "gsl" &

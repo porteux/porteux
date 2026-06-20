@@ -216,8 +216,9 @@ cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
-### install poppler so it can be used by next modules
+### install poppler and its deps so they can be used by next modules
 
+installpkg $MODULEPATH/packages/gpgmepp*.txz
 installpkg $MODULEPATH/packages/poppler*.txz
 
 ### fake root
