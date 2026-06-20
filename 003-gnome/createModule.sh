@@ -263,10 +263,12 @@ rm -fr var/lib/AccountsService
 
 } >/dev/null 2>&1
 
+mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libexiv2.so* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/
 GenericStrip
 AggressiveStripAll
+mv $MODULEPATH/libexiv2.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 mv $MODULEPATH/libvte-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 
