@@ -191,20 +191,7 @@ cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
-# required by dolphin and others
-currentPackage=phonon
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P -r usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
-
-# required by spectacle
+# also required by spectacle
 currentPackage=tesseract
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
@@ -213,7 +200,7 @@ packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libtesseract.so* "${currentPackage}-stripped"
-cp --parents -P usr/share/tessdata/* "${currentPackage}-stripped"
+cp --parents -P -r usr/share/tessdata/* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
@@ -227,6 +214,19 @@ packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${currentPackage}*.txz
 mkdir ${currentPackage}-stripped
 cp --parents -P usr/lib$SYSTEMBITS/libleptonica.so* "${currentPackage}-stripped"
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+
+# required by dolphin and others
+currentPackage=phonon
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}*.txz
+mkdir ${currentPackage}-stripped
+cp --parents -P -r usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped"
+cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6* "${currentPackage}-stripped"
 cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
