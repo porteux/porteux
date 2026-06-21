@@ -30,7 +30,8 @@ meson setup \
 	--sysconfdir=/etc \
 	-Dgtkdoc=false \
 	-Dtests=false \
-	-Dcli=false
+	-Dcli=false \
+	-Dintrospection=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

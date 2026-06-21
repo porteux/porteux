@@ -35,7 +35,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
-	-Dintrospection=true \
+	-Dintrospection=false \
 	-Dsession_tracking=elogind \
 	-Dsystemdsystemunitdir=/usr/lib/systemd/user \
 	-Dauthfw=pam \

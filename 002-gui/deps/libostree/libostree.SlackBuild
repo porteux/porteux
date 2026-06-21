@@ -26,6 +26,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
 	--sysconfdir=/etc \
+	--disable-introspection \
 	--disable-installed-tests \
 	--disable-always-build-tests \
 	--disable-glibtest \

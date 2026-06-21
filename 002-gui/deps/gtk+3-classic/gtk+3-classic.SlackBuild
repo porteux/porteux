@@ -41,7 +41,7 @@ meson setup \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--libexecdir=/usr/libexec \
-	-Dbroadway_backend=true \
+	-Dbroadway_backend=false \
 	-Ddemos=false \
 	-Dexamples=false \
 	-Dtests=false

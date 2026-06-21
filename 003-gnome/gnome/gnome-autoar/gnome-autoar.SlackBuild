@@ -27,7 +27,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dintrospection=enabled \
-	-Dvapi=true \
+	-Dvapi=false \
 	-Dtests=false \
 	-Dgtk_doc=false
 

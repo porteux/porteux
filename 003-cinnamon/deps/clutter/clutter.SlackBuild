@@ -27,7 +27,7 @@ CFLAGS="$GCC_CFLAGS" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--enable-debug=no \
-	--enable-introspection=yes \
+	--disable-introspection \
 	--enable-egl-backend \
 	--disable-examples \
 	--build=$ARCH-porteux-linux

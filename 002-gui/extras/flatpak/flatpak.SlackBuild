@@ -41,11 +41,16 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	-Ddocbook_docs=disabled
+	-Ddocbook_docs=disabled \
+	-Dgir=disabled \
+	-Dman=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+rm -fr $PKG/usr/share/bash-completion
+rm -fr $PKG/usr/share/zsh
+rm -fr $PKG/usr/share/fish
 
 echo 'export XDG_DATA_DIRS="$HOME/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share:$HOME/.local/share/applications}"' > $PKG/etc/profile.d/flatpak.sh
 cp $PKG/etc/profile.d/flatpak.sh $PKG/etc/profile.d/flatpak.csh

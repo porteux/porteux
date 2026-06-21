@@ -29,7 +29,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dzoneinfo_dir=/usr/share/zoneinfo \
-	-Denable_vala=true \
+	-Denable_vala=false \
 	-Dgtk_doc=false \
 	-Dintrospection=true \
 	-Dtests=false

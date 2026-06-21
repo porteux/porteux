@@ -33,6 +33,7 @@ meson setup \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Dstemming=false \
+	-Dcompose=false \
 	-Dsvg-support=false \
 	-Dgir=false \
 	-Dsystemd=false \
