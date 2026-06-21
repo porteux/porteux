@@ -46,6 +46,10 @@ if [ -f autogen.sh ]; then
 
 	make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 else
+	(
+	cd protocols/xfce-wayland-protocols/
+	wget https://gitlab.xfce.org/kelnos/xfce-wayland-protocols/-/raw/main/xfce-output-management-private-v1.xml
+	)
 	mkdir build && cd build
 	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	meson setup \
