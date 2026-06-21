@@ -31,6 +31,8 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+patch -p1 < $CWD/memory-leak-fixes.patch
+
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 
 # show desktop files with size in KiB/MiB/GiB ('binary format')
@@ -48,6 +50,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dtests=false \
+	-Dvideo-backdrop=false \
 	-Ddefault-backdrop-filename=/usr/share/backgrounds/xfce/xfce-x.svg
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
