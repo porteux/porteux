@@ -35,6 +35,7 @@ meson setup \
 	--buildtype=release \
 	-Dsystem-lua=true \
 	-Ddoc=disabled \
+	-Dintrospection=disabled \
 	-Dtests=false \
 	-Ddbus-tests=false
 

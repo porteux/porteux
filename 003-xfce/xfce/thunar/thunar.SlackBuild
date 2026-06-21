@@ -39,6 +39,7 @@ if [ -f autogen.sh ]; then
 		--sysconfdir=/etc \
 		--disable-static \
 		--disable-debug \
+		--disable-introspection \
 		--build=$ARCH-porteux-linux
 
 	make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
@@ -51,7 +52,10 @@ else
 		--libdir=/usr/lib${SYSTEMBITS} \
 		--libexecdir=/usr/libexec \
 		--sysconfdir=/etc \
-		--localstatedir=/var
+		--localstatedir=/var \
+		-Dintrospection=false \
+		-Dgtk-doc=false \
+		-Dtests=false
 
 	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 fi

@@ -39,11 +39,13 @@ CXXFLAGS="$GCC_CXXFLAGS" \
 ../configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
-	--enable-kernel=6.1 \
+	--enable-kernel=7.0 \
 	--with-headers=/usr/include \
 	--with-tls \
 	--with-__thread \
 	--without-cvs \
+	--without-selinux \
+	--without-valgrind \
 	--disable-nscd \
 	--disable-profile \
 	--disable-werror \
