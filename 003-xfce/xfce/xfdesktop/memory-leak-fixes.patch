@@ -1,0 +1,32 @@
+Fix memory leak and use-after-free when changing Style settings in Desktop Settings.
+
+Two issues fixed:
+
+ 1. xfdesktop-file-icon-model-filter.c, finalize: monitor was
+    g_value_dup_object'd in set_property but never g_object_unref'd.  Every
+    time the icon style was switched away from "File launchers", one
+    XfwMonitor ref leaked per filter instance.
+
+ 2. xfdesktop-icon-view-holder.c, finalize: the "notify::monitor" signal
+    connected on holder->desktop (via plain g_signal_connect_swapped, which
+    does not auto-disconnect) was never disconnected.  If the desktop's
+    monitor property changed after the holder was freed, desktop_monitor_changed
+    would access freed memory (use-after-free).
+
+--- a/src/xfdesktop-file-icon-model-filter.c
++++ b/src/xfdesktop-file-icon-model-filter.c
+@@ -362,4 +362,5 @@ xfdesktop_file_icon_model_filter_finalize(GObject *object) {
+     XfdesktopFileIconModelFilter *filter = XFDESKTOP_FILE_ICON_MODEL_FILTER(object);
+     g_object_unref(filter->channel);
++    g_object_unref(filter->monitor);
+     G_OBJECT_CLASS(xfdesktop_file_icon_model_filter_parent_class)->finalize(object);
+ }
+--- a/src/xfdesktop-icon-view-holder.c
++++ b/src/xfdesktop-icon-view-holder.c
+@@ -62,5 +62,6 @@ xfdesktop_icon_view_holder_finalize(GObject *object) {
+     XfdesktopIconViewHolder *holder = XFDESKTOP_ICON_VIEW_HOLDER(object);
+
+     g_signal_handlers_disconnect_by_data(holder->monitor, holder);
++    g_signal_handlers_disconnect_by_data(holder->desktop, holder);
+
+     gtk_widget_destroy(holder->container);
