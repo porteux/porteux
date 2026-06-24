@@ -30,7 +30,9 @@ meson setup \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	-Dintrospection=true
+	-Dintrospection=true \
+	-Dgtk-doc=false \
+	-Dmate-about=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

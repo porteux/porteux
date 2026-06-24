@@ -31,7 +31,9 @@ meson setup \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Dapplets=true \
-	-Denable-tests=false
+	-Denable-tests=false \
+	-Dgnome-keyring=false \
+	-Dlibsecret=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

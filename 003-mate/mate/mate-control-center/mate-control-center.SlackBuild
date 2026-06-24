@@ -33,7 +33,9 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--buildtype=release
+	--buildtype=release \
+	-Daccountsservice=disabled \
+	-Dlibappindicator=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
