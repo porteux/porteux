@@ -32,7 +32,8 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dkeybinder=enabled \
-	-Dlibnotify=enabled
+	-Dlibnotify=enabled \
+	-Dlibcanberra=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

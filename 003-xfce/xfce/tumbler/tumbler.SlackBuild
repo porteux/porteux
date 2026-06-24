@@ -51,7 +51,14 @@ else
 		--libdir=/usr/lib${SYSTEMBITS} \
 		--libexecdir=/usr/libexec \
 		--sysconfdir=/etc \
-		--localstatedir=/var
+		--localstatedir=/var \
+		-Dgtk-doc=false \
+		-Dgepub-thumbnailer=disabled \
+		-Dffmpeg-thumbnailer=disabled \
+		-Dgst-thumbnailer=disabled \
+		-Dodf-thumbnailer=disabled \
+		-Dpoppler-thumbnailer=disabled \
+		-Draw-thumbnailer=disabled
 
 	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 fi

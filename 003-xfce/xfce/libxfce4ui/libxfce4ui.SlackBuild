@@ -55,7 +55,12 @@ else
 		--libdir=/usr/lib${SYSTEMBITS} \
 		--libexecdir=/usr/libexec \
 		--sysconfdir=/etc \
-		--localstatedir=/var
+		--localstatedir=/var \
+		-Dgtk-doc=false \
+		-Dvala=false \
+		-Dlibgtop=disabled \
+		-Dvendor-info=false \
+		-Dmanual-website=false
 
 	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 fi

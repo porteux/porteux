@@ -42,7 +42,10 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	-Dtests=false
+	-Dtests=false \
+	-Dgtk-doc=false \
+	-Dintrospection=false \
+	-Dvala=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

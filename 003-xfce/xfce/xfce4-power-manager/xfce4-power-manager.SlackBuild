@@ -55,7 +55,8 @@ else
 		--libdir=/usr/lib${SYSTEMBITS} \
 		--libexecdir=/usr/libexec \
 		--sysconfdir=/etc \
-		--localstatedir=/var
+		--localstatedir=/var \
+		-Dpolkit=disabled
 
 	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 fi
