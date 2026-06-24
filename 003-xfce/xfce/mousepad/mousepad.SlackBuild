@@ -31,7 +31,12 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
-	--localstatedir=/var 
+	--localstatedir=/var \
+	-Dpolkit=disabled \
+	-Dkeyfile-settings=false \
+	-Dgspell-plugin=false \
+	-Dshortcuts-plugin=false \
+	-Dtest-plugin=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
