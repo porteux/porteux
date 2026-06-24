@@ -46,7 +46,17 @@ meson setup \
 	-Dgtk4=false \
 	-D_systemd=false \
 	-Dicu=false \
-	-Dglade=false
+	-Dglade=false \
+	-Ddocs=false \
+	-Dgir=false \
+	-Dvapi=false \
+	-Dapp=false \
+	-Dapp-hidden=false \
+	-Ddbg=false \
+	-Dgnutls=false \
+	-Dfribidi=false \
+	-Dsixel=false \
+	-Da11y=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
