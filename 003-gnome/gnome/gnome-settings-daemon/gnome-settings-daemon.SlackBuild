@@ -44,7 +44,15 @@ meson setup \
 	-Dcolord=false \
 	-Ddefault_library=shared \
 	-Dsystemd=false \
-	-Delogind=true
+	-Delogind=true \
+	-Dsmartcard=false \
+	-Dusb-protection=false \
+	-Dwwan=false \
+	-Dcups=false \
+	-Drfkill=false \
+	-Dgcr3=false \
+	-Dxwayland=false \
+	-Dsystemd-units=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

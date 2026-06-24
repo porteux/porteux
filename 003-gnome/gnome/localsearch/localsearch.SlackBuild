@@ -40,7 +40,12 @@ meson setup \
 	-Dlandlock=disabled \
 	-Dwriteback=false \
 	-Dseccomp=false \
-	-Dsystemd_user_services=false 
+	-Dsystemd_user_services=false \
+	-Dbash_completion=false \
+	-Dbattery_detection=false \
+	-Dtests_tap_protocol=false \
+	-Dcharset_detection=false \
+	-Dunzip_ps_gz_files=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

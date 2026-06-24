@@ -46,7 +46,11 @@ meson setup \
 	-Dprofiler=disabled \
 	-Dinstalled_tests=false \
 	-Dskip_dbus_tests=true \
-	-Dskip_gtk_tests=true
+	-Dskip_gtk_tests=true \
+	-Dreadline=disabled \
+	-Ddtrace=disabled \
+	-Dsystemtap=disabled \
+	-Dverbose_logs=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

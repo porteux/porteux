@@ -39,7 +39,10 @@ meson setup \
 	--buildtype=release \
 	-Ddocumentation=false \
 	-Dexamples=false \
-	-Dtests=false
+	-Dtests=false \
+	-Dintrospection=false \
+	-Dvapi=false \
+	-Dprofiling=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

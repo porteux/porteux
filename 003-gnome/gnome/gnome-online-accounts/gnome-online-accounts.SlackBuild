@@ -36,6 +36,8 @@ meson setup \
 	-Dms_graph=true \
 	-Dgoogle=true \
 	-Dfedora=false \
+	-Dvapi=false \
+	-Dgoogle_files=false \
 	-Ddocumentation=false \
 	--force-fallback-for=librest
 
