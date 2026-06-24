@@ -4,7 +4,8 @@
             "script": "brave",
             "icon": "brave-browser.png",
             "channels": [
-                "stable"
+                "stable",
+                "origin"
             ],
             "locales": [
                 "af",
