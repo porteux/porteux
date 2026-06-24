@@ -34,7 +34,10 @@ meson setup \
 	-Dbackend-qt5=disabled \
 	-Dbackend-qt6=disabled \
 	-Ddocs=false \
-	-Dtests=false
+	-Dtests=false \
+	-Dintrospection=false \
+	-Dvapi=false \
+	-Dportal-tests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

@@ -33,7 +33,13 @@ meson setup \
 	-Ddocs=false \
 	-Dman=false \
 	-Dsystemd_user_services=false \
-	-Dtests=false
+	-Dtests=false \
+	-Dintrospection=false \
+	-Dvapi=false \
+	-Dstemmer=false \
+	-Davahi=false \
+	-Dbash_completion=false \
+	-Dtests_tap_protocol=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

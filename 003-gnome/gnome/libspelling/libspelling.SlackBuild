@@ -32,7 +32,10 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dsysprof=false \
-	-Ddocs=false
+	-Ddocs=false \
+	-Dintrospection=false \
+	-Dvapi=false \
+	-Dinstall-static=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

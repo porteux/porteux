@@ -36,7 +36,9 @@ meson setup \
 	-Dintrospection=true \
 	-Dpackagekit=false \
 	-Dselinux=false \
-	-Dtests=none
+	-Dtests=none \
+	-Dcloudproviders=false \
+	-Dprofile=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

@@ -31,7 +31,11 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--buildtype=release 
+	--buildtype=release \
+	-Dinstalled-tests=false \
+	-Dintrospection=false \
+	-Dvapigen=false \
+	-Ddocumentation=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

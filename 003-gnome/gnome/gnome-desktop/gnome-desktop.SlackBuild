@@ -37,7 +37,9 @@ meson setup \
 	-Dudev=enabled \
 	-Dsystemd=disabled \
 	-Dgtk_doc=false \
-	-Dinstalled_tests=false
+	-Dinstalled_tests=false \
+	-Dqr=disabled \
+	-Dlegacy_library=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

@@ -32,7 +32,10 @@ meson setup \
 	-Ddefault_library=shared \
 	-Dgtk_doc=false \
 	-Dtests=false \
-	-Dinstall_tests=false
+	-Dinstall_tests=false \
+	-Dgspell_app=false \
+	-Dgobject_introspection=false \
+	-Dvapi=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
