@@ -45,8 +45,7 @@ if [ -f meson.build ]; then
 		-Dgtk-doc=false \
 		-Dvala=disabled \
 		-Dprofiling=false \
-		-Dintrospection=false \
-		-Druntime-checks=false
+		-Dintrospection=false
 
 	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 else

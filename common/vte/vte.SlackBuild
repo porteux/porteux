@@ -53,8 +53,7 @@ meson setup \
 	-Dapp=false \
 	-Dapp-hidden=false \
 	-Ddbg=false \
-	-Dfribidi=false \
-	-Da11y=false
+	-Dfribidi=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

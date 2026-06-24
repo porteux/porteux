@@ -21,6 +21,10 @@ cd $PRGNAM-$DOWNLOADVERSION
 
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 
+# Guard 5 signal connections against NULL log (fails when log dir path is a stale file)
+sed -i '/g_signal_connect(xndlog->log, "row-added"/i\        if (xndlog->log != NULL) {' xfce4-notifyd/xfce-notify-daemon-log.c
+sed -i '/G_CALLBACK(log_cleared), xndlog);/a\        }' xfce4-notifyd/xfce-notify-daemon-log.c
+
 mkdir build && cd build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
