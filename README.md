@@ -4,7 +4,7 @@ Latest release direct link: https://github.com/porteux/porteux/releases/latest
 
 ## About
 
-PorteuX is a Linux distro based on Slackware, inspired by Slax and Porteus and available to the public for free. Its main goal is to be super fast, small, portable, modular and immutable (if the user wants so).
+PorteuX is a Linux distro based on Slackware, inspired by Slax and Porteus and available to the public for free under GPL. Its main goal is to be super fast, small, portable, modular and immutable (if the user wants so).
 
 It's unique in many ways; not just a repackaging of programs on top of Slackware. For a list of its highlights, access the [Main Features](https://github.com/porteux/porteux/wiki/Main-Features) wiki page.
 
