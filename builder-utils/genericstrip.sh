@@ -22,13 +22,17 @@ GenericStrip() {
 	rm -fr usr/man
 	rm -fr usr/share/*/translations
 	rm -fr usr/share/aclocal
+	rm -fr usr/share/appdata
 	rm -fr usr/share/bash-completion
 	rm -fr usr/share/cmake
 	rm -fr usr/share/devhelp
 	rm -fr usr/share/doc
 	rm -fr usr/share/fish
 	rm -fr usr/share/gdb
+	rm -fr usr/share/gettext
 	rm -fr usr/share/gir-1.0
+	rm -fr usr/share/glib-2.0/codegen
+	rm -fr usr/share/glib-2.0/gdb
 	rm -fr usr/share/gtk-doc
 	rm -fr usr/share/help
 	rm -fr usr/share/icons/HighContrast
@@ -70,11 +74,20 @@ GenericStrip() {
 		-name '*.o' -o \
 		-name '*.pc' -o \
 		-name '*.prl' -o \
+		-name '*.pyi' -o \
 		-name '*.vapi' -o \
+		-name 'ABOUT-NLS' -o \
 		-name 'AUTHORS*' -o \
+		-name 'ChangeLog*' -o \
 		-name 'COPYING*' -o \
+		-name 'HACKING*' -o \
+		-name 'INSTALL*' -o \
 		-name 'LICENSE*' -o \
-		-name 'README*' \
+		-name 'NEWS*' -o \
+		-name 'NOTICE*' -o \
+		-name 'README*' -o \
+		-name 'THANKS*' -o \
+		-name 'TODO*' \
 	\) -delete
 
 	find usr/ -type d -empty -delete
