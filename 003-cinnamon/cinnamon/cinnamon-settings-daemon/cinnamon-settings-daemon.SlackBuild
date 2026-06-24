@@ -35,7 +35,7 @@ meson setup \
 	-Duse_color=disabled \
 	-Duse_wacom=disabled \
 	-Denable_debug=false \
-	-Dgtk_layer_shell=disabled \
+	-Dgtk_layer_shell=enabled \
 	-Dgenerate_tz_coords=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
