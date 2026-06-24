@@ -42,7 +42,7 @@ CXXFLAGS="$GCC_CXXFLAGS" \
 	--disable-static \
 	--disable-tests \
 	--disable-liblightdm-qt5 \
-	--enable-gtk-doc-html=false
+	--disable-gtk-doc
 
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 

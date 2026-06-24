@@ -34,6 +34,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects -Wno-error=incompatible-pointer-types" \
 	--with-plugins=all \
 	--program-prefix= \
 	--disable-silent-rules \
+	--disable-gtk-doc \
 	--disable-static \
 	--disable-man
 

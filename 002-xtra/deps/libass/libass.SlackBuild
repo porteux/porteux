@@ -26,7 +26,8 @@ CFLAGS="$GCC_CFLAGS" \
 	--libdir=/usr/lib$SYSTEMBITS \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	--enable-static=no
+	--enable-static=no \
+	--disable-test
 
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 

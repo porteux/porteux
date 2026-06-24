@@ -47,7 +47,8 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	-Dintrospection=true \
+	-Dintrospection=false \
+	-Dtests=false \
 	-Dt1lib=enabled \
 	-Dpixbuf=enabled \
 	-Dcomics=enabled \

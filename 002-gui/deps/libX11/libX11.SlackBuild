@@ -25,6 +25,7 @@ CFLAGS="${GCC_CFLAGS/-flto=auto/}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--disable-static \
+	--disable-specs \
 	--enable-year2038 \
 	--build=$ARCH-porteux-linux
 

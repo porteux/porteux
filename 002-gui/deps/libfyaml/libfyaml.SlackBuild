@@ -27,6 +27,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--disable-dependency-tracking \
 	--disable-devmode \
 	--disable-network \
+	--disable-examples \
 	--disable-static
 
 make -j${NUMBERTHREADS} install DESTDIR=$PKG

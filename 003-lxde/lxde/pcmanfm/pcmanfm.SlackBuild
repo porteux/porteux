@@ -30,6 +30,7 @@ CFLAGS="$GCC_CFLAGS -Wno-error=incompatible-pointer-types" \
 	--localstatedir=/var \
 	--with-gtk=3 \
 	--disable-static \
+	--disable-gtk-doc \
 	--disable-man
 
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG

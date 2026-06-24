@@ -46,6 +46,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects -Wno-error=incompatible-pointer-types" \
 	--localstatedir=/var \
 	--with-gtk=3 \
 	--disable-demo \
+	--disable-gtk-doc \
 	--disable-static \
 	--disable-man
 
