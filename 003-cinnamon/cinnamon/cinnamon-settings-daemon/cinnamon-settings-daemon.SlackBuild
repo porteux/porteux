@@ -30,7 +30,13 @@ meson setup \
 	--sysconfdir=/etc \
 	-Duse_polkit=enabled \
 	-Duse_logind=enabled \
-	-Duse_cups=disabled
+	-Duse_cups=disabled \
+	-Duse_smartcard=disabled \
+	-Duse_color=disabled \
+	-Duse_wacom=disabled \
+	-Denable_debug=false \
+	-Dgtk_layer_shell=disabled \
+	-Dgenerate_tz_coords=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

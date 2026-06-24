@@ -31,7 +31,7 @@ meson setup \
 	--buildtype=release \
 	-Dpython3=true \
 	-Dintrospection=true \
-	-Dvapi=true \
+	-Dvapi=false \
 	-Dgtk_doc=false \
 	-Dglade_catalog=false \
 	-Dlua51=false \

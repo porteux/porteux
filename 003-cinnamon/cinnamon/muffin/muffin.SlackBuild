@@ -37,7 +37,13 @@ meson setup \
 	-Dcogl_tests=false \
 	-Dclutter_tests=false \
 	-Dcore_tests=false \
-	-Dtests=false
+	-Dtests=false \
+	-Dremote_desktop=false \
+	-Degl_device=false \
+	-Dwayland_eglstream=false \
+	-Dlibwacom=false \
+	-Dinstalled_tests=false \
+	-Dverbose=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

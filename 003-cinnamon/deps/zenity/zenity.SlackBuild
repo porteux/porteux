@@ -31,7 +31,8 @@ meson setup \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	-Dwebkitgtk=false
+	-Dwebkitgtk=false \
+	-Dmanpage=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
