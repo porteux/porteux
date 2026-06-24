@@ -30,7 +30,8 @@ meson setup \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	-Ddocs=false
+	-Ddocs=false \
+	-Ddeprecated_warnings=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

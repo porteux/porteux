@@ -28,7 +28,12 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
 	-Ddocs=false \
- 
+	-Dmate=false \
+	-Dxfce=false \
+	-Dintrospection=false \
+	-Dvapi=false \
+	-Ddebian_derivative=false
+
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;

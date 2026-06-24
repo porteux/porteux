@@ -32,7 +32,14 @@ meson setup \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	-Depub=false
+	-Depub=false \
+	-Ddocs=false \
+	-Dhelp_files=false \
+	-Dintrospection=false \
+	-Dpreviewer=false \
+	-Dkeyring=false \
+	-Dgtk_unix_print=false \
+	-Denable_debug=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

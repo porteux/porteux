@@ -28,7 +28,9 @@ meson setup \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	-Dlocking=true
+	-Dlocking=true \
+	-Dxinerama=false \
+	-Duse-debian-pam=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

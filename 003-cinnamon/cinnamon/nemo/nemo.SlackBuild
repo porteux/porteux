@@ -32,7 +32,10 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	-Dselinux=false \
 	-Dtracker=false \
-	-Dxmp=false
+	-Dxmp=false \
+	-Dgtk_doc=false \
+	-Dexif=false \
+	-Dgtk_layer_shell=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
