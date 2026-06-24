@@ -35,7 +35,12 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
 	--prefix=/usr \
-	--sysconfdir=/etc
+	--sysconfdir=/etc \
+	-Dintrospection=disabled \
+	-Dthumbnailer=disabled \
+	-Dgdk-pixbuf-thumbnailer=disabled \
+	-Dnls=disabled \
+	-Dxmp=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
