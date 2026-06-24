@@ -32,11 +32,7 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	-Dpolkit=disabled \
-	-Dkeyfile-settings=false \
-	-Dgspell-plugin=false \
-	-Dshortcuts-plugin=false \
-	-Dtest-plugin=false
+	-Dpolkit=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

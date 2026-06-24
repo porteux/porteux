@@ -45,7 +45,7 @@ meson setup \
 	-Dtests=false \
 	-Dgtk-doc=false \
 	-Dintrospection=false \
-	-Dvala=false
+	-Dvala=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

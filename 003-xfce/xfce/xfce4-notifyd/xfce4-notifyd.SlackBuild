@@ -31,10 +31,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dtests=false \
-	-Dsystemd=false \
-	-Dsound=false \
-	-Dxdg-autostart=false \
-	-Ddbus-start-daemon=false
+	-Ddbus-start-daemon=true
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

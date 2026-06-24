@@ -31,18 +31,7 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-if [ -f autogen.sh ]; then
-	CFLAGS="$GCC_CFLAGS" \
-	./autogen.sh \
-		--prefix=/usr \
-		--libdir=/usr/lib${SYSTEMBITS} \
-		--sysconfdir=/etc \
-		--disable-static \
-		--disable-debug \
-		--build=$ARCH-porteux-linux
-
-	make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
-else
+if [ -f meson.build ]; then
 	mkdir build && cd build
 	CFLAGS="$GCC_CFLAGS" \
 	meson setup \
@@ -61,6 +50,17 @@ else
 		-Draw-thumbnailer=disabled
 
 	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+else
+	CFLAGS="$GCC_CFLAGS" \
+	./autogen.sh \
+		--prefix=/usr \
+		--libdir=/usr/lib${SYSTEMBITS} \
+		--sysconfdir=/etc \
+		--disable-static \
+		--disable-debug \
+		--build=$ARCH-porteux-linux
+
+	make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 fi
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
