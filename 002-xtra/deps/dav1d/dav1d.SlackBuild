@@ -27,7 +27,8 @@ meson setup \
 	--sysconfdir=/etc \
 	-Dbuildtype=release \
 	-Denable_tests=false \
-	-Denable_tools=false
+	-Denable_tools=false \
+	-Denable_docs=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

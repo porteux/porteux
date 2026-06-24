@@ -41,7 +41,9 @@ meson setup \
 	--localstatedir=/var \
 	-Dteam=false \
 	-Dselinux=false \
-	-Dwwan=false
+	-Dwwan=false \
+	-Dgtk_doc=false \
+	-Dintrospection=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
