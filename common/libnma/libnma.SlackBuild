@@ -30,7 +30,6 @@ meson setup \
 	-Dgtk_doc=false \
 	-Dintrospection=false \
 	-Dvapi=false \
-	-Dmore_asserts=false \
 	-Diso_codes=false \
 	-Dmobile_broadband_provider_info=false
 
