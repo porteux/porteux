@@ -27,7 +27,12 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dlibnma_gtk4=false \
-	-Dgtk_doc=false
+	-Dgtk_doc=false \
+	-Dintrospection=false \
+	-Dvapi=false \
+	-Dmore_asserts=false \
+	-Diso_codes=false \
+	-Dmobile_broadband_provider_info=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
