@@ -114,7 +114,7 @@
 +               fclose(fp);
 +
 +               if (ret) {
-+                       strncpy(fstr, ret, s);
++                       snprintf(fstr, s, "%s", ret);
 +                       return 0;
 +               }
 +       }
