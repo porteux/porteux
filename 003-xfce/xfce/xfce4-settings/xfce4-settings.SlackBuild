@@ -31,21 +31,7 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-if [ -f autogen.sh ]; then
-	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
-	./autogen.sh \
-		--prefix=/usr \
-		--libdir=/usr/lib${SYSTEMBITS} \
-		--sysconfdir=/etc \
-		--enable-pluggable-dialogs \
-		--enable-sound-settings \
-		--disable-static \
-		--disable-debug \
-		--enable-wayland \
-		--build=$ARCH-porteux-linux
-
-	make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
-else
+if [ -f meson.build ]; then
 	(
 	cd protocols/xfce-wayland-protocols/
 	wget https://gitlab.xfce.org/kelnos/xfce-wayland-protocols/-/raw/main/xfce-output-management-private-v1.xml
@@ -63,6 +49,20 @@ else
 	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 	
 	rm $PKG/usr/share/applications/xfce4-text-editor.desktop
+else
+	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+	./autogen.sh \
+		--prefix=/usr \
+		--libdir=/usr/lib${SYSTEMBITS} \
+		--sysconfdir=/etc \
+		--enable-pluggable-dialogs \
+		--enable-sound-settings \
+		--disable-static \
+		--disable-debug \
+		--enable-wayland \
+		--build=$ARCH-porteux-linux
+
+	make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 fi
 
 rm $PKG/usr/share/applications/xfce4-file-manager.desktop

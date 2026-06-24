@@ -31,16 +31,34 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
-./autogen.sh \
-	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
-	--sysconfdir=/etc \
-	--disable-static \
-	--disable-debug \
-	--build=$ARCH-porteux-linux
+if [ -f meson.build ]; then
+	mkdir build && cd build
+	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+	meson setup \
+		--prefix=/usr \
+		--buildtype=release \
+		--libdir=/usr/lib${SYSTEMBITS} \
+		--libexecdir=/usr/libexec \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		-Dtests=false \
+		-Dgtk-doc=false \
+		-Dintrospection=false
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+else
+	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+	./autogen.sh \
+		--prefix=/usr \
+		--libdir=/usr/lib${SYSTEMBITS} \
+		--sysconfdir=/etc \
+		--disable-static \
+		--disable-debug \
+		--disable-introspection \
+		--build=$ARCH-porteux-linux
+
+	make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+fi
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

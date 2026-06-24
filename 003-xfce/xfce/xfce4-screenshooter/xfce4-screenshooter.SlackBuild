@@ -28,7 +28,7 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	-Dwayland=disabled
+	-Dwayland=enabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

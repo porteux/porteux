@@ -46,7 +46,7 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	-Dintrospection=disabled \
+	-Dintrospection=false \
 	-Dvala=disabled \
 	-Dgtk-doc=false
 

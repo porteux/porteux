@@ -30,8 +30,8 @@ meson setup \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
-	-Dwayland=disabled \
-	-Dgtk-layer-shell=disabled \
+	-Dwayland=enabled \
+	-Dgtk-layer-shell=enabled \
 	-Dlibutempter=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
