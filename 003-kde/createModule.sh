@@ -32,217 +32,123 @@ LATESTVERSION=$(ls -a $MODULEPATH/packages/plasma-desktop-* | rev | cut -d - -f 
 echo -e "Building KDE Plasma ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
-currentPackage=qt6
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-rm usr/lib$SYSTEMBITS/*.prl
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Concurrent.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Core.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Core5Compat.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6DBus.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6EglFsKmsSupport.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Gui.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6LabsFolderListModel.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6LabsPlatform.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6LabsQmlModels.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Multimedia.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6MultimediaQuick.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6MultimediaWidgets.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Network.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6OpenGL.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6OpenGLWidgets.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Positioning.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6PrintSupport.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Qml.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlCore.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlMeta.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlModels.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QmlWorkerScript.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Quick.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickControls2.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickControls2Basic.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickControls2BasicStyleImpl.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickControls2Fusion.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickControls2FusionStyleImpl.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickControls2Impl.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickDialogs2.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickDialogs2QuickImpl.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickDialogs2Utils.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickEffects.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickLayouts.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickParticles.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickShapes.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickTemplates2.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6QuickWidgets.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Sensors.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6SerialPort.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6ShaderTools.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Sql.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Svg.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6SvgWidgets.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Test.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6TextToSpeech.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandClient.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandCompositor.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandEglCompositorHwIntegration.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Widgets.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6XcbQpa.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Xml.* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/bin/qdbus "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/egldeviceintegrations/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/generic/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/iconengines/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/imageformats/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/networkinformation/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/platforminputcontexts/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/platforms/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/printsupport/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/qmltooling/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/sensors/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/sqldrivers/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/texttospeech/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/tls/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/wayland*/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/plugins/xcbglintegrations/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/Qt/labs/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/Qt5Compat/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtCore/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtMultimedia/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtPositioning/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtQml/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtQuick/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtQuick3D/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtSensors/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtTest/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWayland/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWebChannel/* "${currentPackage}-stripped"
-cp --parents -R usr/lib$SYSTEMBITS/qt6/qml/QtWebSockets/* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage qt6 \
+	usr/lib$SYSTEMBITS/libQt6Concurrent.* \
+	usr/lib$SYSTEMBITS/libQt6Core.* \
+	usr/lib$SYSTEMBITS/libQt6Core5Compat.* \
+	usr/lib$SYSTEMBITS/libQt6DBus.* \
+	usr/lib$SYSTEMBITS/libQt6EglFsKmsSupport.* \
+	usr/lib$SYSTEMBITS/libQt6Gui.* \
+	usr/lib$SYSTEMBITS/libQt6LabsFolderListModel.* \
+	usr/lib$SYSTEMBITS/libQt6LabsPlatform.* \
+	usr/lib$SYSTEMBITS/libQt6LabsQmlModels.* \
+	usr/lib$SYSTEMBITS/libQt6Multimedia.* \
+	usr/lib$SYSTEMBITS/libQt6MultimediaQuick.* \
+	usr/lib$SYSTEMBITS/libQt6MultimediaWidgets.* \
+	usr/lib$SYSTEMBITS/libQt6Network.* \
+	usr/lib$SYSTEMBITS/libQt6OpenGL.* \
+	usr/lib$SYSTEMBITS/libQt6OpenGLWidgets.* \
+	usr/lib$SYSTEMBITS/libQt6Positioning.* \
+	usr/lib$SYSTEMBITS/libQt6PrintSupport.* \
+	usr/lib$SYSTEMBITS/libQt6Qml.* \
+	usr/lib$SYSTEMBITS/libQt6QmlCore.* \
+	usr/lib$SYSTEMBITS/libQt6QmlMeta.* \
+	usr/lib$SYSTEMBITS/libQt6QmlModels.* \
+	usr/lib$SYSTEMBITS/libQt6QmlWorkerScript.* \
+	usr/lib$SYSTEMBITS/libQt6Quick.* \
+	usr/lib$SYSTEMBITS/libQt6QuickControls2.* \
+	usr/lib$SYSTEMBITS/libQt6QuickControls2Basic.* \
+	usr/lib$SYSTEMBITS/libQt6QuickControls2BasicStyleImpl.* \
+	usr/lib$SYSTEMBITS/libQt6QuickControls2Fusion.* \
+	usr/lib$SYSTEMBITS/libQt6QuickControls2FusionStyleImpl.* \
+	usr/lib$SYSTEMBITS/libQt6QuickControls2Impl.* \
+	usr/lib$SYSTEMBITS/libQt6QuickDialogs2.* \
+	usr/lib$SYSTEMBITS/libQt6QuickDialogs2QuickImpl.* \
+	usr/lib$SYSTEMBITS/libQt6QuickDialogs2Utils.* \
+	usr/lib$SYSTEMBITS/libQt6QuickEffects.* \
+	usr/lib$SYSTEMBITS/libQt6QuickLayouts.* \
+	usr/lib$SYSTEMBITS/libQt6QuickParticles.* \
+	usr/lib$SYSTEMBITS/libQt6QuickShapes.* \
+	usr/lib$SYSTEMBITS/libQt6QuickTemplates2.* \
+	usr/lib$SYSTEMBITS/libQt6QuickWidgets.* \
+	usr/lib$SYSTEMBITS/libQt6Sensors.* \
+	usr/lib$SYSTEMBITS/libQt6SerialPort.* \
+	usr/lib$SYSTEMBITS/libQt6ShaderTools.* \
+	usr/lib$SYSTEMBITS/libQt6Sql.* \
+	usr/lib$SYSTEMBITS/libQt6Svg.* \
+	usr/lib$SYSTEMBITS/libQt6SvgWidgets.* \
+	usr/lib$SYSTEMBITS/libQt6Test.* \
+	usr/lib$SYSTEMBITS/libQt6TextToSpeech.* \
+	usr/lib$SYSTEMBITS/libQt6WaylandClient.* \
+	usr/lib$SYSTEMBITS/libQt6WaylandCompositor.* \
+	usr/lib$SYSTEMBITS/libQt6WaylandEglCompositorHwIntegration.* \
+	usr/lib$SYSTEMBITS/libQt6Widgets.* \
+	usr/lib$SYSTEMBITS/libQt6XcbQpa.* \
+	usr/lib$SYSTEMBITS/libQt6Xml.* \
+	usr/lib$SYSTEMBITS/qt6/bin/qdbus \
+	usr/lib$SYSTEMBITS/qt6/plugins/egldeviceintegrations/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/generic/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/iconengines/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/imageformats/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/networkinformation/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforminputcontexts/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforms/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/printsupport/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/qmltooling/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/sensors/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/sqldrivers/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/texttospeech/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/tls/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/wayland*/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/xcbglintegrations/* \
+	usr/lib$SYSTEMBITS/qt6/qml/Qt/labs/* \
+	usr/lib$SYSTEMBITS/qt6/qml/Qt5Compat/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtCore/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtMultimedia/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtPositioning/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtQml/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtQuick/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtQuick3D/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtSensors/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtTest/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtWayland/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtWebChannel/* \
+	usr/lib$SYSTEMBITS/qt6/qml/QtWebSockets/*
 
 # required by network tray
-currentPackage=qtkeychain
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-packageVersion=$(ls * -a | rev | cut -d'-' -f3 | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libqt6keychain.* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${packageVersion}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage qtkeychain usr/lib$SYSTEMBITS/libqt6keychain.*
 
 # required by clipboard tray
-currentPackage=zint
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-packageVersion=$(ls * -a | rev | cut -d'-' -f3 | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libzint.* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-${packageVersion}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage zint usr/lib$SYSTEMBITS/libzint.*
 
 # required by main menu
-currentPackage=appstream
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-packageVersion=$(ls * -a | rev | cut -d'-' -f3 | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libAppStreamQt.* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${currentPackage}-qt-${packageVersion}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage appstream usr/lib$SYSTEMBITS/libAppStreamQt.*
+rename appstream appstream-qt $MODULEPATH/packages/appstream-[0-9]*_stripped.txz
 
 # required by spectacle
-currentPackage=opencv
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libopencv_imgproc.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libopencv_core.* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage opencv \
+	usr/lib$SYSTEMBITS/libopencv_imgproc.* \
+	usr/lib$SYSTEMBITS/libopencv_core.*
 
 # also required by spectacle
-currentPackage=gcc-gfortran
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libgfortran.so* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage gcc-gfortran usr/lib$SYSTEMBITS/libgfortran.so*
 
 # also required by spectacle
-currentPackage=tesseract
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libtesseract.so* "${currentPackage}-stripped"
-cp --parents -P -r usr/share/tessdata/* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage tesseract \
+	usr/lib$SYSTEMBITS/libtesseract.so* \
+	usr/share/tessdata/*
 
 # also required by spectacle
-currentPackage=leptonica
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libleptonica.so* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage leptonica usr/lib$SYSTEMBITS/libleptonica.so*
 
 # required by dolphin and others
-currentPackage=phonon
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P -r usr/lib$SYSTEMBITS/qt6 "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libphonon4qt6* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage phonon \
+	usr/lib$SYSTEMBITS/qt6 \
+	usr/lib$SYSTEMBITS/libphonon4qt6*
 
-currentPackage=qcoro
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libQCoro6Core.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQCoro6DBus.* "${currentPackage}-stripped"
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage qcoro \
+	usr/lib$SYSTEMBITS/libQCoro6Core.* \
+	usr/lib$SYSTEMBITS/libQCoro6DBus.*
 
 ### packages outside slackware repository
 

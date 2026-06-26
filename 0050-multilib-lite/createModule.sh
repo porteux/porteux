@@ -56,27 +56,11 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
-currentPackage=eudev
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir -p ${currentPackage}-stripped/lib
-cp -P lib/libudev*.so* ${currentPackage}-stripped/lib
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage eudev \
+	lib/libudev*.so*
 
-currentPackage=llvm
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-tar xf ${currentPackage}*.txz
-mkdir -p ${currentPackage}-stripped/usr/lib
-cp usr/lib/libLLVM*.so* ${currentPackage}-stripped/usr/lib
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage llvm \
+	usr/lib/libLLVM*.so*
 
 currentPackage=mesa
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -97,31 +81,15 @@ cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
-currentPackage=pulseaudio
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib/libpulse.so* ${currentPackage}-stripped
-cp --parents -P usr/lib/libpulse-mainloop-glib.so* ${currentPackage}-stripped
-cp --parents -P usr/lib/libpulse-simple.so* ${currentPackage}-stripped
-cp --parents -P usr/lib/pulseaudio/libpulsecommon* ${currentPackage}-stripped
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage pulseaudio \
+	usr/lib/libpulse.so* \
+	usr/lib/libpulse-mainloop-glib.so* \
+	usr/lib/libpulse-simple.so* \
+	usr/lib/pulseaudio/libpulsecommon*
 
-currentPackage=vulkan-sdk
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}*.txz .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib/libvulkan.so* ${currentPackage}-stripped
-cp --parents -P usr/lib/libSPIRV-Tools.so* ${currentPackage}-stripped
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage vulkan-sdk \
+	usr/lib/libvulkan.so* \
+	usr/lib/libSPIRV-Tools.so*
 
 ### fake root
 
