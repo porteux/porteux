@@ -24,6 +24,7 @@ sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
 mkdir build && cd build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
+	--buildtype=release \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \

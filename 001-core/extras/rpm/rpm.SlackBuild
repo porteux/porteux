@@ -33,6 +33,7 @@ sed -i "s|install(FILES CONTRIBUTING.md|#install(FILES CONTRIBUTING.md|g" CMakeL
 
 cmake -B build -S . \
 	-G Ninja \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_C_FLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
 	-DCMAKE_INSTALL_PREFIX=/usr \

@@ -25,6 +25,7 @@ LDFLAGS="$LLDFLAGS" \
 cmake -B build-12 \
 	-Ssource \
 	-Wno-dev \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_CXX_FLAGS="$BUILDPARAMS" \
 	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
@@ -41,6 +42,7 @@ LDFLAGS="$LLDFLAGS" \
 cmake -B build-10 \
 	-Ssource \
 	-Wno-dev \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_CXX_FLAGS="$BUILDPARAMS" \
 	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
@@ -56,6 +58,7 @@ LDFLAGS="$LLDFLAGS" \
 cmake -B build \
 	-Ssource \
 	-Wno-dev \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_CXX_COMPILER=clang++ \
 	-DCMAKE_CXX_FLAGS="$BUILDPARAMS" \
 	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \

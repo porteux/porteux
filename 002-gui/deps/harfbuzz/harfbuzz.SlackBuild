@@ -33,8 +33,7 @@ meson setup \
 	-Ddocs=disabled \
 	-Dtests=disabled \
 	-Dsubset=disabled \
-	-Dutilities=disabled \
-	-Dgobject=disabled
+	-Dutilities=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

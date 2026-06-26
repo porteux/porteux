@@ -36,6 +36,7 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Dman=disabled \
+	-Ddocs=disabled \
 	-Dtests=disabled \
 	-Dexamples=disabled \
 	-Dffmpeg=disabled \
