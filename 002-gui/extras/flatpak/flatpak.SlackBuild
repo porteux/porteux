@@ -43,7 +43,8 @@ meson setup \
 	--localstatedir=/var \
 	-Ddocbook_docs=disabled \
 	-Dgir=disabled \
-	-Dman=disabled
+	-Dman=disabled \
+	-Dtests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

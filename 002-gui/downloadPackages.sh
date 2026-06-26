@@ -248,6 +248,8 @@ DownloadPackage "cups" & # to build gtk+3
 DownloadPackage "gperf" & # to build flatpak
 DownloadPackage "ngtcp2" & # to build appstream
 DownloadPackage "pyparsing" & # to build flatpak
+DownloadPackage "python-Jinja2" & # required by libei
+DownloadPackage "python-MarkupSafe" & # required by libei
 DownloadPackage "socat" & # to build flatpak
 DownloadPackage "xtrans" & # to build xorg
 wait
