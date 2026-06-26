@@ -2,6 +2,8 @@
 
 Latest release direct link: https://github.com/porteux/porteux/releases/latest
 
+Or at Slackware.uk mirror: [https://slackware.uk/porteux/](https://slackware.uk/porteux/)
+
 ## About
 
 PorteuX is a Linux distro based on Slackware, inspired by Slax and Porteus and available to the public for free under GPL. Its main goal is to be super fast, small, portable, modular and immutable (if the user wants so).
@@ -109,7 +111,7 @@ arleson (core team)<br />
 theUtopian (core team)<br />
 blaze (@porteus)<br />
 brokenman (@porteus)<br />
-luckyCyborg (@slackware)<br />
+darren tadgy (@slackware.uk)<br />
 nater1983 (@gfs)<br />
 ncmprhnsbl (@porteus)<br />
 neko (@porteus)<br />
