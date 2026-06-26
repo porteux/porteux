@@ -21,6 +21,7 @@ cd $SRCNAM-$VERSION
 
 mkdir build && cd build
 cmake .. \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_C_FLAGS="$GCC_CFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
 	-DCMAKE_INSTALL_PREFIX=/usr \

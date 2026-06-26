@@ -26,6 +26,7 @@ sed -i "s|i18n.merge_file('appdata',|i18n.merge_file(|g" src/meson.build
 mkdir build && cd build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
+	--buildtype=release \
 	--prefix=/usr
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install

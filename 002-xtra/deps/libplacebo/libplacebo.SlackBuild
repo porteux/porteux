@@ -34,7 +34,6 @@ meson setup \
 	--buildtype=release \
 	-Ddemos=false \
 	-Dtests=false \
-	-Ddocs=false \
 	-Dglslang=disabled \
 	-Dvulkan=enabled \
 	-Dshaderc=disabled \

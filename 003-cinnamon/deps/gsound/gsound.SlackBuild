@@ -21,6 +21,7 @@ cd $PRGNAM-$VERSION
 mkdir build && cd build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
+	--buildtype=release \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--sysconfdir=/etc \
