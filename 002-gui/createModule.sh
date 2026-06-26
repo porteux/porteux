@@ -37,21 +37,9 @@ installpkg $MODULEPATH/packages/libvpx*.txz || exit 1
 
 [ ! -f /usr/bin/clang ] && (installpkg $MODULEPATH/packages/llvm*.txz || exit 1)
 
-installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
-installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
-installpkg $MODULEPATH/packages/libtheora*.txz || exit 1
-
 # required by appstream
 installpkg $MODULEPATH/packages/ngtcp2*.txz || exit 1
 rm $MODULEPATH/packages/ngtcp2*.txz
-
-# required by gtk+3
-installpkg $MODULEPATH/packages/cups*.txz || exit 1
-rm $MODULEPATH/packages/cups*.txz
-
-# required by xorg-server
-installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
-rm $MODULEPATH/packages/xtrans*.txz
 
 # required by flatpak
 installpkg $MODULEPATH/packages/glib-networking*.txz || exit 1
@@ -64,6 +52,20 @@ installpkg $MODULEPATH/packages/pyparsing*.txz || exit 1
 rm $MODULEPATH/packages/pyparsing*.txz
 installpkg $MODULEPATH/packages/socat*.txz || exit 1
 rm $MODULEPATH/packages/socat*.txz
+
+# required by gtk+3
+installpkg $MODULEPATH/packages/cups*.txz || exit 1
+rm $MODULEPATH/packages/cups*.txz
+
+# required by libei
+installpkg $MODULEPATH/packages/python-Jinja2 || exit 1
+rm $MODULEPATH/packages/python-Jinja2*.txz
+installpkg $MODULEPATH/packages/python-MarkupSafe || exit 1
+rm $MODULEPATH/packages/python-MarkupSafe*.txz
+
+# required by xorg-server
+installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
+rm $MODULEPATH/packages/xtrans*.txz
 
 # gui deps
 for package in \
