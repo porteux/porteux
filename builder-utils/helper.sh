@@ -42,3 +42,31 @@ Finalize() {
 isRoot() {
 	[ "$(id -u)" -eq 0 ]
 }
+
+StripPackage() {
+	local package="$1"; shift
+
+	local workdir="$MODULEPATH/$package"
+	rm -rf "$workdir"
+	mkdir -p "$workdir" && cd "$workdir" || { echo "StripPackage: cannot enter $workdir" >&2; exit 1; }
+
+	mv "$MODULEPATH"/packages/"${package}"-[0-9]* . || { echo "StripPackage: $package package not found in $MODULEPATH/packages" >&2; exit 1; }
+	installpkg "${package}"*.txz || exit 1
+
+	local pkgFile outBase
+	pkgFile=$(ls "${package}"-[0-9]*.t?z | head -n1)
+	outBase=${pkgFile%.*}
+
+	ROOT=./ installpkg "${package}"*.txz
+	mkdir "${package}-stripped"
+
+	local keep
+	for keep in "$@"; do
+		cp --parents -af $keep "${package}-stripped"
+	done
+
+	cd "${package}-stripped" || exit 1
+	makepkg ${MAKEPKGFLAGS} "$MODULEPATH/packages/${outBase}_stripped.txz" > /dev/null 2>&1
+
+	rm -fr "$workdir" && cd "$MODULEPATH"
+}

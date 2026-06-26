@@ -30,6 +30,7 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### critical libraries that need to be in sync with slackware repo before building
 
+installpkg $MODULEPATH/packages/glib2*.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/libxml2*.txz > /dev/null 2>&1
 installpkg $MODULEPATH/packages/lua*.txz > /dev/null 2>&1
 
@@ -71,18 +72,10 @@ done
 
 ## packages that require specific stripping
 
-currentPackage=avahi
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib${SYSTEMBITS}/libavahi-client.* ${currentPackage}-stripped/
-cp --parents -P usr/lib${SYSTEMBITS}/libavahi-common.* ${currentPackage}-stripped/
-cp --parents -P usr/lib${SYSTEMBITS}/libavahi-glib.* ${currentPackage}-stripped/
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage avahi \
+	usr/lib${SYSTEMBITS}/libavahi-client.* \
+	usr/lib${SYSTEMBITS}/libavahi-common.* \
+	usr/lib${SYSTEMBITS}/libavahi-glib.*
 
 currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -121,57 +114,25 @@ cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
-currentPackage=binutils
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents usr/bin/ar ${currentPackage}-stripped/
-cp --parents usr/bin/strip ${currentPackage}-stripped/
-cp --parents -P usr/lib$SYSTEMBITS/libbfd*.so ${currentPackage}-stripped/
-cp --parents -P usr/lib$SYSTEMBITS/libsframe.so* ${currentPackage}-stripped/
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage binutils \
+	usr/bin/ar \
+	usr/bin/strip \
+	usr/lib$SYSTEMBITS/libbfd*.so \
+	usr/lib$SYSTEMBITS/libsframe.so*
 
-currentPackage=fftw
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib${SYSTEMBITS}/libfftw3.* ${currentPackage}-stripped/
-cp --parents -P usr/lib${SYSTEMBITS}/libfftw3f.* ${currentPackage}-stripped/
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage fftw \
+	usr/lib${SYSTEMBITS}/libfftw3.* \
+	usr/lib${SYSTEMBITS}/libfftw3f.*
 
-currentPackage=ntp
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/bin/ntpdate ${currentPackage}-stripped/
-cp --parents -P usr/sbin/ntpdate ${currentPackage}-stripped/
-cp --parents -P usr/sbin/ntpd ${currentPackage}-stripped/
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage ntp \
+	usr/bin/ntpdate \
+	usr/sbin/ntpdate \
+	usr/sbin/ntpd
 
-currentPackage=openldap
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents etc/openldap/ldap.conf ${currentPackage}-stripped/
-cp --parents usr/include/* ${currentPackage}-stripped/
-cp --parents -P usr/lib$SYSTEMBITS/libl* ${currentPackage}-stripped/
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage openldap \
+	etc/openldap/ldap.conf \
+	usr/include/* \
+	usr/lib$SYSTEMBITS/libl*
 
 ### fake root
 

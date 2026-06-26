@@ -38,18 +38,10 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages that require specific stripping
 
-currentPackage=gettext-tools
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/bin/msgfmt "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libgettextlib* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libgettextsrc* "${currentPackage}-stripped"
-cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage gettext-tools \
+	usr/bin/msgfmt \
+	usr/lib$SYSTEMBITS/libgettextlib* \
+	usr/lib$SYSTEMBITS/libgettextsrc*
 
 currentPackage=ibus
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}

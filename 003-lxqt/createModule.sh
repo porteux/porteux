@@ -32,47 +32,37 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages that require specific stripping
 
-currentPackage=qt6
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}-[0-9]* .
-installpkg ${currentPackage}*.txz || exit 1
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Concurrent.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Core.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6DBus.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Gui.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Multimedia.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Network.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6OpenGL.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Pdf.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6PrintSupport.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Svg.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6SvgWidgets.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6WaylandClient.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Widgets.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6XcbQpa.* "${currentPackage}-stripped"
-cp --parents -P usr/lib$SYSTEMBITS/libQt6Xml.* "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/egldeviceintegrations/* "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/iconengines/* "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/imageformats/* "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforminputcontexts/* "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqeglfs.so "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqlinuxfb.so "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqminimal.so "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqminimalegl.so "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqoffscreen.so "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqvnc.so "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqwayland*.so "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqxcb.so "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/platformthemes/* "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/wayland*/* "${currentPackage}-stripped"
-cp --parents -f usr/lib$SYSTEMBITS/qt6/plugins/xcbglintegrations/* "${currentPackage}-stripped"
-rm ${currentPackage}-stripped/usr/lib$SYSTEMBITS/*.prl
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage qt6 \
+	usr/lib$SYSTEMBITS/libQt6Concurrent.* \
+	usr/lib$SYSTEMBITS/libQt6Core.* \
+	usr/lib$SYSTEMBITS/libQt6DBus.* \
+	usr/lib$SYSTEMBITS/libQt6Gui.* \
+	usr/lib$SYSTEMBITS/libQt6Multimedia.* \
+	usr/lib$SYSTEMBITS/libQt6Network.* \
+	usr/lib$SYSTEMBITS/libQt6OpenGL.* \
+	usr/lib$SYSTEMBITS/libQt6Pdf.* \
+	usr/lib$SYSTEMBITS/libQt6PrintSupport.* \
+	usr/lib$SYSTEMBITS/libQt6Svg.* \
+	usr/lib$SYSTEMBITS/libQt6SvgWidgets.* \
+	usr/lib$SYSTEMBITS/libQt6WaylandClient.* \
+	usr/lib$SYSTEMBITS/libQt6Widgets.* \
+	usr/lib$SYSTEMBITS/libQt6XcbQpa.* \
+	usr/lib$SYSTEMBITS/libQt6Xml.* \
+	usr/lib$SYSTEMBITS/qt6/plugins/egldeviceintegrations/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/iconengines/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/imageformats/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforminputcontexts/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqeglfs.so \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqlinuxfb.so \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqminimal.so \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqminimalegl.so \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqoffscreen.so \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqvnc.so \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqwayland*.so \
+	usr/lib$SYSTEMBITS/qt6/plugins/platforms/libqxcb.so \
+	usr/lib$SYSTEMBITS/qt6/plugins/platformthemes/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/wayland*/* \
+	usr/lib$SYSTEMBITS/qt6/plugins/xcbglintegrations/*
 
 # required by xpdf
 currentPackage=ghostscript-fonts-std

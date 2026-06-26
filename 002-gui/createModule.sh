@@ -37,27 +37,7 @@ installpkg $MODULEPATH/packages/libvpx*.txz || exit 1
 
 [ ! -f /usr/bin/clang ] && (installpkg $MODULEPATH/packages/llvm*.txz || exit 1)
 
-currentPackage=gdk-pixbuf2
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
-
 installpkg $MODULEPATH/packages/libdisplay-info*.txz || exit 1
-
-installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
-rm $MODULEPATH/packages/cargo-c*
-
-# not using rust from slackware because it's much slower
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
-rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
-export PATH=$HOME/.cargo/bin/:$PATH
-
-# building this because the slackware package in current depends on dav1d
-currentPackage=librsvg
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
-
 installpkg $MODULEPATH/packages/libcanberra*.txz || exit 1
 installpkg $MODULEPATH/packages/libtheora*.txz || exit 1
 
@@ -87,6 +67,7 @@ rm $MODULEPATH/packages/socat*.txz
 
 # gui deps
 for package in \
+	gdk-pixbuf2 \
 	freetype \
 	harfbuzz \
 	xorg-server \
@@ -111,6 +92,20 @@ installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
+rm $MODULEPATH/packages/cargo-c*
+
+# not using rust from slackware because it's much slower
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
+rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
+export PATH=$HOME/.cargo/bin/:$PATH
+
+# building this because the slackware package in current depends on dav1d
+currentPackage=librsvg
+sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+
 # only required for building
 rm $MODULEPATH/packages/cxxopts*.txz
 
@@ -134,16 +129,8 @@ done
 
 ### packages that require specific stripping
 
-currentPackage=llvm
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}*.txz .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libLLVM*.so* ${currentPackage}-stripped
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage llvm \
+	usr/lib$SYSTEMBITS/libLLVM*.so*
 
 currentPackage=mesa
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
@@ -168,53 +155,29 @@ cd ${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
-currentPackage=noto-fonts-ttf
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}*.txz .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/share/fonts/TTF/NotoSansSymbols*-Regular.ttf ${currentPackage}-stripped
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage noto-fonts-ttf \
+	usr/share/fonts/TTF/NotoSansSymbols*-Regular.ttf
 
-currentPackage=pulseaudio
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}*.txz .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/bin/pactl ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libpulse.so* ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libpulse-simple.so* ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* ${currentPackage}-stripped
-cp --parents -Pr usr/lib$SYSTEMBITS/cmake/* ${currentPackage}-stripped
-cp --parents -Pr usr/lib$SYSTEMBITS/pkgconfig/* ${currentPackage}-stripped
-cp --parents -Pr usr/include/* ${currentPackage}-stripped
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage pulseaudio \
+	usr/bin/pactl \
+	usr/lib$SYSTEMBITS/libpulse.so* \
+	usr/lib$SYSTEMBITS/libpulse-mainloop-glib.so* \
+	usr/lib$SYSTEMBITS/libpulse-simple.so* \
+	usr/lib$SYSTEMBITS/pulseaudio/libpulsecommon* \
+	usr/lib$SYSTEMBITS/cmake/* \
+	usr/lib$SYSTEMBITS/pkgconfig/* \
+	usr/include/*
 
-currentPackage=vulkan-sdk
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv ../packages/${currentPackage}*.txz .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz
-mkdir ${currentPackage}-stripped
-cp --parents -P usr/bin/vulkaninfo ${currentPackage}-stripped
-cp --parents -Pr usr/include/spirv-tools ${currentPackage}-stripped
-cp --parents -Pr usr/include/vk_video ${currentPackage}-stripped
-cp --parents -P usr/include/vulkan/* ${currentPackage}-stripped > /dev/null 2>&1
-cp --parents -Pr usr/lib$SYSTEMBITS/cmake ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libvulkan.so* ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* ${currentPackage}-stripped
-cp --parents -P usr/lib$SYSTEMBITS/libSPIRV-Tools.so* ${currentPackage}-stripped
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+StripPackage vulkan-sdk \
+	usr/bin/vulkaninfo \
+	usr/include/spirv-tools \
+	usr/include/vk_video \
+	usr/include/vulkan/* \
+	usr/lib$SYSTEMBITS/cmake \
+	usr/lib$SYSTEMBITS/pkgconfig/vulkan.pc \
+	usr/lib$SYSTEMBITS/libvulkan.so* \
+	usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* \
+	usr/lib$SYSTEMBITS/libSPIRV-Tools.so*
 
 ### install poppler and its deps so they can be used by next modules
 
