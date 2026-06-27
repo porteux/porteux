@@ -58,9 +58,9 @@ installpkg $MODULEPATH/packages/cups*.txz || exit 1
 rm $MODULEPATH/packages/cups*.txz
 
 # required by libei
-installpkg $MODULEPATH/packages/python-Jinja2 || exit 1
+installpkg $MODULEPATH/packages/python-Jinja2*.txz || exit 1
 rm $MODULEPATH/packages/python-Jinja2*.txz
-installpkg $MODULEPATH/packages/python-MarkupSafe || exit 1
+installpkg $MODULEPATH/packages/python-MarkupSafe*.txz || exit 1
 rm $MODULEPATH/packages/python-MarkupSafe*.txz
 
 # required by xorg-server
