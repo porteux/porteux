@@ -169,6 +169,10 @@ StripPackage pulseaudio \
 	usr/lib$SYSTEMBITS/cmake/* \
 	usr/lib$SYSTEMBITS/pkgconfig/* \
 	usr/include/*
+	
+StripPackage sound-theme-freedesktop \
+	usr/share/sounds/freedesktop/stereo/audio-channel* \
+	usr/share/sounds/freedesktop/stereo/audio-test-signal*
 
 StripPackage vulkan-sdk \
 	usr/bin/vulkaninfo \
@@ -325,6 +329,7 @@ mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libgallium* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvulkan* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libX11.so* $MODULEPATH/
 mv $MODULEPATH/packages/usr/libexec/gpartedbin $MODULEPATH/
+mv $MODULEPATH/packages/usr/share/sounds $MODULEPATH/
 GenericStrip
 AggressiveStrip
 mv $MODULEPATH/dri $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
@@ -332,6 +337,7 @@ mv $MODULEPATH/libgallium* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libvulkan* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/libX11.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}/
 mv $MODULEPATH/gpartedbin $MODULEPATH/packages/usr/libexec
+mv $MODULEPATH/sounds $MODULEPATH/packages/usr/share
 
 ### copy cache files
 

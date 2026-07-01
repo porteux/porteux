@@ -49,7 +49,7 @@ DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
-install -Dm755 "$CWD/run-pipewire" $PKG/etc/pipewire/run-pipewire
+install -Dm755 "$CWD/rc.pipewire" $PKG/etc/rc.d/rc.pipewire
 install -Dm644 "$CWD/pipewire.desktop" $PKG/etc/xdg/autostart/pipewire.desktop
 
 mkdir -p $PKG/install

@@ -2,7 +2,7 @@
 Type=Application
 Name=PipeWire Media System
 Comment=Start the PipeWire Media System
-Exec=/etc/pipewire/run-pipewire
+Exec=/etc/rc.d/rc.pipewire
 Terminal=false
 
 X-GNOME-AutoRestart=true

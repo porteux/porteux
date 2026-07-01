@@ -239,6 +239,7 @@ DownloadPackage "llvm" &
 DownloadPackage "mesa" &
 DownloadPackage "noto-fonts-ttf" &
 DownloadPackage "pulseaudio" &
+DownloadPackage "sound-theme-freedesktop" & # required by test sound in many DEs
 DownloadPackage "vulkan-sdk" &
 wait
 
