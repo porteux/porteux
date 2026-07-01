@@ -266,11 +266,13 @@ rm -fr var/lib/AccountsService
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libexiv2.so* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libmozjs-* $MODULEPATH/
 mv $MODULEPATH/packages/usr/lib${SYSTEMBITS}/libvte-* $MODULEPATH/
+mv $MODULEPATH/packages/usr/share/sounds $MODULEPATH/
 GenericStrip
 AggressiveStripAll
 mv $MODULEPATH/libexiv2.so* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 mv $MODULEPATH/libvte-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
 mv $MODULEPATH/libmozjs-* $MODULEPATH/packages/usr/lib${SYSTEMBITS}
+mv $MODULEPATH/sounds $MODULEPATH/packages/usr/share
 
 ### copy cache files
 
