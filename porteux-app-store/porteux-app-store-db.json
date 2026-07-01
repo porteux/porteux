@@ -625,13 +625,13 @@
         }
     },
     "Drivers": {
-        "Nvidia 5xx": {
+        "NVIDIA 6xx": {
             "script": "nvidia",
             "icon": "nvidia.png",
             "tooltip": "Official NVIDIA driver with all utilities and libraries",
             "infoDialog": "NVIDIA driver will be loaded after the system is restarted."
         },
-        "Nvidia Lite 5xx": {
+        "NVIDIA Lite 6xx": {
             "script": "nvidia-lite",
             "icon": "nvidia.png",
             "tooltip": "Official NVIDIA driver without some non-critical libraries",
