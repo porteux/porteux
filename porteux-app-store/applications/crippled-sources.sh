@@ -10,11 +10,19 @@ if ! isRoot; then
 	exit 0
 fi
 
+SLACKWAREFULLVERSION=$(cat /etc/slackware-version)
+SLACKWAREVERSION=${SLACKWAREFULLVERSION//* }
+
+if [[ $SLACKWAREVERSION == *"+" ]]; then
+	PORTEUXBUILD=current
+fi
+
 CURRENTPACKAGE=crippled-sources
 PORTEUXFULLVERSION=$(cat /etc/porteux-version)
 PORTEUXVERSION=${PORTEUXFULLVERSION#*-}
 PORTEUXVERSION=${PORTEUXVERSION%%-*}
-APPLICATIONURL="https://github.com/porteux/porteux/releases/download/$PORTEUXVERSION/$CURRENTPACKAGE.zip"
+ZIPFILENAME="$CURRENTPACKAGE-$PORTEUXBUILD.zip"
+APPLICATIONURL="https://github.com/porteux/porteux/releases/download/$PORTEUXVERSION/$ZIPFILENAME"
 OUTPUTDIR="$PORTDIR/optional/"
 BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
 
@@ -22,8 +30,8 @@ rm -fr "$BUILDDIR" &>/dev/null
 mkdir "$BUILDDIR" &>/dev/null
 
 wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
-MODULEFILENAME=$(unzip -Z1 "$BUILDDIR/$CURRENTPACKAGE.zip") || exit 1
-unzip "$BUILDDIR/$CURRENTPACKAGE.zip" -d "$BUILDDIR" &>/dev/null || exit 1
+MODULEFILENAME=$(unzip -Z1 "$BUILDDIR/$ZIPFILENAME") || exit 1
+unzip "$BUILDDIR/$ZIPFILENAME" -d "$BUILDDIR" &>/dev/null || exit 1
 
 if [ ! -w "$OUTPUTDIR" ]; then
 	mv "$BUILDDIR/$MODULEFILENAME" /tmp &>/dev/null
