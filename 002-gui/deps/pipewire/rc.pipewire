@@ -10,8 +10,12 @@ while [ $sleepTimes -gt 0 ] && ! pgrep -x "pipewire" > /dev/null; do
 	sleepTimes=$((sleepTimes - 1))
 done
 
-pkill -u "${USER}" -x wireplumber > /dev/null 2>&1
-wireplumber &
+if [ -f /usr/bin/wireplumber ]; then
+	pkill -u "${USER}" -x wireplumber > /dev/null 2>&1
+	wireplumber &
+fi
 
-pkill -u "${USER}" -x pipewire-pulse > /dev/null 2>&1
-pipewire-pulse &
+if [ -f /usr/bin/pipewire-pulse ]; then
+	pkill -u "${USER}" -x pipewire-pulse > /dev/null 2>&1
+	pipewire-pulse &
+fi
