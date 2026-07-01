@@ -14,17 +14,16 @@ CURRENTPACKAGE=nvidia-driver
 PORTEUXFULLVERSION=$(cat /etc/porteux-version)
 PORTEUXVERSION=${PORTEUXFULLVERSION#*-}
 PORTEUXVERSION=${PORTEUXVERSION%%-*}
+SLACKWAREFULLVERSION=$(cat /etc/slackware-version)
+SLACKWAREVERSION=${SLACKWAREFULLVERSION//* }
 
-systemFullVersion=$(cat /etc/slackware-version)
-SLACKWAREVERSION=${systemFullVersion//* }
-
-if [[ "$SLACKWAREVERSION" == *"+" ]]; then
-	SLACKWAREVERSION=current
+if [[ $SLACKWAREVERSION == *"+" ]]; then
+	PORTEUXBUILD=current
 else
-	SLACKWAREVERSION=stable
+	PORTEUXBUILD=stable
 fi
 
-ZIPFILENAME="$CURRENTPACKAGE-$SLACKWAREVERSION.zip"
+ZIPFILENAME="$CURRENTPACKAGE-$PORTEUXBUILD.zip"
 APPLICATIONURL="https://github.com/porteux/porteux/releases/download/$PORTEUXVERSION/$ZIPFILENAME"
 OUTPUTDIR="$PORTDIR/modules/"
 BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
@@ -34,7 +33,6 @@ mkdir "$BUILDDIR" &>/dev/null
 
 wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
 MODULEFILENAME=$(unzip -Z1 "$BUILDDIR/$ZIPFILENAME" | rev | cut -d "/" -f 1 | rev) || exit 1
-echo "$MODULEFILENAME"
 unzip "$BUILDDIR/$ZIPFILENAME" -d "$BUILDDIR" &>/dev/null
 
 if [ ! -w "$OUTPUTDIR" ]; then
