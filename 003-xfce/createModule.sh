@@ -148,6 +148,10 @@ done
 rm $MODULEPATH/packages/xfce4-dev-tools*.txz
 rm $MODULEPATH/packages/mate-common*.txz
 
+if [[ "$ALLOWTEST" == "yes" ]]; then
+	rm $MODULEPATH/packages/exo*.txz # deprecated since xfce 4.21
+fi
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
