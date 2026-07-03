@@ -10,7 +10,6 @@ DownloadPackage "colord" &
 DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
-DownloadPackage "gnome-keyring" & # required by nm-applet to ask for password
 DownloadPackage "gspell" &
 wait
 DownloadPackage "gtksourceview4" &
