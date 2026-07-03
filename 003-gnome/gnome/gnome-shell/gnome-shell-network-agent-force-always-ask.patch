@@ -1,0 +1,23 @@
+Show the WiFi password dialog even when gnome-keyring is not installed.
+
+GNOME Shell's NM secret agent queries org.freedesktop.secrets before
+prompting and aborts the request (NM_SECRET_AGENT_ERROR_FAILED, no dialog)
+when the service is missing. GNOME 48 added the force-always-ask property
+(commit 65d38939, MR !3646) which skips the keyring lookup and prompts
+directly, but only enables it in greeter mode. Enable it unconditionally:
+NetworkManager saves WPA-PSK secrets system-owned (psk-flags=0) in
+/etc/NetworkManager/system-connections by itself, so no keyring is needed
+to prompt, save or reconnect. Only agent-owned ("this user only") secrets
+lose keyring lookup, which cannot work without a keyring anyway.
+
+--- a/js/ui/components/networkAgent.js	2026-07-03 12:21:49.393054289 +0200
++++ b/js/ui/components/networkAgent.js	2026-07-03 12:21:49.396054289 +0200
+@@ -676,7 +676,7 @@
+             identifier: 'org.gnome.Shell.NetworkAgent',
+             capabilities: NM.SecretAgentCapabilities.VPN_HINTS,
+             auto_register: false,
+-            force_always_ask: Main.sessionMode.isGreeter,
++            force_always_ask: true,
+         });
+ 
+         this._dialogs = { };

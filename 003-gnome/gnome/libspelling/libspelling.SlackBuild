@@ -33,7 +33,7 @@ meson setup \
 	--localstatedir=/var \
 	-Dsysprof=false \
 	-Ddocs=false \
-	-Dintrospection=false \
+	-Dintrospection=disabled \
 	-Dvapi=false \
 	-Dinstall-static=false
 

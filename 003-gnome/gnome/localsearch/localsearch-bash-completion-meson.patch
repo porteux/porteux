@@ -1,0 +1,18 @@
+Fix meson setup failure with -Dbash_completion=false: bash_completion_dir
+is only assigned when the option is enabled (meson.build:269), but the
+configuration summary reads it unconditionally (meson.build:433), so
+disabling the option fails with 'Unknown variable "bash_completion_dir"'.
+Only print the directory when the option is enabled. Bug present upstream
+through current main.
+
+--- a/meson.build	2026-07-03 14:03:06.154798472 +0200
++++ b/meson.build	2026-07-03 14:03:06.155798472 +0200
+@@ -430,7 +430,7 @@
+   '    Battery/mains power detection:          ' + battery_detection_library_name,
+   '    Releasing heap memory with malloc_trim: ' + have_malloc_trim.to_string(),
+   '    Store creation time:                    ' + glib.version().version_compare('>=2.70.0').to_string(),
+-  '    Bash completion support:                ' + get_option('bash_completion').to_string() + ' (' + bash_completion_dir + ')',
++  '    Bash completion support:                ' + get_option('bash_completion').to_string() + (get_option('bash_completion') ? ' (' + bash_completion_dir + ')' : ''),
+   '\nData Miners / Writebacks:',
+   '    FS (File System):                       ' + have_tracker_miner_fs.to_string(),
+   '   Extract (secondary extraction):     ' + have_tracker_extract.to_string(),
