@@ -38,7 +38,7 @@ sed -i "s|^caja_extension.*|caja_extension = dependency('', required: false)|g" 
 
 sed -i "s|version: '1\.28.*|version: '${VERSION}',|g" meson.build
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
@@ -48,7 +48,6 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dintrospection=false \
-	-Dtests=false \
 	-Dt1lib=enabled \
 	-Dpixbuf=enabled \
 	-Dcomics=enabled \

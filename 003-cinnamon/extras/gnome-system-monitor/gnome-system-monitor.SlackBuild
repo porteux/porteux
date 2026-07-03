@@ -22,7 +22,7 @@ cd $PRGNAM-$VERSION
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 sed -i 's|<property name="show-close-button">True</property>|<property name="show-close-button">False</property>|g' data/interface.ui
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \

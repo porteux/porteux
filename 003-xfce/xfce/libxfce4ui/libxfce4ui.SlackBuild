@@ -36,7 +36,7 @@ for i in $CWD/*.patch; do
 done
 
 if [ -f meson.build ]; then
-	mkdir build && cd build
+	mkdir meson-build && cd meson-build
 	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	meson setup \
 		--prefix=/usr \

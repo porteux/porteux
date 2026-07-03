@@ -24,7 +24,7 @@ wget https://github.com/fulalas/gnome-session-sysvinit/archive/refs/heads/main.t
 tar xf main.tar.gz
 cp -rf gnome-session-sysvinit-main/* .
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \

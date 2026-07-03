@@ -13,11 +13,6 @@ DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 wait
 
-### temporary packages only for building
-
-DownloadPackage "iso-codes" & # to build libnma
-wait
-
 ### script clean up
 
 rm FILE_LIST

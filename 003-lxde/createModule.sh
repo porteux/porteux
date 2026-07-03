@@ -32,10 +32,6 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
-# required by libnma
-installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
-rm $MODULEPATH/packages/iso-codes*.txz
-
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 

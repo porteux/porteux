@@ -26,7 +26,7 @@ sed -i "s|subdir('examples')|#subdir('examples')|g" meson.build
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \

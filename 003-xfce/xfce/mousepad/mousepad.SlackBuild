@@ -23,7 +23,7 @@ cd $PRGNAM-$DOWNLOADVERSION
 sed -i "s/g_warning\ (\"Failed\ to\ open\ plugin\ directory\ '%s':\ %s\",//g" mousepad/mousepad-application.c
 sed -i 's/MOUSEPAD_PLUGIN_DIRECTORY,\ error->message);//g' mousepad/mousepad-application.c
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \

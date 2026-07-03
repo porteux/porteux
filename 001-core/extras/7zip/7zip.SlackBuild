@@ -35,7 +35,7 @@ cd $PRGNAM-$VERSION
 cp "$CWD/meson.build.template" meson.build
 meson rewrite kwargs set project / version ${VERSION}
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="${GCC_CFLAGS/-fipa-reorder-for-locality/} -pthread" \
 CXXFLAGS="${GCC_CXXFLAGS/-fipa-reorder-for-locality/} -pthread" \
 meson setup \

@@ -21,7 +21,7 @@ cd $PRGNAM-$VERSION
 
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
