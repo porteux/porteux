@@ -94,7 +94,6 @@ for package in \
 	dart-sass \
 	adw-gtk3 \
 	exiv2 \
-	libstemmer \
 	bubblewrap \
 	geoclue2 \
 	colord-gtk \
