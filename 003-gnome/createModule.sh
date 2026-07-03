@@ -58,7 +58,6 @@ rm $MODULEPATH/packages/c-ares*
 rm $MODULEPATH/packages/cups*
 rm $MODULEPATH/packages/dbus-python*
 rm $MODULEPATH/packages/egl-wayland*
-rm $MODULEPATH/packages/iso-codes*
 rm $MODULEPATH/packages/krb5*
 rm $MODULEPATH/packages/libsass*
 rm $MODULEPATH/packages/libwnck3*
@@ -161,6 +160,15 @@ find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '
 done
 
 ### packages that require specific stripping
+
+# required by gnome-control-center and ibus
+StripPackage iso-codes \
+	usr/share/xml/iso-codes/iso_3166-1.xml \
+	usr/share/xml/iso-codes/iso_3166.xml \
+	usr/share/xml/iso-codes/iso_639-2.xml \
+	usr/share/xml/iso-codes/iso_639-3.xml \
+	usr/share/xml/iso-codes/iso_639.xml \
+	usr/share/xml/iso-codes/iso_639_3.xml
 
 currentPackage=ibus
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}

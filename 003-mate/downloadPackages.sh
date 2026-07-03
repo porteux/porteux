@@ -11,7 +11,6 @@ DownloadPackage "dbus-python" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "hunspell" &
-DownloadPackage "iso-codes" &
 DownloadPackage "jasper" &
 wait
 DownloadPackage "keybinder3" &
@@ -23,6 +22,11 @@ DownloadPackage "libsoup" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "xtrans" &
+wait
+
+### packages that require specific stripping
+
+DownloadPackage "iso-codes" & # required by mate-keyboard-properties and ibus
 wait
 
 ### script clean up

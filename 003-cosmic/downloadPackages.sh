@@ -11,6 +11,11 @@ wait
 [ ! -f /usr/bin/clang ] && DownloadPackage "llvm" &
 wait
 
+### packages that require specific stripping
+
+DownloadPackage "iso-codes" & # required by cosmic-settings
+wait
+
 ### temporary packages only for building
 
 DownloadPackage "leptonica" & # required by cosmic-reader

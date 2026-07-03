@@ -36,36 +36,7 @@ cd $MODULEPATH
 
 sh $SCRIPTPATH/downloadPackages.sh
 
-### packages that require specific stripping
-
-StripPackage gettext-tools \
-	usr/bin/msgfmt \
-	usr/lib$SYSTEMBITS/libgettextlib* \
-	usr/lib$SYSTEMBITS/libgettextsrc*
-
-currentPackage=ibus
-mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
-mv $MODULEPATH/packages/${currentPackage}*.txz .
-packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}*.txz
-rm usr/share/applications/org.freedesktop.IBus.Setup.desktop
-rm -fr usr/share/ibus/dicts
-rm -fr var/lib/pkgtools
-rm -f var/log/packages
-rm -fr var/log/pkgtools
-rm -f var/log/setup
-rm -f var/log/scripts
-mkdir ${currentPackage}-stripped
-rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
-cd ${currentPackage}-stripped
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
-
 ### packages outside slackware repository
-
-# required by libnma
-installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
-rm $MODULEPATH/packages/iso-codes*.txz
 
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
@@ -91,6 +62,7 @@ installpkg $MODULEPATH/packages/aspell*.txz || exit 1
 installpkg $MODULEPATH/packages/colord*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/gspell*.txz || exit 1
+installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
 installpkg $MODULEPATH/packages/gtksourceview4*.txz || exit 1
 installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
@@ -191,6 +163,39 @@ sh $SCRIPTPATH/cinnamon/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+### packages that require specific stripping
+
+StripPackage gettext-tools \
+	usr/bin/msgfmt \
+	usr/lib$SYSTEMBITS/libgettextlib* \
+	usr/lib$SYSTEMBITS/libgettextsrc*
+	
+StripPackage iso-codes \
+	usr/share/xml/iso-codes/iso_3166-1.xml \
+	usr/share/xml/iso-codes/iso_3166.xml \
+	usr/share/xml/iso-codes/iso_639-2.xml \
+	usr/share/xml/iso-codes/iso_639-3.xml \
+	usr/share/xml/iso-codes/iso_639.xml \
+	usr/share/xml/iso-codes/iso_639_3.xml
+
+currentPackage=ibus
+mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
+mv $MODULEPATH/packages/${currentPackage}*.txz .
+packageFileName=$(ls * -a | rev | cut -d . -f 2- | rev)
+ROOT=./ installpkg ${currentPackage}*.txz && rm ${currentPackage}*.txz
+rm usr/share/applications/org.freedesktop.IBus.Setup.desktop
+rm -fr usr/share/ibus/dicts
+rm -fr var/lib/pkgtools
+rm -f var/log/packages
+rm -fr var/log/pkgtools
+rm -f var/log/setup
+rm -f var/log/scripts
+mkdir ${currentPackage}-stripped
+rsync -av * ${currentPackage}-stripped/ --exclude=${currentPackage}-stripped/
+cd ${currentPackage}-stripped
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 ### fake root
 

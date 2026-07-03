@@ -124,6 +124,13 @@ done
 # only required for building not for run-time
 rm -fr $MODULEPATH/just-master
 
+### packages that require specific stripping
+
+StripPackage iso-codes \
+	usr/share/iso-codes/json/iso_3166-1.json \
+	usr/share/iso-codes/json/iso_639-2.json \
+	usr/share/iso-codes/json/iso_639-3.json
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z
