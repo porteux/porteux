@@ -19,6 +19,10 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+for i in $CWD/*.patch; do
+	patch -p1 < $i
+done
+
 sed -i "s|subdir('doc/man')||g" meson.build
 
 mkdir build && cd build

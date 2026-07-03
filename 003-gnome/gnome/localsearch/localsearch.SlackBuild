@@ -19,6 +19,10 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+for i in $CWD/*.patch; do
+	patch -p1 < $i
+done
+
 sed -i "s|subdir('docs')|#subdir('docs')|g" meson.build
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 sed -i "s|subdir('examples')|#subdir('examples')|g" meson.build
@@ -42,9 +46,8 @@ meson setup \
 	-Dseccomp=false \
 	-Dsystemd_user_services=false \
 	-Dbash_completion=false \
-	-Dbattery_detection=false \
+	-Dbattery_detection=none \
 	-Dtests_tap_protocol=false \
-	-Dcharset_detection=false \
 	-Dunzip_ps_gz_files=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install

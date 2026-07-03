@@ -30,8 +30,7 @@ meson setup \
 	--buildtype=release \
 	-Dsystemduserunitdir=/usr/lib/systemd/user \
 	-Dhttpd=/usr/sbin/httpd \
-	-Dmodules_path=/usr/lib${SYSTEMBITS}/httpd/modules \
-	-Dselinux=false
+	-Dmodules_path=/usr/lib${SYSTEMBITS}/httpd/modules
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

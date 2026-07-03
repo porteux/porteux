@@ -49,7 +49,6 @@ meson setup \
 	-Dusb-protection=false \
 	-Dwwan=false \
 	-Dcups=false \
-	-Drfkill=false \
 	-Dgcr3=false \
 	-Dxwayland=false \
 	-Dsystemd-units=false

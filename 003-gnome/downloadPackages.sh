@@ -12,9 +12,8 @@ DownloadPackage "dconf" &
 DownloadPackage "editorconfig-core-c" &
 DownloadPackage "enchant" &
 DownloadPackage "glibmm2" & # required by gnome-system-monitor
-DownloadPackage "gnome-keyring" # required by wifi password dialog
-wait
 DownloadPackage "gst-plugins-bad-free" & # required by gtk4 plugin
+wait
 DownloadPackage "gst-plugins-good" & # required by nautilus media properties
 DownloadPackage "gst-plugins-libav" & # required by nautilus media properties
 DownloadPackage "gtk4" &
@@ -24,8 +23,8 @@ DownloadPackage "hyphen" &
 DownloadPackage "libgtop" &
 DownloadPackage "libgusb" &
 DownloadPackage "libnma" &
-wait
 DownloadPackage "libpwquality" & # required by gnome-control-center
+wait
 DownloadPackage "libsigc++3" & # required by gnome-system-monitor
 DownloadPackage "libxklavier" &
 DownloadPackage "libyaml" &

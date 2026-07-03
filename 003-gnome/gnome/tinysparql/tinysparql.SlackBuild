@@ -34,10 +34,10 @@ meson setup \
 	-Dman=false \
 	-Dsystemd_user_services=false \
 	-Dtests=false \
-	-Dintrospection=false \
-	-Dvapi=false \
-	-Dstemmer=false \
-	-Davahi=false \
+	-Dintrospection=disabled \
+	-Dvapi=disabled \
+	-Dstemmer=disabled \
+	-Davahi=disabled \
 	-Dbash_completion=false \
 	-Dtests_tap_protocol=false
 
