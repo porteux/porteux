@@ -43,7 +43,6 @@ meson setup \
 	-Ddocs=disabled \
 	-Davif=disabled \
 	-Drsvg-convert=disabled \
-	-Dintrospection=disabled \
 	-Dvala=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
