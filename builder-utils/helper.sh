@@ -46,14 +46,12 @@ isRoot() {
 }
 
 StripPackage() {
-	local package="$1"; shift
-
+	local package="$1"
 	local workdir="$MODULEPATH/$package"
 	rm -rf "$workdir"
 	mkdir -p "$workdir" && cd "$workdir" || { echo "StripPackage: cannot enter $workdir" >&2; exit 1; }
 
 	mv "$MODULEPATH"/packages/"${package}"-[0-9]* . || { echo "StripPackage: $package package not found in $MODULEPATH/packages" >&2; exit 1; }
-	installpkg "${package}"*.txz || exit 1
 
 	local pkgFile outBase
 	pkgFile=$(ls "${package}"-[0-9]*.t?z | head -n1)
@@ -63,6 +61,7 @@ StripPackage() {
 	mkdir "${package}-stripped"
 
 	local keep
+	shift # remove package name param
 	for keep in "$@"; do
 		cp --parents -af $keep "${package}-stripped"
 	done
