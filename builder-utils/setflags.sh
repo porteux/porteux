@@ -3,7 +3,7 @@
 SetFlags() {
 	MODULENAME="$1"
 
-	export KERNELVERSION="7.1.1"
+	export KERNELVERSION="7.1.2"
 	export ARCHITECTURELEVEL="x86-64-v2"
 	export GCC_CFLAGS="-O3 -march=$ARCHITECTURELEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -flto=auto -fno-plt -fipa-pta -fno-ident -fmodulo-sched -fuse-linker-plugin -fgraphite-identity -floop-nest-optimize -fdevirtualize-at-ltrans -fipa-reorder-for-locality -fsched-pressure -fgcse-sm -fgcse-las -favoid-store-forwarding"
 	export GCC_CXXFLAGS="$GCC_CFLAGS -fvisibility-inlines-hidden"
@@ -26,7 +26,7 @@ SetFlags() {
 
 	if [[ $slackware_version == *"+" ]]; then
 		export SLACKWAREVERSION=current
-		export PORTEUXBUILD=current		
+		export PORTEUXBUILD=current
 	else
 		echo "Fatal error: PorteuX can only be built in Slackware current environment." && exit 1
 	fi
