@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=openbox
 
 CWD=$(dirname "$0")
@@ -14,15 +12,14 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION="3.6.1"
-wget https://openbox.org/dist/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
+wget https://github.com/Mikachu/${PRGNAM}/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xf ${PRGNAM}.tar.gz
+cd ${PRGNAM}-master
+VERSION=$(date -r . +%Y%m%d)
 
-tar xf $PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+sed -i '1s|env python|env python3|' data/autostart/openbox-xdg-autostart
 
-for i in $CWD/*.patch; do
-	patch -p1 < $i
-done
+./bootstrap
 
 sed -i 's|mkdirprog="\${MKDIRPROG-mkdir}"|mkdirprog="\${MKDIRPROG-mkdir} -p"|g' install-sh
 
@@ -37,6 +34,17 @@ CFLAGS="$GCC_CFLAGS" \
 make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+# gnome/kde session support and extra tools (previously stripped via patch)
+rm -f $PKG/usr/bin/gdm-control
+rm -f $PKG/usr/bin/gnome-panel-control
+rm -f $PKG/usr/bin/obxprop
+rm -f $PKG/usr/bin/openbox-gnome-session
+rm -f $PKG/usr/bin/openbox-kde-session
+rm -f $PKG/usr/share/xsessions/openbox-gnome.desktop
+rm -f $PKG/usr/share/xsessions/openbox-kde.desktop
+rm -fr $PKG/usr/share/gnome-session
+rm -fr $PKG/usr/share/gnome
 
 rm -fr $PKG/usr/share/doc
 rm -fr $PKG/usr/share/man

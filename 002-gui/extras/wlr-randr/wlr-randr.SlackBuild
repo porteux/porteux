@@ -12,11 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.freedesktop.org/emersion/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | rev | cut -d "-" -f 1 | rev | sort -Vr | head -1)
-wget https://gitlab.freedesktop.org/emersion/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
-
-tar xf $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
+wget https://gitlab.freedesktop.org/emersion/${PRGNAM}/-/archive/master/${PRGNAM}-master.tar.gz
+tar xf ${PRGNAM}-master.tar.?z*
+cd ${PRGNAM}-master
+VERSION=$(date -r . +%Y%m%d)
 
 mkdir meson-build && cd meson-build
 CC=clang \

@@ -12,10 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.freedesktop.org/xorg/lib/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v wayland | rev | cut -d "-" -f 1 | rev | sort -Vr | head -1)
-wget https://gitlab.freedesktop.org/xorg/lib/${PRGNAM}/-/archive/${PRGNAM}-${VERSION}/${PRGNAM}-${PRGNAM}-${VERSION}.tar.gz
-tar xf $PRGNAM-$PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$PRGNAM-$VERSION
+wget https://gitlab.freedesktop.org/xorg/lib/${PRGNAM}/-/archive/master/${PRGNAM}-master.tar.gz
+tar xf ${PRGNAM}-master.tar.?z*
+cd ${PRGNAM}-master
+VERSION=$(date -r . +%Y%m%d)
 
 sed -i "s|subdir('man')|#subdir('man')|g" meson.build
 

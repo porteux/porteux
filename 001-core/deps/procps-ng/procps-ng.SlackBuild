@@ -17,8 +17,8 @@ downloadedVersion=$(curl -s https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/tag
 VERSION=${downloadedVersion//[vV]}
 wget https://gitlab.com/${PRGNAM}/${PRGNAMDOWNLOAD}/-/archive/${downloadedVersion}/${PRGNAMDOWNLOAD}-${downloadedVersion}.tar.gz
 
-PSMISCVER=$(curl -s https://gitlab.com/psmisc/psmisc/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v rc | sort -Vr | head -1)
-wget https://gitlab.com/psmisc/psmisc/-/archive/${PSMISCVER}/psmisc-${PSMISCVER}.tar.gz
+PSMISCVER=master
+wget https://gitlab.com/psmisc/psmisc/-/archive/master/psmisc-master.tar.gz
 
 PROCINFONGVER=${PROCINFONGVER:-2.0.304}
 

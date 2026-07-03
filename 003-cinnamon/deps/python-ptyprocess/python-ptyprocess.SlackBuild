@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=python-ptyprocess
 
 CWD=$(dirname "$0")
@@ -14,11 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "pexpect" "ptyprocess")
-VERSION=${info#* }
-
-tar xf ptyprocess-$VERSION.tar.?z*
-cd ptyprocess-$VERSION
+wget https://github.com/pexpect/ptyprocess/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xf ${PRGNAM}.tar.gz
+cd ptyprocess-master
+VERSION=$(date -r . +%Y%m%d)
 
 python -m build --wheel --no-isolation
 python -m installer --destdir "$PKG" dist/*.whl
