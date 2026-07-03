@@ -20,7 +20,7 @@ cd $PRGNAM-$PRGNAM-$VERSION
 
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \

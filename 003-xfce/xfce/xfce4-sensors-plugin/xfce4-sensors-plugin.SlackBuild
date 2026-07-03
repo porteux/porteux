@@ -21,7 +21,7 @@ cd $PRGNAM-$DOWNLOADVERSION
 
 sed -i 's|gint sensors_refresh_time = 60|gint sensors_refresh_time = 1|g' include/sensors-interface-plugin.h
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 CXXFLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
 meson setup \

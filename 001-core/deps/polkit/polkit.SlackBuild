@@ -22,7 +22,7 @@ cd $PRGNAM-$VERSION
 
 patch -p0 < $CWD/dont-set-wheel-group-as-admin.patch
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \

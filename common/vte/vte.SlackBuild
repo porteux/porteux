@@ -29,7 +29,7 @@ cd $PRGNAM-$VERSION
 
 sed -i '/^test_units = \[\]/,/^# Shell integration/{/^# Shell integration/!d}' src/meson.build  
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \

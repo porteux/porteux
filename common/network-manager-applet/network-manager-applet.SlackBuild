@@ -30,7 +30,7 @@ for i in $CWD/*.patch; do
 	patch -p0 < $i;
 done
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
@@ -41,9 +41,7 @@ meson setup \
 	--localstatedir=/var \
 	-Dteam=false \
 	-Dselinux=false \
-	-Dwwan=false \
-	-Dgtk_doc=false \
-	-Dintrospection=false
+	-Dwwan=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

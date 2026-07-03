@@ -20,7 +20,7 @@ wget https://gitlab.gnome.org/chergert/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \

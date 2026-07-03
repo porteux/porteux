@@ -24,7 +24,7 @@ sed -i "s|subdir('contrib|#subdir('contrib|g" meson.build
 sed -i "s|subdir('tests|#subdir('tests|g" meson.build
 sed -i "s|subdir('docs|#subdir('docs|g" meson.build
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \

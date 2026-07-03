@@ -22,7 +22,7 @@ cd $PRGNAM-$VERSION*/
 
 sed -i "s|subdir('doc/man')|#subdir('doc/man')|g" meson.build
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS -Wno-incompatible-pointer-types" \
 meson setup \
 	--buildtype=release \

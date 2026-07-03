@@ -22,7 +22,7 @@ VERSION=${info#* }
 tar xf $project-$VERSION.tar.?z
 cd $project-$VERSION
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \

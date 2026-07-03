@@ -28,7 +28,7 @@ sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 sed -i "s|subdir('man')|#subdir('man')|g" meson.build
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 meson setup \
 	--buildtype=release \

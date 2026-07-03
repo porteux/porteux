@@ -41,7 +41,7 @@ sed -i 's/xfce_appfinder_model_fuzzy_match (item->command, string);/strcasestr(i
 sed -i 's/xfce_appfinder_model_fuzzy_match (item->key, string_casefold);/strcasestr(item->key, string_casefold) != 0;/g' src/appfinder-model.c
 
 if [ -f meson.build ]; then
-	mkdir build && cd build
+	mkdir meson-build && cd meson-build
 	CFLAGS="$GCC_CFLAGS" \
 	meson setup \
 		--prefix=/usr \

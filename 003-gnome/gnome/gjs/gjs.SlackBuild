@@ -35,8 +35,7 @@ sed -i '/gi_tests = subproject/,/installed_tests_execdir/s/^/#/' meson.build
 sed -i "s|subdir('installed-tests')|#subdir('installed-tests')|g" meson.build
 sed -i "s|subdir('test')|#subdir('test')|g" meson.build
 
-[ ! -d build ] && mkdir build
-cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \

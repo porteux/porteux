@@ -25,7 +25,7 @@ sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 sed -i '/g_signal_connect(xndlog->log, "row-added"/i\        if (xndlog->log != NULL) {' xfce4-notifyd/xfce-notify-daemon-log.c
 sed -i '/G_CALLBACK(log_cleared), xndlog);/a\        }' xfce4-notifyd/xfce-notify-daemon-log.c
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \

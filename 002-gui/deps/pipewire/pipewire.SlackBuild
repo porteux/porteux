@@ -18,7 +18,7 @@ wget https://gitlab.freedesktop.org/${PRGNAM}/${PRGNAM}/-/archive/${VERSION}/${P
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CC=clang \
 CXX=clang++ \
 CFLAGS="$CLANG_CFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" \

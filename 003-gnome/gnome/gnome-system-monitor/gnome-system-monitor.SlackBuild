@@ -26,7 +26,7 @@ for i in $CWD/*.patch; do
 	patch -p0 < $i;
 done
 
-mkdir build && cd build
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \

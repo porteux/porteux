@@ -36,7 +36,7 @@ if [ -f meson.build ]; then
 	cd protocols/xfce-wayland-protocols/
 	wget https://gitlab.xfce.org/kelnos/xfce-wayland-protocols/-/raw/main/xfce-output-management-private-v1.xml
 	)
-	mkdir build && cd build
+	mkdir meson-build && cd meson-build
 	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	meson setup \
 		--prefix=/usr \
