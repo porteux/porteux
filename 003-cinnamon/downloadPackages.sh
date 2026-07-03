@@ -51,7 +51,7 @@ wait
 
 ### temporary packages only for building
 
-DownloadPackage "iso-codes" &
+DownloadPackage "iso-codes" & # required by cinnamon-desktop
 DownloadPackage "libgsf" &
 DownloadPackage "libxklavier" &
 DownloadPackage "python-build" &

@@ -123,6 +123,12 @@ installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+### packages that require specific stripping
+
+StripPackage iso-codes \
+	usr/share/xml/iso-codes/iso_3166-1.xml \
+	usr/share/xml/iso-codes/iso_3166.xml
+
 ### fake root
 
 cd $MODULEPATH/packages && ROOT=./ installpkg *.t?z

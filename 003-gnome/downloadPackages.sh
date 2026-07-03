@@ -50,7 +50,7 @@ DownloadPackage "c-ares" &
 DownloadPackage "cups" & # required by gnome-settings-daemon
 DownloadPackage "dbus-python" &
 DownloadPackage "egl-wayland" &
-DownloadPackage "iso-codes" & # required by gnome-desktop
+DownloadPackage "iso-codes" & # required by gnome-desktop, gnome-control-center and ibus
 DownloadPackage "krb5" &
 DownloadPackage "libsass" & # required by libadwaita
 DownloadPackage "libwnck3" &
