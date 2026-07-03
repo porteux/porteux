@@ -14,11 +14,12 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "facebook" ${PRGNAM} "kernel")
-VERSION=${info#* }
-
-tar xf $PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+#info=$(DownloadLatestFromGithub "facebook" ${PRGNAM} "kernel")
+#VERSION=${info#* }
+wget https://github.com/facebook/zstd/archive/refs/heads/dev.tar.gz
+tar xf dev.tar.?z
+cd $PRGNAM-dev
+VERSION=$(date -r . +%Y%m%d)
 
 cd build/cmake
 CC=clang \
