@@ -27,8 +27,7 @@ meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--libexecdir=/usr/libexec \
-	-Dsystemd=disabled \
-	-Dbubblewrap=disabled
+	-Dsystemd=disabled
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

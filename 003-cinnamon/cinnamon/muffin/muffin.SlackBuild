@@ -42,8 +42,7 @@ meson setup \
 	-Degl_device=false \
 	-Dwayland_eglstream=false \
 	-Dlibwacom=false \
-	-Dinstalled_tests=false \
-	-Dverbose=false
+	-Dinstalled_tests=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
