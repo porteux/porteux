@@ -25,8 +25,7 @@ meson setup \
 	--libdir=/usr/lib${SYSTEMBITS} \
 	--localstatedir=/var \
 	--prefix=/usr \
-	--sysconfdir=/etc \
-	-Dintrospection=false
+	--sysconfdir=/etc
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
