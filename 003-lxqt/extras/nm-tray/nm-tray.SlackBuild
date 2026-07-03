@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=nm-tray
 
 CWD=$(dirname "$0")
@@ -14,11 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "palinek" $PRGNAM)
-VERSION=${info#* }
-
-tar xf $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
+wget https://github.com/palinek/nm-tray/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xf ${PRGNAM}.tar.gz
+cd nm-tray-master
+VERSION=$(date -r . +%Y%m%d)
 
 cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=release \

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=cxxopts
 
 CWD=$(dirname "$0")
@@ -14,13 +12,12 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "jarro2783" ${PRGNAM})
-VERSION=${info#* }
+wget https://github.com/jarro2783/cxxopts/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xf ${PRGNAM}.tar.gz
+cd cxxopts-master
+VERSION=$(date -r . +%Y%m%d)
 
-tar xf $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
-
-cmake -B build -S $TMP/$PRGNAM-$VERSION \
+cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \

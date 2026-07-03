@@ -12,11 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://gitlab.freedesktop.org/libopenraw/${PRGNAM}/-/tags | grep "/releases" | cut -d '>' -f 2 | cut -d '<' -f 1 | grep -viE 'alpha|beta|rc' | cut -d ' ' -f 1 | sort -Vr | head -1)
-wget https://gitlab.freedesktop.org/libopenraw/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
-
-tar xf $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
+wget https://gitlab.freedesktop.org/libopenraw/${PRGNAM}/-/archive/main/${PRGNAM}-main.tar.gz
+tar xf ${PRGNAM}-main.tar.?z*
+cd ${PRGNAM}-main
+VERSION=$(date -r . +%Y%m%d)
 
 CFLAGS="$GCC_CFLAGS" \
 CXXFLAGS="$GCC_CXXFLAGS" \

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=nv-codec-headers
 
 CWD=$(dirname "$0")
@@ -14,11 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "FFmpeg" ${PRGNAM})
-VERSION=${info#* }
-
-tar xf ${PRGNAM}-$VERSION.tar.?z
-cd ${PRGNAM}-$VERSION
+wget https://github.com/FFmpeg/nv-codec-headers/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xf ${PRGNAM}.tar.gz
+cd nv-codec-headers-master
+VERSION=$(date -r . +%Y%m%d)
 
 make -j${NUMBERTHREADS} PREFIX=/usr LIBDIR=lib${SYSTEMBITS} DESTDIR=$PKG install
 

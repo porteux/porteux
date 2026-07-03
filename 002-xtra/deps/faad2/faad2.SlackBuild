@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
 PRGNAM=faad2
 
 CWD=$(dirname "$0")
@@ -14,11 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "knik0" ${PRGNAM})
-VERSION=${info#* }
-
-tar xf $PRGNAM-$VERSION.tar.?z*
-cd $PRGNAM-$VERSION
+wget https://github.com/knik0/faad2/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
+tar xf ${PRGNAM}.tar.gz
+cd faad2-master
+VERSION=$(date -r . +%Y%m%d)
 
 cmake -B build -S . \
 	-G Ninja \
