@@ -152,29 +152,27 @@ StripPackage qcoro \
 
 ### packages outside slackware repository
 
-currentPackage=audacious
-QT=6 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${currentPackage}*.txz
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
-
-currentPackage=audacious-plugins
-QT=6 sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+export QT=6
 
 # required by featherpad
 installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
 
-currentPackage=featherpad
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
-
-# kde deps
+# kde common deps
 for package in \
+	audacious \
+	audacious-plugins \
+	featherpad \
 	extra-cmake-modules \
-	kimageformats \
 	exiv2 \
+	kimageformats \
+	kwindowsystem \
+	kwayland \
+	solid \
+	kidletime \
+	libkscreen \
+	networkmanager-qt \
 ; do
-sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done

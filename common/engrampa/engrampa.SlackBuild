@@ -30,7 +30,7 @@ meson setup \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	-Dcaja-actions=false
+	-Dcaja-actions=${CAJAACTIONS:-false}
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 

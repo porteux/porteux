@@ -12,7 +12,6 @@ DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "gspell" &
 wait
-DownloadPackage "gtksourceview4" &
 DownloadPackage "hunspell" &
 DownloadPackage "jasper" &
 DownloadPackage "keybinder3" &
@@ -30,7 +29,6 @@ DownloadPackage "libspectre" &
 DownloadPackage "libwnck3" &
 DownloadPackage "libxklavier" &
 DownloadPackage "mozjs140" &
-DownloadPackage "network-manager-applet" &
 DownloadPackage "python-certifi" &
 DownloadPackage "python-charset-normalizer" &
 wait

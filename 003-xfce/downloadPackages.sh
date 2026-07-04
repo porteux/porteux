@@ -9,7 +9,6 @@ DownloadPackage "blueman" &
 DownloadPackage "dconf" &
 DownloadPackage "enchant" &
 DownloadPackage "gspell" &
-DownloadPackage "gtksourceview4" &
 DownloadPackage "keybinder3" &
 DownloadPackage "libappindicator" &
 DownloadPackage "libdbusmenu" &

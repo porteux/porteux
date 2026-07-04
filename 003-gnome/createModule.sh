@@ -38,17 +38,6 @@ LATESTVERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format
 echo -e "Building GNOME ${LATESTVERSION} based on Slackware ${SLACKWAREVERSION} ${ARCH}...\n"
 MODULENAME=$MODULENAME-${LATESTVERSION}
 
-# gnome common
-for package in \
-	audacious \
-	audacious-plugins \
-	ffmpegthumbnailer \
-; do
-sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}*.txz || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-done
-
 # required from now on
 installpkg $MODULEPATH/packages/*.txz || exit 1
 
@@ -89,11 +78,23 @@ sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# gnome deps
+# gnome common deps
 for package in \
+	audacious \
+	audacious-plugins \
+	ffmpegthumbnailer \
 	dart-sass \
 	adw-gtk3 \
 	exiv2 \
+	gsound \
+; do
+sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# gnome deps
+for package in \
 	bubblewrap \
 	geoclue2 \
 	colord-gtk \
@@ -120,7 +121,6 @@ for package in \
 	gtksourceview5 \
 	geocode-glib \
 	libgweather \
-	gsound \
 	gnome-autoar \
 	gnome-desktop \
 	gnome-settings-daemon \

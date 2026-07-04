@@ -45,6 +45,9 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
+export SESSIONTEMPLATE=xfce
+export ICONTHEME=elementary-xfce
+
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
@@ -69,8 +72,12 @@ for package in \
 	mate-polkit \
 	atril \
 	xcape \
+	gtk-layer-shell \
+	engrampa \
+	pavucontrol \
+	gtksourceview4 \
 ; do
-SESSIONTEMPLATE=xfce ICONTHEME=elementary-xfce sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -79,24 +86,13 @@ currentPackage=wlr-protocols
 sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
-currentPackage=gtk-layer-shell
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+currentPackage=mate-search-tool
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
-
-# xfce extras
-for package in \
-	engrampa \
-	pavucontrol \
-	mate-search-tool \
-; do
-sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-done
 
 # required by mousepad
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/gspell*.txz || exit 1
-installpkg $MODULEPATH/packages/gtksourceview*.txz || exit 1
 
 # required by xfce4-panel
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1

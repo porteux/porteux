@@ -34,21 +34,22 @@ for package in \
 	audacious-plugins \
 	gpicview \
 	ffmpegthumbnailer \
+	dart-sass \
+	adw-gtk3 \
 ; do
 sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+# only required for building adw-gtk3
+rm $MODULEPATH/packages/dart-sass*.txz
+
 installpkg $MODULEPATH/packages/libhandy*.txz || exit 1
 
-# cosmic extras
-for package in \
-	file-roller \
-; do
-sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
-done
+currentPackage=file-roller
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required from now on
 installpkg $MODULEPATH/packages/llvm*.txz > /dev/null 2>&1
@@ -72,16 +73,11 @@ for package in \
 	jbig2dec \
 	greetd \
 	launcher \
-	dart-sass \
-	adw-gtk3 \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-master" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-# required for building adw-gtk3
-rm $MODULEPATH/packages/dart-sass*.txz
 
 # required by cosmic-reader
 installpkg $MODULEPATH/packages/leptonica*.txz
