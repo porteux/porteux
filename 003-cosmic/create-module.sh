@@ -16,11 +16,11 @@ elevate_if_needed "$0" "$@"
 ### create module folder
 
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 ### download packages from slackware repository
 
-bash $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages outside slackware repository
 
@@ -45,7 +45,7 @@ installpkg $MODULE_PATH/packages/libhandy*.txz || exit 1
 
 current_package=file-roller
 bash $SCRIPT_PATH/../common/${current_package}/${current_package}.SlackBuild || exit 1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH
+rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 # required from now on
 installpkg $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
@@ -59,7 +59,7 @@ export PATH=$HOME/.cargo/bin/:$PATH
 current_package=just
 wget https://github.com/casey/${current_package}/archive/refs/heads/master.tar.gz -O ${current_package}.tar.gz
 tar xf ${current_package}.tar.gz
-cd ${current_package}-master
+cd ${current_package}-master || exit 1
 cargo build --release --target x86_64-unknown-linux-gnu || exit 1
 export PATH=$MODULE_PATH/just-master/target/x86_64-unknown-linux-gnu/release/:$PATH
 
@@ -125,7 +125,7 @@ strip_package iso-codes \
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z
+cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
 rm *.t?z
 
 ### install-strip additional packages, including porteux utils
@@ -142,7 +142,7 @@ copy_to_multilanguage
 
 ### module clean up
 
-cd $MODULE_PATH/packages/
+cd $MODULE_PATH/packages/ || exit 1
 
 generic_strip
 aggressive_strip_all

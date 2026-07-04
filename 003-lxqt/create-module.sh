@@ -20,11 +20,11 @@ MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
 ### create module folder
 
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 ### download packages from slackware repository
 
-bash $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages that require specific stripping
 
@@ -62,7 +62,7 @@ strip_package qt6 \
 
 # required by xpdf
 current_package=ghostscript-fonts-std
-mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package}
+mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv $MODULE_PATH/packages/${current_package}-[0-9]* . || exit 1
 package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${current_package}*.txz
@@ -82,12 +82,12 @@ cp --parents -P usr/share/fonts/Type1/n022004l.* "${current_package}-stripped"
 cp --parents -P usr/share/fonts/Type1/n022023l.* "${current_package}-stripped"
 cp --parents -P usr/share/fonts/Type1/n022024l.* "${current_package}-stripped"
 cp --parents -P usr/share/fonts/Type1/s050000l.* "${current_package}-stripped"
-cd ${current_package}-stripped/usr/share
-mkdir ghostscript && cd ghostscript
+cd ${current_package}-stripped/usr/share || exit 1
+mkdir ghostscript && cd ghostscript || exit 1
 ln -s ../fonts/Type1 fonts
-cd $MODULE_PATH/${current_package}/${current_package}-stripped
+cd $MODULE_PATH/${current_package}/${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH
+rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 ### packages outside slackware repository
 
@@ -211,7 +211,7 @@ rm $MODULE_PATH/packages/plasma-wayland-protocols*.txz
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z
+cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
 rm *.t?z
 
 ### install additional packages, including porteux utils
@@ -234,7 +234,7 @@ copy_to_multilanguage
 
 ### module clean up
 
-cd $MODULE_PATH/packages/
+cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm etc/xdg/autostart/blueman.desktop

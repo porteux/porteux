@@ -18,11 +18,11 @@ echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} ${ARCH}
 ### create module folder
 
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 ### download packages from slackware repository
 
-bash $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages outside slackware repository
 
@@ -39,7 +39,7 @@ rm $MODULE_PATH/packages/python-MarkupSafe-*.t?z
 installpkg $MODULE_PATH/packages/vulkan-sdk-*.t?z || exit 1
 rm $MODULE_PATH/packages/vulkan-sdk-*.t?z
 
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 pip install glad2 || exit 1
 
 # required by ffmpeg
@@ -91,7 +91,7 @@ done
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z
+cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
 rm *.t?z
 
 ### install additional packages, including porteux utils
@@ -108,7 +108,7 @@ copy_to_multilanguage
 
 ### module clean up
 
-cd $MODULE_PATH/packages/
+cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm usr/bin/alsoft-config

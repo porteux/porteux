@@ -17,20 +17,20 @@ echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} ${ARCH}
 ### create module folder
 
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 ### download packages from slackware repository
 
-bash $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 if ! ls $MODULE_PATH/packages/kernel-headers*.txz 1> /dev/null 2>&1; then
-	cd ${SCRIPT_PATH}/../000-kernel
+	cd ${SCRIPT_PATH}/../000-kernel || exit 1
 	ONLYHEADERS=yes sh create-module.sh || wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNEL_VERSION-x86-1.txz -P $MODULE_PATH/packages || exit 1
 fi
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z
+cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
 rm *.t?z
 
 ### copy language files to 08-multilanguage
@@ -39,7 +39,7 @@ copy_to_multilanguage
 
 ### module clean up
 
-cd $MODULE_PATH/packages/
+cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm usr/lib/python*/site-packages/setuptools/_distutils/command/*.exe

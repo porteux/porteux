@@ -19,16 +19,16 @@ echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} i686...
 ### create module folder
 
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 ### download packages from slackware repository
 
-bash $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages that require specific stripping
 
 current_package=aaa_libraries
-mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package}
+mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv ../packages/${current_package}-[0-9]* .
 package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
 mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
@@ -48,9 +48,9 @@ cp --parents -P usr/lib/libcups.* ${current_package}-stripped/
 cp --parents -P usr/lib/libgcc_s.* ${current_package}-stripped/
 cp --parents -P usr/lib/libgomp.* ${current_package}-stripped/
 cp --parents -P usr/lib/libstdc++.* ${current_package}-stripped/
-cd $MODULE_PATH/${current_package}/${current_package}-stripped
+cd $MODULE_PATH/${current_package}/${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH
+rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 strip_package eudev \
 	lib/libudev*.so*
@@ -59,7 +59,7 @@ strip_package llvm \
 	usr/lib/libLLVM*.so*
 
 current_package=mesa
-mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package}
+mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv $MODULE_PATH/packages/${current_package}-[0-9]* .
 package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${current_package}*.txz && rm ${current_package}*.txz
@@ -73,9 +73,9 @@ rm usr/lib/libMesaOpenCL*
 rm usr/lib/libRusticlOpenCL*
 mkdir ${current_package}-stripped
 rsync -av * ${current_package}-stripped/ --exclude=${current_package}-stripped/
-cd ${current_package}-stripped
+cd ${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH
+rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 strip_package pulseaudio \
 	usr/lib/libpulse.so* \
@@ -89,7 +89,7 @@ strip_package vulkan-sdk \
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z
+cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
 rm *.t?z
 
 ### module clean up
