@@ -1,35 +1,36 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $*"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
-CURRENTPACKAGE=deno
+CURRENT_PACKAGE=deno
 VERSION=$(curl -s https://github.com/denoland/deno/releases/ | grep -oP "(?<=/denoland/deno/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
-APPLICATIONURL="https://github.com/denoland/deno/releases/download/${VERSION}/deno-x86_64-unknown-linux-gnu.zip"
+[ "$VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
+APPLICATION_URL="https://github.com/denoland/deno/releases/download/${VERSION}/deno-x86_64-unknown-linux-gnu.zip"
 ARCH=$(uname -m)
-OUTPUTDIR="$PORTDIR/modules/"
-BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
-MODULEDIR="$BUILDDIR"
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+OUTPUT_DIR="$PORTDIR/modules/"
+BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+MODULE_DIR="$BUILD_DIR"
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-rm -fr "$BUILDDIR"
-mkdir -p "$BUILDDIR/usr/bin" || exit 1
+rm -fr "$BUILD_DIR"
+mkdir -p "$BUILD_DIR/usr/bin" || exit 1
 
-wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR/usr/bin" || exit 1
-unzip "$BUILDDIR/usr/bin/"*.zip -d "$BUILDDIR/usr/bin"
-rm -f "$BUILDDIR/usr/bin/"*.zip
-chmod 755 "$BUILDDIR/usr/bin/"* &>/dev/null || exit 1
+wget -T 15 "$APPLICATION_URL" -P "$BUILD_DIR/usr/bin" || exit 1
+unzip "$BUILD_DIR/usr/bin/"*.zip -d "$BUILD_DIR/usr/bin"
+rm -f "$BUILD_DIR/usr/bin/"*.zip
+chmod 755 "$BUILD_DIR/usr/bin/"* &>/dev/null || exit 1
 
-MODULEFILENAME="$CURRENTPACKAGE-${VERSION//[vV]}-${ARCH}_porteux.xzm"
+MODULE_FILE_NAME="$CURRENT_PACKAGE-${VERSION//[vV]}-${ARCH}_porteux.xzm"
 
-/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
+/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
 
 # cleanup
-rm -fr "$BUILDDIR" &>/dev/null
+rm -fr "$BUILD_DIR" &>/dev/null

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $1 $2 $3"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
@@ -23,7 +23,7 @@ fi
 APP="opera"
 CHANNEL=$1
 LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
@@ -58,7 +58,7 @@ get_module_name() {
 finisher() {
 	striptease "$APP" "$1"
 
-	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATE_MODULE" || exit 1
 	rm -fr "${TMP:?}/$APP"
 }
 
@@ -74,6 +74,7 @@ make_module_opera() {
 
 	$WGET_WITH_TIME_OUT -P "$TMP/$APP/" -r -nd --no-parent https://rpm.opera.com/rpm/ -A opera_"$CHANNEL"-*.rpm || exit 1
 	pkgver=$(find "$TMP/$APP" -name "opera_*.rpm" -exec basename {} \; | cut -d '-' -f2)
+	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 	pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 
 	mv "$TMP/$APP"/opera_*.rpm "$TMP/$APP/$pkg_name.rpm"

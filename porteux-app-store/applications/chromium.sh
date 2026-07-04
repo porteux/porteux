@@ -1,12 +1,12 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $1 $2 $3"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
@@ -23,7 +23,7 @@ fi
 APP="chromium"
 CHANNEL=$1
 LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
@@ -64,7 +64,7 @@ get_module_name() {
 finisher() {
 	striptease "$APP" "$1"
 
-	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATE_MODULE" || exit 1
 	rm -fr "${TMP:?}/$APP"
 }
 
@@ -84,12 +84,13 @@ make_module_chromium() {
 	fi
 
 	local pkgver=$(get_repo_version_chromium "$CHANNEL")
+	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 	local product_name="$APP-$CHANNEL"
 
 	create_application_temp_dir "$APP" && mkdir -p "$TMP/$APP/$pkg_name" || exit 1
 
-	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.zip" "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F${pkgver}%2Fchrome-linux.zip?alt=media"
+	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.zip" "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F${pkgver}%2Fchrome-linux.zip?alt=media" || exit 1
 	unzip -a "$TMP/$APP/${pkg_name}.zip" -d "$TMP/$APP/$pkg_name"
 	chmod 755 "$TMP/$APP/$pkg_name"
 	mv -f "$TMP/$APP/$pkg_name/chrome-linux" "$TMP/$APP/$pkg_name/$APP-$CHANNEL-${pkgver}" || exit 1

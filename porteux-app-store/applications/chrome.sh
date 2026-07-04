@@ -1,12 +1,12 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $1 $2 $3"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
@@ -21,10 +21,10 @@ fi
 
 # Global variables
 APP="google-chrome"
-FRIENDLYPACKAGENAME="chrome"
+FRIENDLY_PACKAGE_NAME="chrome"
 CHANNEL=$1
 LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
@@ -53,13 +53,13 @@ get_module_name() {
 	local pkgver="$2"
 	local arch="$3"
 
-	echo "${FRIENDLYPACKAGENAME}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
+	echo "${FRIENDLY_PACKAGE_NAME}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
 finisher() {
 	striptease "$APP" "$1"
 
-	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATE_MODULE" || exit 1
 	rm -fr "${TMP:?}/$APP"
 }
 
@@ -90,6 +90,7 @@ make_module_google_chrome() {
 	fi
 
 	local pkgver=$(get_repo_version_google_chrome "$CHANNEL")
+	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 	local product_name=$([ "$CHANNEL" == "stable" ] && echo "$APP" || echo "$APP-$CHANNEL")
 	local product_folder=$([ "$CHANNEL" == "stable" ] && echo "chrome" || echo "chrome-$CHANNEL")
@@ -104,7 +105,7 @@ make_module_google_chrome() {
 
 	mkdir -p "$TMP/$APP/$pkg_name"
 
-	$WGET_WITH_TIME_OUT -O "$TMP/$APP/$pkg_name.deb" "https://dl.google.com/linux/direct/${APP}-${CHANNEL}_current_amd64.deb"
+	$WGET_WITH_TIME_OUT -O "$TMP/$APP/$pkg_name.deb" "https://dl.google.com/linux/direct/${APP}-${CHANNEL}_current_amd64.deb" || exit 1
 	ar p "$TMP/$APP/$pkg_name.deb" data.tar.xz | tar xJv -C "$TMP/$APP/$pkg_name" || exit 1
 	chmod 755 "$TMP/$APP/$pkg_name"
 

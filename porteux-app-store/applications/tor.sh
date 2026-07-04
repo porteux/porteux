@@ -1,12 +1,12 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $1 $2 $3"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
@@ -20,12 +20,12 @@ if [ "$#" -lt 1 ]; then
 fi
 
 # Global variables
-CURRENTUSER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
-CURRENTGROUP=$(id -gn "$CURRENTUSER")
+CURRENT_USER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
+CURRENT_GROUP=$(id -gn "$CURRENT_USER")
 APP="tor"
 CHANNEL=$1
 LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
@@ -49,9 +49,9 @@ striptease() {
 
 	local prefs_file="$TMP/$APP/$pkg_name/opt/${tor_folder}/Browser/TorBrowser/Data/Browser/profile.default/prefs.js"
 
-	echo 'user_pref("app.update.enabled", false);' | sudo -u "$CURRENTUSER" tee -a "$prefs_file" > /dev/null
-	echo 'user_pref("app.update.auto", false);' | sudo -u "$CURRENTUSER" tee -a "$prefs_file" > /dev/null
-	echo 'user_pref("intl.language_notification.shown", true);' | sudo -u "$CURRENTUSER" tee -a "$prefs_file" > /dev/null
+	echo 'user_pref("app.update.enabled", false);' | sudo -u "$CURRENT_USER" tee -a "$prefs_file" > /dev/null
+	echo 'user_pref("app.update.auto", false);' | sudo -u "$CURRENT_USER" tee -a "$prefs_file" > /dev/null
+	echo 'user_pref("intl.language_notification.shown", true);' | sudo -u "$CURRENT_USER" tee -a "$prefs_file" > /dev/null
 	
 	cat > "$TMP/$APP/$pkg_name/opt/${tor_folder}/Browser/distribution/policies.json" << EOF
 {
@@ -68,7 +68,7 @@ EOF
 finisher() {
 	striptease
 
-	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATE_MODULE" || exit 1
 	rm -fr "${TMP:?}/$APP"
 }
 
@@ -98,19 +98,20 @@ make_module_tor() {
 	fi
 
 	local pkgver=$(get_repo_version_tor "$CHANNEL")
+	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 	local tor_folder; tor_folder="tor-browser-${CHANNEL}"
 	
 	create_application_temp_dir "$APP"
 
-	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.xz" "https://archive.torproject.org/tor-package-archive/torbrowser/${pkgver}/tor-browser-linux-x86_64-${pkgver}.tar.xz"
+	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.tar.xz" "https://archive.torproject.org/tor-package-archive/torbrowser/${pkgver}/tor-browser-linux-x86_64-${pkgver}.tar.xz" || exit 1
 	mkdir -p "$TMP/$APP/$pkg_name"
 	mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
 	mkdir -p "$TMP/$APP/$pkg_name/opt"
-	tar -xvf "$TMP/$APP/${pkg_name}.tar.xz" -C "$TMP/$APP/$pkg_name/opt"
+	tar -xvf "$TMP/$APP/${pkg_name}.tar.xz" -C "$TMP/$APP/$pkg_name/opt" || exit 1
 	chmod 755 "$TMP/$APP/$pkg_name"
 	mv "$TMP/$APP/$pkg_name/opt/tor-browser" "$TMP/$APP/$pkg_name/opt/${tor_folder}"
-	chown -R "$CURRENTUSER":"$CURRENTGROUP" "$TMP/$APP/$pkg_name/opt/${tor_folder}"
+	chown -R "$CURRENT_USER":"$CURRENT_GROUP" "$TMP/$APP/$pkg_name/opt/${tor_folder}"
 	
 	if [ "$CHANNEL" = "stable" ]; then
 		sed -i "/^Name=/c\Name=Tor Browser" "$TMP/$APP/$pkg_name/opt/${tor_folder}/start-tor-browser.desktop"
