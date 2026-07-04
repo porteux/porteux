@@ -18,11 +18,11 @@ echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} ${ARCH}
 ### create module folder
 
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 ### download packages from slackware repository
 
-bash $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### critical libraries that need to be in sync with slackware repo before building
 
@@ -128,7 +128,7 @@ strip_package llvm \
 	usr/lib$SYSTEM_BITS/libLLVM*.so*
 
 current_package=mesa
-mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package}
+mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv $MODULE_PATH/packages/${current_package}-[0-9]* .
 package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
 ROOT=./ installpkg ${current_package}*.txz && rm ${current_package}*.txz
@@ -146,9 +146,9 @@ rm -f var/log/setup
 rm -f var/log/scripts
 mkdir ${current_package}-stripped
 rsync -av * ${current_package}-stripped/ --exclude=${current_package}-stripped/
-cd ${current_package}-stripped
+cd ${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH
+rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 strip_package noto-fonts-ttf \
 	usr/share/fonts/TTF/NotoSansSymbols*-Regular.ttf
@@ -180,7 +180,7 @@ strip_package vulkan-sdk \
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z
+cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
 rm *.t?z
 
 ### install additional packages, including porteux utils
@@ -210,7 +210,7 @@ copy_to_multilanguage
 
 ### module clean up
 
-cd $MODULE_PATH/packages/
+cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm etc/asound.state

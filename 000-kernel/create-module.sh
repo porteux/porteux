@@ -31,7 +31,7 @@ mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 ### download packages from slackware repository
 
 if [ ${ONLYHEADERS:-no} != "yes" ]; then
-	bash $SCRIPT_PATH/download-packages.sh
+	bash $SCRIPT_PATH/download-packages.sh || exit 1
 fi
 
 ### set compiler and linker
@@ -95,7 +95,7 @@ echo "Downloading AUFS..."
 git clone https://github.com/sfjro/aufs-standalone ${MODULE_PATH}/aufs_sources > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
 git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION}.${KERNELPATCHVERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
 
-cd $MODULE_PATH/linux-${KERNEL_VERSION}
+cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 
 echo "Patching AUFS..."
 rm ../aufs_sources/tmpfs-idr.patch # this patch isn't useful
@@ -120,7 +120,7 @@ current_package=kernel-headers
 KERNEL_SOURCE=${MODULE_PATH}/linux-${KERNEL_VERSION} sh ${SCRIPT_PATH}/extras/${current_package}/${current_package}.SlackBuild || exit 1
 mkdir -p ${MODULE_PATH}/../05-devel/packages
 mv ${MODULE_PATH}/packages/${current_package}*.txz ${MODULE_PATH}/../05-devel/packages
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH
+rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 if [ ${ONLYHEADERS:-no} = "yes" ]; then
 	rm -fr ${MODULE_PATH}
@@ -128,7 +128,7 @@ if [ ${ONLYHEADERS:-no} = "yes" ]; then
 fi
 
 echo "Building vmlinuz (this may take a while)..."
-cd $MODULE_PATH/linux-${KERNEL_VERSION}
+cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
 make -j${NUMBER_THREADS} KBUILD_LDFLAGS="$LINKPARAMS" LDFLAGS_MODULE="$LINKPARAMS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
@@ -137,14 +137,14 @@ cp -f arch/x86/boot/bzImage $MODULE_PATH/vmlinuz
 echo "Installing modules..."
 make -j${NUMBER_THREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
 
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 kernel_modules_folder=$(ls $MODULE_PATH/lib/modules/)
 rm $MODULE_PATH/lib/modules/$kernel_modules_folder/build > /dev/null 2>&1
 
 echo "Installing firmwares..."
 current_package=kernel-firmware
-mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package}
+mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 tar xf $MODULE_PATH/packages/kernel-firmware*.txz > /dev/null 2>&1
 rm $MODULE_PATH/packages/kernel-firmware*.txz
 sh install/doinst.sh > /dev/null 2>&1
@@ -171,7 +171,7 @@ for dependency in $(cat $modules_dependencies | cut -d':' -f1); do
 	done
 done
 
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 echo "Downloading and installing sof for Intel..."
 current_package=sof-bin
@@ -179,7 +179,7 @@ info=$(download_latest_from_github "thesofproject" "sof-bin")
 filename=${info% *}
 tar xf $filename > /dev/null 2>&1 && rm $filename
 mkdir -p ${MODULE_PATH}/lib/firmware/intel
-cd ${current_package}*
+cd ${current_package}* || exit 1
 mv sof* ${MODULE_PATH}/lib/firmware/intel
 
 echo "Creating symlinks of duplicate firmwares..."
@@ -209,7 +209,7 @@ done < "$hash_list"
 
 rm "$hash_list"
 
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 echo "Creating kernel xzm module..."
 mkdir -p ${MODULE_PATH}/${MODULE_NAME}

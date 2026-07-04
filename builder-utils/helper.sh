@@ -2,7 +2,7 @@
 
 copy_to_devel() {
 	mkdir -p "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
-	cd "$MODULE_PATH"/packages
+	cd "$MODULE_PATH"/packages || exit 1
 	find . -regex '.*\.\(h\|c\|m4\|make\|cmake\|a\|o\|pc\|gir\|deps\|vapi\|in\)$' -exec cp --parents {} "$PORTEUX_BUILDER_PATH"/05-devel/packages \;
 	cp -r --parents usr/lib/python*/site-packages/*-info "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
 	cp -r --parents usr/share/gettext/its "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
@@ -11,22 +11,22 @@ copy_to_devel() {
 
 copy_to_multilanguage() {
 	mkdir -p "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages > /dev/null 2>&1
-	cd "$MODULE_PATH"/packages
+	cd "$MODULE_PATH"/packages || exit 1
 	[ -e usr/share/locale ] && cp -r --parents usr/share/locale "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages
 	[ -e usr/share/X11/locale ] && cp -r --parents usr/share/X11/locale "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages
 	find usr/share -type f -name "*.qm" -exec cp --parents {} "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages \;
 }
 
 install_additional_packages() {
-	cd "$MODULE_PATH"/packages
+	cd "$MODULE_PATH"/packages || exit 1
 	cp "$SCRIPT_PATH"/packages/*.t?z .
 	ROOT=./ installpkg *.t?z
 	rm *.t?z
 }
 
 make_module() {
-	zstd_flags="-comp zstd -b 256K -Xcompression-level 22"
-	mksquashfs "${1}" "${2}" $zstd_flags -noappend
+	local zstd_flags="-comp zstd -b 256K -Xcompression-level 22"
+	mksquashfs "${1}" "${2}" $zstd_flags -noappend || exit 1
 }
 
 finalize() {
@@ -76,5 +76,5 @@ strip_package() {
 	cd "${package}-stripped" || exit 1
 	makepkg ${MAKEPKG_FLAGS} "$MODULE_PATH/packages/${out_base}_stripped.txz" > /dev/null 2>&1
 
-	rm -fr "$workdir" && cd "$MODULE_PATH"
+	rm -fr "$workdir" && cd "$MODULE_PATH" || exit 1
 }

@@ -20,11 +20,11 @@ MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
 ### create module folder
 
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 ### download packages from slackware repository
 
-bash $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages outside slackware repository
 
@@ -67,7 +67,7 @@ done
 # lxde extras
 current_package=l3afpad
 bash $SCRIPT_PATH/extras/${current_package}/${current_package}.SlackBuild || exit 1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH
+rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 # required by lxpanel
 installpkg $MODULE_PATH/packages/libwnck3*.txz || exit 1
@@ -100,7 +100,7 @@ done
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z
+cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
 rm *.t?z
 
 ### install additional packages, including porteux utils
@@ -117,7 +117,7 @@ copy_to_multilanguage
 
 ### module clean up
 
-cd $MODULE_PATH/packages/
+cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm etc/xdg/autostart/blueman.desktop

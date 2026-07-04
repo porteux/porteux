@@ -18,11 +18,11 @@ echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} ${ARCH}
 ### create module folder
 
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 ### download packages from slackware repository
 
-bash $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### critical libraries that need to be in sync with slackware repo before building
 
@@ -69,7 +69,7 @@ done
 ## packages that require specific stripping
 
 current_package=aaa_libraries
-mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package}
+mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv ../packages/${current_package}-[0-9]* .
 package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
 mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
@@ -94,16 +94,16 @@ cp --parents -P usr/lib${SYSTEM_BITS}/libgomp.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libltdl.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libslang.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libstdc++.* ${current_package}-stripped/
-cd ${current_package}-stripped/usr/lib${SYSTEM_BITS}
+cd ${current_package}-stripped/usr/lib${SYSTEM_BITS} || exit 1
 cp -fs $(basename $(readlink -f $(command ls libcares.so* | head -n1))) libcares.so
 cp -fs $(basename $(readlink -f $(command ls libcups.so* | head -n1))) libcups.so
 cp -fs $(basename $(readlink -f $(command ls libgmp.so* | head -n1))) libgmp.so
 cp -fs $(basename $(readlink -f $(command ls libgmpxx.so* | head -n1))) libgmpxx.so
 cp -fs $(basename $(readlink -f $(command ls libltdl.so* | head -n1))) libltdl.so
 cp -fs $(basename $(readlink -f $(command ls libslang.so* | head -n1))) libslang.so
-cd $MODULE_PATH/${current_package}/${current_package}-stripped
+cd $MODULE_PATH/${current_package}/${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH
+rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 strip_package avahi \
 	usr/lib${SYSTEM_BITS}/libavahi-client.* \
@@ -132,7 +132,7 @@ strip_package openldap \
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z
+cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
 rm *.t?z
 
 ### install additional packages, including porteux utils
@@ -143,7 +143,7 @@ install_additional_packages
 
 TEMP_BUNDLE="$(mktemp -t ca-certificates.crt.tmp.XXXXXX)"
 
-cd $MODULE_PATH/packages/etc/ssl/certs
+cd $MODULE_PATH/packages/etc/ssl/certs || exit 1
 cp -s ../../../usr/share/ca-certificates/mozilla/* .
 
 for i in *.crt; do
@@ -158,7 +158,7 @@ mv -f "$TEMP_BUNDLE" ca-certificates.crt
 
 ### extract kbd map files
 
-cd $MODULE_PATH/packages
+cd $MODULE_PATH/packages || exit 1
 find usr/share/kbd -type f -name "*.gz" -exec gunzip {} \;
 
 ### set ctrl+alt+del to not show any error in the terminal
@@ -192,11 +192,11 @@ sed -i '/^TMP=\/var\/log\/setup\/tmp$/a [ ! -d \$TMP ] && mkdir -p \$TMP' $MODUL
 
 ### fix symlinks
 
-cd $MODULE_PATH/packages/bin
+cd $MODULE_PATH/packages/bin || exit 1
 cp -s fusermount3 fusermount
-cd $MODULE_PATH/packages/usr/bin
+cd $MODULE_PATH/packages/usr/bin || exit 1
 cp -s python3 python > /dev/null 2>&1
-cd $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
+cd $MODULE_PATH/packages/usr/lib${SYSTEM_BITS} || exit 1
 cp -s libxml2.so libxml2.so.2 > /dev/null 2>&1
 
 ### update version
@@ -212,7 +212,7 @@ sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUX_VERSION}|" $SCRIPT_PATH/../iso
 
 ### set permissions
 
-cd $MODULE_PATH/packages
+cd $MODULE_PATH/packages || exit 1
 
 chmod 644 etc/rc.d/rc.bluetooth
 chmod 644 etc/rc.d/rc.crond
@@ -233,7 +233,7 @@ copy_to_multilanguage
 
 ### module clean up
 
-cd $MODULE_PATH/packages/
+cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm etc/init.d

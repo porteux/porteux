@@ -28,11 +28,11 @@ MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
 ### create module folder
 
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
-cd $MODULE_PATH
+cd $MODULE_PATH || exit 1
 
 ### download packages from slackware repository
 
-bash $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages outside slackware repository
 
@@ -88,7 +88,7 @@ rm $MODULE_PATH/packages/xtrans*.txz
 current_package=gtksourceview4
 bash $SCRIPT_PATH/../common/${current_package}/${current_package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${current_package}*.txz || exit 1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH
+rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 # mate packages
 for package in \
@@ -141,7 +141,7 @@ strip_package iso-codes \
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z
+cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
 rm *.t?z
 
 ### install additional packages, including porteux utils
@@ -162,7 +162,7 @@ copy_to_multilanguage
 
 ### module clean up
 
-cd $MODULE_PATH/packages/
+cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm etc/xdg/autostart/blueman.desktop
