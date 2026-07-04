@@ -95,10 +95,17 @@ rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 ### packages outside slackware repository
 
+export SESSIONTEMPLATE=lxqt
+export ICONTHEME=kora
+export QT=6
+
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
-# lxqt common
+# required by featherpad
+installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
+
+# lxqt common deps
 for package in \
 	audacious \
 	audacious-plugins \
@@ -106,8 +113,14 @@ for package in \
 	lightdm \
 	lightdm-gtk-greeter \
 	xcape \
+	extra-cmake-modules \
+	kimageformats \
+	libfm-extra \
+	menu-cache \
+	featherpad \
+	kora-icon-theme \
 ; do
-SESSIONTEMPLATE=lxqt ICONTHEME=kora QT=6 sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -116,18 +129,8 @@ done
 for package in \
 	muparser \
 	polkit-qt6-1 \
-	extra-cmake-modules \
 	layer-shell-qt6 \
 	plasma-wayland-protocols \
-	kwindowsystem \
-	kwayland \
-	solid \
-	kidletime \
-	libkscreen \
-	networkmanager-qt \
-	kimageformats \
-	libfm-extra \
-	menu-cache \
 	libstatgrab \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
@@ -135,16 +138,25 @@ installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
-# required by featherpad
-installpkg $MODULEPATH/packages/hunspell*.txz || exit 1
+# kde frameworks required by lxqt
+for package in \
+	kwindowsystem \
+	kwayland \
+	solid \
+	kidletime \
+	libkscreen \
+	networkmanager-qt \
+; do
+sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 # lxqt extras
 for package in \
 	adwaita-qt \
 	xpdf \
-	featherpad \
 	nm-tray \
-	kora-icon-theme \
 ; do
 sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null

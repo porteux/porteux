@@ -12,8 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-# higher than this will require libadwaita
-VERSION="42.0"
+VERSION="42.0" # higher than this will require libadwaita
 wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xf $PRGNAM-$VERSION.tar.?z*

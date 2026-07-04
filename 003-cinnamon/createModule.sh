@@ -38,6 +38,9 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
+export SESSIONTEMPLATE=cinnamon
+export ICONTHEME=Yaru-blue
+
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
@@ -50,9 +53,16 @@ for package in \
 	lightdm-gtk-greeter \
 	vte \
 	libnma \
+	network-manager-applet \
 	mate-polkit \
+	gsound \
+	zenity \
+	libpeas \
+	libgxps \
+	gtksourceview4 \
+	gnome-screenshot \
 ; do
-SESSIONTEMPLATE=cinnamon ICONTHEME=Yaru-blue sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -63,7 +73,6 @@ installpkg $MODULEPATH/packages/colord*.txz || exit 1
 installpkg $MODULEPATH/packages/enchant*.txz || exit 1
 installpkg $MODULEPATH/packages/gspell*.txz || exit 1
 installpkg $MODULEPATH/packages/iso-codes*.txz || exit 1
-installpkg $MODULEPATH/packages/gtksourceview4*.txz || exit 1
 installpkg $MODULEPATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULEPATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULEPATH/packages/libgee*.txz || exit 1
@@ -97,22 +106,18 @@ rm $MODULEPATH/packages/xtrans*.txz
 for package in \
 	python-tinycss2 \
 	xdotool \
-	gsound \
 	python-pytz \
 	libtimezonemap \
 	python-setproctitle \
 	python-ptyprocess \
 	python-pam \
 	libgnomekbd \
-	zenity \
 	cogl \
 	clutter \
 	caribou \
 	python-pexpect \
 	python-polib \
 	python-xapp \
-	libpeas \
-	libgxps \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
@@ -123,11 +128,17 @@ done
 rm $MODULEPATH/packages/cogl*.txz
 rm $MODULEPATH/packages/clutter*.txz
 
-# cinnamon extras
+# cinnamon common extras
 for package in \
 	file-roller \
+; do
+sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# cinnamon extras
+for package in \
 	gnome-terminal \
-	gnome-screenshot \
 	gnome-system-monitor \
 	xapp-symbolic-icons \
 	yaru-icon-theme \

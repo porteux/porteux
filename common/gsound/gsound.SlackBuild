@@ -1,8 +1,6 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
-
-PRGNAM=engrampa
+PRGNAM=gsound
 
 CWD=$(dirname "$0")
 TMP=$MODULEPATH/$PRGNAM
@@ -14,30 +12,28 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "mate-desktop" $PRGNAM "1.29")
-VERSION=${info#* }
-
-tar xf $PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
-
-sed -i "s|subdir('help')|#subdir('help')|g" meson.build
+wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/master/${PRGNAM}-master.tar.gz
+tar xf ${PRGNAM}-master.tar.?z*
+cd ${PRGNAM}-master
+VERSION=$(date -r . +%Y%m%d)
 
 mkdir meson-build && cd meson-build
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \
-	--libdir=/usr/lib${SYSTEMBITS} \
-	--localstatedir=/var \
 	--prefix=/usr \
-	--sysconfdir=/etc
+	--libdir=/usr/lib${SYSTEMBITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	-Dgtk_doc=false \
+	-Denable_vala=false
 
 DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
-rm -fr $PKG/usr/share/engrampa
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

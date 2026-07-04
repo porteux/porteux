@@ -40,6 +40,10 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
+export SESSIONTEMPLATE=mate
+export ICONTHEME=elementary-xfce-dark
+export CAJAACTIONS=true
+
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
@@ -63,8 +67,12 @@ for package in \
 	mate-polkit \
 	atril \
 	xcape \
+	zenity \
+	gtk-layer-shell \
+	libpeas \
+	libgxps \
 ; do
-SESSIONTEMPLATE=mate ICONTHEME=elementary-xfce-dark sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -81,17 +89,10 @@ installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
 # mate deps
-for package in \
-	zenity \
-	gtk-layer-shell \
-	libpeas \
-	libgxps \
-	gtksourceview4 \
-; do
-sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/${package}*.txz || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-done
+currentPackage=gtksourceview4
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz || exit 1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # mate packages
 for package in \
@@ -111,7 +112,20 @@ for package in \
 	eom \
 	mate-control-center \
 	mate-utils \
-	engrampa \
+; do
+sh $SCRIPTPATH/mate/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${package}*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# engrampa from common, must be built after caja because of caja actions
+currentPackage=engrampa
+sh $SCRIPTPATH/../common/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+installpkg $MODULEPATH/packages/${currentPackage}*.txz || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+
+# mate packages
+for package in \
 	mate-media \
 	mate-power-manager \
 	mate-system-monitor \

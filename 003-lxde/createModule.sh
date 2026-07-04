@@ -32,6 +32,9 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### packages outside slackware repository
 
+export SESSIONTEMPLATE=LXDE
+export ICONTHEME=kora
+
 # required by lightdm
 installpkg $MODULEPATH/packages/libxklavier*.txz || exit 1
 
@@ -53,32 +56,32 @@ for package in \
 	network-manager-applet \
 	atril \
 	xcape \
+	engrampa \
+	pavucontrol \
+	gnome-screenshot \
+	kora-icon-theme \
+	libfm-extra \
+	menu-cache \
 ; do
-SESSIONTEMPLATE=LXDE ICONTHEME=kora sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
+sh $SCRIPTPATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
 # lxde extras
-for package in \
-	engrampa \
-	pavucontrol \
-	l3afpad \
-	gnome-screenshot \
-	kora-icon-theme \
-; do
-sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
-find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-done
+currentPackage=l3afpad
+sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
+rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # required by lxpanel
 installpkg $MODULEPATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULEPATH/packages/keybinder3*.txz || exit 1
 
+# only required to build menu-cache
+rm $MODULEPATH/packages/libfm-extra*.txz
+
 # lxde packages
 for package in \
-	libfm-extra \
-	menu-cache \
 	libfm \
 	pcmanfm \
 	lxterminal \
@@ -98,9 +101,6 @@ sh $SCRIPTPATH/lxde/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-# only required to build menu-cache
-rm $MODULEPATH/packages/libfm-extra*.txz
 
 ### fake root
 

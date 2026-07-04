@@ -74,7 +74,6 @@ DownloadPackage "kguiaddons" &
 DownloadPackage "kholidays" &
 DownloadPackage "ki18n" &
 DownloadPackage "kiconthemes" &
-DownloadPackage "kidletime" &
 DownloadPackage "kImageAnnotator" &
 DownloadPackage "kinfocenter" &
 DownloadPackage "kio" &
@@ -120,12 +119,10 @@ DownloadPackage "ktextwidgets" &
 DownloadPackage "kunitconversion" &
 DownloadPackage "kuserfeedback" &
 DownloadPackage "kwallet" &
-DownloadPackage "kwayland" &
 DownloadPackage "kwayland-integration" &
 wait
 DownloadPackage "kwidgetsaddons" &
 DownloadPackage "kwin" &
-DownloadPackage "kwindowsystem" &
 DownloadPackage "kwin-x11" &
 DownloadPackage "kwrited" &
 DownloadPackage "kxmlgui" &
@@ -134,13 +131,11 @@ DownloadPackage "libkdcraw" &
 DownloadPackage "libkexiv2" &
 DownloadPackage "libkipi" &
 wait
-DownloadPackage "libkscreen" &
 DownloadPackage "libksysguard" &
 DownloadPackage "libplasma" &
 DownloadPackage "libqaccessibilityclient" &
 DownloadPackage "milou" &
 DownloadPackage "modemmanager-qt" &
-DownloadPackage "networkmanager-qt" &
 DownloadPackage "okular" &
 DownloadPackage "oxygen" &
 DownloadPackage "plasma5support" &
@@ -163,7 +158,6 @@ DownloadPackage "purpose" &
 DownloadPackage "qqc2-desktop-style" &
 DownloadPackage "sddm" &
 DownloadPackage "sddm-kcm" &
-DownloadPackage "solid" &
 DownloadPackage "sonnet" &
 DownloadPackage "spectacle" &
 wait
