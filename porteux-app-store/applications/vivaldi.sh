@@ -1,12 +1,12 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $1 $2 $3"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
@@ -23,7 +23,7 @@ fi
 APP="vivaldi"
 CHANNEL=$1
 LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
@@ -58,7 +58,7 @@ get_module_name() {
 finisher() {
 	striptease "$APP" "$1"
 
-	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATE_MODULE" || exit 1
 	rm -fr "${TMP:?}/$APP"
 }
 
@@ -75,14 +75,15 @@ make_module_vivaldi() {
 	fi
 
 	local pkgver=$(get_repo_version_vivaldi "$CHANNEL")
+	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 	local product_name; product_name=$([ "$CHANNEL" == "stable" ] && echo "$APP" || echo "$APP-$CHANNEL")
 
 	create_application_temp_dir "$APP"
 
-	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.rpm" "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/vivaldi-${CHANNEL}-${pkgver}.x86_64.rpm"
+	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.rpm" "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/vivaldi-${CHANNEL}-${pkgver}.x86_64.rpm" || exit 1
 	mkdir -p "$TMP/$APP/$pkg_name"
-	rpm2cpio "$TMP/$APP/${pkg_name}.rpm" | cpio -idmv -D "$TMP/$APP/$pkg_name"
+	rpm2cpio "$TMP/$APP/${pkg_name}.rpm" | cpio -idmv -D "$TMP/$APP/$pkg_name" || exit 1
 	chmod 755 "$TMP/$APP/$pkg_name"
 	sed -i "s|Exec=/usr/bin/|Exec=|g" "$TMP/$APP/$pkg_name/usr/share/applications/$APP-$CHANNEL.desktop"
 	sed -i "s|Icon=.*|Icon=/opt/$product_name/product_logo_128.png|g" "$TMP/$APP/$pkg_name/usr/share/applications/$APP-$CHANNEL.desktop"

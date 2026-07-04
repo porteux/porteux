@@ -1,48 +1,48 @@
 #!/bin/bash
 
-CURRENTPACKAGE="$1"
-FRIENDLYNAME="$2"
+CURRENT_PACKAGE="$1"
+FRIENDLY_NAME="$2"
 CATEGORY="$3"
-APPLICATIONURL="$4"
+APPLICATION_URL="$4"
 VERSION="$5"
 
 ARCH=$(uname -m)
-OUTPUTDIR="$PORTDIR/modules/"
-BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
-MODULEDIR="$BUILDDIR/$CURRENTPACKAGE-module"
-APPIMAGEFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH.AppImage"
+OUTPUT_DIR="$PORTDIR/modules/"
+BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-module"
+APPIMAGE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-$ARCH.AppImage"
 
-rm -fr "$BUILDDIR"
-mkdir "$BUILDDIR" && cd "$BUILDDIR"
+rm -fr "$BUILD_DIR"
+mkdir "$BUILD_DIR" && cd "$BUILD_DIR" || exit 1
 
-wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
+wget -T 15 "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
 
-mkdir -p "$MODULEDIR/opt/$CURRENTPACKAGE"
-mkdir -p "$MODULEDIR/usr/share/applications"
-mkdir -p "$MODULEDIR/usr/share/pixmaps"
+mkdir -p "$MODULE_DIR/opt/$CURRENT_PACKAGE"
+mkdir -p "$MODULE_DIR/usr/share/applications"
+mkdir -p "$MODULE_DIR/usr/share/pixmaps"
 
-cat > "$MODULEDIR/usr/share/applications/$CURRENTPACKAGE.desktop" << EOF
+cat > "$MODULE_DIR/usr/share/applications/$CURRENT_PACKAGE.desktop" << EOF
 [Desktop Entry]
 Version=1.0
-Name=$FRIENDLYNAME
-Exec=sh -c /opt/$CURRENTPACKAGE/$APPIMAGEFILENAME %u
+Name=$FRIENDLY_NAME
+Exec=sh -c /opt/$CURRENT_PACKAGE/$APPIMAGE_FILE_NAME %u
 Terminal=false
 X-MultipleArgs=false
 Type=Application
-Icon=$CURRENTPACKAGE
+Icon=$CURRENT_PACKAGE
 StartupNotify=true
 Categories=$CATEGORY;
 EOF
 
-cp "$BUILDDIR"/*.AppImage "$MODULEDIR/opt/$CURRENTPACKAGE/$APPIMAGEFILENAME" || exit 1
+cp "$BUILD_DIR"/*.AppImage "$MODULE_DIR/opt/$CURRENT_PACKAGE/$APPIMAGE_FILE_NAME" || exit 1
 
-chmod 755 -R "$MODULEDIR" 2> /dev/null || exit 1
-chmod 644 "$MODULEDIR"/usr/share/applications/* 2> /dev/null || exit 1
+chmod 755 -R "$MODULE_DIR" 2> /dev/null || exit 1
+chmod 644 "$MODULE_DIR"/usr/share/applications/* 2> /dev/null || exit 1
 
-MODULEFILENAME="$CURRENTPACKAGE-$VERSION-${ARCH}_porteux.xzm"
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-${ARCH}_porteux.xzm"
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
+/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
 
 # cleanup
-rm -fr "$BUILDDIR" 2> /dev/null
+rm -fr "$BUILD_DIR" 2> /dev/null

@@ -1,19 +1,19 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $*"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
-CURRENTPACKAGE=etcher
-FRIENDLYNAME=Etcher
+CURRENT_PACKAGE=etcher
+FRIENDLY_NAME=Etcher
 CATEGORY=Utility
-versions=$(curl -s https://github.com/balena-io/${CURRENTPACKAGE}/tags/ | grep "/balena-io/${CURRENTPACKAGE}/releases/tag/" | grep -oP "(?<=/balena-io/${CURRENTPACKAGE}/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]")
+versions=$(curl -s https://github.com/balena-io/${CURRENT_PACKAGE}/tags/ | grep "/balena-io/${CURRENT_PACKAGE}/releases/tag/" | grep -oP "(?<=/balena-io/${CURRENT_PACKAGE}/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]")
 url="https://github.com/balena-io/etcher/releases/download/"
 for version in $versions; do
 	if wget --spider -q "$url/${version}/balenaEtcher-${version//[vV]}-x64.AppImage"; then
@@ -22,9 +22,11 @@ for version in $versions; do
 	fi
 done
 
-APPLICATIONURL="$url/${version}/balenaEtcher-${VERSION}-x64.AppImage"
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+[ "$VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 
-RESULT=$(/opt/porteux-scripts/porteux-app-store/appimage-builder.sh "$CURRENTPACKAGE" "$FRIENDLYNAME" "$CATEGORY" "$APPLICATIONURL" "$VERSION" "$ACTIVATEMODULE")
+APPLICATION_URL="$url/${version}/balenaEtcher-${VERSION}-x64.AppImage"
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+
+RESULT=$(/opt/porteux-scripts/porteux-app-store/appimage-builder.sh "$CURRENT_PACKAGE" "$FRIENDLY_NAME" "$CATEGORY" "$APPLICATION_URL" "$VERSION" "$ACTIVATE_MODULE")
 
 echo "$RESULT"
