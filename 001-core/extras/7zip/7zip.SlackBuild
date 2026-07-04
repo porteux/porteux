@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=7zip
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -20,13 +20,13 @@ wget https://github.com/Terraspace/UASM/archive/refs/tags/v${uasmVersion}r.tar.g
 tar xf UASM-${uasmVersion}r.tar.?z*
 cd UASM-${uasmVersion}r
 
-make -j${NUMBERTHREADS} CC="gcc $GCC_CFLAGS -std=c99 -fcommon -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-discarded-qualifiers -Wno-lto-type-mismatch -Wno-compare-distinct-pointer-types -Wno-pointer-to-int-cast" -f Makefile-Linux-GCC-64.mak
+make -j${NUMBER_THREADS} CC="gcc $GCC_CFLAGS -std=c99 -fcommon -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-discarded-qualifiers -Wno-lto-type-mismatch -Wno-compare-distinct-pointer-types -Wno-pointer-to-int-cast" -f Makefile-Linux-GCC-64.mak
 
 chmod +x $PWD/GccUnixR/uasm
 PATH=$PATH:$PWD/GccUnixR
 cd ..
 
-info=$(DownloadLatestFromGithub "ip7z" ${PRGNAM})
+info=$(download_latest_from_github "ip7z" ${PRGNAM})
 VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION.tar.?z*
@@ -40,7 +40,7 @@ CFLAGS="${GCC_CFLAGS/-fipa-reorder-for-locality/} -pthread" \
 CXXFLAGS="${GCC_CXXFLAGS/-fipa-reorder-for-locality/} -pthread" \
 meson setup \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--libexecdir=/usr/libexec \
 	--bindir=/usr/bin \
 	--sbindir=/usr/sbin \
@@ -50,7 +50,7 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release
 
-DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 rm -fr $PKG/usr/share/doc
@@ -62,4 +62,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

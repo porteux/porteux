@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=ostree
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(GetLatestVersionTagFromGithub "ostreedev" ${PRGNAM})
+VERSION=$(get_latest_version_tag_from_github "ostreedev" ${PRGNAM})
 wget https://github.com/ostreedev/${PRGNAM}/releases/download/${VERSION}/lib${PRGNAM}-${VERSION//[vV]}.tar.xz
 
 tar xf lib${PRGNAM}-${VERSION//[vV]}.tar.?z*
@@ -23,7 +23,7 @@ cd lib${PRGNAM}-${VERSION//[vV]}
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--localstatedir=/var \
 	--sysconfdir=/etc \
 	--disable-introspection \
@@ -36,7 +36,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--disable-man \
 	--disable-man-html
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -47,4 +47,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/lib${PRGNAM}-${VERSION//[vV]}-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/lib${PRGNAM}-${VERSION//[vV]}-$ARCH-1_porteux.txz

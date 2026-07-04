@@ -3,7 +3,7 @@
 PRGNAM=imlib2
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -21,14 +21,14 @@ cd $PRGNAM-$VERSION
 CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--enable-static=no \
 	--enable-progs=no
 
-make -j${NUMBERTHREADS}
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+make -j${NUMBER_THREADS}
+make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -38,4 +38,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

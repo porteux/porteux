@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=duktape
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "svaarala" ${PRGNAM})
+info=$(download_latest_from_github "svaarala" ${PRGNAM})
 VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION.tar.?z
@@ -24,12 +24,12 @@ sed -i 's/^#undef DUK_USE_FASTINT$/#define DUK_USE_FASTINT/' src/duk_config.h
 sed -i 's/duktape\.c/& -lm/' Makefile.sharedlibrary
 
 CFLAGS="$GCC_CFLAGS" \
-make -j${NUMBERTHREADS} -f Makefile.sharedlibrary LIBDIR=/lib${SYSTEMBITS} INSTALL_PREFIX=/usr DESTDIR=$PKG install
+make -j${NUMBER_THREADS} -f Makefile.sharedlibrary LIBDIR=/lib${SYSTEM_BITS} INSTALL_PREFIX=/usr DESTDIR=$PKG install
 
-rm $PKG/usr/lib${SYSTEMBITS}/libduktaped.*
+rm $PKG/usr/lib${SYSTEM_BITS}/libduktaped.*
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

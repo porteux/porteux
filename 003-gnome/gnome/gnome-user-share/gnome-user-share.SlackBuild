@@ -3,7 +3,7 @@
 PRGNAM=gnome-user-share
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -24,15 +24,15 @@ sed -i "s/'systemd'/'libelogind'/" meson.build
 mkdir meson-build && cd meson-build
 meson setup \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Dsystemduserunitdir=/usr/lib/systemd/user \
 	-Dhttpd=/usr/sbin/httpd \
-	-Dmodules_path=/usr/lib${SYSTEMBITS}/httpd/modules
+	-Dmodules_path=/usr/lib${SYSTEM_BITS}/httpd/modules
 
-DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -40,4 +40,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

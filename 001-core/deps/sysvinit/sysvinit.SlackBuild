@@ -3,7 +3,7 @@
 PRGNAM=sysvinit
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -32,7 +32,7 @@ done
 
 cd src
 CFLAGS="$GCC_CFLAGS" make clobber
-CFLAGS="$GCC_CFLAGS" make -j${NUMBERTHREADS}
+CFLAGS="$GCC_CFLAGS" make -j${NUMBER_THREADS}
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -54,4 +54,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

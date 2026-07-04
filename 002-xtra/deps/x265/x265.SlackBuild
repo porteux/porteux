@@ -3,7 +3,7 @@
 PRGNAM=x265
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -36,7 +36,7 @@ cmake -B build-12 \
 	-DHIGH_BIT_DEPTH=ON \
 	-DMAIN12=ON
 
-cmake --build build-12 -- -j${NUMBERTHREADS}
+cmake --build build-12 -- -j${NUMBER_THREADS}
 
 LDFLAGS="$LLDFLAGS" \
 cmake -B build-10 \
@@ -52,7 +52,7 @@ cmake -B build-10 \
 	-DEXPORT_C_API=OFF \
 	-DHIGH_BIT_DEPTH=ON
 
-cmake --build build-10 -- -j${NUMBERTHREADS}
+cmake --build build-10 -- -j${NUMBER_THREADS}
 
 LDFLAGS="$LLDFLAGS" \
 cmake -B build \
@@ -63,7 +63,7 @@ cmake -B build \
 	-DCMAKE_CXX_FLAGS="$BUILDPARAMS" \
 	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DLIB_INSTALL_DIR=lib${SYSTEMBITS} \
+	-DLIB_INSTALL_DIR=lib${SYSTEM_BITS} \
 	-DENABLE_HDR10_PLUS=ON \
 	-DENABLE_CLI=OFF \
 	-DENABLE_SHARED=ON \
@@ -75,7 +75,7 @@ cmake -B build \
 ln -s ../build-10/libx265.a build/libx265_main10.a
 ln -s ../build-12/libx265.a build/libx265_main12.a
 
-DESTDIR="$PKG" cmake --build build --target install -- -j${NUMBERTHREADS}
+DESTDIR="$PKG" cmake --build build --target install -- -j${NUMBER_THREADS}
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 
@@ -83,4 +83,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

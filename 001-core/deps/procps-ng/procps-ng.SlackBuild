@@ -4,7 +4,7 @@ PRGNAM=procps-ng
 PRGNAMDOWNLOAD=procps
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -42,7 +42,7 @@ CFLAGS="$GCC_CFLAGS" \
 	--prefix=/ \
 	--bindir=/bin \
 	--sbindir=/sbin \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--includedir=/usr/include \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
@@ -60,16 +60,16 @@ CFLAGS="$GCC_CFLAGS" \
 	--disable-modern-top \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
-# Move the shared library to $PKG/lib${SYSTEMBITS}:
-mkdir -p $PKG/lib${SYSTEMBITS}
-( cd $PKG/usr/lib${SYSTEMBITS}
+# Move the shared library to $PKG/lib${SYSTEM_BITS}:
+mkdir -p $PKG/lib${SYSTEM_BITS}
+( cd $PKG/usr/lib${SYSTEM_BITS}
 	for file in lib*.so.?.* ; do
-		mv $file ../../lib${SYSTEMBITS}
-		ln -sf ../../lib${SYSTEMBITS}/$file .
+		mv $file ../../lib${SYSTEM_BITS}
+		ln -sf ../../lib${SYSTEM_BITS}/$file .
 	done
-	cp -a lib*.so.? ../../lib${SYSTEMBITS}
+	cp -a lib*.so.? ../../lib${SYSTEM_BITS}
 )
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
@@ -110,14 +110,14 @@ cd ../psmisc-$PSMISCVER
 CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--disable-silent-rules \
 	--disable-rpath \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
 # Move "killall" to the traditional location:
 mv $PKG/usr/bin/killall $PKG/bin
@@ -127,13 +127,13 @@ cd ../procinfo-ng-$PROCINFONGVER
 CXXFLAGS="$GCC_CXXFLAGS" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--enable-maintainer-mode \
 	--build=$ARCH-porteux-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 rm -fr $PKG/usr/share/doc
@@ -143,4 +143,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION}-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-${VERSION}-$ARCH-1_porteux.txz

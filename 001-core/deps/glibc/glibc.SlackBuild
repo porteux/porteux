@@ -3,7 +3,7 @@
 PRGNAM=glibc
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -27,7 +27,7 @@ cd $PRGNAM-$VERSION
 cp -f $CWD/SUPPORTED localedata
 patch -p1 < $CWD/glibc.locale.no-archive.patch
 patch -p1 < $CWD/glibc-2.32.en_US.no.am.pm.date.format.patch
-[[ $ARCHITECTURELEVEL == "x86-64-v3" ]] || [[ $ARCHITECTURELEVEL == "x86-64-v4" ]] && patch -p0 < $CWD/improve-performance-avx2.patch
+[[ $ARCHITECTURE_LEVEL == "x86-64-v3" ]] || [[ $ARCHITECTURE_LEVEL == "x86-64-v4" ]] && patch -p0 < $CWD/improve-performance-avx2.patch
 
 mkdir build-glibc-$VERSION
 cd build-glibc-$VERSION
@@ -38,7 +38,7 @@ CFLAGS="${GCC_CFLAGS/-flto=auto/} -fPIC" \
 CXXFLAGS="$GCC_CXXFLAGS" \
 ../configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--enable-kernel=7.0 \
 	--with-headers=/usr/include \
 	--with-tls \
@@ -51,9 +51,9 @@ CXXFLAGS="$GCC_CXXFLAGS" \
 	--disable-werror \
 	$ARCH-porteux-linux
 
-make -j$NUMBERTHREADS
-make -j$NUMBERTHREADS install install_root=$PKG
-make -j$NUMBERTHREADS localedata/install-locales install_root=$PKG DESTDIR=$PKG
+make -j$NUMBER_THREADS
+make -j$NUMBER_THREADS install install_root=$PKG
+make -j$NUMBER_THREADS localedata/install-locales install_root=$PKG DESTDIR=$PKG
 
 pushd $CWD
 PKG=$PKG sh libxcrypt.build
@@ -63,7 +63,7 @@ mkdir -p $PKG/bin $PKG/etc/profile.d
 ( cd $PKG/bin; ln -sf /sbin/sln sln )
 install -m755 $CWD/glibc.csh $CWD/glibc.sh $PKG/etc/profile.d/
 
-( cd $PKG/lib${SYSTEMBITS}
+( cd $PKG/lib${SYSTEM_BITS}
 	# Since glibc-2.34 shared objects are using their ABI sonames directly, which is not a good idea
 	for cryptlib in libcrypt.so.* ; do
 		CRYPTSO=$(echo $cryptlib | cut -f 3 -d .)
@@ -80,11 +80,11 @@ find $PKG | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs
 rm $PKG/etc/ld.so.cache
 rm -fr $PKG/usr/share/i18n/charmaps
 rm -fr $PKG/usr/share/locale
-find $PKG/lib${SYSTEMBITS} -type l -exec rm {} \+
+find $PKG/lib${SYSTEM_BITS} -type l -exec rm {} \+
 find $PKG/usr/share/i18n/locales -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en_US" -o -name "POSIX" \) -delete
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

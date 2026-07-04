@@ -3,7 +3,7 @@
 PRGNAM=lightdm-gtk-greeter
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -24,13 +24,13 @@ if ! which xdt-csource > /dev/null 2>&1; then
 	CFLAGS="$GCC_CFLAGS" \
 	./autogen.sh \
 		--prefix=/usr \
-		--libdir=/usr/lib${SYSTEMBITS} \
+		--libdir=/usr/lib${SYSTEM_BITS} \
 		--sysconfdir=/etc \
 		--disable-static \
 		--disable-debug \
 		--build=$ARCH-porteux-linux
 
-	make -j${NUMBERTHREADS} install
+	make -j${NUMBER_THREADS} install
 
 	cd $TMP
 fi
@@ -44,7 +44,7 @@ CFLAGS="$GCC_CFLAGS -Wno-declaration-after-statement" \
 CXXFLAGS="$GCC_CXXFLAGS" \
 ./autogen.sh \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--localstatedir=/var \
 	--sysconfdir=/etc \
 	--with-libxklavier \
@@ -55,7 +55,7 @@ CXXFLAGS="$GCC_CXXFLAGS" \
 	--disable-indicator-services-command \
 	--disable-static
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
 install -Dm644 "$CWD/wave.svg" "$PKG/usr/share/backgrounds/wave.svg"
 
@@ -65,4 +65,4 @@ sed -i "s|ICONTHEMETEMPLATE|$ICONTHEME|g" $PKG/etc/lightdm/lightdm-gtk-greeter.c
 rm -fr $PKG/usr/share/doc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

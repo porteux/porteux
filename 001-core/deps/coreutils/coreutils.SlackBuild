@@ -3,7 +3,7 @@
 PRGNAM=coreutils
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -40,7 +40,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--enable-no-install-program=hostname,kill,uptime \
 	--build=$ARCH-slackware-linux
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
 rm -rf $PKG/usr/share/info
 rm -rf $PKG/usr/share/man
@@ -61,4 +61,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

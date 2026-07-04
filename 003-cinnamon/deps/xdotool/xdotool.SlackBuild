@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=xdotool
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,18 +14,18 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "jordansissel" ${PRGNAM})
+info=$(download_latest_from_github "jordansissel" ${PRGNAM})
 VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-mkdir -p $PKG/usr/lib$SYSTEMBITS
+mkdir -p $PKG/usr/lib$SYSTEM_BITS
 
 CFLAGS="$GCC_CFLAGS" \
-make -j${NUMBERTHREADS} install \
+make -j${NUMBER_THREADS} install \
 	PREFIX=/usr \
-	INSTALLLIB=/usr/lib$SYSTEMBITS \
+	INSTALLLIB=/usr/lib$SYSTEM_BITS \
 	DESTDIR=$PKG \
 	WITHOUT_RPATH_FIX=1
 
@@ -33,4 +33,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

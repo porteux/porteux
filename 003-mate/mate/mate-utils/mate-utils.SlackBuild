@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=mate-utils
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "mate-desktop" $PRGNAM "1.29")
+info=$(download_latest_from_github "mate-desktop" $PRGNAM "1.29")
 VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION.tar.?z
@@ -32,7 +32,7 @@ sed -i 's|readable_size = g_format_size (g_file_info_get_size (file_info))|reada
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./autogen.sh \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--disable-static \
@@ -41,7 +41,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--disable-disk-image-mounter \
 	--disable-gtk-doc-html
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$VERSION/schemas/org.mate.interface.gschema.xml -P $PKG/usr/share/glib-2.0/schemas
 
@@ -51,4 +51,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

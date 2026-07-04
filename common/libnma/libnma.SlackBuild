@@ -3,7 +3,7 @@
 PRGNAM=libnma
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -22,7 +22,7 @@ CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dlibnma_gtk4=false \
@@ -31,7 +31,7 @@ meson setup \
 	-Diso_codes=false \
 	-Dmobile_broadband_provider_info=false
 
-DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -39,4 +39,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-/sbin/makepkg -l y -c n $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+/sbin/makepkg -l y -c n $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

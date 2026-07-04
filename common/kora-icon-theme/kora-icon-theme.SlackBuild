@@ -3,7 +3,7 @@
 PRGNAM=kora
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -30,4 +30,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-icon-theme-$VERSION-noarch-1_porteux.txz > /dev/null 2>&1
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${PRGNAM}-icon-theme-$VERSION-noarch-1_porteux.txz > /dev/null 2>&1

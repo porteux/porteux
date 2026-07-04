@@ -3,7 +3,7 @@
 PRGNAM=lxpanel
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -27,7 +27,7 @@ cp "$CWD/background.png" data/images
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects -Wno-error=incompatible-pointer-types" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
+	--libdir=/usr/lib$SYSTEM_BITS \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--enable-gtk3 \
@@ -38,7 +38,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects -Wno-error=incompatible-pointer-types" \
 	--disable-static \
 	--disable-man
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -46,4 +46,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
