@@ -84,13 +84,14 @@ done
 rm $MODULEPATH/packages/nv-codec-headers*.txz
 rm $MODULEPATH/packages/amf-headers*.txz
 
-currentPackage=mpv
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
-
-currentPackage=transmission
-sh $SCRIPTPATH/extras/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+# xtra deps
+for package in \
+	mpv \
+	transmission \
+; do
+sh $SCRIPTPATH/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
 
 ### fake root
 

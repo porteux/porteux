@@ -30,8 +30,10 @@ sh $SCRIPTPATH/downloadPackages.sh
 
 ### critical libraries that need to be in sync with slackware repo before building
 
+installpkg $MODULEPATH/packages/gpgmepp*.txz || exit 1
 installpkg $MODULEPATH/packages/libbluray*.txz || exit 1
 installpkg $MODULEPATH/packages/libvpx*.txz || exit 1
+installpkg $MODULEPATH/packages/poppler*.txz || exit 1
 
 ### packages outside slackware repository
 
@@ -67,6 +69,14 @@ rm $MODULEPATH/packages/python-MarkupSafe*.txz
 installpkg $MODULEPATH/packages/xtrans*.txz || exit 1
 rm $MODULEPATH/packages/xtrans*.txz
 
+# required by librsvg
+installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
+rm $MODULEPATH/packages/cargo-c*
+# not using rust from slackware because it's much slower
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
+rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
+export PATH=$HOME/.cargo/bin/:$PATH
+
 # gui deps
 for package in \
 	gdk-pixbuf2 \
@@ -88,25 +98,12 @@ for package in \
 	appstream \
 	intel-gmmlib \
 	xdg-desktop-portal-gtk \
+	librsvg \
 ; do
 sh $SCRIPTPATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULEPATH/packages/${package}*.txz || exit 1
 find $MODULEPATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-installpkg $MODULEPATH/packages/cargo-c*.txz || exit 1
-rm $MODULEPATH/packages/cargo-c*
-
-# not using rust from slackware because it's much slower
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
-rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
-export PATH=$HOME/.cargo/bin/:$PATH
-
-# building this because the slackware package in current depends on dav1d
-currentPackage=librsvg
-sh $SCRIPTPATH/deps/${currentPackage}/${currentPackage}.SlackBuild || exit 1
-installpkg $MODULEPATH/packages/librsvg*.txz || exit 1
-rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
 
 # only required for building
 rm $MODULEPATH/packages/cxxopts*.txz
@@ -184,11 +181,6 @@ StripPackage vulkan-sdk \
 	usr/lib$SYSTEMBITS/libvulkan.so* \
 	usr/lib$SYSTEMBITS/pkgconfig/SPIRV-Tools* \
 	usr/lib$SYSTEMBITS/libSPIRV-Tools.so*
-
-### install poppler and its deps so they can be used by next modules
-
-installpkg $MODULEPATH/packages/gpgmepp*.txz
-installpkg $MODULEPATH/packages/poppler*.txz
 
 ### fake root
 
