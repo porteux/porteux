@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=xdg-desktop-portal
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,12 +14,12 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(GetLatestVersionTagFromGithub "flatpak" ${PRGNAM})
+VERSION=$(get_latest_version_tag_from_github "flatpak" ${PRGNAM})
 versions_to_ignore="${VERSION}"
 minor_version=$(echo "$VERSION" | cut -d. -f2)
 
 while (( ${minor_version} % 2 == 1 )); do
-	VERSION=$(GetLatestVersionTagFromGithub "flatpak" ${PRGNAM} "${versions_to_ignore}|${VERSION}")
+	VERSION=$(get_latest_version_tag_from_github "flatpak" ${PRGNAM} "${versions_to_ignore}|${VERSION}")
 	versions_to_ignore="${versions_to_ignore}|${VERSION}"
 	minor_version=$(echo "$VERSION" | cut -d. -f2)
 done
@@ -33,7 +33,7 @@ mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--libexecdir=/usr/libexec \
 	--bindir=/usr/bin \
 	--sbindir=/usr/sbin \
@@ -51,7 +51,7 @@ meson setup \
 	-Dsystemd=disabled \
 	-Dman-pages=disabled
 
-DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -59,4 +59,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

@@ -3,7 +3,7 @@
 PRGNAM=nv-codec-headers
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -17,7 +17,7 @@ tar xf ${PRGNAM}.tar.gz
 cd nv-codec-headers-master
 VERSION=$(date -r . +%Y%m%d)
 
-make -j${NUMBERTHREADS} PREFIX=/usr LIBDIR=lib${SYSTEMBITS} DESTDIR=$PKG install
+make -j${NUMBER_THREADS} PREFIX=/usr LIBDIR=lib${SYSTEM_BITS} DESTDIR=$PKG install
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-noarch-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-noarch-1_porteux.txz

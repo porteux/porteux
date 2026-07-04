@@ -3,7 +3,7 @@
 PRGNAM=xfdesktop
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -45,7 +45,7 @@ CFLAGS="$GCC_CFLAGS -ffast-math" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--libexecdir=/usr/libexec \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
@@ -53,7 +53,7 @@ meson setup \
 	-Dvideo-backdrop=false \
 	-Ddefault-backdrop-filename=/usr/share/backgrounds/xfce/xfce-x.svg
 
-DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
 rm $PKG/usr/share/backgrounds/xfce/xfce-leaves.svg
 rm $PKG/usr/share/backgrounds/xfce/xfce-light.svg
@@ -64,4 +64,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

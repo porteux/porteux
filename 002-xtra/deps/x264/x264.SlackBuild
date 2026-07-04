@@ -3,7 +3,7 @@
 PRGNAM=x264
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -22,14 +22,14 @@ CFLAGS="$CLANG_CFLAGS" \
 LDFLAGS="$LLDFLAGS" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
+	--libdir=/usr/lib$SYSTEM_BITS \
 	--enable-shared \
 	--enable-pic \
 	--enable-strip \
 	--enable-lto \
 	--disable-cli
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;
@@ -38,4 +38,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

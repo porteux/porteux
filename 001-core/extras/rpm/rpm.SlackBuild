@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=rpm
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(GetLatestVersionTagFromGithub "rpm-software-management" ${PRGNAM})
+VERSION=$(get_latest_version_tag_from_github "rpm-software-management" ${PRGNAM})
 VERSION=$(echo $VERSION | cut -d "-" -f2)
 
 wget https://github.com/rpm-software-management/${PRGNAM}/releases/download/${PRGNAM}-${VERSION}-release/${PRGNAM}-${VERSION}.tar.bz2
@@ -37,13 +37,13 @@ cmake -B build -S . \
 	-DCMAKE_C_FLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEM_BITS} \
 	-DWITH_AUDIT=OFF \
 	-DWITH_SELINUX=OFF \
 	-DWITH_SEQUOIA=OFF \
 	-DENABLE_TESTSUITE=OFF
 
-DESTDIR="$PKG" ninja -C build install -j${NUMBERTHREADS}
+DESTDIR="$PKG" ninja -C build install -j${NUMBER_THREADS}
 
 rm -fr $PKG/etc
 rm -fr $PKG/usr/share/doc
@@ -52,4 +52,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

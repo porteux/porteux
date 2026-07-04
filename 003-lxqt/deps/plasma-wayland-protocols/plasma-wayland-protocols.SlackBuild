@@ -3,7 +3,7 @@
 PRGNAM=plasma-wayland-protocols
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -25,12 +25,12 @@ cmake .. \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_C_FLAGS="$GCC_CFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
-	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEM_BITS} \
 	-DCMAKE_INSTALL_PREFIX=/usr
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-${VERSION//[vV]}-$ARCH-1_porteux.txz

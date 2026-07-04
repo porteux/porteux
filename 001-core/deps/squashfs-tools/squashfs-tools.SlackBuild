@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=squashfs-tools
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "plougher" ${PRGNAM} "squashfs-tools|CVE")
+info=$(download_latest_from_github "plougher" ${PRGNAM} "squashfs-tools|CVE")
 VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION.tar.?z*
@@ -23,7 +23,7 @@ cd $PRGNAM-$VERSION
 cd $PRGNAM
 
 CFLAGS="$GCC_CFLAGS" \
-make -j${NUMBERTHREADS} \
+make -j${NUMBER_THREADS} \
 	GZIP_SUPPORT="1" \
 	XZ_SUPPORT="1" \
 	LZ4_SUPPORT="1" \
@@ -40,4 +40,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

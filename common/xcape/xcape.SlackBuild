@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=xcape
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,15 +14,15 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub "fulalas" ${PRGNAM})
+info=$(download_latest_from_github "fulalas" ${PRGNAM})
 VERSION=${info#* }
 
 tar xf ${PRGNAM}-${VERSION}.tar.?z
 cd ${PRGNAM}-${VERSION}
 
 CFLAGS="$GCC_CFLAGS" \
-make -j${NUMBERTHREADS}
-make install -j${NUMBERTHREADS} MANDIR=/man DESTDIR=$PKG
+make -j${NUMBER_THREADS}
+make install -j${NUMBER_THREADS} MANDIR=/man DESTDIR=$PKG
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 rm -fr $PKG/usr/man
@@ -31,4 +31,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

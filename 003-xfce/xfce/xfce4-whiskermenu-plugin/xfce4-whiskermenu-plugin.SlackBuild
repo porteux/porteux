@@ -3,7 +3,7 @@
 PRGNAM=xfce4-whiskermenu-plugin
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -24,12 +24,12 @@ cmake -B build -S . \
 	-DCMAKE_C_FLAGS="$GCC_CFLAGS -fPIC" \
 	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS -fPIC" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEM_BITS} \
 	-DENABLE_ACCOUNTS_SERVICE=OFF \
 	-DENABLE_GTK_LAYER_SHELL=ON \
 	-DCMAKE_BUILD_TYPE=Release
 
-DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -37,4 +37,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-${VERSION//v/}-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-${VERSION//v/}-$ARCH-1_porteux.txz

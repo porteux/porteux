@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=zstd
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-#info=$(DownloadLatestFromGithub "facebook" ${PRGNAM} "kernel")
+#info=$(download_latest_from_github "facebook" ${PRGNAM} "kernel")
 #VERSION=${info#* }
 wget https://github.com/facebook/zstd/archive/refs/heads/dev.tar.gz
 tar xf dev.tar.?z
@@ -31,7 +31,7 @@ cmake -B build -S . \
 	-DCMAKE_C_FLAGS="$CLANG_CFLAGS" \
 	-DCMAKE_CXX_FLAGS="$CLANG_CXXFLAGS" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEM_BITS} \
 	-DBUILD_SHARED_LIBS=ON \
 	-DZSTD_BUILD_STATIC=OFF \
 	-DZSTD_PROGRAMS_LINK_SHARED=ON \
@@ -40,7 +40,7 @@ cmake -B build -S . \
 	-DZSTD_ZLIB_SUPPORT=ON \
 	-DZSTD_BUILD_TESTS=OFF
 
-DESTDIR="$PKG" ninja -C build install -j${NUMBERTHREADS}
+DESTDIR="$PKG" ninja -C build install -j${NUMBER_THREADS}
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -48,4 +48,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

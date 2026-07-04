@@ -3,7 +3,7 @@
 PRGNAM=libjxl
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -37,7 +37,7 @@ cmake -B build -S . \
 	-DBUNDLE_LIBPNG_DEFAULT='NO' \
 	-DCMAKE_BUILD_TYPE='Release' \
 	-DCMAKE_INSTALL_PREFIX='/usr' \
-	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEM_BITS} \
 	-DCMAKE_INSTALL_BINDIR=/usr/bin \
 	-DBUILD_SHARED_LIBS=true \
 	-DJPEGXL_ENABLE_JNI=false \
@@ -61,7 +61,7 @@ cmake -B build -S . \
 	-DCMAKE_C_COMPILER=clang \
 	-DCMAKE_CXX_COMPILER=clang++
 
-DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -exec rm -f {} \;
@@ -71,4 +71,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

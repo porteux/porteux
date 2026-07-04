@@ -1,61 +1,61 @@
 #!/bin/bash
 
-CopyToDevel() {
-	mkdir -p "$PORTEUXBUILDERPATH"/05-devel/packages > /dev/null 2>&1
-	cd "$MODULEPATH"/packages
-	find . -regex '.*\.\(h\|c\|m4\|make\|cmake\|a\|o\|pc\|gir\|deps\|vapi\|in\)$' -exec cp --parents {} "$PORTEUXBUILDERPATH"/05-devel/packages \;
-	cp -r --parents usr/lib/python*/site-packages/*-info "$PORTEUXBUILDERPATH"/05-devel/packages > /dev/null 2>&1
-	cp -r --parents usr/share/gettext/its "$PORTEUXBUILDERPATH"/05-devel/packages > /dev/null 2>&1
-	cp -r --parents usr/share/glib-2.0/codegen "$PORTEUXBUILDERPATH"/05-devel/packages > /dev/null 2>&1
+copy_to_devel() {
+	mkdir -p "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
+	cd "$MODULE_PATH"/packages
+	find . -regex '.*\.\(h\|c\|m4\|make\|cmake\|a\|o\|pc\|gir\|deps\|vapi\|in\)$' -exec cp --parents {} "$PORTEUX_BUILDER_PATH"/05-devel/packages \;
+	cp -r --parents usr/lib/python*/site-packages/*-info "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
+	cp -r --parents usr/share/gettext/its "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
+	cp -r --parents usr/share/glib-2.0/codegen "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
 }
 
-CopyToMultiLanguage() {
-	mkdir -p "$PORTEUXBUILDERPATH"/08-multilanguage/packages > /dev/null 2>&1
-	cd "$MODULEPATH"/packages
-	[ -e usr/share/locale ] && cp -r --parents usr/share/locale "$PORTEUXBUILDERPATH"/08-multilanguage/packages
-	[ -e usr/share/X11/locale ] && cp -r --parents usr/share/X11/locale "$PORTEUXBUILDERPATH"/08-multilanguage/packages
-	find usr/share -type f -name "*.qm" -exec cp --parents {} "$PORTEUXBUILDERPATH"/08-multilanguage/packages \;
+copy_to_multilanguage() {
+	mkdir -p "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages > /dev/null 2>&1
+	cd "$MODULE_PATH"/packages
+	[ -e usr/share/locale ] && cp -r --parents usr/share/locale "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages
+	[ -e usr/share/X11/locale ] && cp -r --parents usr/share/X11/locale "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages
+	find usr/share -type f -name "*.qm" -exec cp --parents {} "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages \;
 }
 
-InstallAdditionalPackages() {
-	cd "$MODULEPATH"/packages
-	cp "$SCRIPTPATH"/packages/*.t?z .
+install_additional_packages() {
+	cd "$MODULE_PATH"/packages
+	cp "$SCRIPT_PATH"/packages/*.t?z .
 	ROOT=./ installpkg *.t?z
 	rm *.t?z
 }
 
-MakeModule() {
-	zstdFlags="-comp zstd -b 256K -Xcompression-level 22"
-	mksquashfs "${1}" "${2}" $zstdFlags -noappend
+make_module() {
+	zstd_flags="-comp zstd -b 256K -Xcompression-level 22"
+	mksquashfs "${1}" "${2}" $zstd_flags -noappend
 }
 
-Finalize() {
+finalize() {
 	# generate module version file
-	mkdir -p "$MODULEPATH"/packages/etc/porteux
-	echo $MODULENAME.xzm:$(date +%Y%m%d) > "$MODULEPATH"/packages/etc/porteux/$MODULENAME.ver
+	mkdir -p "$MODULE_PATH"/packages/etc/porteux
+	echo $MODULE_NAME.xzm:$(date +%Y%m%d) > "$MODULE_PATH"/packages/etc/porteux/$MODULE_NAME.ver
 
 	# create module
-	MakeModule "$MODULEPATH"/packages/ "$MODULEPATH"/$MODULENAME-$PORTEUXBUILD-$(date +%Y%m%d).xzm
+	make_module "$MODULE_PATH"/packages/ "$MODULE_PATH"/$MODULE_NAME-$PORTEUX_BUILD-$(date +%Y%m%d).xzm
 
 	# script clean up
-	rm -fr "$MODULEPATH"/packages/
+	rm -fr "$MODULE_PATH"/packages/
 }
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-StripPackage() {
+strip_package() {
 	local package="$1"
-	local workdir="$MODULEPATH/$package"
+	local workdir="$MODULE_PATH/$package"
 	rm -rf "$workdir"
-	mkdir -p "$workdir" && cd "$workdir" || { echo "StripPackage: cannot enter $workdir" >&2; exit 1; }
+	mkdir -p "$workdir" && cd "$workdir" || { echo "strip_package: cannot enter $workdir" >&2; exit 1; }
 
-	mv "$MODULEPATH"/packages/"${package}"-[0-9]* . || { echo "StripPackage: $package package not found in $MODULEPATH/packages" >&2; exit 1; }
+	mv "$MODULE_PATH"/packages/"${package}"-[0-9]* . || { echo "strip_package: $package package not found in $MODULE_PATH/packages" >&2; exit 1; }
 
-	local pkgFile outBase
-	pkgFile=$(ls "${package}"-[0-9]*.t?z | head -n1)
-	outBase=${pkgFile%.*}
+	local pkg_file out_base
+	pkg_file=$(ls "${package}"-[0-9]*.t?z | head -n1)
+	out_base=${pkg_file%.*}
 
 	ROOT=./ installpkg "${package}"*.txz
 	mkdir "${package}-stripped"
@@ -67,7 +67,7 @@ StripPackage() {
 	done
 
 	cd "${package}-stripped" || exit 1
-	makepkg ${MAKEPKGFLAGS} "$MODULEPATH/packages/${outBase}_stripped.txz" > /dev/null 2>&1
+	makepkg ${MAKEPKG_FLAGS} "$MODULE_PATH/packages/${out_base}_stripped.txz" > /dev/null 2>&1
 
-	rm -fr "$workdir" && cd "$MODULEPATH"
+	rm -fr "$workdir" && cd "$MODULE_PATH"
 }

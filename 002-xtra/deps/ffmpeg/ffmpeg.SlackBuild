@@ -3,7 +3,7 @@
 PRGNAM=ffmpeg
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -28,8 +28,8 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects -Wno-error=int-conversion -Wno-error=incom
 LDFLAGS="$LLDFLAGS" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
-	--shlibdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
+	--shlibdir=/usr/lib${SYSTEM_BITS} \
 	--disable-debug \
 	--disable-static \
 	--disable-ffplay \
@@ -81,7 +81,7 @@ LDFLAGS="$LLDFLAGS" \
 	--enable-libplacebo \
 	--enable-lcms2
 
-make -j${NUMBERTHREADS} install DESTDIR=$PKG
+make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
@@ -91,4 +91,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

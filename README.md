@@ -82,7 +82,7 @@ This only needs to be done once, as these modules will be activated automaticall
 
 PorteuX can be built in a live session of Slackware 64-bit or PorteuX 64-bit. At the moment, the main scripts do not generate ISOs, but only the XZM files for each module (000-kernel, 001-core, 002-gui, 002-xtra, 003-desktop-environment, etc).
 
-To build PorteuX, run the `createModule.sh` script as root, in the exact folder order as described: <br />
+To build PorteuX, run the `create-module.sh` script as root, in the exact folder order as described: <br />
 1. 000-kernel<br />
 2. 001-core<br />
 3. 002-gui<br />

@@ -3,7 +3,7 @@
 PRGNAM=libfm-extra
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -42,7 +42,7 @@ sed -i "s|g_file_info_get_edit_name(inf)|g_file_info_get_attribute_byte_string (
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib$SYSTEMBITS \
+	--libdir=/usr/lib$SYSTEM_BITS \
 	--localstatedir=/var \
 	--enable-udisks \
 	--with-gtk=3 \
@@ -52,9 +52,9 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--disable-static \
 	--disable-man
 
-make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

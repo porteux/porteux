@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=dart-sass
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(GetLatestVersionTagFromGithub "sass" ${PRGNAM} "sass")
+VERSION=$(get_latest_version_tag_from_github "sass" ${PRGNAM} "sass")
 wget https://github.com/sass/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}-linux-x64.tar.gz
 
 tar xf ${PRGNAM}-${VERSION}-linux-x64.tar.?z
@@ -23,4 +23,4 @@ mkdir -p $PKG/usr/bin
 cp -r ${PRGNAM}/* $PKG/usr/bin
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

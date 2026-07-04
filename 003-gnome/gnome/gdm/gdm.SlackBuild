@@ -3,7 +3,7 @@
 PRGNAM=gdm
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -30,7 +30,7 @@ mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -38,7 +38,7 @@ meson setup \
 	-Dstrip=true \
 	-Ddbus-sys="/usr/share/dbus-1/system.d" \
 	-Ddefault-pam-config=none \
-	-Dpam-mod-dir="/lib${SYSTEMBITS}/security" \
+	-Dpam-mod-dir="/lib${SYSTEM_BITS}/security" \
 	-Drun-dir=/run/gdm \
 	-Dlogind-provider=elogind \
 	-Dsystemd-journal=false \
@@ -47,7 +47,7 @@ meson setup \
 	-Dsysconfsubdir=/etc/gdm \
 	-Dinitial-vt=7
 
-DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
 mkdir -p $PKG/etc/pam.d
 install -Dm644 $CWD/gdm-autologin.pam $PKG/etc/pam.d/gdm-autologin
@@ -59,4 +59,4 @@ mkdir -p $PKG/install
 cp $CWD/slack-desc $PKG/install/
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

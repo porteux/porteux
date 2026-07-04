@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=libxcrypt
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 
 set -e
 
@@ -13,7 +13,7 @@ set -e
 mkdir -p $TMP
 cd $TMP
 
-info=$(DownloadLatestFromGithub "besser82" ${PRGNAM})
+info=$(download_latest_from_github "besser82" ${PRGNAM})
 VERSION=${info#* }
 
 tar xvf $PRGNAM-$VERSION.tar.?z
@@ -22,26 +22,26 @@ cd $PRGNAM-$VERSION
 CFLAGS="$GCC_CFLAGS -Wno-error=discarded-qualifiers" \
 ./configure \
 	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEMBITS} \
+	--libdir=/usr/lib${SYSTEM_BITS} \
 	--disable-static \
 	--enable-hashes=strong,glibc \
 	--enable-obsolete-api=no \
 	--disable-failure-tokens \
 	--build=$ARCH-slackware-linux
 
-make -j$NUMBERTHREADS install DESTDIR=$PKG
+make -j$NUMBER_THREADS install DESTDIR=$PKG
 
-rm -f $PKG/{,usr/}lib${SYSTEMBITS}/libcrypt*.la
+rm -f $PKG/{,usr/}lib${SYSTEM_BITS}/libcrypt*.la
 rm -fr $PKG/usr/share/man
 
 # Move libraries out of /usr:
-mkdir -p $PKG/lib${SYSTEMBITS}
-cd $PKG/usr/lib${SYSTEMBITS}
+mkdir -p $PKG/lib${SYSTEM_BITS}
+cd $PKG/usr/lib${SYSTEM_BITS}
 rm libcrypt*.so
-mv libcrypt*so* ../../lib${SYSTEMBITS}
+mv libcrypt*so* ../../lib${SYSTEM_BITS}
 
 # Add .so symlinks for libcrypt and libxcrypt:
-ln -sf ../../lib${SYSTEMBITS}/libcrypt.so.2 libcrypt.so
-ln -sf ../../lib${SYSTEMBITS}/libcrypt.so.2 libxcrypt.so
+ln -sf ../../lib${SYSTEM_BITS}/libcrypt.so.2 libcrypt.so
+ln -sf ../../lib${SYSTEM_BITS}/libcrypt.so.2 libxcrypt.so
 
 rm -fr $TMP

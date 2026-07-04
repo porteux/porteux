@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=AMF-headers
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(GetLatestVersionTagFromGithub "GPUOpen-LibrariesAndSDKs" "AMF")
+VERSION=$(get_latest_version_tag_from_github "GPUOpen-LibrariesAndSDKs" "AMF")
 wget https://github.com/GPUOpen-LibrariesAndSDKs/AMF/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xf ${PRGNAM}-${VERSION}.tar.?z
@@ -23,4 +23,4 @@ mkdir -p $PKG/usr/include
 cp -r ${PRGNAM,,}-${VERSION}/AMF $PKG/usr/include
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM,,}-${VERSION//[vV]}-noarch-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${PRGNAM,,}-${VERSION//[vV]}-noarch-1_porteux.txz

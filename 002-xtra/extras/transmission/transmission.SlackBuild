@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source "$BUILDERUTILSPATH/latestfromgithub.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=transmission
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(DownloadLatestFromGithub ${PRGNAM} ${PRGNAM})
+info=$(download_latest_from_github ${PRGNAM} ${PRGNAM})
 VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION.tar.?z*
@@ -26,15 +26,15 @@ cmake -B build -S . \
 	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEMBITS} \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEM_BITS} \
 	-DRUN_CLANG_TIDY=OFF \
 	-DENABLE_TESTS=OFF \
 	-DWITH_APPINDICATOR=OFF \
 	-DENABLE_QT=OFF \
 	-DINSTALL_DOC=OFF
 
-cmake --build build -j${NUMBERTHREADS}
-DESTDIR=$PKG ninja -C build -j${NUMBERTHREADS} install
+cmake --build build -j${NUMBER_THREADS}
+DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 rm -fr $PKG/usr/share/man
 
@@ -42,4 +42,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

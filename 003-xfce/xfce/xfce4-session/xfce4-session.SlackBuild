@@ -3,7 +3,7 @@
 PRGNAM=xfce4-session
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/$PRGNAM
+TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
 set -e
@@ -37,23 +37,23 @@ if [ -f meson.build ]; then
 	meson setup \
 		--prefix=/usr \
 		--buildtype=release \
-		--libdir=/usr/lib${SYSTEMBITS} \
+		--libdir=/usr/lib${SYSTEM_BITS} \
 		--libexecdir=/usr/libexec \
 		--sysconfdir=/etc \
 		--localstatedir=/var
 
-	DESTDIR=$PKG ninja -j${NUMBERTHREADS} install
+	DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 else
 	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	./autogen.sh \
 		--prefix=/usr \
-		--libdir=/usr/lib${SYSTEMBITS} \
+		--libdir=/usr/lib${SYSTEM_BITS} \
 		--sysconfdir=/etc \
 		--disable-static \
 		--disable-debug \
 		--build=$ARCH-porteux-linux
 
-	make -j${NUMBERTHREADS} install-strip DESTDIR=$PKG
+	make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 fi
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
@@ -69,4 +69,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

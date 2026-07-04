@@ -3,7 +3,7 @@
 PRGNAM=LuaJIT
 
 CWD=$(dirname "$0")
-TMP=$MODULEPATH/${PRGNAM,,}
+TMP=$MODULE_PATH/${PRGNAM,,}
 PKG=$TMP/package-${PRGNAM,,}
 
 set -e
@@ -21,8 +21,8 @@ sed -i -e '/-DLUAJIT_ENABLE_LUA52COMPAT/s/^#//' src/Makefile
 
 CFLAGS="${GCC_CFLAGS/-fno-unwind-tables -fno-asynchronous-unwind-tables/} -ffat-lto-objects" \
 CXXFLAGS="${GCC_CXXFLAGS/-fno-unwind-tables -fno-asynchronous-unwind-tables/}" \
-make -j${NUMBERTHREADS} PREFIX=/usr INSTALL_LIB=/usr/lib${SYSTEMBITS}
-make PREFIX=/usr INSTALL_LIB=${PKG}/usr/lib${SYSTEMBITS} install DESTDIR=${PKG}
+make -j${NUMBER_THREADS} PREFIX=/usr INSTALL_LIB=/usr/lib${SYSTEM_BITS}
+make PREFIX=/usr INSTALL_LIB=${PKG}/usr/lib${SYSTEM_BITS} install DESTDIR=${PKG}
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 rm -fr $PKG/usr/share/lua-jit
@@ -31,4 +31,4 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
 cd $PKG
-makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${PRGNAM,,}-$VERSION-$ARCH-1_porteux.txz
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${PRGNAM,,}-$VERSION-$ARCH-1_porteux.txz
