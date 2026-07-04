@@ -4,18 +4,17 @@ for x in "$@"; do
 	ARGS+=("$x")
 done
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
 # switch to root
-if ! isRoot; then
+if ! is_root; then
 	if [ "$DISPLAY" ]; then
 		psu "$0" "${ARGS[@]}"
 	else
 		echo "Admin's password is required."
-		ROOTCOMMAND="$0 ${ARGS[@]}"
-		su -c "$ROOTCOMMAND"
+		su -c "$(printf '%q ' "$(realpath "$0")" "${ARGS[@]}")"
 	fi
 	exit
 fi

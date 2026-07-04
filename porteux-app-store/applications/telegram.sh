@@ -1,43 +1,44 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $*"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
-CURRENTPACKAGE=telegram
-FRIENDLYNAME="Telegram"
-APPLICATIONURL=https://telegram.org/dl/desktop/linux
-FULLVERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/telegramdesktop/tdesktop/releases/latest | rev | cut -d / -f 1 | rev)
-VERSION="${FULLVERSION//[vV]}"
+CURRENT_PACKAGE=telegram
+FRIENDLY_NAME="Telegram"
+APPLICATION_URL=https://telegram.org/dl/desktop/linux
+FULL_VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/telegramdesktop/tdesktop/releases/latest | rev | cut -d / -f 1 | rev)
+VERSION="${FULL_VERSION//[vV]}"
+[ "$VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 ARCH=$(uname -m)
-OUTPUTDIR="$PORTDIR/modules/"
-BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
-MODULEDIR="$BUILDDIR/$CURRENTPACKAGE-module"
-BINARYFILENAME="$CURRENTPACKAGE-$VERSION-$ARCH"
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+OUTPUT_DIR="$PORTDIR/modules/"
+BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-module"
+BINARY_FILE_NAME="$CURRENT_PACKAGE-$VERSION-$ARCH"
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-rm -fr "$BUILDDIR"
-mkdir "$BUILDDIR" && cd "$BUILDDIR"
+rm -fr "$BUILD_DIR"
+mkdir "$BUILD_DIR" && cd "$BUILD_DIR" || exit 1
 
-wget -T 15 --content-disposition "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
-tar xvf "$BUILDDIR"/*.tar.xz -C "$BUILDDIR" || exit 1
+wget -T 15 --content-disposition "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
+tar xvf "$BUILD_DIR"/*.tar.xz -C "$BUILD_DIR" || exit 1
 
-mkdir -p "$MODULEDIR/opt/$CURRENTPACKAGE"
-mkdir -p "$MODULEDIR/home/guest/.local/share/applications"
+mkdir -p "$MODULE_DIR/opt/$CURRENT_PACKAGE"
+mkdir -p "$MODULE_DIR/home/guest/.local/share/applications"
 
-cat > "$MODULEDIR/home/guest/.local/share/applications/telegramdesktop.desktop" << EOF
+cat > "$MODULE_DIR/home/guest/.local/share/applications/telegramdesktop.desktop" << EOF
 [Desktop Entry]
 Version=$VERSION
 Name=Telegram Desktop
 Comment=Official desktop version of Telegram messaging app
-TryExec=/opt/$CURRENTPACKAGE/$BINARYFILENAME
-Exec=/opt/$CURRENTPACKAGE/$BINARYFILENAME %u
+TryExec=/opt/$CURRENT_PACKAGE/$BINARY_FILE_NAME
+Exec=/opt/$CURRENT_PACKAGE/$BINARY_FILE_NAME %u
 Icon=telegram
 Terminal=false
 StartupWMClass=TelegramDesktop
@@ -51,20 +52,20 @@ X-GNOME-UsesNotifications=true
 X-GNOME-SingleWindow=true
 
 [Desktop Action quit]
-Exec=/opt/$CURRENTPACKAGE/$BINARYFILENAME -quit
+Exec=/opt/$CURRENT_PACKAGE/$BINARY_FILE_NAME -quit
 Name=Quit Telegram
 Icon=application-exit
 EOF
 
-cp "$BUILDDIR/$FRIENDLYNAME/$FRIENDLYNAME" "$MODULEDIR/opt/$CURRENTPACKAGE/$BINARYFILENAME" || exit 1
+cp "$BUILD_DIR/$FRIENDLY_NAME/$FRIENDLY_NAME" "$MODULE_DIR/opt/$CURRENT_PACKAGE/$BINARY_FILE_NAME" || exit 1
 
-chmod 755 -R "$MODULEDIR" &>/dev/null || exit 1
-chown -R guest: "$MODULEDIR/home/guest/"
-chmod 644 "$MODULEDIR/home/guest/.local/share/applications/"* &>/dev/null || exit 1
+chmod 755 -R "$MODULE_DIR" &>/dev/null || exit 1
+chown -R guest: "$MODULE_DIR/home/guest/"
+chmod 644 "$MODULE_DIR/home/guest/.local/share/applications/"* &>/dev/null || exit 1
 
-MODULEFILENAME="$CURRENTPACKAGE-$VERSION-${ARCH}_porteux.xzm"
+MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-${ARCH}_porteux.xzm"
 
-/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
+/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
 
 # cleanup
-rm -fr "$BUILDDIR" &>/dev/null
+rm -fr "$BUILD_DIR" &>/dev/null

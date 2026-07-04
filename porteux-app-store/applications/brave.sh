@@ -1,12 +1,12 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $1 $2 $3"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
@@ -21,10 +21,10 @@ fi
 
 # Global variables
 REPO="brave-browser"
-FRIENDLYPACKAGENAME="brave"
+FRIENDLY_PACKAGE_NAME="brave"
 CHANNEL=$([ "$1" ] && echo "$1" || echo "stable")
 LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
@@ -40,14 +40,14 @@ create_application_temp_dir() {
 }
 
 locale_striptease() {
-	find "$MODULEDIR/opt/brave.com/$OPT_FOLDER/locales" -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en-US.*" -o -name "en_US.*" -o -name "${LANGUAGE}.*" \) -delete
-	find "$MODULEDIR/opt/brave.com/$OPT_FOLDER/resources/brave_extension/_locales" -mindepth 1 -maxdepth 1 -type d ! \( -name "en" -o -name "${LANGUAGE//-/_}" \) -exec rm -fr {} +
+	find "$MODULE_DIR/opt/brave.com/$OPT_FOLDER/locales" -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en-US.*" -o -name "en_US.*" -o -name "${LANGUAGE}.*" \) -delete
+	find "$MODULE_DIR/opt/brave.com/$OPT_FOLDER/resources/brave_extension/_locales" -mindepth 1 -maxdepth 1 -type d ! \( -name "en" -o -name "${LANGUAGE//-/_}" \) -exec rm -fr {} +
 }
 
 striptease() {
-	rm -fr "$MODULEDIR/usr/share/appdata"
-	rm -fr "$MODULEDIR/usr/share/gnome-control-center"
-	rm -fr "$MODULEDIR/usr/share/man"
+	rm -fr "$MODULE_DIR/usr/share/appdata"
+	rm -fr "$MODULE_DIR/usr/share/gnome-control-center"
+	rm -fr "$MODULE_DIR/usr/share/man"
 	locale_striptease
 }
 
@@ -55,13 +55,13 @@ get_module_name() {
 	local pkgver="$2"
 	local arch="$3"
 
-	echo "${FRIENDLYPACKAGENAME}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
+	echo "${FRIENDLY_PACKAGE_NAME}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
 
 finisher() {
 	striptease
 
-	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$TARGET_DIR/${1}.xzm" "$ACTIVATE_MODULE" || exit 1
 	rm -fr "${TMP:?}/$APP"
 }
 
@@ -70,21 +70,22 @@ make_module_brave() {
 		echo "Non-existent channel. Options: stable | origin" && exit 1
 	fi
 
-	local FULLVERSION=$(curl -s https://api.github.com/repos/brave/${REPO}/releases/latest | grep "\"tag_name\":" | cut -d \" -f 4 | head -n 1)
-	local pkgver="${FULLVERSION//[vV]}"
+	local FULL_VERSION=$(curl -s https://api.github.com/repos/brave/${REPO}/releases/latest | grep "\"tag_name\":" | cut -d \" -f 4 | head -n 1)
+	local pkgver="${FULL_VERSION//[vV]}"
+	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
-	MODULEDIR="$TMP/$APP/$pkg_name"
+	MODULE_DIR="$TMP/$APP/$pkg_name"
 
 	create_application_temp_dir "$APP"
 
 	$WGET_WITH_TIME_OUT --content-disposition "https://github.com/brave/${REPO}/releases/download/v${pkgver}/${APP}-${pkgver}-1.x86_64.rpm" -P "$TMP/$APP" || exit 1
-	mkdir -p "$MODULEDIR"
-	rpm2cpio "$TMP/$APP/${APP}-${pkgver}-1.x86_64.rpm" | cpio -idmv -D "$MODULEDIR" || exit 1
-	chmod 755 "$MODULEDIR"
-	sed -i "s|Exec=|Exec=env LANGUAGE=${LANGUAGE} |g" "$MODULEDIR/usr/share/applications/${APP}.desktop"
+	mkdir -p "$MODULE_DIR"
+	rpm2cpio "$TMP/$APP/${APP}-${pkgver}-1.x86_64.rpm" | cpio -idmv -D "$MODULE_DIR" || exit 1
+	chmod 755 "$MODULE_DIR"
+	sed -i "s|Exec=|Exec=env LANGUAGE=${LANGUAGE} |g" "$MODULE_DIR/usr/share/applications/${APP}.desktop"
 
-	mkdir -p "$MODULEDIR/usr/share/icons/hicolor/256x256/apps"
-	cp "$MODULEDIR/opt/brave.com/$OPT_FOLDER/product_logo_256.png" "$MODULEDIR/usr/share/icons/hicolor/256x256/apps/${APP}.png"
+	mkdir -p "$MODULE_DIR/usr/share/icons/hicolor/256x256/apps"
+	cp "$MODULE_DIR/opt/brave.com/$OPT_FOLDER/product_logo_256.png" "$MODULE_DIR/usr/share/icons/hicolor/256x256/apps/${APP}.png"
 
 	finisher "$pkg_name"
 }
