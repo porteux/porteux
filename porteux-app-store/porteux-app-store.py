@@ -203,7 +203,7 @@ class AppWindow(Gtk.ApplicationWindow):
                 return False
         return True
 
-    def execute_external_script(self, script_name, extra_commands = ""):
+    def execute_external_script(self, script_name, extra_args = None):
         if not self.has_internet():
             return
 
@@ -220,8 +220,12 @@ class AppWindow(Gtk.ApplicationWindow):
                 local_script.write(remote_script_decoded)
             os.chmod(local_script_path, 0o755)
 
-        activate_parameter = self.on_main_get_activate_module_paramater(self.check_button_module)
-        result = subprocess.run(["/bin/bash", "-c", local_script_path + " " + extra_commands + " " + activate_parameter], stdout=subprocess.PIPE)
+        command = ["/bin/bash", local_script_path]
+        if extra_args:
+            command += [arg for arg in extra_args if arg is not None]
+        if self.check_button_module.get_active():
+            command.append("--activate-module")
+        result = subprocess.run(command, stdout=subprocess.PIPE)
         output = result.stdout.decode("utf-8")
 
         if output:
@@ -234,12 +238,6 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_main_key_down(self, widget, event):
         if event.keyval == Gdk.KEY_Escape:
             self.destroy()
-
-    def on_main_get_activate_module_paramater(self, check_button_module):
-        if check_button_module.get_active():
-            return "--activate-module"
-        else:
-            return ""
 
     def on_main_close_clicked(self, button):
         self.destroy()
@@ -256,7 +254,7 @@ class AppWindow(Gtk.ApplicationWindow):
             application_folder_dialog = GtkFolder(self, application_name)
             response = application_folder_dialog.run()
             if response == Gtk.ResponseType.OK:
-                self.execute_external_script(application["script"], application_folder_dialog.get_result())
+                self.execute_external_script(application["script"], [application_folder_dialog.get_result()])
             application_folder_dialog.destroy()
         else:
             self.execute_external_script(application["script"])
@@ -270,7 +268,7 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_dialog_button_download_clicked(self, button, application, combobox_channel, combobox_language, dialog):
         channel = combobox_channel.get_active_text()
         language = combobox_language.get_active_text()
-        self.execute_external_script(application["script"], "{0} {1}".format(channel, language))
+        self.execute_external_script(application["script"], [channel, language])
         dialog.destroy()
 
     def on_dialog_button_close_clicked(self, button, dialog):
@@ -340,6 +338,7 @@ class Application(Gtk.Application):
 
 
     def update_changed_files(self):
+        progress_dialog = None
         try:
             with open('/dev/null', 'w') as devnull:
                     progress_dialog = subprocess.Popen(
@@ -378,11 +377,11 @@ class Application(Gtk.Application):
                         local_icon.write(remote_icon.read())
                     os.chmod(local_icon_path, 0o644)
 
-            progress_dialog.send_signal(signal.SIGINT)
-
-        except:
-            progress_dialog.send_signal(signal.SIGINT)
-            return
+        except Exception:
+            pass
+        finally:
+            if progress_dialog:
+                progress_dialog.send_signal(signal.SIGINT)
 
 if __name__ == "__main__":
     application = Application()

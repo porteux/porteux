@@ -5,25 +5,25 @@ if [ "$#" -lt 2 ]; then
     exit 1
 fi
 
-INPUTDIR=$(readlink -f "$1")
-OUTPUTFILEPATH=$(readlink -f "$2")
-if [ -n "$OUTPUTFILEPATH" ]; then
-    MODULEFILENAME="${OUTPUTFILEPATH##*/}"
+INPUT_DIR=$(readlink -f "$1")
+OUTPUT_FILE_PATH=$(readlink -f "$2")
+if [ -n "$OUTPUT_FILE_PATH" ]; then
+    MODULE_FILE_NAME="${OUTPUT_FILE_PATH##*/}"
 else
-    MODULEFILENAME="${2##*/}"
+    MODULE_FILE_NAME="${2##*/}"
 fi
-OUTPUTDIR=${OUTPUTFILEPATH%/*}
+OUTPUT_DIR=${OUTPUT_FILE_PATH%/*}
 
-if [ ! -w "$OUTPUTDIR" ]; then
-    dir2xzm "$INPUTDIR" -o="/tmp/$MODULEFILENAME" -q &>/dev/null || exit 1
+if [ ! -w "$OUTPUT_DIR" ]; then
+    dir2xzm "$INPUT_DIR" -o="/tmp/$MODULE_FILE_NAME" -q &>/dev/null || exit 1
     echo "Destination ${2%/*} is not writable. New module placed in /tmp and not activated."
-elif [ ! -f "$OUTPUTFILEPATH" ]; then
-    dir2xzm "$INPUTDIR" -o="$OUTPUTFILEPATH" -q &>/dev/null || exit 1
-    echo "Module placed in $OUTPUTDIR"
-    if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULEFILENAME" ]; then
-        activate "$OUTPUTFILEPATH" -q &>/dev/null
+elif [ ! -f "$OUTPUT_FILE_PATH" ]; then
+    dir2xzm "$INPUT_DIR" -o="$OUTPUT_FILE_PATH" -q &>/dev/null || exit 1
+    echo "Module placed in $OUTPUT_DIR"
+    if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULE_FILE_NAME" ]; then
+        activate "$OUTPUT_FILE_PATH" -q &>/dev/null
     fi
 else
-    dir2xzm "$INPUTDIR" -o="/tmp/$MODULEFILENAME" -q &>/dev/null || exit 1
-    echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
+    dir2xzm "$INPUT_DIR" -o="/tmp/$MODULE_FILE_NAME" -q &>/dev/null || exit 1
+    echo "Module $MODULE_FILE_NAME was already in $OUTPUT_DIR. New module placed in /tmp and not activated."
 fi

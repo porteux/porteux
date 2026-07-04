@@ -1,63 +1,63 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $*"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
-CURRENTPACKAGE=nvidia-driver
-PORTEUXFULLVERSION=$(cat /etc/porteux-version)
-PORTEUXVERSION=${PORTEUXFULLVERSION#*-}
-PORTEUXVERSION=${PORTEUXVERSION%%-*}
-SLACKWAREFULLVERSION=$(cat /etc/slackware-version)
-SLACKWAREVERSION=${SLACKWAREFULLVERSION//* }
+CURRENT_PACKAGE=nvidia-driver
+PORTEUX_FULL_VERSION=$(cat /etc/porteux-version)
+PORTEUX_VERSION=${PORTEUX_FULL_VERSION#*-}
+PORTEUX_VERSION=${PORTEUX_VERSION%%-*}
+SLACKWARE_FULL_VERSION=$(cat /etc/slackware-version)
+SLACKWARE_VERSION=${SLACKWARE_FULL_VERSION//* }
 
-if [[ $SLACKWAREVERSION == *"+" ]]; then
-	PORTEUXBUILD=current
+if [[ $SLACKWARE_VERSION == *"+" ]]; then
+	PORTEUX_BUILD=current
 else
-	PORTEUXBUILD=stable
+	PORTEUX_BUILD=stable
 fi
 
-ZIPFILENAME="$CURRENTPACKAGE-$PORTEUXBUILD.zip"
-APPLICATIONURL="https://github.com/porteux/porteux/releases/download/$PORTEUXVERSION/$ZIPFILENAME"
-OUTPUTDIR="$PORTDIR/modules/"
-BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
+ZIP_FILE_NAME="$CURRENT_PACKAGE-$PORTEUX_BUILD.zip"
+APPLICATION_URL="https://github.com/porteux/porteux/releases/download/$PORTEUX_VERSION/$ZIP_FILE_NAME"
+OUTPUT_DIR="$PORTDIR/modules/"
+BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
 
-rm -fr "$BUILDDIR" &>/dev/null
-mkdir "$BUILDDIR" &>/dev/null
+rm -fr "$BUILD_DIR" &>/dev/null
+mkdir "$BUILD_DIR" &>/dev/null
 
-wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
-MODULEFILENAME=$(unzip -Z1 "$BUILDDIR/$ZIPFILENAME" | rev | cut -d "/" -f 1 | rev) || exit 1
-unzip "$BUILDDIR/$ZIPFILENAME" -d "$BUILDDIR" &>/dev/null
+wget -T 15 "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
+MODULE_FILE_NAME=$(unzip -Z1 "$BUILD_DIR/$ZIP_FILE_NAME" | rev | cut -d "/" -f 1 | rev) || exit 1
+unzip "$BUILD_DIR/$ZIP_FILE_NAME" -d "$BUILD_DIR" &>/dev/null || exit 1
 
-MODULEDIR=$(basename -s .xzm "$BUILDDIR/$MODULEFILENAME")
-xzm2dir -q "$BUILDDIR/$MODULEFILENAME" -o="$BUILDDIR/$MODULEDIR"
-rm "$BUILDDIR/$MODULEFILENAME"
-EXTRACTEDMODULEPATH="$BUILDDIR/$MODULEDIR"
-[ ! "$EXTRACTEDMODULEPATH" ] && MODULEDIR="$BUILDDIR"/08-nvidia-*
+MODULE_DIR=$(basename -s .xzm "$BUILD_DIR/$MODULE_FILE_NAME")
+xzm2dir -q "$BUILD_DIR/$MODULE_FILE_NAME" -o="$BUILD_DIR/$MODULE_DIR" || exit 1
+rm "$BUILD_DIR/$MODULE_FILE_NAME"
+EXTRACTED_MODULE_PATH="$BUILD_DIR/$MODULE_DIR"
+[ ! -d "$EXTRACTED_MODULE_PATH" ] && MODULE_DIR="$BUILD_DIR"/08-nvidia-*
 
-find "$EXTRACTEDMODULEPATH" \( -type f -name "libnvidia-compiler*" -o -name "libcudadebugger*" -o -name "*nvoptix*" -o -name "libnvidia-gtk2*" \) -delete
+find "$EXTRACTED_MODULE_PATH" \( -type f -name "libnvidia-compiler*" -o -name "libcudadebugger*" -o -name "*nvoptix*" -o -name "libnvidia-gtk2*" \) -delete
 
-MODULEFILENAME="${MODULEFILENAME/nvidia/nvidia-lite}"
+MODULE_FILE_NAME="${MODULE_FILE_NAME/nvidia/nvidia-lite}"
 
-if [ ! -w "$OUTPUTDIR" ]; then
-	dir2xzm -q "$BUILDDIR/$MODULEDIR" -o="/tmp/$MODULEFILENAME"
-	echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
-elif [ ! -f "$OUTPUTDIR/$MODULEFILENAME" ]; then
-	dir2xzm -q "$BUILDDIR/$MODULEDIR" -o="$OUTPUTDIR/$MODULEFILENAME"
-	echo "Module placed in $OUTPUTDIR"
-	if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULEFILENAME" ]; then
-		activate "$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
+if [ ! -w "$OUTPUT_DIR" ]; then
+	dir2xzm -q "$BUILD_DIR/$MODULE_DIR" -o="/tmp/$MODULE_FILE_NAME" || exit 1
+	echo "Destination $OUTPUT_DIR is not writable. New module placed in /tmp and not activated."
+elif [ ! -f "$OUTPUT_DIR/$MODULE_FILE_NAME" ]; then
+	dir2xzm -q "$BUILD_DIR/$MODULE_DIR" -o="$OUTPUT_DIR/$MODULE_FILE_NAME" || exit 1
+	echo "Module placed in $OUTPUT_DIR"
+	if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULE_FILE_NAME" ]; then
+		activate "$OUTPUT_DIR/$MODULE_FILE_NAME" -q &>/dev/null
 	fi
 else
-	dir2xzm -q "$BUILDDIR/$MODULEDIR" -o="/tmp/$MODULEFILENAME"
-	echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
+	dir2xzm -q "$BUILD_DIR/$MODULE_DIR" -o="/tmp/$MODULE_FILE_NAME" || exit 1
+	echo "Module $MODULE_FILE_NAME was already in $OUTPUT_DIR. New module placed in /tmp and not activated."
 fi
 
 # cleanup
-rm -fr "$BUILDDIR" &>/dev/null
+rm -fr "$BUILD_DIR" &>/dev/null
