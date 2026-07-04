@@ -44,7 +44,7 @@ GenericStrip() {
 	rm -fr usr/share/installed-tests
 	rm -fr usr/share/locale
 	rm -fr usr/share/man
-	rm -fr usr/share/metainfo/
+	rm -fr usr/share/metainfo
 	rm -fr usr/share/pkgconfig
 	rm -fr usr/share/sounds
 	rm -fr usr/share/themes/HighContrast
@@ -52,10 +52,10 @@ GenericStrip() {
 	rm -fr usr/share/xdg-terminals
 	rm -fr usr/share/zsh
 	rm -fr usr/src
-	rm -fr var/lib/pkgtools/douninst.sh/
+	rm -fr var/lib/pkgtools/douninst.sh
+	rm -fr var/lib/pkgtools/removed_packages
+	rm -fr var/lib/pkgtools/removed_scripts
 	rm -fr var/lib/pkgtools/setup
-	rm -fr var/log/pkgtools
-	rm -fr var/log/setup
 	rm -fr var/man
 
 	find . \( \
