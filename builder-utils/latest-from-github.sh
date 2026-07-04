@@ -1,5 +1,15 @@
 #!/bin/bash
 
+download_master_from_github() {
+	local owner="$1"
+	local repo="$2"
+	local branch="${3:-master}"
+	local tarball="${repo}-${branch}.tar.gz"
+	wget "https://github.com/${owner}/${repo}/archive/refs/heads/${branch}.tar.gz" -O "$tarball" || exit 1
+	tar xf "$tarball" || exit 1
+	date -r "$(tar tf "$tarball" | head -n1 | cut -d/ -f1)" +%Y%m%d
+}
+
 get_latest_version_tag_from_github() {
 	local repository="$1"
 	local project="$2"
@@ -22,17 +32,12 @@ download_latest_from_github() {
 	version=$(get_latest_version_tag_from_github "${repository}" "${project}" "${filter_out_version}")
 	release_url="https://github.com/${repository}/${project}/releases/download/${version}/${project}-${version//[^0-9._]/}.tar"
 	tag_url="https://github.com/${repository}/${project}/archive/refs/tags/${version}.tar.gz"
-	local valid_url=
 
-	if wget --spider "${release_url}.xz" > /dev/null 2>&1; then
-		valid_url="${release_url}.xz"
-	elif wget --spider "${release_url}.gz" > /dev/null 2>&1; then
-		valid_url="${release_url}.gz"
-	else
-		valid_url=${tag_url}
-	fi
-
-	content_disposition=$(wget --server-response --content-disposition $valid_url 2>&1 | grep -i "content-disposition:")
+	local url
+	for url in "${release_url}.xz" "${release_url}.gz" "${tag_url}"; do
+		content_disposition=$(wget --server-response --content-disposition "$url" 2>&1 | grep -i "content-disposition:")
+		[ -n "$content_disposition" ] && break
+	done
 
 	filename=${content_disposition#*filename=}
 	version="${version//[^0-9._]/}"

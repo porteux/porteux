@@ -2,6 +2,7 @@
 
 prepare_files_for_cache_de() {
 	mkdir -p $PORTEUX_BUILDER_PATH/caches > /dev/null 2>&1
+	rm -rf $PORTEUX_BUILDER_PATH/caches-bkp
 	cp -r $PORTEUX_BUILDER_PATH/caches/ $PORTEUX_BUILDER_PATH/caches-bkp
 	prepare_files_for_cache
 }

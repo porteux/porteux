@@ -13,7 +13,7 @@ source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
-LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | {
+LATEST_VERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | {
 	while read -r version; do
 		minor=$(echo "$version" | cut -d. -f2)
 		if (( minor % 2 == 0 )); then
@@ -22,8 +22,9 @@ LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | gre
 		fi
 	done
 })
-echo -e "Building MATE ${LATESTVERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
+[ "$LATEST_VERSION" ] || { echo "Error: could not detect MATE version." >&2; exit 1; }
+echo -e "Building MATE ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
+MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
 
 ### create module folder
 
@@ -36,9 +37,9 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages outside slackware repository
 
-export SESSIONTEMPLATE=mate
-export ICONTHEME=elementary-xfce-dark
-export CAJAACTIONS=true
+export SESSION_TEMPLATE=mate
+export ICON_THEME=elementary-xfce-dark
+export CAJA_ACTIONS=true
 
 # required by lightdm
 installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1

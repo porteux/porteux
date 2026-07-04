@@ -11,7 +11,7 @@ download_package "bison" &
 download_package "cmake" &
 download_package "gc" &
 download_package "gcc" &
-download_package "g++" &
+download_package "gcc-g++" &
 download_package "gettext-tools" &
 wait
 download_package "git" &

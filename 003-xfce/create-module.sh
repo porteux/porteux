@@ -13,8 +13,8 @@ source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
-LATESTVERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^xfce-|pre' | sort -Vr | {
-	if [[ "$ALLOWTEST" == "yes" ]]; then
+LATEST_VERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^xfce-|pre' | sort -Vr | {
+	if [[ "$ALLOW_TEST" == "yes" ]]; then
 		version=$(head -1)
 		echo "$version" | cut -d '-' -f 2 | cut -d '.' -f-2
 	else
@@ -27,8 +27,9 @@ LATESTVERSION=$(curl -s https://gitlab.xfce.org/xfce/libxfce4util/-/tags?format=
 		done
 	fi
 })
-echo -e "Building Xfce ${LATESTVERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
+[ "$LATEST_VERSION" ] || { echo "Error: could not detect Xfce version." >&2; exit 1; }
+echo -e "Building Xfce ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
+MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
 
 ### create module folder
 
@@ -41,8 +42,8 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages outside slackware repository
 
-export SESSIONTEMPLATE=xfce
-export ICONTHEME=elementary-xfce
+export SESSION_TEMPLATE=xfce
+export ICON_THEME=elementary-xfce
 
 # required by lightdm
 installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1
@@ -140,7 +141,7 @@ done
 rm $MODULE_PATH/packages/xfce4-dev-tools*.txz
 rm $MODULE_PATH/packages/mate-common*.txz
 
-if [[ "$ALLOWTEST" == "yes" ]]; then
+if [[ "$ALLOW_TEST" == "yes" ]]; then
 	rm $MODULE_PATH/packages/exo*.txz # deprecated since xfce 4.21
 fi
 

@@ -20,8 +20,8 @@ if [ "$1" ]; then
 	export KERNEL_VERSION="$1"
 fi
 
-IFS='.' read -r KERNELMAJORVERSION KERNELMINORVERSION KERNELPATCHVERSION <<< "$KERNEL_VERSION"
-CRIPPLEDMODULENAME="06-crippled-sources-${KERNEL_VERSION}"
+IFS='.' read -r KERNEL_MAJOR_VERSION KERNEL_MINOR_VERSION KERNEL_PATCH_VERSION <<< "$KERNEL_VERSION"
+CRIPPLED_MODULE_NAME="06-crippled-sources-${KERNEL_VERSION}"
 
 ### create module folder
 
@@ -30,7 +30,7 @@ mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 
 ### download packages from slackware repository
 
-if [ ${ONLYHEADERS:-no} != "yes" ]; then
+if [ ${ONLY_HEADERS:-no} != "yes" ]; then
 	bash $SCRIPT_PATH/download-packages.sh || exit 1
 fi
 
@@ -43,13 +43,13 @@ if [ ${CLANG:-no} = "yes" ]; then
 	rm $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
 
 	COMPILER="Clang"
-	EXTRAFLAGS="CC=clang LLVM=1 LLVM_IAS=1"
+	EXTRA_FLAGS="CC=clang LLVM=1 LLVM_IAS=1"
 	# remove flags that are not compatible with the kernel
-	BUILDPARAMS=$(echo "$CLANG_CFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" | sed \
+	BUILD_PARAMS=$(echo "$CLANG_CFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" | sed \
 		-e 's/-fno-plt//g' \
 		-e 's/-flto=auto//g' \
 		-e 's/-mpclmul//g')
-	LINKPARAMS=$(echo "$LLDFLAGS" | sed \
+	LINK_PARAMS=$(echo "$LLDFLAGS" | sed \
 		-e 's/-z,/-z /g' \
 		-e 's/-O2/-O1/g' \
 		-e 's/-Wl,//g' \
@@ -61,13 +61,13 @@ if [ ${CLANG:-no} = "yes" ]; then
 else
 	COMPILER="GCC"
 	# remove flags that are not compatible with the kernel
-	BUILDPARAMS=$(echo "$GCC_CFLAGS" | sed \
+	BUILD_PARAMS=$(echo "$GCC_CFLAGS" | sed \
 		-e 's/-fno-plt//g' \
 		-e 's/-ffunction-sections//g' \
 		-e 's/-fdata-sections//g' \
 		-e 's/-flto=auto//g' \
 		-e 's/-mpclmul//g')
-	LINKPARAMS=$(echo "$LDFLAGS" | sed \
+	LINK_PARAMS=$(echo "$LDFLAGS" | sed \
 		-e 's/-z,/-z /g' \
 		-e 's/-Wl,//g' \
 		-e 's/--gc-sections//g' \
@@ -81,7 +81,7 @@ cp ${SCRIPT_PATH}/kernel-firmware*.txz ${MODULE_PATH}/packages 2>/dev/null
 
 echo "Downloading kernel source code..."
 if ! ls linux-${KERNEL_VERSION}.tar.?z 1> /dev/null 2>&1; then
-	wget -P ${MODULE_PATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNELMAJORVERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { echo "Fail to download kernel source code."; exit 1; }
+	wget -P ${MODULE_PATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { echo "Fail to download kernel source code."; exit 1; }
 fi
 
 echo "Extracting kernel source code..."
@@ -93,7 +93,7 @@ cp ${SCRIPT_PATH}/${SYSTEM_BITS}bit.config ${MODULE_PATH}/linux-${KERNEL_VERSION
 
 echo "Downloading AUFS..."
 git clone https://github.com/sfjro/aufs-standalone ${MODULE_PATH}/aufs_sources > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
-git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION}.${KERNELPATCHVERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.${KERNELMINORVERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNELMAJORVERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
+git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION}.${KERNEL_PATCH_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
 
 cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 
@@ -122,7 +122,7 @@ mkdir -p ${MODULE_PATH}/../05-devel/packages
 mv ${MODULE_PATH}/packages/${current_package}*.txz ${MODULE_PATH}/../05-devel/packages
 rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
-if [ ${ONLYHEADERS:-no} = "yes" ]; then
+if [ ${ONLY_HEADERS:-no} = "yes" ]; then
 	rm -fr ${MODULE_PATH}
 	exit 0
 fi
@@ -131,7 +131,7 @@ echo "Building vmlinuz (this may take a while)..."
 cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
-make -j${NUMBER_THREADS} KBUILD_LDFLAGS="$LINKPARAMS" LDFLAGS_MODULE="$LINKPARAMS" KCFLAGS="$BUILDPARAMS" ${EXTRAFLAGS} || { echo "Fail to build kernel."; exit 1; }
+make -j${NUMBER_THREADS} KBUILD_LDFLAGS="$LINK_PARAMS" LDFLAGS_MODULE="$LINK_PARAMS" KCFLAGS="$BUILD_PARAMS" ${EXTRA_FLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULE_PATH/vmlinuz
 
 echo "Installing modules..."
@@ -214,56 +214,56 @@ cd $MODULE_PATH || exit 1
 echo "Creating kernel xzm module..."
 mkdir -p ${MODULE_PATH}/${MODULE_NAME}
 mv lib ${MODULE_PATH}/${MODULE_NAME}
-make_module ${MODULE_PATH}/${MODULE_NAME} "${MODULE_NAME}-${KERNEL_VERSION}-$(date +%Y%m%d).xzm" > /dev/null 2>&1
+make_module ${MODULE_PATH}/${MODULE_NAME} "${MODULE_NAME}-${KERNEL_VERSION}-$(date +%Y%m%d).xzm" > /dev/null || { echo "Error: failed to create kernel module." >&2; exit 1; }
 
 echo "Creating crippled xzm module..."
-CRIPPLEDSOURCEPATH=${MODULE_PATH}/${CRIPPLEDMODULENAME}/usr/src
-mkdir -p ${CRIPPLEDSOURCEPATH}
-mv ${MODULE_PATH}/linux-${KERNEL_VERSION} ${CRIPPLEDSOURCEPATH}
-mv ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/.config ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/config
-ln -sf linux-${KERNEL_VERSION} ${CRIPPLEDSOURCEPATH}/linux
-mkdir -p ${MODULE_PATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernel_modules_folder
-ln -sf /usr/src/linux ${MODULE_PATH}/${CRIPPLEDMODULENAME}/lib/modules/$kernel_modules_folder/build
+CRIPPLED_SOURCE_PATH=${MODULE_PATH}/${CRIPPLED_MODULE_NAME}/usr/src
+mkdir -p ${CRIPPLED_SOURCE_PATH}
+mv ${MODULE_PATH}/linux-${KERNEL_VERSION} ${CRIPPLED_SOURCE_PATH}
+mv ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/.config ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/config
+ln -sf linux-${KERNEL_VERSION} ${CRIPPLED_SOURCE_PATH}/linux
+mkdir -p ${MODULE_PATH}/${CRIPPLED_MODULE_NAME}/lib/modules/$kernel_modules_folder
+ln -sf /usr/src/linux ${MODULE_PATH}/${CRIPPLED_MODULE_NAME}/lib/modules/$kernel_modules_folder/build
 
 # strip crippled
 {
-mv ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/arch/x86 ${CRIPPLEDSOURCEPATH}
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/arch
-mkdir ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/arch
-mv ${CRIPPLEDSOURCEPATH}/x86 ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/arch/
+mv ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch/x86 ${CRIPPLED_SOURCE_PATH}
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch
+mkdir ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch
+mv ${CRIPPLED_SOURCE_PATH}/x86 ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch/
 
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/arch/x86/boot/bzImage > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/arch/x86/boot/compressed/vmlinux > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/Documentation > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/drivers > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/firmware > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/fs > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/net > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/sound > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/.tmp_versions > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/tools/testing/ > /dev/null 2>&1
-rm -rf ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/vmlinux* > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch/x86/boot/bzImage > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch/x86/boot/compressed/vmlinux > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/Documentation > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/drivers > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/firmware > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/fs > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/net > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/sound > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/.tmp_versions > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/tools/testing/ > /dev/null 2>&1
+rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/vmlinux* > /dev/null 2>&1
 
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION} -regex '.*\.\(a\|bin\|elf\|exe\|o\|patch\|txt\|xsl\|xz\|ko\|zst\|json\|py\)$' -delete
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION} -name ".*" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION} -name "COPYING" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION} -name "CREDITS" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION} -name "LICENSE*" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION} -name "MAINTAINERS*" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION} -name "README*" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/scripts -xtype l -delete
+find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -regex '.*\.\(a\|bin\|elf\|exe\|o\|patch\|txt\|xsl\|xz\|ko\|zst\|json\|py\)$' -delete
+find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name ".*" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name "COPYING" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name "CREDITS" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name "LICENSE*" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name "MAINTAINERS*" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name "README*" -exec rm -fr {} \; -print > /dev/null 2>&1
+find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/scripts -xtype l -delete
 
-mv ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/config ${CRIPPLEDSOURCEPATH}/linux-${KERNEL_VERSION}/.config
+mv ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/config ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/.config
 
-find ${CRIPPLEDSOURCEPATH} | xargs strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+find ${CRIPPLED_SOURCE_PATH} | xargs strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } >/dev/null 2>&1
 
-make_module ${MODULE_PATH}/${CRIPPLEDMODULENAME} ${CRIPPLEDMODULENAME}-$(date +%Y%m%d).xzm > /dev/null 2>&1
+make_module ${MODULE_PATH}/${CRIPPLED_MODULE_NAME} ${CRIPPLED_MODULE_NAME}-$(date +%Y%m%d).xzm > /dev/null || { echo "Error: failed to create crippled kernel module." >&2; exit 1; }
 
 echo "Cleaning up..."
 rm -fr ${MODULE_PATH}/kernel-firmware > /dev/null 2>&1 
 rm -fr ${MODULE_PATH}/${MODULE_NAME} > /dev/null 2>&1
-rm -fr ${MODULE_PATH}/${CRIPPLEDMODULENAME} > /dev/null 2>&1
+rm -fr ${MODULE_PATH}/${CRIPPLED_MODULE_NAME} > /dev/null 2>&1
 rm -fr ${MODULE_PATH}/firmware > /dev/null 2>&1
 rm -fr ${MODULE_PATH}/packages > /dev/null 2>&1
 rm -fr ${MODULE_PATH}/sof* > /dev/null 2>&1

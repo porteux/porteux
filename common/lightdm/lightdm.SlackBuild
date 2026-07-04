@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
+
 PRGNAM=lightdm
 
 CWD=$(dirname "$0")
@@ -12,10 +14,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget https://github.com/canonical/${PRGNAM}/archive/refs/heads/main.tar.gz
-tar xf main.tar.?z
-cd ${PRGNAM}-main
-VERSION=$(date -r . +%Y%m%d)
+VERSION=$(download_master_from_github canonical lightdm main) || exit 1
+cd lightdm-main || exit 1
 
 # avoid useless dependency
 sed -i 's|which yelp-build|which ls|g' autogen.sh
@@ -38,7 +38,7 @@ CXXFLAGS="$GCC_CXXFLAGS" \
 	--sysconfdir=/etc \
 	--with-greeter-session=lightdm-gtk-greeter \
 	--with-greeter-user=$LIGHTDM_USER \
-	--with-user-session="$SESSIONTEMPLATE" \
+	--with-user-session="$SESSION_TEMPLATE" \
 	--disable-static \
 	--disable-tests \
 	--disable-liblightdm-qt5 \

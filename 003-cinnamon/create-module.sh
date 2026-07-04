@@ -13,15 +13,16 @@ source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
-if [[ ${ALLOWTEST:-no} == no ]]; then
-	export TESTRELEASES="master.|alpha|beta|rc[0-9]|unstable"
+if [[ ${ALLOW_TEST:-no} == no ]]; then
+	export TEST_RELEASES="master.|alpha|beta|rc[0-9]|unstable"
 else
-	export TESTRELEASES="master."
+	export TEST_RELEASES="master."
 fi
 
-LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -Ev "cjs-|${TESTRELEASES}" | sort -Vr | head -1)
-echo -e "Building Cinnamon ${LATESTVERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
+LATEST_VERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -Ev "cjs-|${TEST_RELEASES}" | sort -Vr | head -1)
+[ "$LATEST_VERSION" ] || { echo "Error: could not detect Cinnamon version." >&2; exit 1; }
+echo -e "Building Cinnamon ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
+MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
 
 ### create module folder
 
@@ -34,8 +35,8 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages outside slackware repository
 
-export SESSIONTEMPLATE=cinnamon
-export ICONTHEME=Yaru-blue
+export SESSION_TEMPLATE=cinnamon
+export ICON_THEME=Yaru-blue
 
 # required by lightdm
 installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1

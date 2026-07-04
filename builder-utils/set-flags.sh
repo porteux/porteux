@@ -17,7 +17,9 @@ set_flags() {
 	if [ -d ../.git ]; then
 		current_folder=$(dirname "$(realpath "$0")")
 		export PORTEUX_VERSION=$(git -C "${current_folder}"/.. -c safe.directory="${current_folder}"/.. branch --show-current)
-	else
+	fi
+
+	if [ -z "$PORTEUX_VERSION" ]; then
 		export PORTEUX_VERSION=$(date -r . +%Y%m%d)
 	fi
 

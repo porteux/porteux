@@ -24,15 +24,16 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages outside slackware repository
 
-if [[ ${ALLOWTEST:-no} == no ]]; then
-	export TESTRELEASES="grep -Ev '\.(alpha|beta|rc)|-dev' | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./'"
+if [[ ${ALLOW_TEST:-no} == no ]]; then
+	export TEST_RELEASES="grep -Ev '\.(alpha|beta|rc)|-dev' | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./'"
 else
-	export TESTRELEASES="sort -Vr"
+	export TEST_RELEASES="sort -Vr"
 fi
 
-LATESTVERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TESTRELEASES:-sort -Vr}" | head -1)
-echo -e "Building GNOME ${LATESTVERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
+LATEST_VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-shell/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TEST_RELEASES:-sort -Vr}" | head -1)
+[ "$LATEST_VERSION" ] || { echo "Error: could not detect GNOME version." >&2; exit 1; }
+echo -e "Building GNOME ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
+MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
 
 # required from now on
 installpkg $MODULE_PATH/packages/*.txz || exit 1

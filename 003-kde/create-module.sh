@@ -24,9 +24,12 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages that require specific stripping
 
-LATESTVERSION=$(ls -a $MODULE_PATH/packages/plasma-desktop-* | rev | cut -d - -f 3 | rev)
-echo -e "Building KDE Plasma ${LATESTVERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
+LATEST_VERSION=$(ls -a $MODULE_PATH/packages/plasma-desktop-* | rev | cut -d - -f 3 | rev)
+[ "$LATEST_VERSION" ] || { echo "Error: could not detect KDE Plasma version." >&2; exit 1; }
+echo -e "Building KDE Plasma ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
+MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
+
+installpkg $MODULE_PATH/packages/qt6-[0-9]*.txz || exit 1
 
 strip_package qt6 \
 	usr/lib$SYSTEM_BITS/libQt6Concurrent.* \

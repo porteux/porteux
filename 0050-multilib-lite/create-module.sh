@@ -28,6 +28,7 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 ### packages that require specific stripping
 
 current_package=aaa_libraries
+rm -rf $MODULE_PATH/${current_package}
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv ../packages/${current_package}-[0-9]* .
 package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
@@ -59,6 +60,7 @@ strip_package llvm \
 	usr/lib/libLLVM*.so*
 
 current_package=mesa
+rm -rf $MODULE_PATH/${current_package}
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv $MODULE_PATH/packages/${current_package}-[0-9]* .
 package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)

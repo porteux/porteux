@@ -25,7 +25,7 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 if ! ls $MODULE_PATH/packages/kernel-headers*.txz 1> /dev/null 2>&1; then
 	cd ${SCRIPT_PATH}/../000-kernel || exit 1
-	ONLYHEADERS=yes sh create-module.sh || wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNEL_VERSION-x86-1.txz -P $MODULE_PATH/packages || exit 1
+	ONLY_HEADERS=yes sh create-module.sh || wget https://slackware.uk/cumulative/slackware64-current/slackware64/d/kernel-headers-$KERNEL_VERSION-x86-1.txz -P $MODULE_PATH/packages || exit 1
 fi
 
 ### fake root

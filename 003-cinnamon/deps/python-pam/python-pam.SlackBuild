@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
+
 PRGNAM=python-pam
 
 CWD=$(dirname "$0")
@@ -12,10 +14,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget https://github.com/FirefighterBlu3/python-pam/archive/refs/heads/master.tar.gz -O ${PRGNAM}.tar.gz
-tar xf ${PRGNAM}.tar.gz
-cd python-pam-master
-VERSION=$(date -r . +%Y%m%d)
+VERSION=$(download_master_from_github FirefighterBlu3 python-pam) || exit 1
+cd python-pam-master || exit 1
 
 python -m build --wheel --no-isolation
 python -m installer --destdir "$PKG" dist/*.whl
