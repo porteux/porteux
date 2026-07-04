@@ -72,11 +72,6 @@ done
 
 ## packages that require specific stripping
 
-StripPackage avahi \
-	usr/lib${SYSTEMBITS}/libavahi-client.* \
-	usr/lib${SYSTEMBITS}/libavahi-common.* \
-	usr/lib${SYSTEMBITS}/libavahi-glib.*
-
 currentPackage=aaa_libraries
 mkdir $MODULEPATH/${currentPackage} && cd $MODULEPATH/${currentPackage}
 mv ../packages/${currentPackage}-[0-9]* .
@@ -113,6 +108,11 @@ cp -fs $(basename $(readlink -f $(command ls libslang.so* | head -n1))) libslang
 cd $MODULEPATH/${currentPackage}/${currentPackage}-stripped
 makepkg ${MAKEPKGFLAGS} $MODULEPATH/packages/${packageFileName}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULEPATH/${currentPackage} && cd $MODULEPATH
+
+StripPackage avahi \
+	usr/lib${SYSTEMBITS}/libavahi-client.* \
+	usr/lib${SYSTEMBITS}/libavahi-common.* \
+	usr/lib${SYSTEMBITS}/libavahi-glib.*
 
 StripPackage binutils \
 	usr/bin/ar \

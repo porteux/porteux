@@ -157,6 +157,7 @@ DownloadPackage "newt" &
 DownloadPackage "nfs-utils" &
 DownloadPackage "nghttp2" &
 wait
+DownloadPackage "nghttp3" &
 DownloadPackage "ngtcp2" &
 DownloadPackage "openssh" &
 DownloadPackage "openssl" &
