@@ -270,8 +270,8 @@ rm -fr var/lib/AccountsService
 mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libexiv2.so* $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libmozjs-* $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libvte-* $MODULE_PATH/
-generic_strip
-aggressive_strip_all
+strip_clean
+strip_hard_all
 mv $MODULE_PATH/libexiv2.so* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
 mv $MODULE_PATH/libvte-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
 mv $MODULE_PATH/libmozjs-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}

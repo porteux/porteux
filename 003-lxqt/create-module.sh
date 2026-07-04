@@ -271,8 +271,8 @@ find usr/share/lxqt/themes -mindepth 1 -maxdepth 1 ! \( -name "Porteux-dark" -o 
 [ "$SYSTEM_BITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 } >/dev/null 2>&1
 
-generic_strip
-aggressive_strip_all
+strip_clean
+strip_hard_all
 
 ### copy cache files
 

@@ -337,12 +337,12 @@ find usr/share/icons -mindepth 1 -maxdepth 1 ! \( -name "breeze" -o -name "breez
 find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o -name "Air Balloon.png.license" -o -name "Astronaut.png" -o -name "Astronaut.png.license" \) -exec rm -rf '{}' \; 2>/dev/null
 } >/dev/null 2>&1
 
-generic_strip
+strip_clean
 
 # move out things that don't support aggressive stripping
 mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libexiv2.so* $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libgwenviewlib.so* $MODULE_PATH/
-aggressive_strip_all
+strip_hard_all
 mv $MODULE_PATH/libexiv2.so* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
 mv $MODULE_PATH/libgwenviewlib.so* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
 

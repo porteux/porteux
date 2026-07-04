@@ -279,8 +279,8 @@ find usr/share/cinnamon/thumbnails/cursors -mindepth 1 -maxdepth 1 ! \( -name "A
 
 mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libmozjs-* $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libvte-* $MODULE_PATH/
-generic_strip
-aggressive_strip_all
+strip_clean
+strip_hard_all
 mv $MODULE_PATH/libvte-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
 mv $MODULE_PATH/libmozjs-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
 

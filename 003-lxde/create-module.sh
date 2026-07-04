@@ -135,8 +135,8 @@ rm -fr usr/share/Thunar
 } >/dev/null 2>&1
 
 mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libvte-* $MODULE_PATH/
-generic_strip
-aggressive_strip_all
+strip_clean
+strip_hard_all
 mv $MODULE_PATH/libvte-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
 
 ### copy cache files

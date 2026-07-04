@@ -143,8 +143,8 @@ mv $MODULE_PATH/packages/usr/lib/dri $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/lib/libgallium* $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/lib/libvulkan* $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/lib/libX11.so* $MODULE_PATH/
-generic_strip
-aggressive_strip_executables
+strip_clean
+strip_hard_exec
 mv $MODULE_PATH/libc.so* $MODULE_PATH/packages/lib
 mv $MODULE_PATH/libc-* $MODULE_PATH/packages/lib
 mv $MODULE_PATH/dri $MODULE_PATH/packages/usr/lib/

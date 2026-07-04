@@ -187,12 +187,12 @@ find usr/share/libmateweather -mindepth 1 -maxdepth 1 ! \( -name "Locations.xml"
 find usr/share/themes -mindepth 1 -maxdepth 1 ! \( -name "Adwaita" -o -name "Adwaita-dark" -o -name "DustBlue" \) -exec rm -rf '{}' \; 2>/dev/null
 } >/dev/null 2>&1
 
-generic_strip
+strip_clean
 
 # move out things that don't support aggressive stripping
 mv $MODULE_PATH/packages/usr/bin/mate-system-monitor $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libvte-* $MODULE_PATH/
-aggressive_strip_all
+strip_hard_all
 mv $MODULE_PATH/mate-system-monitor $MODULE_PATH/packages/usr/bin
 mv $MODULE_PATH/libvte-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
 

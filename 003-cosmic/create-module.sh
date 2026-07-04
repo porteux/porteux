@@ -144,8 +144,8 @@ copy_to_multilanguage
 
 cd $MODULE_PATH/packages/ || exit 1
 
-generic_strip
-aggressive_strip_all
+strip_clean
+strip_hard_all
 
 ### copy cache files
 
