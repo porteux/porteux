@@ -1,12 +1,12 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $1 $2 $3"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
@@ -23,7 +23,7 @@ fi
 APP="librewolf"
 CHANNEL=$1
 LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
 WGET_WITH_TIME_OUT="wget -T 15"
@@ -42,7 +42,7 @@ get_module_name() {
 }
 
 finisher() {
-	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATEMODULE" || exit 1
+	/opt/porteux-scripts/porteux-app-store/module-builder.sh "$TMP/$APP/$1" "$TARGET_DIR/${1}.xzm" "$ACTIVATE_MODULE" || exit 1
 	rm -fr "${TMP:?}/$APP"
 }
 
@@ -61,15 +61,16 @@ make_module_librewolf() {
 	fi
 
 	local pkgver=$(get_repo_version_librewolf "$CHANNEL")
+	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 	local package_extension="tar.xz"
 	local major_version=$(echo $pkgver | cut -f 1 -d .)
 
 	create_application_temp_dir "$APP"
 
-	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://codeberg.org/api/packages/librewolf/generic/librewolf/${pkgver}/librewolf-${pkgver}-linux-x86_64-package.${package_extension}"
+	$WGET_WITH_TIME_OUT -O "$TMP/$APP/${pkg_name}.${package_extension}" "https://codeberg.org/api/packages/librewolf/generic/librewolf/${pkgver}/librewolf-${pkgver}-linux-x86_64-package.${package_extension}" || exit 1
 	mkdir -p "$TMP/$APP/$pkg_name"
-	tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name"
+	tar -xvf "$TMP/$APP/${pkg_name}.${package_extension}" -C "$TMP/$APP/$pkg_name" || exit 1
 	chmod 755 "$TMP/$APP/$pkg_name"
 	mkdir -p "$TMP/$APP/$pkg_name/usr/bin"
 	mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"

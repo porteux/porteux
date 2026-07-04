@@ -1,43 +1,44 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $*"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
-CURRENTPACKAGE=codium
-FULLVERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/VSCodium/vscodium/releases/latest | rev | cut -d / -f 1 | rev)
-VERSION="${FULLVERSION//[vV]}"
-APPLICATIONURL="https://github.com/VSCodium/vscodium/releases/latest/download/codium_${VERSION}_amd64.deb"
+CURRENT_PACKAGE=codium
+FULL_VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/VSCodium/vscodium/releases/latest | rev | cut -d / -f 1 | rev)
+VERSION="${FULL_VERSION//[vV]}"
+[ "$VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
+APPLICATION_URL="https://github.com/VSCodium/vscodium/releases/latest/download/codium_${VERSION}_amd64.deb"
 ARCH=$(uname -m)
-OUTPUTDIR="$PORTDIR/modules"
-BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
-MODULEFILENAME="$CURRENTPACKAGE-$VERSION-${ARCH}_porteux.xzm"
-INPUTFILE="$BUILDDIR/codium_${VERSION}_amd64.deb"
+OUTPUT_DIR="$PORTDIR/modules"
+BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-${ARCH}_porteux.xzm"
+INPUT_FILE="$BUILD_DIR/codium_${VERSION}_amd64.deb"
 
-rm -fr "$BUILDDIR"
-mkdir "$BUILDDIR" && cd "$BUILDDIR"
+rm -fr "$BUILD_DIR"
+mkdir "$BUILD_DIR" && cd "$BUILD_DIR" || exit 1
 
-wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR" || exit 1
+wget -T 15 "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
 
-if [ ! -w "$OUTPUTDIR" ]; then
-	deb2xzm "$INPUTFILE" -o="/tmp/$MODULEFILENAME" -q &>/dev/null
-	echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
-elif [ ! -f "$OUTPUTDIR/$MODULEFILENAME" ]; then
-	deb2xzm "$INPUTFILE" -o="$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
-	echo "Module placed in $OUTPUTDIR"
-	if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULEFILENAME" ]; then
-		activate "$OUTPUTDIR/$MODULEFILENAME" -q &>/dev/null
+if [ ! -w "$OUTPUT_DIR" ]; then
+	deb2xzm "$INPUT_FILE" -o="/tmp/$MODULE_FILE_NAME" -q &>/dev/null
+	echo "Destination $OUTPUT_DIR is not writable. New module placed in /tmp and not activated."
+elif [ ! -f "$OUTPUT_DIR/$MODULE_FILE_NAME" ]; then
+	deb2xzm "$INPUT_FILE" -o="$OUTPUT_DIR/$MODULE_FILE_NAME" -q &>/dev/null
+	echo "Module placed in $OUTPUT_DIR"
+	if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULE_FILE_NAME" ]; then
+		activate "$OUTPUT_DIR/$MODULE_FILE_NAME" -q &>/dev/null
 	fi
 else
-	deb2xzm "$INPUTFILE" -o="/tmp/$MODULEFILENAME" -q &>/dev/null
-	echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
+	deb2xzm "$INPUT_FILE" -o="/tmp/$MODULE_FILE_NAME" -q &>/dev/null
+	echo "Module $MODULE_FILE_NAME was already in $OUTPUT_DIR. New module placed in /tmp and not activated."
 fi
 
 # cleanup
-rm -fr "$BUILDDIR" &>/dev/null
+rm -fr "$BUILD_DIR" &>/dev/null

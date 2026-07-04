@@ -1,33 +1,34 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $*"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
-CURRENTPACKAGE=yt-dlp
+CURRENT_PACKAGE=yt-dlp
 VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/yt-dlp/yt-dlp/releases/latest | rev | cut -d / -f 1 | rev)
-APPLICATIONURL="https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
+[[ "$VERSION" == *[0-9]* ]] || { echo "Error: could not determine the latest version." >&2; exit 1; }
+APPLICATION_URL="https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
 ARCH=$(uname -m)
-OUTPUTDIR="$PORTDIR/modules/"
-BUILDDIR="/tmp/$CURRENTPACKAGE-builder"
-MODULEDIR="$BUILDDIR"
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+OUTPUT_DIR="$PORTDIR/modules/"
+BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+MODULE_DIR="$BUILD_DIR"
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-rm -fr "$BUILDDIR"
-mkdir -p "$BUILDDIR/usr/bin" || exit 1
+rm -fr "$BUILD_DIR"
+mkdir -p "$BUILD_DIR/usr/bin" || exit 1
 
-wget -T 15 "$APPLICATIONURL" -P "$BUILDDIR/usr/bin" || exit 1
-chmod 755 "$BUILDDIR/usr/bin/"* &>/dev/null || exit 1
+wget -T 15 "$APPLICATION_URL" -P "$BUILD_DIR/usr/bin" || exit 1
+chmod 755 "$BUILD_DIR/usr/bin/"* &>/dev/null || exit 1
 
-MODULEFILENAME="$CURRENTPACKAGE-$VERSION-noarch_porteux.xzm"
+MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-noarch_porteux.xzm"
 
-/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULEDIR" "$OUTPUTDIR/$MODULEFILENAME" "$ACTIVATEMODULE"
+/opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
 
 # cleanup
-rm -fr "$BUILDDIR" &>/dev/null
+rm -fr "$BUILD_DIR" &>/dev/null

@@ -1,23 +1,24 @@
 #!/bin/bash
 
-isRoot() {
+is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
-if ! isRoot; then
+if ! is_root; then
 	echo "Please enter root's password below:"
-	su -c "$0 $*"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit 0
 fi
 
-CURRENTPACKAGE=whatsapp
-FRIENDLYNAME="WhatsApp (WALC)"
+CURRENT_PACKAGE=whatsapp
+FRIENDLY_NAME="WhatsApp (WALC)"
 CATEGORY=Network
-FULLVERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/WAClient/WALC/releases/latest | rev | cut -d / -f 1 | rev)
-VERSION="${FULLVERSION//[vV]}"
-APPLICATIONURL="https://github.com/WAClient/WALC/releases/latest/download/WALC-${VERSION}.AppImage"
-ACTIVATEMODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
+FULL_VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/WAClient/WALC/releases/latest | rev | cut -d / -f 1 | rev)
+VERSION="${FULL_VERSION//[vV]}"
+[ "$VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
+APPLICATION_URL="https://github.com/WAClient/WALC/releases/latest/download/WALC-${VERSION}.AppImage"
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-RESULT=$(/opt/porteux-scripts/porteux-app-store/appimage-builder.sh "$CURRENTPACKAGE" "$FRIENDLYNAME" "$CATEGORY" "$APPLICATIONURL" "$VERSION" "$ACTIVATEMODULE")
+RESULT=$(/opt/porteux-scripts/porteux-app-store/appimage-builder.sh "$CURRENT_PACKAGE" "$FRIENDLY_NAME" "$CATEGORY" "$APPLICATION_URL" "$VERSION" "$ACTIVATE_MODULE")
 
 echo "$RESULT"
