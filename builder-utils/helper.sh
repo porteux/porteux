@@ -45,6 +45,13 @@ is_root() {
 	[ "$(id -u)" -eq 0 ]
 }
 
+elevate_if_needed() {
+	is_root && return 0
+	echo "Please enter admin's password below:"
+	su -c "$(printf '%q ' "$@")"
+	exit
+}
+
 strip_package() {
 	local package="$1"
 	local workdir="$MODULE_PATH/$package"

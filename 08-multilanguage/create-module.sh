@@ -9,11 +9,7 @@ set_flags "$MODULE_NAME"
 source "$BUILDER_UTILS_PATH/helper.sh"
 source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
-if ! is_root; then
-	echo "Please enter admin's password below:"
-	su -c "$0 $1"
-	exit
-fi
+elevate_if_needed "$0" "$@"
 
 echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
 
@@ -24,7 +20,7 @@ cd $MODULE_PATH
 
 ### download packages from slackware repository
 
-sh $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh
 
 ### fake root
 

@@ -11,6 +11,7 @@ generate_repository_urls() {
 	rm server-packages.txt > /dev/null 2>&1
 
 	# Cleanup server packages list
+	local line
 	while IFS= read -r line; do
 		if [[ $line == -* ]] && [[ $line == *txz ]]; then
 			echo "${line#*./}" >> server-packages.txt
@@ -29,6 +30,7 @@ download_package() {
 		return
 	fi
 
+	local package_url
 	package_url=$(grep "/${1}[-_][0-9]\+" server-packages.txt)
 	if [ ! -z $package_url ]; then
 		echo "Downloading: $package_url..."

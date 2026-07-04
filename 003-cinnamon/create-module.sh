@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULE_NAME=003-cinnamon
+MODULE_NAME="003-cinnamon"
 
 source "$PWD/../builder-utils/set-flags.sh"
 
@@ -11,11 +11,7 @@ source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
 source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
-if ! is_root; then
-	echo "Please enter admin's password below:"
-	su -c "$0 $1"
-	exit
-fi
+elevate_if_needed "$0" "$@"
 
 if [[ ${ALLOWTEST:-no} == no ]]; then
 	export TESTRELEASES="master.|alpha|beta|rc[0-9]|unstable"
@@ -25,7 +21,7 @@ fi
 
 LATESTVERSION=$(curl -s https://github.com/linuxmint/cinnamon/tags/ | grep "/linuxmint/cinnamon/releases/tag/" | grep -oP "(?<=/linuxmint/cinnamon/releases/tag/)[^\"]+" | uniq | grep -Ev "cjs-|${TESTRELEASES}" | sort -Vr | head -1)
 echo -e "Building Cinnamon ${LATESTVERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME=$MODULE_NAME-${LATESTVERSION}
+MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
 
 ### create module folder
 
@@ -34,7 +30,7 @@ cd $MODULE_PATH
 
 ### download packages from slackware repository
 
-sh $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh
 
 ### packages outside slackware repository
 
@@ -62,7 +58,7 @@ for package in \
 	gtksourceview4 \
 	gnome-screenshot \
 ; do
-sh $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -119,7 +115,7 @@ for package in \
 	python-polib \
 	python-xapp \
 ; do
-sh $SCRIPT_PATH/deps/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -132,7 +128,7 @@ rm $MODULE_PATH/packages/clutter*.txz
 for package in \
 	file-roller \
 ; do
-sh $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -143,7 +139,7 @@ for package in \
 	xapp-symbolic-icons \
 	yaru-icon-theme \
 ; do
-sh $SCRIPT_PATH/extras/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -170,7 +166,7 @@ for package in \
 	xviewer \
 	xed \
 ; do
-sh $SCRIPT_PATH/cinnamon/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/cinnamon/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done

@@ -1,9 +1,10 @@
 #!/bin/bash
 
 get_latest_version_tag_from_github() {
-	repository="$1"
-	project="$2"
-	filter_out_version="$3"
+	local repository="$1"
+	local project="$2"
+	local filter_out_version="$3"
+	local versions version_normalized version
 	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]")
 	[ -n "$filter_out_version" ] && versions=$(echo "$versions" | grep -Ev "$filter_out_version")
 	version_normalized=$(echo "${versions//_/.}" | sort -V -r | head -n 1)
@@ -13,14 +14,15 @@ get_latest_version_tag_from_github() {
 }
 
 download_latest_from_github() {
-	repository="$1"
-	project="$2"
-	filter_out_version="$3"
-	filename=
+	local repository="$1"
+	local project="$2"
+	local filter_out_version="$3"
+	local filename=
+	local version release_url tag_url content_disposition
 	version=$(get_latest_version_tag_from_github "${repository}" "${project}" "${filter_out_version}")
 	release_url="https://github.com/${repository}/${project}/releases/download/${version}/${project}-${version//[^0-9._]/}.tar"
 	tag_url="https://github.com/${repository}/${project}/archive/refs/tags/${version}.tar.gz"
-	valid_url=
+	local valid_url=
 
 	if wget --spider "${release_url}.xz" > /dev/null 2>&1; then
 		valid_url="${release_url}.xz"
