@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULE_NAME=000-kernel
+MODULE_NAME="000-kernel"
 
 source "$PWD/../builder-utils/set-flags.sh"
 
@@ -10,11 +10,7 @@ source "$BUILDER_UTILS_PATH/helper.sh"
 source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
-if ! is_root; then
-	echo "Please enter admin's password below:"
-	su -c "$0 $1"
-	exit
-fi
+elevate_if_needed "$0" "$@"
 
 if [ ! -f ${SYSTEM_BITS}bit.config ]; then
 	echo "File ${SYSTEM_BITS}bit.config is required in this folder." && exit 1
@@ -35,7 +31,7 @@ mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 ### download packages from slackware repository
 
 if [ ${ONLYHEADERS:-no} != "yes" ]; then
-	sh $SCRIPT_PATH/download-packages.sh
+	bash $SCRIPT_PATH/download-packages.sh
 fi
 
 ### set compiler and linker

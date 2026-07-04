@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULE_NAME=003-kde
+MODULE_NAME="003-kde"
 
 source "$PWD/../builder-utils/set-flags.sh"
 
@@ -11,11 +11,7 @@ source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
 source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
-if ! is_root; then
-	echo "Please enter admin's password below:"
-	su -c "$0 $1"
-	exit
-fi
+elevate_if_needed "$0" "$@"
 
 ### create module folder
 
@@ -24,13 +20,13 @@ cd $MODULE_PATH
 
 ### download packages from slackware repository
 
-sh $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh
 
 ### packages that require specific stripping
 
 LATESTVERSION=$(ls -a $MODULE_PATH/packages/plasma-desktop-* | rev | cut -d - -f 3 | rev)
 echo -e "Building KDE Plasma ${LATESTVERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME=$MODULE_NAME-${LATESTVERSION}
+MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
 
 strip_package qt6 \
 	usr/lib$SYSTEM_BITS/libQt6Concurrent.* \
@@ -172,7 +168,7 @@ for package in \
 	libkscreen \
 	networkmanager-qt \
 ; do
-sh $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done

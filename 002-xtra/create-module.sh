@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULE_NAME=002-xtra
+MODULE_NAME="002-xtra"
 
 source "$PWD/../builder-utils/set-flags.sh"
 
@@ -11,11 +11,7 @@ source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
 source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
-if ! is_root; then
-	echo "Please enter admin's password below:"
-	su -c "$0 $1"
-	exit
-fi
+elevate_if_needed "$0" "$@"
 
 echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
 
@@ -26,7 +22,7 @@ cd $MODULE_PATH
 
 ### download packages from slackware repository
 
-sh $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh
 
 ### packages outside slackware repository
 
@@ -75,7 +71,7 @@ for package in \
 	ffmpeg \
 	luajit \
 ; do
-sh $SCRIPT_PATH/deps/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -89,7 +85,7 @@ for package in \
 	mpv \
 	transmission \
 ; do
-sh $SCRIPT_PATH/extras/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MODULE_NAME=003-mate
+MODULE_NAME="003-mate"
 
 source "$PWD/../builder-utils/set-flags.sh"
 
@@ -11,11 +11,7 @@ source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
 source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
-if ! is_root; then
-	echo "Please enter admin's password below:"
-	su -c "$0 $1"
-	exit
-fi
+elevate_if_needed "$0" "$@"
 
 LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | {
 	while read -r version; do
@@ -27,7 +23,7 @@ LATESTVERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | gre
 	done
 })
 echo -e "Building MATE ${LATESTVERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME=$MODULE_NAME-${LATESTVERSION}
+MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
 
 ### create module folder
 
@@ -36,7 +32,7 @@ cd $MODULE_PATH
 
 ### download packages from slackware repository
 
-sh $SCRIPT_PATH/download-packages.sh
+bash $SCRIPT_PATH/download-packages.sh
 
 ### packages outside slackware repository
 
@@ -72,7 +68,7 @@ for package in \
 	libpeas \
 	libgxps \
 ; do
-sh $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
@@ -90,7 +86,7 @@ rm $MODULE_PATH/packages/xtrans*.txz
 
 # mate deps
 current_package=gtksourceview4
-sh $SCRIPT_PATH/../common/${current_package}/${current_package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/${current_package}/${current_package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${current_package}*.txz || exit 1
 rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH
 
@@ -113,14 +109,14 @@ for package in \
 	mate-control-center \
 	mate-utils \
 ; do
-sh $SCRIPT_PATH/mate/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/mate/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
 # engrampa from common, must be built after caja because of caja actions
 current_package=engrampa
-sh $SCRIPT_PATH/../common/${current_package}/${current_package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/${current_package}/${current_package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${current_package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
@@ -132,7 +128,7 @@ for package in \
 	mozo \
 	pluma \
 ; do
-sh $SCRIPT_PATH/mate/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/mate/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
