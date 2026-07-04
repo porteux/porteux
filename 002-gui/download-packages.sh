@@ -7,9 +7,7 @@ download_package "a52dec" &
 download_package "alsa-lib" &
 download_package "alsa-plugins" &
 download_package "alsa-utils" &
-download_package "atk" &
 download_package "atkmm" &
-download_package "at-spi2-atk" &
 download_package "at-spi2-core" &
 download_package "audiofile" &
 download_package "cairo" &
@@ -247,6 +245,8 @@ wait
 
 download_package "cups" & # to build gtk+3
 download_package "gperf" & # to build flatpak
+download_package "libnghttp2" & # to build appstream
+download_package "libnghttp3" & # to build appstream
 download_package "ngtcp2" & # to build appstream
 download_package "pyparsing" & # to build flatpak
 download_package "python-Jinja2" & # required by libei

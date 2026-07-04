@@ -99,7 +99,6 @@ download_package "libidn" &
 download_package "libidn2" &
 download_package "libimobiledevice" &
 download_package "libimobiledevice-glue" &
-download_package "libldap" &
 download_package "libmbim" &
 wait
 download_package "libmnl" &
@@ -173,7 +172,6 @@ download_package "pcre2" &
 download_package "pkgtools" &
 download_package "popt" &
 download_package "ppp" &
-download_package "pptp" &
 download_package "python3" &
 download_package "python-urllib3" &
 download_package "readline" &
@@ -205,7 +203,6 @@ download_package "tdb" &
 download_package "telnet" &
 download_package "tevent" &
 download_package "traceroute" &
-download_package "uring" &
 download_package "usb_modeswitch" &
 download_package "usbmuxd" &
 download_package "usbutils" &
