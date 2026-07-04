@@ -31,9 +31,11 @@ download_package() {
 	fi
 
 	local package_url
-	package_url=$(grep "/${1}[-_][0-9]\+" server-packages.txt)
-	if [ ! -z $package_url ]; then
-		echo "Downloading: $package_url..."
-		wget --tries=3 --retry-connrefused $REPOSITORY/$package_url -q > /dev/null 2>&1 || { echo "Error: failed to download $REPOSITORY/$package_url" >&2; exit 1; }
+	package_url=$(grep "/${1}[-_][0-9]\+" server-packages.txt | head -n1)
+	if [ -z "$package_url" ]; then
+		echo "Error: package $1 not found in repository $REPOSITORY" >&2
+		exit 1
 	fi
+	echo "Downloading: $package_url..."
+	wget --tries=3 --retry-connrefused $REPOSITORY/$package_url -q > /dev/null 2>&1 || { echo "Error: failed to download $REPOSITORY/$package_url" >&2; exit 1; }
 }

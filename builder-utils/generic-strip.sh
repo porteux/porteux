@@ -30,9 +30,9 @@ generic_strip() {
 	rm -fr usr/share/fish
 	rm -fr usr/share/gdb
 	rm -fr usr/share/gettext
-	rm -fr usr/share/gir-1.0
-	rm -fr usr/share/glib-2.0/codegen
-	rm -fr usr/share/glib-2.0/gdb
+	rm -fr usr/share/gir-[0-9]*
+	rm -fr usr/share/glib-[0-9]*/codegen
+	rm -fr usr/share/glib-[0-9]*/gdb
 	rm -fr usr/share/gtk-doc
 	rm -fr usr/share/help
 	rm -fr usr/share/icons/HighContrast
@@ -53,9 +53,11 @@ generic_strip() {
 	rm -fr usr/share/zsh
 	rm -fr usr/src
 	rm -fr var/lib/pkgtools/douninst.sh
-	rm -fr var/lib/pkgtools/removed_packages
+	rm -fr var/lib/pkgtools/removed_packages                               
 	rm -fr var/lib/pkgtools/removed_scripts
 	rm -fr var/lib/pkgtools/setup
+	rm -fr var/log/pkgtools
+	rm -fr var/log/setup
 	rm -fr var/man
 
 	find . \( \

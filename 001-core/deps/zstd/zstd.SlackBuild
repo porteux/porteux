@@ -16,10 +16,8 @@ cd $TMP
 
 #info=$(download_latest_from_github "facebook" ${PRGNAM} "kernel")
 #VERSION=${info#* }
-wget https://github.com/facebook/zstd/archive/refs/heads/dev.tar.gz
-tar xf dev.tar.?z
-cd $PRGNAM-dev
-VERSION=$(date -r . +%Y%m%d)
+VERSION=$(download_master_from_github facebook zstd dev) || exit 1
+cd zstd-dev || exit 1
 
 cd build/cmake
 CC=clang \

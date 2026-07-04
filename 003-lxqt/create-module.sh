@@ -13,9 +13,10 @@ source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
-LATESTVERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
-echo -e "Building LXQt ${LATESTVERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
+LATEST_VERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
+[ "$LATEST_VERSION" ] || { echo "Error: could not detect LXQt version." >&2; exit 1; }
+echo -e "Building LXQt ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
+MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
 
 ### create module folder
 
@@ -27,6 +28,8 @@ cd $MODULE_PATH || exit 1
 bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages that require specific stripping
+
+installpkg $MODULE_PATH/packages/qt6-[0-9]*.txz || exit 1
 
 strip_package qt6 \
 	usr/lib$SYSTEM_BITS/libQt6Concurrent.* \
@@ -62,6 +65,7 @@ strip_package qt6 \
 
 # required by xpdf
 current_package=ghostscript-fonts-std
+rm -rf $MODULE_PATH/${current_package}
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv $MODULE_PATH/packages/${current_package}-[0-9]* . || exit 1
 package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
@@ -91,8 +95,8 @@ rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 ### packages outside slackware repository
 
-export SESSIONTEMPLATE=lxqt
-export ICONTHEME=kora
+export SESSION_TEMPLATE=lxqt
+export ICON_THEME=kora
 export QT=6
 
 # required by lightdm

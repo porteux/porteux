@@ -26,7 +26,7 @@ install_additional_packages() {
 
 make_module() {
 	local zstd_flags="-comp zstd -b 256K -Xcompression-level 22"
-	mksquashfs "${1}" "${2}" $zstd_flags -noappend || exit 1
+	mksquashfs "${1}" "${2}" $zstd_flags -noappend || return 1
 }
 
 finalize() {
@@ -35,7 +35,7 @@ finalize() {
 	echo $MODULE_NAME.xzm:$(date +%Y%m%d) > "$MODULE_PATH"/packages/etc/porteux/$MODULE_NAME.ver
 
 	# create module
-	make_module "$MODULE_PATH"/packages/ "$MODULE_PATH"/$MODULE_NAME-$PORTEUX_BUILD-$(date +%Y%m%d).xzm
+	make_module "$MODULE_PATH"/packages/ "$MODULE_PATH"/$MODULE_NAME-$PORTEUX_BUILD-$(date +%Y%m%d).xzm || { echo "Error: failed to create module $MODULE_NAME." >&2; exit 1; }
 
 	# script clean up
 	rm -fr "$MODULE_PATH"/packages/
@@ -47,8 +47,10 @@ is_root() {
 
 elevate_if_needed() {
 	is_root && return 0
+	local script="$1"
+	shift
 	echo "Please enter admin's password below:"
-	su -c "$(printf '%q ' "$@")"
+	su -c "$(printf '%q ' "$(realpath "$script")" "$@")"
 	exit
 }
 
@@ -70,7 +72,7 @@ strip_package() {
 	local keep
 	shift # remove package name param
 	for keep in "$@"; do
-		cp --parents -af $keep "${package}-stripped"
+		cp --parents -af $keep "${package}-stripped" || { echo "strip_package: $package has no match for $keep" >&2; exit 1; }
 	done
 
 	cd "${package}-stripped" || exit 1

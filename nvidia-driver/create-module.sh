@@ -7,15 +7,15 @@ is_root() {
 
 if ! is_root; then
 	echo "Please enter admin's password below:"
-	su -c "$0 $1"
+	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
 	exit
 fi
 
 [ "$(getconf LONG_BIT)" = "64" ] && SYSTEM_BITS=64
-OUTPUTDIR="$PORTDIR/modules"
-INSTALLERDIR=/tmp/nvidia
-MODULEDIR=$INSTALLERDIR/nvidia-module
-mkdir -p $INSTALLERDIR/nvidia-module
+OUTPUT_DIR="$PORTDIR/modules"
+INSTALLER_DIR=/tmp/nvidia
+MODULE_DIR=$INSTALLER_DIR/nvidia-module
+mkdir -p $INSTALLER_DIR/nvidia-module
 
 # add ABI compatible setting
 echo '
@@ -25,93 +25,93 @@ EndSection' >> /etc/X11/xorg.conf
 
 echo "Creating memory changes file..."
 sync; echo 3 > /proc/sys/vm/drop_caches
-tar cf $INSTALLERDIR/nvidia.tar.xz --exclude={"*/.*","*/.wh.*",".cache","dev","home","mnt","opt","root","run","tmp","var","etc/cups","etc/udev","etc/profile.d","etc/porteux","lib/firmware","lib/modules/*porteux/modules.*"} -C /mnt/live/memory changes || exit 1
+tar cf $INSTALLER_DIR/nvidia.tar.xz --exclude={"*/.*","*/.wh.*",".cache","dev","home","mnt","opt","root","run","tmp","var","etc/cups","etc/udev","etc/profile.d","etc/porteux","lib/firmware","lib/modules/*porteux/modules.*"} -C /mnt/live/memory changes || exit 1
 
 echo "Extracting memory changes file..."
-tar xf $INSTALLERDIR/nvidia.tar.xz --strip 1 -C $MODULEDIR || exit 1
+tar xf $INSTALLER_DIR/nvidia.tar.xz --strip 1 -C $MODULE_DIR || exit 1
 
 echo "Cleaning up driver directory..."
-find $MODULEDIR -name '*.la' -delete
-find $MODULEDIR -type f -maxdepth 1 -delete
-find $MODULEDIR -type l -maxdepth 1 -delete
-find $MODULEDIR/etc/ -maxdepth 1 \( -type f -o -type d \) ! \( -name "modprobe.d" -o -name "OpenCL" -o -name "vulkan" \) -delete 2>/dev/null
-rm -f $MODULEDIR/usr/bin/nvidia-debugdump
-rm -f $MODULEDIR/usr/bin/nvidia-installer
-rm -f $MODULEDIR/usr/bin/nvidia-uninstall
-rm -rf $MODULEDIR/etc/X11/xorg.conf.d
-rm -f $MODULEDIR/etc/X11/xorg.conf.nvidia-xconfig-original
-rm -rf $MODULEDIR/usr/{man,src}
-rm -f $MODULEDIR/usr/bin/gnome-keyring-daemon
-rm -rf $MODULEDIR/usr/lib$SYSTEM_BITS/{gdk-pixbuf-2.0,gio,gtk-2.0,gtk-3.0}
-rm -f $MODULEDIR/usr/lib$SYSTEM_BITS/{libXvMCgallium.*,libgsm.*,libnvidia-gtk2.*,libudev.*,libunrar.*}
-rm -rf $MODULEDIR/usr/local
-rm -rf $MODULEDIR/usr/share/{glib-2.0,man,mime,pixmaps}
-rm -f $MODULEDIR/usr/{,local/}share/applications/mimeinfo.cache
-rm -rf $MODULEDIR/usr/share/doc/NVIDIA_GLX-1.0/{html,samples,LICENSE,NVIDIA_Changelog,README.txt}
+find $MODULE_DIR -name '*.la' -delete
+find $MODULE_DIR -type f -maxdepth 1 -delete
+find $MODULE_DIR -type l -maxdepth 1 -delete
+find $MODULE_DIR/etc/ -maxdepth 1 \( -type f -o -type d \) ! \( -name "modprobe.d" -o -name "OpenCL" -o -name "vulkan" \) -delete 2>/dev/null
+rm -f $MODULE_DIR/usr/bin/nvidia-debugdump
+rm -f $MODULE_DIR/usr/bin/nvidia-installer
+rm -f $MODULE_DIR/usr/bin/nvidia-uninstall
+rm -rf $MODULE_DIR/etc/X11/xorg.conf.d
+rm -f $MODULE_DIR/etc/X11/xorg.conf.nvidia-xconfig-original
+rm -rf $MODULE_DIR/usr/{man,src}
+rm -f $MODULE_DIR/usr/bin/gnome-keyring-daemon
+rm -rf $MODULE_DIR/usr/lib$SYSTEM_BITS/{gdk-pixbuf-2.0,gio,gtk-2.0,gtk-3.0}
+rm -f $MODULE_DIR/usr/lib$SYSTEM_BITS/{libXvMCgallium.*,libgsm.*,libnvidia-gtk2.*,libudev.*,libunrar.*}
+rm -rf $MODULE_DIR/usr/local
+rm -rf $MODULE_DIR/usr/share/{glib-2.0,man,mime,pixmaps}
+rm -f $MODULE_DIR/usr/{,local/}share/applications/mimeinfo.cache
+rm -rf $MODULE_DIR/usr/share/doc/NVIDIA_GLX-1.0/{html,samples,LICENSE,NVIDIA_Changelog,README.txt}
 
 # strip
-mkdir -p $MODULEDIR/../nostrip
+mkdir -p $MODULE_DIR/../nostrip
 
 if [ "$SYSTEM_BITS" = 64 ]; then
-	mkdir -p $MODULEDIR/../nostrip64
+	mkdir -p $MODULE_DIR/../nostrip64
 fi
 
-mv $MODULEDIR/usr/lib/libnvcuvid.* $MODULEDIR/../nostrip &>/dev/null
-mv $MODULEDIR/usr/lib/libnvidia-encode.* $MODULEDIR/../nostrip &>/dev/null
-mv $MODULEDIR/usr/lib/libnvidia-eglcore.* $MODULEDIR/../nostrip &>/dev/null
-mv $MODULEDIR/usr/lib/libnvidia-glvkspirv.* $MODULEDIR/../nostrip &>/dev/null
-mv $MODULEDIR/usr/lib/libnvidia-gpucomp.* $MODULEDIR/../nostrip &>/dev/null
-mv $MODULEDIR/usr/lib/libnvidia-nvvm.* $MODULEDIR/../nostrip &>/dev/null
-mv $MODULEDIR/usr/lib/libnvidia-tls.* $MODULEDIR/../nostrip &>/dev/null
-mv $MODULEDIR/usr/lib/vdpau $MODULEDIR/../nostrip &>/dev/null
+mv $MODULE_DIR/usr/lib/libnvcuvid.* $MODULE_DIR/../nostrip &>/dev/null
+mv $MODULE_DIR/usr/lib/libnvidia-encode.* $MODULE_DIR/../nostrip &>/dev/null
+mv $MODULE_DIR/usr/lib/libnvidia-eglcore.* $MODULE_DIR/../nostrip &>/dev/null
+mv $MODULE_DIR/usr/lib/libnvidia-glvkspirv.* $MODULE_DIR/../nostrip &>/dev/null
+mv $MODULE_DIR/usr/lib/libnvidia-gpucomp.* $MODULE_DIR/../nostrip &>/dev/null
+mv $MODULE_DIR/usr/lib/libnvidia-nvvm.* $MODULE_DIR/../nostrip &>/dev/null
+mv $MODULE_DIR/usr/lib/libnvidia-tls.* $MODULE_DIR/../nostrip &>/dev/null
+mv $MODULE_DIR/usr/lib/vdpau $MODULE_DIR/../nostrip &>/dev/null
 
 if [ "$SYSTEM_BITS" = 64 ]; then
-	mv $MODULEDIR/usr/lib64/libnvcuvid.* $MODULEDIR/../nostrip64 &>/dev/null
-	mv $MODULEDIR/usr/lib64/libnvidia-eglcore.* $MODULEDIR/../nostrip64 &>/dev/null
-	mv $MODULEDIR/usr/lib64/libnvidia-encode.* $MODULEDIR/../nostrip64 &>/dev/null
-	mv $MODULEDIR/usr/lib64/libnvidia-glvkspirv.* $MODULEDIR/../nostrip64 &>/dev/null
-	mv $MODULEDIR/usr/lib64/libnvidia-gpucomp.* $MODULEDIR/../nostrip64 &>/dev/null
-	mv $MODULEDIR/usr/lib64/libnvidia-nvvm.* $MODULEDIR/../nostrip64 &>/dev/null
-	mv $MODULEDIR/usr/lib64/libnvidia-tls.* $MODULEDIR/../nostrip64 &>/dev/null
-	mv $MODULEDIR/usr/lib64/vdpau $MODULEDIR/../nostrip64 &>/dev/null
+	mv $MODULE_DIR/usr/lib64/libnvcuvid.* $MODULE_DIR/../nostrip64 &>/dev/null
+	mv $MODULE_DIR/usr/lib64/libnvidia-eglcore.* $MODULE_DIR/../nostrip64 &>/dev/null
+	mv $MODULE_DIR/usr/lib64/libnvidia-encode.* $MODULE_DIR/../nostrip64 &>/dev/null
+	mv $MODULE_DIR/usr/lib64/libnvidia-glvkspirv.* $MODULE_DIR/../nostrip64 &>/dev/null
+	mv $MODULE_DIR/usr/lib64/libnvidia-gpucomp.* $MODULE_DIR/../nostrip64 &>/dev/null
+	mv $MODULE_DIR/usr/lib64/libnvidia-nvvm.* $MODULE_DIR/../nostrip64 &>/dev/null
+	mv $MODULE_DIR/usr/lib64/libnvidia-tls.* $MODULE_DIR/../nostrip64 &>/dev/null
+	mv $MODULE_DIR/usr/lib64/vdpau $MODULE_DIR/../nostrip64 &>/dev/null
 fi
 
-find $MODULEDIR | xargs file | grep -E -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+find $MODULE_DIR | xargs file | grep -E -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 
-mv $MODULEDIR/../nostrip/* $MODULEDIR/usr/lib &>/dev/null
+mv $MODULE_DIR/../nostrip/* $MODULE_DIR/usr/lib &>/dev/null
 
 if [ "$SYSTEM_BITS" = 64 ]; then
-	mv $MODULEDIR/../nostrip64/* $MODULEDIR/usr/lib64 &>/dev/null
+	mv $MODULE_DIR/../nostrip64/* $MODULE_DIR/usr/lib64 &>/dev/null
 fi
 
 # disable nouveau
-mkdir -p $MODULEDIR/etc/modprobe.d 2>/dev/null
+mkdir -p $MODULE_DIR/etc/modprobe.d 2>/dev/null
 echo 'blacklist nouveau
-options nouveau modeset=0' > $MODULEDIR/etc/modprobe.d/nvidia-installer-disable-nouveau.conf
+options nouveau modeset=0' > $MODULE_DIR/etc/modprobe.d/nvidia-installer-disable-nouveau.conf
 
 # get driver version
-DRIVERFILE=$(find /usr/lib$SYSTEM_BITS/libEGL_nvidia.so* \! -type l)
-DRIVERVERSION=$(echo $DRIVERFILE | cut -d'.' -f3-)
+DRIVER_FILE=$(find /usr/lib$SYSTEM_BITS/libEGL_nvidia.so* \! -type l)
+DRIVER_VERSION=$(echo $DRIVER_FILE | cut -d'.' -f3-)
 
 # build xzm module
 echo "Creating driver module..."
-MODULEFILENAME=08-nvidia-$DRIVERVERSION-k.$(uname -r)-$(uname -m).xzm
+MODULE_FILE_NAME=08-nvidia-$DRIVER_VERSION-k.$(uname -r)-$(uname -m).xzm
 
-if [ ! -w "$OUTPUTDIR" ]; then
-	dir2xzm -q ${MODULEDIR} -o=/tmp/${MODULEFILENAME} || exit 1
+if [ ! -w "$OUTPUT_DIR" ]; then
+	dir2xzm -q ${MODULE_DIR} -o=/tmp/${MODULE_FILE_NAME} || exit 1
 	sync
-	echo "Destination $OUTPUTDIR is not writable. New module placed in /tmp and not activated."
-elif [ ! -f "$OUTPUTDIR"/"$MODULEFILENAME" ]; then
-	dir2xzm -q ${MODULEDIR} -o="$OUTPUTDIR"/${MODULEFILENAME} || exit 1
+	echo "Destination $OUTPUT_DIR is not writable. New module placed in /tmp and not activated."
+elif [ ! -f "$OUTPUT_DIR"/"$MODULE_FILE_NAME" ]; then
+	dir2xzm -q ${MODULE_DIR} -o="$OUTPUT_DIR"/${MODULE_FILE_NAME} || exit 1
 	sync
-	echo "Module placed in $OUTPUTDIR"
+	echo "Module placed in $OUTPUT_DIR"
 else
-	dir2xzm -q ${MODULEDIR} -o=/tmp/${MODULEFILENAME} || exit 1
+	dir2xzm -q ${MODULE_DIR} -o=/tmp/${MODULE_FILE_NAME} || exit 1
 	sync
-	echo "Module $MODULEFILENAME was already in $OUTPUTDIR. New module placed in /tmp and not activated."
+	echo "Module $MODULE_FILE_NAME was already in $OUTPUT_DIR. New module placed in /tmp and not activated."
 fi
 
 # clean up
-rm -rf $INSTALLERDIR
+rm -rf $INSTALLER_DIR
 
 echo "Finished successfully"

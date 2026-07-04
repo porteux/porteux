@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
+
 PRGNAM=xdg-desktop-portal-gtk
 
 CWD=$(dirname "$0")
@@ -12,10 +14,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget https://github.com/flatpak/xdg-desktop-portal-gtk/archive/refs/heads/main.tar.gz -O ${PRGNAM}.tar.gz
-tar xf ${PRGNAM}.tar.gz
-cd xdg-desktop-portal-gtk-main
-VERSION=$(date -r . +%Y%m%d)
+VERSION=$(download_master_from_github flatpak xdg-desktop-portal-gtk main) || exit 1
+cd xdg-desktop-portal-gtk-main || exit 1
 
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \

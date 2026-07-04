@@ -39,11 +39,9 @@ rm -f $PKG/usr/share/vala/vapi/libnma.deps
 rm -f $PKG/usr/share/vala/vapi/libnma.vapi
 rm -f $PKG/usr/share/gir-1.0/NMA-1.0.gir
 
-rm $PKG/usr/lib${SYSTEM_BITS}/girepository-1.0/NMA-1.0.typelib
-rm $PKG/usr/lib${SYSTEM_BITS}/pkgconfig/libnma.pc
-rm $PKG/usr/lib${SYSTEM_BITS}/libnma.so.0.0.0
-rm $PKG/usr/lib${SYSTEM_BITS}/libnma.so.0
-rm $PKG/usr/lib${SYSTEM_BITS}/libnma.so
+rm -f $PKG/usr/lib${SYSTEM_BITS}/girepository-1.0/NMA-1.0.typelib
+rm -f $PKG/usr/lib${SYSTEM_BITS}/pkgconfig/libnma.pc
+rm -f $PKG/usr/lib${SYSTEM_BITS}/libnma.so*
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 

@@ -13,9 +13,9 @@ source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
-LATESTVERSION="0.11.1"
-echo -e "Building LXDE ${LATESTVERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME="$MODULE_NAME-${LATESTVERSION}"
+LATEST_VERSION="0.11.1"
+echo -e "Building LXDE ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
+MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
 
 ### create module folder
 
@@ -28,8 +28,8 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages outside slackware repository
 
-export SESSIONTEMPLATE=LXDE
-export ICONTHEME=kora
+export SESSION_TEMPLATE=LXDE
+export ICON_THEME=kora
 
 # required by lightdm
 installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1
