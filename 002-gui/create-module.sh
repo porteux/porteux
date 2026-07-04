@@ -318,8 +318,8 @@ mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libvulkan* $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libX11.so* $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/libexec/gpartedbin $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/share/sounds $MODULE_PATH/
-generic_strip
-aggressive_strip_executables
+strip_clean
+strip_hard_exec
 mv $MODULE_PATH/dri $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/
 mv $MODULE_PATH/libgallium* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/
 mv $MODULE_PATH/libvulkan* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/

@@ -94,7 +94,7 @@ find . -name '*.la' -delete
 find usr/ -type d -empty -delete
 } >/dev/null 2>&1
 
-aggressive_strip_executables
+strip_hard_exec
 
 ### finalize
 

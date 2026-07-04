@@ -1,6 +1,6 @@
 #!/bin/bash
 
-generic_strip() {
+strip_clean() {
 	rm usr/share/pixmaps/*.xpm
 	rm usr/X11/man
 	rm var/log/removed_packages
@@ -99,12 +99,12 @@ generic_strip() {
 	find . | xargs file | grep -E -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug --strip-unneeded -R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } > /dev/null 2>&1
 
-aggressive_strip_executables() {
+strip_hard_exec() {
 	[[ $(strip --help | grep "strip-section-headers") ]] && strip_section_headers="--strip-section-headers"
 	find . | xargs file | grep -E -e "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-all ${strip_section_headers} -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } > /dev/null 2>&1
 
-aggressive_strip_all() {
+strip_hard_all() {
 	[[ $(strip --help | grep "strip-section-headers") ]] && strip_section_headers="--strip-section-headers"
 	find . | xargs file | grep -E -e "executable|shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-all ${strip_section_headers} -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } > /dev/null 2>&1
