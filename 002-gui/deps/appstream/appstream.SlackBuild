@@ -38,7 +38,10 @@ meson setup \
 	-Dgir=false \
 	-Dsystemd=false \
 	-Dapidocs=false \
-	-Dinstall-docs=false
+	-Dinstall-docs=false \
+	-Dman=false \
+	-Dbash-completion=false \
+	-Dtools=false
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 

@@ -117,7 +117,6 @@ download_package "ksystemstats" &
 download_package "ktexteditor" &
 download_package "ktextwidgets" &
 download_package "kunitconversion" &
-download_package "kuserfeedback" &
 download_package "kwallet" &
 download_package "kwayland-integration" &
 wait
@@ -129,7 +128,6 @@ download_package "kxmlgui" &
 download_package "layer-shell-qt" &
 download_package "libkdcraw" &
 download_package "libkexiv2" &
-download_package "libkipi" &
 wait
 download_package "libksysguard" &
 download_package "libplasma" &
