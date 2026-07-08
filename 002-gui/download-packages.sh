@@ -245,8 +245,8 @@ wait
 
 download_package "cups" & # to build gtk+3
 download_package "gperf" & # to build flatpak
-download_package "libnghttp2" & # to build appstream
-download_package "libnghttp3" & # to build appstream
+download_package "nghttp2" & # to build appstream
+download_package "nghttp3" & # to build appstream
 download_package "ngtcp2" & # to build appstream
 download_package "pyparsing" & # to build flatpak
 download_package "python-Jinja2" & # required by libei
