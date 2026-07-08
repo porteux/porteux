@@ -36,8 +36,8 @@ installpkg $MODULE_PATH/packages/poppler*.txz || exit 1
 [ ! -f /usr/bin/clang ] && (installpkg $MODULE_PATH/packages/llvm*.txz || exit 1)
 
 # required by appstream
-installpkg $MODULE_PATH/packages/libnghttp*.txz || exit 1
-rm $MODULE_PATH/packages/libnghttp*.txz
+installpkg $MODULE_PATH/packages/nghttp*.txz || exit 1
+rm $MODULE_PATH/packages/nghttp*.txz
 installpkg $MODULE_PATH/packages/ngtcp2*.txz || exit 1
 rm $MODULE_PATH/packages/ngtcp2*.txz
 
