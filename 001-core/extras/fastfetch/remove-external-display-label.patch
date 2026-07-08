@@ -1,0 +1,14 @@
+--- a/src/modules/display/display.c
++++ b/src/modules/display/display.c
+@@ -117,11 +117,6 @@
+             }
+
+             bool flag = false;
+-            if (result->type != FF_DISPLAY_TYPE_UNKNOWN) {
+-                ffStrbufAppendS(&buffer, result->type == FF_DISPLAY_TYPE_BUILTIN ? " [Built-in" : " [External");
+-                flag = true;
+-            }
+-
+             if (result->hdrStatus == FF_DISPLAY_HDR_STATUS_ENABLED) {
+                 ffStrbufAppendS(&buffer, flag ? ", HDR" : " [HDR");
+                 flag = true;
