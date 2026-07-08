@@ -20,6 +20,8 @@ VERSION=${info#* }
 tar xf ${PRGNAM}-${VERSION}.tar.gz
 cd ${PRGNAM}-${VERSION}
 
+patch -p1 < $CWD/remove-external-display-label.patch
+
 cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_BUILD_TYPE=Release \
