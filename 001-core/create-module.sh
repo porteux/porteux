@@ -203,7 +203,6 @@ cp -s libxml2.so libxml2.so.2 > /dev/null 2>&1
 
 echo "PorteuX-v${PORTEUX_VERSION}-${PORTEUX_BUILD}" > $MODULE_PATH/packages/etc/porteux-version
 sed -i "s|version|v${PORTEUX_VERSION}|" $MODULE_PATH/packages/etc/issue
-sed -i "s|version|v${PORTEUX_VERSION}|" $MODULE_PATH/packages/etc/issue-openbox
 sed -i "s|^VERSION=.*|VERSION=\"${PORTEUX_VERSION}\"|" $MODULE_PATH/packages/etc/os-release
 sed -i "s|^VERSION_ID=.*|VERSION_ID=${PORTEUX_VERSION}|" $MODULE_PATH/packages/etc/os-release
 sed -i "s|^PRETTY_NAME=.*|PRETTY_NAME=\"PorteuX ${PORTEUX_VERSION} ${PORTEUX_BUILD}\"|" $MODULE_PATH/packages/etc/os-release
