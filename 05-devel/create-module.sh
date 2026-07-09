@@ -72,7 +72,6 @@ rm -fr var/log/setup
 rm usr/lib${SYSTEM_BITS}/libatomic.so*
 rm usr/lib${SYSTEM_BITS}/libgcc_s.so*
 rm usr/lib${SYSTEM_BITS}/libgmp.so*
-rm usr/lib${SYSTEM_BITS}/libgmpxx.so*
 rm usr/lib${SYSTEM_BITS}/libgomp.so*
 rm usr/lib${SYSTEM_BITS}/libltdl.so*
 rm usr/lib${SYSTEM_BITS}/libstdc++.so*
