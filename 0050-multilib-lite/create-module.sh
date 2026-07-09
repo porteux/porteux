@@ -43,7 +43,6 @@ cp --parents -P lib/libk5crypto.* ${current_package}-stripped/
 cp --parents -P lib/libkrb5.* ${current_package}-stripped/
 cp --parents -P lib/libkrb5support.* ${current_package}-stripped/
 cp --parents -P lib/libpcre2* ${current_package}-stripped/
-cp --parents -P lib/libsigsegv.* ${current_package}-stripped/
 cp --parents -P usr/lib/libatomic.* ${current_package}-stripped/
 cp --parents -P usr/lib/libcups.* ${current_package}-stripped/
 cp --parents -P usr/lib/libgcc_s.* ${current_package}-stripped/

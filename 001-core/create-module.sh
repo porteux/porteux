@@ -78,18 +78,15 @@ rm usr/lib${SYSTEM_BITS}/libslang.so.1*
 rm usr/lib${SYSTEM_BITS}/libstdc++.so*
 ROOT=./ installpkg gcc-*.txz
 mkdir ${current_package}-stripped
-cp --parents -P lib${SYSTEM_BITS}/libfuse.* ${current_package}-stripped/
 cp --parents -P lib${SYSTEM_BITS}/libgssapi_krb5.* ${current_package}-stripped/
 cp --parents -P lib${SYSTEM_BITS}/libk5crypto.* ${current_package}-stripped/
 cp --parents -P lib${SYSTEM_BITS}/libkrb5.* ${current_package}-stripped/
 cp --parents -P lib${SYSTEM_BITS}/libkrb5support.* ${current_package}-stripped/
-cp --parents -P lib${SYSTEM_BITS}/libsigsegv.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libatomic.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libcares.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libcups.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libgcc_s.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libgmp.* ${current_package}-stripped/
-cp --parents -P usr/lib${SYSTEM_BITS}/libgmpxx.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libgomp.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libltdl.* ${current_package}-stripped/
 cp --parents -P usr/lib${SYSTEM_BITS}/libslang.* ${current_package}-stripped/
@@ -98,7 +95,6 @@ cd ${current_package}-stripped/usr/lib${SYSTEM_BITS} || exit 1
 cp -fs $(basename $(readlink -f $(command ls libcares.so* | head -n1))) libcares.so
 cp -fs $(basename $(readlink -f $(command ls libcups.so* | head -n1))) libcups.so
 cp -fs $(basename $(readlink -f $(command ls libgmp.so* | head -n1))) libgmp.so
-cp -fs $(basename $(readlink -f $(command ls libgmpxx.so* | head -n1))) libgmpxx.so
 cp -fs $(basename $(readlink -f $(command ls libltdl.so* | head -n1))) libltdl.so
 cp -fs $(basename $(readlink -f $(command ls libslang.so* | head -n1))) libslang.so
 cd $MODULE_PATH/${current_package}/${current_package}-stripped || exit 1
