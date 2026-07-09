@@ -202,6 +202,10 @@ patch --no-backup-if-mismatch -d $MODULE_PATH/packages -p0 < $SCRIPT_PATH/extras
 sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}|GtkEntry::inner-border = {2, 2, 7, 7}|g" $MODULE_PATH/packages/usr/share/themes/Adwaita-dark/gtk-2.0/main.rc
 sed -i "s|GtkEntry::inner-border = {7, 7, 4, 5}|GtkEntry::inner-border = {2, 2, 7, 7}|g" $MODULE_PATH/packages/usr/share/themes/Adwaita/gtk-2.0/main.rc
 
+### update version
+
+sed -i "s|version|v${PORTEUX_VERSION}|" $MODULE_PATH/packages/etc/issue-wm
+
 ### copy build files to 05-devel
 
 copy_to_devel
