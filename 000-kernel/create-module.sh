@@ -44,30 +44,26 @@ if [ ${CLANG:-no} = "yes" ]; then
 
 	COMPILER="Clang"
 	EXTRA_FLAGS="CC=clang LLVM=1 LLVM_IAS=1"
-	# remove flags that are not compatible with the kernel
-	BUILD_PARAMS=$(echo "$CLANG_CFLAGS -Wno-incompatible-pointer-types-discards-qualifiers" | sed \
-		-e 's/-fno-plt//g' \
-		-e 's/-flto=auto//g')
-	LINK_PARAMS=$(echo "$LLDFLAGS" | sed \
-		-e 's/-z,/-z /g' \
-		-e 's/-O2/-O1/g' \
-		-e 's/-Wl,//g' \
-		-e 's/-fuse-ld=lld//g' \
-		-e 's/--icf=safe//g' \
-		-e 's/--gc-sections//g' \
-		-e 's/--strip-all//g')
+	BUILD_PARAMS="$CLANG_CFLAGS"
+	LINK_PARAMS="$LLDFLAGS"
 else
 	COMPILER="GCC"
-	# remove flags that are not compatible with the kernel
-	BUILD_PARAMS=$(echo "$GCC_CFLAGS" | sed \
-		-e 's/-fno-plt//g' \
-		-e 's/-flto=auto//g')
-	LINK_PARAMS=$(echo "$LDFLAGS" | sed \
-		-e 's/-z,/-z /g' \
-		-e 's/-Wl,//g' \
-		-e 's/--gc-sections//g' \
-		-e 's/--strip-all//g')
+	BUILD_PARAMS="$GCC_CFLAGS"
+	LINK_PARAMS="$LDFLAGS"
 fi
+
+# remove flags that are not compatible with the kernel
+BUILD_PARAMS=$(echo "$BUILD_PARAMS" | sed \
+	-e 's/-fno-plt//g' \
+	-e 's/-flto=auto//g')
+LINK_PARAMS=$(echo "$LINK_PARAMS" | sed \
+	-e 's/-z,/-z /g' \
+	-e 's/-Wl,//g' \
+	-e 's/--gc-sections//g' \
+	-e 's/--strip-all//g' \
+	-e 's/--icf=safe//g' \
+	-e 's/--optimize-bb-jumps//g' \
+	-e 's/-fuse-ld=lld//g')
 
 echo -e "Building kernel ${KERNEL_VERSION} using ${COMPILER}...\n"
 
@@ -125,7 +121,6 @@ fi
 echo "Building vmlinuz (this may take a while)..."
 cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
-sed -i 's/select HAVE_ARCH_SECCOMP_FILTER/select HAVE_ARCH_SECCOMP_FILTER\n\tselect HAVE_LD_DEAD_CODE_DATA_ELIMINATION/' arch/x86/Kconfig
 make olddefconfig > /dev/null 2>&1
 make -j${NUMBER_THREADS} KBUILD_LDFLAGS="$LINK_PARAMS" LDFLAGS_MODULE="$LINK_PARAMS" KCFLAGS="$BUILD_PARAMS" ${EXTRA_FLAGS} || { echo "Fail to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULE_PATH/vmlinuz
