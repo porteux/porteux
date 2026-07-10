@@ -78,6 +78,7 @@ rm usr/lib${SYSTEM_BITS}/libslang.so.1*
 rm usr/lib${SYSTEM_BITS}/libstdc++.so*
 ROOT=./ installpkg gcc-*.txz
 mkdir ${current_package}-stripped
+cp --parents -P lib${SYSTEMBITS}/libfuse.* ${currentPackage}-stripped/
 cp --parents -P lib${SYSTEM_BITS}/libgssapi_krb5.* ${current_package}-stripped/
 cp --parents -P lib${SYSTEM_BITS}/libk5crypto.* ${current_package}-stripped/
 cp --parents -P lib${SYSTEM_BITS}/libkrb5.* ${current_package}-stripped/
