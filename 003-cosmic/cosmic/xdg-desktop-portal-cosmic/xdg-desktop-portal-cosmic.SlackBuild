@@ -18,12 +18,10 @@ VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
 RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"
 
-sed -i "s|license = {|#license = {|g" Cargo.toml
-sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
-
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
-make -j${NUMBER_THREADS}
-make install DESTDIR=$PKG
+CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu just build
+rsync -r ./target/x86_64-unknown-linux-gnu/release ./target/ --remove-source-files
+just rootdir=$PKG install
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
