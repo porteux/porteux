@@ -10,17 +10,18 @@ download_master_from_github() {
 	date -r "$(tar tf "$tarball" | head -n1 | cut -d/ -f1)" +%Y%m%d
 }
 
-get_latest_version_tag_from_github() {
+get_latest_versions_tag_from_github() {
 	local repository="$1"
 	local project="$2"
 	local filter_out_version="$3"
-	local versions version_normalized version
+	local versions
 	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]")
 	[ -n "$filter_out_version" ] && versions=$(echo "$versions" | grep -Ev "$filter_out_version")
-	version_normalized=$(echo "${versions//_/.}" | sort -V -r | head -n 1)
-	[[ ${versions} == *"${version_normalized}"* ]] && version=${version_normalized} || version=${version_normalized//./_}
+	echo "$versions" | sort -V -r | head -n 10
+}
 
-	echo "${version}"
+get_latest_version_tag_from_github() {
+	get_latest_versions_tag_from_github "$1" "$2" "$3" | head -n 1
 }
 
 download_latest_from_github() {

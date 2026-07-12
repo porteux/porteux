@@ -14,8 +14,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(get_latest_version_tag_from_github "sass" ${PRGNAM} "sass")
-wget https://github.com/sass/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}-linux-x64.tar.gz
+versions=$(get_latest_versions_tag_from_github "sass" ${PRGNAM} "sass")
+
+for VERSION in ${versions}; do
+	wget https://github.com/sass/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}-linux-x64.tar.gz && break
+done
 
 tar xf ${PRGNAM}-${VERSION}-linux-x64.tar.?z
 
