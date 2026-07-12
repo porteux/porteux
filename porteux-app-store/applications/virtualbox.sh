@@ -49,6 +49,9 @@ fi
 [ "$CURRENT_VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 
 # install
+if grep -q "clang" /proc/version; then
+	export LLVM=1
+fi
 sh "$INSTALLER_PATH" --nox11 || exit 1
 
 # set configuration

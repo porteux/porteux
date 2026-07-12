@@ -47,6 +47,9 @@ fi
 
 # mount and install
 mount "$INSTALLER_PATH" "$MOUNT_DIR"
+if grep -q "clang" /proc/version; then
+	export LLVM=1
+fi
 sh "$MOUNT_DIR/VBoxLinuxAdditions.run" --nox11
 
 # set configuration
