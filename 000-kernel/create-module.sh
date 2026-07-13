@@ -97,6 +97,9 @@ for i in ../aufs_sources/*.patch; do
 done
 rm -fr ../aufs_sources
 
+echo "Patching x86 dead code elimination support..."
+patch -N -p1 < ${SCRIPT_PATH}/kernel-x86-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
+
 # temp fix -- since 6.17.x the kernel is asking for firmware versions that are still not available
 if [ -f drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c ]; then
 	sed -i "s|#define IWL_HR_UCODE_API_MAX.*|#define IWL_HR_UCODE_API_MAX	89|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
