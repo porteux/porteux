@@ -1,0 +1,111 @@
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index f3f7cb0..0539b87 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -264,6 +264,7 @@ config X86
+ 	select HAVE_KRETPROBES
+ 	select HAVE_RETHOOK
+ 	select HAVE_KLP_BUILD			if X86_64
++	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !UNWINDER_ORC
+ 	select HAVE_LIVEPATCH			if X86_64
+ 	select HAVE_MIXED_BREAKPOINTS_REGS
+ 	select HAVE_MOD_ARCH_SPECIFIC
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 4711a35..d476607 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -233,7 +233,7 @@ SECTIONS
+ 
+ 	.x86_cpu_dev.init : AT(ADDR(.x86_cpu_dev.init) - LOAD_OFFSET) {
+ 		__x86_cpu_dev_start = .;
+-		*(.x86_cpu_dev.init)
++		KEEP(*(.x86_cpu_dev.init))
+ 		__x86_cpu_dev_end = .;
+ 	}
+ 
+@@ -255,21 +255,21 @@ SECTIONS
+ 	. = ALIGN(8);
+ 	.retpoline_sites : AT(ADDR(.retpoline_sites) - LOAD_OFFSET) {
+ 		__retpoline_sites = .;
+-		*(.retpoline_sites)
++		KEEP(*(.retpoline_sites))
+ 		__retpoline_sites_end = .;
+ 	}
+ 
+ 	. = ALIGN(8);
+ 	.return_sites : AT(ADDR(.return_sites) - LOAD_OFFSET) {
+ 		__return_sites = .;
+-		*(.return_sites)
++		KEEP(*(.return_sites))
+ 		__return_sites_end = .;
+ 	}
+ 
+ 	. = ALIGN(8);
+ 	.call_sites : AT(ADDR(.call_sites) - LOAD_OFFSET) {
+ 		__call_sites = .;
+-		*(.call_sites)
++		KEEP(*(.call_sites))
+ 		__call_sites_end = .;
+ 	}
+ #endif
+@@ -278,7 +278,7 @@ SECTIONS
+ 	. = ALIGN(8);
+ 	.ibt_endbr_seal : AT(ADDR(.ibt_endbr_seal) - LOAD_OFFSET) {
+ 		__ibt_endbr_seal = .;
+-		*(.ibt_endbr_seal)
++		KEEP(*(.ibt_endbr_seal))
+ 		__ibt_endbr_seal_end = .;
+ 	}
+ #endif
+@@ -287,7 +287,7 @@ SECTIONS
+ 	. = ALIGN(8);
+ 	.cfi_sites : AT(ADDR(.cfi_sites) - LOAD_OFFSET) {
+ 		__cfi_sites = .;
+-		*(.cfi_sites)
++		KEEP(*(.cfi_sites))
+ 		__cfi_sites_end = .;
+ 	}
+ #endif
+@@ -300,7 +300,7 @@ SECTIONS
+ 	. = ALIGN(8);
+ 	.altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
+ 		__alt_instructions = .;
+-		*(.altinstructions)
++		KEEP(*(.altinstructions))
+ 		__alt_instructions_end = .;
+ 	}
+ 
+@@ -310,13 +310,13 @@ SECTIONS
+ 	 * get the address and the length of them to patch the kernel safely.
+ 	 */
+ 	.altinstr_replacement : AT(ADDR(.altinstr_replacement) - LOAD_OFFSET) {
+-		*(.altinstr_replacement)
++		KEEP(*(.altinstr_replacement))
+ 	}
+ 
+ 	. = ALIGN(8);
+ 	.apicdrivers : AT(ADDR(.apicdrivers) - LOAD_OFFSET) {
+ 		__apicdrivers = .;
+-		*(.apicdrivers);
++		KEEP(*(.apicdrivers));
+ 		__apicdrivers_end = .;
+ 	}
+ 
+@@ -388,7 +388,7 @@ SECTIONS
+ 	.brk : AT(ADDR(.brk) - LOAD_OFFSET) {
+ 		__brk_base = .;
+ 		. += 64 * 1024;		/* 64k alignment slop space */
+-		*(.bss..brk)		/* areas brk users have reserved */
++		KEEP(*(.bss..brk))		/* areas brk users have reserved */
+ 		__brk_limit = .;
+ 	}
+ 
+@@ -415,7 +415,7 @@ SECTIONS
+ 	. = ALIGN(HPAGE_SIZE);
+ 	.init.scratch : AT(ADDR(.init.scratch) - LOAD_OFFSET) {
+ 		__init_scratch_begin = .;
+-		*(.init.scratch)
++		KEEP(*(.init.scratch))
+ 		. = ALIGN(HPAGE_SIZE);
+ 		__init_scratch_end = .;
+ 	}
