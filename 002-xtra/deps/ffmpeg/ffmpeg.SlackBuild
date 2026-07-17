@@ -24,6 +24,7 @@ cd $PRGNAM-$VERSION
 sed -i "s|enabled extra_warnings |#enabled extra_warnings |g" ./configure
 patch -p0 < $CWD/add-av_stream_get_first_dts-for-chromium.patch
 
+# disabling 'opus' because it's buggy and its brother libopus (enabled) does the job
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects -Wno-error=int-conversion -Wno-error=incompatible-pointer-types" \
 LDFLAGS="$LLDFLAGS" \
 ./configure \
@@ -36,6 +37,7 @@ LDFLAGS="$LLDFLAGS" \
 	--disable-doc \
 	--disable-htmlpages \
 	--disable-manpages \
+	--disable-decoder=opus \
 	--disable-podpages \
 	--disable-txtpages \
 	--enable-shared \
