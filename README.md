@@ -30,7 +30,7 @@ PorteuX is a modular system so it doesn't require a normal setup/installer. You 
 
 To use PorteuX in a language other than English, download the multilanguage package and use the PorteuX Language Switcher application to choose the desired language.
 
-To read Asian characters, download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module. Some PDFs may also require `poppler-data` package, which can be downloaded via `getpkg` command.
+To read Asian characters, download and activate the [notoserifcjk-regular.xzm](https://github.com/porteux/porteux/raw/main/common/notoserifcjk-regular.xzm) module. Some PDFs may also require `poppler-data` package, which can be downloaded via `getpkg` command (e.g. `getpkg -m poppler-data`).
 
 To run Windows applications inside PorteuX, you can find both Wine and Multilib Lite XZM modules in the App Store. It's recommended to have these 2 modules in `/porteux/optional` and activate them only when needed.
 
