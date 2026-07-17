@@ -84,10 +84,26 @@ cp ${SCRIPT_PATH}/${SYSTEM_BITS}bit.config ${MODULE_PATH}/linux-${KERNEL_VERSION
 
 cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 
-echo "Patching overlayfs dynamic layers support..."
-# runtime layer add/remove for overlayfs (mount -o remount,lowerdir+=/x);
-# requires mounting with maxlayers=<n> and the lowerdir+= option syntax
-patch -N -p1 < ${SCRIPT_PATH}/overlayfs-dynamic-layers.patch > /dev/null 2>&1 || { echo "Failed to apply overlayfs dynamic layers patch."; exit 1; }
+if [ ${OVERLAYFS:-no} = "yes" ]; then
+	echo "Patching overlayfs dynamic layers support..."
+	# runtime layer add/remove for overlayfs (mount -o remount,lowerdir+=/x);
+	# requires mounting with maxlayers=<n> and the lowerdir+= option syntax
+	patch -N -p1 < ${SCRIPT_PATH}/overlayfs-dynamic-layers.patch > /dev/null 2>&1 || { echo "Failed to apply overlayfs dynamic layers patch."; exit 1; }
+	sed -i "s|CONFIG_OVERLAY_FS_METACOPY=y|# CONFIG_OVERLAY_FS_METACOPY is not set|" .config
+else
+	echo "Downloading AUFS..."
+	git clone https://github.com/sfjro/aufs-standalone ${MODULE_PATH}/aufs_sources > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
+	git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION}.${KERNEL_PATCH_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
+
+	echo "Patching AUFS..."
+	rm ../aufs_sources/tmpfs-idr.patch # this patch isn't useful
+	cp -r ../aufs_sources/fs .
+	cp ../aufs_sources/include/uapi/linux/aufs_type.h include/uapi/linux
+	for i in ../aufs_sources/*.patch; do
+		patch -N -p1 < "$i" > /dev/null 2>&1 || { echo "Failed to add AUFS patch '${i}'."; exit 1; }
+	done
+	rm -fr ../aufs_sources
+fi
 
 echo "Patching x86 dead code elimination support..."
 patch -N -p1 < ${SCRIPT_PATH}/kernel-x86-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
