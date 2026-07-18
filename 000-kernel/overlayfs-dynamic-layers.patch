@@ -1,5 +1,5 @@
 Overlayfs: runtime add/remove of lower layers ("dynamic layers"),
-behaving similarly to aufs driver.
+behaving similarly to AUFS driver.
 
 New mount options: maxlayers=<n> enables the feature; on remount,
 lowerdir+=<path> adds a read-only layer at the top of the stack, and
@@ -10,7 +10,7 @@ one feature these distros needed from AUFS. New file:
 fs/overlayfs/dynlayer.c.
 
 --- a/fs/dcache.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/dcache.c	2026-07-18 00:13:01.542313367 +0200
++++ b/fs/dcache.c	2026-07-18 02:07:16.223638675 +0200
 @@ -1345,19 +1345,7 @@
  }
  EXPORT_SYMBOL(shrink_dcache_sb);
@@ -57,7 +57,7 @@ fs/overlayfs/dynlayer.c.
  /*
   * When a file is deleted, we have two options:
 --- a/fs/internal.h	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/internal.h	2026-07-18 00:13:01.542313367 +0200
++++ b/fs/internal.h	2026-07-18 02:07:16.223638675 +0200
 @@ -66,7 +66,6 @@
  int vfs_tmpfile(struct mnt_idmap *idmap,
  		const struct path *parentpath,
@@ -67,7 +67,7 @@ fs/overlayfs/dynlayer.c.
  			   unsigned int lookup_flags);
  int lookup_noperm_common(struct qstr *qname, struct dentry *base);
 --- a/fs/overlayfs/Makefile	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/Makefile	2026-07-18 00:13:01.542313367 +0200
++++ b/fs/overlayfs/Makefile	2026-07-18 02:07:16.223638675 +0200
 @@ -6,4 +6,4 @@
  obj-$(CONFIG_OVERLAY_FS) += overlay.o
  
@@ -75,7 +75,7 @@ fs/overlayfs/dynlayer.c.
 -		copy_up.o export.o params.o xattrs.o
 +		copy_up.o export.o params.o xattrs.o dynlayer.o
 --- a/fs/overlayfs/inode.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/inode.c	2026-07-18 00:13:01.542313367 +0200
++++ b/fs/overlayfs/inode.c	2026-07-18 02:07:16.223638675 +0200
 @@ -117,7 +117,14 @@
  		 * This way all overlay inode numbers are unique and use the
  		 * overlay st_dev.
@@ -112,7 +112,7 @@ fs/overlayfs/dynlayer.c.
  				err = -ESTALE;
  				goto out_err;
 --- a/fs/overlayfs/namei.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/namei.c	2026-07-18 00:13:01.542313367 +0200
++++ b/fs/overlayfs/namei.c	2026-07-18 02:07:16.223638675 +0200
 @@ -37,10 +37,9 @@
  {
  	int res;
@@ -222,7 +222,7 @@ fs/overlayfs/dynlayer.c.
  		}
  	}
  
-@@ -1379,8 +1418,8 @@
+@@ -1379,12 +1418,13 @@
  	return 0;
  }
  
@@ -233,10 +233,33 @@ fs/overlayfs/dynlayer.c.
  {
  	struct ovl_fs *ofs = OVL_FS(dentry->d_sb);
  	struct ovl_entry *poe = OVL_E(dentry->d_parent);
-@@ -1420,13 +1459,40 @@
- 	return d_splice_alias(ctx.inode, dentry);
- }
+ 	bool check_redirect = (ovl_redirect_follow(ofs) || ofs->numdatalayer);
++	struct dentry *ret;
+ 	int err;
+ 	struct ovl_lookup_ctx ctx = {
+ 		.dentry = dentry,
+@@ -1417,16 +1457,57 @@
+ 		return ERR_PTR(err);
+ 	}
  
+-	return d_splice_alias(ctx.inode, dentry);
++	ret = d_splice_alias(ctx.inode, dentry);
++	/*
++	 * d_splice_alias() may return a preexisting alias of this inode
++	 * (merged dirs are hashed and their inodes reused) instead of the
++	 * fresh dentry stamped by ovl_dentry_init_reval().  That alias
++	 * may still carry a stale generation from before a layer change,
++	 * but this lookup just resolved and verified it against the
++	 * current stack, so restamp it - otherwise a pinned directory
++	 * alias could fail revalidation forever, as no fresh lookup can
++	 * ever replace it.
++	 */
++	if (ovl_dyn_enabled(ofs) && !IS_ERR_OR_NULL(ret))
++		ovl_dentry_restamp_gen(ret, ovl_dentry_gen(dentry));
++
++	return ret;
++}
++
 +struct dentry *ovl_lookup(struct inode *dir, struct dentry *dentry,
 +			  unsigned int flags)
 +{
@@ -260,8 +283,8 @@ fs/overlayfs/dynlayer.c.
 +		up_read(&ofs->dyn_lock);
 +
 +	return ret;
-+}
-+
+ }
+ 
  bool ovl_lower_positive(struct dentry *dentry)
  {
 -	struct ovl_entry *poe = OVL_E(dentry->d_parent);
@@ -275,7 +298,7 @@ fs/overlayfs/dynlayer.c.
  
  	/*
  	 * If dentry is negative, then lower is positive iff this is a
-@@ -1439,6 +1505,21 @@
+@@ -1439,6 +1520,21 @@
  	if (!ovl_dentry_upper(dentry))
  		return true;
  
@@ -297,7 +320,7 @@ fs/overlayfs/dynlayer.c.
  	with_ovl_creds(dentry->d_sb) {
  		/* Positive upper -> have to look up lower to see whether it exists */
  		for (i = 0; !done && !positive && i < ovl_numlower(poe); i++) {
-@@ -1479,5 +1560,8 @@
+@@ -1479,5 +1575,8 @@
  		}
  	}
  
@@ -307,7 +330,7 @@ fs/overlayfs/dynlayer.c.
  	return positive;
  }
 --- a/fs/overlayfs/overlayfs.h	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/overlayfs.h	2026-07-18 00:13:01.542313367 +0200
++++ b/fs/overlayfs/overlayfs.h	2026-07-18 02:07:16.223638675 +0200
 @@ -450,6 +450,7 @@
  void ovl_put_write_access(struct dentry *dentry);
  void ovl_start_write(struct dentry *dentry);
@@ -371,7 +394,7 @@ fs/overlayfs/dynlayer.c.
  /* Will this overlay be forced to mount/remount ro? */
  static inline bool ovl_force_readonly(struct ovl_fs *ofs)
 --- a/fs/overlayfs/ovl_entry.h	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/ovl_entry.h	2026-07-18 00:13:01.542313367 +0200
++++ b/fs/overlayfs/ovl_entry.h	2026-07-18 02:07:16.223638675 +0200
 @@ -19,6 +19,8 @@
  	bool metacopy;
  	bool userxattr;
@@ -466,7 +489,7 @@ fs/overlayfs/dynlayer.c.
  
  static inline struct ovl_entry *OVL_E(struct dentry *dentry)
 --- a/fs/overlayfs/params.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/params.c	2026-07-18 00:13:01.542313367 +0200
++++ b/fs/overlayfs/params.c	2026-07-18 02:07:16.223638675 +0200
 @@ -46,6 +46,8 @@
  enum ovl_opt {
  	Opt_lowerdir,
@@ -748,7 +771,7 @@ fs/overlayfs/dynlayer.c.
  		seq_printf(m, ",metacopy=%s", str_on_off(ofs->config.metacopy));
  	if (ofs->config.fsync_mode != ovl_fsync_mode_def())
 --- a/fs/overlayfs/params.h	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/params.h	2026-07-18 00:13:01.542313367 +0200
++++ b/fs/overlayfs/params.h	2026-07-18 02:07:16.223638675 +0200
 @@ -34,8 +34,14 @@
  	struct ovl_fs_context_layer *lower;
  	char *lowerdir_all; /* user provided lowerdir string */
@@ -765,8 +788,32 @@ fs/overlayfs/dynlayer.c.
  void ovl_free_fs(struct ovl_fs *ofs);
  int ovl_fs_params_verify(const struct ovl_fs_context *ctx,
 --- a/fs/overlayfs/readdir.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/readdir.c	2026-07-18 00:13:01.542313367 +0200
-@@ -436,9 +436,29 @@
++++ b/fs/overlayfs/readdir.c	2026-07-18 02:07:16.223638675 +0200
+@@ -412,10 +412,19 @@
+ 	}
+ 	is_real = ovl_dir_is_real(inode);
+ 	if (od->is_real != is_real) {
+-		/* is_real can only become false when dir is copied up */
+-		if (WARN_ON(is_real))
+-			return;
+-		od->is_real = false;
++		if (is_real) {
++			/*
++			 * Normally is_real can only become false (when the
++			 * dir is copied up).  A dynamic layer removal can
++			 * legitimately make a merged dir real again; keep
++			 * iterating this open fd in merged mode, which
++			 * stays correct for a single remaining layer.
++			 */
++			if (WARN_ON(!ovl_dyn_enabled(OVL_FS(inode->i_sb))))
++				return;
++		} else {
++			od->is_real = false;
++		}
+ 	}
+ }
+ 
+@@ -436,9 +445,29 @@
  	int idx, next;
  	const struct ovl_layer *layer;
  	struct ovl_fs *ofs = OVL_FS(dentry->d_sb);
@@ -796,7 +843,7 @@ fs/overlayfs/dynlayer.c.
  
  		if (ofs->casefold)
  			rdd.map = sb_encoding(realpath.dentry->d_sb);
-@@ -462,6 +482,10 @@
+@@ -462,6 +491,10 @@
  			list_del(&rdd.middle);
  		}
  	}
@@ -807,7 +854,7 @@ fs/overlayfs/dynlayer.c.
  	return err;
  }
  
-@@ -484,6 +508,7 @@
+@@ -484,6 +517,7 @@
  	int res;
  	struct ovl_dir_cache *cache;
  	struct inode *inode = d_inode(dentry);
@@ -815,7 +862,7 @@ fs/overlayfs/dynlayer.c.
  
  	cache = ovl_dir_cache(inode);
  	if (cache && ovl_inode_version_get(inode) == cache->version) {
-@@ -501,6 +526,13 @@
+@@ -501,6 +535,13 @@
  	INIT_LIST_HEAD(&cache->entries);
  	cache->root = RB_ROOT;
  
@@ -829,7 +876,7 @@ fs/overlayfs/dynlayer.c.
  	res = ovl_dir_read_merged(dentry, &cache->entries, &cache->root);
  	if (res) {
  		ovl_cache_free(&cache->entries);
-@@ -508,7 +540,7 @@
+@@ -508,7 +549,7 @@
  		return ERR_PTR(res);
  	}
  
@@ -838,7 +885,7 @@ fs/overlayfs/dynlayer.c.
  	ovl_set_dir_cache(inode, cache);
  
  	return cache;
-@@ -697,6 +729,7 @@
+@@ -697,6 +738,7 @@
  	struct inode *inode = d_inode(dentry);
  	struct ovl_fs *ofs = OVL_FS(dentry->d_sb);
  	struct ovl_dir_cache *cache;
@@ -846,7 +893,7 @@ fs/overlayfs/dynlayer.c.
  
  	cache = ovl_dir_cache(inode);
  	if (cache && ovl_inode_version_get(inode) == cache->version)
-@@ -710,6 +743,8 @@
+@@ -710,6 +752,8 @@
  	if (!cache)
  		return ERR_PTR(-ENOMEM);
  
@@ -855,7 +902,7 @@ fs/overlayfs/dynlayer.c.
  	res = ovl_dir_read_impure(path, &cache->entries, &cache->root);
  	if (res) {
  		ovl_cache_free(&cache->entries);
-@@ -731,7 +766,7 @@
+@@ -731,7 +775,7 @@
  		return NULL;
  	}
  
@@ -865,8 +912,8 @@ fs/overlayfs/dynlayer.c.
  
  	return cache;
 --- a/fs/overlayfs/super.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/super.c	2026-07-18 00:13:01.542313367 +0200
-@@ -121,15 +121,59 @@
++++ b/fs/overlayfs/super.c	2026-07-18 02:07:16.223638675 +0200
+@@ -121,15 +121,71 @@
  static int ovl_dentry_revalidate_common(struct dentry *dentry,
  					unsigned int flags, bool weak)
  {
@@ -905,6 +952,18 @@ fs/overlayfs/dynlayer.c.
 +			 */
 +			if (d_mountpoint(dentry))
 +				return 1;
++			/*
++			 * Weak revalidation runs on fd-based re-resolution
++			 * (/proc/self/fd magic links, AT_EMPTY_PATH, jumps
++			 * at the end of a walk), where returning 0 surfaces
++			 * as ESTALE to userspace and a retry jumps straight
++			 * back to this same dentry - it can never self-heal
++			 * through a fresh lookup.  Tolerate the older but
++			 * self-consistent view instead, like the
++			 * mount-shadowed case above.
++			 */
++			if (weak)
++				return 1;
 +			if (flags & LOOKUP_RCU)
 +				return -ECHILD;
 +			if (d_is_dir(dentry) && ovl_dyn_has_submounts(dentry))
@@ -927,7 +986,7 @@ fs/overlayfs/dynlayer.c.
  		 * Lookup of negative dentries will call ovl_dentry_init_flags()
  		 * with NULL upperdentry and NULL oe, resulting in the
  		 * DCACHE_OP*_REVALIDATE flags being cleared.  Hence the only
-@@ -140,6 +184,14 @@
+@@ -140,6 +196,14 @@
  		return -ECHILD;
  	}
  
@@ -942,7 +1001,7 @@ fs/overlayfs/dynlayer.c.
  	oe = OVL_I_E(inode);
  	lowerstack = ovl_lowerstack(oe);
  	upper = ovl_i_dentry_upper(inode);
-@@ -149,6 +201,9 @@
+@@ -149,6 +213,9 @@
  	for (i = 0; ret > 0 && i < ovl_numlower(oe); i++)
  		ret = ovl_revalidate_real(lowerstack[i].dentry, flags, weak);
  
@@ -952,7 +1011,7 @@ fs/overlayfs/dynlayer.c.
  	return ret;
  }
  
-@@ -195,6 +250,7 @@
+@@ -195,6 +262,7 @@
  	oi->__upperdentry = NULL;
  	oi->lowerdata_redirect = NULL;
  	oi->oe = NULL;
@@ -960,7 +1019,7 @@ fs/overlayfs/dynlayer.c.
  	mutex_init(&oi->lock);
  
  	return &oi->vfs_inode;
-@@ -204,6 +260,7 @@
+@@ -204,6 +272,7 @@
  {
  	struct ovl_inode *oi = OVL_I(inode);
  
@@ -968,7 +1027,7 @@ fs/overlayfs/dynlayer.c.
  	kfree(oi->redirect);
  	kfree(oi->oe);
  	mutex_destroy(&oi->lock);
-@@ -213,8 +270,8 @@
+@@ -213,8 +282,8 @@
  static void ovl_destroy_inode(struct inode *inode)
  {
  	struct ovl_inode *oi = OVL_I(inode);
@@ -978,7 +1037,7 @@ fs/overlayfs/dynlayer.c.
  	ovl_stack_put(ovl_lowerstack(oi->oe), ovl_numlower(oi->oe));
  	if (S_ISDIR(inode->i_mode))
  		ovl_dir_cache_free(inode);
-@@ -281,9 +338,14 @@
+@@ -281,9 +350,14 @@
  	struct path path;
  	int err;
  
@@ -993,7 +1052,7 @@ fs/overlayfs/dynlayer.c.
  	if (!err) {
  		buf->f_namelen = ofs->namelen;
  		buf->f_type = OVERLAYFS_SUPER_MAGIC;
-@@ -394,8 +456,8 @@
+@@ -394,8 +468,8 @@
  	return NULL;
  }
  
@@ -1004,7 +1063,7 @@ fs/overlayfs/dynlayer.c.
  {
  	struct kstatfs statfs;
  	int err = vfs_statfs(path, &statfs);
-@@ -460,7 +522,7 @@
+@@ -460,7 +534,7 @@
  	return !is_subdir(workdir, upperdir) && !is_subdir(upperdir, workdir);
  }
  
@@ -1013,7 +1072,7 @@ fs/overlayfs/dynlayer.c.
  			  struct inode **ptrap, const char *name)
  {
  	struct inode *trap;
-@@ -484,7 +546,7 @@
+@@ -484,7 +558,7 @@
   * for example, an old overlay mount is leaked and now its upperdir is
   * attempted to be used as a lower layer in a new overlay mount.
   */
@@ -1022,7 +1081,7 @@ fs/overlayfs/dynlayer.c.
  {
  	if (ofs->config.index) {
  		pr_err("%s is in-use as upperdir/workdir of another mount, mount with '-o index=off' to override exclusive upperdir protection.\n",
-@@ -515,6 +577,21 @@
+@@ -515,6 +589,21 @@
  	if (err)
  		goto out;
  
@@ -1044,7 +1103,7 @@ fs/overlayfs/dynlayer.c.
  	err = ovl_setup_trap(sb, upperpath->dentry, &upper_layer->trap,
  			     "upperdir");
  	if (err)
-@@ -945,7 +1022,7 @@
+@@ -945,7 +1034,7 @@
  }
  
  /* Get a unique fsid for the layer */
@@ -1053,7 +1112,7 @@ fs/overlayfs/dynlayer.c.
  {
  	struct super_block *sb = path->mnt->mnt_sb;
  	const uuid_t *uuid = ovl_origin_uuid(ofs) ? &sb->s_uuid : &uuid_null;
-@@ -962,6 +1039,17 @@
+@@ -962,6 +1051,17 @@
  
  	if (!ovl_lower_uuid_ok(ofs, uuid)) {
  		bad_uuid = true;
@@ -1071,7 +1130,7 @@ fs/overlayfs/dynlayer.c.
  		if (ofs->config.xino == OVL_XINO_AUTO) {
  			ofs->config.xino = OVL_XINO_OFF;
  			warn = true;
-@@ -971,6 +1059,8 @@
+@@ -971,6 +1071,8 @@
  			ofs->config.nfs_export = false;
  			warn = true;
  		}
@@ -1080,7 +1139,7 @@ fs/overlayfs/dynlayer.c.
  		if (warn) {
  			pr_warn("%s uuid in non-single lower fs '%pd2', falling back to xino=%s,index=off,nfs_export=off.\n",
  				uuid_is_null(uuid) ? "null" : "conflicting",
-@@ -984,11 +1074,21 @@
+@@ -984,11 +1086,21 @@
  		return err;
  	}
  
@@ -1106,7 +1165,7 @@ fs/overlayfs/dynlayer.c.
  }
  
  /*
-@@ -1027,7 +1127,9 @@
+@@ -1027,7 +1139,9 @@
  	unsigned int i;
  	size_t nr_merged_lower;
  
@@ -1117,7 +1176,7 @@ fs/overlayfs/dynlayer.c.
  	if (ofs->fs == NULL)
  		return -ENOMEM;
  
-@@ -1067,6 +1169,23 @@
+@@ -1067,6 +1181,23 @@
  		struct inode *trap;
  		int fsid;
  
@@ -1141,7 +1200,7 @@ fs/overlayfs/dynlayer.c.
  		if (i < nr_merged_lower)
  			fsid = ovl_get_fsid(ofs, &l->path);
  		else
-@@ -1140,8 +1259,16 @@
+@@ -1140,8 +1271,16 @@
  	 * bits reserved for fsid, it emits a warning and uses the original
  	 * inode number or a non persistent inode number allocated from a
  	 * dedicated range.
@@ -1159,7 +1218,7 @@ fs/overlayfs/dynlayer.c.
  		if (ofs->config.xino == OVL_XINO_ON)
  			pr_info("\"xino=on\" is useless with all layers on same fs, ignore.\n");
  		ofs->xino_mode = 0;
-@@ -1155,8 +1282,11 @@
+@@ -1155,8 +1294,11 @@
  		 * persistent inode number range that is used for resolving
  		 * xino lower bits overflow.
  		 */
@@ -1172,7 +1231,7 @@ fs/overlayfs/dynlayer.c.
  	}
  
  	if (ofs->xino_mode > 0) {
-@@ -1233,7 +1363,7 @@
+@@ -1233,7 +1375,7 @@
   * - another layer of this overlayfs instance
   * - upper/work dir of any overlayfs instance
   */
@@ -1181,7 +1240,7 @@ fs/overlayfs/dynlayer.c.
  			   struct dentry *dentry, const char *name,
  			   bool is_lower)
  {
-@@ -1388,12 +1518,67 @@
+@@ -1388,12 +1530,67 @@
  		return err;
  	}
  
@@ -1252,7 +1311,7 @@ fs/overlayfs/dynlayer.c.
  		kfree(layers);
  		return err;
 --- a/fs/overlayfs/util.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/util.c	2026-07-18 00:13:01.542313367 +0200
++++ b/fs/overlayfs/util.c	2026-07-18 02:07:16.223638675 +0200
 @@ -136,6 +136,23 @@
  		dput(stack[i].dentry);
  }
@@ -1559,7 +1618,7 @@ fs/overlayfs/dynlayer.c.
  
  /* Return real inode which contains data. Does not return metacopy inode */
 --- a/include/linux/dcache.h	2026-06-27 12:08:18.000000000 +0200
-+++ b/include/linux/dcache.h	2026-07-18 00:13:01.542313367 +0200
++++ b/include/linux/dcache.h	2026-07-18 02:07:16.223638675 +0200
 @@ -289,6 +289,23 @@
  /* test whether we have any submounts in a subdir tree */
  extern int path_has_submounts(const struct path *);
@@ -1585,8 +1644,8 @@ fs/overlayfs/dynlayer.c.
   * This adds the entry to the hash queues.
   */
 --- a/fs/overlayfs/dynlayer.c	2026-07-17 20:39:48.801384341 +0200
-+++ b/fs/overlayfs/dynlayer.c	2026-07-18 00:13:01.542313367 +0200
-@@ -0,0 +1,1315 @@
++++ b/fs/overlayfs/dynlayer.c	2026-07-18 02:07:16.223638675 +0200
+@@ -0,0 +1,1358 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
 + * Dynamic lower layer support for overlayfs.
@@ -1615,12 +1674,22 @@ fs/overlayfs/dynlayer.c.
 + *
 + *  - Layer ADDITION updates the cached state surgically: the walk in
 + *    ovl_dyn_surgical_add() touches only what the module provides,
-+ *    keeping the dentry cache warm.  If that is not possible, and for
-+ *    layer REMOVAL, staleness is handled via a generation stamp in
-+ *    the high bits of d_fsdata (see ovl_dentry_gen()), inherited from
-+ *    the parent at instantiation time: bumping the generation makes
-+ *    every dentry (including negatives) fail d_revalidate on its next
-+ *    use and be looked up again through the fresh root.
++ *    keeping the dentry cache warm.  If that is not possible,
++ *    staleness is handled via a generation stamp in the high bits of
++ *    d_fsdata (see ovl_dentry_gen()), inherited from the parent at
++ *    instantiation time: bumping the generation makes every dentry
++ *    (including negatives) fail d_revalidate on its next use and be
++ *    looked up again through the fresh root.
++ *
++ *  - Layer REMOVAL never bumps the generation: lookups are locked out
++ *    for its whole duration, the dcache shrink plus inode eviction
++ *    flush everything unpinned (including negative dentries that the
++ *    removed layer's whiteouts created), and the surviving in-use
++ *    directories are rebuilt in place - the surviving cache is
++ *    consistent as-is.  A bump would only leave pinned dentries
++ *    (process CWDs, fd-held dirs, which no fresh lookup can replace)
++ *    permanently stale, breaking fd-based path re-resolution
++ *    (/proc/self/fd, as used by FUSE and firejail) with ESTALE.
 + *
 + *  - Removal only succeeds if no inode (other than the root) still
 + *    references the layer, after dropping all unpinned cache entries.
@@ -1654,19 +1723,12 @@ fs/overlayfs/dynlayer.c.
 + * or the root inode lock).
 + */
 +static struct ovl_entry *ovl_dyn_swap_root(struct super_block *sb,
-+					   struct ovl_entry *new_oe,
-+					   bool bump_gen)
++					   struct ovl_entry *new_oe)
 +{
-+	struct ovl_fs *ofs = OVL_FS(sb);
 +	struct inode *inode = ovl_root_inode(sb);
 +	struct ovl_entry *old_oe = OVL_I_E(inode);
-+	unsigned long gen;
 +
 +	WRITE_ONCE(OVL_I(inode)->oe, new_oe);
-+	if (bump_gen) {
-+		gen = atomic_long_inc_return(&ofs->dyn_gen);
-+		ovl_dentry_restamp_gen(sb->s_root, gen);
-+	}
 +	/* force the merged readdir cache of the root to be rebuilt */
 +	OVL_I(inode)->version++;
 +
@@ -1903,6 +1965,35 @@ fs/overlayfs/dynlayer.c.
 +static bool ovl_entry_has_layer(struct ovl_entry *oe,
 +				const struct ovl_layer *layer);
 +
++/*
++ * Overlay inodes are found by lookups through the inode hash, keyed
++ * by the top lower inode - or by the upper inode for pure upper
++ * files (see ovl_get_inode()).  When a dynamic layer change alters a
++ * cached directory's top lower, the cached inode would be left
++ * hashed under its old key: a fresh lookup, hashing by the new top
++ * lower, would miss it and allocate an alias of the directory (see
++ * ovl_dyn_adopt_upper()).  Re-key the inode instead, so lookups keep
++ * finding it.  The private per-inode mutex serializes this against
++ * the hash insertion in ovl_inode_update() (copy-up); lookups are
++ * excluded by dyn_lock, held for writing by every caller.
++ */
++static void ovl_dyn_rekey_inode(struct inode *inode, struct ovl_entry *oe)
++{
++	struct inode *key = ovl_numlower(oe) ?
++			    d_inode(ovl_lowerstack(oe)[0].dentry) :
++			    ovl_inode_upper(inode);
++
++	ovl_inode_lock(inode);
++	if (inode->i_private != key) {
++		if (!inode_unhashed(inode))
++			remove_inode_hash(inode);
++		inode->i_private = key;
++		if (key)
++			__insert_inode_hash(inode, (unsigned long) key);
++	}
++	ovl_inode_unlock(inode);
++}
++
 +/* Insert @layer at the top of the lower stack of cached dir @inode */
 +static int ovl_dyn_insert_lower(struct inode *inode,
 +				struct ovl_layer *layer,
@@ -1938,6 +2029,7 @@ fs/overlayfs/dynlayer.c.
 +	WRITE_ONCE(oi->oe, new_oe);
 +	/* the merged readdir cache of this dir must be rebuilt */
 +	WRITE_ONCE(oi->version, oi->version + 1);
++	ovl_dyn_rekey_inode(inode, new_oe);
 +
 +	old->oe = old_oe;
 +	list_add(&old->node, old_oes);
@@ -1946,7 +2038,7 @@ fs/overlayfs/dynlayer.c.
 +
 +/*
 + * Make @child permanently stale relative to the mount's current
-+ * generation: ofs->dyn_gen only ever increases (see ovl_dyn_swap_root()),
++ * generation: ofs->dyn_gen only ever increases (see ovl_dyn_bump_gen()),
 + * so restamping @child with its own current value minus one can never
 + * again match a live dyn_gen.  The next revalidation of @child that
 + * finds it no longer mount-shadowed will invalidate and re-look-up
@@ -2307,7 +2399,7 @@ fs/overlayfs/dynlayer.c.
 +	ofs->config.lowerdirs[idx] = dup_name;
 +	if (idx == ofs->numlayer)
 +		ofs->numlayer++;
-+	old_oe = ovl_dyn_swap_root(sb, new_oe, false);
++	old_oe = ovl_dyn_swap_root(sb, new_oe);
 +	inode_unlock(root_inode);
 +
 +	/*
@@ -2407,21 +2499,30 @@ fs/overlayfs/dynlayer.c.
 +	struct inode *inode;
 +
 +	/*
-+	 * Drop all unpinned dentries; their inodes go with them.  A
-+	 * batch of removals in one remount shares a single shrink for
++	 * Drop all unpinned dentries; their inodes go with them.  Then
++	 * evict, in one pass, the unreferenced inodes that survive
++	 * without any alias (hashed non-dirs): the dentry cache is
++	 * already cold sb-wide, so purging every unused inode instead
++	 * of only this layer's costs nothing extra and spares the scan
++	 * below its per-inode evict-and-restart dance, which was
++	 * quadratic in the number of cached inodes.  A batch of
++	 * removals in one remount shares a single shrink+purge for
 +	 * their first attempt (nothing about removing a different layer
 +	 * changes this layer's reference counts); a retry within one
-+	 * layer's own removal always re-shrinks, since it only happens
++	 * layer's own removal always redoes both, since it only happens
 +	 * after a copy-up changed reference counts.
 +	 */
 +	if (force_shrink || !*dcache_fresh) {
 +		shrink_dcache_sb(sb);
++		evict_inodes(sb);
 +		*dcache_fresh = true;
 +	}
 +
 +	/*
-+	 * Some unreferenced inodes may survive in the inode cache
-+	 * without any alias (hashed non-dirs).  Evict them.
++	 * The eviction branch below now only catches an inode whose
++	 * last reference was dropped after evict_inodes() above ran
++	 * (e.g. a racing close); everything unreferenced before that
++	 * is already gone.
 +	 */
 +again:
 +	scan->nr_busy = 0;
@@ -2592,6 +2693,7 @@ fs/overlayfs/dynlayer.c.
 +	WRITE_ONCE(oi->oe, new_oe);
 +	/* the merged readdir cache of this dir must be rebuilt */
 +	oi->version++;
++	ovl_dyn_rekey_inode(inode, new_oe);
 +
 +	parked->oe = old_oe;
 +	parked->mnt = mntget(layer->mnt);
@@ -2774,7 +2876,7 @@ fs/overlayfs/dynlayer.c.
 +		j++;
 +	}
 +
-+	old_root_oe = ovl_dyn_swap_root(sb, new_oe, true);
++	old_root_oe = ovl_dyn_swap_root(sb, new_oe);
 +
 +	/*
 +	 * Swap in the prepared stacks of the collected in-use
