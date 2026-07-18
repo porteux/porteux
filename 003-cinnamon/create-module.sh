@@ -41,26 +41,33 @@ export ICON_THEME=Yaru-blue
 # required by lightdm
 installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1
 
-# cinnamon common
+# cinnamon common deps
 for package in \
 	audacious \
-	audacious-plugins \
-	ffmpegthumbnailer \
 	lightdm \
-	lightdm-gtk-greeter \
 	vte \
 	libnma \
-	network-manager-applet \
-	mate-polkit \
 	gsound \
-	zenity \
 	libpeas \
 	libgxps \
 	gtksourceview4 \
-	gnome-screenshot \
 ; do
-bash $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
+find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# cinnamon common extras
+for package in \
+	audacious-plugins \
+	ffmpegthumbnailer \
+	gnome-screenshot \
+	lightdm-gtk-greeter \
+	mate-polkit \
+	network-manager-applet \
+	zenity \
+; do
+bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -129,7 +136,7 @@ rm $MODULE_PATH/packages/clutter*.txz
 for package in \
 	file-roller \
 ; do
-bash $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

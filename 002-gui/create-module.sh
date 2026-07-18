@@ -70,6 +70,7 @@ rm $MODULE_PATH/packages/xtrans*.txz
 # required by librsvg
 installpkg $MODULE_PATH/packages/cargo-c*.txz || exit 1
 rm $MODULE_PATH/packages/cargo-c*
+
 # not using rust from slackware because it's much slower
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
 rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
@@ -81,12 +82,10 @@ for package in \
 	freetype \
 	harfbuzz \
 	xorg-server \
-	xf86-input-libinput \
 	libX11 \
 	gsettings-desktop-schemas \
 	gtk+3-classic \
 	pipewire \
-	wireplumber \
 	cxxopts \
 	imlib2 \
 	libostree \
@@ -95,7 +94,6 @@ for package in \
 	libxmlb \
 	appstream \
 	intel-gmmlib \
-	xdg-desktop-portal-gtk \
 	librsvg \
 ; do
 bash $SCRIPT_PATH/deps/${package}/${package}.SlackBuild || exit 1
@@ -117,8 +115,11 @@ for package in \
 	openbox \
 	pamixer \
 	webp-pixbuf-loader \
+	wireplumber \
 	wlr-randr \
 	xdg-desktop-portal \
+	xdg-desktop-portal-gtk \
+	xf86-input-libinput \
 ; do
 bash $SCRIPT_PATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null

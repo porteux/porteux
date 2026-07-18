@@ -60,11 +60,8 @@ for package in \
 	x264 \
 	x265 \
 	libass \
-	faad2 \
-	faac \
 	svt-av1 \
 	dav1d \
-	libheif \
 	libplacebo \
 	nv-codec-headers \
 	amf-headers \
@@ -80,8 +77,9 @@ done
 rm $MODULE_PATH/packages/nv-codec-headers*.txz
 rm $MODULE_PATH/packages/amf-headers*.txz
 
-# xtra deps
+# xtra extras
 for package in \
+	libheif \
 	mpv \
 	transmission \
 ; do

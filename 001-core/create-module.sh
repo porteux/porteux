@@ -35,28 +35,28 @@ rm $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
 
 ### packages outside slackware repository
 
-# required to build procps-ng
-installpkg $MODULE_PATH/packages/ncurses*.txz || exit 1
-
 # core deps
 for package in \
 	glibc \
-	coreutils \
 	zlib-ng \
 	zstd \
 	squashfs-tools \
-	sysvinit \
 	duktape \
-	polkit \
-	procps-ng \
 ; do
 bash $SCRIPT_PATH/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+# required to build procps-ng
+installpkg $MODULE_PATH/packages/ncurses*.txz || exit 1
+
 # core extras
 for package in \
+	coreutils \
+	sysvinit \
+	procps-ng \
+	polkit \
 	ntfsprogs-plus \
 	fastfetch \
 	7zip \
