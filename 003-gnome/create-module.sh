@@ -78,15 +78,22 @@ done
 # gnome common deps
 for package in \
 	audacious \
-	audacious-plugins \
-	ffmpegthumbnailer \
 	dart-sass \
-	adw-gtk3 \
 	exiv2 \
 	gsound \
 ; do
-bash $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
+find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# gnome common extras
+for package in \
+	adw-gtk3 \
+	audacious-plugins \
+	ffmpegthumbnailer \
+; do
+bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

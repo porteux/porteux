@@ -50,27 +50,34 @@ installpkg $MODULE_PATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULE_PATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULE_PATH/packages/libindicator*.txz || exit 1
 
-# mate common
+# mate common deps
 for package in \
 	audacious \
-	audacious-plugins \
-	ffmpegthumbnailer \
 	lightdm \
-	lightdm-gtk-greeter \
 	vte \
 	libnma \
-	network-manager-applet \
 	mate-common \
-	mate-polkit \
-	atril \
-	xcape \
-	zenity \
 	gtk-layer-shell \
 	libpeas \
 	libgxps \
 ; do
-bash $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
+find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# mate common extras
+for package in \
+	atril \
+	audacious-plugins \
+	ffmpegthumbnailer \
+	lightdm-gtk-greeter \
+	mate-polkit \
+	network-manager-applet \
+	xcape \
+	zenity \
+; do
+bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -87,7 +94,7 @@ rm $MODULE_PATH/packages/xtrans*.txz
 
 # mate deps
 current_package=gtksourceview4
-bash $SCRIPT_PATH/../common/${current_package}/${current_package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/deps/${current_package}/${current_package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${current_package}*.txz || exit 1
 rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
@@ -117,8 +124,7 @@ done
 
 # engrampa from common, must be built after caja because of caja actions
 current_package=engrampa
-bash $SCRIPT_PATH/../common/${current_package}/${current_package}.SlackBuild || exit 1
-installpkg $MODULE_PATH/packages/${current_package}*.txz || exit 1
+bash $SCRIPT_PATH/../common/extras/${current_package}/${current_package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
 # mate packages

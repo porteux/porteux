@@ -24,17 +24,24 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages outside slackware repository
 
-# cosmic common
+# cosmic common deps
 for package in \
 	audacious \
-	audacious-plugins \
-	gpicview \
-	ffmpegthumbnailer \
 	dart-sass \
-	adw-gtk3 \
 ; do
-bash $SCRIPT_PATH/../common/${package}/${package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
+find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# cosmic common extras
+for package in \
+	adw-gtk3 \
+	audacious-plugins \
+	ffmpegthumbnailer \
+	gpicview \
+; do
+bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
@@ -44,7 +51,7 @@ rm $MODULE_PATH/packages/dart-sass*.txz
 installpkg $MODULE_PATH/packages/libhandy*.txz || exit 1
 
 current_package=file-roller
-bash $SCRIPT_PATH/../common/${current_package}/${current_package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/extras/${current_package}/${current_package}.SlackBuild || exit 1
 rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 # required from now on
