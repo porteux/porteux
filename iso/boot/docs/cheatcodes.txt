@@ -55,6 +55,15 @@ baseonly
        debugging to see if problems you are having are associated with
        a module you've added to the system.
 
+bootlog
+
+   ... Log everything the initrd prints during boot to a file while
+       still showing it on screen. This is useful for reporting boot
+       problems that scroll off the screen too fast to read.
+
+       The log is available in the running system at
+       '/mnt/live/var/log/livedbg-verbose'.
+
 cfgfile=file.cfg
 
    ... Specify the configuration file that PorteuX will search for.
