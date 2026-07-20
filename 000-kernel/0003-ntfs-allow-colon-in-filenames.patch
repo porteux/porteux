@@ -1,0 +1,31 @@
+From: linux-ntfs
+
+Subject: [PATCH] ntfs: allow colon (':') in file names
+
+ntfs_check_bad_char() unconditionally rejects ':' (0x003A) when
+creating, renaming, or linking files, regardless of mount options.
+Unlike '/' (which can never appear in a path component) or '\\'
+(reserved for short-name/DOS compatibility), a raw colon in the
+on-disk filename attribute is perfectly valid NTFS content -- the
+restriction against it is purely a Win32 API/Explorer convention
+(colon is used to introduce an alternate data stream name), not an
+on-disk filesystem limitation, and this driver does not implement
+colon-separated ADS access via the file name.
+
+Drop the 0x003A comparison so colons are always permitted. All other
+Windows-reserved characters ('"', '*', '/', '<', '>', '?', '\\', '|'
+and control characters) remain blocked unconditionally, and the
+windows_names mount option still applies its other checks (reserved
+device names, trailing space/dot) unchanged.
+---
+--- a/fs/ntfs/namei.c
++++ b/fs/ntfs/namei.c
+@@ -49,7 +49,7 @@
+
+ 		if (c < 0x0020 ||
+ 		    c == 0x0022 || c == 0x002A || c == 0x002F ||
+-		    c == 0x003A || c == 0x003C || c == 0x003E ||
++		    c == 0x003C || c == 0x003E ||
+ 		    c == 0x003F || c == 0x005C || c == 0x007C)
+ 			return -EINVAL;
+ 	}

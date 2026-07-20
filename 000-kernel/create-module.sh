@@ -72,7 +72,7 @@ cp ${SCRIPT_PATH}/kernel-firmware*.txz ${MODULE_PATH}/packages 2>/dev/null
 
 echo "Downloading kernel source code..."
 if ! ls linux-${KERNEL_VERSION}.tar.?z 1> /dev/null 2>&1; then
-	wget -P ${MODULE_PATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { echo "Fail to download kernel source code."; exit 1; }
+	wget -P ${MODULE_PATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { echo "Failed to download kernel source code."; exit 1; }
 fi
 
 echo "Extracting kernel source code..."
@@ -86,12 +86,11 @@ cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 
 if [ ${OVERLAYFS:-no} = "yes" ]; then
 	echo "Patching OverlayFS dynamic layers support..."
-	# add support to runtime module activation/deactivation
-	patch -N -p1 < ${SCRIPT_PATH}/overlayfs-dynamic-layers.patch > /dev/null 2>&1 || { echo "Failed to apply overlayfs dynamic layers patch."; exit 1; }
+	patch -N -p1 < ${SCRIPT_PATH}/0002-overlayfs-dynamic-layers.patch > /dev/null 2>&1 || { echo "Failed to apply OverlayFS dynamic layers patch."; exit 1; }
 	sed -i "s|CONFIG_OVERLAY_FS_METACOPY=y|# CONFIG_OVERLAY_FS_METACOPY is not set|" .config
 elif [ ${AUFSNG:-no} = "yes" ]; then
 	echo "Downloading AUFS-NG..."
-	git clone --depth 1 https://github.com/fulalas/aufs-ng fs/aufs-ng > /dev/null 2>&1 || { echo "Fail to download AUFS-NG."; exit 1; }
+	git clone --depth 1 https://github.com/fulalas/aufs-ng fs/aufs-ng > /dev/null 2>&1 || { echo "Failed to download AUFS-NG."; exit 1; }
 	grep -q 'source "fs/aufs-ng/Kconfig"' fs/Kconfig || sed -i '/source "fs\/overlayfs\/Kconfig"/a source "fs/aufs-ng/Kconfig"' fs/Kconfig
 	grep -q 'source "fs/aufs-ng/Kconfig"' fs/Kconfig || { echo "Failed to register fs/aufs-ng/Kconfig: anchor line not found in fs/Kconfig."; exit 1; }
 	grep -q 'CONFIG_AUFSNG_FS' fs/Makefile || sed -i '/obj-\$(CONFIG_OVERLAY_FS)\s*+= overlayfs\//a obj-$(CONFIG_AUFSNG_FS)\t+= aufs-ng/' fs/Makefile
@@ -100,8 +99,8 @@ elif [ ${AUFSNG:-no} = "yes" ]; then
 	echo "CONFIG_AUFSNG_FS=y" >> .config
 else
 	echo "Downloading AUFS..."
-	git clone https://github.com/sfjro/aufs-standalone ${MODULE_PATH}/aufs_sources > /dev/null 2>&1 || { echo "Fail to download AUFS."; exit 1; }
-	git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION}.${KERNEL_PATCH_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.x-rcN > /dev/null 2>&1 || { echo "Fail to download AUFS for this kernel version."; exit 1; }
+	git clone https://github.com/sfjro/aufs-standalone ${MODULE_PATH}/aufs_sources > /dev/null 2>&1 || { echo "Failed to download AUFS."; exit 1; }
+	git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION}.${KERNEL_PATCH_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.x-rcN > /dev/null 2>&1 || { echo "Failed to download AUFS for this kernel version."; exit 1; }
 
 	echo "Patching kernel with AUFS..."
 	rm ../aufs_sources/tmpfs-idr.patch # this patch isn't useful
@@ -113,8 +112,11 @@ else
 	rm -fr ../aufs_sources
 fi
 
-echo "Patching x86 dead code elimination support..."
-patch -N -p1 < ${SCRIPT_PATH}/kernel-x86-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
+echo "Patching dead code elimination support..."
+patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
+
+echo "Patching ntfs colon character support..."
+patch -N -p1 < ${SCRIPT_PATH}/0003-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }
 
 # temp fix -- since 6.17.x the kernel is asking for firmware versions that are still not available
 if [ -f drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c ]; then
@@ -141,7 +143,7 @@ echo "Building vmlinuz (this may take a while)..."
 cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
-make -j${NUMBER_THREADS} KBUILD_LDFLAGS="$LINK_PARAMS" LDFLAGS_MODULE="$LINK_PARAMS" KCFLAGS="$BUILD_PARAMS" ${EXTRA_FLAGS} || { echo "Fail to build kernel."; exit 1; }
+make -j${NUMBER_THREADS} KBUILD_LDFLAGS="$LINK_PARAMS" LDFLAGS_MODULE="$LINK_PARAMS" KCFLAGS="$BUILD_PARAMS" ${EXTRA_FLAGS} || { echo "Failed to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULE_PATH/vmlinuz
 
 echo "Installing modules..."
