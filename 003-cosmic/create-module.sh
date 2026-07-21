@@ -48,6 +48,7 @@ done
 # only required for building adw-gtk3
 rm $MODULE_PATH/packages/dart-sass*.txz
 
+# required by file-roller
 installpkg $MODULE_PATH/packages/libhandy*.txz || exit 1
 
 current_package=file-roller
