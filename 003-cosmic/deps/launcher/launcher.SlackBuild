@@ -12,6 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
+patch -Np1 -i $CWD/use-libdirsuffix.patch
+sed -i "s|base-dir / 'lib'|base-dir / 'lib${SYSTEM_BITS}'|g" justfile
+sed -i "s|@LIBDIRSUFFIX@|${SYSTEM_BITS}|" src/lib.rs
+
 git clone https://github.com/pop-os/$PRGNAM
 cd $PRGNAM
 VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
