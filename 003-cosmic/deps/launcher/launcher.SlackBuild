@@ -16,9 +16,10 @@ git clone https://github.com/pop-os/$PRGNAM
 cd $PRGNAM
 VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
-patch -Np1 -i $CWD/use-libdirsuffix.patch
-sed -i "s|base-dir / 'lib'|base-dir / 'lib${SYSTEM_BITS}'|g" justfile
+# make sure binaries go into lib64 in case of x64 system
 sed -i "s|@LIBDIRSUFFIX@|${SYSTEM_BITS}|" src/lib.rs
+sed -i "s|/usr/lib/pop-launcher|/usr/lib@LIBDIRSUFFIX@/pop-launcher|" src/lib.rs
+sed -i "s|base-dir / 'lib'|base-dir / 'lib${SYSTEM_BITS}'|g" justfile
 
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 just build-release --target x86_64-unknown-linux-gnu
