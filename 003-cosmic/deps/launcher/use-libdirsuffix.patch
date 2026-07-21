@@ -1,0 +1,13 @@
+diff --git a/src/lib.rs b/src/lib.rs
+index c63fb70..49378ee 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -19,7 +19,7 @@ pub const LOCAL_PLUGINS: &str = concatcp!(LOCAL, "/plugins");
+ pub const SYSTEM: &str = "/etc/pop-launcher";
+ pub const SYSTEM_PLUGINS: &str = concatcp!(SYSTEM, "/plugins");
+ 
+-pub const DISTRIBUTION: &str = "/usr/lib/pop-launcher";
++pub const DISTRIBUTION: &str = "/usr/lib@LIBDIRSUFFIX@/pop-launcher";
+ pub const DISTRIBUTION_PLUGINS: &str = concatcp!(DISTRIBUTION, "/plugins");
+ 
+ pub const PLUGIN_PATHS: &[&str] = &[LOCAL_PLUGINS, SYSTEM_PLUGINS, DISTRIBUTION_PLUGINS];
