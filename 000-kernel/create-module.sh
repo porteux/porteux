@@ -20,7 +20,7 @@ if [ "$1" ]; then
 	export KERNEL_VERSION="$1"
 fi
 
-IFS='.' read -r KERNEL_MAJOR_VERSION KERNEL_MINOR_VERSION KERNEL_PATCH_VERSION <<< "$KERNEL_VERSION"
+IFS='.-' read -r KERNEL_MAJOR_VERSION KERNEL_MINOR_VERSION KERNEL_PATCH_VERSION <<< "$KERNEL_VERSION"
 CRIPPLED_MODULE_NAME="06-crippled-sources-${KERNEL_VERSION}"
 
 ### create module folder
@@ -118,13 +118,14 @@ patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 
 echo "Patching ntfs colon character support..."
 patch -N -p1 < ${SCRIPT_PATH}/0003-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }
 
-# temp fix -- since 6.17.x the kernel is asking for firmware versions that are still not available
-if [ -f drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c ]; then
+# since 6.17.x the kernel is asking for firmware versions that are still not available
+# fixed in 7.2.x but let's keep the fix for compatibility with old kernels just in case
+if [ "$KERNEL_MAJOR_VERSION" -lt 7 ] || { [ "$KERNEL_MAJOR_VERSION" -eq 7 ] && [ "$KERNEL_MINOR_VERSION" -le 1 ]; }; then
 	sed -i "s|#define IWL_HR_UCODE_API_MAX.*|#define IWL_HR_UCODE_API_MAX	89|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 	sed -i "s|#define IWL_HR_UCODE_API_MIN.*|#define IWL_HR_UCODE_API_MIN	77|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
-	sed -i "s|IWL_QU_B_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_B_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
-	sed -i "s|IWL_QU_C_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_C_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
-	sed -i "s|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(77)|g"  drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|IWL_QU_B_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_B_HR_B_MODULE_FIRMWARE(77)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|IWL_QU_C_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_C_HR_B_MODULE_FIRMWARE(77)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+	sed -i "s|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(77)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 fi
 
 echo "Building kernel headers..."
