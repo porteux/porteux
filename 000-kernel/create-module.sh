@@ -118,15 +118,27 @@ patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 
 echo "Patching ntfs colon character support..."
 patch -N -p1 < ${SCRIPT_PATH}/0003-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }
 
-# since 6.17.x the kernel is asking for firmware versions that are still not available
 # fixed in 7.2.x but let's keep the fix for compatibility with old kernels just in case
 if [ "$KERNEL_MAJOR_VERSION" -lt 7 ] || { [ "$KERNEL_MAJOR_VERSION" -eq 7 ] && [ "$KERNEL_MINOR_VERSION" -le 1 ]; }; then
+	# since 6.17.x the kernel is asking for firmware versions that are still not available
+	sed -i "s|IWL_FW_AND_PNVM(IWL_SO_A_GF_A_FW_PRE, IWL_GF_UCODE_API_MAX)|IWL_FW_AND_PNVM(IWL_SO_A_GF_A_FW_PRE, 89)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-gf.c
+	sed -i "s|IWL_FW_AND_PNVM(IWL_TY_A_GF_A_FW_PRE, IWL_GF_UCODE_API_MAX)|IWL_FW_AND_PNVM(IWL_TY_A_GF_A_FW_PRE, 89)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-gf.c
+	sed -i "s|#define IWL_MA_A_GF_A_FW_PRE.*|#define IWL_MA_A_GF_A_FW_PRE\t\t\"iwlwifi-ma-b0-gf-a0\"|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-gf.c
+	sed -i "s|IWL_FW_AND_PNVM(IWL_MA_A_GF_A_FW_PRE, IWL_GF_UCODE_API_MAX)|IWL_FW_AND_PNVM(IWL_MA_A_GF_A_FW_PRE, 89)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-gf.c
+	sed -i "s|IWL_FW_AND_PNVM(IWL_MA_B_GF_A_FW_PRE, IWL_GF_UCODE_API_MAX)|IWL_FW_AND_PNVM(IWL_MA_B_GF_A_FW_PRE, 89)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-gf.c
+	sed -i "s|#define IWL_MA_A_GF4_A_FW_PRE.*|#define IWL_MA_A_GF4_A_FW_PRE\t\t\"iwlwifi-ma-b0-gf4-a0\"|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-gf.c
+	sed -i "s|IWL_FW_AND_PNVM(IWL_MA_A_GF4_A_FW_PRE, IWL_GF_UCODE_API_MAX)|IWL_FW_AND_PNVM(IWL_MA_A_GF4_A_FW_PRE, 89)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-gf.c
+	sed -i "s|IWL_FW_AND_PNVM(IWL_MA_B_GF4_A_FW_PRE, IWL_GF_UCODE_API_MAX)|IWL_FW_AND_PNVM(IWL_MA_B_GF4_A_FW_PRE, 89)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-gf.c
 	sed -i "s|#define IWL_HR_UCODE_API_MAX.*|#define IWL_HR_UCODE_API_MAX	89|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 	sed -i "s|#define IWL_HR_UCODE_API_MIN.*|#define IWL_HR_UCODE_API_MIN	77|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 	sed -i "s|IWL_QU_B_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_B_HR_B_MODULE_FIRMWARE(77)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 	sed -i "s|IWL_QU_C_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QU_C_HR_B_MODULE_FIRMWARE(77)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 	sed -i "s|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX)|IWL_QUZ_A_HR_B_MODULE_FIRMWARE(77)|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 fi
+
+# redirect a0 -> b0: kernel still declares bz-a0-hr-b0, but only bz-b0-hr-b0 firmware was ever shipped
+sed -i "s|#define IWL_BZ_A_HR_B_FW_PRE.*|#define IWL_BZ_A_HR_B_FW_PRE\t\t\"iwlwifi-bz-b0-hr-b0\"|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
+sed -i "s|MODULE_FIRMWARE(IWL_BZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX));|IWL_FW_AND_PNVM(IWL_BZ_A_HR_B_FW_PRE, IWL_HR_UCODE_API_MAX);|" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 
 echo "Building kernel headers..."
 current_package=kernel-headers
