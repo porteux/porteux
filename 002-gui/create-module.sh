@@ -318,20 +318,9 @@ find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 
 find $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/dri -name '*.la' -delete
 
-# move out things that don't support stripping
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/dri $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libgallium* $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libvulkan* $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libX11.so* $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/libexec/gpartedbin $MODULE_PATH/
 mv $MODULE_PATH/packages/usr/share/sounds $MODULE_PATH/
-strip_clean
-strip_hard_exec
-mv $MODULE_PATH/dri $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/
-mv $MODULE_PATH/libgallium* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/
-mv $MODULE_PATH/libvulkan* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/
-mv $MODULE_PATH/libX11.so* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/
-mv $MODULE_PATH/gpartedbin $MODULE_PATH/packages/usr/libexec
+strip_clean --exceptions='*/dri/*,gpartedbin,libgallium*,libunwind*,libvulkan*,libX11.so*'
+strip_hard_all --exceptions='*/dri/*,gpartedbin,libgallium*,libunwind*,libvulkan*,libX11.so*'
 mv $MODULE_PATH/sounds $MODULE_PATH/packages/usr/share
 
 ### copy cache files

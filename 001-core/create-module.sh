@@ -320,11 +320,8 @@ find usr/lib${SYSTEM_BITS}/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib${SYSTEM_BITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +
 } >/dev/null 2>&1
 
-# move out libc because it can't be stripped at all
-mv $MODULE_PATH/packages/lib${SYSTEM_BITS}/libc-* $MODULE_PATH/
-strip_clean
-strip_hard_exec
-mv $MODULE_PATH/libc-* $MODULE_PATH/packages/lib${SYSTEM_BITS}
+strip_clean --exceptions='ld-linux*,libc-*,libgcc_s*,libldap*,libpthread*,libstdc++*'
+strip_hard_all --exceptions='ld-linux*,libc-*,libgcc_s*,libldap*,libpthread*,libstdc++*'
 
 ### copy cache files
 

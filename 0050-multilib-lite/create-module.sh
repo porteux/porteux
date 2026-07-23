@@ -135,21 +135,8 @@ find $MODULE_PATH/packages/usr -mindepth 1 -maxdepth 1 -type d ! -name "lib" ! -
 find $MODULE_PATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name "en_US.utf8" -exec rm -rf {} +
 } >/dev/null 2>&1
 
-# move out things that don't support stripping
-mv $MODULE_PATH/packages/lib/libc.so* $MODULE_PATH/
-mv $MODULE_PATH/packages/lib/libc-* $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib/dri $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib/libgallium* $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib/libvulkan* $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib/libX11.so* $MODULE_PATH/
-strip_clean
+strip_clean --exceptions='*/dri/*,libc-*,libc.so*,libgallium*,libvulkan*,libX11.so*'
 strip_hard_exec
-mv $MODULE_PATH/libc.so* $MODULE_PATH/packages/lib
-mv $MODULE_PATH/libc-* $MODULE_PATH/packages/lib
-mv $MODULE_PATH/dri $MODULE_PATH/packages/usr/lib/
-mv $MODULE_PATH/libgallium* $MODULE_PATH/packages/usr/lib/
-mv $MODULE_PATH/libvulkan* $MODULE_PATH/packages/usr/lib/
-mv $MODULE_PATH/libX11.so* $MODULE_PATH/packages/usr/lib/
 
 ### finalize
 

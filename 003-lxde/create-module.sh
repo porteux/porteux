@@ -141,10 +141,8 @@ rm -fr usr/share/Thunar
 [ "$SYSTEM_BITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
 } >/dev/null 2>&1
 
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libvte-* $MODULE_PATH/
-strip_clean
-strip_hard_all
-mv $MODULE_PATH/libvte-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
+strip_clean --exceptions='libvte-*'
+strip_hard_all --exceptions='libvte-*'
 
 ### copy cache files
 

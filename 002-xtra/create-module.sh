@@ -114,11 +114,7 @@ rm usr/share/applications/mimeinfo.cache
 } >/dev/null 2>&1
 
 strip_clean
-
-# move out things that don't support aggressive stripping
-mv $MODULE_PATH/packages/usr/bin/transmission-gtk $MODULE_PATH/
-strip_hard_exec
-mv $MODULE_PATH/transmission-gtk $MODULE_PATH/packages/usr/bin/
+strip_hard_all --exceptions='libluajit*,transmission-gtk'
 
 ### copy cache files
 

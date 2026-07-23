@@ -194,13 +194,7 @@ find usr/share/themes -mindepth 1 -maxdepth 1 ! \( -name "Adwaita" -o -name "Adw
 } >/dev/null 2>&1
 
 strip_clean
-
-# move out things that don't support aggressive stripping
-mv $MODULE_PATH/packages/usr/bin/mate-system-monitor $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libvte-* $MODULE_PATH/
-strip_hard_all
-mv $MODULE_PATH/mate-system-monitor $MODULE_PATH/packages/usr/bin
-mv $MODULE_PATH/libvte-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
+strip_hard_all --exceptions='libvte-*,mate-system-monitor'
 
 ### copy cache files
 

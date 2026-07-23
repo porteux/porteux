@@ -284,12 +284,8 @@ find usr/share/cinnamon/faces -mindepth 1 -maxdepth 1 ! \( -name "user-generic*"
 find usr/share/cinnamon/thumbnails/cursors -mindepth 1 -maxdepth 1 ! \( -name "Adwaita*" -o -name "Paper*" -o -name "unknown*" -o -name "Yaru*" \) -exec rm -rf '{}' \; 2>/dev/null
 } >/dev/null 2>&1
 
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libmozjs-* $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libvte-* $MODULE_PATH/
-strip_clean
-strip_hard_all
-mv $MODULE_PATH/libvte-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
-mv $MODULE_PATH/libmozjs-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
+strip_clean --exceptions='libmozjs-*,libvte-*'
+strip_hard_all --exceptions='libmozjs-*,libvte-*'
 
 ### copy cache files
 

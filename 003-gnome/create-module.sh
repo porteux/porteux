@@ -274,14 +274,8 @@ rm -fr var/lib/AccountsService
 
 } >/dev/null 2>&1
 
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libexiv2.so* $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libmozjs-* $MODULE_PATH/
-mv $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/libvte-* $MODULE_PATH/
-strip_clean
-strip_hard_all
-mv $MODULE_PATH/libexiv2.so* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
-mv $MODULE_PATH/libvte-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
-mv $MODULE_PATH/libmozjs-* $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}
+strip_clean --exceptions='libexiv2.so*,libmozjs-*,libvte-*'
+strip_hard_all --exceptions='libexiv2.so*,libmozjs-*,libvte-*'
 
 ### copy cache files
 
