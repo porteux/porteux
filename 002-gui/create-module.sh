@@ -153,6 +153,15 @@ cd ${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
+strip_package dejavu-fonts-ttf \
+	usr/share/fonts/TTF/DejaVuSans-Bold.ttf \
+	usr/share/fonts/TTF/DejaVuSans.ttf \
+	usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf \
+	usr/share/fonts/TTF/DejaVuSansMono-BoldOblique.ttf \
+	usr/share/fonts/TTF/DejaVuSansMono.ttf \
+	usr/share/fonts/TTF/DejaVuSerif-Bold.ttf \
+	usr/share/fonts/TTF/DejaVuSerif.ttf
+
 strip_package noto-fonts-ttf \
 	usr/share/fonts/TTF/NotoSansSymbols*-Regular.ttf
 
@@ -241,13 +250,6 @@ rm usr/share/applications/mimeinfo.cache
 rm usr/share/applications/qv4l2.desktop
 rm usr/share/applications/qvidcap.desktop
 rm usr/share/applications/xterm.desktop
-rm usr/share/fonts/TTF/Deja*Condensed*
-rm usr/share/fonts/TTF/Deja*Italic*
-rm usr/share/fonts/TTF/DejaVuMathTeXGyre.ttf
-rm usr/share/fonts/TTF/DejaVuSans-BoldOblique.ttf
-rm usr/share/fonts/TTF/DejaVuSans-ExtraLight.ttf
-rm usr/share/fonts/TTF/DejaVuSansMono-Oblique.ttf
-rm usr/share/fonts/TTF/DejaVuSans-Oblique.ttf
 rm usr/share/icons/hicolor/scalable/apps/qv4l2.svg
 rm usr/share/icons/hicolor/scalable/apps/qvidcap.svg
 rm usr/share/xsessions/xwmconfig.desktop
