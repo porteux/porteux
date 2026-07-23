@@ -171,7 +171,6 @@ done
 
 # required by lxqt
 installpkg $MODULE_PATH/packages/libdbusmenu-qt*.txz || exit 1
-installpkg $MODULE_PATH/packages/polkit-qt*.txz || exit 1
 
 # lxqt packages
 for package in \
