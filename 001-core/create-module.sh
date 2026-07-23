@@ -44,7 +44,7 @@ for package in \
 	duktape \
 ; do
 bash $SCRIPT_PATH/deps/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
+installpkg $MODULE_PATH/packages/${package}-[0-9]*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 

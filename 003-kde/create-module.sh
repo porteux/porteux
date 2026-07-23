@@ -167,6 +167,7 @@ for package in \
 	kidletime \
 	libkscreen \
 	networkmanager-qt \
+	polkit-qt6-1 \
 ; do
 bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
@@ -234,7 +235,6 @@ rm usr/lib${SYSTEM_BITS}/libKF6PeopleWidgets*
 rm usr/lib${SYSTEM_BITS}/liboxygenstyle5*
 rm usr/lib${SYSTEM_BITS}/liboxygenstyleconfig5*
 rm usr/lib${SYSTEM_BITS}/libphonon4qt5*
-rm usr/lib${SYSTEM_BITS}/libpolkit-qt5*
 rm usr/lib${SYSTEM_BITS}/libqca-qt5*
 rm usr/lib${SYSTEM_BITS}/libQCoro5*
 rm usr/lib${SYSTEM_BITS}/qt6/plugins/designer/phonon4qt6widgets.so

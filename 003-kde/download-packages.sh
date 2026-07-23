@@ -18,7 +18,6 @@ download_package "libqaccessibilityclient" &
 download_package "libqalculate" &
 download_package "LibRaw" &
 download_package "openblas" &
-download_package "polkit-qt" &
 download_package "qca" &
 download_package "qrencode" &
 download_package "xdpyinfo" &
