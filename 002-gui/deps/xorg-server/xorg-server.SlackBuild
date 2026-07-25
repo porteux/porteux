@@ -49,7 +49,7 @@ meson setup \
 	-Dxkb_dir=/usr/share/X11/xkb \
 	-Dxkb_output_dir=/var/lib/xkb
 
-DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install || DESTDIR=$PKG ninja install
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
 rm -fr $PKG/etc/X11/xorg.conf.d

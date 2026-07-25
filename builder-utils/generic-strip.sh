@@ -110,12 +110,11 @@ strip_hard_exec() {
 	local exceptions=""
 	[[ $1 == --exceptions=* ]] && exceptions="${1#--exceptions=}" && exceptions="${exceptions//,/|}"
 
-	[[ $(strip --help | grep "strip-section-headers") ]] && strip_section_headers="--strip-section-headers"
 	find . -type f -print0 | xargs -0 file -00 | while IFS= read -r -d '' binary_file && IFS= read -r -d '' file_type; do
 		[[ $file_type == *ELF*executable* ]] || continue
 		[[ -n $exceptions && ( ${binary_file##*/} == @($exceptions) || $binary_file == @($exceptions) ) ]] && continue
 		printf '%s\0' "$binary_file"
-	done | xargs -0 -r strip --strip-all ${strip_section_headers} -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+	done | xargs -0 -r strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } > /dev/null 2>&1
 
 strip_hard_all() {
@@ -127,7 +126,7 @@ strip_hard_all() {
 		[[ $file_type == *ELF*"shared object"* ]] || continue
 		[[ -n $exceptions && ( ${binary_file##*/} == @($exceptions) || $binary_file == @($exceptions) ) ]] && continue
 		printf '%s\0' "$binary_file"
-	done | xargs -0 -r strip --strip-all -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+	done | xargs -0 -r strip --strip-all -R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 } > /dev/null 2>&1
 
 if [[ ${BASH_SOURCE[0]} == "$0" && -n $1 ]]; then
