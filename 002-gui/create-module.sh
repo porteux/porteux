@@ -28,6 +28,7 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 installpkg $MODULE_PATH/packages/gpgmepp*.txz || exit 1
 installpkg $MODULE_PATH/packages/libbluray*.txz || exit 1
+installpkg $MODULE_PATH/packages/libdisplay-info*.txz || exit 1
 installpkg $MODULE_PATH/packages/libvpx*.txz || exit 1
 installpkg $MODULE_PATH/packages/poppler*.txz || exit 1
 
