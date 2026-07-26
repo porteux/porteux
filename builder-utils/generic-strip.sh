@@ -125,8 +125,11 @@ strip_hard_all() {
 	find . -type f -print0 | xargs -0 file -00 | while IFS= read -r -d '' binary_file && IFS= read -r -d '' file_type; do
 		[[ $file_type == *ELF*"shared object"* ]] || continue
 		[[ -n $exceptions && ( ${binary_file##*/} == @($exceptions) || $binary_file == @($exceptions) ) ]] && continue
-		printf '%s\0' "$binary_file"
-	done | xargs -0 -r strip --strip-all -R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+		strip --strip-all -R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack "$binary_file" 2> /dev/null
+		objdump -h "$binary_file" 2> /dev/null | awk '$2 == ".eh_frame" || $2 == ".eh_frame_hdr" { print $6, $3 }' | while read -r offset size; do
+			dd if=/dev/zero of="$binary_file" bs=1M seek=$((16#$offset)) count=$((16#$size)) conv=notrunc oflag=seek_bytes iflag=count_bytes status=none
+		done
+	done
 } > /dev/null 2>&1
 
 if [[ ${BASH_SOURCE[0]} == "$0" && -n $1 ]]; then
