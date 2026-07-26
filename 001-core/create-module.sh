@@ -53,6 +53,7 @@ installpkg $MODULE_PATH/packages/ncurses*.txz || exit 1
 
 # core extras
 for package in \
+	binutils \
 	coreutils \
 	sysvinit \
 	procps-ng \
@@ -107,6 +108,8 @@ strip_package avahi \
 	usr/lib${SYSTEM_BITS}/libavahi-common.* \
 	usr/lib${SYSTEM_BITS}/libavahi-glib.*
 
+mkdir -p ${MODULE_PATH}/../05-devel/packages > /dev/null 2>&1
+cp $MODULE_PATH/packages/binutils*.txz ${MODULE_PATH}/../05-devel/packages
 strip_package binutils \
 	usr/bin/ar \
 	usr/bin/strip \

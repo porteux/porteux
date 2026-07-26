@@ -6,7 +6,6 @@ generate_repository_urls
 download_package "autoconf" &
 download_package "autoconf-archive" &
 download_package "automake" &
-download_package "binutils" &
 download_package "bison" &
 download_package "cmake" &
 download_package "gc" &

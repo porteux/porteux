@@ -229,10 +229,9 @@ wait
 ### packages that require specific stripping
 
 download_package "aaa_libraries" &
-download_package "binutils" &
 download_package "fftw" & # required by pulse plugins
-download_package "gcc-g++" & # required by aaa_libraries
 download_package "gcc" & # required by aaa_libraries
+download_package "gcc-g++" & # required by aaa_libraries
 download_package "ntp" &
 download_package "openldap" &
 wait

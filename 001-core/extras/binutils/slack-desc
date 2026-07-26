@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+binutils: binutils (GNU binary development tools)
+binutils:
+binutils: Binutils is a collection of binary utilities. It includes "as" (the 
+binutils: portable GNU assembler), "ld" (the GNU linker), and other utilities
+binutils: for creating and working with binary programs.
+binutils:
+binutils: These utilities are required to compile C, C++, Objective-C, Fortran,
+binutils: and most other programming languages.
+binutils:
+binutils:
+binutils:

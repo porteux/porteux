@@ -1,0 +1,59 @@
+#!/bin/bash
+
+PRGNAM=binutils
+
+CWD=$(dirname "$0")
+TMP=$MODULE_PATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+# Select working GNU mirror
+BASE_URL="https://ftp.gnu.org/gnu"
+if ! curl -Is --max-time 5 "$BASE_URL" >/dev/null; then
+	BASE_URL="https://ftp.gnu.org.uk/gnu"
+fi
+
+VERSION=$(curl -s ${BASE_URL}/${PRGNAM}/ | grep "${PRGNAM}-[0-9]" | grep ".tar.xz" | grep -Ev "sig" | grep -oP 'href="\K[^"]+' | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
+wget ${BASE_URL}/${PRGNAM}/${PRGNAM}-${VERSION}.tar.xz
+
+tar xf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+sed -i 's/^development=true/development=false/' bfd/development.sh
+sed -i 's|bfd_version_string="\\"$(VERSION)\\""|bfd_version_string="\\"$(VERSION)-slack151\\""|' bfd/Makefile.in bfd/Makefile.am
+sed -i 's|bfd_soversion="$(VERSION)"|bfd_soversion="$(VERSION)-slack151"|' bfd/Makefile.in bfd/Makefile.am
+
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+CXXFLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEM_BITS} \
+	--sysconfdir=/etc \
+	--with-pic \
+	--enable-colored-disassembly \
+	--enable-install-libiberty \
+	--enable-new-dtags \
+	--enable-pgo-build=lto \
+	--enable-plugins \
+	--enable-shared \
+	--enable-targets=x86_64-pep,bpf-unknown-none \
+	--enable-threads \
+	--disable-static \
+	--disable-gprofng \
+	--build=$ARCH-slackware-linux
+
+make -j${NUMBER_THREADS} tooldir=/usr MAKEINFO=true
+make -j${NUMBER_THREADS} tooldir=/usr MAKEINFO=true install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz
