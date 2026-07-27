@@ -43,6 +43,7 @@ LDFLAGS="$LLDFLAGS" \
 	--enable-shared \
 	--enable-gpl \
 	--enable-version3 \
+	--enable-hardcoded-tables \
 	--enable-nvdec \
 	--enable-nvenc \
 	--enable-gnutls \
