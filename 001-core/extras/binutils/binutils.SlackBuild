@@ -25,8 +25,8 @@ tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 sed -i 's/^development=true/development=false/' bfd/development.sh
-sed -i 's|bfd_version_string="\\"$(VERSION)\\""|bfd_version_string="\\"$(VERSION)-slack151\\""|' bfd/Makefile.in bfd/Makefile.am
-sed -i 's|bfd_soversion="$(VERSION)"|bfd_soversion="$(VERSION)-slack151"|' bfd/Makefile.in bfd/Makefile.am
+#sed -i 's|bfd_version_string="\\"$(VERSION)\\""|bfd_version_string="\\"$(VERSION)-slack151\\""|' bfd/Makefile.in bfd/Makefile.am
+#sed -i 's|bfd_soversion="$(VERSION)"|bfd_soversion="$(VERSION)-slack151"|' bfd/Makefile.in bfd/Makefile.am
 
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 CXXFLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
@@ -51,6 +51,9 @@ make -j${NUMBER_THREADS} tooldir=/usr MAKEINFO=true
 make -j${NUMBER_THREADS} tooldir=/usr MAKEINFO=true install DESTDIR=$PKG
 
 find $PKG -type f -name "*.la" -exec rm -f {} \;
+
+rm -fr $PKG/usr/man
+rm -fr $PKG/usr/share/info
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
