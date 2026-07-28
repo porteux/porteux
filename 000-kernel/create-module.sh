@@ -62,7 +62,6 @@ LINK_PARAMS=$(echo "$LINK_PARAMS" | sed \
 	-e 's/--gc-sections//g' \
 	-e 's/--strip-all//g' \
 	-e 's/--icf=safe//g' \
-	-e 's/--optimize-bb-jumps//g' \
 	-e 's/-fuse-ld=lld//g')
 
 echo -e "Building kernel ${KERNEL_VERSION} using ${COMPILER}...\n"
