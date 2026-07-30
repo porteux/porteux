@@ -68,7 +68,7 @@ rm -fr var/lib/pkgtools/setup
 rm -fr var/log/pkgtools
 rm -fr var/log/setup
 
-# already included in aaa_libraries-stripped - keeping them will prevent 05-devel from being deactivated
+# already included in the 001-core stripped packages - keeping them will prevent 05-devel from being deactivated
 rm usr/lib${SYSTEM_BITS}/libatomic.so*
 rm usr/lib${SYSTEM_BITS}/libgcc_s.so*
 rm usr/lib${SYSTEM_BITS}/libgmp.so*

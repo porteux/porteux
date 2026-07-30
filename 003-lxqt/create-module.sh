@@ -32,36 +32,36 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 installpkg $MODULE_PATH/packages/qt6-[0-9]*.txz || exit 1
 
 strip_package qt6 \
-	usr/lib$SYSTEM_BITS/libQt6Concurrent.* \
-	usr/lib$SYSTEM_BITS/libQt6Core.* \
-	usr/lib$SYSTEM_BITS/libQt6DBus.* \
-	usr/lib$SYSTEM_BITS/libQt6Gui.* \
-	usr/lib$SYSTEM_BITS/libQt6Multimedia.* \
-	usr/lib$SYSTEM_BITS/libQt6Network.* \
-	usr/lib$SYSTEM_BITS/libQt6OpenGL.* \
-	usr/lib$SYSTEM_BITS/libQt6Pdf.* \
-	usr/lib$SYSTEM_BITS/libQt6PrintSupport.* \
-	usr/lib$SYSTEM_BITS/libQt6Svg.* \
-	usr/lib$SYSTEM_BITS/libQt6SvgWidgets.* \
-	usr/lib$SYSTEM_BITS/libQt6WaylandClient.* \
-	usr/lib$SYSTEM_BITS/libQt6Widgets.* \
-	usr/lib$SYSTEM_BITS/libQt6XcbQpa.* \
-	usr/lib$SYSTEM_BITS/libQt6Xml.* \
-	usr/lib$SYSTEM_BITS/qt6/plugins/egldeviceintegrations/* \
-	usr/lib$SYSTEM_BITS/qt6/plugins/iconengines/* \
-	usr/lib$SYSTEM_BITS/qt6/plugins/imageformats/* \
-	usr/lib$SYSTEM_BITS/qt6/plugins/platforminputcontexts/* \
-	usr/lib$SYSTEM_BITS/qt6/plugins/platforms/libqeglfs.so \
-	usr/lib$SYSTEM_BITS/qt6/plugins/platforms/libqlinuxfb.so \
-	usr/lib$SYSTEM_BITS/qt6/plugins/platforms/libqminimal.so \
-	usr/lib$SYSTEM_BITS/qt6/plugins/platforms/libqminimalegl.so \
-	usr/lib$SYSTEM_BITS/qt6/plugins/platforms/libqoffscreen.so \
-	usr/lib$SYSTEM_BITS/qt6/plugins/platforms/libqvnc.so \
-	usr/lib$SYSTEM_BITS/qt6/plugins/platforms/libqwayland*.so \
-	usr/lib$SYSTEM_BITS/qt6/plugins/platforms/libqxcb.so \
-	usr/lib$SYSTEM_BITS/qt6/plugins/platformthemes/* \
-	usr/lib$SYSTEM_BITS/qt6/plugins/wayland*/* \
-	usr/lib$SYSTEM_BITS/qt6/plugins/xcbglintegrations/*
+	usr/lib${SYSTEM_BITS}/libQt6Concurrent.so* \
+	usr/lib${SYSTEM_BITS}/libQt6Core.so* \
+	usr/lib${SYSTEM_BITS}/libQt6DBus.so* \
+	usr/lib${SYSTEM_BITS}/libQt6Gui.so* \
+	usr/lib${SYSTEM_BITS}/libQt6Multimedia.so* \
+	usr/lib${SYSTEM_BITS}/libQt6Network.so* \
+	usr/lib${SYSTEM_BITS}/libQt6OpenGL.so* \
+	usr/lib${SYSTEM_BITS}/libQt6Pdf.so* \
+	usr/lib${SYSTEM_BITS}/libQt6PrintSupport.so* \
+	usr/lib${SYSTEM_BITS}/libQt6Svg.so* \
+	usr/lib${SYSTEM_BITS}/libQt6SvgWidgets.so* \
+	usr/lib${SYSTEM_BITS}/libQt6WaylandClient.so* \
+	usr/lib${SYSTEM_BITS}/libQt6Widgets.so* \
+	usr/lib${SYSTEM_BITS}/libQt6XcbQpa.so* \
+	usr/lib${SYSTEM_BITS}/libQt6Xml.so* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/egldeviceintegrations/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/iconengines/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforminputcontexts/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqeglfs.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqlinuxfb.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqminimal.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqminimalegl.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqoffscreen.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqvnc.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqwayland*.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqxcb.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platformthemes/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/wayland*/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/xcbglintegrations/*
 
 # required by xpdf
 current_package=ghostscript-fonts-std

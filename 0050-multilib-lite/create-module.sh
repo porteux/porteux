@@ -27,33 +27,19 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages that require specific stripping
 
-current_package=aaa_libraries
-rm -rf $MODULE_PATH/${current_package}
-mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
-mv ../packages/${current_package}-[0-9]* .
-package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
-mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
-ROOT=./ installpkg ${current_package}*.txz
-rm usr/lib/libslang.so.1*
-rm usr/lib/libstdc++.so*
-ROOT=./ installpkg gcc-*.txz
-mkdir ${current_package}-stripped
-cp --parents -P lib/libgssapi_krb5.* ${current_package}-stripped/
-cp --parents -P lib/libk5crypto.* ${current_package}-stripped/
-cp --parents -P lib/libkrb5.* ${current_package}-stripped/
-cp --parents -P lib/libkrb5support.* ${current_package}-stripped/
-cp --parents -P lib/libpcre2* ${current_package}-stripped/
-cp --parents -P usr/lib/libatomic.* ${current_package}-stripped/
-cp --parents -P usr/lib/libcups.* ${current_package}-stripped/
-cp --parents -P usr/lib/libgcc_s.* ${current_package}-stripped/
-cp --parents -P usr/lib/libgomp.* ${current_package}-stripped/
-cp --parents -P usr/lib/libstdc++.* ${current_package}-stripped/
-cd $MODULE_PATH/${current_package}/${current_package}-stripped || exit 1
-makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
+strip_package cups \
+	usr/lib/libcups.so*
 
 strip_package eudev \
 	lib/libudev*.so*
+
+strip_package gcc \
+	usr/lib/libatomic.so* \
+	usr/lib/libgcc_s.so* \
+	usr/lib/libgomp.so*
+
+strip_package gcc-g++ \
+	usr/lib/libstdc++.so*
 
 strip_package llvm \
 	usr/lib/libLLVM*.so*
@@ -78,15 +64,18 @@ cd ${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
+strip_package pcre2 \
+	lib/libpcre2-8.so*
+
 strip_package pulseaudio \
-	usr/lib/libpulse.so* \
 	usr/lib/libpulse-mainloop-glib.so* \
 	usr/lib/libpulse-simple.so* \
-	usr/lib/pulseaudio/libpulsecommon*
+	usr/lib/libpulse.so* \
+	usr/lib/pulseaudio/libpulsecommon*.so*
 
 strip_package vulkan-sdk \
-	usr/lib/libvulkan.so* \
-	usr/lib/libSPIRV-Tools.so*
+	usr/lib/libSPIRV-Tools.so* \
+	usr/lib/libvulkan.so*
 
 ### fake root
 
@@ -105,8 +94,6 @@ rm $MODULE_PATH/packages/usr/lib/libkdb*
 rm $MODULE_PATH/packages/usr/lib/libkrad*
 rm $MODULE_PATH/packages/usr/lib/libltdl*
 rm $MODULE_PATH/packages/usr/lib/libslang*
-rm $MODULE_PATH/packages/usr/lib/*.o
-rm $MODULE_PATH/packages/usr/lib/*.spec
 
 rm -fr $MODULE_PATH/packages/etc
 rm -fr $MODULE_PATH/packages/lib/e2fsprogs

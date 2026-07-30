@@ -83,12 +83,13 @@ wait
 
 ### packages that require specific stripping
 
-download_package "aaa_libraries" &
+download_package "cups" &
 download_package "eudev" &
 download_package "gcc" &
 download_package "gcc-g++" &
 download_package "llvm" &
 download_package "mesa" &
+download_package "pcre2" &
 download_package "pulseaudio" &
 download_package "vulkan-sdk" &
 wait

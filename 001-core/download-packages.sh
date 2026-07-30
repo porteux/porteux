@@ -228,12 +228,18 @@ wait
 
 ### packages that require specific stripping
 
-download_package "aaa_libraries" &
+download_package "c-ares" &
+download_package "cups" &
 download_package "fftw" & # required by pulse plugins
-download_package "gcc" & # required by aaa_libraries
-download_package "gcc-g++" & # required by aaa_libraries
+download_package "fuse" &
+download_package "gcc" &
+download_package "gcc-g++" &
+download_package "gmp" &
+download_package "krb5" &
+download_package "libtool" &
 download_package "ntp" &
 download_package "openldap" &
+download_package "slang" &
 wait
 
 ### script clean up

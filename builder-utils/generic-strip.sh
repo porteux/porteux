@@ -80,6 +80,7 @@ strip_clean() {
 		-name '*.pc' -o \
 		-name '*.prl' -o \
 		-name '*.pyi' -o \
+		-name '*.spec' -o \
 		-name '*.vapi' -o \
 		-name 'ABOUT-NLS' -o \
 		-name 'AUTHORS*' -o \

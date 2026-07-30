@@ -183,8 +183,8 @@ done
 
 strip_package gettext-tools \
 	usr/bin/msgfmt \
-	usr/lib$SYSTEM_BITS/libgettextlib* \
-	usr/lib$SYSTEM_BITS/libgettextsrc*
+	usr/lib${SYSTEM_BITS}/libgettextlib*.so* \
+	usr/lib${SYSTEM_BITS}/libgettextsrc*.so*
 	
 strip_package iso-codes \
 	usr/share/xml/iso-codes/iso_3166-1.xml \

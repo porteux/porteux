@@ -69,66 +69,65 @@ done
 
 ## packages that require specific stripping
 
-current_package=aaa_libraries
-mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
-mv ../packages/${current_package}-[0-9]* .
-package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
-mv ../packages/gcc-* . # required because aaa_libraries quite often is not in sync with gcc/g++
-ROOT=./ installpkg ${current_package}*.txz
-rm usr/lib${SYSTEM_BITS}/libslang.so.1*
-rm usr/lib${SYSTEM_BITS}/libstdc++.so*
-ROOT=./ installpkg gcc-*.txz
-mkdir ${current_package}-stripped
-cp --parents -P lib${SYSTEM_BITS}/libfuse.* ${current_package}-stripped/
-cp --parents -P lib${SYSTEM_BITS}/libgssapi_krb5.* ${current_package}-stripped/
-cp --parents -P lib${SYSTEM_BITS}/libk5crypto.* ${current_package}-stripped/
-cp --parents -P lib${SYSTEM_BITS}/libkrb5.* ${current_package}-stripped/
-cp --parents -P lib${SYSTEM_BITS}/libkrb5support.* ${current_package}-stripped/
-cp --parents -P usr/lib${SYSTEM_BITS}/libatomic.* ${current_package}-stripped/
-cp --parents -P usr/lib${SYSTEM_BITS}/libcares.* ${current_package}-stripped/
-cp --parents -P usr/lib${SYSTEM_BITS}/libcups.* ${current_package}-stripped/
-cp --parents -P usr/lib${SYSTEM_BITS}/libgcc_s.* ${current_package}-stripped/
-cp --parents -P usr/lib${SYSTEM_BITS}/libgmp.* ${current_package}-stripped/
-cp --parents -P usr/lib${SYSTEM_BITS}/libgomp.* ${current_package}-stripped/
-cp --parents -P usr/lib${SYSTEM_BITS}/libltdl.* ${current_package}-stripped/
-cp --parents -P usr/lib${SYSTEM_BITS}/libslang.* ${current_package}-stripped/
-cp --parents -P usr/lib${SYSTEM_BITS}/libstdc++.* ${current_package}-stripped/
-cd ${current_package}-stripped/usr/lib${SYSTEM_BITS} || exit 1
-cp -fs $(basename $(readlink -f $(command ls libcares.so* | head -n1))) libcares.so
-cp -fs $(basename $(readlink -f $(command ls libcups.so* | head -n1))) libcups.so
-cp -fs $(basename $(readlink -f $(command ls libgmp.so* | head -n1))) libgmp.so
-cp -fs $(basename $(readlink -f $(command ls libltdl.so* | head -n1))) libltdl.so
-cp -fs $(basename $(readlink -f $(command ls libslang.so* | head -n1))) libslang.so
-cd $MODULE_PATH/${current_package}/${current_package}-stripped || exit 1
-makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
-
 strip_package avahi \
-	usr/lib${SYSTEM_BITS}/libavahi-client.* \
-	usr/lib${SYSTEM_BITS}/libavahi-common.* \
-	usr/lib${SYSTEM_BITS}/libavahi-glib.*
+	usr/lib${SYSTEM_BITS}/libavahi-client.so* \
+	usr/lib${SYSTEM_BITS}/libavahi-common.so* \
+	usr/lib${SYSTEM_BITS}/libavahi-glib.so*
 
 mkdir -p ${MODULE_PATH}/../05-devel/packages > /dev/null 2>&1
 cp $MODULE_PATH/packages/binutils*.txz ${MODULE_PATH}/../05-devel/packages
 strip_package binutils \
 	usr/bin/ar \
 	usr/bin/strip \
-	usr/lib$SYSTEM_BITS/libbfd*.so \
-	usr/lib$SYSTEM_BITS/libsframe.so*
+	usr/lib${SYSTEM_BITS}/libbfd*.so* \
+	usr/lib${SYSTEM_BITS}/libsframe.so*
+
+strip_package c-ares \
+	usr/lib${SYSTEM_BITS}/libcares.so*
+
+strip_package cups \
+	usr/lib${SYSTEM_BITS}/libcups.so*
 
 strip_package fftw \
-	usr/lib${SYSTEM_BITS}/libfftw3.* \
-	usr/lib${SYSTEM_BITS}/libfftw3f.*
+	usr/lib${SYSTEM_BITS}/libfftw3.so* \
+	usr/lib${SYSTEM_BITS}/libfftw3f.so*
+
+strip_package fuse \
+	lib${SYSTEM_BITS}/libfuse.so*
+
+strip_package gcc \
+	usr/lib${SYSTEM_BITS}/libatomic.so* \
+	usr/lib${SYSTEM_BITS}/libgcc_s.so* \
+	usr/lib${SYSTEM_BITS}/libgomp.so*
+
+strip_package gcc-g++ \
+	usr/lib${SYSTEM_BITS}/libstdc++.so*
+
+strip_package gmp \
+	usr/lib${SYSTEM_BITS}/libgmp.so*
+
+strip_package krb5 \
+	lib${SYSTEM_BITS}/libgssapi_krb5.so* \
+	lib${SYSTEM_BITS}/libk5crypto.so* \
+	lib${SYSTEM_BITS}/libkrb5.so* \
+	lib${SYSTEM_BITS}/libkrb5support.so*
+
+strip_package libtool \
+	usr/lib${SYSTEM_BITS}/libltdl.so*
 
 strip_package ntp \
 	usr/bin/ntpdate \
-	usr/sbin/ntpdate \
-	usr/sbin/ntpd
+	usr/sbin/ntpd \
+	usr/sbin/ntpdate
 
 strip_package openldap \
 	etc/openldap/ldap.conf \
 	usr/include/* \
-	usr/lib$SYSTEM_BITS/libl*
+	usr/lib${SYSTEM_BITS}/liblber.so* \
+	usr/lib${SYSTEM_BITS}/libldap.so*
+
+strip_package slang \
+	usr/lib${SYSTEM_BITS}/libslang.so*
 
 ### fake root
 

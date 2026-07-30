@@ -129,7 +129,7 @@ done
 ### packages that require specific stripping
 
 strip_package llvm \
-	usr/lib$SYSTEM_BITS/libLLVM*.so*
+	usr/lib${SYSTEM_BITS}/libLLVM*.so*
 
 current_package=mesa
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
@@ -168,13 +168,13 @@ strip_package noto-fonts-ttf \
 
 strip_package pulseaudio \
 	usr/bin/pactl \
-	usr/lib$SYSTEM_BITS/libpulse.so* \
-	usr/lib$SYSTEM_BITS/libpulse-mainloop-glib.so* \
-	usr/lib$SYSTEM_BITS/libpulse-simple.so* \
-	usr/lib$SYSTEM_BITS/pulseaudio/libpulsecommon* \
-	usr/lib$SYSTEM_BITS/cmake/* \
-	usr/lib$SYSTEM_BITS/pkgconfig/* \
-	usr/include/*
+	usr/include/* \
+	usr/lib${SYSTEM_BITS}/cmake/* \
+	usr/lib${SYSTEM_BITS}/libpulse-mainloop-glib.so* \
+	usr/lib${SYSTEM_BITS}/libpulse-simple.so* \
+	usr/lib${SYSTEM_BITS}/libpulse.so* \
+	usr/lib${SYSTEM_BITS}/pkgconfig/* \
+	usr/lib${SYSTEM_BITS}/pulseaudio/libpulsecommon*.so*
 	
 strip_package sound-theme-freedesktop \
 	usr/share/sounds/freedesktop/stereo/audio-channel* \
@@ -185,11 +185,11 @@ strip_package vulkan-sdk \
 	usr/include/spirv-tools \
 	usr/include/vk_video \
 	usr/include/vulkan/* \
-	usr/lib$SYSTEM_BITS/cmake \
-	usr/lib$SYSTEM_BITS/pkgconfig/vulkan.pc \
-	usr/lib$SYSTEM_BITS/libvulkan.so* \
-	usr/lib$SYSTEM_BITS/pkgconfig/SPIRV-Tools* \
-	usr/lib$SYSTEM_BITS/libSPIRV-Tools.so*
+	usr/lib${SYSTEM_BITS}/cmake \
+	usr/lib${SYSTEM_BITS}/libSPIRV-Tools.so* \
+	usr/lib${SYSTEM_BITS}/libvulkan.so* \
+	usr/lib${SYSTEM_BITS}/pkgconfig/SPIRV-Tools* \
+	usr/lib${SYSTEM_BITS}/pkgconfig/vulkan.pc
 
 ### fake root
 

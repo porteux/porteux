@@ -3,7 +3,7 @@
 copy_to_devel() {
 	mkdir -p "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
 	cd "$MODULE_PATH"/packages || exit 1
-	find . -regex '.*\.\(h\|c\|m4\|make\|cmake\|a\|o\|pc\|gir\|deps\|vapi\|in\)$' -exec cp --parents {} "$PORTEUX_BUILDER_PATH"/05-devel/packages \;
+	find . -regex '.*\.\(a\|c\|cmake\|deps\|gir\|h\|in\|m4\|make\|o\|pc\|spec\|vapi\)$' -exec cp --parents {} "$PORTEUX_BUILDER_PATH"/05-devel/packages \;
 	cp -r --parents usr/lib/python*/site-packages/*-info "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
 	cp -r --parents usr/share/gettext/its "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
 	cp -r --parents usr/share/glib-2.0/codegen "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
