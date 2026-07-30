@@ -22,12 +22,14 @@ patch -p1 < $CWD/fix-lost-found-folder.patch
 
 ./autogen.sh
 
-CFLAGS="$GCC_CFLAGS" \
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEM_BITS \
 	--localstatedir=/var \
-	--disable-static
+	--disable-static \
+	--disable-extras \
+	--disable-dependency-tracking
 
 make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
