@@ -44,7 +44,3 @@ download_package "xorgproto" &
 download_package "yasm" &
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

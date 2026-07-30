@@ -24,7 +24,3 @@ wait
 download_package "libyaml" & # to build xfdesktop with desktop icons
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

@@ -1,27 +1,32 @@
 #!/bin/bash
 
 copy_to_devel() {
-	mkdir -p "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
+	mkdir -p "$PORTEUX_BUILDER_PATH"/05-devel/packages
 	cd "$MODULE_PATH"/packages || exit 1
-	find . -regex '.*\.\(a\|c\|cmake\|deps\|gir\|h\|in\|m4\|make\|o\|pc\|spec\|vapi\)$' -exec cp --parents {} "$PORTEUX_BUILDER_PATH"/05-devel/packages \;
+	find . -regex '.*\.\(a\|c\|cmake\|deps\|gir\|h\|in\|m4\|make\|o\|pc\|spec\|vapi\)$' -exec cp --parents -t "$PORTEUX_BUILDER_PATH"/05-devel/packages {} +
 	cp -r --parents usr/lib/python*/site-packages/*-info "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
 	cp -r --parents usr/share/gettext/its "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
 	cp -r --parents usr/share/glib-2.0/codegen "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
 }
 
 copy_to_multilanguage() {
-	mkdir -p "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages > /dev/null 2>&1
+	mkdir -p "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages
 	cd "$MODULE_PATH"/packages || exit 1
 	[ -e usr/share/locale ] && cp -r --parents usr/share/locale "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages
 	[ -e usr/share/X11/locale ] && cp -r --parents usr/share/X11/locale "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages
-	find usr/share -type f -name "*.qm" -exec cp --parents {} "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages \;
+	find usr/share -type f -name "*.qm" -exec cp --parents -t "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages {} +
 }
 
 install_additional_packages() {
 	cd "$MODULE_PATH"/packages || exit 1
-	cp "$SCRIPT_PATH"/packages/*.t?z .
-	ROOT=./ installpkg *.t?z
-	rm *.t?z
+	ROOT=./ installpkg "$SCRIPT_PATH"/packages/*.t?z
+}
+
+# not using rust from slackware because it's much slower
+install_rust_toolchain() {
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
+	rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
+	export PATH=$HOME/.cargo/bin/:$PATH
 }
 
 make_module() {
@@ -30,12 +35,15 @@ make_module() {
 }
 
 finalize() {
+	local build_date
+	build_date=$(date +%Y%m%d)
+
 	# generate module version file
 	mkdir -p "$MODULE_PATH"/packages/etc/porteux
-	echo $MODULE_NAME.xzm:$(date +%Y%m%d) > "$MODULE_PATH"/packages/etc/porteux/$MODULE_NAME.ver
+	echo $MODULE_NAME.xzm:$build_date > "$MODULE_PATH"/packages/etc/porteux/$MODULE_NAME.ver
 
 	# create module
-	make_module "$MODULE_PATH"/packages/ "$MODULE_PATH"/$MODULE_NAME-$PORTEUX_BUILD-$(date +%Y%m%d).xzm || { echo "Error: failed to create module $MODULE_NAME." >&2; exit 1; }
+	make_module "$MODULE_PATH"/packages/ "$MODULE_PATH"/$MODULE_NAME-$PORTEUX_BUILD-$build_date.xzm || { echo "Error: failed to create module $MODULE_NAME." >&2; exit 1; }
 
 	# script clean up
 	rm -fr "$MODULE_PATH"/packages/

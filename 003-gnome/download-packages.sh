@@ -62,7 +62,3 @@ download_package "vulkan-sdk" & # required by gtksourceview
 download_package "xtrans" &
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

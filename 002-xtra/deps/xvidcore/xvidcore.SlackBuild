@@ -29,7 +29,7 @@ make -j${NUMBER_THREADS}
 make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

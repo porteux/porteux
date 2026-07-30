@@ -7,7 +7,7 @@ download_master_from_github() {
 	local tarball="${repo}-${branch}.tar.gz"
 	wget "https://github.com/${owner}/${repo}/archive/refs/heads/${branch}.tar.gz" -O "$tarball" || exit 1
 	tar xf "$tarball" || exit 1
-	date -r "$(tar tf "$tarball" | head -n1 | cut -d/ -f1)" +%Y%m%d
+	date -r "${repo}-${branch}" +%Y%m%d
 }
 
 get_latest_versions_tag_from_github() {
@@ -15,7 +15,7 @@ get_latest_versions_tag_from_github() {
 	local project="$2"
 	local filter_out_version="$3"
 	local versions
-	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]")
+	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | uniq | grep -Ev "alpha|beta|rc[0-9]")
 	[ -n "$filter_out_version" ] && versions=$(echo "$versions" | grep -Ev "$filter_out_version")
 	echo "$versions" | sort -V -r | head -n 10
 }
@@ -28,8 +28,7 @@ download_latest_from_github() {
 	local repository="$1"
 	local project="$2"
 	local filter_out_version="$3"
-	local filename=
-	local version release_url tag_url content_disposition
+	local filename version release_url tag_url content_disposition
 	version=$(get_latest_version_tag_from_github "${repository}" "${project}" "${filter_out_version}")
 	release_url="https://github.com/${repository}/${project}/releases/download/${version}/${project}-${version//[^0-9._]/}.tar"
 	tag_url="https://github.com/${repository}/${project}/archive/refs/tags/${version}.tar.gz"

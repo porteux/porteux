@@ -8,7 +8,6 @@ set_flags "$MODULE_NAME"
 
 source "$BUILDER_UTILS_PATH/helper.sh"
 source "$BUILDER_UTILS_PATH/latest-from-github.sh"
-source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
@@ -66,17 +65,18 @@ LINK_PARAMS=$(echo "$LINK_PARAMS" | sed \
 
 echo -e "Building kernel ${KERNEL_VERSION} using ${COMPILER}...\n"
 
-cp ${SCRIPT_PATH}/linux-${KERNEL_VERSION}.tar.?z ${MODULE_PATH} 2>/dev/null
 cp ${SCRIPT_PATH}/kernel-firmware*.txz ${MODULE_PATH}/packages 2>/dev/null
 
 echo "Downloading kernel source code..."
-if ! ls linux-${KERNEL_VERSION}.tar.?z 1> /dev/null 2>&1; then
+kernel_source_archive=$(ls ${SCRIPT_PATH}/linux-${KERNEL_VERSION}.tar.?z 2>/dev/null | head -n1)
+if [ -z "$kernel_source_archive" ]; then
 	wget -P ${MODULE_PATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { echo "Failed to download kernel source code."; exit 1; }
+	kernel_source_archive=${MODULE_PATH}/linux-${KERNEL_VERSION}.tar.xz
 fi
 
 echo "Extracting kernel source code..."
-tar xf ${MODULE_PATH}/linux-${KERNEL_VERSION}.tar.?z -C ${MODULE_PATH}
-rm ${MODULE_PATH}/linux-${KERNEL_VERSION}.tar.?z
+tar xf "$kernel_source_archive" -C ${MODULE_PATH}
+rm -f ${MODULE_PATH}/linux-${KERNEL_VERSION}.tar.?z
 
 echo "Copying .config file..."
 cp ${SCRIPT_PATH}/${SYSTEM_BITS}bit.config ${MODULE_PATH}/linux-${KERNEL_VERSION}/.config || exit 1
@@ -180,20 +180,18 @@ cp lib/firmware/intel/ibt* ${MODULE_PATH}/lib/firmware/intel
 
 modules_dependencies=$(ls $MODULE_PATH/lib/modules/*/modules.dep)
 modules_path=${modules_dependencies%/modules.dep}
-for dependency in $(cat $modules_dependencies | cut -d':' -f1); do
-	firmwares=$(modinfo -F firmware $modules_path/$dependency)
-	for firmware in $firmwares; do
-		# expand all target files just in case some of them have wildcard
-		target_files=$(ls lib/firmware/$firmware 2>/dev/null)
-		while IFS= read -r target_file; do
-			cp -Pu --parents "$target_file" $MODULE_PATH > /dev/null 2>&1
-			# if it's a symlink also copy the real files it's pointing to
-			if [ -L "$target_file" ]; then
-				origin_path="$target_file"
-				cp -u --parents ${origin_path%/*}/$(readlink "$target_file") $MODULE_PATH > /dev/null 2>&1
-			fi			
-		done <<< "$target_files"
-	done
+firmwares=$(cut -d':' -f1 $modules_dependencies | sed "s|^|$modules_path/|" | xargs -r modinfo -F firmware | sort -u)
+for firmware in $firmwares; do
+	# expand all target files just in case some of them have wildcard
+	target_files=$(ls lib/firmware/$firmware 2>/dev/null)
+	while IFS= read -r target_file; do
+		cp -Pu --parents "$target_file" $MODULE_PATH > /dev/null 2>&1
+		# if it's a symlink also copy the real files it's pointing to
+		if [ -L "$target_file" ]; then
+			origin_path="$target_file"
+			cp -u --parents ${origin_path%/*}/$(readlink "$target_file") $MODULE_PATH > /dev/null 2>&1
+		fi
+	done <<< "$target_files"
 done
 
 cd $MODULE_PATH || exit 1
@@ -213,8 +211,7 @@ declare -A seen_hashes
 find ${MODULE_PATH}/lib/firmware -type f -print0 | xargs -0 -r -P"$NUMBER_THREADS" stdbuf -oL sha256sum > "$hash_list"
 while IFS= read -r line; do
     file_hash="${line:0:64}"
-    file_path="${line:65}"
-    file_path="$(echo -e "${file_path}" | sed -e 's/^[[:space:]]*//')"
+    file_path="${line:66}"
 
     # if we've already seen this hash, it's a duplicate
     if [[ -n "${seen_hashes[$file_hash]}" ]]; then
@@ -236,54 +233,52 @@ rm "$hash_list"
 
 cd $MODULE_PATH || exit 1
 
+build_date=$(date +%Y%m%d)
+
 echo "Creating kernel xzm module..."
 mkdir -p ${MODULE_PATH}/${MODULE_NAME}
 mv lib ${MODULE_PATH}/${MODULE_NAME}
-make_module ${MODULE_PATH}/${MODULE_NAME} "${MODULE_NAME}-${KERNEL_VERSION}-$(date +%Y%m%d).xzm" > /dev/null || { echo "Error: failed to create kernel module." >&2; exit 1; }
+make_module ${MODULE_PATH}/${MODULE_NAME} "${MODULE_NAME}-${KERNEL_VERSION}-${build_date}.xzm" > /dev/null || { echo "Error: failed to create kernel module." >&2; exit 1; }
 
 echo "Creating crippled xzm module..."
 CRIPPLED_SOURCE_PATH=${MODULE_PATH}/${CRIPPLED_MODULE_NAME}/usr/src
+CRIPPLED_LINUX_PATH=${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}
 mkdir -p ${CRIPPLED_SOURCE_PATH}
 mv ${MODULE_PATH}/linux-${KERNEL_VERSION} ${CRIPPLED_SOURCE_PATH}
-mv ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/.config ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/config
+mv ${CRIPPLED_LINUX_PATH}/.config ${CRIPPLED_LINUX_PATH}/config
 ln -sf linux-${KERNEL_VERSION} ${CRIPPLED_SOURCE_PATH}/linux
 mkdir -p ${MODULE_PATH}/${CRIPPLED_MODULE_NAME}/lib/modules/$kernel_modules_folder
 ln -sf /usr/src/linux ${MODULE_PATH}/${CRIPPLED_MODULE_NAME}/lib/modules/$kernel_modules_folder/build
 
 # strip crippled
 {
-mv ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch/x86 ${CRIPPLED_SOURCE_PATH}
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch
-mkdir ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch
-mv ${CRIPPLED_SOURCE_PATH}/x86 ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch/
+mv ${CRIPPLED_LINUX_PATH}/arch/x86 ${CRIPPLED_SOURCE_PATH}
+rm -rf ${CRIPPLED_LINUX_PATH}/arch
+mkdir ${CRIPPLED_LINUX_PATH}/arch
+mv ${CRIPPLED_SOURCE_PATH}/x86 ${CRIPPLED_LINUX_PATH}/arch/
 
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch/x86/boot/bzImage > /dev/null 2>&1
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/arch/x86/boot/compressed/vmlinux > /dev/null 2>&1
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/Documentation > /dev/null 2>&1
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/drivers > /dev/null 2>&1
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/firmware > /dev/null 2>&1
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/fs > /dev/null 2>&1
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/net > /dev/null 2>&1
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/sound > /dev/null 2>&1
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/.tmp_versions > /dev/null 2>&1
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/tools/testing/ > /dev/null 2>&1
-rm -rf ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/vmlinux* > /dev/null 2>&1
+rm -rf ${CRIPPLED_LINUX_PATH}/arch/x86/boot/bzImage
+rm -rf ${CRIPPLED_LINUX_PATH}/arch/x86/boot/compressed/vmlinux
+rm -rf ${CRIPPLED_LINUX_PATH}/Documentation
+rm -rf ${CRIPPLED_LINUX_PATH}/drivers
+rm -rf ${CRIPPLED_LINUX_PATH}/firmware
+rm -rf ${CRIPPLED_LINUX_PATH}/fs
+rm -rf ${CRIPPLED_LINUX_PATH}/net
+rm -rf ${CRIPPLED_LINUX_PATH}/sound
+rm -rf ${CRIPPLED_LINUX_PATH}/.tmp_versions
+rm -rf ${CRIPPLED_LINUX_PATH}/tools/testing/
+rm -rf ${CRIPPLED_LINUX_PATH}/vmlinux*
 
-find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -regex '.*\.\(a\|bin\|elf\|exe\|o\|patch\|txt\|xsl\|xz\|ko\|zst\|json\|py\)$' -delete
-find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name ".*" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name "COPYING" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name "CREDITS" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name "LICENSE*" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name "MAINTAINERS*" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION} -name "README*" -exec rm -fr {} \; -print > /dev/null 2>&1
-find ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/scripts -xtype l -delete
+find ${CRIPPLED_LINUX_PATH} -regex '.*\.\(a\|bin\|elf\|exe\|o\|patch\|txt\|xsl\|xz\|ko\|zst\|json\|py\)$' -delete
+find ${CRIPPLED_LINUX_PATH} \( -name ".*" -o -name "COPYING" -o -name "CREDITS" -o -name "LICENSE*" -o -name "MAINTAINERS*" -o -name "README*" \) -exec rm -fr {} +
+find ${CRIPPLED_LINUX_PATH}/scripts -xtype l -delete
 
-mv ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/config ${CRIPPLED_SOURCE_PATH}/linux-${KERNEL_VERSION}/.config
+mv ${CRIPPLED_LINUX_PATH}/config ${CRIPPLED_LINUX_PATH}/.config
 
-find ${CRIPPLED_SOURCE_PATH} | xargs strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+find ${CRIPPLED_SOURCE_PATH} -type f -perm -u+x -print0 | xargs -0 -r strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack
 } >/dev/null 2>&1
 
-make_module ${MODULE_PATH}/${CRIPPLED_MODULE_NAME} ${CRIPPLED_MODULE_NAME}-$(date +%Y%m%d).xzm > /dev/null || { echo "Error: failed to create crippled kernel module." >&2; exit 1; }
+make_module ${MODULE_PATH}/${CRIPPLED_MODULE_NAME} ${CRIPPLED_MODULE_NAME}-${build_date}.xzm > /dev/null || { echo "Error: failed to create crippled kernel module." >&2; exit 1; }
 
 echo "Cleaning up..."
 rm -fr ${MODULE_PATH}/kernel-firmware > /dev/null 2>&1 

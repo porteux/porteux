@@ -54,7 +54,7 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 
 make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 cd $PKG
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

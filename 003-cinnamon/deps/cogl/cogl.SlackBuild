@@ -39,7 +39,7 @@ CXXFLAGS="$GCC_CXXFLAGS" \
 
 make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 rm -fr $PKG/usr/share/cogl
 
 mkdir -p $PKG/install

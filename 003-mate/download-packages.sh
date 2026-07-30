@@ -29,7 +29,3 @@ wait
 download_package "iso-codes" & # required by mate-keyboard-properties and ibus
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

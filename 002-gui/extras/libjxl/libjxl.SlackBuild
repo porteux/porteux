@@ -64,7 +64,7 @@ cmake -B build -S . \
 DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.a" -exec rm -f {} \;
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 find $PKG -name perllocal.pod -o -name ".packlist" -o -name "*.bs" | xargs rm -f || true
 
 mkdir -p $PKG/install

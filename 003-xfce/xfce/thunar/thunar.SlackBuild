@@ -60,9 +60,12 @@ else
 	make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 fi
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 rm -fr $PKG/usr/share/man
 rm -fr $PKG/usr/share/Thunar
+
+sed -i "s|Categories=System;|Categories=|g" $PKG/usr/share/applications/thunar.desktop
+sed -i "s|System;||g" $PKG/usr/share/applications/thunar-bulk-rename.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

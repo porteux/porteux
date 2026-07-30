@@ -179,5 +179,3 @@ download_package "tesseract" & # required by spectacle
 download_package "zint" & # required by clipboard tray
 wait
 
-rm FILE_LIST
-rm server-packages.txt

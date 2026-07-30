@@ -1,9 +1,20 @@
 #!/bin/bash
 
-strip_clean() {
-	local exceptions=""
-	[[ $1 == --exceptions=* ]] && exceptions="${1#--exceptions=}" && exceptions="${exceptions//,/|}"
+STRIP_SECTIONS="-R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack"
 
+list_elf_files() {
+	local type_pattern="$1"
+	local exceptions=""
+	[[ $2 == --exceptions=* ]] && exceptions="${2#--exceptions=}" && exceptions="${exceptions//,/|}"
+
+	find . -type f -print0 | xargs -0 file -00 | while IFS= read -r -d '' binary_file && IFS= read -r -d '' file_type; do
+		[[ $file_type == $type_pattern ]] || continue
+		[[ -n $exceptions && ( ${binary_file##*/} == @($exceptions) || $binary_file == @($exceptions) ) ]] && continue
+		printf '%s\0' "$binary_file"
+	done
+}
+
+strip_clean() {
 	rm usr/share/pixmaps/*.xpm
 	rm usr/X11/man
 	rm var/log/removed_packages
@@ -98,39 +109,31 @@ strip_clean() {
 
 	find usr/ -type d -empty -delete
 
-	find usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \; 2>/dev/null
+	find usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \;
 
-	find . -type f -print0 | xargs -0 file -00 | while IFS= read -r -d '' binary_file && IFS= read -r -d '' file_type; do
-		[[ $file_type == *ELF*@(executable|"shared object")* ]] || continue
-		[[ -n $exceptions && ( ${binary_file##*/} == @($exceptions) || $binary_file == @($exceptions) ) ]] && continue
-		printf '%s\0' "$binary_file"
-	done | xargs -0 -r strip --strip-debug --strip-unneeded -R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+	list_elf_files '*ELF*@(executable|shared object)*' "$1" | xargs -0 -r strip --strip-debug --strip-unneeded $STRIP_SECTIONS
 } > /dev/null 2>&1
 
 strip_hard_exec() {
-	local exceptions=""
-	[[ $1 == --exceptions=* ]] && exceptions="${1#--exceptions=}" && exceptions="${exceptions//,/|}"
-
-	find . -type f -print0 | xargs -0 file -00 | while IFS= read -r -d '' binary_file && IFS= read -r -d '' file_type; do
-		[[ $file_type == *ELF*executable* ]] || continue
-		[[ -n $exceptions && ( ${binary_file##*/} == @($exceptions) || $binary_file == @($exceptions) ) ]] && continue
-		printf '%s\0' "$binary_file"
-	done | xargs -0 -r strip --strip-all --strip-section-headers -R .comment* -R .eh_frame* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+	list_elf_files '*ELF*executable*' "$1" | xargs -0 -r strip --strip-all --strip-section-headers -R .eh_frame* $STRIP_SECTIONS
 } > /dev/null 2>&1
 
 strip_hard_all() {
 	strip_hard_exec "$@"
-	local exceptions=""
-	[[ $1 == --exceptions=* ]] && exceptions="${1#--exceptions=}" && exceptions="${exceptions//,/|}"
 
-	find . -type f -print0 | xargs -0 file -00 | while IFS= read -r -d '' binary_file && IFS= read -r -d '' file_type; do
-		[[ $file_type == *ELF*"shared object"* ]] || continue
-		[[ -n $exceptions && ( ${binary_file##*/} == @($exceptions) || $binary_file == @($exceptions) ) ]] && continue
-		strip --strip-all -R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack "$binary_file" 2> /dev/null
-		objdump -h "$binary_file" 2> /dev/null | awk '$2 == ".eh_frame" || $2 == ".eh_frame_hdr" { print $6, $3 }' | while read -r offset size; do
+	local shared_objects
+	shared_objects=$(mktemp)
+	list_elf_files '*ELF*shared object*' "$1" > "$shared_objects"
+
+	xargs -0 -r strip --strip-all $STRIP_SECTIONS < "$shared_objects"
+
+	while IFS= read -r -d '' binary_file; do
+		objdump -h "$binary_file" | awk '$2 == ".eh_frame" || $2 == ".eh_frame_hdr" { print $6, $3 }' | while read -r offset size; do
 			dd if=/dev/zero of="$binary_file" bs=1M seek=$((16#$offset)) count=$((16#$size)) conv=notrunc oflag=seek_bytes iflag=count_bytes status=none
 		done
-	done
+	done < "$shared_objects"
+
+	rm -f "$shared_objects"
 } > /dev/null 2>&1
 
 if [[ ${BASH_SOURCE[0]} == "$0" && -n $1 ]]; then

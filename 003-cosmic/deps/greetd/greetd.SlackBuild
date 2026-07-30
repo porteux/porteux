@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-git clone https://git.sr.ht/~kennylevinsen/$PRGNAM
+git clone --depth 1 https://git.sr.ht/~kennylevinsen/$PRGNAM
 cd $PRGNAM
 VERSION=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 

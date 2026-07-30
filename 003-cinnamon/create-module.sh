@@ -9,7 +9,6 @@ set_flags "$MODULE_NAME"
 source "$BUILDER_UTILS_PATH/cache-files.sh"
 source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
-source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
@@ -197,7 +196,8 @@ strip_package iso-codes \
 current_package=ibus
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv $MODULE_PATH/packages/${current_package}*.txz .
-package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
+package_file_name=$(ls ${current_package}-[0-9]*.t?z | head -n1)
+package_file_name=${package_file_name%.*}
 ROOT=./ installpkg ${current_package}*.txz && rm ${current_package}*.txz
 rm usr/share/applications/org.freedesktop.IBus.Setup.desktop
 rm -fr usr/share/ibus/dicts
@@ -207,7 +207,7 @@ rm -fr var/log/pkgtools
 rm -f var/log/setup
 rm -f var/log/scripts
 mkdir ${current_package}-stripped
-rsync -av * ${current_package}-stripped/ --exclude=${current_package}-stripped/
+find . -mindepth 1 -maxdepth 1 ! -name "${current_package}-stripped" -exec mv -t "${current_package}-stripped" {} +
 cd ${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
 rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
@@ -220,10 +220,6 @@ rm *.t?z
 ### install additional packages, including porteux utils
 
 install_additional_packages
-
-### fix some .desktop files
-
-sed -i "s|image/avif|image/avif;image/jxl|g" $MODULE_PATH/packages/usr/share/applications/xviewer.desktop
 
 ### disable some services
 

@@ -242,7 +242,3 @@ download_package "openldap" &
 download_package "slang" &
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

@@ -9,7 +9,6 @@ set_flags "$MODULE_NAME"
 source "$BUILDER_UTILS_PATH/cache-files.sh"
 source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
-source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
@@ -165,14 +164,6 @@ install_additional_packages
 
 sed -i "s|Core;||g" $MODULE_PATH/packages/usr/share/applications/gpicview.desktop
 sed -i "s|Graphics;|Utility;|g" $MODULE_PATH/packages/usr/share/applications/gpicview.desktop
-sed -z -i "s|OnlyShowIn=MATE;\\n||g" $MODULE_PATH/packages/usr/share/applications/mate-search-tool.desktop
-sed -i "s|MATE;||g" $MODULE_PATH/packages/usr/share/applications/mate-search-tool.desktop
-sed -i "s|MATE ||g" $MODULE_PATH/packages/usr/share/applications/mate-search-tool.desktop
-sed -i "s| MATE||g" $MODULE_PATH/packages/usr/share/applications/mate-search-tool.desktop
-sed -i "s|Categories=System;|Categories=|g" $MODULE_PATH/packages/usr/share/applications/thunar.desktop
-sed -i "s|System;||g" $MODULE_PATH/packages/usr/share/applications/thunar-bulk-rename.desktop
-sed -i "s|System;||g" $MODULE_PATH/packages/usr/share/applications/xfce4-sensors.desktop
-sed -i "s|Utility;||g" $MODULE_PATH/packages/usr/share/applications/xfce4-taskmanager.desktop
 
 ### copy build files to 05-devel
 

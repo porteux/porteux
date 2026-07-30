@@ -34,7 +34,7 @@ CFLAGS="$GCC_CFLAGS -Wno-error=incompatible-pointer-types" \
 
 make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 install -Dm755 "$CWD/lxlock" $PKG/usr/bin/lxlock
 

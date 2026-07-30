@@ -35,7 +35,7 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 rm -fr $PKG/usr/share/xviewer/gir-1.0
 
 sed -i "s|image/jpg|image/jpg;image/jxl|g" $PKG/usr/share/applications/xviewer.desktop

@@ -51,7 +51,7 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install || DESTDIR=$PKG ninja install
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 rm -fr $PKG/etc/X11/xorg.conf.d
 
 install -Dm644 "$CWD/Xwrapper.config" $PKG/etc/X11/Xwrapper.config

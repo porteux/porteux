@@ -56,7 +56,7 @@ else
 	make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 fi
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 # don't ship the xscreensaver autostart file
 rm -fr $PKG/etc/xdg/autostart

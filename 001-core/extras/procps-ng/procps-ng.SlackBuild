@@ -72,7 +72,7 @@ mkdir -p $PKG/lib${SYSTEM_BITS}
 	cp -a lib*.so.? ../../lib${SYSTEM_BITS}
 )
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 # Upstream has shuffled the location of tools since 3.3.11 release.
 mkdir -p $PKG/bin
@@ -135,7 +135,7 @@ CXXFLAGS="$GCC_CXXFLAGS" \
 
 make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 rm -fr $PKG/usr/share/doc
 rm -fr $PKG/usr/share/man
 

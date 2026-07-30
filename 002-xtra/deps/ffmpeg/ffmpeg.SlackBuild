@@ -86,7 +86,7 @@ LDFLAGS="$LLDFLAGS" \
 
 make -j${NUMBER_THREADS} install DESTDIR=$PKG
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 rm -R $PKG/usr/share/ffmpeg/examples
 

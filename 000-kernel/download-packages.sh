@@ -17,7 +17,3 @@ if ! ls ${SCRIPT_PATH}/kernel-firmware*.txz 1> /dev/null 2>&1; then
 	download_package "kernel-firmware"
 fi
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

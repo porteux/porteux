@@ -9,7 +9,6 @@ set_flags "$MODULE_NAME"
 source "$BUILDER_UTILS_PATH/cache-files.sh"
 source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
-source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
@@ -145,10 +144,8 @@ TEMP_BUNDLE="$(mktemp -t ca-certificates.crt.tmp.XXXXXX)"
 cd $MODULE_PATH/packages/etc/ssl/certs || exit 1
 cp -s ../../../usr/share/ca-certificates/mozilla/* .
 
-for i in *.crt; do
-	sed -e '$a\' "$i" >> "$TEMP_BUNDLE"
-	rename crt pem "$i"
-done
+sed -s -e '$a\' *.crt > "$TEMP_BUNDLE"
+rename crt pem *.crt
 
 c_rehash . > /dev/null
 
@@ -256,7 +253,6 @@ rm -fr lib${SYSTEM_BITS}/pkgconfig
 rm -fr lib/systemd
 rm -fr mnt/*
 rm -fr usr/etc
-rm -fr usr/include/qgpgme-qt5*
 rm -fr usr/lib${SYSTEM_BITS}/guile
 rm -fr usr/lib${SYSTEM_BITS}/krb*/plugins
 rm -fr usr/lib${SYSTEM_BITS}/sasl2
@@ -282,7 +278,6 @@ rm -fr usr/share/glib-2.0/gettext
 rm -fr usr/share/glib-2.0/valgrind
 rm -fr usr/share/guile
 rm -fr usr/share/icu
-rm -fr usr/share/info
 rm -fr usr/share/kbd/keymaps/amiga
 rm -fr usr/share/kbd/keymaps/atari
 rm -fr usr/share/kbd/keymaps/mac

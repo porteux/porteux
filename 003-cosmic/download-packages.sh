@@ -22,7 +22,3 @@ download_package "leptonica" & # required by cosmic-reader
 download_package "tesseract" & # required by cosmic-reader
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

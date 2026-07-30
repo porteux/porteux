@@ -41,7 +41,7 @@ meson setup \
  
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 rm -fr $PKG/usr/libexec/installed-tests
 rm -fr $PKG/usr/share/cjs-1.0
 

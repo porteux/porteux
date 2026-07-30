@@ -9,7 +9,6 @@ set_flags "$MODULE_NAME"
 source "$BUILDER_UTILS_PATH/cache-files.sh"
 source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
-source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
@@ -314,7 +313,6 @@ rm -fr usr/lib${SYSTEM_BITS}/qt6/qml/QtTest
 rm -fr usr/lib${SYSTEM_BITS}/qt6/mkspecs
 rm -fr usr/share/chromium
 rm -fr usr/share/emoticons/EmojiOne
-rm -fr usr/share/gdb
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
 rm -fr usr/share/google-chrome
@@ -338,7 +336,6 @@ rm -fr usr/share/sddm/themes/breeze/preview*
 rm -fr usr/share/sddm/themes/elarun
 rm -fr usr/share/sddm/themes/maldives
 rm -fr usr/share/sddm/themes/maya
-rm -fr usr/share/sddm/translations
 rm -fr usr/share/themes/Breeze-Dark/gtk-4.0
 rm -fr usr/share/themes/Breeze/gtk-4.0
 

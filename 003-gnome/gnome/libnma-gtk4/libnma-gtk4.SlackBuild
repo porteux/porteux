@@ -43,7 +43,7 @@ rm -f $PKG/usr/lib${SYSTEM_BITS}/girepository-1.0/NMA-1.0.typelib
 rm -f $PKG/usr/lib${SYSTEM_BITS}/pkgconfig/libnma.pc
 rm -f $PKG/usr/lib${SYSTEM_BITS}/libnma.so*
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

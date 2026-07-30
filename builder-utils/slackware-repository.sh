@@ -1,25 +1,18 @@
 #!/bin/bash
 
+SERVER_PACKAGES_LIST="$MODULE_PATH/server-packages.txt"
+
 generate_repository_urls() {
-	rm -f $MODULE_PATH/packages/FILE_LIST
-	rm -f $MODULE_PATH/packages/server-packages.txt
-	mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
-	cd $MODULE_PATH/packages || exit 1
+	local file_list="$MODULE_PATH/FILE_LIST"
+	mkdir -p $MODULE_PATH/packages
 
 	# Get repository packages list
-	wget --tries=3 --retry-connrefused $REPOSITORY/FILE_LIST -O FILE_LIST -q > /dev/null 2>&1 || wget --tries=3 --retry-connrefused $REPOSITORY/FILELIST.TXT -O FILE_LIST -q > /dev/null 2>&1 || { echo "Error: cannot download package list from $REPOSITORY" >&2; exit 1; }
-	rm server-packages.txt > /dev/null 2>&1
+	wget --tries=3 --retry-connrefused $REPOSITORY/FILE_LIST -O "$file_list" -q > /dev/null 2>&1 || wget --tries=3 --retry-connrefused $REPOSITORY/FILELIST.TXT -O "$file_list" -q > /dev/null 2>&1 || { echo "Error: cannot download package list from $REPOSITORY" >&2; exit 1; }
 
-	# Cleanup server packages list
-	local line
-	while IFS= read -r line; do
-		if [[ $line == -* ]] && [[ $line == *txz ]]; then
-			echo "${line#*./}" >> server-packages.txt
-		fi
-	done < FILE_LIST
+	# Cleanup and sort server packages list
+	awk '/^-/ && /txz$/ { print substr($0, index($0, "./") + 2) }' "$file_list" | sort > "$SERVER_PACKAGES_LIST"
 
-	# Sort server packages list
-	sort -o server-packages.txt{,}
+	rm -f "$file_list"
 }
 
 download_package() {
@@ -31,7 +24,7 @@ download_package() {
 	fi
 
 	local package_url
-	package_url=$(grep "/${1}[-_][0-9]\+" server-packages.txt | head -n1)
+	package_url=$(grep "/${1}[-_][0-9]\+" "$SERVER_PACKAGES_LIST" | head -n1)
 	if [ -z "$package_url" ]; then
 		echo "Error: package $1 not found in repository $REPOSITORY" >&2
 		exit 1

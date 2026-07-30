@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-git clone https://github.com/pop-os/$PRGNAM
+git clone --depth 1 https://github.com/pop-os/$PRGNAM
 cd $PRGNAM
 VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
@@ -20,7 +20,7 @@ RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"
 
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 just build-release --target x86_64-unknown-linux-gnu
-rsync -r ./target/x86_64-unknown-linux-gnu/release ./target/ --remove-source-files
+cp -al ./target/x86_64-unknown-linux-gnu/release ./target/
 just rootdir=$PKG install
 
 mkdir -p $PKG/install

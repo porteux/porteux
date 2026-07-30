@@ -47,7 +47,12 @@ make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
 wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$VERSION/schemas/org.mate.interface.gschema.xml -P $PKG/usr/share/glib-2.0/schemas
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
+
+sed -z -i "s|OnlyShowIn=MATE;\\n||g" $PKG/usr/share/applications/mate-search-tool.desktop
+sed -i "s|MATE;||g" $PKG/usr/share/applications/mate-search-tool.desktop
+sed -i "s|MATE ||g" $PKG/usr/share/applications/mate-search-tool.desktop
+sed -i "s| MATE||g" $PKG/usr/share/applications/mate-search-tool.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

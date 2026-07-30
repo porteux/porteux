@@ -13,7 +13,3 @@ download_package "libwnck3" &
 download_package "libxklavier" &
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

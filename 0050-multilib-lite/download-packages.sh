@@ -94,7 +94,3 @@ download_package "pulseaudio" &
 download_package "vulkan-sdk" &
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

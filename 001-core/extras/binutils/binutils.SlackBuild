@@ -50,7 +50,7 @@ CXXFLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
 make -j${NUMBER_THREADS} tooldir=/usr MAKEINFO=true
 make -j${NUMBER_THREADS} tooldir=/usr MAKEINFO=true install DESTDIR=$PKG
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 rm -fr $PKG/usr/man
 rm -fr $PKG/usr/share/info

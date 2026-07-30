@@ -36,7 +36,7 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 # Fix icon
 sed -i "s|Icon=gcolor2|Icon=/usr/share/icons/matefaenza/apps/scalable/gcolor2.svg|" $PKG/usr/share/applications/mate-color-select.desktop

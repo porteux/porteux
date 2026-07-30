@@ -9,7 +9,6 @@ set_flags "$MODULE_NAME"
 source "$BUILDER_UTILS_PATH/cache-files.sh"
 source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
-source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
@@ -154,10 +153,6 @@ rm *.t?z
 ### install additional packages, including porteux utils
 
 install_additional_packages
-
-### fix some .desktop files
-
-sed -i "s|image/x-xpixmap|image/x-xpixmap;image/heic;image/jxl|g" $MODULE_PATH/packages/usr/share/applications/eom.desktop
 
 ### copy build files to 05-devel
 

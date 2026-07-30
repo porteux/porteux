@@ -16,7 +16,3 @@ wait
 download_package "qt6" &
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

@@ -32,6 +32,8 @@ make -C build -j${NUMBER_THREADS} DESTDIR="$PKG" install
 
 rm $PKG/usr/share/icons/hicolor/scalable/apps/pcmanfm-qt.svg
 
+sed -i "s|Icon=pcmanfm-qt|Icon=system-file-manager|g" $PKG/usr/share/applications/pcmanfm-qt.desktop
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 

@@ -31,7 +31,7 @@ CFLAGS="${GCC_CFLAGS/-flto=auto/}" \
 
 make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 rm -fr $PKG/usr/share/doc
 rm -fr $PKG/usr/share/man
 

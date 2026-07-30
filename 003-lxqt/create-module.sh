@@ -9,7 +9,6 @@ set_flags "$MODULE_NAME"
 source "$BUILDER_UTILS_PATH/cache-files.sh"
 source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
-source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 
@@ -228,12 +227,6 @@ rm *.t?z
 
 install_additional_packages
 
-### fix some .desktop files
-
-sed -i "s|image/x-tga|image/x-tga;image/heic;image/jxl|g" $MODULE_PATH/packages/usr/share/applications/lximage-qt.desktop
-sed -i "s|Icon=pcmanfm-qt|Icon=system-file-manager|g" $MODULE_PATH/packages/usr/share/applications/pcmanfm-qt.desktop
-sed -i "s|Icon=xpdfIcon|Icon=xpdf|g" $MODULE_PATH/packages/usr/share/applications/xpdf.desktop
-
 ### copy build files to 05-devel
 
 copy_to_devel
@@ -255,20 +248,15 @@ rm -fr usr/lib${SYSTEM_BITS}/gtk-2.0/
 rm -fr usr/lib${SYSTEM_BITS}/qt*/mkspecs
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
-rm -fr usr/share/libfm-qt/translations
 rm -fr usr/share/lximage-qt
 rm -fr usr/share/lxqt-archiver
 rm -fr usr/share/lxqt/graphics
 rm -fr usr/share/lxqt/panel
-rm -fr usr/share/lxqt/translations
 rm -fr usr/share/obconf-qt
 rm -fr usr/share/pavucontrol-qt
-rm -fr usr/share/pcmanfm-qt/translations
 rm -fr usr/share/qlogging-categories*
 rm -fr usr/share/qps
 rm -fr usr/share/qterminal
-rm -fr usr/share/qtermwidget*/translations
-rm -fr usr/share/screengrab/translations
 rm -fr usr/share/Thunar
 
 find usr/share/lxqt/wallpapers -mindepth 1 -maxdepth 1 ! \( -name "simple_blue_widescreen*" \) -exec rm -rf '{}' \; 2>/dev/null

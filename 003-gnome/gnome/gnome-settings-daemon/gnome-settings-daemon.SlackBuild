@@ -60,7 +60,7 @@ install -Dm644 "$CWD/org.gnome.settings-daemon.plugins.power.gschema.override" $
 
 install -Dm644 "$CWD/org.gnome.SettingsDaemon.Housekeeping.desktop" $PKG/etc/xdg/autostart/
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

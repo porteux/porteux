@@ -255,7 +255,3 @@ download_package "socat" & # to build flatpak
 download_package "xtrans" & # to build xorg
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

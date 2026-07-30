@@ -9,7 +9,7 @@ set_flags "$MODULE_NAME"
 source "$BUILDER_UTILS_PATH/cache-files.sh"
 source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
-source "$BUILDER_UTILS_PATH/slackware-repository.sh"
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 elevate_if_needed "$0" "$@"
 
@@ -59,14 +59,10 @@ rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 installpkg $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULE_PATH/packages/llvm* > /dev/null 2>&1
 
-# not using rust from slackware because it's much slower
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
-rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
-export PATH=$HOME/.cargo/bin/:$PATH
+install_rust_toolchain
 
 current_package=just
-wget https://github.com/casey/${current_package}/archive/refs/heads/master.tar.gz -O ${current_package}.tar.gz
-tar xf ${current_package}.tar.gz
+download_master_from_github casey ${current_package} > /dev/null || exit 1
 cd ${current_package}-master || exit 1
 cargo build --release --target x86_64-unknown-linux-gnu || exit 1
 export PATH=$MODULE_PATH/just-master/target/x86_64-unknown-linux-gnu/release/:$PATH
@@ -84,9 +80,9 @@ find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" -o -name "just-m
 done
 
 # required by cosmic-reader
-installpkg $MODULE_PATH/packages/leptonica*.txz
+installpkg $MODULE_PATH/packages/leptonica*.txz || exit 1
 rm $MODULE_PATH/packages/leptonica*.txz
-installpkg $MODULE_PATH/packages/tesseract*.txz
+installpkg $MODULE_PATH/packages/tesseract*.txz || exit 1
 rm $MODULE_PATH/packages/tesseract*.txz
 
 # cosmic packages

@@ -36,7 +36,7 @@ cmake -B build -S . \
 
 make -C build -j${NUMBER_THREADS} install DESTDIR=$PKG
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 # Remove these since we use the poppler ones
 rm $PKG/usr/bin/pdfdetach
@@ -52,6 +52,7 @@ rm $PKG/usr/bin/pdffonts
 mkdir -p $PKG/usr/share/{applications,pixmaps}
 cat $CWD/xpdf.desktop > $PKG/usr/share/applications/xpdf.desktop
 cat $CWD/xpdfIcon.xpm > $PKG/usr/share/pixmaps/xpdfIcon.xpm
+sed -i "s|Icon=xpdfIcon|Icon=xpdf|g" $PKG/usr/share/applications/xpdf.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

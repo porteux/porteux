@@ -27,7 +27,7 @@ cmake -B build -S . \
 
 make -C build -j${NUMBER_THREADS} DESTDIR="$PKG" install
 
-find $PKG -type f -name "*.la" -exec rm -f {} \;
+find $PKG -type f -name "*.la" -delete
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

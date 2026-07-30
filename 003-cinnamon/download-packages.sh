@@ -61,7 +61,3 @@ download_package "python-wheel" &
 download_package "xtrans" &
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

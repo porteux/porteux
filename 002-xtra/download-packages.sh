@@ -24,7 +24,3 @@ download_package "python-pip" & # to build libplacebo
 download_package "vulkan-sdk" & # to build libplacebo
 wait
 
-### script clean up
-
-rm FILE_LIST
-rm server-packages.txt

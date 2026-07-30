@@ -7,7 +7,6 @@ source "$PWD/../builder-utils/set-flags.sh"
 set_flags "$MODULE_NAME"
 
 source "$BUILDER_UTILS_PATH/helper.sh"
-source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 elevate_if_needed "$0" "$@"
 

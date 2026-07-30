@@ -1,9 +1,9 @@
 #!/bin/bash
 # Script to create bootable ISO in Linux
 
-if [ "$1" = "--help" -o "$1" = "-h" ]; then
-	mainFolder=$(readlink -f $PWD/..)
-	echo "Create bootable ISO from files in '$mainFolder'."
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+	main_folder=$(readlink -f $PWD/..)
+	echo "Create bootable ISO from files in '$main_folder'."
 	echo "usage: $0 <option>"
 	echo "By default the ISO is created in /tmp folder."
 	echo
@@ -20,7 +20,7 @@ fi
 
 echo "Fixing permissions..."
 chmod 755 -R ../* || exit 1
-echo guest | chown -R guest:users ../ || exit 1
+chown -R guest:users ../ || exit 1
 
 echo "Generating '$ISONAME'..."
 mkisofs -o "$ISONAME" -v -l -J -joliet-long -R -D -A "$CDLABEL" \
@@ -33,9 +33,7 @@ if [ ! -e "$ISONAME" ]; then
 fi
 
 echo "Writing boot partition..."
-../boot/syslinux/isohybrid --partok "$ISONAME"
-
-if [ $? -eq 0 ]; then
+if ../boot/syslinux/isohybrid --partok "$ISONAME"; then
 	echo "Finished successfully."
 else
 	echo "Error writing boot partition. '$ISONAME' has been created and it might work in some cases."
