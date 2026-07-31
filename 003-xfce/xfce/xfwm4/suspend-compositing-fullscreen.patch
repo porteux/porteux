@@ -34,7 +34,7 @@ index 0f7608e..d2163e1 100644
                              "/general/unredirect_overlays",
                              G_TYPE_BOOLEAN,
 diff --git settings-dialogs/xfwm4-tweaks-dialog.glade settings-dialogs/xfwm4-tweaks-dialog.glade
-index f5bc9dd..0eedfcc 100644
+index f5bc9dd..2085cf5 100644
 --- settings-dialogs/xfwm4-tweaks-dialog.glade
 +++ settings-dialogs/xfwm4-tweaks-dialog.glade
 @@ -912,9 +912,27 @@ when switching via keyboard shortcuts</property>
@@ -44,7 +44,7 @@ index f5bc9dd..0eedfcc 100644
 +                                <child>
 +                                  <object class="GtkCheckButton" id="suspend_compositing_fullscreen_check">
 +                                    <property name="label" translatable="yes">_Suspend compositing for focused fullscreen windows</property>
-+                                    <property name="tooltip_text" translatable="yes">Improves performance in fullscreen applications; effects return as soon as the window closes or loses focus</property>
++                                    <property name="tooltip_text" translatable="yes">Improves performance in fullscreen applications; compositing resumes when the window closes or loses focus. Video may tear while it is off</property>
 +                                    <property name="use_action_appearance">False</property>
 +                                    <property name="visible">True</property>
 +                                    <property name="can_focus">True</property>
@@ -61,7 +61,7 @@ index f5bc9dd..0eedfcc 100644
                                  <child>
                                    <object class="GtkCheckButton" id="unredirect_overlays_check">
                                      <property name="label" translatable="yes">Display _fullscreen overlay windows directly</property>
-+                                    <property name="tooltip_text" translatable="yes">Bypass compositing if an application asks to draw straight to the screen, typical of older fullscreen games and video players</property>
++                                    <property name="tooltip_text" translatable="yes">Let fullscreen windows that bypass the window manager draw straight to the screen</property>
                                      <property name="use_action_appearance">False</property>
                                      <property name="visible">True</property>
                                      <property name="can_focus">True</property>
@@ -75,7 +75,7 @@ index f5bc9dd..0eedfcc 100644
                                  </child>
                                  <child>
 diff --git src/compositor.c src/compositor.c
-index f021f65..9db4cb3 100644
+index 3fe93cc..376b3aa 100644
 --- src/compositor.c
 +++ src/compositor.c
 @@ -54,6 +54,7 @@
@@ -86,7 +86,7 @@ index f021f65..9db4cb3 100644
  #include "frame.h"
  #include "hints.h"
  #include "compositor.h"
-@@ -5223,6 +5224,33 @@ compositorActivateScreen (ScreenInfo *screen_info, gboolean active)
+@@ -5235,6 +5236,51 @@ compositorActivateScreen (ScreenInfo *screen_info, gboolean active)
  #endif /* HAVE_COMPOSITOR */
  }
  
@@ -108,10 +108,28 @@ index f021f65..9db4cb3 100644
 +    for (list = display_info->screens; list; list = g_slist_next (list))
 +    {
 +        screen = (ScreenInfo *) list->data;
-+        active = screen->params->use_compositing &&
-+                 !(screen->params->suspend_compositing_fullscreen &&
-+                   (c != NULL) && (c->screen_info == screen) &&
-+                   FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN));
++        gboolean suspend;
++
++        suspend = screen->params->suspend_compositing_fullscreen &&
++                  (c != NULL) && (c->screen_info == screen) &&
++                  FLAG_TEST (c->flags, CLIENT_FLAG_FULLSCREEN);
++
++        if (suspend)
++        {
++            CWindow *cw = find_cwindow_in_screen (screen, c->frame);
++
++            /*
++             * _NET_WM_BYPASS_COMPOSITOR of 2 means the window wants compositing
++             * kept whatever happens. Anything relying on the compositor to
++             * present without tearing, a video player for one, can say so.
++             */
++            if ((cw != NULL) && (cw->bypass_compositor == 2))
++            {
++                suspend = FALSE;
++            }
++        }
++
++        active = screen->params->use_compositing && !suspend;
 +        compositorActivateScreen (screen, active);
 +    }
 +#endif /* HAVE_COMPOSITOR */
@@ -120,6 +138,32 @@ index f021f65..9db4cb3 100644
  void
  compositorUpdateScreenSize (ScreenInfo *screen_info)
  {
+diff --git src/compositor.c.orig src/compositor.c.orig
+index 16dcb46..3fe93cc 100644
+--- src/compositor.c.orig
++++ src/compositor.c.orig
+@@ -799,6 +799,11 @@ border_size (CWindow *cw)
+     myDisplayErrorTrapPush (display_info);
+     border = XFixesCreateRegionFromWindow (display_info->dpy,
+                                            cw->id, WindowRegionBounding);
++    if (myDisplayErrorTrapPop (display_info) != Success)
++    {
++        return None;
++    }
++    myDisplayErrorTrapPush (display_info);
+     XFixesSetPictureClipRegion (display_info->dpy, cw->picture, 0, 0, border);
+     XFixesTranslateRegion (display_info->dpy, border,
+                            cw->attr.x + cw->attr.border_width,
+@@ -806,6 +811,9 @@ border_size (CWindow *cw)
+ 
+     if (myDisplayErrorTrapPop (display_info) != Success)
+     {
++	if (border) {
++	       XFixesDestroyRegion(display_info->dpy, border);
++	}
+         return None;
+     }
+ 
 diff --git src/compositor.h src/compositor.h
 index 2778867..85c6325 100644
 --- src/compositor.h

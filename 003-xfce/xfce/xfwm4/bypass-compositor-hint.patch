@@ -1,0 +1,52 @@
+Read _NET_WM_BYPASS_COMPOSITOR from the window that sets it
+
+An application sets this property on its own window, while the compositor
+tracks the frame. Adding a window read the property from the frame, and the
+property change handler looked the window up by the client id when windows
+are keyed by frame, so the lookup failed and nothing was ever updated.
+
+For any window with a frame the hint therefore stayed at zero, which means
+a fullscreen application asking to bypass the compositor was never let
+through. The handler for _NET_WM_OPAQUE_REGION right below does this
+correctly and is what this follows.
+
+diff --git src/compositor.c src/compositor.c
+index 74fed87..53e7409 100644
+--- src/compositor.c
++++ src/compositor.c
+@@ -3417,7 +3417,9 @@ add_win (DisplayInfo *display_info, Window id, Client *c)
+     {
+         update_opaque_region (new, id);
+     }
+-    getBypassCompositor (display_info, id, &new->bypass_compositor);
++    /* The application sets this on its own window, not on the frame */
++    getBypassCompositor (display_info, (c != NULL) ? c->window : id,
++                         &new->bypass_compositor);
+     init_opacity (new);
+     determine_mode (new);
+ 
+@@ -3927,12 +3929,22 @@ compositorHandlePropertyNotify (DisplayInfo *display_info, XPropertyEvent *ev)
+     }
+     else if (ev->atom == display_info->atoms[NET_WM_BYPASS_COMPOSITOR])
+     {
+-        CWindow *cw = find_cwindow_in_display (display_info, ev->window);
++        Client *c;
++        CWindow *cw;
++
+         TRACE ("NET_WM_BYPASS_COMPOSITOR changed for id 0x%lx", ev->window);
+ 
++        /*
++         * The property sits on the client window while the compositor tracks
++         * the frame, so the client has to be resolved first.
++         */
++        c = myDisplayGetClientFromWindow (display_info, ev->window, SEARCH_WINDOW);
++        cw = find_cwindow_in_display (display_info,
++                                      (c != NULL) ? c->frame : ev->window);
++
+         if (is_on_compositor (cw))
+         {
+-            getBypassCompositor (display_info, cw->id, &cw->bypass_compositor);
++            getBypassCompositor (display_info, ev->window, &cw->bypass_compositor);
+         }
+     }
+     else if (ev->atom == display_info->atoms[NET_WM_OPAQUE_REGION])
