@@ -12,7 +12,7 @@ source "$BUILDER_UTILS_PATH/helper.sh"
 
 elevate_if_needed "$0" "$@"
 
-LATEST_VERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | head -1)
+LATEST_VERSION=$(curl -s https://github.com/lxqt/lxqt-about/tags/ | grep "/lxqt/lxqt-about/releases/tag/" | grep -oP "(?<=/lxqt/lxqt-about/releases/tag/)[^\"]+" | uniq | grep -Ev "alpha|beta|rc[0-9]" | sort -Vr | head -1)
 [ "$LATEST_VERSION" ] || { echo "Error: could not detect LXQt version." >&2; exit 1; }
 echo -e "Building LXQt ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
 MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"

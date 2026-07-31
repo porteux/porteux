@@ -18,10 +18,12 @@ MODULE_DIR=$INSTALLER_DIR/nvidia-module
 mkdir -p $INSTALLER_DIR/nvidia-module
 
 # add ABI compatible setting
-echo '
+if ! grep -q '"IgnoreABI"' /etc/X11/xorg.conf 2>/dev/null; then
+	echo '
 Section "ServerFlags"
-    Option         "IgnoreABI" "1" 
+    Option         "IgnoreABI" "1"
 EndSection' >> /etc/X11/xorg.conf
+fi
 
 echo "Creating memory changes file..."
 sync; echo 3 > /proc/sys/vm/drop_caches

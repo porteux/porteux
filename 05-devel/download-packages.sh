@@ -12,7 +12,7 @@ download_package "gc" &
 download_package "gcc" &
 download_package "gcc-g++" &
 download_package "gettext-tools" &
-wait
+wait_for_downloads
 download_package "git" &
 download_package "gmp" &
 download_package "guile" &
@@ -23,7 +23,7 @@ download_package "itstool" &
 download_package "libmpc" &
 download_package "libpthread-stubs" &
 download_package "libtool" &
-wait
+wait_for_downloads
 download_package "linuxdoc-tools" &
 download_package "m4" &
 download_package "make" &
@@ -34,7 +34,7 @@ download_package "ninja" &
 download_package "perl" &
 download_package "pkgconf" & # this replaces pkg-config
 download_package "python-packaging" &
-wait
+wait_for_downloads
 download_package "python-setuptools" &
 download_package "util-macros" &
 download_package "vala" &
@@ -42,5 +42,5 @@ download_package "wayland-protocols" &
 download_package "xcb-proto" &
 download_package "xorgproto" &
 download_package "yasm" &
-wait
+wait_for_downloads
 

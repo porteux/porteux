@@ -13,7 +13,7 @@ download_package "elfutils" &
 download_package "elogind" &
 download_package "expat" &
 download_package "flac" &
-wait
+wait_for_downloads
 download_package "fontconfig" &
 download_package "freetype" &
 download_package "glib2" &
@@ -24,7 +24,7 @@ download_package "glu" &
 download_package "graphite2" &
 download_package "harfbuzz" &
 download_package "keyutils" &
-wait
+wait_for_downloads
 download_package "krb5" &
 download_package "lame" &
 download_package "libasyncns" &
@@ -35,7 +35,7 @@ download_package "libedit" &
 download_package "libffi" &
 download_package "libglvnd" &
 download_package "libICE" &
-wait
+wait_for_downloads
 download_package "libjpeg-turbo" &
 download_package "libnsl" &
 download_package "libogg" &
@@ -46,7 +46,7 @@ download_package "libsndfile" &
 download_package "libtirpc" &
 download_package "libvorbis" &
 download_package "libX11" &
-wait
+wait_for_downloads
 download_package "libXau" &
 download_package "libxcb" &
 download_package "libXcomposite" &
@@ -57,7 +57,7 @@ download_package "libXext" &
 download_package "libXfixes" &
 download_package "libXft" &
 download_package "libXi" &
-wait
+wait_for_downloads
 download_package "libXinerama" &
 download_package "libxml2" &
 download_package "libXrandr" &
@@ -68,7 +68,7 @@ download_package "libXxf86vm" &
 download_package "lm_sensors" &
 download_package "lz4" &
 download_package "mpg123" &
-wait
+wait_for_downloads
 download_package "ncurses" &
 download_package "openal-soft" &
 download_package "opus" &
@@ -79,7 +79,7 @@ download_package "xcb-util-keysyms" &
 download_package "xz" &
 download_package "zlib" &
 download_package "zstd" &
-wait
+wait_for_downloads
 
 ### packages that require specific stripping
 
@@ -92,5 +92,5 @@ download_package "mesa" &
 download_package "pcre2" &
 download_package "pulseaudio" &
 download_package "vulkan-sdk" &
-wait
+wait_for_downloads
 

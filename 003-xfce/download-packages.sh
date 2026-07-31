@@ -12,15 +12,15 @@ download_package "gspell" &
 download_package "keybinder3" &
 download_package "libappindicator" &
 download_package "libdbusmenu" &
-wait
+wait_for_downloads
 download_package "libgtop" &
 download_package "libindicator" &
 download_package "libwnck3" &
 download_package "libxklavier" &
-wait
+wait_for_downloads
 
 ### temporary packages only for building
 
 download_package "libyaml" & # to build xfdesktop with desktop icons
-wait
+wait_for_downloads
 

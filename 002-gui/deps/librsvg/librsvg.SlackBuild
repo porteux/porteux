@@ -14,8 +14,9 @@ cd $TMP
 
 VERSION=$(curl -s https://gitlab.gnome.org/GNOME/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -viE 'alpha|beta|rc|gtk' | sort -Vr | {
 	while read -r version; do
+		minor=$(echo "$version" | cut -d. -f2)
 		patchVersion=$(echo "$version" | rev | cut -d. -f1 | rev)
-		if [[ $patchVersion != "9"* ]]; then
+		if (( minor % 2 == 0 )) && [[ $patchVersion != "9"* ]]; then
 			echo "$version"
 			break
 		fi

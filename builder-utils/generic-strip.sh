@@ -14,6 +14,20 @@ list_elf_files() {
 	done
 }
 
+split_elf_files() {
+	local executables="$1" shared_objects="$2"
+	local exceptions=""
+	[[ $3 == --exceptions=* ]] && exceptions="${3#--exceptions=}" && exceptions="${exceptions//,/|}"
+
+	find . -type f -print0 | xargs -0 file -00 | while IFS= read -r -d '' binary_file && IFS= read -r -d '' file_type; do
+		[[ -n $exceptions && ( ${binary_file##*/} == @($exceptions) || $binary_file == @($exceptions) ) ]] && continue
+		case $file_type in
+			*ELF*shared\ object*) printf '%s\0' "$binary_file" >> "$shared_objects" ;;
+			*ELF*executable*) printf '%s\0' "$binary_file" >> "$executables" ;;
+		esac
+	done
+}
+
 strip_clean() {
 	rm usr/share/pixmaps/*.xpm
 	rm usr/X11/man
@@ -119,12 +133,13 @@ strip_hard_exec() {
 } > /dev/null 2>&1
 
 strip_hard_all() {
-	strip_hard_exec "$@"
-
-	local shared_objects
+	local executables shared_objects
+	executables=$(mktemp)
 	shared_objects=$(mktemp)
-	list_elf_files '*ELF*shared object*' "$1" > "$shared_objects"
 
+	split_elf_files "$executables" "$shared_objects" "$1"
+
+	xargs -0 -r strip --strip-all --strip-section-headers -R .eh_frame* $STRIP_SECTIONS < "$executables"
 	xargs -0 -r strip --strip-all $STRIP_SECTIONS < "$shared_objects"
 
 	while IFS= read -r -d '' binary_file; do
@@ -133,7 +148,7 @@ strip_hard_all() {
 		done
 	done < "$shared_objects"
 
-	rm -f "$shared_objects"
+	rm -f "$executables" "$shared_objects"
 } > /dev/null 2>&1
 
 if [[ ${BASH_SOURCE[0]} == "$0" && -n $1 ]]; then

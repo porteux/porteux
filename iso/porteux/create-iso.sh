@@ -23,9 +23,10 @@ chmod 755 -R ../* || exit 1
 chown -R guest:users ../ || exit 1
 
 echo "Generating '$ISONAME'..."
+rm -f "$ISONAME"
 mkisofs -o "$ISONAME" -v -l -J -joliet-long -R -D -A "$CDLABEL" \
 -V "$CDLABEL" -no-emul-boot -boot-info-table -boot-load-size 4 \
--b boot/syslinux/isolinux.bin -c boot/syslinux/isolinux.boot ../. > /dev/null 2>&1
+-b boot/syslinux/isolinux.bin -c boot/syslinux/isolinux.boot ../. > /dev/null 2>&1 || { echo "Error creating ISO."; rm -f "$ISONAME"; exit 1; }
 
 if [ ! -e "$ISONAME" ]; then
 	echo "Error creating ISO."

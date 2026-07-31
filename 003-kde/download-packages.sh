@@ -13,7 +13,7 @@ download_package "hunspell" &
 download_package "jasper" &
 download_package "keybinder3" &
 download_package "libdmtx" &
-wait
+wait_for_downloads
 download_package "libqaccessibilityclient" &
 download_package "libqalculate" &
 download_package "LibRaw" &
@@ -22,7 +22,7 @@ download_package "qca" &
 download_package "qrencode" &
 download_package "xdpyinfo" &
 download_package "zxing-cpp" &
-wait
+wait_for_downloads
 download_package "ark" &
 download_package "attica" &
 download_package "baloo" &
@@ -33,7 +33,7 @@ download_package "breeze" &
 download_package "breeze-grub" &
 download_package "breeze-gtk" &
 download_package "breeze-icons" &
-wait
+wait_for_downloads
 download_package "dolphin" &
 download_package "dolphin-plugins" &
 download_package "ffmpegthumbs" &
@@ -44,7 +44,7 @@ download_package "kapidox" &
 download_package "karchive" &
 download_package "kauth" &
 download_package "kbookmarks" &
-wait
+wait_for_downloads
 download_package "kcmutils" &
 download_package "kcodecs" &
 download_package "kColorPicker" &
@@ -55,7 +55,7 @@ download_package "kconfigwidgets" &
 download_package "kcoreaddons" &
 download_package "kcrash" &
 download_package "kdbusaddons" &
-wait
+wait_for_downloads
 download_package "kdeclarative" &
 download_package "kde-cli-tools" &
 download_package "kdecoration" &
@@ -66,7 +66,7 @@ download_package "kdeplasma-addons" &
 download_package "kdesu" &
 download_package "kdnssd" &
 download_package "kfilemetadata" &
-wait
+wait_for_downloads
 download_package "kglobalaccel" &
 download_package "kglobalacceld" &
 download_package "kguiaddons" &
@@ -76,7 +76,7 @@ download_package "kiconthemes" &
 download_package "kImageAnnotator" &
 download_package "kinfocenter" &
 download_package "kio" &
-wait
+wait_for_downloads
 download_package "kio-admin" &
 download_package "kio-extras" &
 download_package "kio-gdrive" &
@@ -87,7 +87,7 @@ download_package "kitemmodels" &
 download_package "kitemviews" &
 download_package "kjobwidgets" &
 download_package "kmenuedit" &
-wait
+wait_for_downloads
 download_package "knewstuff" &
 download_package "knighttime" &
 download_package "knotifications" &
@@ -98,7 +98,7 @@ download_package "kparts" &
 download_package "kpeople" &
 download_package "kpeoplevcard" &
 download_package "kpipewire" &
-wait
+wait_for_downloads
 download_package "kplotting" &
 download_package "kpty" &
 download_package "kqtquickcharts" &
@@ -109,7 +109,7 @@ download_package "kscreen" &
 download_package "kscreenlocker" &
 download_package "kservice" &
 download_package "ksshaskpass" &
-wait
+wait_for_downloads
 download_package "kstatusnotifieritem" &
 download_package "ksvg" &
 download_package "ksystemstats" &
@@ -118,7 +118,7 @@ download_package "ktextwidgets" &
 download_package "kunitconversion" &
 download_package "kwallet" &
 download_package "kwayland-integration" &
-wait
+wait_for_downloads
 download_package "kwidgetsaddons" &
 download_package "kwin" &
 download_package "kwin-x11" &
@@ -127,7 +127,7 @@ download_package "kxmlgui" &
 download_package "layer-shell-qt" &
 download_package "libkdcraw" &
 download_package "libkexiv2" &
-wait
+wait_for_downloads
 download_package "libksysguard" &
 download_package "libplasma" &
 download_package "libqaccessibilityclient" &
@@ -136,7 +136,7 @@ download_package "modemmanager-qt" &
 download_package "okular" &
 download_package "oxygen" &
 download_package "plasma5support" &
-wait
+wait_for_downloads
 download_package "plasma-activities" &
 download_package "plasma-activities-stats" &
 download_package "plasma-browser-integration" &
@@ -147,7 +147,7 @@ download_package "plasma-pa" &
 download_package "plasma-systemmonitor" &
 download_package "plasma-workspace" &
 download_package "polkit-kde-agent" &
-wait
+wait_for_downloads
 download_package "powerdevil" &
 download_package "prison" &
 download_package "pulseaudio-qt" &
@@ -157,13 +157,13 @@ download_package "sddm" &
 download_package "sddm-kcm" &
 download_package "sonnet" &
 download_package "spectacle" &
-wait
+wait_for_downloads
 download_package "syndication" &
 download_package "syntax-highlighting" &
 download_package "systemsettings" &
 download_package "threadweaver" &
 download_package "xdg-desktop-portal-kde" &
-wait
+wait_for_downloads
 
 ### packages that require specific stripping
 
@@ -177,5 +177,5 @@ download_package "qt6" &
 download_package "qtkeychain" & # required by network tray
 download_package "tesseract" & # required by spectacle
 download_package "zint" & # required by clipboard tray
-wait
+wait_for_downloads
 

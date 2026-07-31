@@ -30,12 +30,16 @@ prepare_files_for_cache() {
 
 generate_caches_de() {
 	generate_caches
+	restore_files_for_cache_de
+}
+
+restore_files_for_cache_de() {
 	rm -r $PORTEUX_BUILDER_PATH/caches
 	mv $PORTEUX_BUILDER_PATH/caches-bkp $PORTEUX_BUILDER_PATH/caches
 }
 
 generate_caches() {
-	if [ "$(ls -A $PORTEUX_BUILDER_PATH/caches/mime)" ]; then
+	if [ "$(ls -A $PORTEUX_BUILDER_PATH/caches/mime/packages)" ]; then
 		mkdir -p $MODULE_PATH/packages/usr/share/mime
 		update-mime-database $PORTEUX_BUILDER_PATH/caches/mime
 		cp $PORTEUX_BUILDER_PATH/caches/mime/mime.cache $MODULE_PATH/packages/usr/share/mime/

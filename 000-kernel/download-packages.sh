@@ -9,7 +9,7 @@ if [ ${CLANG:-no} = "yes" ]; then
 	if [ ! -f /usr/bin/clang ]; then
 		download_package "libxml2" & # required by llvm
 		download_package "llvm" & # required when building with clang
-		wait
+		wait_for_downloads
 	fi
 fi
 

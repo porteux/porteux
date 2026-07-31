@@ -22,6 +22,10 @@ fi
 IFS='.-' read -r KERNEL_MAJOR_VERSION KERNEL_MINOR_VERSION KERNEL_PATCH_VERSION <<< "$KERNEL_VERSION"
 CRIPPLED_MODULE_NAME="06-crippled-sources-${KERNEL_VERSION}"
 
+if [ ${ONLY_HEADERS:-no} = "yes" ]; then
+	export MODULE_PATH="${MODULE_PATH}-headers"
+fi
+
 ### create module folder
 
 rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
@@ -101,15 +105,32 @@ else
 	git clone https://github.com/sfjro/aufs-standalone ${MODULE_PATH}/aufs_sources > /dev/null 2>&1 || { echo "Failed to download aufs."; exit 1; }
 	git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION}.${KERNEL_PATCH_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.x-rcN > /dev/null 2>&1 || { echo "Failed to download AUFS for this kernel version."; exit 1; }
 
-	echo "Patching kernel with aufs..."
-	rm ../aufs_sources/tmpfs-idr.patch # this patch isn't useful
-	cp -r ../aufs_sources/fs .
 	cp ../aufs_sources/include/uapi/linux/aufs_type.h include/uapi/linux
-	for i in ../aufs_sources/*.patch; do
-		patch -N -p1 < "$i" > /dev/null 2>&1 || { echo "Failed to add aufs patch '${i}'."; exit 1; }
-	done
+
+	if [ ${ONLY_HEADERS:-no} != "yes" ]; then
+		echo "Patching kernel with aufs..."
+		rm ../aufs_sources/tmpfs-idr.patch # this patch isn't useful
+		cp -r ../aufs_sources/fs .
+		for i in ../aufs_sources/*.patch; do
+			patch -N -p1 < "$i" > /dev/null 2>&1 || { echo "Failed to add aufs patch '${i}'."; exit 1; }
+		done
+	fi
 	rm -fr ../aufs_sources
 fi
+
+echo "Building kernel headers..."
+current_package=kernel-headers
+KERNEL_SOURCE=${MODULE_PATH}/linux-${KERNEL_VERSION} sh ${SCRIPT_PATH}/extras/${current_package}/${current_package}.SlackBuild || exit 1
+mkdir -p ${MODULE_PATH}/../05-devel/packages
+mv ${MODULE_PATH}/packages/${current_package}*.txz ${MODULE_PATH}/../05-devel/packages
+rm -fr $MODULE_PATH/${current_package} || exit 1
+
+if [ ${ONLY_HEADERS:-no} = "yes" ]; then
+	cd $MODULE_PATH/.. && rm -fr ${MODULE_PATH}
+	exit 0
+fi
+
+cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 
 echo "Patching dead code elimination support..."
 patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
@@ -140,20 +161,7 @@ fi
 sed -i "s|#define IWL_BZ_A_HR_B_FW_PRE.*|#define IWL_BZ_A_HR_B_FW_PRE\t\t\"iwlwifi-bz-b0-hr-b0\"|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 sed -i "s|MODULE_FIRMWARE(IWL_BZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX));|IWL_FW_AND_PNVM(IWL_BZ_A_HR_B_FW_PRE, IWL_HR_UCODE_API_MAX);|" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 
-echo "Building kernel headers..."
-current_package=kernel-headers
-KERNEL_SOURCE=${MODULE_PATH}/linux-${KERNEL_VERSION} sh ${SCRIPT_PATH}/extras/${current_package}/${current_package}.SlackBuild || exit 1
-mkdir -p ${MODULE_PATH}/../05-devel/packages
-mv ${MODULE_PATH}/packages/${current_package}*.txz ${MODULE_PATH}/../05-devel/packages
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
-
-if [ ${ONLY_HEADERS:-no} = "yes" ]; then
-	rm -fr ${MODULE_PATH}
-	exit 0
-fi
-
 echo "Building vmlinuz (this may take a while)..."
-cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1
 make -j${NUMBER_THREADS} KBUILD_LDFLAGS="$LINK_PARAMS" LDFLAGS_MODULE="$LINK_PARAMS" KCFLAGS="$BUILD_PARAMS" ${EXTRA_FLAGS} || { echo "Failed to build kernel."; exit 1; }

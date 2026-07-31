@@ -4,10 +4,12 @@ for arg in "$@"; do
 	case "$arg" in
 		--force-setup)
 			RESET="true"
-			shift
-			break
+			;;
+		*)
+			set -- "$@" "$arg"
 			;;
 	esac
+	shift
 done
 
 is_root() {
@@ -23,7 +25,6 @@ if [ -z "$RESET" ] && [ -L "/var/lib/flatpak" ] && [ -e "$(readlink -f /var/lib/
 	fi
 
 	exec flatpak_ "${@}"
-	exit 0
 fi
 
 FLATPAK_STORAGE_PATH="$1"

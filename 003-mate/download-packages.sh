@@ -12,7 +12,7 @@ download_package "dconf" &
 download_package "enchant" &
 download_package "hunspell" &
 download_package "jasper" &
-wait
+wait_for_downloads
 download_package "keybinder3" &
 download_package "libappindicator" &
 download_package "libdbusmenu" &
@@ -22,10 +22,10 @@ download_package "libsoup" &
 download_package "libwnck3" &
 download_package "libxklavier" &
 download_package "xtrans" &
-wait
+wait_for_downloads
 
 ### packages that require specific stripping
 
 download_package "iso-codes" & # required by mate-keyboard-properties and ibus
-wait
+wait_for_downloads
 

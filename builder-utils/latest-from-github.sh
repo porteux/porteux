@@ -30,6 +30,10 @@ download_latest_from_github() {
 	local filter_out_version="$3"
 	local filename version release_url tag_url content_disposition
 	version=$(get_latest_version_tag_from_github "${repository}" "${project}" "${filter_out_version}")
+	if [ -z "$version" ]; then
+		echo "Error: cannot detect latest ${project} version from github" >&2
+		return 1
+	fi
 	release_url="https://github.com/${repository}/${project}/releases/download/${version}/${project}-${version//[^0-9._]/}.tar"
 	tag_url="https://github.com/${repository}/${project}/archive/refs/tags/${version}.tar.gz"
 
@@ -38,6 +42,11 @@ download_latest_from_github() {
 		content_disposition=$(wget --server-response --content-disposition "$url" 2>&1 | grep -i "content-disposition:")
 		[ -n "$content_disposition" ] && break
 	done
+
+	if [ -z "$content_disposition" ]; then
+		echo "Error: cannot download ${project} ${version} from github" >&2
+		return 1
+	fi
 
 	filename=${content_disposition#*filename=}
 	version="${version//[^0-9._]/}"

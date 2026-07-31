@@ -12,7 +12,7 @@ source "$BUILDER_UTILS_PATH/helper.sh"
 
 elevate_if_needed "$0" "$@"
 
-LATEST_VERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | cut -d "v" -f 2 | grep -v "alpha" | grep -v "beta" | grep -v "rc[0-9]" | {
+LATEST_VERSION=$(curl -s https://github.com/mate-desktop/mate-desktop/tags/ | grep "/mate-desktop/mate-desktop/releases/tag/" | grep -oP "(?<=/mate-desktop/mate-desktop/releases/tag/)[^\"]+" | uniq | sed 's|^v||' | grep -Ev "alpha|beta|rc[0-9]" | sort -Vr | {
 	while read -r version; do
 		minor=$(echo "$version" | cut -d. -f2)
 		if (( minor % 2 == 0 )); then

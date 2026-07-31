@@ -11,7 +11,7 @@ download_package "dbus-python" &
 download_package "dconf" &
 download_package "enchant" &
 download_package "gspell" &
-wait
+wait_for_downloads
 download_package "hunspell" &
 download_package "jasper" &
 download_package "keybinder3" &
@@ -21,7 +21,7 @@ download_package "libgee" &
 download_package "libgpod" &
 download_package "libgtop" &
 download_package "libgusb" &
-wait
+wait_for_downloads
 download_package "libhandy" &
 download_package "libindicator" &
 download_package "libsoup" & # required by settings -> Date&Time
@@ -31,7 +31,7 @@ download_package "libxklavier" &
 download_package "mozjs140" &
 download_package "python-certifi" &
 download_package "python-charset-normalizer" &
-wait
+wait_for_downloads
 download_package "python-distro" &
 download_package "python-idna" &
 download_package "python-pillow" &
@@ -39,13 +39,13 @@ download_package "python-psutil" &
 download_package "python-requests" &
 download_package "python-six" &
 download_package "python-webencodings" &
-wait
+wait_for_downloads
 
 ### packages that require specific stripping
 
 download_package "gettext-tools" & # required by extensions
 download_package "ibus" &
-wait
+wait_for_downloads
 
 ### temporary packages only for building
 
@@ -59,5 +59,5 @@ download_package "python-pip" &
 download_package "python-pyproject-hooks" &
 download_package "python-wheel" &
 download_package "xtrans" &
-wait
+wait_for_downloads
 

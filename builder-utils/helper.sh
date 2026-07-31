@@ -3,7 +3,7 @@
 copy_to_devel() {
 	mkdir -p "$PORTEUX_BUILDER_PATH"/05-devel/packages
 	cd "$MODULE_PATH"/packages || exit 1
-	find . -regex '.*\.\(a\|c\|cmake\|deps\|gir\|h\|in\|m4\|make\|o\|pc\|spec\|vapi\)$' -exec cp --parents -t "$PORTEUX_BUILDER_PATH"/05-devel/packages {} +
+	find . -regex '.*\.\(a\|c\|cmake\|deps\|gir\|h\|hpp\|hxx\|in\|m4\|make\|mk\|o\|pc\|prl\|pyi\|spec\|vapi\)$' -exec cp --parents -t "$PORTEUX_BUILDER_PATH"/05-devel/packages {} +
 	cp -r --parents usr/lib/python*/site-packages/*-info "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
 	cp -r --parents usr/share/gettext/its "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
 	cp -r --parents usr/share/glib-2.0/codegen "$PORTEUX_BUILDER_PATH"/05-devel/packages > /dev/null 2>&1
@@ -80,11 +80,11 @@ strip_package() {
 	local keep
 	shift # remove package name param
 	for keep in "$@"; do
-		cp --parents -af $keep "${package}-stripped" || { echo "strip_package: $package has no match for $keep" >&2; exit 1; }
+		cp --parents -alf $keep "${package}-stripped" || { echo "strip_package: $package has no match for $keep" >&2; exit 1; }
 	done
 
 	cd "${package}-stripped" || exit 1
-	makepkg ${MAKEPKG_FLAGS} "$MODULE_PATH/packages/${out_base}_stripped.txz" > /dev/null 2>&1
+	makepkg ${MAKEPKG_FLAGS} "$MODULE_PATH/packages/${out_base}_stripped.txz" > /dev/null 2>&1 || { echo "strip_package: failed to create ${out_base}_stripped.txz" >&2; exit 1; }
 
 	rm -fr "$workdir" && cd "$MODULE_PATH" || exit 1
 }

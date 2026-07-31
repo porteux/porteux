@@ -11,5 +11,5 @@ download_package "libdbusmenu" &
 download_package "libindicator" &
 download_package "libwnck3" &
 download_package "libxklavier" &
-wait
+wait_for_downloads
 

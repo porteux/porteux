@@ -195,10 +195,10 @@ strip_package iso-codes \
 
 current_package=ibus
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
-mv $MODULE_PATH/packages/${current_package}*.txz .
+mv $MODULE_PATH/packages/${current_package}-[0-9]* .
 package_file_name=$(ls ${current_package}-[0-9]*.t?z | head -n1)
 package_file_name=${package_file_name%.*}
-ROOT=./ installpkg ${current_package}*.txz && rm ${current_package}*.txz
+ROOT=./ installpkg ${current_package}-[0-9]*.t?z && rm ${current_package}-[0-9]*.t?z
 rm usr/share/applications/org.freedesktop.IBus.Setup.desktop
 rm -fr usr/share/ibus/dicts
 rm -fr var/lib/pkgtools

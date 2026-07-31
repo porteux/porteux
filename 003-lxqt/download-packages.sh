@@ -9,10 +9,10 @@ download_package "ghostscript-fonts-std" &
 download_package "hunspell" &
 download_package "libdbusmenu-qt" &
 download_package "libxklavier" & # required by lightdm-gtk-greeter
-wait
+wait_for_downloads
 
 ### packages that require specific stripping
 
 download_package "qt6" &
-wait
+wait_for_downloads
 
