@@ -42,6 +42,8 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects -ffast-math" \
 	--sysconfdir=/etc \
 	--disable-static \
 	--disable-debug \
+	--enable-epoxy \
+	--enable-xpresent \
 	--build=$ARCH-porteux-linux
 
 make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
