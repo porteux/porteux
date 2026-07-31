@@ -190,8 +190,7 @@ strip_package vulkan-sdk \
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
-rm *.t?z
+install_packages
 
 ### install additional packages, including porteux utils
 

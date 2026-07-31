@@ -17,9 +17,17 @@ copy_to_multilanguage() {
 	find usr/share -type f -name "*.qm" -exec cp --parents -t "$PORTEUX_BUILDER_PATH"/08-multilanguage/packages {} +
 }
 
+install_packages() {
+	cd "$MODULE_PATH"/packages || exit 1
+	ROOT=./ installpkg *.t?z || exit 1
+	rm *.t?z
+}
+
 install_additional_packages() {
 	cd "$MODULE_PATH"/packages || exit 1
-	ROOT=./ installpkg "$SCRIPT_PATH"/packages/*.t?z
+	# need to copy otherwise package install log will leak the package path
+	cp "$SCRIPT_PATH"/packages/*.t?z . || exit 1
+	install_packages
 }
 
 # not using rust from slackware because it's much slower

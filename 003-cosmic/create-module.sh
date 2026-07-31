@@ -129,8 +129,7 @@ strip_package iso-codes \
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
-rm *.t?z
+install_packages
 
 ### install-strip additional packages, including porteux utils
 

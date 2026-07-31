@@ -23,8 +23,7 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### fake root
 
-cd $MODULE_PATH/packages && ROOT=./ installpkg *.t?z || exit 1
-rm *.t?z
+install_packages
 
 ### module clean up
 

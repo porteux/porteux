@@ -7,6 +7,7 @@ generate_repository_urls() {
 	local file_list="$MODULE_PATH/FILE_LIST"
 	mkdir -p $MODULE_PATH/packages
 	rm -f "$DOWNLOAD_FAILURE_FLAG"
+	trap 'rm -f "$SERVER_PACKAGES_LIST"' EXIT
 
 	# Get repository packages list
 	wget --tries=3 --retry-connrefused $REPOSITORY/FILE_LIST -O "$file_list" -q > /dev/null 2>&1 || wget --tries=3 --retry-connrefused $REPOSITORY/FILELIST.TXT -O "$file_list" -q > /dev/null 2>&1 || { echo "Error: cannot download package list from $REPOSITORY" >&2; exit 1; }
