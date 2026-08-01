@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+xfwm4-gl: xfwm4-gl (Xfce Window Manager with OpenGL compositing)
+xfwm4-gl:
+xfwm4-gl: This package contains xfwm4-gl which is a compositor forked from
+xfwm4-gl: xfwm4, adding support for OpenGL compositing.
+xfwm4-gl:
+xfwm4-gl: https://github.com/fulalas/xfwm4-gl
+xfwm4-gl:
+xfwm4-gl:
+xfwm4-gl:
+xfwm4-gl:
+xfwm4-gl:

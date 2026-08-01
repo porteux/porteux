@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PRGNAM=xfwm4
+PRGNAM=xfwm4-gl
 
 CWD=$(dirname "$0")
 TMP=$MODULE_PATH/$PRGNAM
@@ -12,28 +12,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-DOWNLOADVERSION=$(curl -s https://gitlab.xfce.org/xfce/${PRGNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -Ev '^xfce-|pre' | sort -Vr | {
-	if [[ "$ALLOW_TEST" == "yes" ]]; then
-		head -1
-	else
-		while read -r version; do
-			minor=$(echo "$version" | cut -d. -f2)
-			if (( minor % 2 == 0 )); then
-				echo "$version"
-				break
-			fi
-		done
-	fi
-})
-VERSION=$(echo $DOWNLOADVERSION | rev | cut -d '-' -f 1 | rev)
-wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNAM}-${DOWNLOADVERSION}.tar.gz
+wget https://github.com/fulalas/xfwm4-gl/archive/refs/heads/main.tar.gz
+tar xf main.tar.gz
+cd xfwm4-gl-main
 
-tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
-cd $PRGNAM-$DOWNLOADVERSION
-
-for i in $CWD/*.patch; do
-	patch -p0 < $i;
-done
+VERSION=$(sed -n 's/^XDT_VERSION_INIT(\[\([^]]*\)\]\(, *\[\([^]]*\)\]\)\?).*/\1\3/p' configure.ac)
 
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects -ffast-math" \
 ./autogen.sh \

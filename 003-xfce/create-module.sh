@@ -123,7 +123,7 @@ for package in \
 	xfce4-power-manager \
 	xfce4-settings \
 	xfdesktop \
-	xfwm4 \
+	xfwm4-gl \
 	xfce4-session \
 	xfce4-taskmanager \
 	xfce4-terminal \
