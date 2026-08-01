@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
+
 PRGNAM=xfwm4-gl
 
 CWD=$(dirname "$0")
@@ -12,8 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-wget https://github.com/fulalas/xfwm4-gl/archive/refs/heads/main.tar.gz
-tar xf main.tar.gz
+download_master_from_github fulalas $PRGNAM main || exit 1
 cd xfwm4-gl-main
 
 VERSION=$(sed -n 's/^XDT_VERSION_INIT(\[\([^]]*\)\]\(, *\[\([^]]*\)\]\)\?).*/\1\3/p' configure.ac)
