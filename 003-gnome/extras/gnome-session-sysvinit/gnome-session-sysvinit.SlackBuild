@@ -1,0 +1,35 @@
+#!/bin/bash
+
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
+
+PRGNAM=gnome-session-sysvinit
+
+CWD=$(dirname "$0")
+TMP=$MODULE_PATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -s https://gitlab.gnome.org/GNOME/gnome-session/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | eval "${TEST_RELEASES:-sort -Vr}" | head -1)
+download_master_from_github fulalas ${PRGNAM} main || exit 1
+cd gnome-session-sysvinit-main || exit 1
+
+mkdir meson-build && cd meson-build
+CFLAGS="$GCC_CFLAGS" \
+meson setup \
+	--prefix=/usr \
+	--buildtype=release \
+	--libexecdir=/usr/libexec \
+	--libdir=/usr/lib${SYSTEM_BITS}
+
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${PRGNAM}-$VERSION-$ARCH-1_porteux.txz

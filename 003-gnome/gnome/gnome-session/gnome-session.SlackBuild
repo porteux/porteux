@@ -19,10 +19,7 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-# update gnome-session to be sysvinit compatible
-wget https://github.com/fulalas/gnome-session-sysvinit/archive/refs/heads/main.tar.gz
-tar xf main.tar.gz
-cp -rf gnome-session-sysvinit-main/* .
+patch -p1 < "${CWD}/remove-systemd.patch"
 
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
@@ -35,6 +32,7 @@ meson setup \
 	-Dmimeapps=false \
 	-Ddocbook=false \
 	-Dman=false \
+	-Dsystemd=false \
 	-Dsystemduserunitdir=/dev/null
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
