@@ -168,6 +168,11 @@ copy2ram
        NOTE: You can use 'rammod' cheatcode to selectively load
        modules to RAM - see the 'rammod' description below.
 
+debug
+
+   ... Don't load initrd or any modules, booting directly into a
+       very basic terminal. Only useful for developers.
+
 delay=value
 
    ... To be used for devices which need extra time to settle.
