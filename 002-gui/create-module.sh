@@ -175,7 +175,8 @@ strip_package pulseaudio \
 	
 strip_package sound-theme-freedesktop \
 	usr/share/sounds/freedesktop/stereo/audio-channel* \
-	usr/share/sounds/freedesktop/stereo/audio-test-signal*
+	usr/share/sounds/freedesktop/stereo/audio-test-signal* \
+	usr/share/sounds/freedesktop/index.theme
 
 strip_package vulkan-sdk \
 	usr/bin/vulkaninfo \
