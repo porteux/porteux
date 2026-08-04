@@ -176,6 +176,10 @@ sed -i "s|dhcp=dhclient|dhcp=internal|g" $MODULE_PATH/packages/etc/NetworkManage
 sed -i "s|^dhcp=|#dhcp=|g" $MODULE_PATH/packages/etc/NetworkManager/conf.d/00-dhcp-client.conf || exit 1
 sed -i "s|#dhcp=internal|dhcp=internal|g" $MODULE_PATH/packages/etc/NetworkManager/conf.d/00-dhcp-client.conf || exit 1
 
+### remove bloat auto-start
+
+rm -fr $MODULE_PATH/packages/etc/xdg/autostart
+
 ### fix udev rules
 
 sed -i "s|^KERNEL==\"kvm\".*|KERNEL==\"kvm\", GROUP=\"kvm\", MODE=\"0666\", OPTIONS+=\"static_node=kvm\"|g" $MODULE_PATH/packages/lib/udev/rules.d/50-udev-default.rules || exit 1

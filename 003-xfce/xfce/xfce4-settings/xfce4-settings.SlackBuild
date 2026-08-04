@@ -33,8 +33,8 @@ cd $PRGNAM-$DOWNLOADVERSION
 
 if [ -f meson.build ]; then
 	(
-	cd protocols/xfce-wayland-protocols/
-	wget https://gitlab.xfce.org/xfce/xfce-wayland-protocols/-/raw/4299072022d5fc9be0505f293cbe0f7f5ab6da00/xfce-output-management-private-v1.xml
+	rm -fr protocols/xfce-wayland-protocols && cd protocols/
+	git clone https://gitlab.xfce.org/xfce/xfce-wayland-protocols
 	)
 	mkdir meson-build && cd meson-build
 	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \

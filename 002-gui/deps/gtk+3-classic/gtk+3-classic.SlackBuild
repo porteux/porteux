@@ -22,7 +22,7 @@ cd gtk-$VERSION
 
 sed -i "s|subdir('docs|#subdir('docs|g" meson.build
 
-download_master_from_github lah7/gtk3-classic || exit 1
+download_master_from_github lah7 gtk3-classic || exit 1
 rm gtk3-classic*/gtk+-atk-bridge-meson.build.patch
 rm gtk3-classic*/gtk+-atk-bridge-meson_options.txt.patch
 rm gtk3-classic*/appearance__disable-backdrop.patch
