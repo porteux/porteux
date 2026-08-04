@@ -3,7 +3,7 @@
 set_flags() {
 	MODULE_NAME="$1"
 
-	export KERNEL_VERSION="7.1.5"
+	export KERNEL_VERSION="7.1.6"
 	export ARCHITECTURE_LEVEL="x86-64-v2"
 	export GCC_CFLAGS="-O3 -march=$ARCHITECTURE_LEVEL -mtune=generic -fno-semantic-interposition -fno-trapping-math -fno-unwind-tables -fno-asynchronous-unwind-tables -ffunction-sections -fdata-sections -flto=auto -fno-plt -fipa-pta -fno-ident -fmodulo-sched -fmodulo-sched-allow-regmoves -floop-nest-optimize -fdevirtualize-at-ltrans -fipa-reorder-for-locality -fgcse-sm -fgcse-las -favoid-store-forwarding"
 	export GCC_CXXFLAGS="$GCC_CFLAGS -fvisibility-inlines-hidden"
