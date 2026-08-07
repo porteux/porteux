@@ -24,7 +24,10 @@ for i in $CWD/*.patch; do
 done
 
 if [ ! -f subprojects/gvc/meson.build ]; then
-	git clone https://gitlab.gnome.org/GNOME/libgnome-volume-control subprojects/gvc || git clone https://github.com/GNOME/libgnome-volume-control subprojects/gvc
+	wget https://gitlab.gnome.org/GNOME/libgnome-volume-control/-/archive/master/libgnome-volume-control-master.tar.gz || true
+	[ ! -s libgnome-volume-control-master.tar.gz ] && wget https://github.com/GNOME/libgnome-volume-control/archive/refs/heads/master.tar.gz -O libgnome-volume-control-master.tar.gz
+	mkdir -p subprojects/gvc
+	tar xf libgnome-volume-control-master.tar.gz -C subprojects/gvc --strip-components 1
 fi
 
 mkdir meson-build && cd meson-build

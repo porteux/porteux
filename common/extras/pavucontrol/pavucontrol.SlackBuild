@@ -13,9 +13,10 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 VERSION="5.0"
-git clone https://gitlab.freedesktop.org/pulseaudio/${PRGNAM}.git/
-cd ${PRGNAM}
-git checkout c330506815f78f77f6685cb40749679eae789d63
+COMMIT=c330506815f78f77f6685cb40749679eae789d63
+wget https://gitlab.freedesktop.org/pulseaudio/${PRGNAM}/-/archive/${COMMIT}/${PRGNAM}-${COMMIT}.tar.gz || exit 1
+tar xf ${PRGNAM}-${COMMIT}.tar.gz || exit 1
+cd ${PRGNAM}-${COMMIT} || exit 1
 
 sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
 # fix version not showing when running 'pavucontrol --version'

@@ -12,9 +12,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-git clone --depth 1 https://git.sr.ht/~kennylevinsen/$PRGNAM
-cd $PRGNAM
-VERSION=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
+wget https://git.sr.ht/~kennylevinsen/$PRGNAM/archive/master.tar.gz -O $PRGNAM-master.tar.gz || exit 1
+tar xf $PRGNAM-master.tar.gz || exit 1
+cd $PRGNAM-master || exit 1
+VERSION=$(date -r . +%Y%m%d)
 
 cargo build --release --target x86_64-unknown-linux-gnu
 
