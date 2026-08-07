@@ -45,7 +45,7 @@ meson setup \
 	-Dxvfb=false \
 	-Dxnest=false \
 	-Ddefault_font_path="${DEF_FONTPATH}" \
-	-Dmodule_dir=/usr/lib64/xorg/modules \
+	-Dmodule_dir=/usr/lib${SYSTEM_BITS}/xorg/modules \
 	-Dxkb_dir=/usr/share/X11/xkb \
 	-Dxkb_output_dir=/var/lib/xkb
 
