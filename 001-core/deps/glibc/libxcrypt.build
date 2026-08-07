@@ -29,7 +29,7 @@ CFLAGS="$GCC_CFLAGS -Wno-error=discarded-qualifiers" \
 	--disable-failure-tokens \
 	--build=$ARCH-slackware-linux
 
-make -j$NUMBER_THREADS install DESTDIR=$PKG
+make -j$NUMBER_THREADS install DESTDIR="${PKG:?PKG is unset}"
 
 rm -f $PKG/{,usr/}lib${SYSTEM_BITS}/libcrypt*.la
 rm -fr $PKG/usr/share/man
