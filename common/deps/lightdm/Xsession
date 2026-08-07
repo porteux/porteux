@@ -44,10 +44,10 @@ sysmodmap=/etc/X11/xinit/.Xmodmap
 
 case "$*" in
 	*wayland*|*labwc*)
-		exec "$@"
+		exec $@
 		;;
 	*)
 		# xorg sessions in combination with cron only work using dbus-launch
-		exec dbus-launch --sh-syntax --exit-with-session "$@"
+		exec dbus-launch --sh-syntax --exit-with-session $@
 		;;
 esac
