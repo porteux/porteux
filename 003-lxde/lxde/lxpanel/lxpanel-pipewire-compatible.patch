@@ -10,7 +10,7 @@
  #include <libfm/fm-gtk.h>
  
  #include "plugin.h"
-@@ -931,6 +933,66 @@
+@@ -931,6 +933,70 @@
      vol->mute_check_handler = g_signal_connect(vol->mute_check, "toggled", G_CALLBACK(volumealsa_popup_mute_toggled), vol);
  }
  
@@ -55,6 +55,13 @@
 +    return found;
 +}
 +
++static gboolean asound_initialize_idle(gpointer arg)
++{
++    asound_initialize((VolumeALSAPlugin *)arg);
++
++    return G_SOURCE_REMOVE;
++}
++
 +static int wait_for_pipewire(void *arg)
 +{
 +    VolumeALSAPlugin *vol = (VolumeALSAPlugin *)arg;
@@ -66,10 +73,7 @@
 +        usleep(200 * 1000);
 +    }
 +
-+    if ( ! asound_initialize(vol))
-+    {
-+        volumealsa_destructor(vol);
-+    }
++    g_idle_add(asound_initialize_idle, vol);
 +
 +    return 0;
 +}
@@ -77,7 +81,7 @@
  /* Plugin constructor. */
  static GtkWidget *volumealsa_constructor(LXPanel *panel, config_setting_t *settings)
  {
-@@ -973,12 +1035,9 @@
+@@ -973,12 +1039,11 @@
      if (config_setting_lookup_string(settings, "VolumeMuteKey", &tmp_str))
          lxpanel_apply_hotkey(&vol->hotkey_mute, tmp_str, volume_mute, vol, FALSE);
  
@@ -88,8 +92,10 @@
 -        return NULL;
 -    }
 +    thrd_t tid;
-+    thrd_create(&tid, wait_for_pipewire, (void *)vol);
-+    thrd_detach(tid);
++    if (thrd_create(&tid, wait_for_pipewire, (void *)vol) == thrd_success)
++        thrd_detach(tid);
++    else
++        asound_initialize(vol);
  
      /* Allocate top level widget and set into Plugin widget pointer. */
      vol->panel = panel;
