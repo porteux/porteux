@@ -21,6 +21,9 @@ for i in $CWD/*.patch; do
 	patch -p0 < $i
 done
 
+export VERGEN_GIT_COMMIT_DATE=$(date -r . +%Y-%m-%d)
+export VERGEN_GIT_SHA=$VERSION
+
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 just build-release --target x86_64-unknown-linux-gnu
 cp -aln ./target/x86_64-unknown-linux-gnu/release ./target/
