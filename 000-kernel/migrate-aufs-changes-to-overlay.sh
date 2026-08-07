@@ -28,6 +28,7 @@ DRY="${2:-}"
 
 [ "$(id -u)" = 0 ] || { echo "must run as root" >&2; exit 1; }
 [ -d "$DIR" ] || { echo "'$DIR' is not a directory" >&2; exit 1; }
+DIR=$(realpath -- "$DIR") || exit 1
 command -v setfattr > /dev/null || { echo "setfattr not found (install attr)" >&2; exit 1; }
 
 run() {
@@ -41,7 +42,8 @@ run() {
 cd "$DIR" || exit 1
 
 ### sanity: refuse to run on a mounted aufs/overlay branch
-if grep -qE "(^|[=:])$DIR(,|:|/| |$)" /proc/mounts; then
+escaped_dir=$(printf '%s' "$DIR" | sed 's#[][\\.^$*+?(){}|]#\\&#g')
+if grep -qE "(^|[=:])$escaped_dir(,|:|/| |$)" /proc/mounts; then
 	echo "'$DIR' appears to be part of an active mount; unmount first." >&2
 	exit 1
 fi
@@ -58,26 +60,26 @@ if [ ! -d upper ]; then
 fi
 [ -d work ] || run mkdir work
 
+scan_root=upper
+[ -d upper ] || scan_root=.
+
 ### 2. drop aufs bookkeeping
 echo "* removing aufs bookkeeping entries"
-find upper -depth \( -name '.wh..wh.aufs' -o -name '.wh..wh.orph' \
-	-o -name '.wh..wh.plnk' -o -name '.wh..wh..tmp' \) -print0 2>/dev/null |
 while IFS= read -r -d '' f; do
 	run rm -rf -- "$f"
-done
+done < <(find "$scan_root" -depth \( -name '.wh..wh.aufs' -o -name '.wh..wh.orph' \
+	-o -name '.wh..wh.plnk' -o -name '.wh..wh..tmp' \) -print0 2>/dev/null)
 
 ### 3. opaque directory markers
 echo "* converting opaque directory markers"
-find upper -name '.wh..wh..opq' -print0 2>/dev/null |
 while IFS= read -r -d '' f; do
 	d=$(dirname -- "$f")
 	run setfattr -n trusted.overlay.opaque -v y -- "$d"
 	run rm -f -- "$f"
-done
+done < <(find "$scan_root" -name '.wh..wh..opq' -print0 2>/dev/null)
 
 ### 4. whiteouts
 echo "* converting whiteouts"
-find upper -name '.wh.*' ! -name '.wh..wh.*' -print0 2>/dev/null |
 while IFS= read -r -d '' f; do
 	d=$(dirname -- "$f")
 	name=$(basename -- "$f")
@@ -89,7 +91,7 @@ while IFS= read -r -d '' f; do
 	fi
 	run mknod -- "$target" c 0 0
 	run rm -f -- "$f"
-done
+done < <(find "$scan_root" -name '.wh.*' ! -name '.wh..wh.*' -print0 2>/dev/null)
 
 echo "done. Mount with:"
 echo "  mount -t overlay overlay -o lowerdir+=<module...>,upperdir=$DIR/upper,workdir=$DIR/work,maxlayers=<n> <mountpoint>"
