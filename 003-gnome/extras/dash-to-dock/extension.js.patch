@@ -43,7 +43,7 @@
 +
 +    const newDesc = {
 +        enumerable: true,
-+        configurable: false,
++        configurable: true,
 +        get() {
 +            if (!newDesc._deprecationWarningDone) {
 +                console.warn(`Gio.${prop} is deprecated, please use ` +
