@@ -5,7 +5,7 @@
  #define XFCE_APPFINDER_LOCAL_PREFIX "file://"
  
 -
-+gboolean force_execute;
++static gboolean force_execute;
  static void       xfce_appfinder_window_finalize                      (GObject                     *object);
  static void       xfce_appfinder_window_focus_out                     (GtkWidget                   *widget);
  static void       xfce_appfinder_window_unmap                         (GtkWidget                   *widget);
@@ -39,7 +39,7 @@
 +      if (event->keyval == GDK_KEY_Up)
 +        return XFCE_APPFINDER_KEY_PREVIOUS;
 +    }
-+  else
++  else if (!event->is_modifier && event->keyval != GDK_KEY_Escape)
 +    {
 +      force_execute = TRUE;
 +    }
