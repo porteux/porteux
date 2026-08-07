@@ -7,7 +7,7 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 CURRENT_PACKAGE=notepadnext
@@ -15,7 +15,7 @@ FRIENDLY_NAME="Notepad++ (Next)"
 CATEGORY=Utility
 FULL_VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/dail8859/NotepadNext/releases/latest | rev | cut -d / -f 1 | rev)
 VERSION="${FULL_VERSION//[vV]}"
-[ "$VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
+[[ "$VERSION" == *[0-9]* ]] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 APPLICATION_URL="https://github.com/dail8859/NotepadNext/releases/latest/download/NotepadNext-${FULL_VERSION}-x86_64.AppImage"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 

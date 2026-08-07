@@ -15,15 +15,15 @@ fi
 OUTPUT_DIR=${OUTPUT_FILE_PATH%/*}
 
 if [ ! -w "$OUTPUT_DIR" ]; then
-    dir2xzm "$INPUT_DIR" -o="/tmp/$MODULE_FILE_NAME" -q &>/dev/null || exit 1
+    dir2xzm "$INPUT_DIR" -o="/tmp/$MODULE_FILE_NAME" -q >/dev/null || { echo "Error: dir2xzm failed for $INPUT_DIR" >&2; exit 1; }
     echo "Destination ${2%/*} is not writable. New module placed in /tmp and not activated."
 elif [ ! -f "$OUTPUT_FILE_PATH" ]; then
-    dir2xzm "$INPUT_DIR" -o="$OUTPUT_FILE_PATH" -q &>/dev/null || exit 1
+    dir2xzm "$INPUT_DIR" -o="$OUTPUT_FILE_PATH" -q >/dev/null || { echo "Error: dir2xzm failed for $INPUT_DIR" >&2; exit 1; }
     echo "Module placed in $OUTPUT_DIR"
     if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULE_FILE_NAME" ]; then
-        activate "$OUTPUT_FILE_PATH" -q &>/dev/null
+        activate "$OUTPUT_FILE_PATH" -q &>/dev/null || echo "Warning: module activation failed." >&2
     fi
 else
-    dir2xzm "$INPUT_DIR" -o="/tmp/$MODULE_FILE_NAME" -q &>/dev/null || exit 1
+    dir2xzm "$INPUT_DIR" -o="/tmp/$MODULE_FILE_NAME" -q >/dev/null || { echo "Error: dir2xzm failed for $INPUT_DIR" >&2; exit 1; }
     echo "Module $MODULE_FILE_NAME was already in $OUTPUT_DIR. New module placed in /tmp and not activated."
 fi

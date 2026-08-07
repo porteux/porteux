@@ -7,20 +7,16 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 CURRENT_PACKAGE=telegram
 FRIENDLY_NAME="Telegram"
 APPLICATION_URL=https://telegram.org/dl/desktop/linux
-FULL_VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/telegramdesktop/tdesktop/releases/latest | rev | cut -d / -f 1 | rev)
-VERSION="${FULL_VERSION//[vV]}"
-[ "$VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/modules/"
 BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
 MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-module"
-BINARY_FILE_NAME="$CURRENT_PACKAGE-$VERSION-$ARCH"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
 rm -fr "$BUILD_DIR"
@@ -28,6 +24,10 @@ mkdir "$BUILD_DIR" && cd "$BUILD_DIR" || exit 1
 
 wget -T 15 --content-disposition "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
 tar xvf "$BUILD_DIR"/*.tar.xz -C "$BUILD_DIR" || exit 1
+
+VERSION=$(basename "$BUILD_DIR"/tsetup.*.tar.xz .tar.xz | cut -d . -f 2-)
+[[ "$VERSION" == *[0-9]* ]] || { echo "Error: could not determine the latest version." >&2; exit 1; }
+BINARY_FILE_NAME="$CURRENT_PACKAGE-$VERSION-$ARCH"
 
 mkdir -p "$MODULE_DIR/opt/$CURRENT_PACKAGE"
 mkdir -p "$MODULE_DIR/home/guest/.local/share/applications"

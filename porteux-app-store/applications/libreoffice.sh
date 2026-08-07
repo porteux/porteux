@@ -7,13 +7,13 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 CURRENT_PACKAGE=libreoffice
 ARCH=$(uname -m)
-CHANNEL=$([ "$1" ] && echo "$1" || echo "stable")
-LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
+CHANNEL=$([ "$1" ] && [ "${1#--}" = "$1" ] && echo "$1" || echo "stable")
+LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 MAJOR_VERSION=$(curl -s "http://download.documentfoundation.org/libreoffice/$CHANNEL/" | grep -oP 'a href="[0-9].*' | cut -d '"' -f 2 | cut -d / -f 1 | sort -V -r | head -1)
 LATEST_PACKAGE=$(curl -s "https://download.documentfoundation.org/libreoffice/$CHANNEL/$MAJOR_VERSION/rpm/$ARCH/" | grep -oP 'LibreOffice_.*' | cut -d '"' -f 1 | grep -oP ".*_Linux_x86-64_rpm.tar.gz$")
@@ -25,8 +25,8 @@ MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-module"
 MODULE_FILE_NAME="$CURRENT_PACKAGE-$CHANNEL-$VERSION-$ARCH-${LANGUAGE}_porteux.xzm"
 
 CURRENT_USER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
-CURRENT_GROUP=$(id -gn "$CURRENT_USER")
 [ ! "$CURRENT_USER" ] && CURRENT_USER=guest
+CURRENT_GROUP=$(id -gn "$CURRENT_USER")
 USER_HOME_FOLDER=$(getent passwd "$CURRENT_USER" | cut -d: -f6)
 [ ! -e "$USER_HOME_FOLDER" ] && USER_HOME_FOLDER=home/guest
 

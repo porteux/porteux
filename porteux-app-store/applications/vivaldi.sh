@@ -7,7 +7,7 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 if [ "$#" -lt 1 ]; then
@@ -22,7 +22,7 @@ fi
 # Global variables
 APP="vivaldi"
 CHANNEL=$1
-LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
+LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
@@ -43,7 +43,7 @@ chromium_family_locale_striptease() {
 striptease() {
 	local pkg_dir="$TMP/$1/$2"
 
-	rm -fr "$pkg_dir/opt/vivaldi*/resources/vivaldi/default-bookmarks"
+	rm -fr "$pkg_dir"/opt/vivaldi*/resources/vivaldi/default-bookmarks
 	chromium_family_locale_striptease "$pkg_dir"/opt/vivaldi*/locales
 	find "$pkg_dir"/opt/vivaldi*/resources/vivaldi/_locales -mindepth 1 -maxdepth 1 -type d ! \( -name "en" -o -name "${LANGUAGE//-/_}" \) -exec rm -fr {} +
 }
@@ -64,7 +64,7 @@ finisher() {
 
 get_repo_version_vivaldi() {
 	local ver=$(curl -s "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/" | grep 'href=' | awk -F '"' '{print $2}' | \
-	grep "$CHANNEL" | tail -n 1 | rev | cut -d '.' -f3- | rev | cut -d '-' -f3-) || exit 1
+	grep "$CHANNEL" | tail -n 1 | rev | cut -d '.' -f3- | rev | cut -d '-' -f3-)
 
 	echo "$ver"
 }

@@ -7,7 +7,7 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 CURRENT_PACKAGE=steam
@@ -26,8 +26,8 @@ if [ -z "$INSTALL_DIR" ]; then
 fi
 
 CURRENT_USER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
-CURRENT_GROUP=$(id -gn "$CURRENT_USER")
 [ ! "$CURRENT_USER" ] && CURRENT_USER=guest
+CURRENT_GROUP=$(id -gn "$CURRENT_USER")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 [[ $INSTALL_DIR = --* ]] && echo "Installation path can't be empty." && exit 1
 
@@ -37,8 +37,8 @@ rm -fr "$BUILD_DIR"
 mkdir "$BUILD_DIR" && cd "$BUILD_DIR" || exit 1
 
 wget -T 5 "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
-ar p "$BUILD_DIR"/*.deb data.tar.xz | tar xJv
-tar -xvf "$BUILD_DIR/usr/lib/steam/bootstraplinux_ubuntu12_32.tar.xz" -C "$INSTALL_DIR"
+ar p "$BUILD_DIR"/*.deb data.tar.xz | tar xJv || exit 1
+tar -xvf "$BUILD_DIR/usr/lib/steam/bootstraplinux_ubuntu12_32.tar.xz" -C "$INSTALL_DIR" || exit 1
 
 # the process below is not required but it will speedup the first steam run significantly
 mkdir -p "$INSTALL_DIR/ubuntu12_32/steam-runtime/pinned_libs_32"

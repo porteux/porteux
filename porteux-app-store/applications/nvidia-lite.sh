@@ -7,7 +7,7 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 CURRENT_PACKAGE=nvidia-driver
@@ -39,7 +39,10 @@ MODULE_DIR=$(basename -s .xzm "$BUILD_DIR/$MODULE_FILE_NAME")
 xzm2dir -q "$BUILD_DIR/$MODULE_FILE_NAME" -o="$BUILD_DIR/$MODULE_DIR" || exit 1
 rm "$BUILD_DIR/$MODULE_FILE_NAME"
 EXTRACTED_MODULE_PATH="$BUILD_DIR/$MODULE_DIR"
-[ ! -d "$EXTRACTED_MODULE_PATH" ] && MODULE_DIR="$BUILD_DIR"/08-nvidia-*
+if [ ! -d "$EXTRACTED_MODULE_PATH" ]; then
+	MODULE_DIR=$(basename "$(echo "$BUILD_DIR"/08-nvidia-*)")
+	EXTRACTED_MODULE_PATH="$BUILD_DIR/$MODULE_DIR"
+fi
 
 find "$EXTRACTED_MODULE_PATH" \( -type f -name "libnvidia-compiler*" -o -name "libcudadebugger*" -o -name "*nvoptix*" -o -name "libnvidia-gtk2*" \) -delete
 

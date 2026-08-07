@@ -4,13 +4,13 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, Gio
 import os
-from os import getenv, getuid, path
+from os import path
 from os.path import exists
 import subprocess
 import signal
 import json
 from urllib.request import urlopen
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 
 if os.geteuid() != 0:
@@ -213,27 +213,29 @@ class AppWindow(Gtk.ApplicationWindow):
                 stderr=devnull
             )
 
-        local_script_path = LOCAL_APPS_PATH + script_name + ".sh"
-        if not is_recently_updated(local_script_path):
-            with open(local_script_path, "w") as local_script, urlopen(REPO_APPS_URL + script_name + ".sh") as remote_script:
-                remote_script_decoded = remote_script.read().decode("utf-8")
-                local_script.write(remote_script_decoded)
-            os.chmod(local_script_path, 0o755)
+        try:
+            local_script_path = LOCAL_APPS_PATH + script_name + ".sh"
+            if not is_recently_updated(local_script_path):
+                with urlopen(REPO_APPS_URL + script_name + ".sh") as remote_script:
+                    remote_script_decoded = remote_script.read().decode("utf-8")
+                with open(local_script_path, "w") as local_script:
+                    local_script.write(remote_script_decoded)
+                os.chmod(local_script_path, 0o755)
 
-        command = ["/bin/bash", local_script_path]
-        if extra_args:
-            command += [arg for arg in extra_args if arg is not None]
-        if self.check_button_module.get_active():
-            command.append("--activate-module")
-        result = subprocess.run(command, stdout=subprocess.PIPE)
-        output = result.stdout.decode("utf-8")
+            command = ["/bin/bash", local_script_path]
+            if extra_args:
+                command += [arg for arg in extra_args if arg is not None]
+            if self.check_button_module.get_active():
+                command.append("--activate-module")
+            result = subprocess.run(command, stdout=subprocess.PIPE)
+            output = result.stdout.decode("utf-8")
 
-        if output:
-            self.show_dialog_porteux(output.splitlines()[-1])
-        else:
-            self.show_dialog_porteux("Error creating module.")
-
-        progress_dialog.send_signal(signal.SIGINT)
+            if output:
+                self.show_dialog_porteux(output.splitlines()[-1])
+            else:
+                self.show_dialog_porteux("Error creating module.")
+        finally:
+            progress_dialog.send_signal(signal.SIGINT)
 
     def on_main_key_down(self, widget, event):
         if event.keyval == Gdk.KEY_Escape:
@@ -359,9 +361,11 @@ class Application(Gtk.Application):
                 local_script_path = LOCAL_APPSTORE_PATH + script_name
                 if is_recently_updated(local_script_path):
                     continue
-                with open(local_script_path, 'wb') as local_script, urlopen(REPO_APPSTORE_URL + script_name) as remote_script:
-                    local_script.write(remote_script.read())
-                    os.chmod(local_script_path, 0o755)
+                with urlopen(REPO_APPSTORE_URL + script_name) as remote_script:
+                    remote_script_content = remote_script.read()
+                with open(local_script_path, 'wb') as local_script:
+                    local_script.write(remote_script_content)
+                os.chmod(local_script_path, 0o755)
 
             os.makedirs(LOCAL_APPS_PATH, exist_ok = True)
 
@@ -373,8 +377,10 @@ class Application(Gtk.Application):
                     local_icon_path = LOCAL_ICONS_PATH + application['icon']
                     if is_recently_updated(local_icon_path, 720):
                         continue
-                    with open(local_icon_path, 'wb') as local_icon, urlopen(REPO_ICONS_URL + application['icon']) as remote_icon:
-                        local_icon.write(remote_icon.read())
+                    with urlopen(REPO_ICONS_URL + application['icon']) as remote_icon:
+                        remote_icon_content = remote_icon.read()
+                    with open(local_icon_path, 'wb') as local_icon:
+                        local_icon.write(remote_icon_content)
                     os.chmod(local_icon_path, 0o644)
 
         except Exception:
@@ -382,6 +388,10 @@ class Application(Gtk.Application):
         finally:
             if progress_dialog:
                 progress_dialog.send_signal(signal.SIGINT)
+
+        if not exists(LOCAL_DB_JSON_PATH):
+            subprocess.call([GTK_DIALOG_SCRIPT, "-p", "Error: the application list could not be downloaded."])
+            quit()
 
 if __name__ == "__main__":
     application = Application()

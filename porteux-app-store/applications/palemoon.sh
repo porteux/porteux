@@ -7,7 +7,7 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 if [ "$#" -lt 1 ]; then
@@ -22,7 +22,7 @@ fi
 # Global variables
 APP="palemoon"
 CHANNEL=$1
-LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
+LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
@@ -86,7 +86,7 @@ finisher() {
 }
 
 get_repo_version_palemoon() {
-	local temp=$(curl -s "https://www.palemoon.org/download.shtml" | grep "linux-x86_64-gtk3") || exit 1
+	local temp=$(curl -s "https://www.palemoon.org/download.shtml" | grep "linux-x86_64-gtk3")
 	local ver=$(echo "$temp" | cut -d'-' -f2 | sed 's/\.linux//')
 
 	echo "$ver"
