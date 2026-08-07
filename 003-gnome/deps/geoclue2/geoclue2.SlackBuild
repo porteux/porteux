@@ -46,7 +46,7 @@ DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -delete
 
-[ -e $TMP ] && rm -rf $TMP/etc/geoclue/geoclue.conf
+rm -f $PKG/etc/geoclue/geoclue.conf
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
