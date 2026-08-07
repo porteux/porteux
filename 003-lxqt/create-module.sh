@@ -68,28 +68,28 @@ rm -rf $MODULE_PATH/${current_package}
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv $MODULE_PATH/packages/${current_package}-[0-9]* . || exit 1
 package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
-ROOT=./ installpkg ${current_package}*.txz
-mkdir ${current_package}-stripped
-cp --parents -P usr/share/fonts/Type1/d050000l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/fonts.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n019003l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n019004l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n019023l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n019024l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n021003l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n021004l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n021023l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n021024l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n022003l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n022004l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n022023l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/n022024l.* "${current_package}-stripped"
-cp --parents -P usr/share/fonts/Type1/s050000l.* "${current_package}-stripped"
+ROOT=./ installpkg ${current_package}*.txz || exit 1
+mkdir ${current_package}-stripped || exit 1
+cp --parents -P usr/share/fonts/Type1/d050000l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/fonts.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n019003l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n019004l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n019023l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n019024l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n021003l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n021004l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n021023l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n021024l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n022003l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n022004l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n022023l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/n022024l.* "${current_package}-stripped" || exit 1
+cp --parents -P usr/share/fonts/Type1/s050000l.* "${current_package}-stripped" || exit 1
 cd ${current_package}-stripped/usr/share || exit 1
 mkdir ghostscript && cd ghostscript || exit 1
-ln -s ../fonts/Type1 fonts
+ln -s ../fonts/Type1 fonts || exit 1
 cd $MODULE_PATH/${current_package}/${current_package}-stripped || exit 1
-makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1 || exit 1
 rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 ### packages outside slackware repository
