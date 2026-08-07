@@ -7,14 +7,13 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 CURRENT_PACKAGE=yt-dlp
 VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/yt-dlp/yt-dlp/releases/latest | rev | cut -d / -f 1 | rev)
 [[ "$VERSION" == *[0-9]* ]] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 APPLICATION_URL="https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
-ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/modules/"
 BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
 MODULE_DIR="$BUILD_DIR"

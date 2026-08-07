@@ -7,7 +7,7 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 CURRENT_PACKAGE=nvidia-driver
@@ -32,14 +32,15 @@ rm -fr "$BUILD_DIR" &>/dev/null
 mkdir "$BUILD_DIR" &>/dev/null
 
 wget -T 15 "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
-MODULE_FILE_NAME=$(unzip -Z1 "$BUILD_DIR/$ZIP_FILE_NAME" | rev | cut -d "/" -f 1 | rev) || exit 1
-unzip "$BUILD_DIR/$ZIP_FILE_NAME" -d "$BUILD_DIR" &>/dev/null
+MODULE_FILE_NAME=$(unzip -Z1 "$BUILD_DIR/$ZIP_FILE_NAME" | rev | cut -d "/" -f 1 | rev)
+[ "$MODULE_FILE_NAME" ] || exit 1
+unzip "$BUILD_DIR/$ZIP_FILE_NAME" -d "$BUILD_DIR" &>/dev/null || exit 1
 
 if [ ! -w "$OUTPUT_DIR" ]; then
 	mv "$BUILD_DIR/$MODULE_FILE_NAME" /tmp &>/dev/null
 	echo "Destination $OUTPUT_DIR is not writable. New module placed in /tmp and not activated."
 elif [ ! -f "$OUTPUT_DIR/$MODULE_FILE_NAME" ]; then
-	mv "$BUILD_DIR/$MODULE_FILE_NAME" "$OUTPUT_DIR" &>/dev/null
+	mv "$BUILD_DIR/$MODULE_FILE_NAME" "$OUTPUT_DIR" || { echo "Error: could not move module to $OUTPUT_DIR." >&2; exit 1; }
 	echo "Module placed in $OUTPUT_DIR"
 	if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULE_FILE_NAME" ]; then
 		activate "$OUTPUT_DIR/$MODULE_FILE_NAME" -q &>/dev/null

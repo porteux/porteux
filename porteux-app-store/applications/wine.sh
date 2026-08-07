@@ -7,7 +7,7 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 CURRENT_PACKAGE=wine
@@ -25,8 +25,8 @@ CURRENT_TXZ="wine-$VERSION-x86_64-1sg.txz"
 CURRENT_TXZ_PATH="$BUILD_DIR/$CURRENT_TXZ"
 
 rm -fr "$BUILD_DIR"
-mkdir "$BUILD_DIR"
-mkdir "$MODULE_DIR"
+mkdir "$BUILD_DIR" || exit 1
+mkdir "$MODULE_DIR" || exit 1
 
 wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/$VERSION/x86_64/$CURRENT_TXZ" || exit 1
 
@@ -36,7 +36,7 @@ rm -fr "$MODULE_DIR/usr/doc"
 rm -fr "$MODULE_DIR/usr/include"
 rm -fr "$MODULE_DIR/usr/man"
 find "$MODULE_DIR" -name '*.a' -delete
-find "$MODULE_DIR" | xargs file | grep -E "\.exe|\.dll" | cut -f 1 -d : | xargs strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag &>/dev/null
+find "$MODULE_DIR" -type f \( -name "*.exe" -o -name "*.dll" \) -print0 | xargs -0 strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag &>/dev/null
 
 MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-${ARCH}_porteux.xzm"
 

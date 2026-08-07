@@ -7,7 +7,7 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ] || [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*06-crippled?sources*")" ]; then
@@ -40,17 +40,17 @@ if [[ ! "$1" || "$1" == "--activate-module" ]]; then
 else
 	# use file provided by the user
 	INSTALLER_PATH="$1"
-	CURRENT_VERSION=$(find "$INSTALLER_PATH" -name "*.[0-9]*" | sort -V | tail -n 1)
+	CURRENT_VERSION=$(basename "$INSTALLER_PATH" .iso | cut -d'_' -f2)
 fi
 
 [ "$CURRENT_VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 
 # mount and install
-mount "$INSTALLER_PATH" "$MOUNT_DIR"
+mount "$INSTALLER_PATH" "$MOUNT_DIR" || exit 1
 if grep -q "clang" /proc/version; then
 	export LLVM=1
 fi
-sh "$MOUNT_DIR/VBoxLinuxAdditions.run" --nox11
+sh "$MOUNT_DIR/VBoxLinuxAdditions.run" --nox11 || { umount "$MOUNT_DIR"; exit 1; }
 
 # set configuration
 cp -r --parents /etc/rc.d/{rc.vboxadd,rc.vboxadd-service,rc.vboxadd-x11} "$MODULE_DIR/" &>/dev/null

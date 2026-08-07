@@ -25,7 +25,7 @@ cat > "$MODULE_DIR/usr/share/applications/$CURRENT_PACKAGE.desktop" << EOF
 [Desktop Entry]
 Version=1.0
 Name=$FRIENDLY_NAME
-Exec=sh -c /opt/$CURRENT_PACKAGE/$APPIMAGE_FILE_NAME %u
+Exec=/opt/$CURRENT_PACKAGE/$APPIMAGE_FILE_NAME %u
 Terminal=false
 X-MultipleArgs=false
 Type=Application
@@ -35,9 +35,11 @@ Categories=$CATEGORY;
 EOF
 
 cp "$BUILD_DIR"/*.AppImage "$MODULE_DIR/opt/$CURRENT_PACKAGE/$APPIMAGE_FILE_NAME" || exit 1
+cp /usr/share/pixmaps/"$CURRENT_PACKAGE".* "$MODULE_DIR/usr/share/pixmaps" 2> /dev/null
 
 chmod 755 -R "$MODULE_DIR" 2> /dev/null || exit 1
 chmod 644 "$MODULE_DIR"/usr/share/applications/* 2> /dev/null || exit 1
+chmod 644 "$MODULE_DIR"/usr/share/pixmaps/* 2> /dev/null
 
 MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-${ARCH}_porteux.xzm"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")

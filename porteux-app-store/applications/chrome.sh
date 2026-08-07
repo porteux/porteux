@@ -7,7 +7,7 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 if [ "$#" -lt 1 ]; then
@@ -23,7 +23,7 @@ fi
 APP="google-chrome"
 FRIENDLY_PACKAGE_NAME="chrome"
 CHANNEL=$1
-LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
+LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
@@ -64,24 +64,11 @@ finisher() {
 }
 
 get_repo_version_google_chrome() {
-	local ver=()
+	local ver=$(curl -s https://dl.google.com/linux/chrome/rpm/stable/x86_64/repodata/other.xml.gz | \
+		gzip -df | tr -d '\n' | tr '<' '\n' | grep -A 1 "name=\"$APP-$1\"" | grep -o 'ver="[^"]*"' | \
+		sed -r 's/ver="([^"]*)"/\1/' | sort -Vr | head -n 1)
 
-	local versions=$(curl -s https://dl.google.com/linux/chrome/rpm/stable/x86_64/repodata/other.xml.gz | \
-		gzip -df | grep -o 'ver="[^"]*"') || exit 1
-	for version in $versions; do
-		temp=$(echo "$version" | sed -r 's/ver="([^"]*)"/\1/')
-		ver+=("$temp")
-	done
-
-	if [ "$1" == "beta" ]; then
-		echo "${ver[0]}"
-	elif [ "$1" == "stable" ]; then
-		echo "${ver[2]}"
-	elif [ "$1" == "unstable" ]; then
-		echo "${ver[3]}"
-	else
-		exit 1
-	fi
+	echo "$ver"
 }
 
 make_module_google_chrome() {

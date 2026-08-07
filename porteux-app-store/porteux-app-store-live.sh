@@ -11,7 +11,7 @@ is_root() {
 # switch to root
 if ! is_root; then
 	if [ "$DISPLAY" ]; then
-		psu "$0" "${ARGS[@]}"
+		psu "$(realpath "$0")" "${ARGS[@]}"
 	else
 		echo "Admin's password is required."
 		su -c "$(printf '%q ' "$(realpath "$0")" "${ARGS[@]}")"
@@ -34,7 +34,6 @@ update_app(){
 	echo "Updating App Store..."
 	echo "$APP_STORE_FILE"
 	if wget -N "$REPO_FOLDER_PATH/$APP_STORE_FILE" -P "$LOCAL_PATH"; then
-		LIST_DOWNLOADED=1
 		chmod -R 755 "$LOCAL_PATH/$APP_STORE_FILE" > /dev/null 2>&1
 	else
 		echo "Error updating App Store"
@@ -58,4 +57,5 @@ else
 fi
 
 # run app store
+[ -x "$LOCAL_PATH/$APP_STORE_FILE" ] || { echo "Error: App Store could not be downloaded." >&2; exit 1; }
 "$LOCAL_PATH/porteux-app-store.py"

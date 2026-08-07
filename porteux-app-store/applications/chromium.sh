@@ -7,7 +7,7 @@ is_root() {
 if ! is_root; then
 	echo "Please enter root's password below:"
 	su -c "$(printf '%q ' "$(realpath "$0")" "$@")"
-	exit 0
+	exit $?
 fi
 
 if [ "$#" -lt 1 ]; then
@@ -22,7 +22,7 @@ fi
 # Global variables
 APP="chromium"
 CHANNEL=$1
-LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
+LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
 TMP="/tmp"
@@ -50,7 +50,7 @@ striptease() {
 				--remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag 2> /dev/null
 	done
 	find "$pkg_dir" -name "chromedriver" -type f -delete
-	rm "$pkg_dir"/usr/lib64/chromium/locales/*.info
+	rm -f "$pkg_dir"/usr/lib64/chromium*/locales/*.info
 	chromium_family_locale_striptease "$pkg_dir"/usr/lib64/chromium*/locales
 }
 
@@ -70,7 +70,7 @@ finisher() {
 
 get_repo_version_chromium() {
 	if [ "$CHANNEL" == "developer" ]; then
-		local ver=$(curl -s "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media") || exit 1
+		local ver=$(curl -s "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media")
 	else
 		exit 1
 	fi
