@@ -14,10 +14,10 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(download_master_from_github FirefighterBlu3 python-pam) || exit 1
-cd python-pam-master || exit 1
+VERSION=$(download_master_from_github FirefighterBlu3 python-pam main) || exit 1
+cd python-pam-main || exit 1
 
-python -m build --wheel --no-isolation
+python -m build --wheel
 python -m installer --destdir "$PKG" dist/*.whl
 
 mkdir -p $PKG/install
