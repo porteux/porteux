@@ -23,7 +23,7 @@ index f3d03166..fb5b4be1 100644
 +	# We can only use girepository-2.0 if libpeas also uses it, otherwise we get conflicts
 +	PKG_CHECK_EXISTS([girepository-2.0], [
 +		# Check if libpeas requires girepository-2.0
-+		if pkg-config --print-requires libpeas-1.0 | grep -q "girepository-2.0"; then
++		if $PKG_CONFIG --print-requires --print-requires-private libpeas-1.0 | grep -q "girepository-2.0"; then
 +			AC_DEFINE([HAVE_GIREPOSITORY_2], [1], [Using girepository-2.0 API])
 +			have_girepository_2=yes
 +		else
