@@ -163,12 +163,12 @@ sed -i "s|MODULE_FIRMWARE(IWL_BZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX));|
 
 echo "Building vmlinuz (this may take a while)..."
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
-make olddefconfig > /dev/null 2>&1
+make olddefconfig > /dev/null 2>&1 || { echo "Failed to update kernel config."; exit 1; }
 make -j${NUMBER_THREADS} KBUILD_LDFLAGS="$LINK_PARAMS" LDFLAGS_MODULE="$LINK_PARAMS" KCFLAGS="$BUILD_PARAMS" ${EXTRA_FLAGS} || { echo "Failed to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULE_PATH/vmlinuz
 
 echo "Installing modules..."
-make -j${NUMBER_THREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1
+make -j${NUMBER_THREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_install > /dev/null 2>&1 || { echo "Failed to install kernel modules."; exit 1; }
 
 cd $MODULE_PATH || exit 1
 
@@ -178,9 +178,9 @@ rm $MODULE_PATH/lib/modules/$kernel_modules_folder/build > /dev/null 2>&1
 echo "Installing firmwares..."
 current_package=kernel-firmware
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
-tar xf $MODULE_PATH/packages/kernel-firmware*.txz > /dev/null 2>&1
+tar xf $MODULE_PATH/packages/kernel-firmware*.txz > /dev/null 2>&1 || { echo "Failed to extract kernel firmware."; exit 1; }
 rm $MODULE_PATH/packages/kernel-firmware*.txz
-sh install/doinst.sh > /dev/null 2>&1
+sh install/doinst.sh > /dev/null 2>&1 || { echo "Failed to install kernel firmware."; exit 1; }
 
 # manually copy intel bluetooth firmwares until kernel fixes drivers/bluetooth/btintel.c
 mkdir -p ${MODULE_PATH}/lib/firmware/intel > /dev/null 2>&1
