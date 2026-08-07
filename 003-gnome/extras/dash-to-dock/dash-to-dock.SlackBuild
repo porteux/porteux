@@ -17,10 +17,6 @@ cd $TMP
 VERSION=$(download_master_from_github micheleg dash-to-dock) || exit 1
 cd dash-to-dock-master || exit 1
 
-for i in $CWD/*.patch; do
-	patch -p0 < $i
-done
-
 make -j${NUMBER_THREADS} DESTDIR=${PKG} VERSION=$VERSION install
 
 EXTENSIONPATH="usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com"
