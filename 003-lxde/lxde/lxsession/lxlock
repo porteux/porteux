@@ -1,8 +1,8 @@
 #!/bin/sh
 # Try to lock the screen with these applications (in this order):
 
-if which dm-tool >/dev/null 2>&1; then
-	dm-tool switch-to-greeter
+if pidof lightdm >/dev/null && which dm-tool >/dev/null 2>&1; then
+	dm-tool lock
 elif pidof light-locker >/dev/null; then
 	light-locker-command -l >/dev/null 2>&1
 elif pidof xscreensaver >/dev/null; then
