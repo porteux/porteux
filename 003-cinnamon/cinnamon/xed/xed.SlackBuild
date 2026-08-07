@@ -14,16 +14,18 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-#info=$(download_latest_from_github "linuxmint" ${PRGNAM} "master.")
-#VERSION=${info#* }
-VERSION=3.8.5 # higher than this won't compile: https://github.com/linuxmint/xed/issues/734
-wget https://github.com/linuxmint/xed/archive/refs/tags/${VERSION}.tar.gz
+info=$(download_latest_from_github "linuxmint" ${PRGNAM} "master.")
+VERSION=${info#* }
 
 tar xf *.tar.?z
 cd $PRGNAM-$VERSION
 
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 sed -i "s|subdir('test')|#subdir('test')|g" meson.build
+
+sed -i 's|#if PYGOBJECT_MAJOR_VERSION > 3 .*|#if 0|' xed/xed-app.c xed/xed-plugins-engine.c
+grep -q '^#if 0' xed/xed-app.c
+grep -q '^#if 0' xed/xed-plugins-engine.c
 
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
@@ -39,6 +41,15 @@ DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -delete
 rm -fr $PKG/usr/share/xed/gir-1.0
+
+### TEMPORARY: remove some xed plugins that doesn't work with new pygobject 3.52.x
+rm -fr $PKG/usr/lib${SYSTEM_BITS}/xed/plugins/bracket-complete
+rm -fr $PKG/usr/lib${SYSTEM_BITS}/xed/plugins/joinlines
+rm -fr $PKG/usr/lib${SYSTEM_BITS}/xed/plugins/open-uri-context-menu
+rm -fr $PKG/usr/lib${SYSTEM_BITS}/xed/plugins/textsize
+rm $PKG/usr/lib${SYSTEM_BITS}/xed/plugins/joinlines.plugin
+rm $PKG/usr/lib${SYSTEM_BITS}/xed/plugins/sort.plugin
+rm $PKG/usr/lib${SYSTEM_BITS}/xed/plugins/textsize.plugin
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

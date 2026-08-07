@@ -40,6 +40,11 @@ export ICON_THEME=Yaru-blue
 # required by lightdm
 installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1
 
+# required from now on
+installpkg $MODULE_PATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULE_PATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULE_PATH/packages/libindicator*.txz || exit 1
+
 # cinnamon common deps
 for package in \
 	audacious \
@@ -76,12 +81,9 @@ installpkg $MODULE_PATH/packages/colord*.txz || exit 1
 installpkg $MODULE_PATH/packages/enchant*.txz || exit 1
 installpkg $MODULE_PATH/packages/gspell*.txz || exit 1
 installpkg $MODULE_PATH/packages/iso-codes*.txz || exit 1
-installpkg $MODULE_PATH/packages/libappindicator*.txz || exit 1
-installpkg $MODULE_PATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULE_PATH/packages/libgee*.txz || exit 1
 installpkg $MODULE_PATH/packages/libgtop*.txz || exit 1
 installpkg $MODULE_PATH/packages/libhandy*.txz || exit 1
-installpkg $MODULE_PATH/packages/libindicator*.txz || exit 1
 installpkg $MODULE_PATH/packages/libsoup*.txz || exit 1
 installpkg $MODULE_PATH/packages/libspectre*.txz || exit 1
 installpkg $MODULE_PATH/packages/libwnck3*.txz || exit 1
@@ -219,20 +221,6 @@ install_packages
 ### install additional packages, including porteux utils
 
 install_additional_packages
-
-### disable some services
-
-echo "Hidden=true" >> $MODULE_PATH/packages/etc/xdg/autostart/cinnamon-settings-daemon-color.desktop
-
-### TEMPORARY: remove some xed plugins that doesn't work with new pygobject 3.52.x
-
-rm -fr $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/xed/plugins/bracket-complete
-rm -fr $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/xed/plugins/joinlines
-rm -fr $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/xed/plugins/open-uri-context-menu
-rm -fr $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/xed/plugins/textsize
-rm $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/xed/plugins/joinlines.plugin
-rm $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/xed/plugins/sort.plugin
-rm $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/xed/plugins/textsize.plugin
 
 ### copy build files to 05-devel
 

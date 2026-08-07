@@ -31,7 +31,7 @@ meson setup \
 	--sysconfdir=/etc \
 	-Dgtk_doc=false \
 	-Dvapi=false \
-	-Dgir=false \
+	-Dgir=true \
 	-Dglade_catalog=false
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
