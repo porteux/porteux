@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 for arg in "$@"; do
 	case "$arg" in
@@ -47,7 +47,7 @@ fail() {
 check_posix() {
 	# Test 1: ntfs is still not fully POSIX-compliant
 	if command -v findmnt >/dev/null; then
-		current_partition=$(findmnt -no FSTYPE "$FLATPAK_STORAGE_PATH")
+		current_partition=$(findmnt -no FSTYPE -T "$FLATPAK_STORAGE_PATH")
 		[[ "$current_partition" == *fat* ]] && fail
 		[[ "$current_partition" == *ntfs* ]] && fail
 	fi
@@ -86,7 +86,7 @@ mkdir -p "$FLATPAK_STORAGE_PATH"/flatpak
 ln -sf "$FLATPAK_STORAGE_PATH"/flatpak /var/lib/
 
 # Add flathub and update
-flatpak_ remote-add flathub https://flathub.org/repo/flathub.flatpakrepo > /dev/null 2>&1
-flatpak_ update --appstream
+flatpak_ remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || { echo "Failed to add flathub remote."; exit 1; }
+flatpak_ update --appstream || { echo "Failed to update flatpak appstream data."; exit 1; }
 
 echo -e "\n\e[36mAll set. You can now use flatpak normally.\e[0m"
