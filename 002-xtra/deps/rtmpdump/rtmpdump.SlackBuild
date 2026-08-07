@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-git clone git://git.ffmpeg.org/${PRGNAM}.git
+git clone https://git.ffmpeg.org/${PRGNAM}.git
 cd $PRGNAM
 VERSION=`git log -1 --date=format:"%Y%m%d" --format="%ad"`
 
@@ -25,7 +25,7 @@ sed -i \
 	-e 's/#CRYPTO=GNUTLS/CRYPTO=GNUTLS/' \
 	Makefile librtmp/Makefile
 
-CFLAGS="$GCC_CFLAGS" \
+XCFLAGS="$GCC_CFLAGS" \
 make -j${NUMBER_THREADS} \
 	prefix=/usr \
 	libdir=/usr/lib${SYSTEM_BITS} \
