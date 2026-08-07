@@ -5,8 +5,8 @@ download_master_from_github() {
 	local repo="$2"
 	local branch="${3:-master}"
 	local tarball="${repo}-${branch}.tar.gz"
-	wget "https://github.com/${owner}/${repo}/archive/refs/heads/${branch}.tar.gz" -O "$tarball" || exit 1
-	tar xf "$tarball" || exit 1
+	wget "https://github.com/${owner}/${repo}/archive/refs/heads/${branch}.tar.gz" -O "$tarball" || return 1
+	tar xf "$tarball" || return 1
 	date -r "${repo}-${branch}" +%Y%m%d
 }
 
@@ -37,9 +37,11 @@ download_latest_from_github() {
 	release_url="https://github.com/${repository}/${project}/releases/download/${version}/${project}-${version//[^0-9._]/}.tar"
 	tag_url="https://github.com/${repository}/${project}/archive/refs/tags/${version}.tar.gz"
 
-	local url
+	local url wget_output
 	for url in "${release_url}.xz" "${release_url}.gz" "${tag_url}"; do
-		content_disposition=$(wget --server-response --content-disposition "$url" 2>&1 | grep -i "content-disposition:")
+		content_disposition=""
+		wget_output=$(wget --server-response --content-disposition "$url" 2>&1) || continue
+		content_disposition=$(echo "$wget_output" | grep -i "content-disposition:")
 		[ -n "$content_disposition" ] && break
 	done
 

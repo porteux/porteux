@@ -35,6 +35,7 @@ install_rust_toolchain() {
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile minimal --default-toolchain stable -y
 	rm -fr $HOME/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/share/doc 2>/dev/null
 	export PATH=$HOME/.cargo/bin/:$PATH
+	command -v cargo > /dev/null || { echo "Error: failed to install rust toolchain." >&2; exit 1; }
 }
 
 make_module() {
@@ -82,7 +83,7 @@ strip_package() {
 	pkg_file=$(ls "${package}"-[0-9]*.t?z | head -n1)
 	out_base=${pkg_file%.*}
 
-	ROOT=./ installpkg "${package}"*.txz
+	ROOT=./ installpkg "${package}"*.t?z || { echo "strip_package: failed to install $package" >&2; exit 1; }
 	mkdir "${package}-stripped"
 
 	local keep
