@@ -61,7 +61,7 @@ rm usr/lib/libRusticlOpenCL*
 mkdir ${current_package}-stripped
 find . -mindepth 1 -maxdepth 1 ! -name "${current_package}-stripped" -exec mv -t "${current_package}-stripped" {} +
 cd ${current_package}-stripped || exit 1
-makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1 || { echo "Error: failed to create ${package_file_name}_stripped.txz" >&2; exit 1; }
 rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 strip_package pcre2 \
@@ -107,7 +107,6 @@ rm -fr $MODULE_PATH/packages/usr/lib/libear
 rm -fr $MODULE_PATH/packages/usr/lib/libscanbuild
 rm -fr $MODULE_PATH/packages/usr/lib/xmms
 rm -fr $MODULE_PATH/packages/var/cache
-rm -fr $MODULE_PATH/packages/var/cache/fontconfig
 rm -fr $MODULE_PATH/packages/var/db
 rm -fr $MODULE_PATH/packages/var/kerberos
 rm -fr $MODULE_PATH/packages/var/lib/dbus
