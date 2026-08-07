@@ -58,6 +58,12 @@ else
 		--sysconfdir=/etc \
 		--disable-static \
 		--disable-debug \
+		--disable-gepub-thumbnailer \
+		--disable-ffmpeg-thumbnailer \
+		--disable-gstreamer-thumbnailer \
+		--disable-odf-thumbnailer \
+		--disable-poppler-thumbnailer \
+		--disable-raw-thumbnailer \
 		--build=$ARCH-porteux-linux
 
 	make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
