@@ -1,0 +1,30 @@
+diff -ru a/Cargo.toml b/Cargo.toml
+--- a/Cargo.toml	2026-07-26 17:03:14.344209823 +0000
++++ b/Cargo.toml	2026-07-26 17:19:24.015240166 +0000
+@@ -31,7 +31,7 @@
+ cosmic-text = { version = "0.19", features = [
+     "shape-run-cache",
+ ] }
+-libdisplay-info = "0.3.0"
++libdisplay-info = "0.4.0"
+ egui = { version = "0.31.1", optional = true }
+ egui_plot = { version = "0.31.0", optional = true }
+ i18n-embed = { version = "0.16", features = [
+@@ -145,3 +145,5 @@
+ 
+ [patch.crates-io]
+ smithay = { git = "https://github.com/smithay/smithay.git", rev = "1ed69cb" }
++# Use the locally-ported bindings that support libdisplay-info 0.4.0.
++libdisplay-info = { path = "/home/guest/Downloads/libdisplay-info-rs-main/libdisplay-info" }
+diff -ru a/cosmic-comp-config/Cargo.toml b/cosmic-comp-config/Cargo.toml
+--- a/cosmic-comp-config/Cargo.toml	2026-07-26 17:03:14.344258384 +0000
++++ b/cosmic-comp-config/Cargo.toml	2026-07-26 17:03:14.331239570 +0000
+@@ -7,7 +7,7 @@
+ cosmic-config = { git = "https://github.com/pop-os/libcosmic/" }
+ cosmic-randr-shell = { git = "https://github.com/pop-os/cosmic-randr/", optional = true }
+ input = "0.10.0"
+-libdisplay-info = { version = "0.3.0", optional = true }
++libdisplay-info = { version = "0.4.0", optional = true }
+ serde = { version = "1", features = ["derive"] }
+ ron = { version = "0.12", optional = true }
+ tracing = { version = "0.1.44", features = [

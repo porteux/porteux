@@ -88,7 +88,7 @@ rm $MODULE_PATH/packages/tesseract*.txz
 # cosmic packages
 for package in \
 	cosmic-applets \
-	cosmic-applibrary \
+	cosmic-app-library \
 	cosmic-bg \
 	cosmic-comp \
 	cosmic-edit \

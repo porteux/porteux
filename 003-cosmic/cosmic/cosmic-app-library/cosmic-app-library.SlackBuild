@@ -2,7 +2,7 @@
 
 source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
-PRGNAM=cosmic-applibrary
+PRGNAM=cosmic-app-library
 
 CWD=$(dirname "$0")
 TMP=$MODULE_PATH/$PRGNAM
@@ -19,7 +19,7 @@ cd $PRGNAM-master || exit 1
 
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 just build-release --target x86_64-unknown-linux-gnu
-cp -al ./target/x86_64-unknown-linux-gnu/release ./target/
+cp -aln ./target/x86_64-unknown-linux-gnu/release ./target/
 just rootdir=$PKG install
 
 mkdir -p $PKG/install
