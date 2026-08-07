@@ -2,14 +2,12 @@
 
 PRGNAM=wlr-protocols
 
-CWD=$(dirname "$0")
 TMP=$MODULE_PATH/$PRGNAM
-PKG=$TMP/package-$PRGNAM
 
 set -e
 
 [ -e $TMP ] && rm -rf $TMP
-mkdir -p $TMP $PKG
+mkdir -p $TMP
 cd $TMP
 
 wget https://gitlab.freedesktop.org/wlroots/${PRGNAM}/-/archive/master/${PRGNAM}-master.tar.gz
