@@ -33,7 +33,7 @@ installpkg $MODULE_PATH/packages/poppler*.txz || exit 1
 
 ### packages outside slackware repository
 
-[ ! -f /usr/bin/clang ] && (installpkg $MODULE_PATH/packages/llvm*.txz || exit 1)
+[ ! -f /usr/bin/clang ] && { installpkg $MODULE_PATH/packages/llvm*.txz || exit 1; }
 
 # required by appstream
 installpkg $MODULE_PATH/packages/nghttp*.txz || exit 1
@@ -132,7 +132,8 @@ mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || e
 mv $MODULE_PATH/packages/${current_package}-[0-9]* .
 package_file_name=$(ls ${current_package}-[0-9]*.t?z | head -n1)
 package_file_name=${package_file_name%.*}
-ROOT=./ installpkg ${current_package}*.txz && rm ${current_package}*.txz
+ROOT=./ installpkg ${current_package}*.txz || exit 1
+rm ${current_package}*.txz
 rm -fr etc/OpenCL
 rm usr/lib${SYSTEM_BITS}/dri/i830*
 rm usr/lib${SYSTEM_BITS}/dri/i965*
@@ -148,7 +149,7 @@ rm -f var/log/scripts
 mkdir ${current_package}-stripped
 find . -mindepth 1 -maxdepth 1 ! -name "${current_package}-stripped" -exec mv -t "${current_package}-stripped" {} +
 cd ${current_package}-stripped || exit 1
-makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1 || exit 1
 rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
 
 strip_package dejavu-fonts-ttf \
