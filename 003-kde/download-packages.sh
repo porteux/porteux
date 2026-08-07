@@ -130,7 +130,6 @@ download_package "libkexiv2" &
 wait_for_downloads
 download_package "libksysguard" &
 download_package "libplasma" &
-download_package "libqaccessibilityclient" &
 download_package "milou" &
 download_package "modemmanager-qt" &
 download_package "okular" &
