@@ -28,6 +28,7 @@ cmake -B build -S . \
 
 make -C build -j${NUMBER_THREADS} DESTDIR="$PKG" install
 
+grep -q "image/x-tga" $PKG/usr/share/applications/lximage-qt.desktop
 sed -i "s|image/x-tga|image/x-tga;image/heic;image/jxl|g" $PKG/usr/share/applications/lximage-qt.desktop
 
 mkdir -p $PKG/install
