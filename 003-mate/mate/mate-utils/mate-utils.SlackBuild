@@ -43,8 +43,6 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 
 make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
-wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$VERSION/schemas/org.mate.interface.gschema.xml -P $PKG/usr/share/glib-2.0/schemas
-
 find $PKG -type f -name "*.la" -delete
 
 mkdir -p $PKG/install
