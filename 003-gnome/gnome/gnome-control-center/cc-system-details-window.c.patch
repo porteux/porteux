@@ -8,7 +8,7 @@
 +get_gnome_shell_version() {
 +   FILE *file_pointer = popen("gnome-shell --version | cut -d \" \" -f 3", "r");
 +   if (file_pointer == NULL)
-+       return MAJOR_VERSION;
++       return g_strdup (MAJOR_VERSION);
 +
 +   char *version = NULL;
 +   size_t len = 0;
@@ -20,9 +20,9 @@
 +       if (version[read - 1] == '\n')
 +           version[read - 1] = '\0';
 +
-+       result = strdup(version);
++       result = g_strdup (version);
 +   } else {
-+       result = MAJOR_VERSION;
++       result = g_strdup (MAJOR_VERSION);
 +   }
 +
 +   free(version);
