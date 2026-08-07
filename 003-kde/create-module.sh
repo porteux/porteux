@@ -190,6 +190,7 @@ done
 
 # only required for building
 rm $MODULE_PATH/packages/extra-cmake-modules*.txz
+rm $MODULE_PATH/packages/plasma-wayland-protocols*.txz
 
 ### fake root
 

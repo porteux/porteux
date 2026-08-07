@@ -171,6 +171,7 @@ download_package "gcc-gfortran" & # required by spectacle
 download_package "leptonica" & # required by spectacle
 download_package "opencv" & # required by spectacle
 download_package "phonon" & # required by dolphin and others
+download_package "plasma-wayland-protocols" & # required by kwindowsystem
 download_package "qcoro" &
 download_package "qt6" &
 download_package "qtkeychain" & # required by network tray
