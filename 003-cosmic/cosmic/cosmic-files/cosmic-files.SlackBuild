@@ -18,8 +18,6 @@ VERSION=$(git log -1 --date=format:"%Y%m%d" --format="%ad")
 
 sed -i "s|license = {|#license = {|g" Cargo.toml
 
-RUSTFLAGS=${RUSTFLAGS/-Cpanic=abort/}
-
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 just build-release --target x86_64-unknown-linux-gnu
 cp -al ./target/x86_64-unknown-linux-gnu/release ./target/
