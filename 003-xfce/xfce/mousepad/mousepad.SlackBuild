@@ -21,7 +21,7 @@ cd $PRGNAM-$DOWNLOADVERSION
 
 # Remove stupid plugin warning
 sed -i "s/g_warning\ (\"Failed\ to\ open\ plugin\ directory\ '%s':\ %s\",//g" mousepad/mousepad-application.c
-sed -i 's/MOUSEPAD_PLUGIN_DIRECTORY,\ error->message);//g' mousepad/mousepad-application.c
+sed -i 's/MOUSEPAD_PLUGIN_DIRECTORY,\ error->message);/;/g' mousepad/mousepad-application.c
 
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \

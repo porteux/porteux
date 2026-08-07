@@ -18,6 +18,10 @@ download_master_from_github fulalas $PRGNAM main || exit 1
 cd xfwm4-gl-main
 
 VERSION=$(sed -n 's/^XDT_VERSION_INIT(\[\([^]]*\)\]\(, *\[\([^]]*\)\]\)\?).*/\1\3/p' configure.ac)
+if [ -z "$VERSION" ]; then
+	echo "Error: cannot detect $PRGNAM version."
+	exit 1
+fi
 
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects -ffast-math" \
 ./autogen.sh \

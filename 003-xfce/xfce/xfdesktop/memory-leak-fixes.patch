@@ -18,7 +18,7 @@ Two issues fixed:
 @@ -362,4 +362,5 @@ xfdesktop_file_icon_model_filter_finalize(GObject *object) {
      XfdesktopFileIconModelFilter *filter = XFDESKTOP_FILE_ICON_MODEL_FILTER(object);
      g_object_unref(filter->channel);
-+    g_object_unref(filter->monitor);
++    g_clear_object(&filter->monitor);
      G_OBJECT_CLASS(xfdesktop_file_icon_model_filter_parent_class)->finalize(object);
  }
 --- a/src/xfdesktop-icon-view-holder.c
