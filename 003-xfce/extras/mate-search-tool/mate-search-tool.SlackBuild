@@ -45,7 +45,9 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 
 make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
-wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/v$VERSION/schemas/org.mate.interface.gschema.xml -P $PKG/usr/share/glib-2.0/schemas
+MATE_DESKTOP_VERSION=$(curl -s https://api.github.com/repos/mate-desktop/mate-desktop/tags | grep '"name":' | cut -d \" -f 4 | sort -Vr | head -1)
+[ "$MATE_DESKTOP_VERSION" ] || { echo "Error: could not determine the latest mate-desktop version." >&2; exit 1; }
+wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/$MATE_DESKTOP_VERSION/schemas/org.mate.interface.gschema.xml -P $PKG/usr/share/glib-2.0/schemas
 
 find $PKG -type f -name "*.la" -delete
 
