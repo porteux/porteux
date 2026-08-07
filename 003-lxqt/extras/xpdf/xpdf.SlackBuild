@@ -54,6 +54,9 @@ cat $CWD/xpdf.desktop > $PKG/usr/share/applications/xpdf.desktop
 cat $CWD/xpdfIcon.xpm > $PKG/usr/share/pixmaps/xpdfIcon.xpm
 sed -i "s|Icon=xpdfIcon|Icon=xpdf|g" $PKG/usr/share/applications/xpdf.desktop
 
+mkdir -p $PKG/etc
+cat doc/sample-xpdfrc > $PKG/etc/xpdfrc
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
