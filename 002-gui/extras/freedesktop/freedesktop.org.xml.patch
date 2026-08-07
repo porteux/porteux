@@ -1,6 +1,6 @@
 --- usr/share/mime/packages/freedesktop.org.xml	2021-02-13 21:59:06.000000000 +1300
 +++ usr/share/mime/packages/freedesktop.org-patched.xml	2022-12-11 21:50:05.000000000 +1300
-@@ -16029,6 +16029,28 @@
+@@ -16783,6 +16783,25 @@
      <generic-icon name="package-x-generic"/>
      <glob pattern="*.zz"/>
    </mime-type>
@@ -11,7 +11,7 @@
 +    <expanded-acronym>XZ Module</expanded-acronym>
 +    <generic-icon name="cdr"/>
 +    <magic priority="50">
-+      <match value="\x89\x4c\x5a\x4f\x00\x0d\x0a\x1a\x0a" type="string" offset="0"/>
++      <match value="hsqs" type="string" offset="0"/>
 +    </magic>
 +    <glob pattern="*.xzm"/>
 +  </mime-type>
@@ -21,11 +21,8 @@
 +    <acronym>DAT</acronym>
 +    <expanded-acronym>Porteux save file</expanded-acronym>
 +    <generic-icon name="cdr"/>
-+    <magic priority="50">
-+      <match value="\x89\x4c\x5a\x4f\x00\x0d\x0a\x1a\x0a" type="string" offset="0"/>
-+    </magic>
 +    <glob pattern="*.dat"/>
 +  </mime-type>
    <mime-type type="application/x-magicpoint">
      <comment>MagicPoint presentation</comment>
-     <comment xml:lang="af">MagicPoint-voorlegging</comment>
+     <comment xml:lang="zh-Hant-TW">MagicPoint 簡報</comment>
