@@ -19,7 +19,7 @@ generate_repository_urls() {
 }
 
 download_package() {
-	cd $MODULE_PATH/packages || exit 1
+	cd $MODULE_PATH/packages || { touch "$DOWNLOAD_FAILURE_FLAG"; exit 1; }
 
 	# if the package is already present don't download it again
 	if find . -maxdepth 1 -type f -name "${1}[-_][0-9]*" | grep -q .; then
@@ -33,8 +33,12 @@ download_package() {
 		touch "$DOWNLOAD_FAILURE_FLAG"
 		exit 1
 	fi
+	local package_file
+	package_file=${package_url##*/}
+
 	echo "Downloading: $package_url..."
-	wget --tries=3 --retry-connrefused $REPOSITORY/$package_url -q > /dev/null 2>&1 || { echo "Error: failed to download $REPOSITORY/$package_url" >&2; touch "$DOWNLOAD_FAILURE_FLAG"; exit 1; }
+	wget --tries=3 --retry-connrefused $REPOSITORY/$package_url -O ".$package_file.part" -q > /dev/null 2>&1 || { rm -f ".$package_file.part"; echo "Error: failed to download $REPOSITORY/$package_url" >&2; touch "$DOWNLOAD_FAILURE_FLAG"; exit 1; }
+	mv ".$package_file.part" "$package_file" || { echo "Error: failed to download $REPOSITORY/$package_url" >&2; touch "$DOWNLOAD_FAILURE_FLAG"; exit 1; }
 }
 
 wait_for_downloads() {
