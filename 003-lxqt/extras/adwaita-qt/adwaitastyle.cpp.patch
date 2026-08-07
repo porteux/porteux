@@ -13,7 +13,7 @@
 -            op.palette = pal;
 -        }
 +    QPalette palette = op.palette;
-+    if ((vopt->state & QStyle::State_Enabled) && !(vopt->state & QStyle::State_Active)) {
++    if ((vopt->state & QStyle::State_Enabled) && !(vopt->state & QStyle::State_Active) && !hasCustomTextColors(palette)) {
 +        palette.setColor(QPalette::Inactive, QPalette::Text, palette.color(QPalette::Active, QPalette::Text));
      }
  
