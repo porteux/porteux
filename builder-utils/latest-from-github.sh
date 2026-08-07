@@ -15,7 +15,7 @@ get_latest_versions_tag_from_github() {
 	local project="$2"
 	local filter_out_version="$3"
 	local versions
-	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep -oP "(?<=/${repository}/${project}/releases/tag/)[^\"]+" | uniq | grep -Ev "alpha|beta|rc[0-9]")
+	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep -oP "(?<=/${repository}/${project}/archive/refs/tags/)[^\"]+(?=\.tar\.gz)" | uniq | grep -Ev "alpha|beta|rc[0-9]")
 	[ -n "$filter_out_version" ] && versions=$(echo "$versions" | grep -Ev "$filter_out_version")
 	echo "$versions" | sort -V -r | head -n 10
 }
@@ -28,14 +28,16 @@ download_latest_from_github() {
 	local repository="$1"
 	local project="$2"
 	local filter_out_version="$3"
-	local filename version release_url tag_url content_disposition
-	version=$(get_latest_version_tag_from_github "${repository}" "${project}" "${filter_out_version}")
-	if [ -z "$version" ]; then
+	local filename tag version release_url tag_url content_disposition
+	tag=$(get_latest_version_tag_from_github "${repository}" "${project}" "${filter_out_version}")
+	if [ -z "$tag" ]; then
 		echo "Error: cannot detect latest ${project} version from github" >&2
 		return 1
 	fi
-	release_url="https://github.com/${repository}/${project}/releases/download/${version}/${project}-${version//[^0-9._]/}.tar"
-	tag_url="https://github.com/${repository}/${project}/archive/refs/tags/${version}.tar.gz"
+	version=${tag##*/}
+	version=${version//[^0-9._]/}
+	release_url="https://github.com/${repository}/${project}/releases/download/${tag}/${project}-${version}.tar"
+	tag_url="https://github.com/${repository}/${project}/archive/refs/tags/${tag}.tar.gz"
 
 	local url wget_output
 	for url in "${release_url}.xz" "${release_url}.gz" "${tag_url}"; do
@@ -51,7 +53,6 @@ download_latest_from_github() {
 	fi
 
 	filename=${content_disposition#*filename=}
-	version="${version//[^0-9._]/}"
 
 	echo "$filename $version"
 }
