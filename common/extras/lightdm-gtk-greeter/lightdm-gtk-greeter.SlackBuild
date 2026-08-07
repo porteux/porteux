@@ -17,7 +17,6 @@ cd $TMP
 if ! which xdt-csource > /dev/null 2>&1; then
 	DEVTOOLS=xfce4-dev-tools
 	DEVTOOLSVERSION=$(curl -s https://gitlab.xfce.org/xfce/${DEVTOOLS}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v pre | grep -v 4.21 | sort -Vr | head -1)
-	VERSION=$(echo $DEVTOOLSVERSION | rev | cut -d '-' -f 1 | rev)
 	wget https://gitlab.xfce.org/xfce/${DEVTOOLS}/-/archive/${DEVTOOLSVERSION}/${DEVTOOLS}-${DEVTOOLSVERSION}.tar.gz
 
 	tar xf $DEVTOOLS-$DEVTOOLSVERSION.tar.?z*
@@ -59,7 +58,7 @@ make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
 
 install -Dm644 "$CWD/wave.svg" "$PKG/usr/share/backgrounds/wave.svg"
 
-install -Dm644 "$CWD/lightdm-gtk-greeter.conf" $PKG/etc/lightdm/
+install -Dm644 "$CWD/lightdm-gtk-greeter.conf" $PKG/etc/lightdm/lightdm-gtk-greeter.conf
 sed -i "s|ICONTHEMETEMPLATE|$ICON_THEME|g" $PKG/etc/lightdm/lightdm-gtk-greeter.conf
 
 rm -fr $PKG/usr/share/doc
