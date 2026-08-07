@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=GNOME maintenance of expirable data
-Exec=/usr/libexec/gsd-housekeeping
+Exec=false
 OnlyShowIn=GNOME;
 NoDisplay=true
 X-GNOME-Autostart-Notify=true
