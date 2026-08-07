@@ -151,7 +151,7 @@ find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf 
 done
 
 cd $MODULE_PATH || exit 1
-pip install pysass # required by cinnamon project
+pip install pysass || exit 1 # required by cinnamon project
 
 installpkg $MODULE_PATH/packages/mozjs*.txz || exit 1
 
