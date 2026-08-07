@@ -301,7 +301,7 @@ mopt
        separated by commas (',') with no spaces between any character.
 
        Example:
-       mopt=realtime,sync,users,nosuid,noexec
+       mopt=relatime,sync,users,nosuid,noexec
        
        NOTE: this cheatcode is ignored if set in '/porteux/porteux.cfg'
        because it affects how PorteuX storage media is detected and
