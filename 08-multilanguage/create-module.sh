@@ -33,7 +33,7 @@ rm $MODULE_PATH/packages/var/log/removed_scripts
 rm $MODULE_PATH/packages/var/log/removed_uninstall_scripts
 
 rm -fr $MODULE_PATH/packages/usr/lib/
-rm -fr $MODULE_PATH/packages/var/lib/pkgtools/douninst.sh/
+rm -fr $MODULE_PATH/packages/var/lib/pkgtools/douninst.sh
 rm -fr $MODULE_PATH/packages/var/lib/pkgtools/setup
 rm -fr $MODULE_PATH/packages/var/log/pkgtools
 rm -fr $MODULE_PATH/packages/var/log/setup
