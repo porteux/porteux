@@ -2339,7 +2339,7 @@ fs/overlayfs/dynlayer.c.
 +
 +	err = ovl_setup_trap(sb, path->dentry, &trap, "lowerdir");
 +	if (err)
-+		goto out_name;
++		goto out_trap;
 +
 +	/* refuse layers overlapping with other layers or upper/work dirs */
 +	err = ovl_check_layer(sb, ofs, path->dentry, "lowerdir", true);
