@@ -21,8 +21,8 @@ RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"
 
 sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
 
-download_master_from_github fulalas libdisplay-info-pure || exit 1
-bash libdisplay-info-pure/apply.sh . || exit 1
+download_master_from_github fulalas libdisplay-info-pure main || exit 1
+bash libdisplay-info-pure-main/apply.sh . || exit 1
 
 ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
 make -j${NUMBER_THREADS}
