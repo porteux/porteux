@@ -5,7 +5,7 @@ libass: libass is a portable subtitle renderer for the ASS/SSA (Advanced
 libass: Substation Alpha/Substation Alpha) subtitle format. It is mostly
 libass: compatible with VSFilter.
 libass:
-libass: Homepage: http://code.google.com/p/libass/
+libass: Homepage: https://github.com/libass/libass
 libass:
 libass:
 libass:

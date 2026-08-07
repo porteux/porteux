@@ -1,5 +1,5 @@
                     |-----handy-ruler-----------------------------------------|
-lxqt-wayland-session: lxqt-wayland-session (desktop menus for LXQt)
+lxqt-wayland-session: lxqt-wayland-session (Wayland session files for LXQt)
 lxqt-wayland-session:
 lxqt-wayland-session: This package provides files needed for the 
 lxqt-wayland-session: LXQt Wayland Session: Wayland session start script,

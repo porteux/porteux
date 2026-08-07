@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+kwayland: kwayland (Qt-style Client and Server library for Wayland)
+kwayland:
+kwayland: KWayland provides a Qt-style Client and Server library wrapper for
+kwayland: the Wayland libraries. It can be used to integrate Wayland support
+kwayland: into Qt applications and compositors.
+kwayland:
+kwayland: Homepage: https://invent.kde.org/plasma/kwayland
+kwayland:
+kwayland:
+kwayland:
+kwayland:

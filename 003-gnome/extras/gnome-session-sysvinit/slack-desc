@@ -1,8 +1,8 @@
-        		      |-----handy-ruler------------------------------------------|
+                      |-----handy-ruler------------------------------------------------------|
 gnome-session-sysvinit: gnome-session-sysvinit
 gnome-session-sysvinit:
 gnome-session-sysvinit: Port of gnome-session-openrc to sysvinit systems
-gnome-session-sysvinit: extension, with many advantages.
+gnome-session-sysvinit:
 gnome-session-sysvinit:
 gnome-session-sysvinit: https://github.com/fulalas/gnome-session-sysvinit
 gnome-session-sysvinit:

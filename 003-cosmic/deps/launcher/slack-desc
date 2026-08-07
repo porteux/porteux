@@ -10,4 +10,3 @@ launcher: the service. Using IPC enables each plugin to isolate their data
 launcher: from other plugin processes and frontends that are interacting with
 launcher: them.
 launcher: Homepage: https://github.com/pop-os/launcher
- 

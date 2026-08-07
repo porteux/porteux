@@ -1,6 +1,6 @@
            |-----handy-ruler------------------------------------------------------|
+file-roller: file-roller (archive manager for GNOME)
 file-roller:
-file-roller: File Roller
 file-roller:
 file-roller: File Roller is an archive manager for GNOME with support for tar,
 file-roller: bzip2, gzip, zip, jar, compress, lzop and many other archive formats.

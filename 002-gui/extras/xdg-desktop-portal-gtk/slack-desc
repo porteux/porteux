@@ -1,8 +1,8 @@
                       |-----handy-ruler------------------------------------------------------|
 xdg-desktop-portal-gtk: xdg-desktop-portal-gtk (gtk sandboxing desktop APIs)
 xdg-desktop-portal-gtk:
-xdg-desktop-portal-gtk: xdg-desktop-portal-gtk are APIs for building sandoxed portal of
-xdg-desktop-portal-gtk: desktop services and integrations.
+xdg-desktop-portal-gtk: xdg-desktop-portal-gtk provides GTK backends for sandboxed portals
+xdg-desktop-portal-gtk: of desktop services and integrations.
 xdg-desktop-portal-gtk:
 xdg-desktop-portal-gtk:
 xdg-desktop-portal-gtk:

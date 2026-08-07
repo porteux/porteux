@@ -1,6 +1,11 @@
                      |-----handy-ruler------------------------------------------------------|
 xfce4-cpugraph-plugin: xfce4-cpugraph-plugin (cpugraph plugin for the Xfce panel)
 xfce4-cpugraph-plugin:
+xfce4-cpugraph-plugin: CPUGraph shows the current CPU load of the system in the Xfce
+xfce4-cpugraph-plugin: panel, with multiple display modes and configurable colors.
+xfce4-cpugraph-plugin:
+xfce4-cpugraph-plugin:
+xfce4-cpugraph-plugin:
 xfce4-cpugraph-plugin:
 xfce4-cpugraph-plugin:
 xfce4-cpugraph-plugin:

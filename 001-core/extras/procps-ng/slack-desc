@@ -1,12 +1,12 @@
-      |-----handy-ruler------------------------------------------------------|
-procps: procps (utilities for displaying process information)
-procps:
-procps: The procps package provides the classic set of utilities used to
-procps: display information about the processes currently running on the
-procps: machine.
-procps:
-procps: Homepage: https://gitlab.com/procps/procps
-procps:
-procps:
-procps:
-procps:
+         |-----handy-ruler------------------------------------------------------|
+procps-ng: procps-ng (utilities for displaying process information)
+procps-ng:
+procps-ng: The procps package provides the classic set of utilities used to
+procps-ng: display information about the processes currently running on the
+procps-ng: machine.
+procps-ng:
+procps-ng: Homepage: https://gitlab.com/procps/procps
+procps-ng:
+procps-ng:
+procps-ng:
+procps-ng:

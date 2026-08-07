@@ -1,12 +1,12 @@
-             |-----handy-ruler------------------------------------------------------|
-geocode-glib2: geocode-glib2 (convenience library for the geocoding)
-geocode-glib2:
-geocode-glib2: geocode-glib2 is a convenience library for the geocoding (finding
-geocode-glib2: longitude, and latitude from an address) and reverse geocoding
-geocode-glib2: (finding an address from coordinates). It uses Nominatim service to
-geocode-glib2: achieve that. It also caches (reverse-)geocoding requests for faster
-geocode-glib2: results and to avoid unnecessary server load.
-geocode-glib2:
-geocode-glib2: geocode-glib2 uses soup3 API.
-geocode-glib2:
-geocode-glib2: https://git.gnome.org/browse/geocode-glib
+            |-----handy-ruler------------------------------------------------------|
+geocode-glib: geocode-glib (convenience library for the geocoding)
+geocode-glib:
+geocode-glib: geocode-glib is a convenience library for the geocoding (finding
+geocode-glib: longitude, and latitude from an address) and reverse geocoding
+geocode-glib: (finding an address from coordinates). It uses Nominatim service to
+geocode-glib: achieve that. It also caches (reverse-)geocoding requests for faster
+geocode-glib: results and to avoid unnecessary server load.
+geocode-glib:
+geocode-glib: geocode-glib uses soup3 API.
+geocode-glib:
+geocode-glib: https://git.gnome.org/browse/geocode-glib

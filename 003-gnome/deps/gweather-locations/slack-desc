@@ -1,5 +1,5 @@
-                 |-----handy-ruler------------------------------------------------------|
-gweather-locations: gweather-locations
+                  |-----handy-ruler------------------------------------------------------|
+gweather-locations: gweather-locations (GWeather locations database)
 gweather-locations:
 gweather-locations: The GWeather locations database contains a list of locations used
 gweather-locations: by GNOME components through the GWeather library.

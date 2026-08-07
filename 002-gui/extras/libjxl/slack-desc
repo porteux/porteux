@@ -3,10 +3,10 @@ libjxl: libjxl (JPEG XL Specification)
 libjxl:
 libjxl: JPEG XL image coding system is particularly optimised for
 libjxl: responsive web environments so that content renders well on
-libjxl: a wide range of devices.Existing JPEG files can be losslessly
-libjxl: transcoded to JPEG XL and can also restored to exact same JPEG
-libjxl: file ensuring backward compatibility.
+libjxl: a wide range of devices. Existing JPEG files can be losslessly
+libjxl: transcoded to JPEG XL and can also be restored to the exact same
+libjxl: JPEG file ensuring backward compatibility.
 libjxl:
-libjxl: Homepage:https://www.jpeg.org/jpegxl
+libjxl: Homepage: https://www.jpeg.org/jpegxl
 libjxl:
 libjxl:

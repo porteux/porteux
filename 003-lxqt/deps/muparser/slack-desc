@@ -1,12 +1,12 @@
         |-----handy-ruler------------------------------------------------------|
-muParser: muParser (A math parser library)
-muParser:
-muParser: muParser is an extensible high performance math expression parser
-muParser: library written in C++. It works by transforming a mathematical
-muParser: expression into bytecode and precalculating constant parts of the
-muParser: expression.
-muParser:
-muParser: Home: https://beltoforion.de/en/muparser/
-muParser:
-muParser:
-muParser:
+muparser: muparser (A math parser library)
+muparser:
+muparser: muParser is an extensible high performance math expression parser
+muparser: library written in C++. It works by transforming a mathematical
+muparser: expression into bytecode and precalculating constant parts of the
+muparser: expression.
+muparser:
+muparser: Home: https://beltoforion.de/en/muparser/
+muparser:
+muparser:
+muparser:

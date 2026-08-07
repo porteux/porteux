@@ -1,12 +1,12 @@
               |-----handy-ruler------------------------------------------------------|
-gtksourceview4: gtksourceview5 (a GTK+ framework for source code editing)
-gtksourceview4:
-gtksourceview4: GtkSourceView is a portable C library that extends the standard
-gtksourceview4: GTK+ framework for multiline text editing with support for
-gtksourceview4: configurable syntax highlighting, unlimited undo/redo, UTF-8
-gtksourceview4: compliant caseless searching, printing and other features
-gtksourceview4: typical of a source code editor.
-gtksourceview4:
-gtksourceview4: Homepage: http://projects.gnome.org/gtksourceview/
-gtksourceview4:
-gtksourceview4:
+gtksourceview5: gtksourceview5 (a GTK+ framework for source code editing)
+gtksourceview5:
+gtksourceview5: GtkSourceView is a portable C library that extends the standard
+gtksourceview5: GTK+ framework for multiline text editing with support for
+gtksourceview5: configurable syntax highlighting, unlimited undo/redo, UTF-8
+gtksourceview5: compliant caseless searching, printing and other features
+gtksourceview5: typical of a source code editor.
+gtksourceview5:
+gtksourceview5: Homepage: http://projects.gnome.org/gtksourceview/
+gtksourceview5:
+gtksourceview5:

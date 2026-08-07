@@ -1,12 +1,12 @@
-   |-----handy-ruler------------------------------------------------------|
-vte: vte (terminal emulator widget)
-vte:
-vte: VTE is a terminal emulator widget for use with GTK+. This package
-vte: contains the VTE library and development files and a sample
-vte: implementation (vte).
-vte:
-vte: https://gitlab.gnome.org/GNOME/vte/
-vte:
-vte:
-vte:
-vte:
+        |-----handy-ruler------------------------------------------------------|
+vte-gtk4: vte-gtk4 (terminal emulator widget)
+vte-gtk4:
+vte-gtk4: VTE is a terminal emulator widget for use with GTK+. This package
+vte-gtk4: contains the VTE library and development files and a sample
+vte-gtk4: implementation (vte).
+vte-gtk4:
+vte-gtk4: https://gitlab.gnome.org/GNOME/vte/
+vte-gtk4:
+vte-gtk4:
+vte-gtk4:
+vte-gtk4:
