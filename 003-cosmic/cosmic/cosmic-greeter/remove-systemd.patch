@@ -22,5 +22,5 @@ index a567119..03c67db 100644
 + 
 +[D-BUS Service]
 +Name=com.system76.CosmicGreeter
-+Exec=/usr/bin/cosmic-greeter-daemon &
++Exec=/usr/bin/cosmic-greeter-daemon
 +User=root
