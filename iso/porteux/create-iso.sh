@@ -1,6 +1,10 @@
 #!/bin/bash
 # Script to create bootable ISO in Linux
 
+ISONAME=$(readlink -f "$1")
+
+cd "$(dirname "$(realpath "$0")")" || exit 1
+
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
 	main_folder=$(readlink -f $PWD/..)
 	echo "Create bootable ISO from files in '$main_folder'."
@@ -12,7 +16,6 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
 fi
 
 CDLABEL="PorteuX"
-ISONAME=$(readlink -f "$1")
 
 if [ "$ISONAME" = "" ]; then
 	ISONAME=/tmp/${CDLABEL,,}.iso
@@ -20,7 +23,10 @@ fi
 
 echo "Fixing permissions..."
 chmod 755 -R ../* || exit 1
-chown -R guest:users ../ || exit 1
+
+if id guest > /dev/null 2>&1; then
+	chown -R guest:users ../ || exit 1
+fi
 
 echo "Generating '$ISONAME'..."
 rm -f "$ISONAME"
