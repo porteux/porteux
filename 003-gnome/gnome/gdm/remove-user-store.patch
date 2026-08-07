@@ -106,7 +106,7 @@ diff -ru a/daemon/gdm-launch-environment.c b/daemon/gdm-launch-environment.c
                  }
          }
  
-@@ -381,10 +387,15 @@
+@@ -381,10 +387,19 @@
          g_autofree char *environment_conf = NULL;
          g_autoptr(GFile) file = NULL;
          g_autoptr(GFileOutputStream) file_stream = NULL;
@@ -116,8 +116,12 @@ diff -ru a/daemon/gdm-launch-environment.c b/daemon/gdm-launch-environment.c
          gid_t gid = GID_NOBODY;
  
 -        config_dir = g_build_filename (launch_environment->dyn_user_home, ".config", NULL);
-+        if (!gdm_get_pwent_for_name (launch_environment->user_name, &pwent) || pwent == NULL)
++        if (!gdm_get_pwent_for_name (launch_environment->user_name, &pwent) || pwent == NULL) {
++                g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
++                             "Unknown greeter user '%s'",
++                             launch_environment->user_name);
 +                return NULL;
++        }
 +        uid = pwent->pw_uid;
 +
 +        config_dir = g_build_filename (pwent->pw_dir, ".config", NULL);
