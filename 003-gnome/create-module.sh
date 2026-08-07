@@ -24,7 +24,7 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 ### packages outside slackware repository
 
 if [[ ${ALLOW_TEST:-no} == no ]]; then
-	export TEST_RELEASES="grep -Ev '\.(alpha|beta|rc)|-dev' | sed -E 's/\.(alpha|beta|rc)/~\1/' | sort -Vr | sed 's/~/\./'"
+	export TEST_RELEASES="grep -Ev '\.(alpha|beta|rc)|-dev' | sort -Vr"
 else
 	export TEST_RELEASES="sort -Vr"
 fi
