@@ -9,7 +9,7 @@
  #include <gdk/gdkx.h>
  #include <libxfce4util/libxfce4util.h>
  #include <sys/utsname.h>
-@@ -375,6 +377,218 @@
+@@ -375,6 +377,225 @@
  
  
  
@@ -96,6 +96,7 @@
 +  xfce_nvmlDeviceGetName_f           fn_name    = NULL;
 +  unsigned int                       count      = 0;
 +  unsigned int                       i;
++  GList                             *matched    = NULL;
 +
 +  /* With nouveau there is no libnvidia-ml → dlopen fails → we return
 +   * immediately and the caller's epoxy/gudev results are preserved. */
@@ -105,17 +106,19 @@
 +  if (!lib)
 +    return gpus;
 +
-+#define XFCE_NVML_SYM(var, sym)    \
-+  (var) = dlsym (lib, (sym));      \
-+  if (!(var)) { dlclose (lib); return gpus; }
++#define XFCE_NVML_SYM(var, sym)                       \
++  do {                                                \
++    (var) = dlsym (lib, (sym));                       \
++    if (!(var)) { dlclose (lib); return gpus; }       \
++  } while (0)
 +
-+  XFCE_NVML_SYM (fn_init,    "nvmlInit_v2")
-+  XFCE_NVML_SYM (fn_shutdown, "nvmlShutdown")
-+  XFCE_NVML_SYM (fn_count,   "nvmlDeviceGetCount_v2")
-+  XFCE_NVML_SYM (fn_handle,  "nvmlDeviceGetHandleByIndex_v2")
-+  XFCE_NVML_SYM (fn_pci,     "nvmlDeviceGetPciInfo_v3")
-+  XFCE_NVML_SYM (fn_mem,     "nvmlDeviceGetMemoryInfo")
-+  XFCE_NVML_SYM (fn_name,    "nvmlDeviceGetName")
++  XFCE_NVML_SYM (fn_init,    "nvmlInit_v2");
++  XFCE_NVML_SYM (fn_shutdown, "nvmlShutdown");
++  XFCE_NVML_SYM (fn_count,   "nvmlDeviceGetCount_v2");
++  XFCE_NVML_SYM (fn_handle,  "nvmlDeviceGetHandleByIndex_v2");
++  XFCE_NVML_SYM (fn_pci,     "nvmlDeviceGetPciInfo_v3");
++  XFCE_NVML_SYM (fn_mem,     "nvmlDeviceGetMemoryInfo");
++  XFCE_NVML_SYM (fn_name,    "nvmlDeviceGetName");
 +#undef XFCE_NVML_SYM
 +
 +  if (fn_init () != XFCE_NVML_SUCCESS)
@@ -158,7 +161,8 @@
 +      for (l = gpus; l != NULL; l = l->next)
 +        {
 +          GPUInfo *info = (GPUInfo *) l->data;
-+          if (info->pci_id && strcmp (info->pci_id, pci_id_buf) == 0)
++          if (info->pci_id && strcmp (info->pci_id, pci_id_buf) == 0
++              && g_list_find (matched, info) == NULL)
 +            {
 +              existing = info;
 +              break;
@@ -167,6 +171,8 @@
 +
 +      if (existing != NULL)
 +        {
++          matched = g_list_prepend (matched, existing);
++
 +          /* ── ENRICH: fill in whatever is still missing ── */
 +          if (!existing->name)
 +            {
@@ -220,6 +226,7 @@
 +out:
 +  fn_shutdown ();
 +  dlclose (lib);
++  g_list_free (matched);
 +  return gpus;
 +}
 +
@@ -228,7 +235,7 @@
  /**
   * Returns a string containing all detected GPUs.
   * If the machine has multiple GPUs, they are separated by the newline '\n' character.
-@@ -477,6 +691,10 @@
+@@ -477,6 +698,10 @@
    gpus = get_drm_cards (gpus);
  #endif
  
