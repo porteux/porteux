@@ -25,9 +25,9 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### critical libraries that need to be in sync with slackware repo before building
 
-installpkg $MODULE_PATH/packages/glib2*.txz > /dev/null 2>&1
-installpkg $MODULE_PATH/packages/libxml2*.txz > /dev/null 2>&1
-installpkg $MODULE_PATH/packages/lua*.txz > /dev/null 2>&1
+installpkg $MODULE_PATH/packages/glib2*.txz || exit 1
+installpkg $MODULE_PATH/packages/libxml2*.txz || exit 1
+installpkg $MODULE_PATH/packages/lua*.txz || exit 1
 
 installpkg $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
 rm $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
@@ -163,6 +163,7 @@ sed -i '/^ca::ctrlaltdel/c\ca::ctrlaltdel:/sbin/shutdown -r now 2>/dev/null' $MO
 ### remove pwquality dependency
 
 sed -i "s|password    requisite     pam_pwquality.so|#password    requisite     pam_pwquality.so|g" $MODULE_PATH/packages/etc/pam.d/system-auth
+grep -q "^password.*pam_pwquality.so" $MODULE_PATH/packages/etc/pam.d/system-auth && { echo "Failed to disable pam_pwquality."; exit 1; }
 sed -i "s|try_first_pass use_authtok||g" $MODULE_PATH/packages/etc/pam.d/system-auth
 
 ### remove fake curl dependencies
