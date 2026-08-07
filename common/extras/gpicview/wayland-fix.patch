@@ -329,7 +329,7 @@ index c7741f5..2304fce 100644
  #ifdef GDK_WINDOWING_X11
  #include <gdk/gdkx.h>
  #include <X11/Xlib.h>
-@@ -43,115 +40,109 @@ static gboolean gf_display_get_workarea(GdkScreen* g_screen, GdkRectangle *rect)
+@@ -43,115 +40,118 @@ static gboolean gf_display_get_workarea(GdkScreen* g_screen, GdkRectangle *rect)
  	if (!(g_display = gdk_display_get_default()))
  		return FALSE;
  
@@ -517,15 +517,24 @@ index c7741f5..2304fce 100644
 +
 +		/* make sure the type and format are good */
 +		if(xa_type == None || format == 0)
++		{
++			XFree(data);
 +			return FALSE;
++		}
 +
 +		/* make sure we don't have any leftovers */
 +		if(fill)
++		{
++			XFree(data);
 +			return FALSE;
++		}
 +
 +		/* make sure len divides evenly by 4 */
-+		if(len % 4)
++		if(len % 4 || (gulong)current * 4 + 3 >= len)
++		{
++			XFree(data);
 +			return FALSE;
++		}
 +
 +		/* it's good, lets use it */
 +		workareas = (gulong *)(guint32 *)data;
@@ -545,7 +554,7 @@ index c7741f5..2304fce 100644
  }
  
  void get_working_area(GdkScreen* screen, GdkRectangle *rect)
-@@ -163,4 +154,4 @@ void get_working_area(GdkScreen* screen, GdkRectangle *rect)
+@@ -163,4 +163,4 @@ void get_working_area(GdkScreen* screen, GdkRectangle *rect)
  		rect->width = gdk_screen_width();
  		rect->height = gdk_screen_height();
  	}

@@ -9,7 +9,9 @@
  #include "ev-document-links.h"
  #include "ev-job-scheduler.h"
  #include "ev-sidebar-links.h"
-@@ -337,9 +335,8 @@
+@@ -335,11 +333,9 @@
+ 	GtkWidget *menu;
+-	GtkWidget *image;
  	GtkWidget *item;
  
  	menu = gtk_menu_new ();

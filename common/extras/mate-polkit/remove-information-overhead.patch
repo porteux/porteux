@@ -1,15 +1,21 @@
 --- src/polkitmateauthenticationdialog.c	2024-02-26 14:54:12.000000000 +0400
 +++ src/polkitmateauthenticationdialog.c.patch	2024-02-27 11:06:59.950207523 +0400
-@@ -456,7 +456,7 @@
-   switch (prop_id)
-     {
-     case PROP_DETAILS:
--      dialog->priv->details = g_value_dup_object (value);
-+      dialog->priv->details = NULL;
-       break;
+@@ -642,14 +642,10 @@
+   GtkWidget *main_vbox;
+   GtkWidget *vbox;
+   GtkWidget *grid_password;
+-  GtkWidget *details_expander;
+-  GtkWidget *details_vbox;
+-  GtkWidget *grid;
+   GtkWidget *label;
+   GtkWidget *image;
+   GtkWidget *content_area;
+   gboolean have_user_combobox;
+   gchar *s;
+-  guint rows;
  
-     case PROP_ACTION_ID:
-@@ -701,36 +701,6 @@
+   dialog = POLKIT_MATE_AUTHENTICATION_DIALOG (object);
+@@ -701,36 +697,6 @@
    gtk_label_set_max_width_chars (GTK_LABEL (label), 50);
    gtk_box_pack_start (GTK_BOX (main_vbox), label, FALSE, FALSE, 0);
  
@@ -46,7 +52,7 @@
    /* user combobox */
    if (g_strv_length (dialog->priv->users) > 1)
      {
-@@ -773,91 +743,6 @@
+@@ -773,91 +739,6 @@
    gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
    dialog->priv->info_label = label;
  

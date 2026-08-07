@@ -36,7 +36,7 @@ sed -i "s|'pixbuf.atril-backend.desktop.in'|'pixbufdocument.atril-backend.deskto
 sed -i "s|^gtk_x11.*|gtk_x11 = dependency('', required: false)|g" properties/meson.build
 sed -i "s|^caja_extension.*|caja_extension = dependency('', required: false)|g" properties/meson.build
 
-sed -i "s|version: '1\.28.*|version: '${VERSION}',|g" meson.build
+sed -i "s|^\(\s*version: \)'[0-9.]*',|\1'${VERSION//[vV]}',|" meson.build
 
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
