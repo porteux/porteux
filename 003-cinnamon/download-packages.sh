@@ -51,7 +51,6 @@ wait_for_downloads
 
 download_package "iso-codes" & # required by cinnamon-desktop
 download_package "libgsf" &
-download_package "libxklavier" &
 download_package "python-build" &
 download_package "python-flit-core" &
 download_package "python-installer" &
