@@ -1,6 +1,6 @@
-diff -Nur xpdf-4.00.orig/doc/sample-xpdfrc xpdf-4.00/doc/sample-xpdfrc
---- xpdf-4.00.orig/doc/sample-xpdfrc	2017-08-08 18:22:50.000000000 -0500
-+++ xpdf-4.00/doc/sample-xpdfrc	2017-09-25 23:39:20.010485577 -0500
+diff --git a/doc/sample-xpdfrc b/doc/sample-xpdfrc
+--- a/doc/sample-xpdfrc
++++ b/doc/sample-xpdfrc
 @@ -29,20 +29,20 @@
  # installed in a "standard" location, xpdf will find them
  # automatically.)

@@ -1,5 +1,6 @@
---- src/meson.build	2025-02-19 13:21:56.599534783 +0100
-+++ src/meson.build.patched	2025-02-19 13:21:48.961534422 +0100
+diff --git a/src/meson.build b/src/meson.build
+--- a/src/meson.build
++++ b/src/meson.build
 @@ -149,18 +149,6 @@
    install: true,
  )

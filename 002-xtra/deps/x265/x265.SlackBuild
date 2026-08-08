@@ -19,7 +19,7 @@ VERSION=$(date -r . +%Y%m%d)
 
 BUILDPARAMS="${CLANG_CXXFLAGS} -ffat-lto-objects"
 
-patch -p0 < $CWD/build-fix.patch
+patch -p1 < $CWD/build-fix.patch
 
 LDFLAGS="$LLDFLAGS" \
 cmake -B build-12 \

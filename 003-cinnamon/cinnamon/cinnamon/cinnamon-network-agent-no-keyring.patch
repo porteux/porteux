@@ -12,8 +12,9 @@ itself, so prompting, saving and reconnecting all work keyring-free.
 Ports network-manager-applet 1.8.14 commit ecdf7087 ("applet-agent:
 tolerate keyring not being there for interactive requests").
 
---- a/src/cinnamon-network-agent.c	2026-07-03 12:22:00.718055676 +0200
-+++ b/src/cinnamon-network-agent.c	2026-07-03 12:22:00.725055677 +0200
+diff --git a/src/cinnamon-network-agent.c b/src/cinnamon-network-agent.c
+--- a/src/cinnamon-network-agent.c
++++ b/src/cinnamon-network-agent.c
 @@ -259,6 +259,17 @@
    self = closure->self;
    priv  = self->priv;

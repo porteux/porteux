@@ -1,5 +1,6 @@
---- panels/system/about/cc-system-details-window.c	2025-10-07 18:39:10.071271947 +0200
-+++ panels/system/about/cc-system-details-window.c.patched	2025-10-07 18:39:03.543271638 +0200
+diff --git a/panels/system/about/cc-system-details-window.c b/panels/system/about/cc-system-details-window.c
+--- a/panels/system/about/cc-system-details-window.c
++++ b/panels/system/about/cc-system-details-window.c
 @@ -674,6 +674,33 @@
      g_string_append (dst_string, " ");
  }

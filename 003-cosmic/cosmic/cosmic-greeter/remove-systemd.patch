@@ -1,7 +1,7 @@
-diff --git debian/cosmic-greeter-daemon.service debian/cosmic-greeter-daemon.service
+diff --git a/debian/cosmic-greeter-daemon.service b/debian/cosmic-greeter-daemon.service
 index a567119..03c67db 100644
---- debian/cosmic-greeter-daemon.service
-+++ debian/cosmic-greeter-daemon.service
+--- a/debian/cosmic-greeter-daemon.service
++++ b/debian/cosmic-greeter-daemon.service
 @@ -1,11 +1,10 @@
 -[Unit]
 -Description=COSMIC Greeter Daemon

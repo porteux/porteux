@@ -204,7 +204,7 @@ sed -i "s|^Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULE_PATH/packages/usr/sha
 
 ### add xzm to freedesktop.org.xml
 
-patch --no-backup-if-mismatch -d $MODULE_PATH/packages -p0 < $SCRIPT_PATH/extras/freedesktop/freedesktop.org.xml.patch || exit 1
+patch --no-backup-if-mismatch -d $MODULE_PATH/packages -p1 < $SCRIPT_PATH/extras/freedesktop/freedesktop.org.xml.patch || exit 1
 
 ### fix gtk2 adwaita theme cursor click on text box having wrong offset
 

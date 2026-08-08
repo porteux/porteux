@@ -1,5 +1,6 @@
---- etc/xdg/menus/xfce-applications.menu	2024-10-02 19:27:14.223041167 +0200
-+++ etc/xdg/menus/xfce-applications.menu.patched	2024-10-02 19:29:08.851046589 +0200
+diff --git a/etc/xdg/menus/xfce-applications.menu b/etc/xdg/menus/xfce-applications.menu
+--- a/etc/xdg/menus/xfce-applications.menu
++++ b/etc/xdg/menus/xfce-applications.menu
 @@ -11,18 +11,11 @@
          <Category>X-Xfce-Toplevel</Category>
      </Include>

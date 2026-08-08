@@ -1,5 +1,3 @@
-Currently this is not being used because PorteuX builds using x86-64-v2
-
 From 0c62c38deb339d973ac5eaf3476441f304473938 Mon Sep 17 00:00:00 2001
 From: Guobing Chen <guobing.chen@intel.com>
 Date: Tue, 21 May 2019 15:53:18 +0800
@@ -21,13 +19,13 @@ Signed-off-by: Guobing Chen <guobing.chen@intel.com>
  math/w_sqrt_compat.c            | 1 +
  sysdeps/ieee754/dbl-64/e_exp.c  | 1 +
  sysdeps/ieee754/dbl-64/e_exp2.c | 1 +
- sysdeps/x86_64/fpu/Makefile     | 3 +++
- 4 files changed, 6 insertions(+)
+ sysdeps/x86_64/fpu/Makefile     | 6 ++++++
+ 4 files changed, 9 insertions(+)
 
-diff --git math/w_sqrt_compat.c math/w_sqrt_compat.c
+diff --git a/math/w_sqrt_compat.c b/math/w_sqrt_compat.c
 index cc5ba4b7..d977ec4c 100644
---- math/w_sqrt_compat.c
-+++ math/w_sqrt_compat.c
+--- a/math/w_sqrt_compat.c
++++ b/math/w_sqrt_compat.c
 @@ -26,6 +26,7 @@
  #if LIBM_SVID_COMPAT
  /* wrapper sqrt */
@@ -36,10 +34,10 @@ index cc5ba4b7..d977ec4c 100644
  __sqrt (double x)
  {
    if (__builtin_expect (isless (x, 0.0), 0) && _LIB_VERSION != _IEEE_)
-diff --git sysdeps/ieee754/dbl-64/e_exp.c sysdeps/ieee754/dbl-64/e_exp.c
+diff --git a/sysdeps/ieee754/dbl-64/e_exp.c b/sysdeps/ieee754/dbl-64/e_exp.c
 index 853d6ca7..7290caab 100644
---- sysdeps/ieee754/dbl-64/e_exp.c
-+++ sysdeps/ieee754/dbl-64/e_exp.c
+--- a/sysdeps/ieee754/dbl-64/e_exp.c
++++ b/sysdeps/ieee754/dbl-64/e_exp.c
 @@ -94,6 +94,7 @@ top12 (double x)
  
  double
@@ -48,10 +46,10 @@ index 853d6ca7..7290caab 100644
  __exp (double x)
  {
    uint32_t abstop;
-diff --git sysdeps/ieee754/dbl-64/e_exp2.c sysdeps/ieee754/dbl-64/e_exp2.c
+diff --git a/sysdeps/ieee754/dbl-64/e_exp2.c b/sysdeps/ieee754/dbl-64/e_exp2.c
 index 22cade8b..fe20e84c 100644
---- sysdeps/ieee754/dbl-64/e_exp2.c
-+++ sysdeps/ieee754/dbl-64/e_exp2.c
+--- a/sysdeps/ieee754/dbl-64/e_exp2.c
++++ b/sysdeps/ieee754/dbl-64/e_exp2.c
 @@ -87,6 +87,7 @@ top12 (double x)
  }
  
@@ -60,35 +58,18 @@ index 22cade8b..fe20e84c 100644
  __exp2 (double x)
  {
    uint32_t abstop;
-diff --git sysdeps/x86_64/fpu/Makefile sysdeps/x86_64/fpu/Makefile
-index b5f95890..30c71c84 100644
---- sysdeps/x86_64/fpu/Makefile
-+++ sysdeps/x86_64/fpu/Makefile
-@@ -240,4 +240,7 @@ endif
- # Limit vector width to 128 bits to work around this issue.  It improves
- # performance of sin and cos by more than 40% on Skylake.
- CFLAGS-branred.c = -mprefer-vector-width=128
+diff --git a/sysdeps/x86_64/fpu/Makefile b/sysdeps/x86_64/fpu/Makefile
+--- a/sysdeps/x86_64/fpu/Makefile
++++ b/sysdeps/x86_64/fpu/Makefile
+@@ -103,3 +103,9 @@
+ 	mv -f $@-tmp $@
+ endif
+ endif
++
++ifeq ($(subdir)$(config-cflags-mprefer-vector-width),mathyes)
 +CFLAGS-s_sincos.c = -mprefer-vector-width=256
 +CFLAGS-e_exp.c = -mprefer-vector-width=128
 +CFLAGS-e_exp2.c = -mprefer-vector-width=128
- endif
++endif
 -- 
 2.21.0
-
-diff --git sysdeps/x86_64/fpu/Makefile sysdeps/x86_64/fpu/Makefile
-index b82cd126..56e68f04 100644
---- sysdeps/x86_64/fpu/Makefile
-+++ sysdeps/x86_64/fpu/Makefile
-@@ -136,8 +136,8 @@ ifeq ($(subdir)$(config-cflags-mprefer-vector-width),mathyes)
- #
- # Limit vector width to 128 bits to work around this issue.  It improves
- # performance of sin and cos by more than 40% on Skylake.
--CFLAGS-branred.c = -mprefer-vector-width=128
--CFLAGS-s_sincos.c = -mprefer-vector-width=256
--CFLAGS-e_exp.c = -mprefer-vector-width=128
--CFLAGS-e_exp2.c = -mprefer-vector-width=128
-+CFLAGS-branred.c = -mprefer-vector-width=128 -fno-tree-vectorize
-+CFLAGS-s_sincos.c = -mprefer-vector-width=256 -fno-tree-vectorize
-+CFLAGS-e_exp.c = -mprefer-vector-width=128 -fno-tree-vectorize
-+CFLAGS-e_exp2.c = -mprefer-vector-width=128 -fno-tree-vectorize
- endif

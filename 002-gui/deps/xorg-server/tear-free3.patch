@@ -17,8 +17,8 @@ Reviewed-by: Martin Roukala <martin.roukala@mupuf.org>
 
 diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
 index b0ff9655b0..08a1bcd314 100644
---- hw/xfree86/drivers/modesetting/pageflip.c
-+++ hw/xfree86/drivers/modesetting/pageflip.c
+--- a/hw/xfree86/drivers/modesetting/pageflip.c
++++ b/hw/xfree86/drivers/modesetting/pageflip.c
 @@ -476,7 +476,9 @@ error_out:
  static void
  ms_tearfree_flip_abort(void *data)
@@ -76,8 +76,8 @@ Reviewed-by: Martin Roukala <martin.roukala@mupuf.org>
 
 diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
 index 08a1bcd314..94437c0f3c 100644
---- hw/xfree86/drivers/modesetting/pageflip.c
-+++ hw/xfree86/drivers/modesetting/pageflip.c
+--- a/hw/xfree86/drivers/modesetting/pageflip.c
++++ b/hw/xfree86/drivers/modesetting/pageflip.c
 @@ -336,7 +336,7 @@ ms_do_pageflip(ScreenPtr screen,
          xf86DrvMsg(scrn->scrnIndex, X_ERROR,
                     "%s: Failed to get GBM BO for flip to new front.\n",

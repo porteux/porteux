@@ -1,5 +1,6 @@
---- shell/ev-sidebar.c	2024-02-18 14:50:31.977835412 +0100
-+++ shell/ev-sidebar.c.patched	2024-02-18 14:53:26.680843676 +0100
+diff --git a/shell/ev-sidebar.c b/shell/ev-sidebar.c
+--- a/shell/ev-sidebar.c
++++ b/shell/ev-sidebar.c
 @@ -31,8 +31,6 @@
  #include <gtk/gtk.h>
  #include <gdk/gdkkeysyms.h>

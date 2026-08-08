@@ -1,5 +1,6 @@
---- lxsession-logout/lxsession-logout.c	2025-04-01 11:18:10.000000000 +0200
-+++ lxsession-logout/lxsession-logout.c.patched	2025-05-01 21:39:14.019986880 +0200
+diff --git a/lxsession-logout/lxsession-logout.c b/lxsession-logout/lxsession-logout.c
+--- a/lxsession-logout/lxsession-logout.c
++++ b/lxsession-logout/lxsession-logout.c
 @@ -739,21 +739,12 @@
      GtkWidget * label = gtk_label_new("");
      if (prompt == NULL)

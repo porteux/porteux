@@ -17,8 +17,8 @@ Reviewed-by: Martin Roukala <martin.roukala@mupuf.org>
 
 diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
 index 8d57047efa..5a4ad1dba1 100644
---- hw/xfree86/drivers/modesetting/pageflip.c
-+++ hw/xfree86/drivers/modesetting/pageflip.c
+--- a/hw/xfree86/drivers/modesetting/pageflip.c
++++ b/hw/xfree86/drivers/modesetting/pageflip.c
 @@ -321,9 +321,6 @@ ms_do_pageflip(ScreenPtr screen,
                 ms_pageflip_abort_proc pageflip_abort,
                 const char *log_prefix)
@@ -61,8 +61,8 @@ Reviewed-by: Martin Roukala <martin.roukala@mupuf.org>
 
 diff --git a/hw/xfree86/drivers/modesetting/dri2.c b/hw/xfree86/drivers/modesetting/dri2.c
 index 8d1b742efb..34ddec4246 100644
---- hw/xfree86/drivers/modesetting/dri2.c
-+++ hw/xfree86/drivers/modesetting/dri2.c
+--- a/hw/xfree86/drivers/modesetting/dri2.c
++++ b/hw/xfree86/drivers/modesetting/dri2.c
 @@ -483,7 +483,6 @@ ms_dri2_schedule_flip(ms_dri2_frame_event_ptr info)
      modesettingPtr ms = modesettingPTR(scrn);
      ms_dri2_buffer_private_ptr back_priv = info->back->driverPrivate;
@@ -82,8 +82,8 @@ index 8d1b742efb..34ddec4246 100644
                         "DRI2-flip")) {
 diff --git a/hw/xfree86/drivers/modesetting/driver.h b/hw/xfree86/drivers/modesetting/driver.h
 index 3f2b1d1aef..605fd8530f 100644
---- hw/xfree86/drivers/modesetting/driver.h
-+++ hw/xfree86/drivers/modesetting/driver.h
+--- a/hw/xfree86/drivers/modesetting/driver.h
++++ b/hw/xfree86/drivers/modesetting/driver.h
 @@ -236,7 +236,7 @@ typedef void (*ms_pageflip_abort_proc)(modesettingPtr ms, void *data);
  Bool ms_do_pageflip(ScreenPtr screen,
                      PixmapPtr new_front,
@@ -95,8 +95,8 @@ index 3f2b1d1aef..605fd8530f 100644
                      ms_pageflip_abort_proc pageflip_abort,
 diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
 index 5a4ad1dba1..b0ff9655b0 100644
---- hw/xfree86/drivers/modesetting/pageflip.c
-+++ hw/xfree86/drivers/modesetting/pageflip.c
+--- a/hw/xfree86/drivers/modesetting/pageflip.c
++++ b/hw/xfree86/drivers/modesetting/pageflip.c
 @@ -204,11 +204,10 @@ enum queue_flip_status {
  static int
  queue_flip_on_crtc(ScreenPtr screen, xf86CrtcPtr crtc,
@@ -154,8 +154,8 @@ index 5a4ad1dba1..b0ff9655b0 100644
              case QUEUE_FLIP_ALLOC_FAILED:
 diff --git a/hw/xfree86/drivers/modesetting/present.c b/hw/xfree86/drivers/modesetting/present.c
 index 642f7baaff..e147f3eda5 100644
---- hw/xfree86/drivers/modesetting/present.c
-+++ hw/xfree86/drivers/modesetting/present.c
+--- a/hw/xfree86/drivers/modesetting/present.c
++++ b/hw/xfree86/drivers/modesetting/present.c
 @@ -361,6 +361,5 @@ ms_present_flip(RRCrtcPtr crtc,
      ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
      modesettingPtr ms = modesettingPTR(scrn);

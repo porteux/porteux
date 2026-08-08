@@ -1,5 +1,6 @@
---- panels/system/about/cc-system-details-window.blp	2025-08-20 13:14:44.394537786 +0200
-+++ panels/system/about/cc-system-details-window.blp.patched	2025-08-20 13:14:54.152538981 +0200
+diff --git a/panels/system/about/cc-system-details-window.blp b/panels/system/about/cc-system-details-window.blp
+--- a/panels/system/about/cc-system-details-window.blp
++++ b/panels/system/about/cc-system-details-window.blp
 @@ -126,7 +126,7 @@
              }
  

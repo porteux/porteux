@@ -1,5 +1,6 @@
---- src/theme.rs	2026-03-13 14:23:20.142586182 +0100
-+++ src/theme.rs.patched	2026-03-13 14:29:23.487562190 +0100
+diff --git a/src/theme.rs b/src/theme.rs
+--- a/src/theme.rs
++++ b/src/theme.rs
 @@ -624,6 +624,7 @@
  }
  

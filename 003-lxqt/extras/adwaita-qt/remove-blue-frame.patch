@@ -1,6 +1,7 @@
 # remove blue frame in focused areas
---- src/style/adwaitastyle.cpp	2024-09-29 20:08:32.883813057 +0200
-+++ src/style/adwaitastyle.cpp.patched	2024-09-29 20:08:24.625812666 +0200
+diff --git a/src/style/adwaitastyle.cpp b/src/style/adwaitastyle.cpp
+--- a/src/style/adwaitastyle.cpp
++++ b/src/style/adwaitastyle.cpp
 @@ -1014,9 +1014,6 @@
      case PE_FrameStatusBarItem:
          fcn = &Style::emptyPrimitive;

@@ -32,7 +32,7 @@ tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
 for i in $CWD/*.patch; do
-	patch -p0 < $i;
+	patch -p1 < $i
 done
 
 if [ -f meson.build ]; then

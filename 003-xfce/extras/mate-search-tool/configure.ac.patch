@@ -1,5 +1,6 @@
---- configure.ac	2024-02-22 01:58:07.000000000 +0100
-+++ configure.ac.patched	2024-02-26 13:55:43.705170473 +0100
+diff --git a/configure.ac b/configure.ac
+--- a/configure.ac
++++ b/configure.ac
 @@ -99,7 +99,6 @@
  LIBMATE_PANEL_APPLET_REQUIRED=1.17.0
  LIBGTOP_REQUIRED=2.12.0

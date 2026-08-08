@@ -1,5 +1,6 @@
---- aboutdialog/technicalinfo.cpp	2025-11-22 00:59:38.154333813 +0100
-+++ aboutdialog/technicalinfo.cpp.patched	2025-11-22 00:59:31.246333486 +0100
+diff --git a/aboutdialog/technicalinfo.cpp b/aboutdialog/technicalinfo.cpp
+--- a/aboutdialog/technicalinfo.cpp
++++ b/aboutdialog/technicalinfo.cpp
 @@ -30,6 +30,7 @@
  #include <LXQt/Translator>
  

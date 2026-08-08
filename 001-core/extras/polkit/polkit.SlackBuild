@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-patch -p0 < $CWD/dont-set-wheel-group-as-admin.patch
+patch -p1 < $CWD/dont-set-wheel-group-as-admin.patch
 
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \

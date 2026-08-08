@@ -9,6 +9,7 @@
  tools/meson.build         |   6 +++-
  5 files changed, 100 insertions(+), 79 deletions(-)
 
+diff --git a/data/meson.build b/data/meson.build
 --- a/data/meson.build
 +++ b/data/meson.build
 @@ -15,64 +15,66 @@
@@ -130,6 +131,7 @@
  
  # Install some other misc. configuration files
  
+diff --git a/gnome-session/meson.build b/gnome-session/meson.build
 --- a/gnome-session/meson.build
 +++ b/gnome-session/meson.build
 @@ -19,20 +19,23 @@
@@ -169,6 +171,7 @@
  
  sources = files(
    'gsm-app.c',
+diff --git a/meson.build b/meson.build
 --- a/meson.build
 +++ b/meson.build
 @@ -86,20 +86,30 @@
@@ -223,6 +226,7 @@
   'Systemd Units Directory': systemd_userunitdir,
  }
  
+diff --git a/meson_options.txt b/meson_options.txt
 --- a/meson_options.txt
 +++ b/meson_options.txt
 @@ -1,4 +1,5 @@
@@ -231,6 +235,7 @@
  option('systemduserunitdir', type: 'string', description: 'Directory for systemd user service files')
  option('docbook', type: 'boolean', value: true, description: 'build documentation')
  option('man', type: 'boolean', value: true, description: 'build documentation (requires xmlto)')
+diff --git a/tools/meson.build b/tools/meson.build
 --- a/tools/meson.build
 +++ b/tools/meson.build
 @@ -1,10 +1,14 @@

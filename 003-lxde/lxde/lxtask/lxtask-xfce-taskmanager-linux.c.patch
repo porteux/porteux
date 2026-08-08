@@ -1,5 +1,6 @@
---- src/xfce-taskmanager-linux.c	2023-11-14 15:03:32.522970064 +0100
-+++ src/xfce-taskmanager-linux.c.patched	2023-11-14 15:06:37.416949713 +0100
+diff --git a/src/xfce-taskmanager-linux.c b/src/xfce-taskmanager-linux.c
+--- a/src/xfce-taskmanager-linux.c
++++ b/src/xfce-taskmanager-linux.c
 @@ -272,8 +272,8 @@
      {
          if(!strncmp(buffer,"MemTotal:",9))

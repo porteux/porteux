@@ -9,8 +9,9 @@ squashfs modules on a running root filesystem without a reboot - the
 one feature these distros needed from AUFS. New file:
 fs/overlayfs/dynlayer.c.
 
---- a/fs/dcache.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/dcache.c	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/dcache.c b/fs/dcache.c
+--- a/fs/dcache.c
++++ b/fs/dcache.c
 @@ -1345,19 +1345,7 @@
  }
  EXPORT_SYMBOL(shrink_dcache_sb);
@@ -56,8 +57,9 @@ fs/overlayfs/dynlayer.c.
  
  /*
   * When a file is deleted, we have two options:
---- a/fs/internal.h	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/internal.h	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/internal.h b/fs/internal.h
+--- a/fs/internal.h
++++ b/fs/internal.h
 @@ -66,7 +66,6 @@
  int vfs_tmpfile(struct mnt_idmap *idmap,
  		const struct path *parentpath,
@@ -66,16 +68,18 @@ fs/overlayfs/dynlayer.c.
  struct dentry *start_dirop(struct dentry *parent, struct qstr *name,
  			   unsigned int lookup_flags);
  int lookup_noperm_common(struct qstr *qname, struct dentry *base);
---- a/fs/overlayfs/Makefile	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/Makefile	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/Makefile b/fs/overlayfs/Makefile
+--- a/fs/overlayfs/Makefile
++++ b/fs/overlayfs/Makefile
 @@ -6,4 +6,4 @@
  obj-$(CONFIG_OVERLAY_FS) += overlay.o
  
  overlay-objs := super.o namei.o util.o inode.o file.o dir.o readdir.o \
 -		copy_up.o export.o params.o xattrs.o
 +		copy_up.o export.o params.o xattrs.o dynlayer.o
---- a/fs/overlayfs/inode.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/inode.c	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+--- a/fs/overlayfs/inode.c
++++ b/fs/overlayfs/inode.c
 @@ -117,7 +117,14 @@
  		 * This way all overlay inode numbers are unique and use the
  		 * overlay st_dev.
@@ -111,8 +115,9 @@ fs/overlayfs/dynlayer.c.
  				iput(inode);
  				err = -ESTALE;
  				goto out_err;
---- a/fs/overlayfs/namei.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/namei.c	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
+--- a/fs/overlayfs/namei.c
++++ b/fs/overlayfs/namei.c
 @@ -37,10 +37,9 @@
  {
  	int res;
@@ -329,8 +334,9 @@ fs/overlayfs/dynlayer.c.
 +
  	return positive;
  }
---- a/fs/overlayfs/overlayfs.h	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/overlayfs.h	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
+--- a/fs/overlayfs/overlayfs.h
++++ b/fs/overlayfs/overlayfs.h
 @@ -450,6 +450,7 @@
  void ovl_put_write_access(struct dentry *dentry);
  void ovl_start_write(struct dentry *dentry);
@@ -393,8 +399,9 @@ fs/overlayfs/dynlayer.c.
  
  /* Will this overlay be forced to mount/remount ro? */
  static inline bool ovl_force_readonly(struct ovl_fs *ofs)
---- a/fs/overlayfs/ovl_entry.h	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/ovl_entry.h	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
+--- a/fs/overlayfs/ovl_entry.h
++++ b/fs/overlayfs/ovl_entry.h
 @@ -19,6 +19,8 @@
  	bool metacopy;
  	bool userxattr;
@@ -488,8 +495,9 @@ fs/overlayfs/dynlayer.c.
  }
  
  static inline struct ovl_entry *OVL_E(struct dentry *dentry)
---- a/fs/overlayfs/params.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/params.c	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/params.c b/fs/overlayfs/params.c
+--- a/fs/overlayfs/params.c
++++ b/fs/overlayfs/params.c
 @@ -46,6 +46,8 @@
  enum ovl_opt {
  	Opt_lowerdir,
@@ -770,8 +778,9 @@ fs/overlayfs/dynlayer.c.
  	if (ofs->config.metacopy != ovl_metacopy_def)
  		seq_printf(m, ",metacopy=%s", str_on_off(ofs->config.metacopy));
  	if (ofs->config.fsync_mode != ovl_fsync_mode_def())
---- a/fs/overlayfs/params.h	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/params.h	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/params.h b/fs/overlayfs/params.h
+--- a/fs/overlayfs/params.h
++++ b/fs/overlayfs/params.h
 @@ -34,8 +34,14 @@
  	struct ovl_fs_context_layer *lower;
  	char *lowerdir_all; /* user provided lowerdir string */
@@ -787,8 +796,9 @@ fs/overlayfs/dynlayer.c.
  int ovl_init_fs_context(struct fs_context *fc);
  void ovl_free_fs(struct ovl_fs *ofs);
  int ovl_fs_params_verify(const struct ovl_fs_context *ctx,
---- a/fs/overlayfs/readdir.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/readdir.c	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/readdir.c b/fs/overlayfs/readdir.c
+--- a/fs/overlayfs/readdir.c
++++ b/fs/overlayfs/readdir.c
 @@ -412,10 +412,19 @@
  	}
  	is_real = ovl_dir_is_real(inode);
@@ -911,8 +921,9 @@ fs/overlayfs/dynlayer.c.
  	ovl_set_dir_cache(inode, cache);
  
  	return cache;
---- a/fs/overlayfs/super.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/super.c	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+--- a/fs/overlayfs/super.c
++++ b/fs/overlayfs/super.c
 @@ -121,15 +121,71 @@
  static int ovl_dentry_revalidate_common(struct dentry *dentry,
  					unsigned int flags, bool weak)
@@ -1310,8 +1321,9 @@ fs/overlayfs/dynlayer.c.
  	if (!ofs->config.lowerdirs) {
  		kfree(layers);
  		return err;
---- a/fs/overlayfs/util.c	2026-06-27 12:08:18.000000000 +0200
-+++ b/fs/overlayfs/util.c	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/util.c b/fs/overlayfs/util.c
+--- a/fs/overlayfs/util.c
++++ b/fs/overlayfs/util.c
 @@ -136,6 +136,23 @@
  		dput(stack[i].dentry);
  }
@@ -1617,8 +1629,9 @@ fs/overlayfs/dynlayer.c.
  }
  
  /* Return real inode which contains data. Does not return metacopy inode */
---- a/include/linux/dcache.h	2026-06-27 12:08:18.000000000 +0200
-+++ b/include/linux/dcache.h	2026-07-18 02:07:16.223638675 +0200
+diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+--- a/include/linux/dcache.h
++++ b/include/linux/dcache.h
 @@ -289,6 +289,23 @@
  /* test whether we have any submounts in a subdir tree */
  extern int path_has_submounts(const struct path *);
@@ -1643,8 +1656,10 @@ fs/overlayfs/dynlayer.c.
  /*
   * This adds the entry to the hash queues.
   */
---- a/fs/overlayfs/dynlayer.c	2026-07-17 20:39:48.801384341 +0200
-+++ b/fs/overlayfs/dynlayer.c	2026-07-18 02:07:16.223638675 +0200
+diff --git a/fs/overlayfs/dynlayer.c b/fs/overlayfs/dynlayer.c
+new file mode 100644
+--- /dev/null
++++ b/fs/overlayfs/dynlayer.c
 @@ -0,0 +1,1358 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*

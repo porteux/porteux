@@ -1,5 +1,6 @@
---- plugins/task-button.c	2025-04-30 15:15:31.391648871 +0200
-+++ plugins/task-button.c.patched	2025-04-30 15:16:00.000650224 +0200
+diff --git a/plugins/task-button.c b/plugins/task-button.c
+--- a/plugins/task-button.c
++++ b/plugins/task-button.c
 @@ -543,12 +543,8 @@
      }
      else if (event->button == 2)

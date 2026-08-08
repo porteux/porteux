@@ -13,6 +13,7 @@ Two issues fixed:
     monitor property changed after the holder was freed, desktop_monitor_changed
     would access freed memory (use-after-free).
 
+diff --git a/src/xfdesktop-file-icon-model-filter.c b/src/xfdesktop-file-icon-model-filter.c
 --- a/src/xfdesktop-file-icon-model-filter.c
 +++ b/src/xfdesktop-file-icon-model-filter.c
 @@ -362,4 +362,5 @@ xfdesktop_file_icon_model_filter_finalize(GObject *object) {
@@ -21,6 +22,7 @@ Two issues fixed:
 +    g_clear_object(&filter->monitor);
      G_OBJECT_CLASS(xfdesktop_file_icon_model_filter_parent_class)->finalize(object);
  }
+diff --git a/src/xfdesktop-icon-view-holder.c b/src/xfdesktop-icon-view-holder.c
 --- a/src/xfdesktop-icon-view-holder.c
 +++ b/src/xfdesktop-icon-view-holder.c
 @@ -62,5 +62,6 @@ xfdesktop_icon_view_holder_finalize(GObject *object) {

@@ -1,5 +1,6 @@
---- shell/ev-navigation-action.c	2024-02-18 14:50:45.781836065 +0100
-+++ shell/ev-navigation-action.c.patched	2024-02-18 14:50:40.073835794 +0100
+diff --git a/shell/ev-navigation-action.c b/shell/ev-navigation-action.c
+--- a/shell/ev-navigation-action.c
++++ b/shell/ev-navigation-action.c
 @@ -26,8 +26,6 @@
  #include "ev-navigation-action.h"
  #include "ev-navigation-action-widget.h"

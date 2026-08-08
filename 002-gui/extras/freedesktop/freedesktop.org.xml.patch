@@ -1,5 +1,6 @@
---- usr/share/mime/packages/freedesktop.org.xml	2021-02-13 21:59:06.000000000 +1300
-+++ usr/share/mime/packages/freedesktop.org-patched.xml	2022-12-11 21:50:05.000000000 +1300
+diff --git a/usr/share/mime/packages/freedesktop.org.xml b/usr/share/mime/packages/freedesktop.org.xml
+--- a/usr/share/mime/packages/freedesktop.org.xml
++++ b/usr/share/mime/packages/freedesktop.org.xml
 @@ -16783,6 +16783,25 @@
      <generic-icon name="package-x-generic"/>
      <glob pattern="*.zz"/>

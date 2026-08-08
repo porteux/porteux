@@ -18,7 +18,7 @@ VERSION=$(download_master_from_github pop-os $PRGNAM) || exit 1
 cd $PRGNAM-master || exit 1
 
 for i in $CWD/*.patch; do
-	patch -p0 < $i
+	patch -p1 < $i
 done
 
 RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"

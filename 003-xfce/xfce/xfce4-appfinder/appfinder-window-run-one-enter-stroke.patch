@@ -1,5 +1,6 @@
---- src/appfinder-window.c	2024-10-02 22:39:03.609708876 +0200
-+++ src/appfinder-window.c.patched	2024-10-02 23:00:46.984868492 +0200
+diff --git a/src/appfinder-window.c b/src/appfinder-window.c
+--- a/src/appfinder-window.c
++++ b/src/appfinder-window.c
 @@ -55,7 +55,7 @@
  
  #define XFCE_APPFINDER_LOCAL_PREFIX "file://"

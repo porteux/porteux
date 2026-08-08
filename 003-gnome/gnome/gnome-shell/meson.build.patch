@@ -1,5 +1,6 @@
---- a/meson.build	2025-09-01 12:13:19.546066111 +0200
-+++ b/meson.build.patched	2025-09-01 12:13:32.197066709 +0200
+diff --git a/meson.build b/meson.build
+--- a/meson.build
++++ b/meson.build
 @@ -18,7 +18,6 @@
  libmutter_pc = 'libmutter-' + mutter_api_version
  libmutter_test_pc = 'libmutter-test-' + mutter_api_version

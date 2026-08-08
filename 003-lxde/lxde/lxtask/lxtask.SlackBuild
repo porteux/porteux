@@ -24,7 +24,7 @@ if [ -z "$VERSION" ]; then
 fi
 
 for i in $CWD/*.patch; do
-	patch -p0 < $i;
+	patch -p1 < $i
 done
 
 ./autogen.sh

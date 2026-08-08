@@ -19,8 +19,8 @@ Reviewed-by: Martin Roukala <martin.roukala@mupuf.org>
 
 diff --git a/hw/xfree86/drivers/modesetting/driver.c b/hw/xfree86/drivers/modesetting/driver.c
 index 3f185489e3..5176b6d402 100644
---- hw/xfree86/drivers/modesetting/driver.c
-+++ hw/xfree86/drivers/modesetting/driver.c
+--- a/hw/xfree86/drivers/modesetting/driver.c
++++ b/hw/xfree86/drivers/modesetting/driver.c
 @@ -655,8 +655,7 @@ ms_tearfree_do_flips(ScreenPtr pScreen)
          drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
          drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
@@ -33,8 +33,8 @@ index 3f185489e3..5176b6d402 100644
          /* Skip if the last flip is still pending, a DRI client is flipping, or
 diff --git a/hw/xfree86/drivers/modesetting/driver.h b/hw/xfree86/drivers/modesetting/driver.h
 index 605fd8530f..a54bf28ff0 100644
---- hw/xfree86/drivers/modesetting/driver.h
-+++ hw/xfree86/drivers/modesetting/driver.h
+--- a/hw/xfree86/drivers/modesetting/driver.h
++++ b/hw/xfree86/drivers/modesetting/driver.h
 @@ -249,3 +249,4 @@ Bool ms_do_tearfree_flip(ScreenPtr screen, xf86CrtcPtr crtc);
  int ms_flush_drm_events(ScreenPtr screen);
  Bool ms_window_has_variable_refresh(modesettingPtr ms, WindowPtr win);
@@ -42,8 +42,8 @@ index 605fd8530f..a54bf28ff0 100644
 +Bool ms_tearfree_is_active_on_crtc(xf86CrtcPtr crtc);
 diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
 index 94437c0f3c..a804841faf 100644
---- hw/xfree86/drivers/modesetting/pageflip.c
-+++ hw/xfree86/drivers/modesetting/pageflip.c
+--- a/hw/xfree86/drivers/modesetting/pageflip.c
++++ b/hw/xfree86/drivers/modesetting/pageflip.c
 @@ -529,3 +529,13 @@ no_flip:
      return TRUE;
  }
@@ -60,8 +60,8 @@ index 94437c0f3c..a804841faf 100644
 +}
 diff --git a/hw/xfree86/drivers/modesetting/present.c b/hw/xfree86/drivers/modesetting/present.c
 index acc299f3b5..89fca1a9c7 100644
---- hw/xfree86/drivers/modesetting/present.c
-+++ hw/xfree86/drivers/modesetting/present.c
+--- a/hw/xfree86/drivers/modesetting/present.c
++++ b/hw/xfree86/drivers/modesetting/present.c
 @@ -334,7 +334,7 @@ no_flip:
          drmmode_crtc_private_ptr drmmode_crtc = xf86_crtc->driver_private;
          drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;

@@ -1,5 +1,6 @@
---- src/applet.c	2024-01-19 11:42:17.000000000 +0100
-+++ src/applet.c.patched	2025-11-08 16:07:48.753424273 +0100
+diff --git a/src/applet.c b/src/applet.c
+--- a/src/applet.c
++++ b/src/applet.c
 @@ -2008,6 +2008,62 @@
  
  /*****************************************************************************/
@@ -131,8 +132,9 @@
  		                                           APP_INDICATOR_CATEGORY_SYSTEM_SERVICES);
  		if (!applet->app_indicator)
  			return FALSE;
---- src/applet-device-ethernet.c	2024-01-02 14:29:22.000000000 +0100
-+++ src/applet-device-ethernet.c.patched	2025-11-08 14:11:57.305006900 +0100
+diff --git a/src/applet-device-ethernet.c b/src/applet-device-ethernet.c
+--- a/src/applet-device-ethernet.c
++++ b/src/applet-device-ethernet.c
 @@ -123,7 +123,7 @@
  	applet_do_notify (applet,
  	                  _("Connection Established"),
@@ -151,8 +153,9 @@
  		*tip = g_strdup_printf (_("Ethernet network connection “%s” active"), id);
  		break;
  	default:
---- src/mobile-helpers.c	2024-01-02 14:29:22.000000000 +0100
-+++ src/mobile-helpers.c.patched	2025-11-08 14:11:38.713006000 +0100
+diff --git a/src/mobile-helpers.c b/src/mobile-helpers.c
+--- a/src/mobile-helpers.c
++++ b/src/mobile-helpers.c
 @@ -93,15 +93,15 @@
  mobile_helper_get_quality_icon_name (guint32 quality)
  {

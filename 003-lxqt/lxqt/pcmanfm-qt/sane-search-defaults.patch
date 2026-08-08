@@ -1,5 +1,6 @@
---- pcmanfm/settings.cpp	2023-01-04 00:02:47.779200646 +1300
-+++ pcmanfm/settings.cpp.patched	2023-01-04 00:04:14.074206555 +1300
+diff --git a/pcmanfm/settings.cpp b/pcmanfm/settings.cpp
+--- a/pcmanfm/settings.cpp
++++ b/pcmanfm/settings.cpp
 @@ -356,12 +356,12 @@
      settings.endGroup();
  

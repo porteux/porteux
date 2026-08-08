@@ -1,5 +1,6 @@
---- xfce4-about/system-info.c	2026-04-18 00:45:28.000000000 +0200
-+++ xfce4-about/system-info-patched.c	2026-04-18 22:16:11.367940454 +0200
+diff --git a/xfce4-about/system-info.c b/xfce4-about/system-info.c
+--- a/xfce4-about/system-info.c
++++ b/xfce4-about/system-info.c
 @@ -20,6 +20,8 @@
  #include <stdlib.h>
  #endif

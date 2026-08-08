@@ -43,8 +43,8 @@ Acked-by: Martin Roukala <martin.roukala@mupuf.org>
 
 diff --git a/hw/xfree86/drivers/modesetting/driver.c b/hw/xfree86/drivers/modesetting/driver.c
 index 5176b6d402..9a69452bd0 100644
---- hw/xfree86/drivers/modesetting/driver.c
-+++ hw/xfree86/drivers/modesetting/driver.c
+--- a/hw/xfree86/drivers/modesetting/driver.c
++++ b/hw/xfree86/drivers/modesetting/driver.c
 @@ -655,8 +655,11 @@ ms_tearfree_do_flips(ScreenPtr pScreen)
          drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
          drmmode_tearfree_ptr trf = &drmmode_crtc->tearfree;
@@ -60,8 +60,8 @@ index 5176b6d402..9a69452bd0 100644
           * there isn't any damage on the front buffer.
 diff --git a/hw/xfree86/drivers/modesetting/driver.h b/hw/xfree86/drivers/modesetting/driver.h
 index a54bf28ff0..e302c067d8 100644
---- hw/xfree86/drivers/modesetting/driver.h
-+++ hw/xfree86/drivers/modesetting/driver.h
+--- a/hw/xfree86/drivers/modesetting/driver.h
++++ b/hw/xfree86/drivers/modesetting/driver.h
 @@ -242,6 +242,14 @@ Bool ms_do_pageflip(ScreenPtr screen,
                      ms_pageflip_abort_proc pageflip_abort,
                      const char *log_prefix);
@@ -79,8 +79,8 @@ index a54bf28ff0..e302c067d8 100644
  #endif
 diff --git a/hw/xfree86/drivers/modesetting/drmmode_display.c b/hw/xfree86/drivers/modesetting/drmmode_display.c
 index 8f8e4060a9..e8b5421635 100644
---- hw/xfree86/drivers/modesetting/drmmode_display.c
-+++ hw/xfree86/drivers/modesetting/drmmode_display.c
+--- a/hw/xfree86/drivers/modesetting/drmmode_display.c
++++ b/hw/xfree86/drivers/modesetting/drmmode_display.c
 @@ -2529,6 +2529,7 @@ drmmode_crtc_init(ScrnInfoPtr pScrn, drmmode_ptr drmmode, drmModeResPtr mode_res
      drmmode_crtc->drmmode = drmmode;
      drmmode_crtc->vblank_pipe = drmmode_crtc_vblank_pipe(num);
@@ -91,8 +91,8 @@ index 8f8e4060a9..e8b5421635 100644
      props = drmModeObjectGetProperties(drmmode->fd, mode_res->crtcs[num],
 diff --git a/hw/xfree86/drivers/modesetting/drmmode_display.h b/hw/xfree86/drivers/modesetting/drmmode_display.h
 index 145cb8cc7b..b4074a30fa 100644
---- hw/xfree86/drivers/modesetting/drmmode_display.h
-+++ hw/xfree86/drivers/modesetting/drmmode_display.h
+--- a/hw/xfree86/drivers/modesetting/drmmode_display.h
++++ b/hw/xfree86/drivers/modesetting/drmmode_display.h
 @@ -176,6 +176,7 @@ typedef struct {
  
  typedef struct {
@@ -103,8 +103,8 @@ index 145cb8cc7b..b4074a30fa 100644
  } drmmode_tearfree_rec, *drmmode_tearfree_ptr;
 diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
 index a804841faf..c1ee542b76 100644
---- hw/xfree86/drivers/modesetting/pageflip.c
-+++ hw/xfree86/drivers/modesetting/pageflip.c
+--- a/hw/xfree86/drivers/modesetting/pageflip.c
++++ b/hw/xfree86/drivers/modesetting/pageflip.c
 @@ -99,6 +99,8 @@ struct ms_crtc_pageflip {
      Bool on_reference_crtc;
      /* reference to the ms_flipdata */
@@ -310,8 +310,8 @@ index a804841faf..c1ee542b76 100644
      drmmode_copy_damage(crtc, trf->buf[idx].px, &trf->buf[idx].dmg, TRUE);
 diff --git a/hw/xfree86/drivers/modesetting/present.c b/hw/xfree86/drivers/modesetting/present.c
 index 89fca1a9c7..3d8f16aa96 100644
---- hw/xfree86/drivers/modesetting/present.c
-+++ hw/xfree86/drivers/modesetting/present.c
+--- a/hw/xfree86/drivers/modesetting/present.c
++++ b/hw/xfree86/drivers/modesetting/present.c
 @@ -165,6 +165,13 @@ ms_present_abort_vblank(RRCrtcPtr crtc, uint64_t event_id, uint64_t msc)
  {
      ScreenPtr screen = crtc->pScreen;

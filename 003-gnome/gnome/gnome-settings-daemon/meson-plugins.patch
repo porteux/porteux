@@ -1,5 +1,6 @@
---- plugins/meson.build	2025-09-01 14:34:35.000000000 +0200
-+++ plugins/meson.build.patched	2025-09-01 20:12:12.014871045 +0200
+diff --git a/plugins/meson.build b/plugins/meson.build
+--- a/plugins/meson.build
++++ b/plugins/meson.build
 @@ -82,11 +82,30 @@
      plugin_description = plugin[2]
      plugin_dbus_name='org.gnome.SettingsDaemon.@0@'.format(plugin_name_case)

@@ -1,5 +1,6 @@
---- src/polkitmateauthenticationdialog.c	2024-02-26 14:54:12.000000000 +0400
-+++ src/polkitmateauthenticationdialog.c.patch	2024-02-27 11:06:59.950207523 +0400
+diff --git a/src/polkitmateauthenticationdialog.c b/src/polkitmateauthenticationdialog.c
+--- a/src/polkitmateauthenticationdialog.c
++++ b/src/polkitmateauthenticationdialog.c
 @@ -642,14 +642,10 @@
    GtkWidget *main_vbox;
    GtkWidget *vbox;

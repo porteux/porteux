@@ -1,6 +1,7 @@
 # out of focus window now don't get grey out, just the title bar
---- src/style/adwaitastyle.cpp	2023-01-04 21:35:17.000000000 +1300
-+++ src/style/adwaitastyle.cpp.patched	2022-04-18 12:10:54.000000000 +1200
+diff --git a/src/style/adwaitastyle.cpp b/src/style/adwaitastyle.cpp
+--- a/src/style/adwaitastyle.cpp
++++ b/src/style/adwaitastyle.cpp
 @@ -4869,15 +4821,13 @@
  
      QStyleOptionViewItem op(*vopt);

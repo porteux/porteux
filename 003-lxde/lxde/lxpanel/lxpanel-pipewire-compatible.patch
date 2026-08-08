@@ -1,5 +1,6 @@
---- plugins/volumealsa/volumealsa.c	2026-03-26 13:33:38.433622682 +0000
-+++ plugins/volumealsa/volumealsa-patched2.c	2026-03-26 13:36:36.895829786 +0000
+diff --git a/plugins/volumealsa/volumealsa.c b/plugins/volumealsa/volumealsa.c
+--- a/plugins/volumealsa/volumealsa.c
++++ b/plugins/volumealsa/volumealsa.c
 @@ -68,7 +68,9 @@
  #include <alsa/asoundlib.h>
  #include <poll.h>

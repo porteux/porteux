@@ -23,7 +23,7 @@ sed -i "s|catch2|#catch2|g" meson.build
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 
 for i in $CWD/*.patch; do
-	patch -p0 < $i;
+	patch -p1 < $i
 done
 
 mkdir meson-build && cd meson-build

@@ -26,8 +26,8 @@ Co-authored-by: Victor Kareh <vkareh@redhat.com>
 
 diff --git a/meson.build b/meson.build
 index a22ddc9c..9df0dff7 100644
---- meson.build
-+++ meson.build
+--- a/meson.build
++++ b/meson.build
 @@ -178,9 +178,17 @@ endif
  if gobject_introspection.found()
    conf.set('HAVE_INTROSPECTION', 1)

@@ -1,5 +1,6 @@
---- ./localedata/Makefile.orig	2019-02-16 14:05:01.794154302 -0600
-+++ ./localedata/Makefile	2019-02-16 14:06:25.744146460 -0600
+diff --git a/localedata/Makefile b/localedata/Makefile
+--- a/localedata/Makefile
++++ b/localedata/Makefile
 @@ -413,6 +413,7 @@
  	echo -n '...'; \
  	input=`echo $$locale | sed 's/\([^.]*\)[^@]*\(.*\)/\1\2/'`; \

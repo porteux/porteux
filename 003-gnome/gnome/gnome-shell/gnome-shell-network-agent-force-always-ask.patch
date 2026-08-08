@@ -10,8 +10,9 @@ NetworkManager saves WPA-PSK secrets system-owned (psk-flags=0) in
 to prompt, save or reconnect. Only agent-owned ("this user only") secrets
 lose keyring lookup, which cannot work without a keyring anyway.
 
---- a/js/ui/components/networkAgent.js	2026-07-03 12:21:49.393054289 +0200
-+++ b/js/ui/components/networkAgent.js	2026-07-03 12:21:49.396054289 +0200
+diff --git a/js/ui/components/networkAgent.js b/js/ui/components/networkAgent.js
+--- a/js/ui/components/networkAgent.js
++++ b/js/ui/components/networkAgent.js
 @@ -676,7 +676,7 @@
              identifier: 'org.gnome.Shell.NetworkAgent',
              capabilities: NM.SecretAgentCapabilities.VPN_HINTS,

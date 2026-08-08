@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-patch -p0 < $CWD/sane-search-defaults.patch
+patch -p1 < $CWD/sane-search-defaults.patch
 
 cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=release \

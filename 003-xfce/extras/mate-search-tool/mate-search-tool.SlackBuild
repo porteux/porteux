@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xf mate-utils-$VERSION.tar.?z
 cd mate-utils-$VERSION
 
-patch -p0 < $CWD/configure.ac.patch
+patch -p1 < $CWD/configure.ac.patch
 
 sed -i 's|baobab||g' ./Makefile.am
 sed -i 's|mate-dictionary||g' ./Makefile.am

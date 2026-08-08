@@ -1,5 +1,6 @@
---- shell/ev-sidebar-links.c	2024-02-18 15:20:00.672056372 +0100
-+++ shell/ev-sidebar-links.c.patched	2024-02-18 15:24:21.213068697 +0100
+diff --git a/shell/ev-sidebar-links.c b/shell/ev-sidebar-links.c
+--- a/shell/ev-sidebar-links.c
++++ b/shell/ev-sidebar-links.c
 @@ -29,8 +29,6 @@
  #include <glib/gi18n.h>
  #include <gtk/gtk.h>

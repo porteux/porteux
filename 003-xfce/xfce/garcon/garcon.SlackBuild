@@ -65,7 +65,7 @@ find $PKG -type f -name "*.la" -delete
 cd $PKG
 
 # make main menu more beautiful
-patch -p0 < $CWD/xfce-applications.menu.patch
+patch -p1 < $CWD/xfce-applications.menu.patch
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

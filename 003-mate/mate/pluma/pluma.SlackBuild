@@ -21,7 +21,7 @@ tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
 for i in $CWD/*.patch; do
-	patch -p0 < $i;
+	patch -p1 < $i
 done
 
 sed -i "s| docs help||g" Makefile.am

@@ -1,5 +1,6 @@
---- src/nautilus-main.c	2025-08-16 01:46:48.007404033 +0200
-+++ src/nautilus-main.c.patched	2025-08-16 01:46:57.481404481 +0200
+diff --git a/src/nautilus-main.c b/src/nautilus-main.c
+--- a/src/nautilus-main.c
++++ b/src/nautilus-main.c
 @@ -56,14 +56,6 @@
  
      g_set_prgname (APPLICATION_ID);

@@ -1,5 +1,6 @@
---- src/polkitbackend/50-default.rules.in	2025-01-13 08:54:22.000000000 -0600
-+++ src/polkitbackend/50-default.rules.in	2025-01-14 12:41:52.726910352 -0600
+diff --git a/src/polkitbackend/50-default.rules.in b/src/polkitbackend/50-default.rules.in
+--- a/src/polkitbackend/50-default.rules.in
++++ b/src/polkitbackend/50-default.rules.in
 @@ -8,5 +8,5 @@
  // about configuring polkit.
  

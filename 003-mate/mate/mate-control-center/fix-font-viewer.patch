@@ -10,8 +10,8 @@ Subject: [PATCH] meson: Fix build error about font-viewer
 
 diff --git a/font-viewer/meson.build b/font-viewer/meson.build
 index 6a85f8afc..3636521f8 100644
---- font-viewer/meson.build
-+++ font-viewer/meson.build
+--- a/font-viewer/meson.build
++++ b/font-viewer/meson.build
 @@ -8,6 +8,7 @@ deps = [
    common_deps,
    pango_dep,
@@ -22,8 +22,8 @@ index 6a85f8afc..3636521f8 100644
  executable(
 diff --git a/meson.build b/meson.build
 index ca16c48b4..fc28a15db 100644
---- meson.build
-+++ meson.build
+--- a/meson.build
++++ b/meson.build
 @@ -86,6 +86,7 @@ xi_dep = dependency('xi', version: '>= 1.5')
  xext_dep = dependency('xext')
  xscrnsaver_dep = dependency('xscrnsaver')

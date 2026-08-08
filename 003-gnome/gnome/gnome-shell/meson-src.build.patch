@@ -1,5 +1,6 @@
---- a/src/meson.build	2024-01-16 20:23:12.165816301 +0100
-+++ b/src/meson.build.patched	2024-01-16 20:23:05.038817085 +0100
+diff --git a/src/meson.build b/src/meson.build
+--- a/src/meson.build
++++ b/src/meson.build
 @@ -3,7 +3,6 @@
    'fatal_warnings': get_option('werror'),
  }

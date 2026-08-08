@@ -12,8 +12,8 @@ find out details currently visible anyway.
 
 diff --git a/plugins/task-button.c b/plugins/task-button.c
 index 6aa2d05..b306c45 100644
---- plugins/task-button.c
-+++ plugins/task-button.c
+--- a/plugins/task-button.c
++++ b/plugins/task-button.c
 @@ -1343,7 +1343,21 @@ static gboolean task_button_button_release_event(GtkWidget *widget, GdkEventButt
      else
      {

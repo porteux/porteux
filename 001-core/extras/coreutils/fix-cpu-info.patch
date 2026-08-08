@@ -1,5 +1,6 @@
---- ./src/uname.c.orig	2025-01-07 06:36:53.000000000 -0600
-+++ ./src/uname.c	2025-09-22 14:31:08.881099454 -0500
+diff --git a/src/uname.c b/src/uname.c
+--- a/src/uname.c
++++ b/src/uname.c
 @@ -22,6 +22,7 @@
  #include <sys/types.h>
  #include <sys/utsname.h>

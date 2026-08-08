@@ -5,8 +5,9 @@ disabling the option fails with 'Unknown variable "bash_completion_dir"'.
 Only print the directory when the option is enabled. Bug present upstream
 through current main.
 
---- a/meson.build	2026-07-03 14:03:06.154798472 +0200
-+++ b/meson.build	2026-07-03 14:03:06.155798472 +0200
+diff --git a/meson.build b/meson.build
+--- a/meson.build
++++ b/meson.build
 @@ -430,7 +430,7 @@
    '    Battery/mains power detection:          ' + battery_detection_library_name,
    '    Releasing heap memory with malloc_trim: ' + have_malloc_trim.to_string(),

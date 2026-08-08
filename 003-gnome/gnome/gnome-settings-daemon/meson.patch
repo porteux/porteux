@@ -1,5 +1,6 @@
---- meson.build	2025-09-01 14:34:35.000000000 +0200
-+++ meson.build.patched	2025-09-01 20:11:54.336868880 +0200
+diff --git a/meson.build b/meson.build
+--- a/meson.build
++++ b/meson.build
 @@ -37,6 +37,8 @@
  
  gsd_schemadir = join_paths(gsd_datadir, 'glib-2.0', 'schemas')

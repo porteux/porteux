@@ -20,7 +20,7 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-patch -p0 < $CWD/remove-screensaver-entry.patch
+patch -p1 < $CWD/remove-screensaver-entry.patch
 
 cmake -B build -S . \
 	-DCMAKE_BUILD_TYPE=release \

@@ -13,8 +13,8 @@ Fixes https://github.com/mate-desktop/pluma/issues/729
 
 diff --git a/configure.ac b/configure.ac
 index b35b55e3..5f9a8486 100644
---- configure.ac
-+++ configure.ac
+--- a/configure.ac
++++ b/configure.ac
 @@ -197,9 +197,16 @@ if test "$found_introspection" = "yes"; then
  	AC_DEFINE([HAVE_INTROSPECTION], [1], [Define to enable GObject Introspection])
  

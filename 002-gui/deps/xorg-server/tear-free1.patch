@@ -17,8 +17,8 @@ Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
 
 diff --git a/dix/pixmap.c b/dix/pixmap.c
 index 5a0146bbb6..0b01c4ee06 100644
---- dix/pixmap.c
-+++ dix/pixmap.c
+--- a/dix/pixmap.c
++++ b/dix/pixmap.c
 @@ -262,12 +262,11 @@ PixmapStopDirtyTracking(DrawablePtr src, PixmapPtr secondary_dst)
      return TRUE;
  }
@@ -59,8 +59,8 @@ index 5a0146bbb6..0b01c4ee06 100644
      pScreen->SourceValidate = SourceValidate;
 diff --git a/include/pixmap.h b/include/pixmap.h
 index 7144bfb30e..e251690d56 100644
---- include/pixmap.h
-+++ include/pixmap.h
+--- a/include/pixmap.h
++++ b/include/pixmap.h
 @@ -134,4 +134,9 @@ PixmapStopDirtyTracking(DrawablePtr src, PixmapPtr slave_dst);
  extern _X_EXPORT Bool
  PixmapSyncDirtyHelper(PixmapDirtyUpdatePtr dirty);
@@ -101,8 +101,8 @@ Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
 
 diff --git a/hw/xfree86/common/xf86Module.h b/hw/xfree86/common/xf86Module.h
 index 33cf0e56a4..c59e53a55c 100644
---- hw/xfree86/common/xf86Module.h
-+++ hw/xfree86/common/xf86Module.h
+--- a/hw/xfree86/common/xf86Module.h
++++ b/hw/xfree86/common/xf86Module.h
 @@ -74,7 +74,7 @@
   * mask is 0xFFFF0000.
   */
@@ -114,8 +114,8 @@ index 33cf0e56a4..c59e53a55c 100644
  
 diff --git a/hw/xfree86/modes/xf86Crtc.h b/hw/xfree86/modes/xf86Crtc.h
 index e36adbe003..e9db8e3e53 100644
---- hw/xfree86/modes/xf86Crtc.h
-+++ hw/xfree86/modes/xf86Crtc.h
+--- a/hw/xfree86/modes/xf86Crtc.h
++++ b/hw/xfree86/modes/xf86Crtc.h
 @@ -912,6 +912,11 @@ extern _X_EXPORT void
  extern _X_EXPORT Bool
   xf86CrtcRotate(xf86CrtcPtr crtc);
@@ -130,8 +130,8 @@ index e36adbe003..e9db8e3e53 100644
   * as well as when rotation is disabled.
 diff --git a/hw/xfree86/modes/xf86Rotate.c b/hw/xfree86/modes/xf86Rotate.c
 index ea9c43c0f2..944a01b1c0 100644
---- hw/xfree86/modes/xf86Rotate.c
-+++ hw/xfree86/modes/xf86Rotate.c
+--- a/hw/xfree86/modes/xf86Rotate.c
++++ b/hw/xfree86/modes/xf86Rotate.c
 @@ -39,13 +39,13 @@
  #include "X11/extensions/dpmsconst.h"
  #include "X11/Xatom.h"
@@ -205,8 +205,8 @@ Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
 
 diff --git a/hw/xfree86/drivers/modesetting/drmmode_display.c b/hw/xfree86/drivers/modesetting/drmmode_display.c
 index 65e8e63353..3d0fd80013 100644
---- hw/xfree86/drivers/modesetting/drmmode_display.c
-+++ hw/xfree86/drivers/modesetting/drmmode_display.c
+--- a/hw/xfree86/drivers/modesetting/drmmode_display.c
++++ b/hw/xfree86/drivers/modesetting/drmmode_display.c
 @@ -1931,33 +1931,42 @@ drmmode_clear_pixmap(PixmapPtr pixmap)
  }
  
@@ -400,8 +400,8 @@ Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
 
 diff --git a/hw/xfree86/drivers/modesetting/drmmode_display.c b/hw/xfree86/drivers/modesetting/drmmode_display.c
 index 3d0fd80013..9fca1f61fd 100644
---- hw/xfree86/drivers/modesetting/drmmode_display.c
-+++ hw/xfree86/drivers/modesetting/drmmode_display.c
+--- a/hw/xfree86/drivers/modesetting/drmmode_display.c
++++ b/hw/xfree86/drivers/modesetting/drmmode_display.c
 @@ -930,7 +930,8 @@ drmmode_crtc_set_mode(xf86CrtcPtr crtc, Bool test_only)
  }
  
@@ -423,8 +423,8 @@ index 3d0fd80013..9fca1f61fd 100644
              ret = drmModeAtomicCommit(ms->fd, req, flags, data);
 diff --git a/hw/xfree86/drivers/modesetting/drmmode_display.h b/hw/xfree86/drivers/modesetting/drmmode_display.h
 index 2a9a915293..3a267a67da 100644
---- hw/xfree86/drivers/modesetting/drmmode_display.h
-+++ hw/xfree86/drivers/modesetting/drmmode_display.h
+--- a/hw/xfree86/drivers/modesetting/drmmode_display.h
++++ b/hw/xfree86/drivers/modesetting/drmmode_display.h
 @@ -309,7 +309,8 @@ void drmmode_get_default_bpp(ScrnInfoPtr pScrn, drmmode_ptr drmmmode,
  
  void drmmode_copy_fb(ScrnInfoPtr pScrn, drmmode_ptr drmmode);
@@ -437,8 +437,8 @@ index 2a9a915293..3a267a67da 100644
  
 diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
 index 23ee95f9a6..a51a10a2c1 100644
---- hw/xfree86/drivers/modesetting/pageflip.c
-+++ hw/xfree86/drivers/modesetting/pageflip.c
+--- a/hw/xfree86/drivers/modesetting/pageflip.c
++++ b/hw/xfree86/drivers/modesetting/pageflip.c
 @@ -160,11 +160,24 @@ ms_pageflip_abort(void *data)
  }
  
@@ -528,8 +528,8 @@ Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
 
 diff --git a/present/present.h b/present/present.h
 index d41b36033f..1d7b0ce42f 100644
---- present/present.h
-+++ present/present.h
+--- a/present/present.h
++++ b/present/present.h
 @@ -29,7 +29,9 @@
  
  typedef enum {
@@ -543,8 +543,8 @@ index d41b36033f..1d7b0ce42f 100644
  typedef struct present_vblank present_vblank_rec, *present_vblank_ptr;
 diff --git a/present/present_scmd.c b/present/present_scmd.c
 index 239055bc10..46fd9a1fd3 100644
---- present/present_scmd.c
-+++ present/present_scmd.c
+--- a/present/present_scmd.c
++++ b/present/present_scmd.c
 @@ -71,6 +71,7 @@ present_check_flip(RRCrtcPtr            crtc,
      PixmapPtr                   window_pixmap;
      WindowPtr                   root = screen->root;
@@ -737,8 +737,8 @@ Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
 
 diff --git a/hw/xfree86/drivers/modesetting/driver.h b/hw/xfree86/drivers/modesetting/driver.h
 index 71aa8730ec..4f62646a09 100644
---- hw/xfree86/drivers/modesetting/driver.h
-+++ hw/xfree86/drivers/modesetting/driver.h
+--- a/hw/xfree86/drivers/modesetting/driver.h
++++ b/hw/xfree86/drivers/modesetting/driver.h
 @@ -86,10 +86,13 @@ struct ms_drm_queue {
      struct xorg_list list;
      xf86CrtcPtr crtc;
@@ -755,8 +755,8 @@ index 71aa8730ec..4f62646a09 100644
  typedef struct _modesettingRec {
 diff --git a/hw/xfree86/drivers/modesetting/drmmode_display.c b/hw/xfree86/drivers/modesetting/drmmode_display.c
 index 9fca1f61fd..65e9593790 100644
---- hw/xfree86/drivers/modesetting/drmmode_display.c
-+++ hw/xfree86/drivers/modesetting/drmmode_display.c
+--- a/hw/xfree86/drivers/modesetting/drmmode_display.c
++++ b/hw/xfree86/drivers/modesetting/drmmode_display.c
 @@ -2411,6 +2411,7 @@ drmmode_crtc_init(ScrnInfoPtr pScrn, drmmode_ptr drmmode, drmModeResPtr mode_res
      drmmode_crtc->drmmode = drmmode;
      drmmode_crtc->vblank_pipe = drmmode_crtc_vblank_pipe(num);
@@ -767,8 +767,8 @@ index 9fca1f61fd..65e9593790 100644
                                         DRM_MODE_OBJECT_CRTC);
 diff --git a/hw/xfree86/drivers/modesetting/drmmode_display.h b/hw/xfree86/drivers/modesetting/drmmode_display.h
 index 3a267a67da..d6ad15501b 100644
---- hw/xfree86/drivers/modesetting/drmmode_display.h
-+++ hw/xfree86/drivers/modesetting/drmmode_display.h
+--- a/hw/xfree86/drivers/modesetting/drmmode_display.h
++++ b/hw/xfree86/drivers/modesetting/drmmode_display.h
 @@ -200,6 +200,8 @@ typedef struct {
      uint64_t msc_high;
      /** @} */
@@ -780,8 +780,8 @@ index 3a267a67da..d6ad15501b 100644
  
 diff --git a/hw/xfree86/drivers/modesetting/vblank.c b/hw/xfree86/drivers/modesetting/vblank.c
 index ea9e7a88c5..4d250aa348 100644
---- hw/xfree86/drivers/modesetting/vblank.c
-+++ hw/xfree86/drivers/modesetting/vblank.c
+--- a/hw/xfree86/drivers/modesetting/vblank.c
++++ b/hw/xfree86/drivers/modesetting/vblank.c
 @@ -260,6 +260,51 @@ ms_get_kernel_ust_msc(xf86CrtcPtr crtc,
      }
  }
@@ -1012,8 +1012,8 @@ Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
 
 diff --git a/hw/xfree86/drivers/modesetting/driver.c b/hw/xfree86/drivers/modesetting/driver.c
 index fe3315a9c4..7a7d5c3887 100644
---- hw/xfree86/drivers/modesetting/driver.c
-+++ hw/xfree86/drivers/modesetting/driver.c
+--- a/hw/xfree86/drivers/modesetting/driver.c
++++ b/hw/xfree86/drivers/modesetting/driver.c
 @@ -145,6 +145,7 @@ static const OptionInfoRec Options[] = {
      {OPTION_VARIABLE_REFRESH, "VariableRefresh", OPTV_BOOLEAN, {0}, FALSE},
      {OPTION_USE_GAMMA_LUT, "UseGammaLUT", OPTV_BOOLEAN, {0}, FALSE},
@@ -1219,8 +1219,8 @@ index fe3315a9c4..7a7d5c3887 100644
          else {
 diff --git a/hw/xfree86/drivers/modesetting/driver.h b/hw/xfree86/drivers/modesetting/driver.h
 index 4f62646a09..3f2b1d1aef 100644
---- hw/xfree86/drivers/modesetting/driver.h
-+++ hw/xfree86/drivers/modesetting/driver.h
+--- a/hw/xfree86/drivers/modesetting/driver.h
++++ b/hw/xfree86/drivers/modesetting/driver.h
 @@ -61,6 +61,7 @@ typedef enum {
      OPTION_VARIABLE_REFRESH,
      OPTION_USE_GAMMA_LUT,
@@ -1240,8 +1240,8 @@ index 4f62646a09..3f2b1d1aef 100644
  int ms_flush_drm_events(ScreenPtr screen);
 diff --git a/hw/xfree86/drivers/modesetting/drmmode_display.c b/hw/xfree86/drivers/modesetting/drmmode_display.c
 index 65e9593790..8f8e4060a9 100644
---- hw/xfree86/drivers/modesetting/drmmode_display.c
-+++ hw/xfree86/drivers/modesetting/drmmode_display.c
+--- a/hw/xfree86/drivers/modesetting/drmmode_display.c
++++ b/hw/xfree86/drivers/modesetting/drmmode_display.c
 @@ -632,6 +632,7 @@ drmmode_crtc_get_fb_id(xf86CrtcPtr crtc, uint32_t *fb_id, int *x, int *y)
  {
      drmmode_crtc_private_ptr drmmode_crtc = crtc->driver_private;
@@ -1419,8 +1419,8 @@ index 65e9593790..8f8e4060a9 100644
  
 diff --git a/hw/xfree86/drivers/modesetting/drmmode_display.h b/hw/xfree86/drivers/modesetting/drmmode_display.h
 index d6ad15501b..145cb8cc7b 100644
---- hw/xfree86/drivers/modesetting/drmmode_display.h
-+++ hw/xfree86/drivers/modesetting/drmmode_display.h
+--- a/hw/xfree86/drivers/modesetting/drmmode_display.h
++++ b/hw/xfree86/drivers/modesetting/drmmode_display.h
 @@ -135,6 +135,7 @@ typedef struct {
      Bool async_flip_secondaries;
      Bool dri2_enable;
@@ -1475,8 +1475,8 @@ index d6ad15501b..145cb8cc7b 100644
                        uint32_t flags, void *data);
 diff --git a/hw/xfree86/drivers/modesetting/modesetting.man b/hw/xfree86/drivers/modesetting/modesetting.man
 index 71790011ec..9e40b04f32 100644
---- hw/xfree86/drivers/modesetting/modesetting.man
-+++ hw/xfree86/drivers/modesetting/modesetting.man
+--- a/hw/xfree86/drivers/modesetting/modesetting.man
++++ b/hw/xfree86/drivers/modesetting/modesetting.man
 @@ -109,6 +109,17 @@ When enabled, this option allows the driver to use gamma ramps with more
  entries, if supported by the kernel. By default, GAMMA_LUT will be used for
  kms drivers which are known to be safe for use of GAMMA_LUT.
@@ -1497,8 +1497,8 @@ index 71790011ec..9e40b04f32 100644
  X(@miscmansuffix@)
 diff --git a/hw/xfree86/drivers/modesetting/pageflip.c b/hw/xfree86/drivers/modesetting/pageflip.c
 index a51a10a2c1..8d57047efa 100644
---- hw/xfree86/drivers/modesetting/pageflip.c
-+++ hw/xfree86/drivers/modesetting/pageflip.c
+--- a/hw/xfree86/drivers/modesetting/pageflip.c
++++ b/hw/xfree86/drivers/modesetting/pageflip.c
 @@ -35,8 +35,8 @@
   * Returns a negative value on error, 0 if there was nothing to process,
   * or 1 if we handled any events.
@@ -1610,8 +1610,8 @@ index a51a10a2c1..8d57047efa 100644
  #endif
 diff --git a/hw/xfree86/drivers/modesetting/present.c b/hw/xfree86/drivers/modesetting/present.c
 index c3266d8711..642f7baaff 100644
---- hw/xfree86/drivers/modesetting/present.c
-+++ hw/xfree86/drivers/modesetting/present.c
+--- a/hw/xfree86/drivers/modesetting/present.c
++++ b/hw/xfree86/drivers/modesetting/present.c
 @@ -318,14 +318,32 @@ ms_present_check_flip(RRCrtcPtr crtc,
      modesettingPtr ms = modesettingPTR(scrn);
  

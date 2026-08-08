@@ -1,7 +1,7 @@
 diff --git a/src/icon-grid.c b/src/icon-grid.c
 index 2177971e..e4279339 100644
---- src/icon-grid.c
-+++ src/icon-grid.c
+--- a/src/icon-grid.c
++++ b/src/icon-grid.c
 @@ -392,9 +392,9 @@ static void panel_icon_grid_get_preferred_width(GtkWidget *widget,
      }
      panel_icon_grid_size_request(widget, &requisition);

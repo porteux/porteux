@@ -1,5 +1,6 @@
---- ./src/ls.c.orig	2021-09-24 06:31:05.000000000 -0500
-+++ ./src/ls.c	2021-09-24 19:47:32.230001419 -0500
+diff --git a/src/ls.c b/src/ls.c
+--- a/src/ls.c
++++ b/src/ls.c
 @@ -2342,7 +2342,7 @@
      qs = getenv_quoting_style ();
    if (qs < 0)
