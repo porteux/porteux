@@ -1,0 +1,24 @@
+diff --git a/gtk/Notify.cc b/gtk/Notify.cc
+--- a/gtk/Notify.cc
++++ b/gtk/Notify.cc
+@@ -205,13 +205,15 @@
+     {
+         auto const argv = gtr_pref_strv_get(TR_KEY_torrent_complete_sound_command);
+ 
+-        try
+-        {
+-            Glib::spawn_async({}, argv, TR_GLIB_SPAWN_FLAGS(SEARCH_PATH));
+-        }
+-        catch (Glib::SpawnError const&)
++        auto c_argv = std::vector<char*>{};
++        c_argv.reserve(argv.size() + 1U);
++        for (auto const& arg : argv)
+         {
++            c_argv.push_back(const_cast<char*>(arg.c_str()));
+         }
++        c_argv.push_back(nullptr);
++
++        g_spawn_async(nullptr, std::data(c_argv), nullptr, G_SPAWN_SEARCH_PATH, nullptr, nullptr, nullptr, nullptr);
+     }
+ 
+     if (!gtr_pref_flag_get(TR_KEY_torrent_complete_notification_enabled))
