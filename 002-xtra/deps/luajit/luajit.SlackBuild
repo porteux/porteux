@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(download_master_from_github LuaJIT LuaJIT) || exit 1
+VERSION=$(download_master_from_github $PRGNAM $PRGNAM) || exit 1
 cd LuaJIT-master || exit 1
 
 sed -i -e '/-DLUAJIT_ENABLE_LUA52COMPAT/s/^#//' src/Makefile
