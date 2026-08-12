@@ -142,12 +142,6 @@ strip_hard_all() {
 	xargs -0 -r strip --strip-all --strip-section-headers -R .eh_frame* $STRIP_SECTIONS < "$executables"
 	xargs -0 -r strip --strip-all $STRIP_SECTIONS < "$shared_objects"
 
-	while IFS= read -r -d '' binary_file; do
-		objdump -h "$binary_file" | awk '$2 == ".eh_frame" || $2 == ".eh_frame_hdr" { print $6, $3 }' | while read -r offset size; do
-			dd if=/dev/zero of="$binary_file" bs=1M seek=$((16#$offset)) count=$((16#$size)) conv=notrunc oflag=seek_bytes iflag=count_bytes status=none
-		done
-	done < "$shared_objects"
-
 	rm -f "$executables" "$shared_objects"
 } > /dev/null 2>&1
 
