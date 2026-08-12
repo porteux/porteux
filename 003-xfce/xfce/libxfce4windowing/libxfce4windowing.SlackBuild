@@ -33,6 +33,13 @@ cd $PRGNAM-$DOWNLOADVERSION
 
 sed -i "s|subdir('docs'|#subdir('docs'|g" meson.build
 
+(
+	rm -fr protocols/xfce-wayland-protocols && cd protocols/
+	wget https://gitlab.xfce.org/xfce/xfce-wayland-protocols/-/archive/main/xfce-wayland-protocols-main.tar.gz || exit 1
+	tar xf xfce-wayland-protocols-main.tar.gz || exit 1
+	mv xfce-wayland-protocols-main xfce-wayland-protocols || exit 1
+)
+
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \
