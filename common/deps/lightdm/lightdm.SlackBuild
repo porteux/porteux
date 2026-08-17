@@ -23,9 +23,6 @@ sed -i 's|which yelp-build|which ls|g' autogen.sh
 # faster build
 sed -i 's|doc help||g' Makefile.am
 
-# allow switch user
-sed -i 's|seat_set_supports_multi_session|//seat_set_supports_multi_session|g' src/lightdm.c
-
 export LIGHTDM_USER=gdm
 export LIGHTDM_GROUP=gdm
 
