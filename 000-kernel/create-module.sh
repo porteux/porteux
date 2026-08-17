@@ -161,6 +161,9 @@ fi
 sed -i "s|#define IWL_BZ_A_HR_B_FW_PRE.*|#define IWL_BZ_A_HR_B_FW_PRE\t\t\"iwlwifi-bz-b0-hr-b0\"|g" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 sed -i "s|MODULE_FIRMWARE(IWL_BZ_A_HR_B_MODULE_FIRMWARE(IWL_HR_UCODE_API_MAX));|IWL_FW_AND_PNVM(IWL_BZ_A_HR_B_FW_PRE, IWL_HR_UCODE_API_MAX);|" drivers/net/wireless/intel/iwlwifi/cfg/rf-hr.c
 
+# rtw89 RTW89_FW_CMD_OFLD_SRC_OTHER is 4, which doesn't fit the 2-bit src field, and -O3 turns the silent truncation into a build error
+sed -i "s|le32_encode_bits(cmd->src, RTW89_H2C_CMD_OFLD_W0_SRC)|le32_encode_bits(cmd->src \& RTW89_H2C_CMD_OFLD_W0_SRC, RTW89_H2C_CMD_OFLD_W0_SRC)|" drivers/net/wireless/realtek/rtw89/fw.c
+
 echo "Building vmlinuz (this may take a while)..."
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1 || { echo "Failed to update kernel config."; exit 1; }
