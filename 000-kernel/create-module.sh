@@ -87,20 +87,7 @@ cp ${SCRIPT_PATH}/${SYSTEM_BITS}bit.config ${MODULE_PATH}/linux-${KERNEL_VERSION
 
 cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 
-if [ ${OVERLAYFS:-no} = "yes" ]; then
-	echo "Patching OverlayFS dynamic layers support..."
-	patch -N -p1 < ${SCRIPT_PATH}/0002-overlayfs-dynamic-layers.patch > /dev/null 2>&1 || { echo "Failed to apply OverlayFS dynamic layers patch."; exit 1; }
-	sed -i "s|CONFIG_OVERLAY_FS_METACOPY=y|# CONFIG_OVERLAY_FS_METACOPY is not set|" .config
-elif [ ${AUFSNG:-no} = "yes" ]; then
-	echo "Downloading aufs-ng..."
-	git clone --depth 1 https://github.com/fulalas/aufs-ng fs/aufs-ng > /dev/null 2>&1 || { echo "Failed to download aufs."; exit 1; }
-	grep -q 'source "fs/aufs-ng/Kconfig"' fs/Kconfig || sed -i '/source "fs\/overlayfs\/Kconfig"/a source "fs/aufs-ng/Kconfig"' fs/Kconfig
-	grep -q 'source "fs/aufs-ng/Kconfig"' fs/Kconfig || { echo "Failed to register fs/aufs-ng/Kconfig: anchor line not found in fs/Kconfig."; exit 1; }
-	grep -q 'CONFIG_AUFSNG_FS' fs/Makefile || sed -i '/obj-\$(CONFIG_OVERLAY_FS)\s*+= overlayfs\//a obj-$(CONFIG_AUFSNG_FS)\t+= aufs-ng/' fs/Makefile
-	grep -q 'CONFIG_AUFSNG_FS' fs/Makefile || { echo "Failed to register fs/aufs-ng in fs/Makefile: anchor line not found."; exit 1; }
-	sed -i '/^CONFIG_AUFSNG_FS/d' .config
-	echo "CONFIG_AUFSNG_FS=y" >> .config
-else
+if [ ${AUFS:-no} = "yes" ]; then
 	echo "Downloading aufs..."
 	git clone https://github.com/sfjro/aufs-standalone ${MODULE_PATH}/aufs_sources > /dev/null 2>&1 || { echo "Failed to download aufs."; exit 1; }
 	git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION}.${KERNEL_PATCH_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION} > /dev/null 2>&1 || git -C ${MODULE_PATH}/aufs_sources checkout origin/aufs${KERNEL_MAJOR_VERSION}.x-rcN > /dev/null 2>&1 || { echo "Failed to download AUFS for this kernel version."; exit 1; }
@@ -116,6 +103,19 @@ else
 		done
 	fi
 	rm -fr ../aufs_sources
+elif [ ${OVERLAYFS:-no} = "yes" ]; then
+	echo "Patching OverlayFS dynamic layers support..."
+	patch -N -p1 < ${SCRIPT_PATH}/0002-overlayfs-dynamic-layers.patch > /dev/null 2>&1 || { echo "Failed to apply OverlayFS dynamic layers patch."; exit 1; }
+	sed -i "s|CONFIG_OVERLAY_FS_METACOPY=y|# CONFIG_OVERLAY_FS_METACOPY is not set|" .config
+else
+	echo "Downloading aufs-ng..."
+	git clone --depth 1 https://github.com/fulalas/aufs-ng fs/aufs-ng > /dev/null 2>&1 || { echo "Failed to download aufs-ng."; exit 1; }
+	grep -q 'source "fs/aufs-ng/Kconfig"' fs/Kconfig || sed -i '/source "fs\/overlayfs\/Kconfig"/a source "fs/aufs-ng/Kconfig"' fs/Kconfig
+	grep -q 'source "fs/aufs-ng/Kconfig"' fs/Kconfig || { echo "Failed to register fs/aufs-ng/Kconfig: anchor line not found in fs/Kconfig."; exit 1; }
+	grep -q 'CONFIG_AUFSNG_FS' fs/Makefile || sed -i '/obj-\$(CONFIG_OVERLAY_FS)\s*+= overlayfs\//a obj-$(CONFIG_AUFSNG_FS)\t+= aufs-ng/' fs/Makefile
+	grep -q 'CONFIG_AUFSNG_FS' fs/Makefile || { echo "Failed to register fs/aufs-ng in fs/Makefile: anchor line not found."; exit 1; }
+	sed -i '/^CONFIG_AUFSNG_FS/d' .config
+	echo "CONFIG_AUFSNG_FS=y" >> .config
 fi
 
 echo "Building kernel headers..."
