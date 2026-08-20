@@ -1,21 +1,23 @@
 #!/bin/bash
 
-pkill -u "${USER}" -x pipewire > /dev/null 2>&1
-pipewire &
+UID_NUM=$(id -u)
+RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID_NUM}
 
-# Wait for pipewire to load
-sleepTimes=50
-while [ $sleepTimes -gt 0 ] && ! pgrep -u "${USER}" -x pipewire > /dev/null; do
-	sleep 0.2
-	sleepTimes=$((sleepTimes - 1))
-done
+if ! pgrep -u "$UID_NUM" -x pipewire > /dev/null 2>&1; then
+	pipewire &
 
-if [ -f /usr/bin/wireplumber ]; then
-	pkill -u "${USER}" -x wireplumber > /dev/null 2>&1
+	# Wait for pipewire to load
+	sleepTimes=50
+	while [ $sleepTimes -gt 0 ] && [ ! -S "$RUNTIME_DIR/pipewire-0" ]; do
+		sleep 0.2
+		sleepTimes=$((sleepTimes - 1))
+	done
+fi
+
+if [ -x /usr/bin/wireplumber ] && ! pgrep -u "$UID_NUM" -x wireplumber > /dev/null 2>&1; then
 	wireplumber &
 fi
 
-if [ -f /usr/bin/pipewire-pulse ]; then
-	pkill -u "${USER}" -x pipewire-pulse > /dev/null 2>&1
+if [ -x /usr/bin/pipewire-pulse ] && ! pgrep -u "$UID_NUM" -x pipewire-pulse > /dev/null 2>&1; then
 	pipewire-pulse &
 fi
