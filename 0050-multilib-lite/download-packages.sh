@@ -18,7 +18,6 @@ download_package "fontconfig" &
 download_package "freetype" &
 download_package "glib2" &
 download_package "glibc" &
-download_package "glibc-i18n" &
 download_package "glibc-profile" &
 download_package "glu" &
 download_package "graphite2" &

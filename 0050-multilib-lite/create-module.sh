@@ -51,13 +51,17 @@ package_file_name=$(ls ${current_package}-[0-9]*.t?z | head -n1)
 package_file_name=${package_file_name%.*}
 ROOT=./ installpkg ${current_package}*.txz && rm ${current_package}*.txz
 rm -fr etc/OpenCL
-rm usr/lib/dri/i830*
-rm usr/lib/dri/i965*
-rm usr/lib/dri/nouveau_vieux*
-rm usr/lib/dri/r200*
-rm usr/lib/dri/radeon_dri*
-rm usr/lib/libMesaOpenCL*
-rm usr/lib/libRusticlOpenCL*
+rm usr/lib${SYSTEM_BITS}/dri/i830*
+rm usr/lib${SYSTEM_BITS}/dri/i965*
+rm usr/lib${SYSTEM_BITS}/dri/nouveau_vieux*
+rm usr/lib${SYSTEM_BITS}/dri/r200*
+rm usr/lib${SYSTEM_BITS}/dri/radeon_dri*
+rm usr/lib${SYSTEM_BITS}/*OpenCL*
+rm -fr var/lib/pkgtools
+rm -f var/log/packages
+rm -fr var/log/pkgtools
+rm -f var/log/setup
+rm -f var/log/scripts
 mkdir ${current_package}-stripped
 find . -mindepth 1 -maxdepth 1 ! -name "${current_package}-stripped" -exec mv -t "${current_package}-stripped" {} +
 cd ${current_package}-stripped || exit 1
