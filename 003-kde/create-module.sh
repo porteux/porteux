@@ -160,6 +160,9 @@ export QT=6
 # required by featherpad
 installpkg $MODULE_PATH/packages/hunspell*.txz || exit 1
 
+# required by kwindowsystem
+installpkg $MODULE_PATH/packages/plasma-wayland-protocols*.txz || exit 1
+
 # kde common deps
 for package in \
 	audacious \
