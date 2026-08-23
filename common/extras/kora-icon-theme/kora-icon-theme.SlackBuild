@@ -24,7 +24,7 @@ dest_dir="$PKG/usr/share/icons/${PRGNAM}"
 mkdir -p "$dest_dir"
 rm -f "${PRGNAM}/create-new-icon-theme.cache.sh"
 cp -r "${PRGNAM}/"* "$dest_dir"
-gtk-update-icon-cache -f "$dest_dir"
+gtk-update-icon-cache -f "$dest_dir" || true
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
