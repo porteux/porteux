@@ -35,7 +35,7 @@ meson setup \
 	--localstatedir=/var \
 	--buildtype=release \
 	-Daccountsservice=disabled \
-	-Dlibappindicator=disabled
+	-Dlibappindicator=yes
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
