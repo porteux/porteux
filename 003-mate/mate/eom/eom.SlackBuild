@@ -28,6 +28,8 @@ sed -i "s|subdir('doc')|#subdir('doc')|g" meson.build
 sed -i "s|subdir('help')|#subdir('help')|g" meson.build
 sed -i "s|subdir('man')|#subdir('man')|g" meson.build
 
+sed -i "s|^pkg_info.set('EOM_THUMBNAILER', eom_thumbnailer)|if not is_variable('eom_thumbnailer')\n  eom_thumbnailer = ''\nendif\n\0|" meson.build
+
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 meson setup \
@@ -37,9 +39,9 @@ meson setup \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	-Dintrospection=disabled \
-	-Dthumbnailer=disabled \
-	-Dgdk-pixbuf-thumbnailer=disabled \
-	-Dnls=disabled \
+	-Dthumbnailer=false \
+	-Dgdk-pixbuf-thumbnailer=false \
+	-Dnls=false \
 	-Dxmp=disabled
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
