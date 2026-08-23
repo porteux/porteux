@@ -52,8 +52,8 @@ CXXFLAGS="$GCC_CXXFLAGS" \
 	$ARCH-porteux-linux
 
 make -j$NUMBER_THREADS
-make -j$NUMBER_THREADS install install_root=$PKG
-make -j$NUMBER_THREADS localedata/install-locales install_root=$PKG DESTDIR=$PKG
+make -j$NUMBER_THREADS install install_root=$PKG no_deps=t
+make -j$NUMBER_THREADS localedata/install-locales install_root=$PKG DESTDIR=$PKG no_deps=t
 
 pushd $CWD
 PKG=$PKG sh libxcrypt.build
