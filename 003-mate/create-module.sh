@@ -59,6 +59,7 @@ for package in \
 	gtk-layer-shell \
 	libpeas \
 	libgxps \
+	zenity \
 ; do
 bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
@@ -74,7 +75,6 @@ for package in \
 	mate-polkit \
 	network-manager-applet \
 	xcape \
-	zenity \
 ; do
 bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
@@ -115,19 +115,6 @@ for package in \
 	eom \
 	mate-control-center \
 	mate-utils \
-; do
-bash $SCRIPT_PATH/mate/${package}/${package}.SlackBuild || exit 1
-installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
-find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-done
-
-# engrampa from common, must be built after caja because of caja actions
-current_package=engrampa
-bash $SCRIPT_PATH/../common/extras/${current_package}/${current_package}.SlackBuild || exit 1
-find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-
-# mate packages
-for package in \
 	mate-media \
 	mate-power-manager \
 	mate-system-monitor \
@@ -138,6 +125,11 @@ bash $SCRIPT_PATH/mate/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+# engrampa must be built after caja because of caja actions
+current_package=engrampa
+bash $SCRIPT_PATH/../common/extras/${current_package}/${current_package}.SlackBuild || exit 1
+find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 
 ### packages that require specific stripping
 
