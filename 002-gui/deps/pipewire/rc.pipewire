@@ -3,7 +3,20 @@
 UID_NUM=$(id -u)
 RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$UID_NUM}
 
-if ! pgrep -u "$UID_NUM" -x pipewire > /dev/null 2>&1; then
+if [ ! -S "$RUNTIME_DIR/pipewire-0" ] || ! pgrep -u "$UID_NUM" -x pipewire > /dev/null 2>&1; then
+	pkill -u "$UID_NUM" -x pipewire-pulse > /dev/null 2>&1
+	pkill -u "$UID_NUM" -x wireplumber > /dev/null 2>&1
+	pkill -u "$UID_NUM" -x pipewire > /dev/null 2>&1
+
+	killTimes=20
+	while [ $killTimes -gt 0 ] && pgrep -u "$UID_NUM" -x pipewire > /dev/null 2>&1; do
+		sleep 0.1
+		killTimes=$((killTimes - 1))
+	done
+	[ $killTimes -eq 0 ] && pkill -9 -u "$UID_NUM" -x pipewire > /dev/null 2>&1
+
+	rm -f "$RUNTIME_DIR/pipewire-0" "$RUNTIME_DIR/pipewire-0-manager"
+
 	pipewire &
 
 	# Wait for pipewire to load
