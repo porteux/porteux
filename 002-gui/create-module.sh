@@ -287,6 +287,7 @@ rm -fr usr/share/libgphoto2/*/konica/japanese
 rm -fr usr/share/libgphoto2/*/konica/korean
 rm -fr usr/share/libgphoto2/*/konica/spanish
 rm -fr usr/share/libgphoto2_port
+rm -fr usr/share/sounds/alsa
 rm -fr usr/share/svgalib-demos
 rm -fr usr/share/themes/Artwiz-boxed
 rm -fr usr/share/themes/Bear2
