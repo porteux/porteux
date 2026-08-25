@@ -63,24 +63,12 @@ mkdir -p $PKG/bin $PKG/etc/profile.d
 ( cd $PKG/bin; ln -sf /sbin/sln sln )
 install -m755 $CWD/glibc.csh $CWD/glibc.sh $PKG/etc/profile.d/
 
-( cd $PKG/lib${SYSTEM_BITS}
-	# Since glibc-2.34 shared objects are using their ABI sonames directly, which is not a good idea
-	for cryptlib in libcrypt.so.* ; do
-		CRYPTSO=$(echo $cryptlib | cut -f 3 -d .)
-		mv $cryptlib libcrypt${CRYPTSO}-${VERSION}.so
-	done
-	for library in *.so.* ; do
-		mv $library $(echo $library | cut -f 1 -d .)-${VERSION}.so
-	done
-)
-
 find $PKG | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
 find $PKG | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
 
 rm $PKG/etc/ld.so.cache
 rm -fr $PKG/usr/share/i18n/charmaps
 rm -fr $PKG/usr/share/locale
-find $PKG/lib${SYSTEM_BITS} -type l -exec rm {} \+
 find $PKG/usr/share/i18n/locales -mindepth 1 -maxdepth 1 \( -type f -o -type d \) ! \( -name "en_US" -o -name "POSIX" \) -delete
 
 mkdir -p $PKG/install
