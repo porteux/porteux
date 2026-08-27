@@ -1,0 +1,44 @@
+When DYNAMIC_BMI2 is 0 - GCC older than 11, a non-x86 target, or a build
+that already has BMI2 on globally - nothing reads the flag.
+HUF_compress1X_usingCTable_internal(), FSE_decompress_wksp_bmi2(),
+HUF_readStats_body() and the rest all resolve to the default body
+without consulting it.  ZSTD_cpuSupportsBmi2() nevertheless issues
+CPUID, which on x86 is two serializing instructions, and throws the
+answer away.
+
+ZSTD_initDCtx_internal() already wraps its assignment in
+#if DYNAMIC_BMI2 - it has to, because the dctx->bmi2 field is itself
+declared under that #if.  The two compress-side callers have no such
+guard, and ZSTD_CCtx_s::bmi2 is unconditional, so they probe
+unconditionally.
+
+Put the test inside ZSTD_cpuSupportsBmi2() so every caller gets it
+without having to remember.
+
+Signed-off-by: Usama Arif <usama.arif@linux.dev>
+---
+ lib/zstd/common/zstd_internal.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/lib/zstd/common/zstd_internal.h b/lib/zstd/common/zstd_internal.h
+index 52a79435caf66..41f190b533209 100644
+--- a/lib/zstd/common/zstd_internal.h
++++ b/lib/zstd/common/zstd_internal.h
+@@ -311,8 +311,13 @@ size_t ZSTD_decodeSeqHeaders(ZSTD_DCtx* dctx, int* nbSeqPtr,
+  */
+ MEM_STATIC int ZSTD_cpuSupportsBmi2(void)
+ {
++#if DYNAMIC_BMI2
+     ZSTD_cpuid_t cpuid = ZSTD_cpuid();
+     return ZSTD_cpuid_bmi1(cpuid) && ZSTD_cpuid_bmi2(cpuid);
++#else
++    /* Nothing looks at the flag in this configuration. */
++    return 0;
++#endif
+ }
+ 
+ #endif   /* ZSTD_CCOMMON_H_MODULE */
+-- 
+2.53.0-Meta
+
+

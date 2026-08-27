@@ -1,0 +1,61 @@
+ZSTD_cpuSupportsBmi2() issues CPUID on every context setup for an answer
+that cannot change while the kernel is running.  On x86 that is two
+serializing CPUID instructions, and the callers are not rare:
+squashfs, erofs, btrfs, f2fs and crypto/zstd all initialise a context
+per operation, so a busy squashfs or zswap workload pays for it per
+block or per page.  Under KVM it is worse, because CPUID is an
+unconditional VM exit.
+
+Cache the result.  Keeping the cache as a single int with a negative
+sentinel, rather than a copy of ZSTD_cpuid_t, keeps it to one word: a
+racing pair of probes computes the same value from the same CPUID leaf,
+so the unsynchronized access is benign, and READ_ONCE()/WRITE_ONCE()
+keep the compiler and KCSAN in agreement about that.
+
+ZSTD_cpuSupportsBmi2() is MEM_STATIC, so each translation unit that
+inlines it gets its own cache - three in a modular build, plus one in
+each preboot decompressor.  That is a handful of ints in bss and one
+extra probe apiece, not worth avoiding.
+
+The cached answer is the one the probing CPU reported.  zstd could
+already be migrated between the probe and the use of the flag, so this
+does not introduce a heterogeneity question that was not there before.
+
+Suggested-by: Yosry Ahmed <yosry@kernel.org>
+Signed-off-by: Usama Arif <usama.arif@linux.dev>
+---
+ lib/zstd/common/zstd_internal.h | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/lib/zstd/common/zstd_internal.h b/lib/zstd/common/zstd_internal.h
+index 41f190b533209..b179f44753598 100644
+--- a/lib/zstd/common/zstd_internal.h
++++ b/lib/zstd/common/zstd_internal.h
+@@ -312,8 +312,21 @@ size_t ZSTD_decodeSeqHeaders(ZSTD_DCtx* dctx, int* nbSeqPtr,
+ MEM_STATIC int ZSTD_cpuSupportsBmi2(void)
+ {
+ #if DYNAMIC_BMI2
+-    ZSTD_cpuid_t cpuid = ZSTD_cpuid();
+-    return ZSTD_cpuid_bmi1(cpuid) && ZSTD_cpuid_bmi2(cpuid);
++    /*
++     * The answer cannot change over the life of the kernel, so probe
++     * once.  Racing probes compute the same value, so the unsynchronized
++     * access is benign; the annotations are there to keep it that way.
++     */
++    static int supported = -1;
++    int s = READ_ONCE(supported);
++
++    if (s < 0) {
++        ZSTD_cpuid_t const cpuid = ZSTD_cpuid();
++
++        s = ZSTD_cpuid_bmi1(cpuid) && ZSTD_cpuid_bmi2(cpuid);
++        WRITE_ONCE(supported, s);
++    }
++    return s;
+ #else
+     /* Nothing looks at the flag in this configuration. */
+     return 0;
+-- 
+2.53.0-Meta
+
+

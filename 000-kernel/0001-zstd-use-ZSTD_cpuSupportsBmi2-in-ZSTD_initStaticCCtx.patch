@@ -1,0 +1,40 @@
+ZSTD_initStaticCCtx() open-codes its BMI2 probe as
+ZSTD_cpuid_bmi2(ZSTD_cpuid()).  Every other context setup -
+ZSTD_initCCtx() and ZSTD_initDCtx_internal() - goes through
+ZSTD_cpuSupportsBmi2(), which requires BMI1 as well as BMI2.
+
+Requiring both is the correct test.  The alternate function bodies the
+flag selects are tagged BMI2_TARGET_ATTRIBUTE, which is
+TARGET_ATTRIBUTE("lzcnt,bmi,bmi2"), so the compiler may emit BMI1 and
+LZCNT instructions in them; BMI2 alone does not make that safe.  No
+shipping x86 CPU implements BMI2 without BMI1, so this is a latent
+inconsistency rather than an observed failure.
+
+Route the static path through the same helper.  That also leaves a
+single place where the probe is issued, which the following patches
+build on.
+
+No functional change on any CPU in the field.
+
+Signed-off-by: Usama Arif <usama.arif@linux.dev>
+---
+ lib/zstd/compress/zstd_compress.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/zstd/compress/zstd_compress.c b/lib/zstd/compress/zstd_compress.c
+index c41a747413e01..4ab67d679bb63 100644
+--- a/lib/zstd/compress/zstd_compress.c
++++ b/lib/zstd/compress/zstd_compress.c
+@@ -142,7 +142,7 @@ ZSTD_CCtx* ZSTD_initStaticCCtx(void* workspace, size_t workspaceSize)
+     cctx->blockState.nextCBlock = (ZSTD_compressedBlockState_t*)ZSTD_cwksp_reserve_object(&cctx->workspace, sizeof(ZSTD_compressedBlockState_t));
+     cctx->tmpWorkspace = ZSTD_cwksp_reserve_object(&cctx->workspace, TMP_WORKSPACE_SIZE);
+     cctx->tmpWkspSize = TMP_WORKSPACE_SIZE;
+-    cctx->bmi2 = ZSTD_cpuid_bmi2(ZSTD_cpuid());
++    cctx->bmi2 = ZSTD_cpuSupportsBmi2();
+     return cctx;
+ }
+ 
+-- 
+2.53.0-Meta
+
+

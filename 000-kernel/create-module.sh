@@ -138,6 +138,11 @@ patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 
 echo "Patching ntfs colon character support..."
 patch -N -p1 < ${SCRIPT_PATH}/0003-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }
 
+echo "Patching zstd..."
+patch -N -p1 < ${SCRIPT_PATH}/0001-zstd-use-ZSTD_cpuSupportsBmi2-in-ZSTD_initStaticCCtx.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
+patch -N -p1 < ${SCRIPT_PATH}/0002-zstd-skip-BMI2-probe-when-dynamic-dispatch-disabled.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
+patch -N -p1 < ${SCRIPT_PATH}/0003-zstd-probe-the-CPU-for-BMI2-support-only-once.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
+
 echo "Patching missing firmware..."
 # fixed in 7.2.x but let's keep the fix for compatibility with old kernels just in case
 if [ "$KERNEL_MAJOR_VERSION" -lt 7 ] || { [ "$KERNEL_MAJOR_VERSION" -eq 7 ] && [ "$KERNEL_MINOR_VERSION" -le 1 ]; }; then
