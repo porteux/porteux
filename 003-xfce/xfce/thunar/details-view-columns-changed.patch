@@ -1,0 +1,61 @@
+Stop the details view from reacting to the shared column model once it is
+destroyed.
+
+ThunarDetailsView connects to the ThunarColumnModel singleton but only
+disconnects in finalize. Closing a tab destroys the view, which destroys its
+GtkTreeView child, while the view object itself is still alive. Any later
+"columns-changed" emission (every directory change updates the trash/recent
+columns) then calls thunar_details_view_columns_changed on that dead view and
+gtk_bin_get_child returns NULL, giving a flood of
+
+  Gtk-CRITICAL: gtk_tree_view_move_column_after: assertion 'GTK_IS_TREE_VIEW (tree_view)' failed
+
+--- a/thunar/thunar-details-view.c
++++ b/thunar/thunar-details-view.c
+@@ -50,6 +50,8 @@
+ static void
+ thunar_details_view_finalize (GObject *object);
+ static void
++thunar_details_view_destroy (GtkWidget *widget);
++static void
+ thunar_details_view_get_property (GObject    *object,
+                                   guint       prop_id,
+                                   GValue     *value,
+@@ -243,4 +245,5 @@
+   gtkwidget_class->get_accessible = thunar_details_view_get_accessible;
++  gtkwidget_class->destroy = thunar_details_view_destroy;
+ 
+   thunarstandard_view_class = THUNAR_STANDARD_VIEW_CLASS (klass);
+   thunarstandard_view_class->get_selected_items = thunar_details_view_get_selected_items;
+@@ -549,6 +552,20 @@
+ 
+ 
+ static void
++thunar_details_view_destroy (GtkWidget *widget)
++{
++  ThunarDetailsView *details_view = THUNAR_DETAILS_VIEW (widget);
++
++  /* the column model is a shared singleton which outlives this view, so stop
++   * listening before the tree view child is destroyed */
++  g_signal_handlers_disconnect_by_func (G_OBJECT (details_view->column_model), thunar_details_view_columns_changed, details_view);
++
++  (*GTK_WIDGET_CLASS (thunar_details_view_parent_class)->destroy) (widget);
++}
++
++
++
++static void
+ thunar_details_view_finalize (GObject *object)
+ {
+   ThunarDetailsView *details_view = THUNAR_DETAILS_VIEW (object);
+@@ -1433,6 +1450,10 @@
+   _thunar_return_if_fail (THUNAR_IS_COLUMN_MODEL (column_model));
+   _thunar_return_if_fail (details_view->column_model == column_model);
+ 
++  /* the tree view is already gone when the view is being destroyed */
++  if (!GTK_IS_TREE_VIEW (gtk_bin_get_child (GTK_BIN (details_view))))
++    return;
++
+   /* look up current directory */
+   current_directory = thunar_navigator_get_current_directory (THUNAR_NAVIGATOR (details_view));
+ 
