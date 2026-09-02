@@ -45,8 +45,8 @@ cmake -B build -S . \
 
 DESTDIR="$PKG" ninja -C build install -j${NUMBER_THREADS}
 
-rm -fr $PKG/etc
-rm -fr $PKG/usr/share/doc
+rm -fr "${PKG:?}/etc"
+rm -fr "${PKG:?}/usr/share/doc"
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

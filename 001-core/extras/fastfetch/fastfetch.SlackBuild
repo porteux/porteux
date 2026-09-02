@@ -34,7 +34,7 @@ DESTDIR="$PKG" ninja -C build install -j${NUMBER_THREADS}
 echo -e "#!/bin/sh\nfastfetch --logo linux --color-title blue --color-keys blue -s Title:Separator:OS:Host:Kernel:Uptime:Packages:Shell:Display:DE:WM:WMTheme:Theme:Icons:Font:Cursor:Terminal:TerminalFont:CPU:GPU:Memory:Swap:LocalIp:Battery:PowerAdapter:Locale:Break:Colors \"\$@\"" > $PKG/usr/bin/neofetch
 chmod 755 $PKG/usr/bin/neofetch
 
-rm -fr $PKG/usr/share
+rm -fr "${PKG:?}/usr/share"
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

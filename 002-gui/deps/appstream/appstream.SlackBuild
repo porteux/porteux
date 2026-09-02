@@ -47,9 +47,9 @@ DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -delete
 
-rm -fr $PKG/usr/bin
-rm -fr $PKG/usr/share
-rm -fr $PKG/usr/libexec/
+rm -fr "${PKG:?}/usr/bin"
+rm -fr "${PKG:?}/usr/share"
+rm -fr "${PKG:?}/usr/libexec/"
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

@@ -37,7 +37,7 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
-rm -fr $PKG/usr/bin
+rm -fr "${PKG:?}/usr/bin"
 find $PKG -type f -name "*.la" -delete
 
 mkdir -p $PKG/install

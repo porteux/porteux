@@ -35,8 +35,8 @@ make -j${NUMBER_THREADS} \
 find $PKG -type f -name "*.a" -exec rm -f {} \;
 find $PKG -type f -name "*.la" -delete
 
-rm -fr $PKG/usr/bin
-rm -fr $PKG/usr/sbin
+rm -fr "${PKG:?}/usr/bin"
+rm -fr "${PKG:?}/usr/sbin"
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
