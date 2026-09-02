@@ -14,7 +14,7 @@ set_flags() {
 	export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=$ARCHITECTURE_LEVEL -Ztune-cpu=generic -Cstrip=symbols -Cforce-unwind-tables=no -Clto=fat -Clinker=clang -Clink-arg=-fuse-ld=lld -Clink-arg=-Wl,--gc-sections -Clink-arg=-Wl,-O2 -Clink-arg=-Wl,--strip-all -Clink-arg=-Wl,--icf=safe -Clink-arg=-Wl,--lto-O3 -Clink-arg=-Wl,--lto-CGO3 -Clink-arg=-Wl,--lto-whole-program-visibility -Clink-arg=-Wl,-z,pack-relative-relocs -Clink-arg=-Wl,--hash-style=gnu -Cllvm-args=-enable-dfa-jump-thread -Cpanic=unwind -Cdebuginfo=0 -Cembed-bitcode=yes -Zdylib-lto -Zlocation-detail=none -Zfmt-debug=shallow -Ccodegen-units=1"
 	export RUSTC_BOOTSTRAP=1 # allows -Z unstable flags on stable compiler
 	
-	repo_root=$(realpath "$(dirname "$(realpath "$0")")"/..)
+	repo_root=$(realpath "$(dirname "$(realpath "${BASH_SOURCE[0]:-$0}")")"/..)
 
 	if [ -d "${repo_root}"/.git ]; then
 		export PORTEUX_VERSION=$(git -C "${repo_root}" -c safe.directory="${repo_root}" branch --show-current)
@@ -37,13 +37,13 @@ set_flags() {
 	export SCRIPT_PATH="$PWD"
 	export PORTEUX_BUILDER_PATH="/tmp/porteux-builder-$PORTEUX_VERSION"
 	export MODULE_PATH="$PORTEUX_BUILDER_PATH/$MODULE_NAME"
-	export BUILDER_UTILS_PATH="$SCRIPT_PATH/../builder-utils"
+	export BUILDER_UTILS_PATH="$repo_root/builder-utils"
 
 	export ARCH=$(uname -m)
 	export NUMBER_THREADS=$(nproc --all)
 	export MAKEPKG_FLAGS="-l n -c n --compress -0"
 
-	if [ -z ${SYSTEM_BITS+x} ] && [ "$(getconf LONG_BIT)" = "64" ]; then
+	if [ -z "${SYSTEM_BITS+x}" ] && [ "$(getconf LONG_BIT)" = "64" ]; then
 		export SYSTEM_BITS="64"
 	fi
 
