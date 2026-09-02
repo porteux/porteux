@@ -55,7 +55,7 @@ finalize() {
 	make_module "$MODULE_PATH"/packages/ "$MODULE_PATH"/$MODULE_NAME-$PORTEUX_BUILD-$build_date.xzm || { echo "Error: failed to create module $MODULE_NAME." >&2; exit 1; }
 
 	# script clean up
-	rm -fr "$MODULE_PATH"/packages/
+	rm -fr "${MODULE_PATH:?}"/packages/
 }
 
 is_root() {
