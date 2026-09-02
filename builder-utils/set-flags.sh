@@ -14,14 +14,15 @@ set_flags() {
 	export RUSTFLAGS="-Copt-level=3 -Ctarget-cpu=$ARCHITECTURE_LEVEL -Ztune-cpu=generic -Cstrip=symbols -Cforce-unwind-tables=no -Clto=fat -Clinker=clang -Clink-arg=-fuse-ld=lld -Clink-arg=-Wl,--gc-sections -Clink-arg=-Wl,-O2 -Clink-arg=-Wl,--strip-all -Clink-arg=-Wl,--icf=safe -Clink-arg=-Wl,--lto-O3 -Clink-arg=-Wl,--lto-CGO3 -Clink-arg=-Wl,--lto-whole-program-visibility -Clink-arg=-Wl,-z,pack-relative-relocs -Clink-arg=-Wl,--hash-style=gnu -Cllvm-args=-enable-dfa-jump-thread -Cpanic=unwind -Cdebuginfo=0 -Cembed-bitcode=yes -Zdylib-lto -Zlocation-detail=none -Zfmt-debug=shallow -Ccodegen-units=1"
 	export RUSTC_BOOTSTRAP=1 # allows -Z unstable flags on stable compiler
 	
-	repo_root=$(realpath "$(dirname "$(realpath "${BASH_SOURCE[0]:-$0}")")"/..)
+	local repo_root
+	repo_root=$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")
 
 	if [ -d "${repo_root}"/.git ]; then
 		export PORTEUX_VERSION=$(git -C "${repo_root}" -c safe.directory="${repo_root}" branch --show-current)
 	fi
 
 	if [ -z "$PORTEUX_VERSION" ]; then
-		export PORTEUX_VERSION=$(date -r . +%Y%m%d)
+		export PORTEUX_VERSION=$(date -r "$repo_root" +%Y%m%d)
 	fi
 
 	slackware_full_version=$(cat /etc/slackware-version)
@@ -34,7 +35,7 @@ set_flags() {
 		echo "Fatal error: PorteuX can only be built in Slackware current environment." && exit 1
 	fi
 
-	export SCRIPT_PATH="$PWD"
+	export SCRIPT_PATH="$(dirname "$(realpath "${BASH_SOURCE[1]}")")"
 	export PORTEUX_BUILDER_PATH="/tmp/porteux-builder-$PORTEUX_VERSION"
 	export MODULE_PATH="$PORTEUX_BUILDER_PATH/$MODULE_NAME"
 	export BUILDER_UTILS_PATH="$repo_root/builder-utils"

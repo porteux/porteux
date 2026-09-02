@@ -26,10 +26,8 @@ download_package() {
 		return
 	fi
 
-	local pkg_esc
-	pkg_esc=$(printf '%s' "$1" | sed 's/[+.]/\\&/g')
 	local package_url
-	package_url=$(grep -E "/${pkg_esc}[-_][0-9]+" "$SERVER_PACKAGES_LIST" | head -n1)
+	package_url=$(grep "/${1//./\\.}[-_][0-9]\+" "$SERVER_PACKAGES_LIST" | head -n1)
 	if [ -z "$package_url" ]; then
 		echo "Error: package $1 not found in repository $REPOSITORY" >&2
 		touch "$DOWNLOAD_FAILURE_FLAG"
