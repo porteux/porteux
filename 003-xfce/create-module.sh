@@ -2,7 +2,7 @@
 
 MODULE_NAME="003-xfce"
 
-source "$PWD/../builder-utils/set-flags.sh"
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../builder-utils/set-flags.sh"
 
 set_flags "$MODULE_NAME"
 
@@ -87,11 +87,11 @@ done
 
 current_package=wlr-protocols
 bash $SCRIPT_PATH/deps/${current_package}/${current_package}.SlackBuild || exit 1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
+rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 current_package=mate-search-tool
 bash $SCRIPT_PATH/extras/${current_package}/${current_package}.SlackBuild || exit 1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
+rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 # required by mousepad
 installpkg $MODULE_PATH/packages/enchant*.txz || exit 1

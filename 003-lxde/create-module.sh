@@ -2,7 +2,7 @@
 
 MODULE_NAME="003-lxde"
 
-source "$PWD/../builder-utils/set-flags.sh"
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../builder-utils/set-flags.sh"
 
 set_flags "$MODULE_NAME"
 
@@ -73,7 +73,7 @@ done
 # lxde extras
 current_package=l3afpad
 bash $SCRIPT_PATH/extras/${current_package}/${current_package}.SlackBuild || exit 1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
+rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 # required by lxpanel
 installpkg $MODULE_PATH/packages/libwnck3*.txz || exit 1

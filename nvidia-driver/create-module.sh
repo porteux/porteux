@@ -46,7 +46,7 @@ rm -rf $MODULE_DIR/usr/{man,src}
 rm -f $MODULE_DIR/usr/bin/gnome-keyring-daemon
 rm -rf $MODULE_DIR/usr/lib$SYSTEM_BITS/{gdk-pixbuf-2.0,gio,gtk-2.0,gtk-3.0}
 rm -f $MODULE_DIR/usr/lib$SYSTEM_BITS/{libXvMCgallium.*,libgsm.*,libnvidia-gtk2.*,libudev.*,libunrar.*}
-rm -rf $MODULE_DIR/usr/local
+rm -rf "${MODULE_DIR:?}/usr/local"
 rm -rf $MODULE_DIR/usr/share/{glib-2.0,man,mime,pixmaps}
 rm -f $MODULE_DIR/usr/{,local/}share/applications/mimeinfo.cache
 rm -rf $MODULE_DIR/usr/share/doc/NVIDIA_GLX-1.0/{html,samples,LICENSE,NVIDIA_Changelog,README.txt}

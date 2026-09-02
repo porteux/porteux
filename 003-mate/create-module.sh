@@ -2,7 +2,7 @@
 
 MODULE_NAME="003-mate"
 
-source "$PWD/../builder-utils/set-flags.sh"
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../builder-utils/set-flags.sh"
 
 set_flags "$MODULE_NAME"
 
@@ -95,7 +95,7 @@ rm $MODULE_PATH/packages/xtrans*.txz
 current_package=gtksourceview4
 bash $SCRIPT_PATH/../common/deps/${current_package}/${current_package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${current_package}*.txz || exit 1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
+rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 # mate packages
 for package in \

@@ -2,7 +2,7 @@
 
 MODULE_NAME="002-gui"
 
-source "$PWD/../builder-utils/set-flags.sh"
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../builder-utils/set-flags.sh"
 
 set_flags "$MODULE_NAME"
 
@@ -151,7 +151,7 @@ mkdir ${current_package}-stripped
 find . -mindepth 1 -maxdepth 1 ! -name "${current_package}-stripped" -exec mv -t "${current_package}-stripped" {} +
 cd ${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1 || exit 1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
+rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 strip_package dejavu-fonts-ttf \
 	usr/share/fonts/TTF/DejaVuSans-Bold.ttf \

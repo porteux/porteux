@@ -2,7 +2,7 @@
 
 MODULE_NAME="003-cosmic"
 
-source "$PWD/../builder-utils/set-flags.sh"
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../builder-utils/set-flags.sh"
 
 set_flags "$MODULE_NAME"
 
@@ -53,7 +53,7 @@ installpkg $MODULE_PATH/packages/libhandy*.txz || exit 1
 
 current_package=file-roller
 bash $SCRIPT_PATH/../common/extras/${current_package}/${current_package}.SlackBuild || exit 1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
+rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 # required from now on
 installpkg $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1

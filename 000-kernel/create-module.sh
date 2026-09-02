@@ -2,7 +2,7 @@
 
 MODULE_NAME="000-kernel"
 
-source "$PWD/../builder-utils/set-flags.sh"
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../builder-utils/set-flags.sh"
 
 set_flags "$MODULE_NAME"
 
@@ -297,11 +297,11 @@ find ${CRIPPLED_SOURCE_PATH} -type f -perm -u+x -print0 | xargs -0 -r strip --st
 make_module ${MODULE_PATH}/${CRIPPLED_MODULE_NAME} ${CRIPPLED_MODULE_NAME}-${build_date}.xzm > /dev/null || { echo "Error: failed to create crippled kernel module." >&2; exit 1; }
 
 echo "Cleaning up..."
-rm -fr ${MODULE_PATH}/kernel-firmware > /dev/null 2>&1 
-rm -fr ${MODULE_PATH}/${MODULE_NAME} > /dev/null 2>&1
-rm -fr ${MODULE_PATH}/${CRIPPLED_MODULE_NAME} > /dev/null 2>&1
-rm -fr ${MODULE_PATH}/firmware > /dev/null 2>&1
-rm -fr ${MODULE_PATH}/packages > /dev/null 2>&1
-rm -fr ${MODULE_PATH}/sof* > /dev/null 2>&1
+rm -fr "${MODULE_PATH:?}/kernel-firmware" > /dev/null 2>&1 
+rm -fr "${MODULE_PATH:?}/${MODULE_NAME}" > /dev/null 2>&1
+rm -fr "${MODULE_PATH:?}/${CRIPPLED_MODULE_NAME}" > /dev/null 2>&1
+rm -fr "${MODULE_PATH:?}/firmware" > /dev/null 2>&1
+rm -fr "${MODULE_PATH:?}/packages" > /dev/null 2>&1
+rm -fr "${MODULE_PATH:?}"/sof* > /dev/null 2>&1
 
 echo "Finished successfully."

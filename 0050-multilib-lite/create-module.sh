@@ -4,7 +4,7 @@ MODULE_NAME="0050-multilib-lite"
 
 export SYSTEM_BITS=
 
-source "$PWD/../builder-utils/set-flags.sh"
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../builder-utils/set-flags.sh"
 
 set_flags "$MODULE_NAME"
 
@@ -44,7 +44,7 @@ strip_package llvm \
 	usr/lib/libLLVM*.so*
 
 current_package=mesa
-rm -rf $MODULE_PATH/${current_package}
+rm -rf "${MODULE_PATH:?}/${current_package}"
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv $MODULE_PATH/packages/${current_package}-[0-9]* .
 package_file_name=$(ls ${current_package}-[0-9]*.t?z | head -n1)
@@ -66,7 +66,7 @@ mkdir ${current_package}-stripped
 find . -mindepth 1 -maxdepth 1 ! -name "${current_package}-stripped" -exec mv -t "${current_package}-stripped" {} +
 cd ${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1 || { echo "Error: failed to create ${package_file_name}_stripped.txz" >&2; exit 1; }
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
+rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 strip_package pcre2 \
 	lib/libpcre2-8.so*

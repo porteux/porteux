@@ -2,7 +2,7 @@
 
 MODULE_NAME="003-lxqt"
 
-source "$PWD/../builder-utils/set-flags.sh"
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../builder-utils/set-flags.sh"
 
 set_flags "$MODULE_NAME"
 
@@ -64,7 +64,7 @@ strip_package qt6 \
 
 # required by xpdf
 current_package=ghostscript-fonts-std
-rm -rf $MODULE_PATH/${current_package}
+rm -rf "${MODULE_PATH:?}/${current_package}"
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
 mv $MODULE_PATH/packages/${current_package}-[0-9]* . || exit 1
 package_file_name=$(ls * -a | rev | cut -d . -f 2- | rev)
@@ -90,7 +90,7 @@ mkdir ghostscript && cd ghostscript || exit 1
 ln -s ../fonts/Type1 fonts || exit 1
 cd $MODULE_PATH/${current_package}/${current_package}-stripped || exit 1
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1 || exit 1
-rm -fr $MODULE_PATH/${current_package} && cd $MODULE_PATH || exit 1
+rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 ### packages outside slackware repository
 
