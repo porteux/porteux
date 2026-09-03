@@ -34,7 +34,6 @@ meson setup \
 	--sysconfdir=/etc \
 	-Dstemming=false \
 	-Dcompose=false \
-	-Dsvg-support=false \
 	-Dgir=false \
 	-Dsystemd=false \
 	-Dapidocs=false \
