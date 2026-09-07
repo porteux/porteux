@@ -1,0 +1,35 @@
+diff --git a/src/gpicview.c b/src/gpicview.c
+index 2bff52d..db89480 100644
+--- a/src/gpicview.c
++++ b/src/gpicview.c
+@@ -79,11 +79,12 @@ int main(int argc, char *argv[])
+     /* Allocate and show the window.
+      * We must show the window now in case the file open needs to put up an error dialog. */
+     win = (MainWin*)main_win_new();
+-    gtk_widget_show( GTK_WIDGET(win) );
+ 
+     if ( pref.open_maximized )
+         gtk_window_maximize( (GtkWindow*)win );
+ 
++    gtk_widget_show( GTK_WIDGET(win) );
++
+     // FIXME: need to process multiple files...
+     if( files )
+     {
+diff --git a/src/main-win.c b/src/main-win.c
+index ce2bbdd..c323464 100644
+--- a/src/main-win.c
++++ b/src/main-win.c
+@@ -562,12 +562,7 @@ void on_size_allocate( GtkWidget* widget, GtkAllocation    *allocation )
+         MainWin* mw = (MainWin*)widget;
+ 
+         if( mw->zoom_mode == ZOOM_FIT )
+-        {
+-            while(gtk_events_pending ())
+-                gtk_main_iteration(); // makes it more fluid
+-
+             main_win_fit_window_size( mw, FALSE, GDK_INTERP_BILINEAR );
+-        }
+     }
+ }
+ 
