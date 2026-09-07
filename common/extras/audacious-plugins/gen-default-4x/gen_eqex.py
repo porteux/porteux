@@ -67,4 +67,11 @@ glyph_x(ov, (12, 39, 18, 45), W)
 glyph_x(ov, (12, 48, 18, 54), W)
 ov.apply()
 
+# the original strip lacks the bright right border column that the main
+# and playlist shaded bars have (invisible at 1x, obvious at 4K)
+dbr = ImageDraw.Draw(sheet)
+for sy in (0, 15):
+    dbr.rectangle([274 * R, sy * R, 275 * R - 1, (sy + 14) * R - 1],
+                  fill=(89, 89, 89))
+
 save(sheet, 'eq_ex')
