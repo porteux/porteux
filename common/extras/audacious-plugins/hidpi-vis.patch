@@ -1,0 +1,1008 @@
+diff --git a/src/skins-qt/vis-callbacks.cc b/src/skins-qt/vis-callbacks.cc
+--- a/src/skins-qt/vis-callbacks.cc
++++ b/src/skins-qt/vis-callbacks.cc
+@@ -27,6 +27,7 @@
+ #include <libaudcore/runtime.h>
+ 
+ #include "skins_cfg.h"
++#include "skin.h"
+ #include "main.h"
+ #include "vis-callbacks.h"
+ #include "vis.h"
+@@ -43,8 +44,81 @@ public:
+     void render_freq (const float * freq) override;
+ };
+ 
++/* ---- hi-res analyzer: the core's 512-point FFT resolves the whole bass
++   region into 2-3 bins, so a dense hi-res graph only repeats them in
++   staircase plateaus.  Re-run the transform on the same 512 frames the
++   core hands us, zero-padded to 2048, which interpolates that spectrum
++   exactly onto a 4x finer bin grid.  The blocks arrive 33 ms apart and
++   are not contiguous, so they must not be concatenated. ---- */
++#define HD_N 2048
++
++static float hd_pcm[512];
++static float hd_freq[HD_N / 2];
++static bool hd_have = false;
++
++static void hd_feed (const float * pcm)
++{
++    memcpy (hd_pcm, pcm, sizeof hd_pcm);
++    hd_have = true;
++}
++
++static void hd_fft ()
++{
++    static float window[512];
++    static int rev[HD_N];
++    static bool init = false;
++
++    if (! init)
++    {
++        /* the core's window and scaling, so hd bin 4 * (n + 1) comes out
++           equal to the core's freq[n] */
++        for (int i = 0; i < 512; i ++)
++            window[i] = 1 - 0.85f * cosf (2 * (float) M_PI * i / 512);
++        for (int i = 0; i < HD_N; i ++)
++        {
++            int r = 0;
++            for (int b = 0; (1 << b) < HD_N; b ++)
++                r = (r << 1) | ((i >> b) & 1);
++            rev[i] = r;
++        }
++        init = true;
++    }
++
++    static float re[HD_N], im[HD_N];
++    memset (re, 0, sizeof re);
++    memset (im, 0, sizeof im);
++    for (int i = 0; i < 512; i ++)
++        re[rev[i]] = hd_pcm[i] * window[i];
++
++    for (int len = 2; len <= HD_N; len <<= 1)
++    {
++        float ang = -2 * (float) M_PI / len;
++        float wr = cosf (ang), wi = sinf (ang);
++        for (int i = 0; i < HD_N; i += len)
++        {
++            float cr = 1, ci = 0;
++            for (int j = 0; j < len / 2; j ++)
++            {
++                float vr = re[i + j + len / 2] * cr - im[i + j + len / 2] * ci;
++                float vi = re[i + j + len / 2] * ci + im[i + j + len / 2] * cr;
++                re[i + j + len / 2] = re[i + j] - vr;
++                im[i + j + len / 2] = im[i + j] - vi;
++                re[i + j] += vr;
++                im[i + j] += vi;
++                float nr = cr * wr - ci * wi;
++                ci = cr * wi + ci * wr;
++                cr = nr;
++            }
++        }
++    }
++
++    for (int k = 0; k < HD_N / 2; k ++)
++        hd_freq[k] = sqrtf (re[k] * re[k] + im[k] * im[k]) * 2 / 512;
++}
++
+ void VisCallbacks::clear ()
+ {
++    hd_have = false;
+     mainwin_vis->clear ();
+     mainwin_svis->clear ();
+ }
+@@ -53,6 +127,9 @@ void VisCallbacks::render_mono_pcm (const float * pcm)
+ {
+     unsigned char data[512];
+ 
++    if (vis_subpixel () > 1)
++        hd_feed (pcm);
++
+     if (config.vis_type != VIS_SCOPE)
+         return;
+ 
+@@ -106,6 +183,22 @@ void VisCallbacks::render_multi_pcm (const float * pcm, int channels)
+     mainwin_svis->render (data);
+ }
+ 
++/* magnitude at a fractional bin, Catmull-Rom over the four nearest bins:
++   dense hi-res graphs then curve smoothly instead of repeating bins in
++   staircase plateaus, and interpolating magnitude (not dB) keeps the wide
++   shoulders of tonal peaks that upstream's bin summation produces */
++static float interp_bin (const float * mag, int nbins, float c)
++{
++    int k = aud::clamp ((int) c, 0, nbins - 1);
++    float t = c - k;
++    float d[4];
++    for (int j = 0; j < 4; j ++)
++        d[j] = mag[aud::clamp (k + j - 1, 0, nbins - 1)];
++    return d[1] + 0.5f * t * (d[2] - d[0] + t * (2 * d[0]
++     - 5 * d[1] + 4 * d[2] - d[3] + t * (3 * (d[1] - d[2])
++     + d[3] - d[0])));
++}
++
+ /* convert linear frequency graph to logarithmic one */
+ static void make_log_graph (const float * freq, int bands, int db_range,
+  int int_range, unsigned char * graph)
+@@ -121,20 +214,83 @@ static void make_log_graph (const float * freq, int bands, int db_range,
+         last_bands = bands;
+     }
+ 
++    const bool hd = vis_subpixel () > 1;
++
+     for (int i = 0; i < bands; i ++)
+     {
+-        float val = Visualizer::compute_freq_band (freq, & xscale[0], i, bands);
++        float val;
++
++        if (xscale[i + 1] - xscale[i] < 1.0f && hd)
++        {
++            float m = interp_bin (freq, 256, (xscale[i] + xscale[i + 1]) / 2);
++            float w = (xscale[i + 1] - xscale[i]) * (float) bands / 12;
++            val = 20 * log10f (aud::max (m, 1e-9f) * w);
++        }
++        else
++            val = Visualizer::compute_freq_band (freq, & xscale[0], i, bands);
++
+         /* scale (-db_range, 0.0) to (0.0, int_range) */
+         val = (1 + val / db_range) * int_range;
+         graph[i] = aud::clamp ((int) val, 0, int_range);
+     }
+ }
+ 
++/* same log mapping over the 1024-bin local FFT; xscale is in hd-bin
++   units, where the core's index n sits at hd bin 4 * (n + 1), and the
++   band widths are normalised back to core-bin units so levels match the
++   256-bin path */
++static void make_log_graph_hd (int bands, int db_range, int int_range,
++ unsigned char * graph)
++{
++    static int last_bands = 0;
++    static Index<float> xscale;
++
++    if (bands != last_bands)
++    {
++        xscale.resize (bands + 1);
++        for (int i = 0; i <= bands; i ++)
++            xscale[i] = (powf (256, (float) i / bands) + 0.5f) * 4;
++        last_bands = bands;
++    }
++
++    for (int i = 0; i < bands; i ++)
++    {
++        float val;
++        float width = xscale[i + 1] - xscale[i];
++
++        if (width < 1.0f)
++        {
++            float m = interp_bin (hd_freq, HD_N / 2,
++             (xscale[i] + xscale[i + 1]) / 2);
++            float w = width / 4 * (float) bands / 12;
++            val = 20 * log10f (aud::max (m, 1e-9f) * w);
++        }
++        else
++        {
++            int a = ceilf (xscale[i]);
++            int b = floorf (xscale[i + 1]);
++            float n = 0;
++            if (a > 0 && a - 1 < HD_N / 2)
++                n += hd_freq[a - 1] * (a - xscale[i]);
++            for (; a < b && a < HD_N / 2; a ++)
++                n += hd_freq[a];
++            if (b < HD_N / 2)
++                n += hd_freq[b] * (xscale[i + 1] - b);
++            n *= (float) bands / 12 * 0.25f;
++            val = 20 * log10f (aud::max (n, 1e-9f));
++        }
++
++        val = (1 + val / db_range) * int_range;
++        graph[i] = aud::clamp ((int) val, 0, int_range);
++    }
++}
++
+ void VisCallbacks::render_freq (const float * freq)
+ {
+     bool shaded = aud_get_bool ("skins", "player_shaded");
+ 
+     unsigned char data[512];
++    int S = vis_subpixel ();
+ 
+     if (config.vis_type == VIS_ANALYZER)
+     {
+@@ -143,14 +299,22 @@ void VisCallbacks::render_freq (const float * freq)
+             if (shaded)
+                 make_log_graph (freq, 13, 40, 8, data);
+             else
+-                make_log_graph (freq, 19, 40, 16, data);
++                make_log_graph (freq, 19, 40, 16 * S, data);
+         }
+         else
+         {
+             if (shaded)
+                 make_log_graph (freq, 37, 40, 8, data);
+             else
+-                make_log_graph (freq, 75, 40, 16, data);
++            {
++                if (S > 1 && hd_have)
++                {
++                    hd_fft ();
++                    make_log_graph_hd (75 * S, 40, 16 * S, data);
++                }
++                else
++                    make_log_graph (freq, 75 * S, 40, 16 * S, data);
++            }
+         }
+     }
+     else if (config.vis_type == VIS_VOICEPRINT && ! shaded)
+diff --git a/src/skins-qt/vis.cc b/src/skins-qt/vis.cc
+--- a/src/skins-qt/vis.cc
++++ b/src/skins-qt/vis.cc
+@@ -36,12 +36,20 @@ static const float vis_pfalloff_speeds[] = {1.2, 1.3, 1.4, 1.5, 1.6};
+ static const int vis_scope_colors[16] = {22, 22, 21, 21, 20, 10, 19, 19, 18,
+  19, 19, 20, 20, 21, 21, 22};
+ 
+-#define RGB_SEEK(x,y) (set = rgb + 76 * (y) + (x))
++#define RGB_SEEK(x,y) (set = rgb + W * (y) + (x))
+ #define RGB_SET(c) (* set ++ = (c))
+-#define RGB_SET_Y(c) do {* set = (c); set += 76;} while (0)
++#define RGB_SET_Y(c) do {* set = (c); set += W;} while (0)
+ #define RGB_SET_INDEX(c) RGB_SET (skin.vis_colors[c])
+ #define RGB_SET_INDEX_Y(c) RGB_SET_Y (skin.vis_colors[c])
+ 
++int vis_subpixel ()
++{
++    /* no point rendering subpixels the widget scale cannot show, and at
++       scale 1 this keeps rendering identical to upstream */
++    return aud::clamp (aud::min (skin.hints.skin_pixel_ratio, config.scale),
++     1, VIS_SUBPIXEL_MAX);
++}
++
+ void SkinnedVis::set_colors ()
+ {
+     uint32_t fgc = skin.colors[SKIN_TEXTFG];
+@@ -85,59 +93,79 @@ void SkinnedVis::set_colors ()
+ 
+ void SkinnedVis::draw (QPainter & cr)
+ {
+-    uint32_t rgb[76 * 16];
++    const int S = vis_subpixel ();
++    const int W = 76 * S, H = 16 * S;
++    uint32_t rgb[76 * VIS_SUBPIXEL_MAX * 16 * VIS_SUBPIXEL_MAX];
+     uint32_t * set;
+ 
+     if (config.vis_type != VIS_VOICEPRINT)
+     {
+-        for (set = rgb; set < rgb + 76 * 16; set += 76 * 2)
+-            memcpy (set, m_pattern_fill, sizeof m_pattern_fill);
++        uint32_t rows[76 * VIS_SUBPIXEL_MAX * 2];
++
++        for (int x = 0; x < W; x ++)
++        {
++            rows[x] = m_pattern_fill[x / S];
++            rows[W + x] = m_pattern_fill[76 + x / S];
++        }
++
++        for (int y = 0; y < H; y ++)
++            memcpy (rgb + W * y, rows + ((y / S) & 1) * W,
++             W * sizeof (uint32_t));
+     }
+ 
++    /* fill a rectangle of physical pixels */
++    auto fill = [&] (int x, int y, int w, int h, int ci) {
++        uint32_t c = skin.vis_colors[ci];
++        for (int yy = y; yy < y + h; yy ++)
++            for (int xx = x; xx < x + w; xx ++)
++                rgb[W * yy + xx] = c;
++    };
++
+     switch (config.vis_type)
+     {
+     case VIS_ANALYZER:
+     {
+         bool bars = (config.analyzer_type == ANALYZER_BARS);
++        int n = bars ? 19 : 75 * S;
++        int step = bars ? 4 * S : 1;
++        int xw = bars ? 3 * S : 1;
++        int pt = aud::max (1, (S + 1) / 2);
+ 
+-        for (int x = 0; x < 75; x ++)
++        for (int i = 0; i < n; i ++)
+         {
+-            if (bars && (x & 3) == 3)
+-                continue;
+-
+-            int h = m_data[bars ? (x >> 2) : x];
+-            h = aud::clamp (h, 0, 16);
+-            RGB_SEEK (x, 16 - h);
++            int x0 = i * step;
++            int h = aud::clamp ((int) m_data[i], 0, H);
++            int hl = (h + S - 1) / S;
+ 
+-            switch (config.analyzer_mode)
++            for (int dx = 0; dx < xw; dx ++)
+             {
+-            case ANALYZER_NORMAL:
+-                for (int y = 0; y < h; y ++)
+-                    RGB_SET_INDEX_Y (18 - h + y);
+-                break;
+-            case ANALYZER_FIRE:
+-                for (int y = 0; y < h; y ++)
+-                    RGB_SET_INDEX_Y (2 + y);
+-                break;
+-            default: /* ANALYZER_VLINES */
+-                for (int y = 0; y < h; y ++)
+-                    RGB_SET_INDEX_Y (18 - h);
+-                break;
++                RGB_SEEK (x0 + dx, H - h);
++
++                switch (config.analyzer_mode)
++                {
++                case ANALYZER_NORMAL:
++                    for (int y = 0; y < h; y ++)
++                        RGB_SET_INDEX_Y (18 - hl + y / S);
++                    break;
++                case ANALYZER_FIRE:
++                    for (int y = 0; y < h; y ++)
++                        RGB_SET_INDEX_Y (2 + y / S);
++                    break;
++                default: /* ANALYZER_VLINES */
++                    for (int y = 0; y < h; y ++)
++                        RGB_SET_INDEX_Y (18 - hl);
++                    break;
++                }
+             }
+ 
+             if (config.analyzer_peaks)
+             {
+-                int h = m_peak[bars ? (x >> 2) : x];
+-                h = aud::clamp (h, 0, 16);
++                int p = aud::clamp ((int) m_peak[i], 0, H);
+ 
+-                if (h)
+-                {
+-                    RGB_SEEK (x, 16 - h);
+-                    RGB_SET_INDEX (23);
+-                }
++                if (p)
++                    fill (x0, H - p, xw, aud::min (pt, p), 23);
+             }
+         }
+-
+         break;
+     }
+     case VIS_VOICEPRINT:
+@@ -152,16 +180,19 @@ void SkinnedVis::draw (QPainter & cr)
+                 m_voiceprint_data[76 * y + 75] = m_data[y];
+         }
+ 
+-        unsigned char * get = m_voiceprint_data;
+         uint32_t * colors = (config.voiceprint_mode == VOICEPRINT_NORMAL) ?
+          m_voice_color : (config.voiceprint_mode == VOICEPRINT_FIRE) ?
+          m_voice_color_fire : /* VOICEPRINT_ICE */ m_voice_color_ice;
+-        set = rgb;
+ 
+         for (int y = 0; y < 16; y ++)
+         {
+-            for (int x = 0; x < 76; x ++)
+-                RGB_SET (colors[* get ++]);
++            uint32_t * row = rgb + W * y * S;
++
++            for (int x = 0; x < W; x ++)
++                row[x] = colors[m_voiceprint_data[76 * y + x / S]];
++
++            for (int k = 1; k < S; k ++)
++                memcpy (row + W * k, row, W * sizeof (uint32_t));
+         }
+         break;
+     }
+@@ -175,8 +206,7 @@ void SkinnedVis::draw (QPainter & cr)
+             for (int x = 0; x < 75; x ++)
+             {
+                 int h = aud::clamp ((int) m_data[x], 0, 15);
+-                RGB_SEEK (x, h);
+-                RGB_SET_INDEX (vis_scope_colors[h]);
++                fill (x * S, h * S, S, S, vis_scope_colors[h]);
+             }
+             break;
+         case SCOPE_LINE:
+@@ -195,15 +225,12 @@ void SkinnedVis::draw (QPainter & cr)
+                     h2 = temp;
+                 }
+ 
+-                RGB_SEEK (x, h);
+-
+                 for (int y = h; y <= h2; y ++)
+-                    RGB_SET_INDEX_Y (vis_scope_colors[y]);
++                    fill (x * S, y * S, S, S, vis_scope_colors[y]);
+             }
+ 
+             int h = aud::clamp ((int) m_data[74], 0, 15);
+-            RGB_SEEK (74, h);
+-            RGB_SET_INDEX (vis_scope_colors[h]);
++            fill (74 * S, h * S, S, S, vis_scope_colors[h]);
+             break;
+         }
+         default: /* SCOPE_SOLID */
+@@ -220,10 +247,8 @@ void SkinnedVis::draw (QPainter & cr)
+                     h = 8;
+                 }
+ 
+-                RGB_SEEK (x, h);
+-
+                 for (int y = h; y <= h2; y ++)
+-                    RGB_SET_INDEX_Y (vis_scope_colors[y]);
++                    fill (x * S, y * S, S, S, vis_scope_colors[y]);
+             }
+             break;
+         }
+@@ -231,8 +256,11 @@ void SkinnedVis::draw (QPainter & cr)
+     }
+ 
+ DRAW:
+-    QImage image ((unsigned char *) rgb, 76, 16, 4 * 76, QImage::Format_RGB32);
++    QImage image ((unsigned char *) rgb, W, H, 4 * W, QImage::Format_RGB32);
++    cr.save ();
++    cr.scale (1.0 / S, 1.0 / S);
+     cr.drawImage (0, 0, image);
++    cr.restore ();
+ }
+ 
+ SkinnedVis::SkinnedVis ()
+@@ -259,7 +287,8 @@ void SkinnedVis::render (const unsigned char * data)
+ {
+     if (config.vis_type == VIS_ANALYZER)
+     {
+-        const int n = (config.analyzer_type == ANALYZER_BARS) ? 19 : 75;
++        const int S = vis_subpixel ();
++        const int n = (config.analyzer_type == ANALYZER_BARS) ? 19 : 75 * S;
+ 
+         for (int i = 0; i < n; i ++)
+         {
+@@ -269,7 +298,7 @@ void SkinnedVis::render (const unsigned char * data)
+                 if (m_data[i] > m_peak[i])
+                 {
+                     m_peak[i] = m_data[i];
+-                    m_peak_speed[i] = 0.01;
++                    m_peak_speed[i] = 0.01 * S;
+ 
+                 }
+                 else if (m_peak[i] > 0.0)
+@@ -286,7 +315,7 @@ void SkinnedVis::render (const unsigned char * data)
+             {
+                 if (m_data[i] > 0.0)
+                 {
+-                    m_data[i] -= vis_afalloff_speeds[config.analyzer_falloff];
++                    m_data[i] -= vis_afalloff_speeds[config.analyzer_falloff] * S;
+                     if (m_data[i] < 0.0)
+                         m_data[i] = 0.0;
+                 }
+diff --git a/src/skins-qt/vis.h b/src/skins-qt/vis.h
+--- a/src/skins-qt/vis.h
++++ b/src/skins-qt/vis.h
+@@ -24,6 +24,11 @@
+ #include <stdint.h>
+ #include "widget.h"
+ 
++/* subpixel resolution factor for hi-res skins (skinPixelRatio) */
++#define VIS_SUBPIXEL_MAX 4
++
++int vis_subpixel ();
++
+ typedef enum {
+     VIS_ANALYZER, VIS_SCOPE, VIS_VOICEPRINT, VIS_OFF
+ } VisType;
+@@ -69,7 +74,8 @@ private:
+     uint32_t m_pattern_fill[76 * 2];
+ 
+     bool m_active, m_voiceprint_advance;
+-    float m_data[75], m_peak[75], m_peak_speed[75];
++    float m_data[75 * VIS_SUBPIXEL_MAX], m_peak[75 * VIS_SUBPIXEL_MAX],
++     m_peak_speed[75 * VIS_SUBPIXEL_MAX];
+     unsigned char m_voiceprint_data[76 * 16];
+ };
+ 
+diff --git a/src/skins/vis-callbacks.cc b/src/skins/vis-callbacks.cc
+--- a/src/skins/vis-callbacks.cc
++++ b/src/skins/vis-callbacks.cc
+@@ -27,6 +27,7 @@
+ #include <libaudcore/runtime.h>
+ 
+ #include "skins_cfg.h"
++#include "skin.h"
+ #include "main.h"
+ #include "vis-callbacks.h"
+ #include "vis.h"
+@@ -43,8 +44,81 @@ public:
+     void render_freq (const float * freq) override;
+ };
+ 
++/* ---- hi-res analyzer: the core's 512-point FFT resolves the whole bass
++   region into 2-3 bins, so a dense hi-res graph only repeats them in
++   staircase plateaus.  Re-run the transform on the same 512 frames the
++   core hands us, zero-padded to 2048, which interpolates that spectrum
++   exactly onto a 4x finer bin grid.  The blocks arrive 33 ms apart and
++   are not contiguous, so they must not be concatenated. ---- */
++#define HD_N 2048
++
++static float hd_pcm[512];
++static float hd_freq[HD_N / 2];
++static bool hd_have = false;
++
++static void hd_feed (const float * pcm)
++{
++    memcpy (hd_pcm, pcm, sizeof hd_pcm);
++    hd_have = true;
++}
++
++static void hd_fft ()
++{
++    static float window[512];
++    static int rev[HD_N];
++    static bool init = false;
++
++    if (! init)
++    {
++        /* the core's window and scaling, so hd bin 4 * (n + 1) comes out
++           equal to the core's freq[n] */
++        for (int i = 0; i < 512; i ++)
++            window[i] = 1 - 0.85f * cosf (2 * (float) M_PI * i / 512);
++        for (int i = 0; i < HD_N; i ++)
++        {
++            int r = 0;
++            for (int b = 0; (1 << b) < HD_N; b ++)
++                r = (r << 1) | ((i >> b) & 1);
++            rev[i] = r;
++        }
++        init = true;
++    }
++
++    static float re[HD_N], im[HD_N];
++    memset (re, 0, sizeof re);
++    memset (im, 0, sizeof im);
++    for (int i = 0; i < 512; i ++)
++        re[rev[i]] = hd_pcm[i] * window[i];
++
++    for (int len = 2; len <= HD_N; len <<= 1)
++    {
++        float ang = -2 * (float) M_PI / len;
++        float wr = cosf (ang), wi = sinf (ang);
++        for (int i = 0; i < HD_N; i += len)
++        {
++            float cr = 1, ci = 0;
++            for (int j = 0; j < len / 2; j ++)
++            {
++                float vr = re[i + j + len / 2] * cr - im[i + j + len / 2] * ci;
++                float vi = re[i + j + len / 2] * ci + im[i + j + len / 2] * cr;
++                re[i + j + len / 2] = re[i + j] - vr;
++                im[i + j + len / 2] = im[i + j] - vi;
++                re[i + j] += vr;
++                im[i + j] += vi;
++                float nr = cr * wr - ci * wi;
++                ci = cr * wi + ci * wr;
++                cr = nr;
++            }
++        }
++    }
++
++    for (int k = 0; k < HD_N / 2; k ++)
++        hd_freq[k] = sqrtf (re[k] * re[k] + im[k] * im[k]) * 2 / 512;
++}
++
+ void VisCallbacks::clear ()
+ {
++    hd_have = false;
+     mainwin_vis->clear ();
+     mainwin_svis->clear ();
+ }
+@@ -53,6 +127,9 @@ void VisCallbacks::render_mono_pcm (const float * pcm)
+ {
+     unsigned char data[512];
+ 
++    if (vis_subpixel () > 1)
++        hd_feed (pcm);
++
+     if (config.vis_type != VIS_SCOPE)
+         return;
+ 
+@@ -106,6 +183,22 @@ void VisCallbacks::render_multi_pcm (const float * pcm, int channels)
+     mainwin_svis->render (data);
+ }
+ 
++/* magnitude at a fractional bin, Catmull-Rom over the four nearest bins:
++   dense hi-res graphs then curve smoothly instead of repeating bins in
++   staircase plateaus, and interpolating magnitude (not dB) keeps the wide
++   shoulders of tonal peaks that upstream's bin summation produces */
++static float interp_bin (const float * mag, int nbins, float c)
++{
++    int k = aud::clamp ((int) c, 0, nbins - 1);
++    float t = c - k;
++    float d[4];
++    for (int j = 0; j < 4; j ++)
++        d[j] = mag[aud::clamp (k + j - 1, 0, nbins - 1)];
++    return d[1] + 0.5f * t * (d[2] - d[0] + t * (2 * d[0]
++     - 5 * d[1] + 4 * d[2] - d[3] + t * (3 * (d[1] - d[2])
++     + d[3] - d[0])));
++}
++
+ /* convert linear frequency graph to logarithmic one */
+ static void make_log_graph (const float * freq, int bands, int db_range,
+  int int_range, unsigned char * graph)
+@@ -121,20 +214,83 @@ static void make_log_graph (const float * freq, int bands, int db_range,
+         last_bands = bands;
+     }
+ 
++    const bool hd = vis_subpixel () > 1;
++
+     for (int i = 0; i < bands; i ++)
+     {
+-        float val = Visualizer::compute_freq_band (freq, & xscale[0], i, bands);
++        float val;
++
++        if (xscale[i + 1] - xscale[i] < 1.0f && hd)
++        {
++            float m = interp_bin (freq, 256, (xscale[i] + xscale[i + 1]) / 2);
++            float w = (xscale[i + 1] - xscale[i]) * (float) bands / 12;
++            val = 20 * log10f (aud::max (m, 1e-9f) * w);
++        }
++        else
++            val = Visualizer::compute_freq_band (freq, & xscale[0], i, bands);
++
+         /* scale (-db_range, 0.0) to (0.0, int_range) */
+         val = (1 + val / db_range) * int_range;
+         graph[i] = aud::clamp ((int) val, 0, int_range);
+     }
+ }
+ 
++/* same log mapping over the 1024-bin local FFT; xscale is in hd-bin
++   units, where the core's index n sits at hd bin 4 * (n + 1), and the
++   band widths are normalised back to core-bin units so levels match the
++   256-bin path */
++static void make_log_graph_hd (int bands, int db_range, int int_range,
++ unsigned char * graph)
++{
++    static int last_bands = 0;
++    static Index<float> xscale;
++
++    if (bands != last_bands)
++    {
++        xscale.resize (bands + 1);
++        for (int i = 0; i <= bands; i ++)
++            xscale[i] = (powf (256, (float) i / bands) + 0.5f) * 4;
++        last_bands = bands;
++    }
++
++    for (int i = 0; i < bands; i ++)
++    {
++        float val;
++        float width = xscale[i + 1] - xscale[i];
++
++        if (width < 1.0f)
++        {
++            float m = interp_bin (hd_freq, HD_N / 2,
++             (xscale[i] + xscale[i + 1]) / 2);
++            float w = width / 4 * (float) bands / 12;
++            val = 20 * log10f (aud::max (m, 1e-9f) * w);
++        }
++        else
++        {
++            int a = ceilf (xscale[i]);
++            int b = floorf (xscale[i + 1]);
++            float n = 0;
++            if (a > 0 && a - 1 < HD_N / 2)
++                n += hd_freq[a - 1] * (a - xscale[i]);
++            for (; a < b && a < HD_N / 2; a ++)
++                n += hd_freq[a];
++            if (b < HD_N / 2)
++                n += hd_freq[b] * (xscale[i + 1] - b);
++            n *= (float) bands / 12 * 0.25f;
++            val = 20 * log10f (aud::max (n, 1e-9f));
++        }
++
++        val = (1 + val / db_range) * int_range;
++        graph[i] = aud::clamp ((int) val, 0, int_range);
++    }
++}
++
+ void VisCallbacks::render_freq (const float * freq)
+ {
+     bool shaded = aud_get_bool ("skins", "player_shaded");
+ 
+     unsigned char data[512];
++    int S = vis_subpixel ();
+ 
+     if (config.vis_type == VIS_ANALYZER)
+     {
+@@ -143,14 +299,22 @@ void VisCallbacks::render_freq (const float * freq)
+             if (shaded)
+                 make_log_graph (freq, 13, 40, 8, data);
+             else
+-                make_log_graph (freq, 19, 40, 16, data);
++                make_log_graph (freq, 19, 40, 16 * S, data);
+         }
+         else
+         {
+             if (shaded)
+                 make_log_graph (freq, 37, 40, 8, data);
+             else
+-                make_log_graph (freq, 75, 40, 16, data);
++            {
++                if (S > 1 && hd_have)
++                {
++                    hd_fft ();
++                    make_log_graph_hd (75 * S, 40, 16 * S, data);
++                }
++                else
++                    make_log_graph (freq, 75 * S, 40, 16 * S, data);
++            }
+         }
+     }
+     else if (config.vis_type == VIS_VOICEPRINT && ! shaded)
+diff --git a/src/skins/vis.cc b/src/skins/vis.cc
+--- a/src/skins/vis.cc
++++ b/src/skins/vis.cc
+@@ -36,12 +36,20 @@ static const float vis_pfalloff_speeds[] = {1.2, 1.3, 1.4, 1.5, 1.6};
+ static const int vis_scope_colors[16] = {22, 22, 21, 21, 20, 10, 19, 19, 18,
+  19, 19, 20, 20, 21, 21, 22};
+ 
+-#define RGB_SEEK(x,y) (set = rgb + 76 * (y) + (x))
++#define RGB_SEEK(x,y) (set = rgb + W * (y) + (x))
+ #define RGB_SET(c) (* set ++ = (c))
+-#define RGB_SET_Y(c) do {* set = (c); set += 76;} while (0)
++#define RGB_SET_Y(c) do {* set = (c); set += W;} while (0)
+ #define RGB_SET_INDEX(c) RGB_SET (skin.vis_colors[c])
+ #define RGB_SET_INDEX_Y(c) RGB_SET_Y (skin.vis_colors[c])
+ 
++int vis_subpixel ()
++{
++    /* no point rendering subpixels the widget scale cannot show, and at
++       scale 1 this keeps rendering identical to upstream */
++    return aud::clamp (aud::min (skin.hints.skin_pixel_ratio, config.scale),
++     1, VIS_SUBPIXEL_MAX);
++}
++
+ void SkinnedVis::set_colors ()
+ {
+     uint32_t fgc = skin.colors[SKIN_TEXTFG];
+@@ -85,59 +93,79 @@ void SkinnedVis::set_colors ()
+ 
+ void SkinnedVis::draw (cairo_t * cr)
+ {
+-    uint32_t rgb[76 * 16];
++    const int S = vis_subpixel ();
++    const int W = 76 * S, H = 16 * S;
++    uint32_t rgb[76 * VIS_SUBPIXEL_MAX * 16 * VIS_SUBPIXEL_MAX];
+     uint32_t * set;
+ 
+     if (config.vis_type != VIS_VOICEPRINT)
+     {
+-        for (set = rgb; set < rgb + 76 * 16; set += 76 * 2)
+-            memcpy (set, m_pattern_fill, sizeof m_pattern_fill);
++        uint32_t rows[76 * VIS_SUBPIXEL_MAX * 2];
++
++        for (int x = 0; x < W; x ++)
++        {
++            rows[x] = m_pattern_fill[x / S];
++            rows[W + x] = m_pattern_fill[76 + x / S];
++        }
++
++        for (int y = 0; y < H; y ++)
++            memcpy (rgb + W * y, rows + ((y / S) & 1) * W,
++             W * sizeof (uint32_t));
+     }
+ 
++    /* fill a rectangle of physical pixels */
++    auto fill = [&] (int x, int y, int w, int h, int ci) {
++        uint32_t c = skin.vis_colors[ci];
++        for (int yy = y; yy < y + h; yy ++)
++            for (int xx = x; xx < x + w; xx ++)
++                rgb[W * yy + xx] = c;
++    };
++
+     switch (config.vis_type)
+     {
+     case VIS_ANALYZER:
+     {
+         bool bars = (config.analyzer_type == ANALYZER_BARS);
++        int n = bars ? 19 : 75 * S;
++        int step = bars ? 4 * S : 1;
++        int xw = bars ? 3 * S : 1;
++        int pt = aud::max (1, (S + 1) / 2);
+ 
+-        for (int x = 0; x < 75; x ++)
++        for (int i = 0; i < n; i ++)
+         {
+-            if (bars && (x & 3) == 3)
+-                continue;
+-
+-            int h = m_data[bars ? (x >> 2) : x];
+-            h = aud::clamp (h, 0, 16);
+-            RGB_SEEK (x, 16 - h);
++            int x0 = i * step;
++            int h = aud::clamp ((int) m_data[i], 0, H);
++            int hl = (h + S - 1) / S;
+ 
+-            switch (config.analyzer_mode)
++            for (int dx = 0; dx < xw; dx ++)
+             {
+-            case ANALYZER_NORMAL:
+-                for (int y = 0; y < h; y ++)
+-                    RGB_SET_INDEX_Y (18 - h + y);
+-                break;
+-            case ANALYZER_FIRE:
+-                for (int y = 0; y < h; y ++)
+-                    RGB_SET_INDEX_Y (2 + y);
+-                break;
+-            default: /* ANALYZER_VLINES */
+-                for (int y = 0; y < h; y ++)
+-                    RGB_SET_INDEX_Y (18 - h);
+-                break;
++                RGB_SEEK (x0 + dx, H - h);
++
++                switch (config.analyzer_mode)
++                {
++                case ANALYZER_NORMAL:
++                    for (int y = 0; y < h; y ++)
++                        RGB_SET_INDEX_Y (18 - hl + y / S);
++                    break;
++                case ANALYZER_FIRE:
++                    for (int y = 0; y < h; y ++)
++                        RGB_SET_INDEX_Y (2 + y / S);
++                    break;
++                default: /* ANALYZER_VLINES */
++                    for (int y = 0; y < h; y ++)
++                        RGB_SET_INDEX_Y (18 - hl);
++                    break;
++                }
+             }
+ 
+             if (config.analyzer_peaks)
+             {
+-                int h = m_peak[bars ? (x >> 2) : x];
+-                h = aud::clamp (h, 0, 16);
++                int p = aud::clamp ((int) m_peak[i], 0, H);
+ 
+-                if (h)
+-                {
+-                    RGB_SEEK (x, 16 - h);
+-                    RGB_SET_INDEX (23);
+-                }
++                if (p)
++                    fill (x0, H - p, xw, aud::min (pt, p), 23);
+             }
+         }
+-
+         break;
+     }
+     case VIS_VOICEPRINT:
+@@ -152,16 +180,19 @@ void SkinnedVis::draw (cairo_t * cr)
+                 m_voiceprint_data[76 * y + 75] = m_data[y];
+         }
+ 
+-        unsigned char * get = m_voiceprint_data;
+         uint32_t * colors = (config.voiceprint_mode == VOICEPRINT_NORMAL) ?
+          m_voice_color : (config.voiceprint_mode == VOICEPRINT_FIRE) ?
+          m_voice_color_fire : /* VOICEPRINT_ICE */ m_voice_color_ice;
+-        set = rgb;
+ 
+         for (int y = 0; y < 16; y ++)
+         {
+-            for (int x = 0; x < 76; x ++)
+-                RGB_SET (colors[* get ++]);
++            uint32_t * row = rgb + W * y * S;
++
++            for (int x = 0; x < W; x ++)
++                row[x] = colors[m_voiceprint_data[76 * y + x / S]];
++
++            for (int k = 1; k < S; k ++)
++                memcpy (row + W * k, row, W * sizeof (uint32_t));
+         }
+         break;
+     }
+@@ -175,8 +206,7 @@ void SkinnedVis::draw (cairo_t * cr)
+             for (int x = 0; x < 75; x ++)
+             {
+                 int h = aud::clamp ((int) m_data[x], 0, 15);
+-                RGB_SEEK (x, h);
+-                RGB_SET_INDEX (vis_scope_colors[h]);
++                fill (x * S, h * S, S, S, vis_scope_colors[h]);
+             }
+             break;
+         case SCOPE_LINE:
+@@ -195,15 +225,12 @@ void SkinnedVis::draw (cairo_t * cr)
+                     h2 = temp;
+                 }
+ 
+-                RGB_SEEK (x, h);
+-
+                 for (int y = h; y <= h2; y ++)
+-                    RGB_SET_INDEX_Y (vis_scope_colors[y]);
++                    fill (x * S, y * S, S, S, vis_scope_colors[y]);
+             }
+ 
+             int h = aud::clamp ((int) m_data[74], 0, 15);
+-            RGB_SEEK (74, h);
+-            RGB_SET_INDEX (vis_scope_colors[h]);
++            fill (74 * S, h * S, S, S, vis_scope_colors[h]);
+             break;
+         }
+         default: /* SCOPE_SOLID */
+@@ -220,10 +247,8 @@ void SkinnedVis::draw (cairo_t * cr)
+                     h = 8;
+                 }
+ 
+-                RGB_SEEK (x, h);
+-
+                 for (int y = h; y <= h2; y ++)
+-                    RGB_SET_INDEX_Y (vis_scope_colors[y]);
++                    fill (x * S, y * S, S, S, vis_scope_colors[y]);
+             }
+             break;
+         }
+@@ -232,10 +257,13 @@ void SkinnedVis::draw (cairo_t * cr)
+ 
+ DRAW:
+     cairo_surface_t * surf = cairo_image_surface_create_for_data
+-     ((unsigned char *) rgb, CAIRO_FORMAT_RGB24, 76, 16, 4 * 76);
++     ((unsigned char *) rgb, CAIRO_FORMAT_RGB24, W, H, 4 * W);
++    cairo_save (cr);
++    cairo_scale (cr, 1.0 / S, 1.0 / S);
+     cairo_set_source_surface (cr, surf, 0, 0);
+     cairo_pattern_set_filter (cairo_get_source (cr), CAIRO_FILTER_NEAREST);
+     cairo_paint (cr);
++    cairo_restore (cr);
+     cairo_surface_destroy (surf);
+ }
+ 
+@@ -263,7 +291,8 @@ void SkinnedVis::render (const unsigned char * data)
+ {
+     if (config.vis_type == VIS_ANALYZER)
+     {
+-        const int n = (config.analyzer_type == ANALYZER_BARS) ? 19 : 75;
++        const int S = vis_subpixel ();
++        const int n = (config.analyzer_type == ANALYZER_BARS) ? 19 : 75 * S;
+ 
+         for (int i = 0; i < n; i ++)
+         {
+@@ -273,7 +302,7 @@ void SkinnedVis::render (const unsigned char * data)
+                 if (m_data[i] > m_peak[i])
+                 {
+                     m_peak[i] = m_data[i];
+-                    m_peak_speed[i] = 0.01;
++                    m_peak_speed[i] = 0.01 * S;
+ 
+                 }
+                 else if (m_peak[i] > 0.0)
+@@ -290,7 +319,7 @@ void SkinnedVis::render (const unsigned char * data)
+             {
+                 if (m_data[i] > 0.0)
+                 {
+-                    m_data[i] -= vis_afalloff_speeds[config.analyzer_falloff];
++                    m_data[i] -= vis_afalloff_speeds[config.analyzer_falloff] * S;
+                     if (m_data[i] < 0.0)
+                         m_data[i] = 0.0;
+                 }
+diff --git a/src/skins/vis.h b/src/skins/vis.h
+--- a/src/skins/vis.h
++++ b/src/skins/vis.h
+@@ -24,6 +24,11 @@
+ #include <stdint.h>
+ #include "widget.h"
+ 
++/* subpixel resolution factor for hi-res skins (skinPixelRatio) */
++#define VIS_SUBPIXEL_MAX 4
++
++int vis_subpixel ();
++
+ typedef enum {
+     VIS_ANALYZER, VIS_SCOPE, VIS_VOICEPRINT, VIS_OFF
+ } VisType;
+@@ -69,7 +74,8 @@ private:
+     uint32_t m_pattern_fill[76 * 2];
+ 
+     bool m_active, m_voiceprint_advance;
+-    float m_data[75], m_peak[75], m_peak_speed[75];
++    float m_data[75 * VIS_SUBPIXEL_MAX], m_peak[75 * VIS_SUBPIXEL_MAX],
++     m_peak_speed[75 * VIS_SUBPIXEL_MAX];
+     unsigned char m_voiceprint_data[76 * 16];
+ };
+ 

@@ -1,0 +1,489 @@
+diff --git a/src/skins-qt/eq-graph.cc b/src/skins-qt/eq-graph.cc
+--- a/src/skins-qt/eq-graph.cc
++++ b/src/skins-qt/eq-graph.cc
+@@ -84,7 +84,9 @@ void EqGraph::draw (QPainter & cr)
+ {
+     static const double x[N] = {0, 11, 23, 35, 47, 59, 71, 83, 97, 109};
+ 
+-    if (skin.pixmaps[SKIN_EQMAIN].height () < 313)
++    int r = skin.hints.skin_pixel_ratio;
++
++    if (skin.pixmaps[SKIN_EQMAIN].height () < 313 * r)
+         return;
+ 
+     skin_draw_pixbuf (cr, SKIN_EQMAIN, 0, 294, 0, 0, 113, 19);
+@@ -97,6 +99,33 @@ void EqGraph::draw (QPainter & cr)
+     double yf[N];
+     init_spline (x, bands, yf);
+ 
++    if (r > 1)
++    {
++        /* hi-res skin: draw the curve as an anti-aliased polyline */
++        double yc[109];
++        for (int i = 0; i < 109; i ++)
++            yc[i] = aud::clamp (10.0 - eval_spline (x, bands, yf, i) * 9 /
++             AUD_EQ_MAX_GAIN, 0.5, 18.5);
++
++        cr.save ();
++        cr.setRenderHint (QPainter::Antialiasing);
++
++        QPen pen;
++        pen.setWidthF (1.15);
++        pen.setCapStyle (Qt::RoundCap);
++
++        for (int i = 1; i < 109; i ++)
++        {
++            int ci = (int) (yc[i] - 0.5);
++            pen.setColor (QColor (skin.eq_spline_colors[ci]));
++            cr.setPen (pen);
++            cr.drawLine (QLineF (i + 1.5, yc[i - 1], i + 2.5, yc[i]));
++        }
++
++        cr.restore ();
++        return;
++    }
++
+     int py = 0;
+     for (int i = 0; i < 109; i ++)
+     {
+diff --git a/src/skins-qt/playlistwin.cc b/src/skins-qt/playlistwin.cc
+--- a/src/skins-qt/playlistwin.cc
++++ b/src/skins-qt/playlistwin.cc
+@@ -151,6 +151,16 @@ static void playlistwin_scroll_down_pushed ()
+     playlistwin_scroll (1);
+ }
+ 
++static int sinfo_width (int w)
++{
++    return w - ((skin.hints.skin_pixel_ratio > 1) ? 37 : 35);
++}
++
++void playlistwin_refresh_hints ()
++{
++    playlistwin_sinfo->set_width (sinfo_width (config.playlist_width));
++}
++
+ /* note: height is ignored if the window is shaded */
+ static void playlistwin_resize (int w, int h)
+ {
+@@ -202,7 +212,7 @@ static void playlistwin_resize (int w, int h)
+     playlistwin->move_widget (false, resize_handle, w - 20, h - 20);
+     playlistwin->move_widget (true, sresize_handle, w - 31, 0);
+ 
+-    playlistwin_sinfo->set_width (w - 35);
++    playlistwin_sinfo->set_width (sinfo_width (w));
+ 
+     playlistwin->move_widget (false, button_add, 12, h - 29);
+     playlistwin->move_widget (false, button_sub, 40, h - 29);
+@@ -355,7 +365,7 @@ static void playlistwin_create_widgets ()
+     int w = config.playlist_width, h = config.playlist_height;
+ 
+     bool shaded = aud_get_bool ("skins", "playlist_shaded");
+-    playlistwin_sinfo = new TextBox (w - 35, nullptr, shaded && config.autoscroll);
++    playlistwin_sinfo = new TextBox (sinfo_width (w), nullptr, shaded && config.autoscroll);
+     playlistwin->put_widget (true, playlistwin_sinfo, 4, 4);
+ 
+     playlistwin_shaded_shade = new Button (9, 9, 128, 45, 150, 42, SKIN_PLEDIT, SKIN_PLEDIT);
+diff --git a/src/skins-qt/playlistwin.h b/src/skins-qt/playlistwin.h
+--- a/src/skins-qt/playlistwin.h
++++ b/src/skins-qt/playlistwin.h
+@@ -30,6 +30,7 @@ class Window;
+ void playlistwin_create ();
+ void playlistwin_unhook ();
+ void playlistwin_hide_timer ();
++void playlistwin_refresh_hints ();
+ void playlistwin_set_time (const char * minutes, const char * seconds);
+ 
+ extern Window * playlistwin;
+diff --git a/src/skins-qt/skin-ini.cc b/src/skins-qt/skin-ini.cc
+--- a/src/skins-qt/skin-ini.cc
++++ b/src/skins-qt/skin-ini.cc
+@@ -98,6 +98,7 @@ static const HintPair hint_pairs[] = {
+     {"mainwinvolumex", & skin.hints.mainwin_volume_x},
+     {"mainwinvolumey", & skin.hints.mainwin_volume_y},
+     {"mainwinwidth", & skin.hints.mainwin_width},
++    {"skinpixelratio", & skin.hints.skin_pixel_ratio},
+     {"textboxbitmapfontheight", & skin.hints.textbox_bitmap_font_height},
+     {"textboxbitmapfontwidth", & skin.hints.textbox_bitmap_font_width},
+ };
+diff --git a/src/skins-qt/skin.cc b/src/skins-qt/skin.cc
+--- a/src/skins-qt/skin.cc
++++ b/src/skins-qt/skin.cc
+@@ -122,6 +122,12 @@ static int color_diff (uint32_t a, uint32_t b)
+     return abs (qRed (a) - qRed (b)) + abs (qGreen (a) - qGreen (b)) + abs (qBlue (a) - qBlue (b));
+ }
+ 
++/* centre of the r x r block a classic 1x pixel expands to */
++static int ctr (int v, int r)
++{
++    return v * r + r / 2;
++}
++
+ static void skin_get_textcolors (const QImage & image)
+ {
+     /*
+@@ -129,15 +135,17 @@ static void skin_get_textcolors (const QImage & image)
+      * from the font pixmap
+      */
+ 
++    int r = skin.hints.skin_pixel_ratio;
++
+     /* Get a pixel from the middle of the space character */
+-    skin.colors[SKIN_TEXTBG] = image.pixel (152, 3);
++    skin.colors[SKIN_TEXTBG] = image.pixel (ctr (152, r), ctr (3, r));
+ 
+     int max_d = -1;
+     for (int y = 0; y < 6; y ++)
+     {
+         for (int x = 1; x < 150; x ++)
+         {
+-            uint32_t c = image.pixel (x, y);
++            uint32_t c = image.pixel (ctr (x, r), ctr (y, r));
+             int d = color_diff (skin.colors[SKIN_TEXTBG], c);
+             if (d > max_d)
+             {
+@@ -150,11 +158,13 @@ static void skin_get_textcolors (const QImage & image)
+ 
+ static void skin_get_eq_spline_colors (const QImage & image)
+ {
+-    if (image.height () < 313)
++    int r = skin.hints.skin_pixel_ratio;
++
++    if (image.height () < 313 * r)
+         return;
+ 
+     for (int i = 0; i < 19; i ++)
+-        skin.eq_spline_colors[i] = image.pixel (115, i + 294);
++        skin.eq_spline_colors[i] = image.pixel (ctr (115, r), ctr (i + 294, r));
+ }
+ 
+ static void skin_load_viscolor (const char * path)
+@@ -184,18 +194,20 @@ static void skin_load_viscolor (const char * path)
+ 
+ static void skin_numbers_generate_dash (QImage & image)
+ {
++    int r = skin.hints.skin_pixel_ratio;
++
+     int w = image.width ();
+-    if (w < 99 || w >= 108)
++    if (w < 99 * r || w >= 108 * r)
+         return;
+ 
+     int h = image.height ();
+-    QImage temp (108, h, QImage::Format_RGB32);
++    QImage temp (108 * r, h, QImage::Format_RGB32);
+ 
+     {
+         QPainter p (& temp);
+-        p.drawImage (0, 0, image, 0, 0, 99, h);
+-        p.drawImage (99, 0, image, 90, 0, 9, h);
+-        p.drawImage (101, 6, image, 20, 6, 5, 1);
++        p.drawImage (0, 0, image, 0, 0, 99 * r, h);
++        p.drawImage (99 * r, 0, image, 90 * r, 0, 9 * r, h);
++        p.drawImage (101 * r, 6 * r, image, 20 * r, 6 * r, 5 * r, r);
+     }
+ 
+     image = std::move (temp);
+@@ -239,11 +251,13 @@ static bool skin_load_data (const char * path)
+         path = archive_path;
+     }
+ 
++    skin_load_hints (path);
++    skin.hints.skin_pixel_ratio = aud::clamp (skin.hints.skin_pixel_ratio, 1, 8);
++
+     bool success = skin_load_pixmaps (path);
+ 
+     if (success)
+     {
+-        skin_load_hints (path);
+         skin_load_pl_colors (path);
+         skin_load_viscolor (path);
+         skin_load_masks (path);
+@@ -311,8 +325,19 @@ void skin_install_skin (const char * path)
+ void skin_draw_pixbuf (QPainter & p, SkinPixmapId id, int xsrc, int ysrc, int
+  xdest, int ydest, int width, int height)
+ {
+-    if (! skin.pixmaps[id].isNull ())
++    if (skin.pixmaps[id].isNull ())
++        return;
++
++    int r = skin.hints.skin_pixel_ratio;
++
++    if (r == 1)
+         p.drawImage (xdest, ydest, skin.pixmaps[id], xsrc, ysrc, width, height);
++    else
++    {
++        p.setRenderHint (QPainter::SmoothPixmapTransform);
++        p.drawImage (QRect (xdest, ydest, width, height), skin.pixmaps[id],
++         QRect (xsrc * r, ysrc * r, width * r, height * r));
++    }
+ }
+ 
+ static void skin_draw_playlistwin_frame_top (QPainter & cr, int width, bool focus)
+diff --git a/src/skins-qt/skin.h b/src/skins-qt/skin.h
+--- a/src/skins-qt/skin.h
++++ b/src/skins-qt/skin.h
+@@ -163,6 +163,8 @@ struct SkinHints {
+ 
+     int textbox_bitmap_font_width = 5;
+     int textbox_bitmap_font_height = 6;
++
++    int skin_pixel_ratio = 1;
+ };
+ 
+ struct Skin {
+diff --git a/src/skins-qt/view.cc b/src/skins-qt/view.cc
+--- a/src/skins-qt/view.cc
++++ b/src/skins-qt/view.cc
+@@ -355,6 +355,7 @@ void view_apply_skin ()
+       scale_mask (skin.masks[SKIN_MASK_EQ_SHADE], config.scale));
+ 
+     mainwin_refresh_hints ();
++    playlistwin_refresh_hints ();
+     view_apply_equalizer_shaded ();
+     TextBox::update_all ();
+ 
+diff --git a/src/skins/eq-graph.cc b/src/skins/eq-graph.cc
+--- a/src/skins/eq-graph.cc
++++ b/src/skins/eq-graph.cc
+@@ -84,7 +84,10 @@ void EqGraph::draw (cairo_t * cr)
+ {
+     static const double x[N] = {0, 11, 23, 35, 47, 59, 71, 83, 97, 109};
+ 
+-    if (cairo_image_surface_get_height (skin.pixmaps[SKIN_EQMAIN].get ()) < 313)
++    int r = skin.hints.skin_pixel_ratio;
++
++    if (cairo_image_surface_get_height (skin.pixmaps[SKIN_EQMAIN].get ()) <
++     313 * r)
+         return;
+ 
+     skin_draw_pixbuf (cr, SKIN_EQMAIN, 0, 294, 0, 0, 113, 19);
+@@ -97,6 +100,32 @@ void EqGraph::draw (cairo_t * cr)
+     double yf[N];
+     init_spline (x, bands, yf);
+ 
++    if (r > 1)
++    {
++        /* hi-res skin: draw the curve as an anti-aliased polyline */
++        double yc[109];
++        for (int i = 0; i < 109; i ++)
++            yc[i] = aud::clamp (10.0 - eval_spline (x, bands, yf, i) * 9 /
++             AUD_EQ_MAX_GAIN, 0.5, 18.5);
++
++        cairo_save (cr);
++        cairo_set_line_width (cr, 1.15);
++        cairo_set_line_cap (cr, CAIRO_LINE_CAP_ROUND);
++        cairo_set_line_join (cr, CAIRO_LINE_JOIN_ROUND);
++
++        for (int i = 1; i < 109; i ++)
++        {
++            int ci = (int) (yc[i] - 0.5);
++            set_cairo_color (cr, skin.eq_spline_colors[ci]);
++            cairo_move_to (cr, i + 1.5, yc[i - 1]);
++            cairo_line_to (cr, i + 2.5, yc[i]);
++            cairo_stroke (cr);
++        }
++
++        cairo_restore (cr);
++        return;
++    }
++
+     int py = 0;
+     for (int i = 0; i < 109; i ++)
+     {
+diff --git a/src/skins/playlistwin.cc b/src/skins/playlistwin.cc
+--- a/src/skins/playlistwin.cc
++++ b/src/skins/playlistwin.cc
+@@ -154,6 +154,16 @@ static void playlistwin_scroll_down_pushed ()
+     playlistwin_scroll (1);
+ }
+ 
++static int sinfo_width (int w)
++{
++    return w - ((skin.hints.skin_pixel_ratio > 1) ? 37 : 35);
++}
++
++void playlistwin_refresh_hints ()
++{
++    playlistwin_sinfo->set_width (sinfo_width (config.playlist_width));
++}
++
+ /* note: height is ignored if the window is shaded */
+ static void playlistwin_resize (int w, int h)
+ {
+@@ -205,7 +215,7 @@ static void playlistwin_resize (int w, int h)
+     playlistwin->move_widget (false, resize_handle, w - 20, h - 20);
+     playlistwin->move_widget (true, sresize_handle, w - 31, 0);
+ 
+-    playlistwin_sinfo->set_width (w - 35);
++    playlistwin_sinfo->set_width (sinfo_width (w));
+ 
+     playlistwin->move_widget (false, button_add, 12, h - 29);
+     playlistwin->move_widget (false, button_sub, 40, h - 29);
+@@ -369,7 +379,7 @@ static void playlistwin_create_widgets ()
+     int w = config.playlist_width, h = config.playlist_height;
+ 
+     bool shaded = aud_get_bool ("skins", "playlist_shaded");
+-    playlistwin_sinfo = new TextBox (w - 35, nullptr, shaded && config.autoscroll);
++    playlistwin_sinfo = new TextBox (sinfo_width (w), nullptr, shaded && config.autoscroll);
+     playlistwin->put_widget (true, playlistwin_sinfo, 4, 4);
+ 
+     playlistwin_shaded_shade = new Button (9, 9, 128, 45, 150, 42, SKIN_PLEDIT, SKIN_PLEDIT);
+diff --git a/src/skins/playlistwin.h b/src/skins/playlistwin.h
+--- a/src/skins/playlistwin.h
++++ b/src/skins/playlistwin.h
+@@ -30,6 +30,7 @@ class Window;
+ void playlistwin_create ();
+ void playlistwin_unhook ();
+ void playlistwin_hide_timer ();
++void playlistwin_refresh_hints ();
+ void playlistwin_set_time (const char * minutes, const char * seconds);
+ 
+ extern Window * playlistwin;
+diff --git a/src/skins/skin-ini.cc b/src/skins/skin-ini.cc
+--- a/src/skins/skin-ini.cc
++++ b/src/skins/skin-ini.cc
+@@ -98,6 +98,7 @@ static const HintPair hint_pairs[] = {
+     {"mainwinvolumex", & skin.hints.mainwin_volume_x},
+     {"mainwinvolumey", & skin.hints.mainwin_volume_y},
+     {"mainwinwidth", & skin.hints.mainwin_width},
++    {"skinpixelratio", & skin.hints.skin_pixel_ratio},
+     {"textboxbitmapfontheight", & skin.hints.textbox_bitmap_font_height},
+     {"textboxbitmapfontwidth", & skin.hints.textbox_bitmap_font_width},
+ };
+diff --git a/src/skins/skin.cc b/src/skins/skin.cc
+--- a/src/skins/skin.cc
++++ b/src/skins/skin.cc
+@@ -112,6 +112,12 @@ static int color_diff (uint32_t a, uint32_t b)
+      abs (COLOR_B (a) - COLOR_B (b));
+ }
+ 
++/* centre of the r x r block a classic 1x pixel expands to */
++static int ctr (int v, int r)
++{
++    return v * r + r / 2;
++}
++
+ static void skin_get_textcolors (cairo_surface_t * s)
+ {
+     /*
+@@ -119,15 +125,17 @@ static void skin_get_textcolors (cairo_surface_t * s)
+      * from the font pixmap
+      */
+ 
++    int r = skin.hints.skin_pixel_ratio;
++
+     /* Get a pixel from the middle of the space character */
+-    skin.colors[SKIN_TEXTBG] = surface_get_pixel (s, 152, 3);
++    skin.colors[SKIN_TEXTBG] = surface_get_pixel (s, ctr (152, r), ctr (3, r));
+ 
+     int max_d = -1;
+     for (int y = 0; y < 6; y ++)
+     {
+         for (int x = 1; x < 150; x ++)
+         {
+-            uint32_t c = surface_get_pixel (s, x, y);
++            uint32_t c = surface_get_pixel (s, ctr (x, r), ctr (y, r));
+             int d = color_diff (skin.colors[SKIN_TEXTBG], c);
+             if (d > max_d)
+             {
+@@ -140,11 +148,14 @@ static void skin_get_textcolors (cairo_surface_t * s)
+ 
+ static void skin_get_eq_spline_colors (cairo_surface_t * s)
+ {
+-    if (cairo_image_surface_get_height (s) < 313)
++    int r = skin.hints.skin_pixel_ratio;
++
++    if (cairo_image_surface_get_height (s) < 313 * r)
+         return;
+ 
+     for (int i = 0; i < 19; i ++)
+-        skin.eq_spline_colors[i] = surface_get_pixel (s, 115, i + 294);
++        skin.eq_spline_colors[i] = surface_get_pixel (s, ctr (115, r),
++         ctr (i + 294, r));
+ }
+ 
+ static void skin_load_viscolor (const char * path)
+@@ -174,16 +185,18 @@ static void skin_load_viscolor (const char * path)
+ 
+ static void skin_numbers_generate_dash (CairoSurfacePtr & s)
+ {
++    int r = skin.hints.skin_pixel_ratio;
++
+     int w = cairo_image_surface_get_width (s.get ());
+-    if (w < 99 || w >= 108)
++    if (w < 99 * r || w >= 108 * r)
+         return;
+ 
+     int h = cairo_image_surface_get_height (s.get ());
+-    cairo_surface_t * surface = surface_new (108, h);
++    cairo_surface_t * surface = surface_new (108 * r, h);
+ 
+-    surface_copy_rect (s.get (), 0, 0, 99, h, surface, 0, 0);
+-    surface_copy_rect (s.get (), 90, 0, 9, h, surface, 99, 0);
+-    surface_copy_rect (s.get (), 20, 6, 5, 1, surface, 101, 6);
++    surface_copy_rect (s.get (), 0, 0, 99 * r, h, surface, 0, 0);
++    surface_copy_rect (s.get (), 90 * r, 0, 9 * r, h, surface, 99 * r, 0);
++    surface_copy_rect (s.get (), 20 * r, 6 * r, 5 * r, r, surface, 101 * r, 6 * r);
+ 
+     s.capture (surface);
+ }
+@@ -226,11 +239,13 @@ static bool skin_load_data (const char * path)
+         path = archive_path;
+     }
+ 
++    skin_load_hints (path);
++    skin.hints.skin_pixel_ratio = aud::clamp (skin.hints.skin_pixel_ratio, 1, 8);
++
+     bool success = skin_load_pixmaps (path);
+ 
+     if (success)
+     {
+-        skin_load_hints (path);
+         skin_load_pl_colors (path);
+         skin_load_viscolor (path);
+         skin_load_masks (path);
+@@ -301,8 +316,18 @@ void skin_draw_pixbuf (cairo_t * cr, SkinPixmapId id, int xsrc, int ysrc, int
+     if (! skin.pixmaps[id])
+         return;
+ 
+-    cairo_set_source_surface (cr, skin.pixmaps[id].get (), xdest - xsrc, ydest - ysrc);
+-    cairo_pattern_set_filter (cairo_get_source (cr), CAIRO_FILTER_NEAREST);
++    int r = skin.hints.skin_pixel_ratio;
++
++    cairo_set_source_surface (cr, skin.pixmaps[id].get (), 0, 0);
++    cairo_pattern_t * pattern = cairo_get_source (cr);
++
++    cairo_matrix_t matrix;
++    cairo_matrix_init_scale (& matrix, r, r);
++    cairo_matrix_translate (& matrix, xsrc - xdest, ysrc - ydest);
++    cairo_pattern_set_matrix (pattern, & matrix);
++    cairo_pattern_set_filter (pattern, (r == 1) ? CAIRO_FILTER_NEAREST
++     : CAIRO_FILTER_GOOD);
++
+     cairo_rectangle (cr, xdest, ydest, width, height);
+     cairo_fill (cr);
+ }
+diff --git a/src/skins/skin.h b/src/skins/skin.h
+--- a/src/skins/skin.h
++++ b/src/skins/skin.h
+@@ -171,6 +171,8 @@ struct SkinHints {
+ 
+     int textbox_bitmap_font_width = 5;
+     int textbox_bitmap_font_height = 6;
++
++    int skin_pixel_ratio = 1;
+ };
+ 
+ struct Skin {
+diff --git a/src/skins/view.cc b/src/skins/view.cc
+--- a/src/skins/view.cc
++++ b/src/skins/view.cc
+@@ -350,6 +350,7 @@ void view_apply_skin ()
+       scale_mask (skin.masks[SKIN_MASK_EQ_SHADE], config.scale));
+ 
+     mainwin_refresh_hints ();
++    playlistwin_refresh_hints ();
+     view_apply_equalizer_shaded ();
+     TextBox::update_all ();
+ 
