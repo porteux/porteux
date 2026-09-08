@@ -25,7 +25,8 @@ CHANNEL=$1
 LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
-TMP="/tmp"
+TMP=$(mktemp -d /tmp/porteux-app-store.XXXXXX) || exit 1
+trap 'rm -fr "${TMP:?}"' EXIT
 WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
@@ -73,7 +74,7 @@ make_module_opera() {
 	create_application_temp_dir "$APP" || exit 1
 
 	$WGET_WITH_TIME_OUT -P "$TMP/$APP/" -r -nd --no-parent https://rpm.opera.com/rpm/ -A "opera_$CHANNEL-*x64*.rpm" || exit 1
-	pkgver=$(find "$TMP/$APP" -name "opera_$CHANNEL-*.rpm" -exec basename {} \; | cut -d '-' -f2 | sort -Vr | head -n 1)
+	pkgver=$(find "$TMP/$APP" -name "opera_$CHANNEL-*.rpm" -exec basename {} \; | cut -d '-' -f2 | sort -V | tail -n 1)
 	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 	pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 

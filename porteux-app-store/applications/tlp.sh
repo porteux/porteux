@@ -23,7 +23,8 @@ VERSION="${FULL_VERSION//[vV]}"
 [ "$VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 APPLICATION_URL="https://github.com/linrunner/${CURRENT_PACKAGE}/archive/refs/tags/${VERSION}.tar.gz"
 OUTPUT_DIR="$PORTDIR/modules/"
-BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
+trap 'rm -fr "${BUILD_DIR:?}"' EXIT
 MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-$VERSION-1.$ARCH"
 
 striptease() {
@@ -34,8 +35,7 @@ striptease() {
 	rm -fr "$MODULE_DIR/usr/share/zsh"
 }
 
-rm -fr "$BUILD_DIR"
-mkdir "$BUILD_DIR" && cd "$BUILD_DIR" || exit 1
+cd "$BUILD_DIR" || exit 1
 
 wget -T 15 --content-disposition "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
 tar xvf "$CURRENT_PACKAGE-$VERSION.tar.gz" || exit 1
@@ -45,6 +45,3 @@ make install DESTDIR="$MODULE_DIR" || exit 1
 striptease
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/tlp-$VERSION-${ARCH}_porteux.xzm" "$ACTIVATE_MODULE" || exit 1
-
-# cleanup
-rm -fr "$BUILD_DIR" &>/dev/null

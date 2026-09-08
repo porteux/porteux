@@ -15,11 +15,12 @@ VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/yt-dlp/yt
 [[ "$VERSION" == *[0-9]* ]] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 APPLICATION_URL="https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
 OUTPUT_DIR="$PORTDIR/modules/"
-BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
+trap 'rm -fr "${BUILD_DIR:?}"' EXIT
+chmod 755 "$BUILD_DIR" || exit 1
 MODULE_DIR="$BUILD_DIR"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-rm -fr "$BUILD_DIR"
 mkdir -p "$BUILD_DIR/usr/bin" || exit 1
 
 wget -T 15 "$APPLICATION_URL" -P "$BUILD_DIR/usr/bin" || exit 1
@@ -28,6 +29,3 @@ chmod 755 "$BUILD_DIR/usr/bin/"* &>/dev/null || exit 1
 MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-noarch_porteux.xzm"
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
-
-# cleanup
-rm -fr "$BUILD_DIR" &>/dev/null

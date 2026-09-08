@@ -13,7 +13,8 @@ fi
 CURRENT_PACKAGE=wine
 ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/optional/"
-BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
+trap 'rm -fr "${BUILD_DIR:?}"' EXIT
 MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-module"
 REPOSITORY="https://sourceforge.net/projects/wine/files/Slackware%20Packages"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
@@ -24,8 +25,6 @@ VERSION=$(curl -s "$REPOSITORY/" | grep "<tr title=" | grep -oP 'title="\K[^"]+(
 CURRENT_TXZ="wine-$VERSION-x86_64-1sg.txz"
 CURRENT_TXZ_PATH="$BUILD_DIR/$CURRENT_TXZ"
 
-rm -fr "$BUILD_DIR"
-mkdir "$BUILD_DIR" || exit 1
 mkdir "$MODULE_DIR" || exit 1
 
 wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/$VERSION/x86_64/$CURRENT_TXZ" || exit 1
@@ -41,6 +40,3 @@ find "$MODULE_DIR" -type f \( -name "*.exe" -o -name "*.dll" \) -print0 | xargs 
 MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-${ARCH}_porteux.xzm"
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
-
-# cleanup
-rm -fr "$BUILD_DIR" &>/dev/null

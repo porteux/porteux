@@ -28,7 +28,8 @@ CHANNEL=$1
 LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
-TMP="/tmp"
+TMP=$(mktemp -d /tmp/porteux-app-store.XXXXXX) || exit 1
+trap 'rm -fr "${TMP:?}"' EXIT
 WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions

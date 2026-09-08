@@ -18,28 +18,35 @@ fi
 CURRENT_PACKAGE=virtualbox
 ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/optional"
-BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
+trap 'rm -fr "${BUILD_DIR:?}"' EXIT
 MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-module"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
 CURRENT_USER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
-CURRENT_GROUP=$(id -gn "$CURRENT_USER")
 [ ! "$CURRENT_USER" ] && CURRENT_USER=guest
+CURRENT_GROUP=$(id -gn "$CURRENT_USER")
 USER_HOME_FOLDER=$(getent passwd "$CURRENT_USER" | cut -d: -f6)
 [ ! -e "$USER_HOME_FOLDER" ] && USER_HOME_FOLDER=home/guest
 
-rm -fr "$BUILD_DIR"
-mkdir "$BUILD_DIR"
-mkdir "$MODULE_DIR"
+mkdir "$MODULE_DIR" || exit 1
 
 if [[ ! "$1" || "$1" == "--activate-module" ]]; then
 	# download the latest version
-	REPOSITORY="http://download.virtualbox.org/virtualbox"
-	wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/LATEST.TXT"
+	REPOSITORY="https://download.virtualbox.org/virtualbox"
+	wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/LATEST.TXT" || exit 1
 	CURRENT_VERSION=$(cat "$BUILD_DIR/LATEST.TXT")
-	LATEST_FILE=$(curl -s "$REPOSITORY/$CURRENT_VERSION/" | grep .run | cut -d "\"" -f2)
-	wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/$CURRENT_VERSION/$LATEST_FILE"
+	[ "$CURRENT_VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
+	LATEST_FILE=$(curl -sf "$REPOSITORY/$CURRENT_VERSION/" | grep -oE '"[^"]+_amd64\.run"' | tr -d '"' | sort -V | tail -n1)
+	[ "$LATEST_FILE" ] || { echo "Error: could not find the installer for version $CURRENT_VERSION." >&2; exit 1; }
+	wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/$CURRENT_VERSION/$LATEST_FILE" || exit 1
 	INSTALLER_PATH="$BUILD_DIR/$LATEST_FILE"
+
+	# the installer runs as root, so make sure it is the file Oracle published
+	wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/$CURRENT_VERSION/SHA256SUMS" || exit 1
+	EXPECTED_CHECKSUM=$(grep " \*\?$LATEST_FILE\$" "$BUILD_DIR/SHA256SUMS" | cut -d' ' -f1)
+	ACTUAL_CHECKSUM=$(sha256sum "$INSTALLER_PATH" | cut -d' ' -f1)
+	[ "$EXPECTED_CHECKSUM" = "$ACTUAL_CHECKSUM" ] || { echo "Error: checksum mismatch for $LATEST_FILE." >&2; exit 1; }
 else
 	# use file provided by the user
 	INSTALLER_PATH="$1"
@@ -104,6 +111,3 @@ KERNEL_VERSION=$(uname -r | awk -F- '{print$1}')
 MODULE_FILE_NAME="$CURRENT_PACKAGE-$CURRENT_VERSION-k.$KERNEL_VERSION-${ARCH}_porteux.xzm"
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
-
-# cleanup
-rm -fr "$BUILD_DIR" &>/dev/null
