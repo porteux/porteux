@@ -18,6 +18,6 @@ VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/keepassxr
 APPLICATION_URL="https://github.com/keepassxreboot/keepassxc/releases/latest/download/KeePassXC-${VERSION}-x86_64.AppImage"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-RESULT=$(/opt/porteux-scripts/porteux-app-store/appimage-builder.sh "$CURRENT_PACKAGE" "$FRIENDLY_NAME" "$CATEGORY" "$APPLICATION_URL" "$VERSION" "$ACTIVATE_MODULE")
+RESULT=$(/opt/porteux-scripts/porteux-app-store/appimage-builder.sh "$CURRENT_PACKAGE" "$FRIENDLY_NAME" "$CATEGORY" "$APPLICATION_URL" "$VERSION" "$ACTIVATE_MODULE") || { echo "$RESULT"; exit 1; }
 
 echo "$RESULT"

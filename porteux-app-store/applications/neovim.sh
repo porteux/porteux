@@ -16,20 +16,17 @@ VERSION=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/neovim/ne
 APPLICATION_URL="https://github.com/neovim/neovim/releases/download/${VERSION}/nvim-linux-x86_64.tar.gz"
 ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/modules/"
-BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
+trap 'rm -fr "${BUILD_DIR:?}"' EXIT
 MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-module"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-rm -fr "$BUILD_DIR"
 mkdir -p "$MODULE_DIR" && cd "$BUILD_DIR" || exit 1
 
 wget -T 15 "$APPLICATION_URL" -O - | tar -xz -C "$MODULE_DIR" || exit 1
 
-mv "$MODULE_DIR/nvim-linux-x86_64" "$MODULE_DIR/usr"
+mv "$MODULE_DIR/nvim-linux-x86_64" "$MODULE_DIR/usr" || exit 1
 
 MODULE_FILE_NAME="$CURRENT_PACKAGE-${VERSION//v}-${ARCH}_porteux.xzm"
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
-
-# cleanup
-rm -fr "$BUILD_DIR" &>/dev/null

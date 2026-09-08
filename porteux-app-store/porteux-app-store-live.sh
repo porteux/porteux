@@ -33,9 +33,13 @@ update_app(){
 
 	echo "Updating App Store..."
 	echo "$APP_STORE_FILE"
-	if wget -N "$REPO_FOLDER_PATH/$APP_STORE_FILE" -P "$LOCAL_PATH"; then
-		chmod -R 755 "$LOCAL_PATH/$APP_STORE_FILE" > /dev/null 2>&1
+	local temporary_file
+	temporary_file=$(mktemp "$LOCAL_PATH/$APP_STORE_FILE.XXXXXX")
+	if wget -T 15 --tries=2 -O "$temporary_file" "$REPO_FOLDER_PATH/$APP_STORE_FILE" && [ -s "$temporary_file" ]; then
+		chmod 755 "$temporary_file" > /dev/null 2>&1
+		mv -f "$temporary_file" "$LOCAL_PATH/$APP_STORE_FILE"
 	else
+		rm -f "$temporary_file"
 		echo "Error updating App Store"
 	fi
 

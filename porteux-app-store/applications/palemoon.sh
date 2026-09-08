@@ -25,7 +25,8 @@ CHANNEL=$1
 LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
-TMP="/tmp"
+TMP=$(mktemp -d /tmp/porteux-app-store.XXXXXX) || exit 1
+trap 'rm -fr "${TMP:?}"' EXIT
 WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
@@ -69,7 +70,7 @@ add_language_pack() {
 		local pkg_dir="$TMP/$1/$2"
 		mkdir -p "$pkg_dir"/usr/lib64/${APP}/distribution/extensions
 
-		curl --silent --user-agent 'PaleMoon' --output "$pkg_dir/usr/lib64/${APP}/distribution/extensions/langpack-${LANGUAGE}@palemoon.org.xpi" "https://addons.palemoon.org/?component=download&id=langpack-${LANGUAGE}@palemoon.org"
+		curl --silent --fail --location --user-agent 'PaleMoon' --output "$pkg_dir/usr/lib64/${APP}/distribution/extensions/langpack-${LANGUAGE}@palemoon.org.xpi" "https://addons.palemoon.org/?component=download&id=langpack-${LANGUAGE}@palemoon.org" || { echo "Error: could not download the ${LANGUAGE} language pack." >&2; exit 1; }
 		chmod 644 "$pkg_dir/usr/lib64/${APP}/distribution/extensions/langpack-${LANGUAGE}@palemoon.org.xpi"
 
 		cat >> "$pkg_dir"/usr/lib64/${APP}/distribution/distribution.ini << EOF
@@ -86,7 +87,7 @@ finisher() {
 }
 
 get_repo_version_palemoon() {
-	local temp=$(curl -s "https://www.palemoon.org/download.shtml" | grep "linux-x86_64-gtk3")
+	local temp=$(curl -sf "https://www.palemoon.org/download.shtml" | grep -m1 "linux-x86_64-gtk3")
 	local ver=$(echo "$temp" | cut -d'-' -f2 | sed 's/\.linux//')
 
 	echo "$ver"

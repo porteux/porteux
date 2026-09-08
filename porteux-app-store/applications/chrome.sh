@@ -26,7 +26,8 @@ CHANNEL=$1
 LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
-TMP="/tmp"
+TMP=$(mktemp -d /tmp/porteux-app-store.XXXXXX) || exit 1
+trap 'rm -fr "${TMP:?}"' EXIT
 WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
@@ -63,12 +64,27 @@ finisher() {
 	rm -fr "${TMP:?}/$APP"
 }
 
-get_repo_version_google_chrome() {
-	local ver=$(curl -s https://dl.google.com/linux/chrome/rpm/stable/x86_64/repodata/other.xml.gz | \
-		gzip -df | tr -d '\n' | tr '<' '\n' | grep -A 1 "name=\"$APP-$1\"" | grep -o 'ver="[^"]*"' | \
-		sed -r 's/ver="([^"]*)"/\1/' | sort -Vr | head -n 1)
+# the tar arrives through a pipe, so its compression can't be auto-detected
+extract_deb_member() {
+	local deb="$1" member="$2"
+	shift 2
 
-	echo "$ver"
+	case "$member" in
+		*.xz)  ar p "$deb" "$member" | tar -xJ "$@" ;;
+		*.gz)  ar p "$deb" "$member" | tar -xz "$@" ;;
+		*.zst) ar p "$deb" "$member" | zstd -dc | tar -x "$@" ;;
+		*) return 1 ;;
+	esac
+}
+
+get_deb_member() {
+	ar t "$1" | grep -m1 "^$2\.tar"
+}
+
+get_deb_version_google_chrome() {
+	local control_member=$(get_deb_member "$1" control)
+
+	extract_deb_member "$1" "$control_member" -O ./control 2>/dev/null | grep -m1 '^Version:' | cut -d' ' -f2 | cut -d- -f1
 }
 
 make_module_google_chrome() {
@@ -76,9 +92,6 @@ make_module_google_chrome() {
 		echo "Non-existent channel. Options: unstable | beta | stable" && exit 1
 	fi
 
-	local pkgver=$(get_repo_version_google_chrome "$CHANNEL")
-	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
-	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
 	local product_name=$([ "$CHANNEL" == "stable" ] && echo "$APP" || echo "$APP-$CHANNEL")
 	local product_folder=$([ "$CHANNEL" == "stable" ] && echo "chrome" || echo "chrome-$CHANNEL")
 	local icon_channel;
@@ -90,10 +103,14 @@ make_module_google_chrome() {
 
 	create_application_temp_dir "$APP"
 
-	mkdir -p "$TMP/$APP/$pkg_name"
+	$WGET_WITH_TIME_OUT -O "$TMP/$APP/$APP.deb" "https://dl.google.com/linux/direct/${APP}-${CHANNEL}_current_amd64.deb" || exit 1
 
-	$WGET_WITH_TIME_OUT -O "$TMP/$APP/$pkg_name.deb" "https://dl.google.com/linux/direct/${APP}-${CHANNEL}_current_amd64.deb" || exit 1
-	ar p "$TMP/$APP/$pkg_name.deb" data.tar.xz | tar xJv -C "$TMP/$APP/$pkg_name" || exit 1
+	local pkgver=$(get_deb_version_google_chrome "$TMP/$APP/$APP.deb")
+	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
+	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+
+	mkdir -p "$TMP/$APP/$pkg_name"
+	extract_deb_member "$TMP/$APP/$APP.deb" "$(get_deb_member "$TMP/$APP/$APP.deb" data)" -v -C "$TMP/$APP/$pkg_name" || exit 1
 	chmod 755 "$TMP/$APP/$pkg_name"
 
 	sed -i "s|TryExec=.*||g" "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop"
