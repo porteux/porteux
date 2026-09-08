@@ -44,7 +44,11 @@ supported ones, and it will contain '/porteux' folder.
 ~~~~~~~~~~~~~~~~~~
 
 1) Make sure your partition table is of type 'MS-DOS'.
-2) Copy '/boot' and '/porteux' folders onto the desired partition.
+2) Make sure the partition that will hold '/boot' is formatted with ext2,
+ext3, ext4, FAT, NTFS, btrfs or XFS. The bootloader cannot be installed on
+exFAT, so use one of the other filesystems for that partition ('/porteux'
+can still be on exFAT).
+3) Copy '/boot' and '/porteux' folders onto the desired partition.
 
 -----
 
