@@ -194,6 +194,10 @@ sh install/doinst.sh > /dev/null 2>&1 || { echo "Failed to install kernel firmwa
 mkdir -p ${MODULE_PATH}/lib/firmware/intel > /dev/null 2>&1
 cp lib/firmware/intel/ibt* ${MODULE_PATH}/lib/firmware/intel
 
+for runtime_firmware in lib/firmware/qca lib/firmware/brcm/*.hcd lib/firmware/cirrus lib/firmware/intel/ish; do
+	cp -ru --parents "$runtime_firmware" ${MODULE_PATH} > /dev/null 2>&1
+done
+
 modules_dependencies=$(ls $MODULE_PATH/lib/modules/*/modules.dep)
 modules_path=${modules_dependencies%/modules.dep}
 firmwares=$(cut -d':' -f1 $modules_dependencies | sed "s|^|$modules_path/|" | xargs -r modinfo -F firmware | sort -u)

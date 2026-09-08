@@ -27,7 +27,9 @@ fi
 
 echo "Creating memory changes file..."
 sync; echo 3 > /proc/sys/vm/drop_caches
-tar cf $INSTALLER_DIR/nvidia.tar --exclude={"*/.*","*/.wh.*",".cache","dev","home","mnt","opt","root","run","tmp","var","etc/cups","etc/udev","etc/profile.d","etc/porteux","lib/firmware","lib/modules/*porteux/modules.*"} -C /mnt/live/memory changes || exit 1
+CHANGES_DIR=/mnt/live/memory/changes
+grep -q '^overlay / ' /proc/mounts && [ -d $CHANGES_DIR/upper ] && CHANGES_DIR=$CHANGES_DIR/upper
+tar cf $INSTALLER_DIR/nvidia.tar --exclude={"*/.*","*/.wh.*",".cache","dev","home","mnt","opt","root","run","tmp","var","etc/cups","etc/udev","etc/profile.d","etc/porteux","lib/firmware","lib/modules/*porteux/modules.*"} -C "${CHANGES_DIR%/*}" "${CHANGES_DIR##*/}" || exit 1
 
 echo "Extracting memory changes file..."
 tar xf $INSTALLER_DIR/nvidia.tar --strip 1 -C $MODULE_DIR || exit 1
@@ -92,7 +94,7 @@ echo 'blacklist nouveau
 options nouveau modeset=0' > $MODULE_DIR/etc/modprobe.d/nvidia-installer-disable-nouveau.conf
 
 # get driver version
-DRIVER_FILE=$(find /usr/lib$SYSTEM_BITS/libEGL_nvidia.so* \! -type l)
+DRIVER_FILE=$(find /usr/lib$SYSTEM_BITS/libEGL_nvidia.so* \! -type l | sort -V | tail -n1)
 DRIVER_VERSION=$(echo $DRIVER_FILE | cut -d'.' -f3-)
 [ "$DRIVER_VERSION" ] || { echo "Error: NVIDIA driver not found."; exit 1; }
 

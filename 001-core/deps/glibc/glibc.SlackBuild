@@ -34,7 +34,10 @@ cd build-glibc-$VERSION
 
 LDFLAGS="${LDFLAGS/-Wl,--gc-sections/}"
 
-CFLAGS="${GCC_CFLAGS/-flto=auto/} -fPIC" \
+GLIBC_CFLAGS="${GCC_CFLAGS/-flto=auto/}"
+GLIBC_CFLAGS="${GLIBC_CFLAGS/-fno-semantic-interposition/}"
+
+CFLAGS="$GLIBC_CFLAGS -fPIC" \
 CXXFLAGS="$GCC_CXXFLAGS" \
 ../configure \
 	--prefix=/usr \

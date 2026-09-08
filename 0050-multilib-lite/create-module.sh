@@ -81,6 +81,15 @@ strip_package vulkan-sdk \
 	usr/lib/libSPIRV-Tools.so* \
 	usr/lib/libvulkan.so*
 
+### common extras
+
+for package in \
+	gcc15-compat \
+; do
+bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
 ### fake root
 
 install_packages
@@ -117,8 +126,8 @@ rm -fr $MODULE_PATH/packages/var/lib/dbus
 rm -fr $MODULE_PATH/packages/var/run
 
 find $MODULE_PATH/packages -maxdepth 1 -type f -delete
-find $MODULE_PATH/packages/sbin \( -type f -o -type l \) ! \( -name "ldconfig" -o -name "sln" \) -delete
-find $MODULE_PATH/packages/bin \( -type f -o -type l \) ! -name "sln" -delete
+find $MODULE_PATH/packages/sbin \( -type f -o -type l \) -delete
+find $MODULE_PATH/packages/bin \( -type f -o -type l \) -delete
 find $MODULE_PATH/packages/usr/share -mindepth 1 -maxdepth 1 -type d ! -name "vulkan" -exec rm -rf {} +
 find $MODULE_PATH/packages/usr -mindepth 1 -maxdepth 1 -type d ! -name "lib" ! -name "share" -exec rm -rf {} +
 find $MODULE_PATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name "en_US.utf8" -exec rm -rf {} +

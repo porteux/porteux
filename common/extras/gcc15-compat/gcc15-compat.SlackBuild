@@ -1,0 +1,38 @@
+#!/bin/bash
+
+PRGNAM=gcc15-compat
+VERSION=1
+
+CWD=$(dirname "$(realpath "$0")")
+TMP=$MODULE_PATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+if [ "$SYSTEM_BITS" = 64 ]; then
+	ARCH=x86_64
+else
+	ARCH=i686
+fi
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG/usr/lib${SYSTEM_BITS}
+cd $TMP
+
+gcc -m${SYSTEM_BITS:-32} -O2 -fPIC -shared -nostdlib \
+	-Wl,--version-script=$CWD/eptr_compat.map \
+	-Wl,-soname,libeptr_compat.so \
+	-Wl,--hash-style=gnu \
+	-o $PKG/usr/lib${SYSTEM_BITS}/libeptr_compat.so $CWD/eptr_compat.c
+strip --strip-unneeded $PKG/usr/lib${SYSTEM_BITS}/libeptr_compat.so
+
+if [ "$SYSTEM_BITS" = 64 ]; then
+	mkdir -p $PKG/etc
+	echo '/usr/$LIB/libeptr_compat.so' > $PKG/etc/ld.so.preload
+fi
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz > /dev/null 2>&1

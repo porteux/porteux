@@ -62,7 +62,7 @@ depending on the system you're setting the media storage.
 | From Linux: |
 ~~~~~~~~~~~~~~~
 
-1) Make sure the system has zstd installed.
+1) Make sure the system has zstd and cpio installed.
 2) Navigate into '/boot' folder that you have just copied.
 3) From the terminal, run 'sh porteux-installer-for-linux.run' and follow
 the instructions.

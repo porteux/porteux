@@ -26,9 +26,9 @@ another cheatcode by default):
 APPEND changes=EXIT:/porteux noauto volume=30
 
 NOTE: the following cheatcodes will be ignored when placed in
-'/porteux/porteux.cfg' because they affect how PorteuX storage
-media is detected and mounted: 'cfgfile=', 'delay=', 'from=',
-'mopt=', 'fsck'.
+'/porteux/porteux.cfg' because they are evaluated before PorteuX
+storage media is detected and mounted: 'bootlog', 'cfgfile=', 'debug',
+'delay=', 'from=', 'fsck', 'fscknolog', 'mopt=', 'nocd', 'nohd'.
 
 NOTE: for all other cheatcodes that appear in multiple places, PorteuX
 uses the following priority list (from higher to lower):
@@ -62,7 +62,7 @@ bootlog
        problems that scroll off the screen too fast to read.
 
        The log is available in the running system at
-       '/mnt/live/var/log/livedbg-verbose'.
+       '/mnt/live/var/log/livedbg-verbose.log'.
 
 cfgfile=file.cfg
 
@@ -155,6 +155,10 @@ cliexec=my_script
        
        NOTE: to start graphical applications please use 'guiexec='
        cheatcode instead.
+
+       NOTE: the boot process waits for the commands to finish. To
+       start something that keeps running (e.g. a server), send it
+       to the background by appending '~&'.
        
        Example (to echo your text with spaces instead of '~'):
        cliexec=echo~Shutting~power;poweroff
@@ -168,10 +172,15 @@ copy2ram
        NOTE: You can use 'rammod' cheatcode to selectively load
        modules to RAM - see the 'rammod' description below.
 
+       NOTE: the boot media can only be removed after boot when all
+       modules were copied (no 'rammod'), no 'changes=' path points
+       to it and PorteuX was not started from an ISO file.
+
 debug
 
-   ... Don't load initrd or any modules, booting directly into a
-       very basic terminal. Only useful for developers.
+   ... Open a shell inside the initrd before PorteuX data is searched
+       for, so the boot environment can be inspected. Press Ctrl+D to
+       continue booting normally. Only useful for developers.
 
 delay=value
 
@@ -220,7 +229,7 @@ from=/path
 
 fsck
 
-   ... Enable a filesystem check for ext(2,3,4), FAT and NTFS
+   ... Enable a filesystem check for ext(2,3,4), FAT, exFAT and NTFS
        partitions during boot time before anything is mounted.
        XFS does not need fsck as a check is performed automatically
        when it's mounted. A log file will be shown after boot.
@@ -277,8 +286,10 @@ kmap=keyboardmap
 load=module
 
    ... Load optional modules from '/porteux/optional' directory on the
-       boot media that contain the strings specified. Additional modules
-       can be listed, separated by semicolons without spaces.
+       boot media whose path contains the strings specified. Additional
+       modules can be listed, separated by semicolons without spaces.
+       Each string is a regular expression matched against the full
+       path of the module, so characters like '+' must be escaped.
 
        Example:
        load=gimp;inkscape;firefox
@@ -336,12 +347,14 @@ nohotplug
 
 noload=module
 
-   ... Disable loading of any modules with a name containing the text
+   ... Disable loading of any modules with a path containing the text
        specified. This affects all the modules on the PorteuX booting
-       media, including '/porteux/base' and '/porteux/modules' folders.
-       It's useful with the 'copy2ram' cheatcode because any unused module
-       is not copied to RAM. Multiple modules can be listed, but they must
-       be separated by semicolons, with no spaces.
+       media, including '/porteux/base', '/porteux/modules', '/porteux/optional'
+       and 'extramod=' folders. It's useful with the 'copy2ram' cheatcode
+       because any unused module is not copied to RAM. Multiple modules can
+       be listed, but they must be separated by semicolons, with no spaces.
+       Each string is a regular expression matched against the full path
+       of the module, so 'noload=porteux' would disable everything.
 
        Example:
        noload=lxde;devel
@@ -353,16 +366,11 @@ nologin
 nonetwork
 
    ... Prevent PorteuX from automatically establishing a network
-       connection on startup.
+       connection on startup. NetworkManager is not started for this
+       session only; nothing is modified on disk. To connect later,
+       run the following as root:
 
-       Note that this cheatcode makes system modifications that must
-       be manually restored, so it is recommended that you only use
-       this cheatcode in 'Always Fresh' mode. If you ignore this
-       advice and need to recover your network connection, please run
-       the following 2 commands as root:
-
-       chmod +x /etc/rc.d/rc.inet1 /etc/rc.d/rc.networkmanager
-       sed -i 's/Hidden=true//g' /etc/xdg/autostart/nm-applet.desktop
+       /etc/rc.d/rc.networkmanager start
 
 norootcopy
 

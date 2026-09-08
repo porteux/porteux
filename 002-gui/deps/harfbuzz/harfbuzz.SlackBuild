@@ -34,7 +34,7 @@ meson setup \
 	-Dtests=disabled \
 	-Dutilities=disabled
 
-DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install || DESTDIR=$PKG ninja install
 
 find $PKG -type f -name "*.la" -delete
 

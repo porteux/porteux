@@ -66,6 +66,14 @@ bash $SCRIPT_PATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+# common extras
+for package in \
+	gcc15-compat \
+; do
+bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
+find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
 ## packages that require specific stripping
 
 strip_package avahi \
@@ -213,7 +221,6 @@ sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUX_VERSION}|" $SCRIPT_PATH/../iso
 
 cd $MODULE_PATH/packages || exit 1
 
-chmod 644 etc/rc.d/rc.bluetooth
 chmod 644 etc/rc.d/rc.crond
 chmod 644 etc/rc.d/rc.fuse3
 chmod 644 etc/rc.d/rc.inet1
@@ -296,7 +303,6 @@ rm -fr usr/share/terminfo/[A-Z]
 rm -fr usr/share/terminfo/b
 rm -fr usr/share/terminfo/c
 rm -fr usr/share/terminfo/e
-rm -fr usr/share/terminfo/f
 rm -fr usr/share/terminfo/g
 rm -fr usr/share/terminfo/h
 rm -fr usr/share/terminfo/i
@@ -307,8 +313,6 @@ rm -fr usr/share/terminfo/n
 rm -fr usr/share/terminfo/o
 rm -fr usr/share/terminfo/p
 rm -fr usr/share/terminfo/q
-rm -fr usr/share/terminfo/s
-rm -fr usr/share/terminfo/t
 rm -fr usr/share/terminfo/u
 rm -fr usr/share/terminfo/w
 rm -fr usr/share/terminfo/z

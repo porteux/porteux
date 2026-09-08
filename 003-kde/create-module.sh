@@ -228,9 +228,9 @@ copy_to_multilanguage
 cd $MODULE_PATH/packages/ || exit 1
 
 {
-rm etc/kde/xdg/autostart/baloo_file.desktop
-rm etc/kde/xdg/autostart/kaccess.desktop
-rm etc/kde/xdg/autostart/xembedsniproxy.desktop
+rm etc/xdg/autostart/baloo_file.desktop
+rm etc/xdg/autostart/kaccess.desktop
+rm etc/xdg/autostart/xembedsniproxy.desktop
 rm usr/bin/kwalletmanager*
 rm usr/bin/oxygen-demo5
 rm usr/bin/oxygen-gtk-demo

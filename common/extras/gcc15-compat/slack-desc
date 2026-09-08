@@ -1,0 +1,12 @@
+            |-----handy-ruler-------------------------------------------------------|
+gcc15-compat: gcc15-compat (libstdc++ exception_ptr compatibility shim)
+gcc15-compat:
+gcc15-compat: Provides the std::__exception_ptr::exception_ptr::operator==
+gcc15-compat: symbol (CXXABI_1.3.3) that GCC 15 libstdc++ no longer exports,
+gcc15-compat: so binaries built against an older libstdc++ keep working.
+gcc15-compat: Loaded into every process through /etc/ld.so.preload as
+gcc15-compat: /usr/$LIBDIR/libeptr_compat.so.
+gcc15-compat:
+gcc15-compat:
+gcc15-compat:
+gcc15-compat:

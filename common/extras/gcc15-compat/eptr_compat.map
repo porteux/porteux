@@ -1,0 +1,4 @@
+CXXABI_1.3.3 {
+	global: _ZNSt15__exception_ptreqERKNS_13exception_ptrES2_;
+	local: *;
+};
