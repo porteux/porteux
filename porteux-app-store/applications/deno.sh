@@ -16,21 +16,19 @@ VERSION=$(curl -s https://github.com/denoland/deno/releases/ | grep -oP "(?<=/de
 APPLICATION_URL="https://github.com/denoland/deno/releases/download/${VERSION}/deno-x86_64-unknown-linux-gnu.zip"
 ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/modules/"
-BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
+trap 'rm -fr "${BUILD_DIR:?}"' EXIT
+chmod 755 "$BUILD_DIR" || exit 1
 MODULE_DIR="$BUILD_DIR"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-rm -fr "$BUILD_DIR"
 mkdir -p "$BUILD_DIR/usr/bin" || exit 1
 
 wget -T 15 "$APPLICATION_URL" -P "$BUILD_DIR/usr/bin" || exit 1
-unzip "$BUILD_DIR/usr/bin/"*.zip -d "$BUILD_DIR/usr/bin"
+unzip "$BUILD_DIR/usr/bin/"*.zip -d "$BUILD_DIR/usr/bin" || { echo "Error: could not extract the package." >&2; exit 1; }
 rm -f "$BUILD_DIR/usr/bin/"*.zip
 chmod 755 "$BUILD_DIR/usr/bin/"* &>/dev/null || exit 1
 
 MODULE_FILE_NAME="$CURRENT_PACKAGE-${VERSION//[vV]}-${ARCH}_porteux.xzm"
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
-
-# cleanup
-rm -fr "$BUILD_DIR" &>/dev/null

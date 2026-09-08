@@ -18,25 +18,40 @@ fi
 CURRENT_PACKAGE=virtualbox-guestadditions
 ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/optional"
-BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
 MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-module"
 MOUNT_DIR="/mnt/$CURRENT_PACKAGE"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-rm -fr "$BUILD_DIR"
+MOUNTED=""
+
+cleanup() {
+	[ "$MOUNTED" ] && umount "$MOUNT_DIR"
+	rmdir "$MOUNT_DIR" 2>/dev/null
+	rm -fr "${BUILD_DIR:?}"
+}
+trap cleanup EXIT
+
+mountpoint -q "$MOUNT_DIR" && { echo "Error: $MOUNT_DIR is already mounted." >&2; exit 1; }
 rm -fr "$MOUNT_DIR"
-mkdir "$BUILD_DIR"
-mkdir "$MOUNT_DIR"
-mkdir "$MODULE_DIR"
+mkdir "$MOUNT_DIR" || exit 1
+mkdir "$MODULE_DIR" || exit 1
 
 if [[ ! "$1" || "$1" == "--activate-module" ]]; then
 	# download the latest version
-	REPOSITORY="http://download.virtualbox.org/virtualbox"
-	wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/LATEST.TXT"
+	REPOSITORY="https://download.virtualbox.org/virtualbox"
+	wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/LATEST.TXT" || exit 1
 	CURRENT_VERSION=$(cat "$BUILD_DIR/LATEST.TXT")
+	[ "$CURRENT_VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 	LATEST_FILE="VBoxGuestAdditions_${CURRENT_VERSION}.iso"
-	wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/$CURRENT_VERSION/$LATEST_FILE"
+	wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/$CURRENT_VERSION/$LATEST_FILE" || exit 1
 	INSTALLER_PATH="$BUILD_DIR/$LATEST_FILE"
+
+	# the installer inside the iso runs as root, so make sure it is the file Oracle published
+	wget -T 15 -P "$BUILD_DIR" "$REPOSITORY/$CURRENT_VERSION/SHA256SUMS" || exit 1
+	EXPECTED_CHECKSUM=$(grep " \*\?$LATEST_FILE\$" "$BUILD_DIR/SHA256SUMS" | cut -d' ' -f1)
+	ACTUAL_CHECKSUM=$(sha256sum "$INSTALLER_PATH" | cut -d' ' -f1)
+	[ "$EXPECTED_CHECKSUM" = "$ACTUAL_CHECKSUM" ] || { echo "Error: checksum mismatch for $LATEST_FILE." >&2; exit 1; }
 else
 	# use file provided by the user
 	INSTALLER_PATH="$1"
@@ -47,10 +62,11 @@ fi
 
 # mount and install
 mount "$INSTALLER_PATH" "$MOUNT_DIR" || exit 1
+MOUNTED="true"
 if grep -q "clang" /proc/version; then
 	export LLVM=1
 fi
-sh "$MOUNT_DIR/VBoxLinuxAdditions.run" --nox11 || { umount "$MOUNT_DIR"; exit 1; }
+sh "$MOUNT_DIR/VBoxLinuxAdditions.run" --nox11 || exit 1
 
 # set configuration
 cp -r --parents /etc/rc.d/{rc.vboxadd,rc.vboxadd-service,rc.vboxadd-x11} "$MODULE_DIR/" &>/dev/null
@@ -78,8 +94,3 @@ KERNEL_VERSION=$(uname -r | awk -F- '{print$1}')
 MODULE_FILE_NAME="$CURRENT_PACKAGE-$CURRENT_VERSION-k.$KERNEL_VERSION-${ARCH}_porteux.xzm"
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
-
-# cleanup
-umount "$MOUNT_DIR"
-rm -fr "$MOUNT_DIR"
-rm -fr "$BUILD_DIR" &>/dev/null

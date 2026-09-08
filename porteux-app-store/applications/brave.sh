@@ -22,11 +22,12 @@ fi
 # Global variables
 REPO="brave-browser"
 FRIENDLY_PACKAGE_NAME="brave"
-CHANNEL=$([ "$1" ] && echo "$1" || echo "stable")
-LANGUAGE=$([ "$2" ] && echo "$2" || echo "en-US")
+CHANNEL=$([ "$1" ] && [ "${1#--}" = "$1" ] && echo "$1" || echo "stable")
+LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
-TMP="/tmp"
+TMP=$(mktemp -d /tmp/porteux-app-store.XXXXXX) || exit 1
+trap 'rm -fr "${TMP:?}"' EXIT
 WGET_WITH_TIME_OUT="wget -T 15"
 
 # Channel-dependent package name and install folder (origin and stable share the brave-browser repo/release)

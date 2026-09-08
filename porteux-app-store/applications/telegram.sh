@@ -15,17 +15,20 @@ FRIENDLY_NAME="Telegram"
 APPLICATION_URL=https://telegram.org/dl/desktop/linux
 ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/modules/"
-BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
+trap 'rm -fr "${BUILD_DIR:?}"' EXIT
 MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-module"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
-rm -fr "$BUILD_DIR"
-mkdir "$BUILD_DIR" && cd "$BUILD_DIR" || exit 1
+cd "$BUILD_DIR" || exit 1
 
 wget -T 15 --content-disposition "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
-tar xvf "$BUILD_DIR"/*.tar.xz -C "$BUILD_DIR" || exit 1
+DOWNLOADED_FILE=$(find "$BUILD_DIR" -maxdepth 1 -type f -name "*.tar.xz" | head -1)
+[ "$DOWNLOADED_FILE" ] || { echo "Error: nothing was downloaded." >&2; exit 1; }
+tar xvf "$DOWNLOADED_FILE" -C "$BUILD_DIR" || exit 1
 
-VERSION=$(basename "$BUILD_DIR"/tsetup.*.tar.xz .tar.xz | cut -d . -f 2-)
+# the file name is either tsetup.<version>.tar.xz or td-setup-linux-x64-<version>.tar.xz
+VERSION=$(basename "$DOWNLOADED_FILE" .tar.xz | grep -oE '[0-9]+(\.[0-9]+)+' | tail -1)
 [[ "$VERSION" == *[0-9]* ]] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 BINARY_FILE_NAME="$CURRENT_PACKAGE-$VERSION-$ARCH"
 
@@ -66,6 +69,3 @@ chmod 644 "$MODULE_DIR/home/guest/.local/share/applications/"* &>/dev/null || ex
 MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-${ARCH}_porteux.xzm"
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
-
-# cleanup
-rm -fr "$BUILD_DIR" &>/dev/null

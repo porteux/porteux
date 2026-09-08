@@ -17,16 +17,16 @@ ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module
 
 ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/modules"
-BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
+trap 'rm -fr "${BUILD_DIR:?}"' EXIT
 TMP_MODULE_FILE_NAME="$CURRENT_PACKAGE.xzm"
 INPUT_FILE="$BUILD_DIR/Lunacy.deb"
 
-rm -fr "$BUILD_DIR"
-mkdir "$BUILD_DIR" && cd "$BUILD_DIR" || exit 1
+cd "$BUILD_DIR" || exit 1
 
 wget -T 15 "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
 
-deb2xzm "$INPUT_FILE" -o="$BUILD_DIR/$TMP_MODULE_FILE_NAME" -q &>/dev/null
+deb2xzm "$INPUT_FILE" -o="$BUILD_DIR/$TMP_MODULE_FILE_NAME" -q &>/dev/null || { echo "Error: could not convert the package." >&2; exit 1; }
 VERSION=$(unsquashfs -cat "$BUILD_DIR/$TMP_MODULE_FILE_NAME" "usr/share/applications/*.desktop" | grep Version | cut -d= -f2)
 [ "$VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-${ARCH}_porteux.xzm"
@@ -45,6 +45,3 @@ else
 	mv "$BUILD_DIR/$TMP_MODULE_FILE_NAME" "/tmp/$MODULE_FILE_NAME"
 	echo "Module $MODULE_FILE_NAME was already in $OUTPUT_DIR. New module placed in /tmp and not activated."
 fi
-
-# cleanup
-rm -fr "$BUILD_DIR" &>/dev/null

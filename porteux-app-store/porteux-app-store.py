@@ -9,6 +9,7 @@ from os.path import exists
 import subprocess
 import signal
 import json
+import tempfile
 from urllib.request import urlopen
 from datetime import datetime
 from pathlib import Path
@@ -32,6 +33,19 @@ LOCAL_ICONS_PATH = '/usr/share/pixmaps/'
 
 GTK_DIALOG_SCRIPT = "/opt/porteux-scripts/gtkdialog.py"
 GTK_PROGRESS_SCRIPT = "/opt/porteux-scripts/gtkprogress.py"
+
+def write_file(file_path, content, mode):
+    directory = path.dirname(file_path)
+    binary = isinstance(content, bytes)
+    descriptor, temporary_path = tempfile.mkstemp(dir = directory)
+    try:
+        with open(descriptor, 'wb' if binary else 'w') as temporary_file:
+            temporary_file.write(content)
+        os.chmod(temporary_path, mode)
+        os.replace(temporary_path, file_path)
+    except BaseException:
+        os.unlink(temporary_path)
+        raise
 
 def is_recently_updated(file_path, hours = MAX_AGE_HOURS):
     if not exists(file_path):
@@ -195,9 +209,9 @@ class AppWindow(Gtk.ApplicationWindow):
         subprocess.call([GTK_DIALOG_SCRIPT, "-p", input])
 
     def has_internet(self):
-        has_Internet = subprocess.call(["/bin/bash", "-c", "curl 1.1.1.1 > /dev/null 2>&1"])
+        has_Internet = subprocess.call(["/bin/bash", "-c", "curl --max-time 2 1.1.1.1 > /dev/null 2>&1"])
         if has_Internet != 0:
-            has_Internet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 8.8.8.8 > /dev/null 2>&1"])
+            has_Internet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 -W 2 8.8.8.8 > /dev/null 2>&1"])
             if has_Internet != 0:
                 subprocess.call([GTK_DIALOG_SCRIPT, "-p", "No internet connection"])
                 return False
@@ -218,24 +232,35 @@ class AppWindow(Gtk.ApplicationWindow):
             if not is_recently_updated(local_script_path):
                 with urlopen(REPO_APPS_URL + script_name + ".sh") as remote_script:
                     remote_script_decoded = remote_script.read().decode("utf-8")
-                with open(local_script_path, "w") as local_script:
-                    local_script.write(remote_script_decoded)
-                os.chmod(local_script_path, 0o755)
+                write_file(local_script_path, remote_script_decoded, 0o755)
 
             command = ["/bin/bash", local_script_path]
             if extra_args:
                 command += [arg for arg in extra_args if arg is not None]
             if self.check_button_module.get_active():
                 command.append("--activate-module")
-            result = subprocess.run(command, stdout=subprocess.PIPE)
-            output = result.stdout.decode("utf-8")
-
-            if output:
-                self.show_dialog_porteux(output.splitlines()[-1])
-            else:
-                self.show_dialog_porteux("Error creating module.")
+            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            self.show_dialog_porteux(self.get_script_message(result))
+        except Exception as error:
+            self.show_dialog_porteux("Error creating module: " + str(error))
         finally:
             progress_dialog.send_signal(signal.SIGINT)
+
+    def get_script_message(self, result):
+        errors = result.stderr.decode("utf-8").splitlines()
+        output = result.stdout.decode("utf-8").splitlines()
+
+        if result.returncode != 0:
+            # the scripts report their own failures starting with a keyword;
+            # anything else on stderr is progress output from wget and friends
+            for line in reversed(errors):
+                if line.startswith(("Error", "Refusing", "Warning", "Usage", "Directory", "Module placed")):
+                    return line
+            return "Error creating module."
+
+        if output:
+            return output[-1]
+        return "Module created."
 
     def on_main_key_down(self, widget, event):
         if event.keyval == Gdk.KEY_Escape:
@@ -352,8 +377,8 @@ class Application(Gtk.Application):
                 with urlopen(REPO_APPSTORE_URL + DB_JSON_FILE) as remote_db_json_file:
                     if remote_db_json_file.status == 200:
                         remote_db_json_file_decoded = remote_db_json_file.read().decode('utf-8')
-                        with open(LOCAL_APPSTORE_PATH + DB_JSON_FILE, 'w') as local_db_json_file:
-                            local_db_json_file.write(remote_db_json_file_decoded)
+                        json.loads(remote_db_json_file_decoded)
+                        write_file(LOCAL_DB_JSON_PATH, remote_db_json_file_decoded, 0o644)
 
             script_list = [ 'porteux-app-store-live.sh', 'appimage-builder.sh', 'module-builder.sh' ]
 
@@ -363,9 +388,9 @@ class Application(Gtk.Application):
                     continue
                 with urlopen(REPO_APPSTORE_URL + script_name) as remote_script:
                     remote_script_content = remote_script.read()
-                with open(local_script_path, 'wb') as local_script:
-                    local_script.write(remote_script_content)
-                os.chmod(local_script_path, 0o755)
+                if not remote_script_content:
+                    continue
+                write_file(local_script_path, remote_script_content, 0o755)
 
             os.makedirs(LOCAL_APPS_PATH, exist_ok = True)
 
@@ -379,9 +404,9 @@ class Application(Gtk.Application):
                         continue
                     with urlopen(REPO_ICONS_URL + application['icon']) as remote_icon:
                         remote_icon_content = remote_icon.read()
-                    with open(local_icon_path, 'wb') as local_icon:
-                        local_icon.write(remote_icon_content)
-                    os.chmod(local_icon_path, 0o644)
+                    if not remote_icon_content:
+                        continue
+                    write_file(local_icon_path, remote_icon_content, 0o644)
 
         except Exception:
             pass

@@ -8,14 +8,16 @@ VERSION="$5"
 
 ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/modules/"
-BUILD_DIR="/tmp/$CURRENT_PACKAGE-builder"
+BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
+trap 'rm -fr "${BUILD_DIR:?}"' EXIT
 MODULE_DIR="$BUILD_DIR/$CURRENT_PACKAGE-module"
 APPIMAGE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-$ARCH.AppImage"
+DOWNLOADED_FILE="$BUILD_DIR/$CURRENT_PACKAGE.AppImage"
 
-rm -fr "$BUILD_DIR"
-mkdir "$BUILD_DIR" && cd "$BUILD_DIR" || exit 1
+cd "$BUILD_DIR" || exit 1
 
-wget -T 15 "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
+wget -T 15 -O "$DOWNLOADED_FILE" "$APPLICATION_URL" || exit 1
+[ -s "$DOWNLOADED_FILE" ] || { echo "Error: downloaded file is empty." >&2; exit 1; }
 
 mkdir -p "$MODULE_DIR/opt/$CURRENT_PACKAGE"
 mkdir -p "$MODULE_DIR/usr/share/applications"
@@ -34,17 +36,14 @@ StartupNotify=true
 Categories=$CATEGORY;
 EOF
 
-cp "$BUILD_DIR"/*.AppImage "$MODULE_DIR/opt/$CURRENT_PACKAGE/$APPIMAGE_FILE_NAME" || exit 1
+cp "$DOWNLOADED_FILE" "$MODULE_DIR/opt/$CURRENT_PACKAGE/$APPIMAGE_FILE_NAME" || exit 1
 cp /usr/share/pixmaps/"$CURRENT_PACKAGE".* "$MODULE_DIR/usr/share/pixmaps" 2> /dev/null
 
-chmod 755 -R "$MODULE_DIR" 2> /dev/null || exit 1
-chmod 644 "$MODULE_DIR"/usr/share/applications/* 2> /dev/null || exit 1
+chmod 755 -R "$MODULE_DIR" 2> /dev/null || { echo "Error: could not set the module permissions." >&2; exit 1; }
+chmod 644 "$MODULE_DIR"/usr/share/applications/* 2> /dev/null || { echo "Error: could not set the module permissions." >&2; exit 1; }
 chmod 644 "$MODULE_DIR"/usr/share/pixmaps/* 2> /dev/null
 
 MODULE_FILE_NAME="$CURRENT_PACKAGE-$VERSION-${ARCH}_porteux.xzm"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
 /opt/porteux-scripts/porteux-app-store/module-builder.sh "$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1
-
-# cleanup
-rm -fr "$BUILD_DIR" 2> /dev/null

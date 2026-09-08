@@ -25,7 +25,8 @@ CHANNEL=$1
 LANGUAGE=$([ "$2" ] && [ "${2#--}" = "$2" ] && echo "$2" || echo "en-US")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 TARGET_DIR="$PORTDIR/modules"
-TMP="/tmp"
+TMP=$(mktemp -d /tmp/porteux-app-store.XXXXXX) || exit 1
+trap 'rm -fr "${TMP:?}"' EXIT
 WGET_WITH_TIME_OUT="wget -T 15"
 
 # Functions
@@ -63,8 +64,8 @@ finisher() {
 }
 
 get_repo_version_vivaldi() {
-	local ver=$(curl -s "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/" | grep 'href=' | awk -F '"' '{print $2}' | \
-	grep "$CHANNEL" | tail -n 1 | rev | cut -d '.' -f3- | rev | cut -d '-' -f3-)
+	local ver=$(curl -sf "https://repo.vivaldi.com/${CHANNEL}/rpm/x86_64/" | grep 'href=' | awk -F '"' '{print $2}' | \
+	grep "$CHANNEL" | rev | cut -d '.' -f3- | rev | cut -d '-' -f3- | sort -V | tail -n 1)
 
 	echo "$ver"
 }
