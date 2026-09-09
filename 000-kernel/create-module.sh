@@ -143,6 +143,9 @@ patch -N -p1 < ${SCRIPT_PATH}/0001-zstd-use-ZSTD_cpuSupportsBmi2-in-ZSTD_initSta
 patch -N -p1 < ${SCRIPT_PATH}/0002-zstd-skip-BMI2-probe-when-dynamic-dispatch-disabled.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
 patch -N -p1 < ${SCRIPT_PATH}/0003-zstd-probe-the-CPU-for-BMI2-support-only-once.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
 
+echo "Patching MemAvailable..."
+patch -N -p1 < ${SCRIPT_PATH}/0004-mm-count-GPU-pool-pages-in-MemAvailable.patch > /dev/null 2>&1 || { echo "Failed to apply MemAvailable patch."; exit 1; }
+
 echo "Patching missing firmware..."
 # fixed in 7.2.x but let's keep the fix for compatibility with old kernels just in case
 if [ "$KERNEL_MAJOR_VERSION" -lt 7 ] || { [ "$KERNEL_MAJOR_VERSION" -eq 7 ] && [ "$KERNEL_MINOR_VERSION" -le 1 ]; }; then

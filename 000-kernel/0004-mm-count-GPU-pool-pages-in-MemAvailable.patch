@@ -1,0 +1,37 @@
+From: Rafael <rafael@msupply.foundation>
+Date: Thu, 10 Sep 2026 00:00:00 +0200
+Subject: [PATCH] mm: count shrinkable GPU pool pages in MemAvailable
+
+The GPU driver keeps pages it has finished with in a pool for
+reuse. They hold no data and are freed on demand, but MemAvailable
+does not count them. On an APU this pool can reach several GiB, so
+tools that compute 'used = MemTotal - MemAvailable report' memory
+as used when it is really free for the taking.
+
+Add the pool (NR_GPU_RECLAIM) to the estimate.
+
+---
+--- a/mm/show_mem.c	2026-09-10 01:00:51.533196742 +0200
++++ b/mm/show_mem.c	2026-09-10 01:01:14.325231688 +0200
+@@ -66,6 +66,8 @@
+ 	reclaimable -= min(reclaimable / 2, wmark_low);
+ 	available += reclaimable;
+ 
++	available += global_node_page_state(NR_GPU_RECLAIM);
++
+ 	if (available < 0)
+ 		available = 0;
+ 	return available;
+--- a/Documentation/filesystems/proc.rst	2026-09-10 01:00:51.535764604 +0200
++++ b/Documentation/filesystems/proc.rst	2026-09-10 01:00:51.559971119 +0200
+@@ -1126,8 +1126,8 @@
+ MemAvailable
+               An estimate of how much memory is available for starting new
+               applications, without swapping. Calculated from MemFree,
+-              SReclaimable, the size of the file LRU lists, and the low
+-              watermarks in each zone.
++              SReclaimable, GPUReclaim, the size of the file LRU lists,
++              and the low watermarks in each zone.
+               The estimate takes into account that the system needs some
+               page cache to function well, and that not all reclaimable
+               slab will be reclaimable, due to items being in use. The
