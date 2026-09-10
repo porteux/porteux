@@ -32,7 +32,7 @@ tar xf ${PRGNAM}-${PRGNAM}-$VERSION.tar.?z
 cd ${PRGNAM}-${PRGNAM}-$VERSION
 
 for i in $CWD/*.patch; do
-	patch -p1 < $i
+	patch -p1 < "$i"
 done
 
 cp "$CWD/Default4x/"* src/skins-data/Skins/Default/
