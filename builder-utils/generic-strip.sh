@@ -29,6 +29,7 @@ split_elf_files() {
 }
 
 strip_clean() {
+	{
 	rm usr/share/pixmaps/*.xpm
 	rm usr/X11/man
 	rm var/log/removed_packages
@@ -124,13 +125,14 @@ strip_clean() {
 	find usr/ -type d -empty -delete
 
 	find usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \;
+	} > /dev/null 2>&1
 
 	list_elf_files '*ELF*@(executable|shared object)*' "$1" | xargs -0 -r strip --strip-debug --strip-unneeded $STRIP_SECTIONS
-} > /dev/null 2>&1
+}
 
 strip_hard_exec() {
 	list_elf_files '*ELF*executable*' "$1" | xargs -0 -r strip --strip-all --strip-section-headers -R .eh_frame* $STRIP_SECTIONS
-} > /dev/null 2>&1
+}
 
 strip_hard_all() {
 	local executables shared_objects
@@ -143,7 +145,7 @@ strip_hard_all() {
 	xargs -0 -r strip --strip-all $STRIP_SECTIONS < "$shared_objects"
 
 	rm -f "$executables" "$shared_objects"
-} > /dev/null 2>&1
+}
 
 if [[ ${BASH_SOURCE[0]} == "$0" && -n $1 ]]; then
 	"$@"

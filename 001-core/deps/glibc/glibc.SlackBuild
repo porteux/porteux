@@ -66,8 +66,7 @@ mkdir -p $PKG/bin $PKG/etc/profile.d
 ( cd $PKG/bin; ln -sf /sbin/sln sln )
 install -m755 $CWD/glibc.csh $CWD/glibc.sh $PKG/etc/profile.d/
 
-find $PKG | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
-find $PKG | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
+find "$PKG" -type f -exec file {} + | grep -E 'ELF.*(executable|shared object)' | cut -f 1 -d : | xargs -r strip --strip-debug 2> /dev/null
 
 rm $PKG/etc/ld.so.cache
 rm -fr $PKG/usr/share/i18n/charmaps

@@ -72,7 +72,7 @@ echo -e "Building kernel ${KERNEL_VERSION} using ${COMPILER}...\n"
 cp ${SCRIPT_PATH}/kernel-firmware*.txz ${MODULE_PATH}/packages 2>/dev/null
 
 echo "Downloading kernel source code..."
-kernel_source_archive=$(ls ${SCRIPT_PATH}/linux-${KERNEL_VERSION}.tar.?z 2>/dev/null | head -n1)
+kernel_source_archive=$(ls "${SCRIPT_PATH}"/linux-"${KERNEL_VERSION}".tar.?z 2>/dev/null | head -n1)
 if [ -z "$kernel_source_archive" ]; then
 	wget -P ${MODULE_PATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { echo "Failed to download kernel source code."; exit 1; }
 	kernel_source_archive=${MODULE_PATH}/linux-${KERNEL_VERSION}.tar.xz
@@ -183,8 +183,8 @@ make -j${NUMBER_THREADS} INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=../ modules_instal
 
 cd $MODULE_PATH || exit 1
 
-kernel_modules_folder=$(ls $MODULE_PATH/lib/modules/)
-rm $MODULE_PATH/lib/modules/$kernel_modules_folder/build > /dev/null 2>&1
+kernel_modules_folder=$(basename "$MODULE_PATH"/lib/modules/*/)
+rm "$MODULE_PATH/lib/modules/$kernel_modules_folder/build" > /dev/null 2>&1
 
 echo "Installing firmwares..."
 current_package=kernel-firmware
