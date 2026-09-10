@@ -8,6 +8,7 @@ from os import path
 from os.path import exists
 import subprocess
 import signal
+import sys
 import json
 import tempfile
 from urllib.request import urlopen
@@ -21,6 +22,7 @@ if os.geteuid() != 0:
 
 DB_JSON_FILE = 'porteux-app-store-db.json'
 MAX_AGE_HOURS = 6
+REQUEST_TIMEOUT = 15
 
 REPO_APPSTORE_URL = "https://raw.githubusercontent.com/porteux/porteux/refs/heads/main/porteux-app-store/"
 REPO_APPS_URL = REPO_APPSTORE_URL + 'applications/'
@@ -230,7 +232,7 @@ class AppWindow(Gtk.ApplicationWindow):
         try:
             local_script_path = LOCAL_APPS_PATH + script_name + ".sh"
             if not is_recently_updated(local_script_path):
-                with urlopen(REPO_APPS_URL + script_name + ".sh") as remote_script:
+                with urlopen(REPO_APPS_URL + script_name + ".sh", timeout = REQUEST_TIMEOUT) as remote_script:
                     remote_script_decoded = remote_script.read().decode("utf-8")
                 write_file(local_script_path, remote_script_decoded, 0o755)
 
@@ -374,7 +376,7 @@ class Application(Gtk.Application):
                     )
 
             if not is_recently_updated(LOCAL_DB_JSON_PATH):
-                with urlopen(REPO_APPSTORE_URL + DB_JSON_FILE) as remote_db_json_file:
+                with urlopen(REPO_APPSTORE_URL + DB_JSON_FILE, timeout = REQUEST_TIMEOUT) as remote_db_json_file:
                     if remote_db_json_file.status == 200:
                         remote_db_json_file_decoded = remote_db_json_file.read().decode('utf-8')
                         json.loads(remote_db_json_file_decoded)
@@ -386,7 +388,7 @@ class Application(Gtk.Application):
                 local_script_path = LOCAL_APPSTORE_PATH + script_name
                 if is_recently_updated(local_script_path):
                     continue
-                with urlopen(REPO_APPSTORE_URL + script_name) as remote_script:
+                with urlopen(REPO_APPSTORE_URL + script_name, timeout = REQUEST_TIMEOUT) as remote_script:
                     remote_script_content = remote_script.read()
                 if not remote_script_content:
                     continue
@@ -402,14 +404,14 @@ class Application(Gtk.Application):
                     local_icon_path = LOCAL_ICONS_PATH + application['icon']
                     if is_recently_updated(local_icon_path, 720):
                         continue
-                    with urlopen(REPO_ICONS_URL + application['icon']) as remote_icon:
+                    with urlopen(REPO_ICONS_URL + application['icon'], timeout = REQUEST_TIMEOUT) as remote_icon:
                         remote_icon_content = remote_icon.read()
                     if not remote_icon_content:
                         continue
                     write_file(local_icon_path, remote_icon_content, 0o644)
 
-        except Exception:
-            pass
+        except (OSError, ValueError) as error:
+            print("PorteuX App Store: could not update the application list: " + str(error), file = sys.stderr)
         finally:
             if progress_dialog:
                 progress_dialog.send_signal(signal.SIGINT)
