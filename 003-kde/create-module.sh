@@ -350,7 +350,7 @@ find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o
 } >/dev/null 2>&1
 
 strip_clean
-strip_hard_all --exceptions='libexiv2.so*,libgwenviewlib.so*'
+strip_hard_all 'libexiv2.so*' 'libgwenviewlib.so*'
 
 ### copy cache files
 

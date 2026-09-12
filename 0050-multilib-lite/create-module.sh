@@ -133,7 +133,7 @@ find $MODULE_PATH/packages/usr -mindepth 1 -maxdepth 1 -type d ! -name "lib" ! -
 find $MODULE_PATH/packages/usr/lib/locale -mindepth 1 -maxdepth 1 -type d ! -name "en_US.utf8" -exec rm -rf {} +
 } >/dev/null 2>&1
 
-strip_clean --exceptions='*/dri/*,libc-*,libc.so*,libgallium*,libvulkan*,libX11.so*'
+strip_clean '*/dri/*' 'libc-*' 'libc.so*' 'libgallium*' 'libvulkan*' 'libX11.so*'
 strip_hard_exec
 
 ### finalize

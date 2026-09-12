@@ -112,7 +112,7 @@ rm usr/share/applications/mimeinfo.cache
 } >/dev/null 2>&1
 
 strip_clean
-strip_hard_all --exceptions='libluajit*,transmission-gtk'
+strip_hard_all 'libluajit*' 'transmission-gtk'
 
 ### copy cache files
 

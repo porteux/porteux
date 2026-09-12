@@ -1,31 +1,18 @@
 #!/bin/bash
 
-STRIP_SECTIONS="-R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack"
+list_files_to_strip() {
+	local type=$1 name exclude=()
+	shift
 
-list_elf_files() {
-	local type_pattern="$1"
-	local exceptions=""
-	[[ $2 == --exceptions=* ]] && exceptions="${2#--exceptions=}" && exceptions="${exceptions//,/|}"
-
-	find . -type f -print0 | xargs -0 file -00 | while IFS= read -r -d '' binary_file && IFS= read -r -d '' file_type; do
-		[[ $file_type == $type_pattern ]] || continue
-		[[ -n $exceptions && ( ${binary_file##*/} == @($exceptions) || $binary_file == @($exceptions) ) ]] && continue
-		printf '%s\0' "$binary_file"
+	for name; do
+		exclude+=(! -path "*/$name")
 	done
+
+	find . -type f "${exclude[@]}" | file -F $'\t' -f - | grep -E $'\t.*'"$type" | cut -f1
 }
 
-split_elf_files() {
-	local executables="$1" shared_objects="$2"
-	local exceptions=""
-	[[ $3 == --exceptions=* ]] && exceptions="${3#--exceptions=}" && exceptions="${exceptions//,/|}"
-
-	find . -type f -print0 | xargs -0 file -00 | while IFS= read -r -d '' binary_file && IFS= read -r -d '' file_type; do
-		[[ -n $exceptions && ( ${binary_file##*/} == @($exceptions) || $binary_file == @($exceptions) ) ]] && continue
-		case $file_type in
-			*ELF*shared\ object*) printf '%s\0' "$binary_file" >> "$shared_objects" ;;
-			*ELF*executable*) printf '%s\0' "$binary_file" >> "$executables" ;;
-		esac
-	done
+strip_files() {
+	xargs -d '\n' -r strip "$@" -R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }
 
 strip_clean() {
@@ -127,24 +114,16 @@ strip_clean() {
 	find usr/share/mime/ -mindepth 1 -maxdepth 1 -not -name packages -exec rm -rf '{}' \;
 	} > /dev/null 2>&1
 
-	list_elf_files '*ELF*@(executable|shared object)*' "$1" | xargs -0 -r strip --strip-debug --strip-unneeded $STRIP_SECTIONS
+	list_files_to_strip 'ELF.*(executable|shared object)' "$@" | strip_files --strip-debug --strip-unneeded
 }
 
 strip_hard_exec() {
-	list_elf_files '*ELF*executable*' "$1" | xargs -0 -r strip --strip-all --strip-section-headers -R .eh_frame* $STRIP_SECTIONS
+	list_files_to_strip 'ELF.*executable' "$@" | strip_files --strip-all --strip-section-headers -R .eh_frame*
 }
 
 strip_hard_all() {
-	local executables shared_objects
-	executables=$(mktemp)
-	shared_objects=$(mktemp)
-
-	split_elf_files "$executables" "$shared_objects" "$1"
-
-	xargs -0 -r strip --strip-all --strip-section-headers -R .eh_frame* $STRIP_SECTIONS < "$executables"
-	xargs -0 -r strip --strip-all $STRIP_SECTIONS < "$shared_objects"
-
-	rm -f "$executables" "$shared_objects"
+	strip_hard_exec "$@"
+	list_files_to_strip 'ELF.*shared object' "$@" | strip_files --strip-all
 }
 
 if [[ ${BASH_SOURCE[0]} == "$0" && -n $1 ]]; then

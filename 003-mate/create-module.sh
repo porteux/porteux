@@ -180,7 +180,7 @@ find usr/share/themes -mindepth 1 -maxdepth 1 ! \( -name "Adwaita" -o -name "Adw
 } >/dev/null 2>&1
 
 strip_clean
-strip_hard_all --exceptions='libvte-*,mate-system-monitor'
+strip_hard_all 'libvte-*' 'mate-system-monitor'
 
 ### copy cache files
 

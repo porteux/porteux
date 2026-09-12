@@ -271,8 +271,8 @@ rm -fr var/lib/AccountsService
 
 } >/dev/null 2>&1
 
-strip_clean --exceptions='libexiv2.so*,libmozjs-*,libvte-*'
-strip_hard_all --exceptions='libexiv2.so*,libmozjs-*,libvte-*'
+strip_clean 'libexiv2.so*' 'libmozjs-*' 'libvte-*'
+strip_hard_all 'libexiv2.so*' 'libmozjs-*' 'libvte-*'
 
 ### copy cache files
 
