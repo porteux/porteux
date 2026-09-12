@@ -8,7 +8,7 @@ list_files_to_strip() {
 		exclude+=(! -path "*/$name")
 	done
 
-	find . -type f "${exclude[@]}" | file -F $'\t' -f - | grep -E $'\t.*'"$type" | cut -f1
+	find . -type f "${exclude[@]}" | file -e text -F $'\t' -f - | grep -E $'\t.*'"$type" | cut -f1
 }
 
 strip_files() {

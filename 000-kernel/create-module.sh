@@ -6,6 +6,7 @@ source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../builder-utils/set-flags.
 
 set_flags "$MODULE_NAME"
 
+source "$BUILDER_UTILS_PATH/generic-strip.sh"
 source "$BUILDER_UTILS_PATH/helper.sh"
 source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
@@ -298,7 +299,7 @@ find ${CRIPPLED_LINUX_PATH}/scripts -xtype l -delete
 
 mv ${CRIPPLED_LINUX_PATH}/config ${CRIPPLED_LINUX_PATH}/.config
 
-find ${CRIPPLED_SOURCE_PATH} -type f -perm -u+x -print0 | xargs -0 -r strip --strip-all -R .comment -R .eh_frame -R .eh_frame_hdr -R .eh_frame_ptr -R .jcr -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack
+find ${CRIPPLED_SOURCE_PATH} -type f -perm -u+x | strip_files --strip-all -R .eh_frame* -R .jcr
 } >/dev/null 2>&1
 
 make_module ${MODULE_PATH}/${CRIPPLED_MODULE_NAME} ${CRIPPLED_MODULE_NAME}-${build_date}.xzm > /dev/null || { echo "Error: failed to create crippled kernel module." >&2; exit 1; }

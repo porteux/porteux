@@ -322,8 +322,9 @@ find usr/share/icons/hicolor -name 'image-vnd.djvu.png' -delete
 find $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/dri -name '*.la' -delete
 
 mv $MODULE_PATH/packages/usr/share/sounds $MODULE_PATH/
-strip_clean '*/dri/*' 'gpartedbin' 'libgallium*' 'libunwind*' 'libvulkan*' 'libX11.so*'
-strip_hard_all '*/dri/*' 'gpartedbin' 'libgallium*' 'libunwind*' 'libvulkan*' 'libX11.so*'
+exceptions=('*/dri/*' 'gpartedbin' 'libgallium*' 'libunwind*' 'libvulkan*' 'libX11.so*')
+strip_clean "${exceptions[@]}"
+strip_hard_all "${exceptions[@]}"
 mv $MODULE_PATH/sounds $MODULE_PATH/packages/usr/share
 
 ### copy cache files

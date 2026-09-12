@@ -267,8 +267,9 @@ find usr/share/cinnamon/faces -mindepth 1 -maxdepth 1 ! \( -name "user-generic*"
 find usr/share/cinnamon/thumbnails/cursors -mindepth 1 -maxdepth 1 ! \( -name "Adwaita*" -o -name "Paper*" -o -name "unknown*" -o -name "Yaru*" \) -exec rm -rf '{}' \; 2>/dev/null
 } >/dev/null 2>&1
 
-strip_clean 'libmozjs-*' 'libvte-*'
-strip_hard_all 'libmozjs-*' 'libvte-*'
+exceptions=('libmozjs-*' 'libvte-*')
+strip_clean "${exceptions[@]}"
+strip_hard_all "${exceptions[@]}"
 
 ### copy cache files
 

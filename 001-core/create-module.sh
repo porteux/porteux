@@ -325,8 +325,9 @@ find usr/lib${SYSTEM_BITS}/python* -type d -name 'test' -prune -exec rm -rf {} +
 find usr/lib${SYSTEM_BITS}/python* -type d -name 'tests' -prune -exec rm -rf {} +
 } >/dev/null 2>&1
 
-strip_clean 'ld-linux*' 'libc.so.*' 'libgcc_s*' 'libldap*' 'libpthread*' 'libstdc++*'
-strip_hard_all 'ld-linux*' 'libc.so.*' 'libgcc_s*' 'libldap*' 'libpthread*' 'libstdc++*'
+exceptions=('ld-linux*' 'libc.so.*' 'libgcc_s*' 'libldap*' 'libpthread*' 'libstdc++*')
+strip_clean "${exceptions[@]}"
+strip_hard_all "${exceptions[@]}"
 
 ### copy cache files
 
