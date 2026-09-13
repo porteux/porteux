@@ -140,9 +140,9 @@ echo "Patching ntfs colon character support..."
 patch -N -p1 < ${SCRIPT_PATH}/0003-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }
 
 echo "Patching zstd..."
-patch -N -p1 < ${SCRIPT_PATH}/0001-zstd-use-ZSTD_cpuSupportsBmi2-in-ZSTD_initStaticCCtx.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
-patch -N -p1 < ${SCRIPT_PATH}/0002-zstd-skip-BMI2-probe-when-dynamic-dispatch-disabled.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
-patch -N -p1 < ${SCRIPT_PATH}/0003-zstd-probe-the-CPU-for-BMI2-support-only-once.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
+patch -N -p1 < ${SCRIPT_PATH}/0001-zstd-add-fallback-aliases-for-disabled-BMI2-variants.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
+patch -N -p1 < ${SCRIPT_PATH}/0002-zstd-use-cpu_feature_enabled-for-BMI2-dispatch.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
+patch -N -p1 < ${SCRIPT_PATH}/0003-btrfs-zstd-avoid-a-copy-in-zstd_decompress_bio.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
 
 echo "Patching MemAvailable..."
 patch -N -p1 < ${SCRIPT_PATH}/0004-mm-count-GPU-pool-pages-in-MemAvailable.patch > /dev/null 2>&1 || { echo "Failed to apply MemAvailable patch."; exit 1; }
