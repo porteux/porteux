@@ -1,8 +1,8 @@
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index f3f7cb0..0539b87 100644
+index bdad90f..d2d0570 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -264,6 +264,7 @@ config X86
+@@ -263,6 +263,7 @@ config X86
  	select HAVE_KRETPROBES
  	select HAVE_RETHOOK
  	select HAVE_KLP_BUILD			if X86_64
@@ -11,7 +11,7 @@ index f3f7cb0..0539b87 100644
  	select HAVE_MIXED_BREAKPOINTS_REGS
  	select HAVE_MOD_ARCH_SPECIFIC
 diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index 4711a35..d476607 100644
+index 74e336d..51b51c6 100644
 --- a/arch/x86/kernel/vmlinux.lds.S
 +++ b/arch/x86/kernel/vmlinux.lds.S
 @@ -233,7 +233,7 @@ SECTIONS
@@ -23,6 +23,15 @@ index 4711a35..d476607 100644
  		__x86_cpu_dev_end = .;
  	}
  
+@@ -241,7 +241,7 @@ SECTIONS
+ 	.x86_intel_mid_dev.init : AT(ADDR(.x86_intel_mid_dev.init) - \
+ 								LOAD_OFFSET) {
+ 		__x86_intel_mid_dev_start = .;
+-		*(.x86_intel_mid_dev.init)
++		KEEP(*(.x86_intel_mid_dev.init))
+ 		__x86_intel_mid_dev_end = .;
+ 	}
+ #endif
 @@ -255,21 +255,21 @@ SECTIONS
  	. = ALIGN(8);
  	.retpoline_sites : AT(ADDR(.retpoline_sites) - LOAD_OFFSET) {
@@ -91,6 +100,15 @@ index 4711a35..d476607 100644
  		__apicdrivers_end = .;
  	}
  
+@@ -353,7 +353,7 @@ SECTIONS
+ 	. = ALIGN(PAGE_SIZE);
+ 	.smp_locks : AT(ADDR(.smp_locks) - LOAD_OFFSET) {
+ 		__smp_locks = .;
+-		*(.smp_locks)
++		KEEP(*(.smp_locks))
+ 		. = ALIGN(PAGE_SIZE);
+ 		__smp_locks_end = .;
+ 	}
 @@ -388,7 +388,7 @@ SECTIONS
  	.brk : AT(ADDR(.brk) - LOAD_OFFSET) {
  		__brk_base = .;
