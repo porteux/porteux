@@ -1,11 +1,11 @@
 diff --git a/src/meson.build b/src/meson.build
 --- a/src/meson.build
 +++ b/src/meson.build
-@@ -3,7 +3,6 @@
+@@ -10,7 +10,6 @@ introspection_common = {
    'fatal_warnings': get_option('werror'),
  }
-
+ 
 -subdir('calendar-server')
  subdir('hotplug-sniffer')
  subdir('st')
- if have_x11_client
+ if have_xwayland

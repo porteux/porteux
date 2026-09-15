@@ -19,10 +19,6 @@ wget https://gitlab.gnome.org/GNOME/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${V
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-for i in $CWD/*.patch; do
-	patch -p1 < "$i"
-done
-
 if [ ! -f subprojects/gvc/meson.build ]; then
 	wget https://gitlab.gnome.org/GNOME/libgnome-volume-control/-/archive/master/libgnome-volume-control-master.tar.gz || true
 	[ ! -s libgnome-volume-control-master.tar.gz ] && wget https://github.com/GNOME/libgnome-volume-control/archive/refs/heads/master.tar.gz -O libgnome-volume-control-master.tar.gz

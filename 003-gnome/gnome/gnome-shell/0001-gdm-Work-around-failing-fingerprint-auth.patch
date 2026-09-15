@@ -9,50 +9,59 @@ the PAM configuration has not been updated and no prints are enrolled.
 So, consider a verification failure within one second to be a service
 failure instead.
 ---
- js/gdm/util.js | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ js/gdm/authServicesLegacy.js | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/js/gdm/util.js b/js/gdm/util.js
-index 97df6d687e..371953cb25 100644
---- a/js/gdm/util.js
-+++ b/js/gdm/util.js
-@@ -109,6 +109,7 @@ export class ShellUserVerifier extends Signals.EventEmitter {
-         this._defaultService = null;
-         this._preemptingService = null;
-         this._fingerprintReaderType = FingerprintReaderType.NONE;
+diff --git a/js/gdm/authServicesLegacy.js b/js/gdm/authServicesLegacy.js
+--- a/js/gdm/authServicesLegacy.js
++++ b/js/gdm/authServicesLegacy.js
+@@ -75,6 +75,7 @@ export class AuthServicesLegacy extends AuthServices {
+         this.addCredentialManager(Vmware.SERVICE_NAME, Vmware.getVmwareCredentialsManager());
+ 
+         this._fingerprintReadyTimeoutId = 0;
 +        this._fprintStartTime = -1;
+     }
  
-         this._messageQueue = [];
-         this._messageQueueTimeoutId = 0;
-@@ -669,6 +670,10 @@ export class ShellUserVerifier extends Signals.EventEmitter {
-         this._hold.acquire();
-         try {
-             this._activeServices.add(serviceName);
-+
-+            if (serviceName == FINGERPRINT_SERVICE_NAME)
-+                this._fprintStartTime = GLib.get_monotonic_time();
-+
-             if (this._userName) {
-                 await this._userVerifier.call_begin_verification_for_user(
-                     serviceName, this._userName, this._cancellable);
-@@ -829,6 +834,17 @@ export class ShellUserVerifier extends Signals.EventEmitter {
-         if (serviceName === FINGERPRINT_SERVICE_NAME) {
-             if (this._fingerprintFailedId)
-                 GLib.source_remove(this._fingerprintFailedId);
-+
-+            // On Fedora we have the problem that fingerprint auth fails
-+            // immediately if the PAM configuration has not been updated and no
-+            // prints are enrolled.
-+            // So, consider a verification failure within one second to be a service
-+            // failure instead.
-+            if (this._fprintStartTime > GLib.get_monotonic_time() - GLib.USEC_PER_SEC) {
-+                log("Fingerprint service failed almost immediately, considering it unavailable.");
-+                this._onServiceUnavailable(this._client, serviceName, null);
-+                return;
-+            }
-         }
+     _handleAnswerQuery(serviceName, answer) {
+@@ -128,8 +129,12 @@ export class AuthServicesLegacy extends AuthServices {
+     }
  
-         // For Not Listed / enterprise logins, immediately reset
+     _handleOnConversationStarted(serviceName) {
+-        if (serviceName !== FINGERPRINT_SERVICE_NAME ||
+-            this._fingerprintReadyTimeoutId !== 0)
++        if (serviceName !== FINGERPRINT_SERVICE_NAME)
++            return;
++
++        this._fprintStartTime = GLib.get_monotonic_time();
++
++        if (this._fingerprintReadyTimeoutId !== 0)
+             return;
+ 
+         this._fingerprintReadyTimeoutId = GLib.timeout_add_once(
+@@ -336,6 +341,23 @@ export class AuthServicesLegacy extends AuthServices {
+             GLib.source_remove(this._fingerprintFailedId);
+     }
+ 
++    async _verificationFailed(serviceName, shouldRetry) {
++        // On Fedora we have the problem that fingerprint auth fails
++        // immediately if the PAM configuration has not been updated and no
++        // prints are enrolled.
++        // So, consider a verification failure within one second to be a service
++        // failure instead.
++        if (serviceName === FINGERPRINT_SERVICE_NAME &&
++            this._fprintStartTime > GLib.get_monotonic_time() - GLib.USEC_PER_SEC) {
++            log('Fingerprint service failed almost immediately, considering it unavailable.');
++            this._onServiceUnavailable(serviceName, null);
++            this._setFingerprintReady(false);
++            return;
++        }
++
++        await super._verificationFailed(serviceName, shouldRetry);
++    }
++
+     _handleOnVerificationComplete(serviceName) {
+         if (this._credentialManagers[serviceName])
+             this._credentialManagers[serviceName].token = null;
 -- 
 2.43.2
 
