@@ -1,0 +1,123 @@
+diff -Naur a/src/actions/gsm_gksu.cpp b/src/actions/gsm_gksu.cpp
+--- a/src/actions/gsm_gksu.cpp	2026-09-15 20:23:40.812359892 +0200
++++ b/src/actions/gsm_gksu.cpp	2026-09-15 20:24:31.310407865 +0200
+@@ -16,20 +16,23 @@
+ static void
+ load_gksu (void)
+ {
+-  static GModule *module = NULL;
++  static gsize initialized = 0;
+ 
+-  if (g_once_init_enter_pointer (&module)) {
++  if (g_once_init_enter (&initialized)) {
+     GModule *gksu = g_module_open ("libgksu2.so",
+                                    static_cast<GModuleFlags>(G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL));
+ 
+-    if (!g_module_symbol (gksu, "gksu_run", (gpointer *) &gksu_run)) {
++    if (gksu == NULL) {
++      g_debug ("Could not load libgksu2.so");
++    } else if (!g_module_symbol (gksu, "gksu_run", (gpointer *) &gksu_run)) {
+       g_debug ("Could not load gksu_run from libgksu2.so");
+-      return;
++      g_module_close (gksu);
+     } else {
+       g_debug ("Loaded gksu_run from libgksu2.so");
++      g_module_make_resident (gksu);
+     }
+ 
+-    g_once_init_leave_pointer (&module, g_steal_pointer (&gksu));
++    g_once_init_leave (&initialized, 1);
+   }
+ }
+ 
+diff -Naur a/src/actions/gsm_gnomesu.cpp b/src/actions/gsm_gnomesu.cpp
+--- a/src/actions/gsm_gnomesu.cpp	2026-09-15 20:23:41.323582745 +0200
++++ b/src/actions/gsm_gnomesu.cpp	2026-09-15 20:24:31.310426801 +0200
+@@ -16,20 +16,23 @@
+ static void
+ load_gnomesu (void)
+ {
+-  static GModule *module = NULL;
++  static gsize initialized = 0;
+ 
+-  if (g_once_init_enter_pointer (&module)) {
++  if (g_once_init_enter (&initialized)) {
+     GModule *gnomesu = g_module_open ("libgnomesu.so.0",
+                                       static_cast<GModuleFlags>(G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL));
+ 
+-    if (!g_module_symbol (gnomesu, "gnomesu_exec", (gpointer *) &gnomesu_exec)) {
++    if (gnomesu == NULL) {
++      g_debug ("Could not load libgnomesu.so.0");
++    } else if (!g_module_symbol (gnomesu, "gnomesu_exec", (gpointer *) &gnomesu_exec)) {
+       g_debug ("Could not load gnomesu_exec from libgnomesu.so.0");
+-      return;
++      g_module_close (gnomesu);
+     } else {
+       g_debug ("Loaded gnomesu_exec from libgnomesu.so.0");
++      g_module_make_resident (gnomesu);
+     }
+ 
+-    g_once_init_leave_pointer (&module, g_steal_pointer (&gnomesu));
++    g_once_init_leave (&initialized, 1);
+   }
+ }
+ 
+diff -Naur a/src/selinux/gsm-selinux.c b/src/selinux/gsm-selinux.c
+--- a/src/selinux/gsm-selinux.c	2026-09-15 20:23:09.272207467 +0200
++++ b/src/selinux/gsm-selinux.c	2026-09-15 20:24:31.310382828 +0200
+@@ -17,38 +17,32 @@
+ static gboolean
+ load_selinux (void)
+ {
++  static gsize initialized = 0;
+   static GModule *module = NULL;
+ 
+-  if (g_once_init_enter_pointer (&module)) {
++  if (g_once_init_enter (&initialized)) {
+     GModule *selinux = g_module_open ("libselinux.so.1",
+                                       G_MODULE_BIND_LAZY | G_MODULE_BIND_LOCAL);
+ 
+-    if (!g_module_symbol (selinux, "getpidcon", (gpointer *) &getpidcon)) {
+-      g_debug ("Could not load getpidcon from libselinux.so.0");
+-      return FALSE;
++    if (selinux == NULL) {
++      g_debug ("Could not load libselinux.so.1");
++    } else if (!g_module_symbol (selinux, "getpidcon", (gpointer *) &getpidcon)) {
++      g_debug ("Could not load getpidcon from libselinux.so.1");
++    } else if (!g_module_symbol (selinux, "freecon", (gpointer *) &freecon)) {
++      g_debug ("Could not load freecon from libselinux.so.1");
++    } else if (!g_module_symbol (selinux,
++                                 "is_selinux_enabled",
++                                 (gpointer *) &is_selinux_enabled)) {
++      g_debug ("Could not load is_selinux_enabled from libselinux.so.1");
+     } else {
+-      g_debug ("Loaded getpidcon from libselinux.so.0");
++      g_debug ("Loaded libselinux.so.1");
++      g_module_make_resident (selinux);
++      module = g_steal_pointer (&selinux);
+     }
+ 
+-    if (!g_module_symbol (selinux, "freecon", (gpointer *) &freecon)) {
+-      g_debug ("Could not load freecon from libselinux.so.0");
+-      return FALSE;
+-    } else {
+-      g_debug ("Loaded freecon from libselinux.so.0");
+-    }
+-
+-    if (!g_module_symbol (selinux,
+-                          "is_selinux_enabled",
+-                          (gpointer *) &is_selinux_enabled)) {
+-      g_debug ("Could not load is_selinux_enabled from libselinux.so.0");
+-      return FALSE;
+-    } else {
+-      g_debug ("Loaded is_selinux_enabled from libselinux.so.0");
+-    }
+-
+-    g_module_make_resident (selinux);
++    g_clear_pointer (&selinux, g_module_close);
+ 
+-    g_once_init_leave_pointer (&module, g_steal_pointer (&selinux));
++    g_once_init_leave (&initialized, 1);
+   }
+ 
+   return module != NULL;
