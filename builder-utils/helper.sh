@@ -67,7 +67,7 @@ elevate_if_needed() {
 	local script="$1"
 	shift
 	echo "Please enter admin's password below:"
-	su -c "$(printf '%q ' "$(realpath "$script")" "$@")"
+	su -c "$(printf '%q ' bash "$(realpath "$script")" "$@")"
 	exit
 }
 
