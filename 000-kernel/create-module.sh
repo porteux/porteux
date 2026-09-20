@@ -106,7 +106,7 @@ if [ ${AUFS:-no} = "yes" ]; then
 	rm -fr ../aufs_sources
 elif [ ${OVERLAYFS:-no} = "yes" ]; then
 	echo "Patching OverlayFS dynamic layers support..."
-	patch -N -p1 < ${SCRIPT_PATH}/0002-overlayfs-dynamic-layers.patch > /dev/null 2>&1 || { echo "Failed to apply OverlayFS dynamic layers patch."; exit 1; }
+	patch -N -p1 < ${SCRIPT_PATH}/overlayfs-dynamic-layers.patch > /dev/null 2>&1 || { echo "Failed to apply OverlayFS dynamic layers patch."; exit 1; }
 	sed -i "s|CONFIG_OVERLAY_FS_METACOPY=y|# CONFIG_OVERLAY_FS_METACOPY is not set|" .config
 else
 	echo "Downloading aufs-ng..."
@@ -137,15 +137,18 @@ echo "Patching dead code elimination support..."
 patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
 
 echo "Patching ntfs colon character support..."
-patch -N -p1 < ${SCRIPT_PATH}/0003-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }
+patch -N -p1 < ${SCRIPT_PATH}/0004-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }
 
 echo "Patching zstd..."
-patch -N -p1 < ${SCRIPT_PATH}/0001-zstd-add-fallback-aliases-for-disabled-BMI2-variants.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
+patch -N -p1 < ${SCRIPT_PATH}/0002-zstd-add-fallback-aliases-for-disabled-BMI2-variants.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
 patch -N -p1 < ${SCRIPT_PATH}/0002-zstd-use-cpu_feature_enabled-for-BMI2-dispatch.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
-patch -N -p1 < ${SCRIPT_PATH}/0003-btrfs-zstd-avoid-a-copy-in-zstd_decompress_bio.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
+patch -N -p1 < ${SCRIPT_PATH}/0002-zstd-btrfs-avoid-a-copy-in-zstd_decompress_bio.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
 
 echo "Patching MemAvailable..."
-patch -N -p1 < ${SCRIPT_PATH}/0004-mm-count-GPU-pool-pages-in-MemAvailable.patch > /dev/null 2>&1 || { echo "Failed to apply MemAvailable patch."; exit 1; }
+patch -N -p1 < ${SCRIPT_PATH}/0003-mm-count-GPU-pool-pages-in-MemAvailable.patch > /dev/null 2>&1 || { echo "Failed to apply MemAvailable patch."; exit 1; }
+
+echo "Patching file read optimization..."
+patch -N -p1 < ${SCRIPT_PATH}/0005-fs-avoid-spurious-dentry-ref-unref-cycle-on-open.patch > /dev/null 2>&1 || { echo "Failed to apply file read patch."; exit 1; }
 
 echo "Patching missing firmware..."
 # fixed in 7.2.x but let's keep the fix for compatibility with old kernels just in case
