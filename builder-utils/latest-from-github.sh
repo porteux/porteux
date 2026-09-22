@@ -5,7 +5,7 @@ download_master_from_github() {
 	local repo="$2"
 	local branch="${3:-master}"
 	local tarball="${repo}-${branch}.tar.gz"
-	wget "https://github.com/${owner}/${repo}/archive/refs/heads/${branch}.tar.gz" -O "$tarball" || return 1
+	wget "https://github.com/${owner}/${repo}/archive/refs/heads/${branch}.tar.gz" -O "$tarball" >&2 || return 1
 	tar xf "$tarball" || return 1
 	date -r "${repo}-${branch}" +%Y%m%d
 }

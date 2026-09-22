@@ -23,14 +23,15 @@ fi
 IFS='.-' read -r KERNEL_MAJOR_VERSION KERNEL_MINOR_VERSION KERNEL_PATCH_VERSION <<< "$KERNEL_VERSION"
 CRIPPLED_MODULE_NAME="06-crippled-sources-${KERNEL_VERSION}"
 
-if [ ${ONLY_HEADERS:-no} = "yes" ]; then
-	export MODULE_PATH="${MODULE_PATH}-headers"
-fi
-
 ### create module folder
 
-rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
-mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
+if [ ${ONLY_HEADERS:-no} = "yes" ]; then
+	export MODULE_PATH="$PORTEUX_BUILDER_PATH/05-devel"
+	mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
+else
+	rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
+	mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
+fi
 
 ### download packages from slackware repository
 
@@ -70,13 +71,15 @@ LINK_PARAMS=$(echo "$LINK_PARAMS" | sed \
 
 echo -e "Building kernel ${KERNEL_VERSION} using ${COMPILER}...\n"
 
-cp ${SCRIPT_PATH}/kernel-firmware*.txz ${MODULE_PATH}/packages 2>/dev/null
+if [ ${ONLY_HEADERS:-no} != "yes" ]; then
+	cp ${SCRIPT_PATH}/kernel-firmware*.txz ${MODULE_PATH}/packages 2>/dev/null
+fi
 
 echo "Downloading kernel source code..."
 kernel_source_archive=$(ls "${SCRIPT_PATH}"/linux-"${KERNEL_VERSION}".tar.?z 2>/dev/null | head -n1)
 if [ -z "$kernel_source_archive" ]; then
-	wget -P ${MODULE_PATH} https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { echo "Failed to download kernel source code."; exit 1; }
 	kernel_source_archive=${MODULE_PATH}/linux-${KERNEL_VERSION}.tar.xz
+	wget -O "${kernel_source_archive}" https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { echo "Failed to download kernel source code."; exit 1; }
 fi
 
 echo "Extracting kernel source code..."
@@ -122,14 +125,15 @@ fi
 echo "Building kernel headers..."
 current_package=kernel-headers
 KERNEL_SOURCE=${MODULE_PATH}/linux-${KERNEL_VERSION} sh ${SCRIPT_PATH}/extras/${current_package}/${current_package}.SlackBuild || exit 1
-mkdir -p ${MODULE_PATH}/../05-devel/packages
-mv ${MODULE_PATH}/packages/${current_package}*.txz ${MODULE_PATH}/../05-devel/packages
 rm -fr $MODULE_PATH/${current_package} || exit 1
 
 if [ ${ONLY_HEADERS:-no} = "yes" ]; then
-	cd $MODULE_PATH/.. && rm -fr ${MODULE_PATH}
+	cd $MODULE_PATH && rm -fr ${MODULE_PATH}/linux-${KERNEL_VERSION}
 	exit 0
 fi
+
+mkdir -p ${PORTEUX_BUILDER_PATH}/05-devel/packages
+mv ${MODULE_PATH}/packages/${current_package}*.txz ${PORTEUX_BUILDER_PATH}/05-devel/packages
 
 cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 
