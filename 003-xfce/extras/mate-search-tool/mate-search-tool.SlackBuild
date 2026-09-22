@@ -31,6 +31,8 @@ sed -i 's|dnl yelp-tools stuff||g' configure.ac
 sed -i 's|YELP_HELP_INIT||g' configure.ac
 sed -i 's| help||g' gsearchtool/Makefile.am
 sed -i 's|readable_size = g_format_size (g_file_info_get_size (file_info))|readable_size = g_format_size_full (g_file_info_get_size (file_info), G_FORMAT_SIZE_IEC_UNITS)|g' gsearchtool/src/gsearchtool.c
+sed -i 's|g_settings_get_boolean (gsearch->mate_desktop_interface_settings, "enable-animations")|TRUE|g' gsearchtool/src/gsearchtool.c
+sed -i '/mate_desktop_interface_settings = g_settings_new ("org.mate.interface")/d' gsearchtool/src/gsearchtool.c
 
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./autogen.sh \
@@ -44,10 +46,6 @@ CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	--disable-gtk-doc-html
 
 make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
-
-MATE_DESKTOP_VERSION=$(curl -s https://api.github.com/repos/mate-desktop/mate-desktop/tags | grep '"name":' | cut -d \" -f 4 | sort -Vr | head -1)
-[ "$MATE_DESKTOP_VERSION" ] || { echo "Error: could not determine the latest mate-desktop version." >&2; exit 1; }
-wget https://raw.githubusercontent.com/mate-desktop/mate-desktop/$MATE_DESKTOP_VERSION/schemas/org.mate.interface.gschema.xml -P $PKG/usr/share/glib-2.0/schemas
 
 find $PKG -type f -name "*.la" -delete
 
