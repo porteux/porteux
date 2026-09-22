@@ -18,7 +18,7 @@ fi
 CURRENT_PACKAGE=TLP
 ARCH="noarch"
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
-FULL_VERSION=$(curl -s https://api.github.com/repos/linrunner/${CURRENT_PACKAGE}/releases/latest | grep "\"tag_name\":" | cut -d \" -f 4 | head -n 1)
+FULL_VERSION=$(curl -s https://api.github.com/repos/linrunner/${CURRENT_PACKAGE}/releases/latest | grep -oP '"tag_name":\s*"\K[^"]+' | head -n 1)
 VERSION="${FULL_VERSION//[vV]}"
 [ "$VERSION" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 APPLICATION_URL="https://github.com/linrunner/${CURRENT_PACKAGE}/archive/refs/tags/${VERSION}.tar.gz"

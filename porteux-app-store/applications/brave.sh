@@ -71,7 +71,7 @@ make_module_brave() {
 		echo "Non-existent channel. Options: stable | origin" && exit 1
 	fi
 
-	local FULL_VERSION=$(curl -s https://api.github.com/repos/brave/${REPO}/releases/latest | grep "\"tag_name\":" | cut -d \" -f 4 | head -n 1)
+	local FULL_VERSION=$(curl -s https://api.github.com/repos/brave/${REPO}/releases/latest | grep -oP '"tag_name":\s*"\K[^"]+' | head -n 1)
 	local pkgver="${FULL_VERSION//[vV]}"
 	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
 	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
