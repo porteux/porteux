@@ -210,7 +210,6 @@ download_package "userspace-rcu" &
 download_package "utempter" &
 wait_for_downloads
 download_package "util-linux" &
-download_package "wget" &
 download_package "which" &
 download_package "whois" &
 download_package "wireless_tools" &

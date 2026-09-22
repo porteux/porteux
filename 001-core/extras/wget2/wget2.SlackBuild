@@ -1,0 +1,55 @@
+#!/bin/bash
+
+PRGNAM=wget2
+PRGNAMDOWNLOAD=wget
+
+CWD=$(dirname "$0")
+TMP=$MODULE_PATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+# Select working GNU mirror
+BASE_URL="https://ftp.gnu.org/gnu"
+if ! curl -Is --max-time 5 "$BASE_URL" >/dev/null; then
+	BASE_URL="https://ftp.gnu.org.uk/gnu"
+fi
+
+VERSION=$(curl -s ${BASE_URL}/${PRGNAMDOWNLOAD}/ | grep "${PRGNAM}-[0-9]" | grep ".tar.gz" | grep -Ev "sig" | grep -oP 'href="\K[^"]+' | sort -Vr | head -1 | cut -d "-" -f 2 | rev | cut -d "." -f 3- | rev)
+wget ${BASE_URL}/${PRGNAMDOWNLOAD}/${PRGNAM}-${VERSION}.tar.gz
+
+tar xf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+patch -p1 < $CWD/0001-fix-absolute-directory-prefix.patch
+
+CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${SYSTEM_BITS} \
+	--sysconfdir=/etc \
+	--with-ssl=gnutls \
+	--disable-static \
+	--disable-doc \
+	--disable-dependency-tracking \
+	--disable-valgrind-tests \
+	--build=$ARCH-porteux-linux
+
+make -j${NUMBER_THREADS} install DESTDIR=$PKG
+
+find $PKG -type f -name "*.la" -delete
+
+rm -fr $PKG/usr/bin/wget2_noinstall
+
+cd $PKG/usr/bin
+cp -s wget2 wget
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

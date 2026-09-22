@@ -1,0 +1,12 @@
+     |-----handy-ruler------------------------------------------------------|
+wget2: wget2 (a non-interactive network retriever v2)
+wget2:
+wget2: GNU Wget2 is the successor of GNU Wget, a file and recursive website
+wget2: downloader. Designed and written from scratch it wraps around libwget,
+wget2: that provides the basic functions needed by a web client. In many
+wget2: cases Wget2 downloads much faster than Wget1.x due to HTTP2, HTTP
+wget2: compression, parallel connections and use of If-Modified-Since HTTP
+wget2: header.
+wget2:
+wget2: https://gitlab.com/gnuwget/wget2
+wget2:

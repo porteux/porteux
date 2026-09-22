@@ -1,0 +1,53 @@
+Subject: [PATCH] Fix -P/--directory-prefix with an absolute path
+
+The current directory is prepended to the prefix unconditionally,
+so an absolute prefix is rebuilt below the cwd:
+
+  mkdir /tmp/wt && cd /tmp/wt
+  wget2 -q -P /tmp/wt/out https://example.com/index.html
+
+  wget 1.25.0: /tmp/wt/out/index.html
+  wget2 2.3.0: /tmp/wt/tmp/wt/out/index.html
+
+Only prepend the current directory when the prefix is relative.
+
+Relative prefixes are unaffected. Absolute ones are no longer confined
+to the cwd, which is what wget1 does: -P /a/../b now resolves to /b
+rather than $PWD/b.
+
+---
+--- a/src/options.c
++++ b/src/options.c
+@@ -51,6 +51,7 @@
+ #include <spawn.h>
+ #include "getpass.h"
+ #include "xgethostname.h"
++#include "filename.h" // IS_ABSOLUTE_FILE_NAME
+ 
+ #include <wget.h>
+ 
+@@ -3569,12 +3570,19 @@
+ 	debug_printf("Input URI encoding = '%s'\n", config.input_encoding);
+ 
+ 	if (config.directory_prefix) {
+-		char *cwd = getcwd(NULL, 0);
+-		if (!cwd) {
+-			error_printf_exit(_("Failed to get current directory\n"));
++		char *unresolved_path;
++
++		if (IS_ABSOLUTE_FILE_NAME(config.directory_prefix)) {
++			unresolved_path = wget_strdup(config.directory_prefix);
++		} else {
++			char *cwd = getcwd(NULL, 0);
++			if (!cwd) {
++				error_printf_exit(_("Failed to get current directory\n"));
++			}
++			unresolved_path = wget_aprintf("%s/%s", cwd, config.directory_prefix);
++			xfree(cwd);
+ 		}
+-		char *unresolved_path = wget_aprintf("%s/%s", cwd, config.directory_prefix);
+-		xfree(cwd);
++
+ 		char *resolved_path = wget_path_sanitize(unresolved_path);
+ 		xfree(unresolved_path);
+ 		if (resolved_path) {

@@ -61,6 +61,7 @@ for package in \
 	fastfetch \
 	7zip \
 	rpm \
+	wget2 \
 ; do
 bash $SCRIPT_PATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
