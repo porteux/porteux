@@ -204,7 +204,6 @@ cd $MODULE_PATH/packages/bin || exit 1
 cp -s fusermount3 fusermount
 cd $MODULE_PATH/packages/usr/bin || exit 1
 cp -s python3 python > /dev/null 2>&1
-cp -s wget2 wget > /dev/null 2>&1
 cd $MODULE_PATH/packages/usr/lib${SYSTEM_BITS} || exit 1
 cp -s libxml2.so libxml2.so.2 > /dev/null 2>&1
 
