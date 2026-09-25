@@ -1,0 +1,29 @@
+#!/bin/bash
+
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
+
+PRGNAM=cosmic-viewer
+
+CWD=$(dirname "$0")
+TMP=$MODULE_PATH/$PRGNAM
+PKG=$TMP/package
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(download_master_from_github pop-os $PRGNAM) || exit 1
+cd $PRGNAM-master || exit 1
+
+ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
+just build-release --target x86_64-unknown-linux-gnu
+cp -aln ./target/x86_64-unknown-linux-gnu/release ./target/
+just rootdir=$PKG install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-${ARCH}-1_porteux.txz

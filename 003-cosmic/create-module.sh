@@ -39,7 +39,6 @@ for package in \
 	adw-gtk3 \
 	audacious-plugins \
 	ffmpegthumbnailer \
-	gpicview \
 ; do
 bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
@@ -108,6 +107,7 @@ for package in \
 	cosmic-settings \
 	cosmic-settings-daemon \
 	cosmic-term \
+	cosmic-viewer \
 	cosmic-workspaces-epoch \
 	xdg-desktop-portal-cosmic \
 ; do
