@@ -14,9 +14,14 @@ get_latest_versions_tag_from_github() {
 	local repository="$1"
 	local project="$2"
 	local filter_out_version="$3"
-	local versions
-	versions=$(curl -s https://github.com/${repository}/${project}/tags/ | grep -oP "(?<=/${repository}/${project}/archive/refs/tags/)[^\"]+(?=\.tar\.gz)" | uniq | grep -Ev "alpha|beta|rc[0-9]")
-	[ -n "$filter_out_version" ] && versions=$(echo "$versions" | grep -Ev "$filter_out_version")
+	local versions tags after page
+	for page in {1..5}; do
+		tags=$(curl -s --compressed "https://github.com/${repository}/${project}/tags${after:+?after=$after}" | grep -oP "(?<=/${repository}/${project}/archive/refs/tags/)[^\"]+(?=\.tar\.gz)" | uniq)
+		[ -z "$tags" ] && break
+		versions=$(grep -Ev "alpha|beta|rc[0-9]${filter_out_version:+|$filter_out_version}" <<< "$tags")
+		[ -n "$versions" ] && break
+		after=${tags##*$'\n'}
+	done
 	echo "$versions" | sort -V -r | head -n 10
 }
 
