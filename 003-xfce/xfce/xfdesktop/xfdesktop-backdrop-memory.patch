@@ -1,0 +1,469 @@
+Fix memory growth when changing the backdrop Style in Desktop Settings.
+
+Each style change grew xfdesktop's memory by one full-screen image (about
+33 MB at 4K) until cairo's 256 MB shared memory pool was used up.
+
+ 1. xfdesktop-backdrop-renderer.c: gdk_cairo_surface_create_from_pixbuf()
+    with a NULL window falls back to the root window, so cairo-xlib put
+    every backdrop in its X shared memory pool.  Freed images stayed
+    resident and new ones landed elsewhere in the pool.  Backdrops are now
+    built as plain image surfaces, and solid colors and gradients no longer
+    go through the X server.
+
+ 2. xfdesktop-x11.c: the finished backdrop is uploaded once into an X
+    pixmap with plain XPutImage and the local copy is freed.  Falls back to
+    the image surface if the pixmap format does not match or an X error
+    happens.  _XROOTPMAP_ID is removed instead of set to 0 (cairo owns the
+    pixmap, so publishing it would leave a dangling id).
+
+ 3. main.c: mallopt(M_MMAP_THRESHOLD, 1 MB) so freed full-screen buffers
+    are returned to the system instead of kept by glibc's heap.
+
+ 4. tests/meson.build: link xfdesktop-x11.c into test-gradient-benchmarking,
+    which includes the renderer source.
+
+Result at 4K: xfdesktop starts at about 39 MB (was 71 MB) and stays flat
+across style changes (was growing by about 33 MB per change).
+
+diff -ruN -x all-changes.patch a/meson.build b/meson.build
+--- a/meson.build	2026-09-26 01:23:47.000000000 +0200
++++ b/meson.build	2026-09-26 17:49:02.249146832 +0200
+@@ -151,6 +151,7 @@
+ headers = [
+   'errno.h',
+   'fcntl.h',
++  'malloc.h',
+   'math.h',
+   'memory.h',
+   'pwd.h',
+diff -ruN -x all-changes.patch a/src/main.c b/src/main.c
+--- a/src/main.c	2026-09-26 01:23:47.000000000 +0200
++++ b/src/main.c	2026-09-26 18:01:00.947091804 +0200
+@@ -24,6 +24,10 @@
+  *     Copyright (c) 2004 Nils Rennebarth
+  */
+ 
++#ifdef HAVE_MALLOC_H
++#include <malloc.h>
++#endif
++
+ #include <gtk/gtk.h>
+ 
+ #include <libxfce4util/libxfce4util.h>
+@@ -42,6 +46,10 @@
+     XfdesktopApplication *app;
+     int ret = 0;
+ 
++#ifdef M_MMAP_THRESHOLD
++    mallopt(M_MMAP_THRESHOLD, 1024 * 1024);
++#endif
++
+     /* bind gettext textdomain */
+     xfce_textdomain(GETTEXT_PACKAGE, LOCALEDIR, "UTF-8");
+ 
+diff -ruN -x all-changes.patch a/src/xfdesktop-backdrop-renderer.c b/src/xfdesktop-backdrop-renderer.c
+--- a/src/xfdesktop-backdrop-renderer.c	2026-09-26 01:23:47.000000000 +0200
++++ b/src/xfdesktop-backdrop-renderer.c	2026-09-26 18:08:36.145911313 +0200
+@@ -33,6 +33,11 @@
+ #include "xfdesktop-common.h"
+ #include "xfdesktop-backdrop-renderer.h"
+ 
++#ifdef ENABLE_X11
++#include <libxfce4windowing/libxfce4windowing.h>
++#include "xfdesktop-x11.h"
++#endif
++
+ #define XFCE_BACKDROP_BUFFER_SIZE 32768
+ 
+ // Below constants are from the 1999 and 2003 IEC sRGB standards
+@@ -67,11 +72,73 @@
+     gpointer callback_user_data;
+ } ImageData;
+ 
+-static void
+-image_data_complete(ImageData *image_data, cairo_surface_t *surface) {
++static XfdesktopBackdropMedia *
++media_from_pixbuf(GdkPixbuf *pixbuf) {
++    if (pixbuf == NULL) {
++        return NULL;
++    }
++
++    gint width = gdk_pixbuf_get_width(pixbuf);
++    gint height = gdk_pixbuf_get_height(pixbuf);
++    gint n_channels = gdk_pixbuf_get_n_channels(pixbuf);
++    gint src_stride = gdk_pixbuf_get_rowstride(pixbuf);
++    const guchar *src = gdk_pixbuf_read_pixels(pixbuf);
++
++    cairo_surface_t *surface = cairo_image_surface_create(n_channels == 3 ? CAIRO_FORMAT_RGB24 : CAIRO_FORMAT_ARGB32,
++                                                          width, height);
++    if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
++        cairo_surface_destroy(surface);
++        return NULL;
++    }
++
++    guchar *dst = cairo_image_surface_get_data(surface);
++    gint dst_stride = cairo_image_surface_get_stride(surface);
++
++    for (gint y = 0; y < height; ++y) {
++        const guchar *s = src + y * src_stride;
++        guint32 *d = (guint32 *)(gpointer)(dst + y * dst_stride);
++        for (gint x = 0; x < width; ++x, s += n_channels) {
++            guint a = n_channels == 4 ? s[3] : 0xff;
++            if (a == 0xff) {
++                d[x] = 0xff000000 | (s[0] << 16) | (s[1] << 8) | s[2];
++            } else {
++                guint r = (s[0] * a + 127) / 255;
++                guint g = (s[1] * a + 127) / 255;
++                guint b = (s[2] * a + 127) / 255;
++                d[x] = (a << 24) | (r << 16) | (g << 8) | b;
++            }
++        }
++    }
++    cairo_surface_mark_dirty(surface);
++
++#ifdef ENABLE_X11
++    if (xfw_windowing_get() == XFW_WINDOWING_X11) {
++        cairo_surface_t *xsurface = xfdesktop_x11_upload_image_surface(gdk_screen_get_default(), surface);
++        cairo_surface_destroy(surface);
++        surface = xsurface;
++    }
++#endif
++
+     XfdesktopBackdropMedia *bmedia = xfdesktop_backdrop_media_new_from_image(surface);
+     cairo_surface_destroy(surface);
+-    image_data->callback(bmedia, image_data->width, image_data->height, NULL, image_data->callback_user_data);
++    return bmedia;
++}
++
++static void
++complete_with_pixbuf(GdkPixbuf *pixbuf, gint width, gint height, RenderCompleteCallback callback, gpointer callback_user_data) {
++    XfdesktopBackdropMedia *bmedia = media_from_pixbuf(pixbuf);
++    if (bmedia != NULL) {
++        callback(bmedia, width, height, NULL, callback_user_data);
++    } else {
++        GError *error = g_error_new_literal(G_IO_ERROR, G_IO_ERROR_FAILED, "Failed to create the backdrop surface");
++        callback(NULL, -1, -1, error, callback_user_data);
++        g_error_free(error);
++    }
++}
++
++static void
++image_data_complete(ImageData *image_data, GdkPixbuf *pixbuf) {
++    complete_with_pixbuf(pixbuf, image_data->width, image_data->height, image_data->callback, image_data->callback_user_data);
+ }
+ 
+ static void
+@@ -90,12 +157,9 @@
+     if (!g_error_matches(cb_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+         // If there was an error loading the image file, at least return the
+         // canvas, which has the solid/gradient color the user has chosen.
+-        cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf(image_data->canvas, 1, NULL);
+-        width = cairo_image_surface_get_width(surface);
+-        height = cairo_image_surface_get_height(surface);
+-
+-        bmedia = xfdesktop_backdrop_media_new_from_image(surface);
+-        cairo_surface_destroy(surface);
++        bmedia = media_from_pixbuf(image_data->canvas);
++        width = image_data->width;
++        height = image_data->height;
+     } else {
+         bmedia = NULL;
+         width = -1;
+@@ -131,29 +195,21 @@
+     g_free(image_data);
+ }
+ 
++static inline guint32
++color_to_byte(gdouble value) {
++    return (guint32)(CLAMP(value, 0.0, 1.0) * 255.0 + 0.5);
++}
++
+ static GdkPixbuf *
+ create_solid(GdkRGBA *color, gint width, gint height) {
+-    GdkWindow *root;
+-    GdkPixbuf *pix;
+-    cairo_surface_t *surface;
+-    cairo_t *cr;
+-
+-    root = gdk_screen_get_root_window(gdk_screen_get_default ());
+-    surface = gdk_window_create_similar_surface(root, CAIRO_CONTENT_COLOR_ALPHA, width, height);
+-    cr = cairo_create(surface);
+-
+-    cairo_set_source_rgba(cr, color->red, color->green, color->blue, color->alpha);
+-
+-    cairo_rectangle(cr, 0, 0, width, height);
+-    cairo_fill(cr);
+-
+-    cairo_surface_flush(surface);
+-
+-    pix = gdk_pixbuf_get_from_surface(surface, 0, 0, width, height);
+-
+-    cairo_destroy(cr);
+-    cairo_surface_destroy(surface);
+-
++    GdkPixbuf *pix = gdk_pixbuf_new(GDK_COLORSPACE_RGB, color->alpha < 1.0, 8, width, height);
++    if (pix != NULL) {
++        gdk_pixbuf_fill(pix,
++                        (color_to_byte(color->red) << 24)
++                        | (color_to_byte(color->green) << 16)
++                        | (color_to_byte(color->blue) << 8)
++                        | color_to_byte(color->alpha));
++    }
+     return pix;
+ }
+ 
+@@ -224,9 +280,7 @@
+ 
+ static GdkPixbuf *
+ create_gradient(GdkRGBA *color1, GdkRGBA *color2, gint width, gint height, XfceBackdropColorStyle style) {
+-    GdkWindow *root = gdk_screen_get_root_window(gdk_screen_get_default());
+-    gint scale_factor = gdk_window_get_scale_factor(root);
+-    cairo_surface_t *surface = gdk_window_create_similar_image_surface(root, CAIRO_FORMAT_RGB24, width, height, scale_factor);
++    cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24, width, height);
+     guchar *data = cairo_image_surface_get_data(surface);
+     gint stride = cairo_image_surface_get_stride(surface);
+ 
+@@ -313,8 +367,7 @@
+         if (image == NULL) {
+             XF_DEBUG("image failed to load, displaying canvas only");
+ 
+-            cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf(final_image, 1, NULL);
+-            image_data_complete(image_data, surface);
++            image_data_complete(image_data, final_image);
+             image_data_free(image_data);
+         } else {
+             /* If the image is supposed to be rotated, do that now */
+@@ -488,14 +541,14 @@
+                     g_critical("Invalid image style: %d\n", (gint)istyle);
+             }
+ 
++            g_object_unref(image);
++
+             if (!g_cancellable_is_cancelled(image_data->cancellable)) {
+-                cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf(final_image, 1, NULL);
+-                image_data_complete(image_data, surface);
++                image_data_complete(image_data, final_image);
+             } else {
+                 image_data_cancelled(image_data);
+             }
+ 
+-            g_object_unref(image);
+             image_data_free(image_data);
+         }
+     }
+@@ -620,8 +673,6 @@
+                           RenderCompleteCallback callback,
+                           gpointer callback_user_data)
+ {
+-    XfdesktopBackdropMedia *bmedia;
+-    
+     g_return_if_fail(color1 != NULL);
+     g_return_if_fail(color2 != NULL);
+     g_return_if_fail(width > 0);
+@@ -643,11 +694,8 @@
+ 
+     if (image_style == XFCE_BACKDROP_IMAGE_NONE) {
+         // If we aren't going to display an image then just return the canvas
+-        cairo_surface_t *surface = gdk_cairo_surface_create_from_pixbuf(canvas, 1, NULL);
+-        g_object_unref(canvas);
+-        bmedia = xfdesktop_backdrop_media_new_from_image(surface);
+-        cairo_surface_destroy(surface);
+-        callback(bmedia, width, height, NULL, callback_user_data);
++        complete_with_pixbuf(canvas, width, height, callback, callback_user_data);
++        g_clear_object(&canvas);
+     } else {
+         if (image_file == NULL) {
+             image_file = g_file_new_for_path(DEFAULT_BACKDROP);
+diff -ruN -x all-changes.patch a/src/xfdesktop-x11.c b/src/xfdesktop-x11.c
+--- a/src/xfdesktop-x11.c	2026-09-26 01:23:47.000000000 +0200
++++ b/src/xfdesktop-x11.c	2026-09-26 18:08:27.176415855 +0200
+@@ -22,6 +22,9 @@
+ #include <X11/Xatom.h>
+ 
+ #include <cairo-xlib.h>
++#if CAIRO_HAS_XLIB_XRENDER_SURFACE
++#include <cairo-xlib-xrender.h>
++#endif
+ #include <gdk/gdkx.h>
+ 
+ #include "xfdesktop-common.h"
+@@ -145,30 +148,8 @@
+ xfdesktop_x11_set_root_image_surface(GdkScreen *gscreen, cairo_surface_t *surface) {
+ #ifndef DISABLE_FOR_BUG7442
+     GdkWindow *groot = gdk_screen_get_root_window(gscreen);
+-    GdkAtom prop_atom = gdk_atom_intern("_XROOTPMAP_ID", FALSE);
+-    cairo_pattern_t *pattern = NULL;
+-
+-    if (surface != NULL) {
+-        Pixmap pixmap_id = cairo_xlib_surface_get_drawable(surface);
+-        pattern = cairo_pattern_create_for_surface(surface);
+-
+-        GdkDisplay *display = gdk_screen_get_display(gscreen);
+-        xfw_windowing_error_trap_push(display);
+-
+-        /* set root property for transparent Eterms */
+-        gdk_property_change(groot,
+-                            prop_atom,
+-                            gdk_atom_intern("PIXMAP", FALSE),
+-                            32,
+-                            GDK_PROP_MODE_REPLACE,
+-                            (guchar *)&pixmap_id,
+-                            1);
+-        /* there really should be a standard for this crap... */
+-
+-        xfw_windowing_error_trap_pop_ignored(display);
+-    } else {
+-        gdk_property_delete(groot, prop_atom);
+-    }
++    gdk_property_delete(groot, gdk_atom_intern("_XROOTPMAP_ID", FALSE));
++    cairo_pattern_t *pattern = surface != NULL ? cairo_pattern_create_for_surface(surface) : NULL;
+ 
+ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+     /* and set the root window's BG surface, because aterm is somewhat lame. */
+@@ -181,6 +162,106 @@
+ #endif
+ }
+ 
++static gboolean
++pixmap_format_matches_image(Display *dpy, cairo_surface_t *surface, gint depth) {
++#if CAIRO_HAS_XLIB_XRENDER_SURFACE
++    XRenderPictFormat *format = cairo_xlib_surface_get_xrender_format(surface);
++    if (format == NULL
++        || format->type != PictTypeDirect
++        || format->depth != depth
++        || format->direct.red != 16 || format->direct.redMask != 0xff
++        || format->direct.green != 8 || format->direct.greenMask != 0xff
++        || format->direct.blue != 0 || format->direct.blueMask != 0xff
++        || (depth == 32 && (format->direct.alpha != 24 || format->direct.alphaMask != 0xff)))
++    {
++        return FALSE;
++    }
++
++    gboolean matches = FALSE;
++    gint n_formats = 0;
++    XPixmapFormatValues *formats = XListPixmapFormats(dpy, &n_formats);
++    for (gint i = 0; i < n_formats; ++i) {
++        if (formats[i].depth == depth) {
++            matches = formats[i].bits_per_pixel == 32;
++            break;
++        }
++    }
++    if (formats != NULL) {
++        XFree(formats);
++    }
++
++    return matches;
++#else
++    return FALSE;
++#endif
++}
++
++cairo_surface_t *
++xfdesktop_x11_upload_image_surface(GdkScreen *gscreen, cairo_surface_t *image) {
++    g_return_val_if_fail(cairo_surface_get_type(image) == CAIRO_SURFACE_TYPE_IMAGE, NULL);
++
++    GdkDisplay *gdisplay = gdk_screen_get_display(gscreen);
++    Display *dpy = GDK_SCREEN_XDISPLAY(gscreen);
++    Screen *xscreen = GDK_SCREEN_XSCREEN(gscreen);
++    gint width = cairo_image_surface_get_width(image);
++    gint height = cairo_image_surface_get_height(image);
++    gint depth = cairo_image_surface_get_format(image) == CAIRO_FORMAT_ARGB32 ? 32 : 24;
++
++    gdk_x11_display_error_trap_push(gdisplay);
++
++    cairo_surface_t *root_surface = cairo_xlib_surface_create(dpy,
++                                                              RootWindowOfScreen(xscreen),
++                                                              DefaultVisualOfScreen(xscreen),
++                                                              1, 1);
++    cairo_surface_t *surface = cairo_surface_create_similar(root_surface,
++                                                            cairo_surface_get_content(image),
++                                                            width, height);
++    cairo_surface_destroy(root_surface);
++
++    gboolean uploaded = FALSE;
++    if (cairo_surface_get_type(surface) == CAIRO_SURFACE_TYPE_XLIB && pixmap_format_matches_image(dpy, surface, depth)) {
++        XImage ximage = {
++            .width = width,
++            .height = height,
++            .xoffset = 0,
++            .format = ZPixmap,
++            .data = (char *)cairo_image_surface_get_data(image),
++            .byte_order = G_BYTE_ORDER == G_LITTLE_ENDIAN ? LSBFirst : MSBFirst,
++            .bitmap_unit = 32,
++            .bitmap_bit_order = G_BYTE_ORDER == G_LITTLE_ENDIAN ? LSBFirst : MSBFirst,
++            .bitmap_pad = 32,
++            .depth = depth,
++            .bytes_per_line = cairo_image_surface_get_stride(image),
++            .bits_per_pixel = 32,
++            .red_mask = 0xff0000,
++            .green_mask = 0x00ff00,
++            .blue_mask = 0x0000ff,
++        };
++
++        if (XInitImage(&ximage) != 0) {
++            Drawable pixmap = cairo_xlib_surface_get_drawable(surface);
++            GC gc = XCreateGC(dpy, pixmap, 0, NULL);
++            XPutImage(dpy, pixmap, gc, &ximage, 0, 0, 0, 0, width, height);
++            XFreeGC(dpy, gc);
++            uploaded = TRUE;
++        }
++    }
++
++    if (gdk_x11_display_error_trap_pop(gdisplay) != 0) {
++        uploaded = FALSE;
++    }
++
++    if (!uploaded) {
++        gdk_x11_display_error_trap_push(gdisplay);
++        cairo_surface_destroy(surface);
++        gdk_x11_display_error_trap_pop_ignored(gdisplay);
++        return cairo_surface_reference(image);
++    }
++
++    cairo_surface_mark_dirty(surface);
++    return surface;
++}
++
+ void
+ xfdesktop_x11_set_compat_properties(GtkWidget *desktop) {
+     GdkDisplay *gdpy = desktop != NULL
+diff -ruN -x all-changes.patch a/src/xfdesktop-x11.h b/src/xfdesktop-x11.h
+--- a/src/xfdesktop-x11.h	2026-09-26 01:23:47.000000000 +0200
++++ b/src/xfdesktop-x11.h	2026-09-26 17:54:01.375763119 +0200
+@@ -50,6 +50,9 @@
+ void xfdesktop_x11_set_root_image_surface(GdkScreen *gscreen,
+                                           cairo_surface_t *surface);
+ 
++cairo_surface_t *xfdesktop_x11_upload_image_surface(GdkScreen *gscreen,
++                                                    cairo_surface_t *image);
++
+ gboolean xfdesktop_x11_desktop_scrolled(GtkWidget *widget,
+                                         GdkEventScroll *event);
+ 
+diff -ruN -x all-changes.patch a/tests/meson.build b/tests/meson.build
+--- a/tests/meson.build	2026-09-26 01:23:47.000000000 +0200
++++ b/tests/meson.build	2026-09-26 18:08:57.446917010 +0200
+@@ -8,10 +8,12 @@
+ 
+   test_exes = {}
+ 
++  test_x11_sources = enable_x11 ? ['../src/xfdesktop-x11.c'] : []
++
+   foreach test_prog : test_progs
+     test_exe = executable(
+       test_prog,
+-      '@0@.c'.format(test_prog),
++      ['@0@.c'.format(test_prog), test_prog == 'test-gradient-benchmarking' ? test_x11_sources : []],
+       include_directories: [
+         include_directories('../common'),
+         include_directories('../src'),
+@@ -26,7 +28,8 @@
+         libxfce4util,
+         libxfce4windowing,
+         xfconf,
+-        video_backdrop_deps
++        video_backdrop_deps,
++        x11_deps,
+       ],
+       install: false,
+     )

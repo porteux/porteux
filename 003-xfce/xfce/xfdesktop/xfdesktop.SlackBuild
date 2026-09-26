@@ -35,7 +35,9 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-patch -p1 < $CWD/memory-leak-fixes.patch
+for i in $CWD/*.patch; do
+	patch -p1 < "$i"
+done
 
 sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 
