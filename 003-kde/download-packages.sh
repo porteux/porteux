@@ -39,6 +39,7 @@ download_package "dolphin-plugins" &
 download_package "ffmpegthumbs" &
 download_package "frameworkintegration" &
 download_package "gwenview" &
+download_package "highway" & # required by spectacle
 download_package "kactivitymanagerd" &
 download_package "kapidox" &
 download_package "karchive" &
