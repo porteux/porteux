@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ODD_MINOR_RELEASES='^v?[0-9]+\.[0-9]*[13579]\.'
+
 download_master_from_github() {
 	local owner="$1"
 	local repo="$2"
@@ -45,6 +47,7 @@ download_latest_from_github() {
 	else
 		version=${version//[^0-9._]/}
 	fi
+	version=${version//_/.}
 	release_url="https://github.com/${repository}/${project}/releases/download/${tag}/${project}-${version}.tar"
 	tag_url="https://github.com/${repository}/${project}/archive/refs/tags/${tag}.tar.gz"
 
@@ -56,7 +59,8 @@ download_latest_from_github() {
 			filename=${content_disposition#*filename=}
 			filename=${filename//[\"$'\r']/}
 		else
-			filename=${url##*/}
+			filename=${project}-${version}.tar.${url##*.tar.}
+			[ "${url##*/}" = "$filename" ] || mv "${url##*/}" "$filename"
 		fi
 		break
 	done

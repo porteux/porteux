@@ -13,7 +13,7 @@ source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 elevate_if_needed "$0" "$@"
 
-LATEST_VERSION=$(get_latest_version_tag_from_github mate-desktop mate-desktop '^v?[0-9]+\.[0-9]*[13579]\.')
+LATEST_VERSION=$(get_latest_version_tag_from_github mate-desktop mate-desktop "$ODD_MINOR_RELEASES")
 LATEST_VERSION=${LATEST_VERSION#v}
 [ "$LATEST_VERSION" ] || { echo "Error: could not detect MATE version." >&2; exit 1; }
 echo -e "Building MATE ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
@@ -21,7 +21,6 @@ MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
 
 ### create module folder
 
-rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 

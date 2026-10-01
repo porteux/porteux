@@ -26,7 +26,6 @@ MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
 
 ### create module folder
 
-rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 

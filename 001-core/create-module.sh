@@ -16,7 +16,6 @@ echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} ${ARCH}
 
 ### create module folder
 
-rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 
@@ -217,7 +216,7 @@ sed -i "s|^VERSION=.*|VERSION=\"${PORTEUX_VERSION}\"|" $MODULE_PATH/packages/etc
 sed -i "s|^VERSION_ID=.*|VERSION_ID=${PORTEUX_VERSION}|" $MODULE_PATH/packages/etc/os-release
 sed -i "s|^PRETTY_NAME=.*|PRETTY_NAME=\"PorteuX ${PORTEUX_VERSION} ${PORTEUX_BUILD}\"|" $MODULE_PATH/packages/etc/os-release
 sed -i "s|^CPE_NAME=.*|CPE_NAME=\"cpe:/o:porteux:porteux_linux:${PORTEUX_VERSION}\"|" $MODULE_PATH/packages/etc/os-release
-sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUX_VERSION}|" $SCRIPT_PATH/../iso/boot/syslinux/help.txt
+[ "$PORTEUX_RELEASE_VERSION" ] && sed -i "0,/PorteuX/s|PorteuX.*|PorteuX v${PORTEUX_RELEASE_VERSION}|" $SCRIPT_PATH/../iso/boot/syslinux/help.txt
 
 ### set permissions
 

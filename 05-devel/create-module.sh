@@ -11,10 +11,6 @@ source "$BUILDER_UTILS_PATH/helper.sh"
 
 elevate_if_needed "$0" "$@"
 
-if [ "$1" ]; then
-	export KERNEL_VERSION="$1"
-fi
-
 echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
 
 ### create module folder
@@ -27,7 +23,7 @@ cd $MODULE_PATH || exit 1
 bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 if ! ls $MODULE_PATH/packages/kernel-headers*.txz 1> /dev/null 2>&1; then
-	ONLY_HEADERS=yes bash ${SCRIPT_PATH}/../000-kernel/create-module.sh "$KERNEL_VERSION" || exit 1
+	ONLY_HEADERS=yes bash ${SCRIPT_PATH}/../000-kernel/create-module.sh "$1" || exit 1
 fi
 
 ### fake root

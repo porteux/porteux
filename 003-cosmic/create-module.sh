@@ -15,7 +15,6 @@ elevate_if_needed "$0" "$@"
 
 ### create module folder
 
-rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 
