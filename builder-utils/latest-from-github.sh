@@ -58,6 +58,7 @@ download_latest_from_github() {
 	fi
 
 	filename=${content_disposition#*filename=}
+	filename=${filename//[\"$'\r']/}
 
 	echo "$filename $version"
 }
