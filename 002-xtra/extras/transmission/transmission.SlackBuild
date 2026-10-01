@@ -35,6 +35,7 @@ cmake -B build -S . \
 	-DENABLE_QT=OFF \
 	-DINSTALL_DOC=OFF
 
+cmake --build build -j${NUMBER_THREADS}
 DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 rm -fr $PKG/usr/share/man

@@ -69,7 +69,7 @@ find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf 
 done
 
 current_package=xfce4-dev-tools
-bash $SCRIPT_PATH/xfce/${current_package}/${current_package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/../common/deps/${current_package}/${current_package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${current_package}-[0-9]*.txz || exit 1
 rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 

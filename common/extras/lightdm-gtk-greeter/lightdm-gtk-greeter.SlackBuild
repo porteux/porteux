@@ -14,7 +14,12 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-which xdt-csource > /dev/null 2>&1 || { echo "Error: xfce4-dev-tools is required to build $PRGNAM." >&2; exit 1; }
+if ! which xdt-csource > /dev/null 2>&1; then
+	bash $CWD/../../deps/xfce4-dev-tools/xfce4-dev-tools.SlackBuild
+	installpkg $MODULE_PATH/packages/xfce4-dev-tools-[0-9]*.txz
+	rm -fr $MODULE_PATH/packages/xfce4-dev-tools-[0-9]*.txz $MODULE_PATH/xfce4-dev-tools
+	cd $TMP
+fi
 
 VERSION=$(download_master_from_github Xubuntu lightdm-gtk-greeter) || exit 1
 cd lightdm-gtk-greeter-master || exit 1
