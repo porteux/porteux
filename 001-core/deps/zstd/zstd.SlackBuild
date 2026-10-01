@@ -14,8 +14,6 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-#info=$(download_latest_from_github "facebook" ${PRGNAM} "kernel")
-#VERSION=${info#* }
 VERSION=$(download_master_from_github facebook $PRGNAM dev) || exit 1
 cd zstd-dev || exit 1
 

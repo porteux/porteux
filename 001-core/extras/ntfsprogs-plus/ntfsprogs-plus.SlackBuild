@@ -14,11 +14,6 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-#VERSION=$(download_master_from_github ntfsprogs-plus ntfsprogs-plus main) || exit 1
-#cd ntfsprogs-plus-main || exit 1
-# only create lost+found folder when finding orphan files
-#patch -p1 < $CWD/fix-lost-found-folder.patch
-
 VERSION=$(download_master_from_github $PRGNAM $PRGNAM ntfs-next) || exit 1
 cd ${PRGNAM}-ntfs-next
 
