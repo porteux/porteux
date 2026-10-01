@@ -47,26 +47,23 @@ download_and_verify() {
 	rm -f "$1.sha256"
 }
 
+download_rpms() {
+	download_and_verify "$1" || exit 1
+	local extracted_dir=$(tar -tf "$1" | head -1 | cut -d/ -f1)
+	tar -xf "$1" || exit 1
+	mv "$BUILD_DIR/$extracted_dir"/RPMS/* "$MODULE_DIR"
+	rm -fr "${BUILD_DIR:?}/$extracted_dir" "$1"
+}
+
 # download LibreOffice
-download_and_verify "$LATEST_PACKAGE" || exit 1
-tar -xf LibreOffice_"$VERSION"*_Linux_x86-64_rpm.tar.gz || exit 1
-mv "$BUILD_DIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm/RPMS/* "$MODULE_DIR"
-rm -f "$BUILD_DIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm.tar.gz
+download_rpms "$LATEST_PACKAGE"
 
 # download helppack
-download_and_verify "LibreOffice_${VERSION}_Linux_x86-64_rpm_helppack_${LANGUAGE}.tar.gz" || exit 1
-tar -xf LibreOffice_"$VERSION"*_Linux_x86-64_rpm_helppack_"$LANGUAGE".tar.gz || exit 1
-mv "$BUILD_DIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_helppack_"$LANGUAGE"/RPMS/* "$MODULE_DIR"
-rm -fr "$BUILD_DIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_helppack_"$LANGUAGE"
-rm -f "$BUILD_DIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_helppack_"$LANGUAGE".tar.gz
+download_rpms "LibreOffice_${VERSION}_Linux_x86-64_rpm_helppack_${LANGUAGE}.tar.gz"
 
 if [[ "$LANGUAGE" != 'en-US' ]]; then
 	# download langpack
-	download_and_verify "LibreOffice_${VERSION}_Linux_x86-64_rpm_langpack_${LANGUAGE}.tar.gz" || exit 1
-	tar -xf LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE".tar.gz || exit 1
-	mv "$BUILD_DIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE"/RPMS/* "$MODULE_DIR"
-	rm -fr "$BUILD_DIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE"
-	rm -f "$BUILD_DIR"/LibreOffice_"$VERSION"*_Linux_x86-64_rpm_langpack_"$LANGUAGE".tar.gz
+	download_rpms "LibreOffice_${VERSION}_Linux_x86-64_rpm_langpack_${LANGUAGE}.tar.gz"
 
 	mkdir -p "$MODULE_DIR/root/.config/libreoffice/4/user/"
 	cat > "$MODULE_DIR/root/.config/libreoffice/4/user/registrymodifications.xcu" << EOF
@@ -102,7 +99,7 @@ LO=$(find "$MODULE_DIR"/opt/libreoffice*/program -name soffice | awk 'NR==1 {pri
 sed -i -e '/^#\ restore/i# Prefer GTK2\nexport SAL_USE_VCLPLUGIN=${SAL_USE_VCLPLUGIN:-gtk}\n' "$LO"
 
 # to open PDFs LibreOffice needs libavahi libs, but it works if we create symlinks to any existing lib
-cd "$(echo "$LO" | sed 's|soffice||')"
+cd "$(dirname "$LO")" || exit 1
 ln -s ./libabplo.so libavahi-client.so.3
 ln -s ./libabplo.so libavahi-common.so.3
 

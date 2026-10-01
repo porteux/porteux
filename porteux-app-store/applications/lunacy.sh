@@ -11,9 +11,7 @@ if ! is_root; then
 fi
 
 CURRENT_PACKAGE=lunacy
-CATEGORY=Graphics
 APPLICATION_URL="https://lcdn.icons8.com/setup/Lunacy.deb"
-ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 
 ARCH=$(uname -m)
 OUTPUT_DIR="$PORTDIR/modules"

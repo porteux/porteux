@@ -56,8 +56,8 @@ striptease() {
 }
 
 get_module_name() {
-	local pkgver="$2"
-	local arch="$3"
+	local pkgver="$1"
+	local arch="$2"
 
 	echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
@@ -86,7 +86,7 @@ make_module_chromium() {
 
 	local pkgver=$(get_repo_version_chromium "$CHANNEL")
 	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
-	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+	local pkg_name=$(get_module_name "$pkgver" "x86_64")
 	local product_name="$APP-$CHANNEL"
 
 	create_application_temp_dir "$APP" && mkdir -p "$TMP/$APP/$pkg_name" || exit 1
@@ -100,9 +100,9 @@ make_module_chromium() {
 	mkdir -p "$TMP/$APP/$pkg_name/usr/lib64"
 	mkdir -p "$TMP/$APP/$pkg_name/usr/share/applications"
 	mv -f "$TMP/$APP/$pkg_name/$APP-$CHANNEL-${pkgver}" "$TMP/$APP/$pkg_name/usr/lib64"
-	cd "$TMP/$APP/$pkg_name/usr/lib64"
+	cd "$TMP/$APP/$pkg_name/usr/lib64" || exit 1
 	ln -sf "$APP-$CHANNEL-${pkgver}/" "$product_name"
-	cd "$TMP/$APP/$pkg_name/usr/bin"
+	cd "$TMP/$APP/$pkg_name/usr/bin" || exit 1
 	ln -sf "../lib64/$product_name/chrome" "$product_name"
 	cat > "$TMP/$APP/$pkg_name/usr/share/applications/$product_name.desktop" << EOF
 [Desktop Entry]

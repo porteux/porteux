@@ -51,8 +51,8 @@ striptease() {
 }
 
 get_module_name() {
-	local pkgver="$2"
-	local arch="$3"
+	local pkgver="$1"
+	local arch="$2"
 
 	echo "${FRIENDLY_PACKAGE_NAME}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
@@ -107,7 +107,7 @@ make_module_google_chrome() {
 
 	local pkgver=$(get_deb_version_google_chrome "$TMP/$APP/$APP.deb")
 	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
-	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+	local pkg_name=$(get_module_name "$pkgver" "x86_64")
 
 	mkdir -p "$TMP/$APP/$pkg_name"
 	extract_deb_member "$TMP/$APP/$APP.deb" "$(get_deb_member "$TMP/$APP/$APP.deb" data)" -v -C "$TMP/$APP/$pkg_name" || exit 1
