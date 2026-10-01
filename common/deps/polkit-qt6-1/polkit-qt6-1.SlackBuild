@@ -19,8 +19,8 @@ wget https://invent.kde.org/libraries/${SRCNAM}/-/archive/${VERSION}/${SRCNAM}-$
 tar xf $SRCNAM-$VERSION.tar.?z
 cd $SRCNAM-$VERSION
 
-mkdir build && cd build
-cmake .. \
+cmake -B build -S . \
+	-G Ninja \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_C_FLAGS="$GCC_CFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
@@ -28,7 +28,7 @@ cmake .. \
 	-DQT_MAJOR_VERSION=6 \
 	-DLIB_SUFFIX=${SYSTEM_BITS}
 
-make -j${NUMBER_THREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -delete
 

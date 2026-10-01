@@ -17,18 +17,19 @@ tar xf ${PRGNAM}-main.tar.?z*
 cd ${PRGNAM}-main
 VERSION=$(date -r . +%Y%m%d)
 
+sed -i "s|install: false,|install: false, build_by_default: false,|g" exempi/meson.build
+
+mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 CXXFLAGS="$GCC_CXXFLAGS" \
-./autogen.sh \
-	--prefix=/usr \
+meson setup \
+	--buildtype=release \
 	--libdir=/usr/lib${SYSTEM_BITS} \
 	--localstatedir=/var \
-	--sysconfdir=/etc \
-	--disable-static \
-	--enable-samples=no \
-	--enable-unittest=no
+	--prefix=/usr \
+	--sysconfdir=/etc
 
-make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -delete
 

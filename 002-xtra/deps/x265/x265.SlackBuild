@@ -23,6 +23,7 @@ patch -p1 < $CWD/build-fix.patch
 
 LDFLAGS="$LLDFLAGS" \
 cmake -B build-12 \
+	-G Ninja \
 	-Ssource \
 	-Wno-dev \
 	-DCMAKE_BUILD_TYPE=Release \
@@ -40,6 +41,7 @@ cmake --build build-12 -- -j${NUMBER_THREADS}
 
 LDFLAGS="$LLDFLAGS" \
 cmake -B build-10 \
+	-G Ninja \
 	-Ssource \
 	-Wno-dev \
 	-DCMAKE_BUILD_TYPE=Release \
@@ -56,6 +58,7 @@ cmake --build build-10 -- -j${NUMBER_THREADS}
 
 LDFLAGS="$LLDFLAGS" \
 cmake -B build \
+	-G Ninja \
 	-Ssource \
 	-Wno-dev \
 	-DCMAKE_BUILD_TYPE=Release \

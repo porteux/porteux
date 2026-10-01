@@ -13,20 +13,20 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://invent.kde.org/plasma/${SRCNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -viE 'alpha|beta|rc' | sort -Vr | head -1)
+VERSION=$(curl -s https://invent.kde.org/plasma/${SRCNAM}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -viE 'alpha|beta|rc' | grep -vE '\.9[0-9]$' | sort -Vr | head -1)
 wget https://invent.kde.org/plasma/${SRCNAM}/-/archive/${VERSION}/${SRCNAM}-${VERSION}.tar.gz
 
 tar xf $SRCNAM-$VERSION.tar.?z
 cd $SRCNAM-$VERSION
 
-mkdir build && cd build
-cmake .. \
+cmake -B build -S . \
+	-G Ninja \
 	-DCMAKE_C_FLAGS="$GCC_CFLAGS" \
 	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_BUILD_TYPE=Release
 
-make -j${NUMBER_THREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -delete
 

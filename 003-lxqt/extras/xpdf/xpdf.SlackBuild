@@ -24,6 +24,7 @@ sed -i "s|initialSidebarState = gTrue|initialSidebarState = gFalse|g" xpdf/Globa
 patch -p1 < $CWD/font.patch
 
 cmake -B build -S . \
+	-G Ninja \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_C_FLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
@@ -34,7 +35,7 @@ cmake -B build -S . \
 	-DXPDFWIDGET_PRINTING=ON \
 	-DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
-make -C build -j${NUMBER_THREADS} install DESTDIR=$PKG
+DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -delete
 
