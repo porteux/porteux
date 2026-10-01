@@ -26,6 +26,7 @@ fi
 ZIP_FILE_NAME="$CURRENT_PACKAGE-$PORTEUX_BUILD.zip"
 APPLICATION_URL="https://github.com/porteux/porteux/releases/download/$PORTEUX_VERSION/$ZIP_FILE_NAME"
 OUTPUT_DIR="$PORTDIR/modules/"
+ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
 BUILD_DIR=$(mktemp -d "/tmp/$CURRENT_PACKAGE-builder.XXXXXX") || exit 1
 trap 'rm -fr "${BUILD_DIR:?}"' EXIT
 
@@ -49,16 +50,4 @@ find "$EXTRACTED_MODULE_PATH" \( -type f -name "libnvidia-compiler*" -o -name "l
 
 MODULE_FILE_NAME="${MODULE_FILE_NAME/nvidia/nvidia-lite}"
 
-if [ ! -w "$OUTPUT_DIR" ]; then
-	dir2xzm -q "$BUILD_DIR/$MODULE_DIR" -o="/tmp/$MODULE_FILE_NAME" || { echo "Error: could not create the module." >&2; exit 1; }
-	echo "Destination $OUTPUT_DIR is not writable. New module placed in /tmp and not activated."
-elif [ ! -f "$OUTPUT_DIR/$MODULE_FILE_NAME" ]; then
-	dir2xzm -q "$BUILD_DIR/$MODULE_DIR" -o="$OUTPUT_DIR/$MODULE_FILE_NAME" || { echo "Error: could not create the module." >&2; exit 1; }
-	echo "Module placed in $OUTPUT_DIR"
-	if [[ "$@" == *"--activate-module"* ]] && [ ! -d "/mnt/live/memory/images/$MODULE_FILE_NAME" ]; then
-		activate "$OUTPUT_DIR/$MODULE_FILE_NAME" -q &>/dev/null
-	fi
-else
-	dir2xzm -q "$BUILD_DIR/$MODULE_DIR" -o="/tmp/$MODULE_FILE_NAME" || { echo "Error: could not create the module." >&2; exit 1; }
-	echo "Module $MODULE_FILE_NAME was already in $OUTPUT_DIR. New module placed in /tmp and not activated."
-fi
+/opt/porteux-scripts/porteux-app-store/module-builder.sh "$BUILD_DIR/$MODULE_DIR" "$OUTPUT_DIR/$MODULE_FILE_NAME" "$ACTIVATE_MODULE" || exit 1

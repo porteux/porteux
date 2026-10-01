@@ -36,8 +36,8 @@ create_application_temp_dir() {
 }
 
 get_module_name() {
-	local pkgver="$2"
-	local arch="$3"
+	local pkgver="$1"
+	local arch="$2"
 
 	echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
@@ -67,7 +67,7 @@ make_module_firefox() {
 
 	local pkgver=$(get_repo_version_firefox "$CHANNEL")
 	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
-	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+	local pkg_name=$(get_module_name "$pkgver" "x86_64")
 	local package_extension="tar.xz"
 	local major_version=$(echo $pkgver | cut -f 1 -d .)
 	

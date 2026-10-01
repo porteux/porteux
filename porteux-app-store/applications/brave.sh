@@ -53,8 +53,8 @@ striptease() {
 }
 
 get_module_name() {
-	local pkgver="$2"
-	local arch="$3"
+	local pkgver="$1"
+	local arch="$2"
 
 	echo "${FRIENDLY_PACKAGE_NAME}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
@@ -74,7 +74,7 @@ make_module_brave() {
 	local FULL_VERSION=$(curl -s https://api.github.com/repos/brave/${REPO}/releases/latest | grep -oP '"tag_name":\s*"\K[^"]+' | head -n 1)
 	local pkgver="${FULL_VERSION//[vV]}"
 	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
-	local pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+	local pkg_name=$(get_module_name "$pkgver" "x86_64")
 	MODULE_DIR="$TMP/$APP/$pkg_name"
 
 	create_application_temp_dir "$APP"

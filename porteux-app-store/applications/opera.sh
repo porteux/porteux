@@ -50,8 +50,8 @@ striptease() {
 }
 
 get_module_name() {
-	local pkgver="$2"
-	local arch="$3"
+	local pkgver="$1"
+	local arch="$2"
 
 	echo "${APP}-${CHANNEL}-${pkgver}-${arch}-${LANGUAGE}_porteux"
 }
@@ -76,7 +76,7 @@ make_module_opera() {
 	$WGET_WITH_TIME_OUT -P "$TMP/$APP/" -r -nd --no-parent https://rpm.opera.com/rpm/ -A "opera_$CHANNEL-*x64*.rpm" || exit 1
 	pkgver=$(find "$TMP/$APP" -name "opera_$CHANNEL-*.rpm" -exec basename {} \; | cut -d '-' -f2 | sort -V | tail -n 1)
 	[ "$pkgver" ] || { echo "Error: could not determine the latest version." >&2; exit 1; }
-	pkg_name=$(get_module_name "$CHANNEL" "$pkgver" "x86_64")
+	pkg_name=$(get_module_name "$pkgver" "x86_64")
 
 	mv "$TMP/$APP"/opera_"$CHANNEL"-"$pkgver"-*.rpm "$TMP/$APP/$pkg_name.rpm" || exit 1
 	mkdir -p "$TMP/$APP/$pkg_name"

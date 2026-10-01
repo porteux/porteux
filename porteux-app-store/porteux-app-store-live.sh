@@ -32,7 +32,6 @@ update_app(){
 	/opt/porteux-scripts/gtkprogress.py -w "PorteuX App Store" -m "Updating App Store..." -t " " & prog=$!
 
 	echo "Updating App Store..."
-	echo "$APP_STORE_FILE"
 	local temporary_file
 	temporary_file=$(mktemp "$LOCAL_PATH/$APP_STORE_FILE.XXXXXX")
 	if wget -T 15 --tries=2 -O "$temporary_file" "$REPO_FOLDER_PATH/$APP_STORE_FILE" && [ -s "$temporary_file" ]; then
@@ -62,4 +61,4 @@ fi
 
 # run app store
 [ -x "$LOCAL_PATH/$APP_STORE_FILE" ] || { echo "Error: App Store could not be downloaded." >&2; exit 1; }
-"$LOCAL_PATH/porteux-app-store.py"
+"$LOCAL_PATH/$APP_STORE_FILE"
