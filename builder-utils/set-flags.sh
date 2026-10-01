@@ -19,6 +19,7 @@ set_flags() {
 
 	if [ -d "${repo_root}"/.git ]; then
 		export PORTEUX_VERSION=$(git -C "${repo_root}" -c safe.directory="${repo_root}" branch --show-current)
+		[[ $PORTEUX_VERSION =~ ^[0-9]+(\.[0-9]+)*$ ]] || PORTEUX_VERSION=
 	fi
 
 	if [ -z "$PORTEUX_VERSION" ]; then

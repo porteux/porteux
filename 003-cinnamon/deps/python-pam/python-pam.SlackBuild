@@ -14,8 +14,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(download_master_from_github FirefighterBlu3 python-pam main) || exit 1
-cd python-pam-main || exit 1
+info=$(download_latest_from_github FirefighterBlu3 $PRGNAM)
+VERSION=${info#* }
+
+tar xf $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
 
 python -m build --wheel
 python -m installer --destdir "$PKG" dist/*.whl

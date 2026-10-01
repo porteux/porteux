@@ -12,7 +12,7 @@ source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 elevate_if_needed "$0" "$@"
 
-if [ ! -f ${SYSTEM_BITS}bit.config ]; then
+if [ ! -f ${SCRIPT_PATH}/${SYSTEM_BITS}bit.config ]; then
 	echo "File ${SYSTEM_BITS}bit.config is required in this folder." && exit 1
 fi
 
@@ -42,9 +42,9 @@ fi
 ### set compiler and linker
 
 if [ ${CLANG:-no} = "yes" ]; then
-	installpkg $MODULE_PATH/packages/libxml2*.txz > /dev/null 2>&1
+	[ ! -f /usr/bin/clang ] && { installpkg $MODULE_PATH/packages/libxml2*.txz || exit 1; }
 	rm $MODULE_PATH/packages/libxml2*.txz > /dev/null 2>&1
-	installpkg $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
+	[ ! -f /usr/bin/clang ] && { installpkg $MODULE_PATH/packages/llvm*.txz || exit 1; }
 	rm $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
 
 	COMPILER="Clang"
@@ -78,13 +78,13 @@ fi
 echo "Downloading kernel source code..."
 kernel_source_archive=$(ls "${SCRIPT_PATH}"/linux-"${KERNEL_VERSION}".tar.?z 2>/dev/null | head -n1)
 if [ -z "$kernel_source_archive" ]; then
-	kernel_source_archive=${MODULE_PATH}/linux-${KERNEL_VERSION}.tar.xz
-	wget -O "${kernel_source_archive}" https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { echo "Failed to download kernel source code."; exit 1; }
+	kernel_source_archive=${SCRIPT_PATH}/linux-${KERNEL_VERSION}.tar.xz
+	wget -O "${kernel_source_archive}.part" https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { rm -f "${kernel_source_archive}.part"; echo "Failed to download kernel source code."; exit 1; }
+	mv "${kernel_source_archive}.part" "${kernel_source_archive}" || exit 1
 fi
 
 echo "Extracting kernel source code..."
 tar xf "$kernel_source_archive" -C ${MODULE_PATH}
-rm -f ${MODULE_PATH}/linux-${KERNEL_VERSION}.tar.?z
 
 echo "Copying .config file..."
 cp ${SCRIPT_PATH}/${SYSTEM_BITS}bit.config ${MODULE_PATH}/linux-${KERNEL_VERSION}/.config || exit 1
@@ -283,10 +283,7 @@ ln -sf /usr/src/linux ${MODULE_PATH}/${CRIPPLED_MODULE_NAME}/lib/modules/$kernel
 
 # strip crippled
 {
-mv ${CRIPPLED_LINUX_PATH}/arch/x86 ${CRIPPLED_SOURCE_PATH}
-rm -rf ${CRIPPLED_LINUX_PATH}/arch
-mkdir ${CRIPPLED_LINUX_PATH}/arch
-mv ${CRIPPLED_SOURCE_PATH}/x86 ${CRIPPLED_LINUX_PATH}/arch/
+find ${CRIPPLED_LINUX_PATH}/arch -mindepth 1 -maxdepth 1 ! -name x86 -exec rm -rf {} +
 
 rm -rf ${CRIPPLED_LINUX_PATH}/arch/x86/boot/bzImage
 rm -rf ${CRIPPLED_LINUX_PATH}/arch/x86/boot/compressed/vmlinux
@@ -306,7 +303,7 @@ find ${CRIPPLED_LINUX_PATH}/scripts -xtype l -delete
 
 mv ${CRIPPLED_LINUX_PATH}/config ${CRIPPLED_LINUX_PATH}/.config
 
-find ${CRIPPLED_SOURCE_PATH} -type f -perm -u+x | strip_files --strip-all -R .eh_frame* -R .jcr
+find ${CRIPPLED_SOURCE_PATH} -type f -perm -u+x | strip_files --strip-all -R '.eh_frame*' -R .jcr
 } >/dev/null 2>&1
 
 make_module ${MODULE_PATH}/${CRIPPLED_MODULE_NAME} ${CRIPPLED_MODULE_NAME}-${build_date}.xzm > /dev/null || { echo "Error: failed to create crippled kernel module." >&2; exit 1; }
@@ -315,7 +312,6 @@ echo "Cleaning up..."
 rm -fr "${MODULE_PATH:?}/kernel-firmware" > /dev/null 2>&1 
 rm -fr "${MODULE_PATH:?}/${MODULE_NAME}" > /dev/null 2>&1
 rm -fr "${MODULE_PATH:?}/${CRIPPLED_MODULE_NAME}" > /dev/null 2>&1
-rm -fr "${MODULE_PATH:?}/firmware" > /dev/null 2>&1
 rm -fr "${MODULE_PATH:?}/packages" > /dev/null 2>&1
 rm -fr "${MODULE_PATH:?}"/sof* > /dev/null 2>&1
 

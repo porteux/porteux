@@ -38,6 +38,7 @@ cp -s xinitrc.cinnamon xinitrc
 
 # fix for Wayland sessions which happens to also work for X11
 sed -i "/cinnamon-session-binary/c exec dbus-run-session -- /usr/libexec/cinnamon-session-binary \"\$@\"" $PKG/usr/bin/cinnamon-session
+grep -q "exec dbus-run-session" $PKG/usr/bin/cinnamon-session
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

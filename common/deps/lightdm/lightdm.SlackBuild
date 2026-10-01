@@ -14,8 +14,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(download_master_from_github canonical lightdm main) || exit 1
-cd lightdm-main || exit 1
+info=$(download_latest_from_github ubuntu $PRGNAM)
+VERSION=${info#* }
+
+tar xf $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
 
 # avoid useless dependency
 sed -i 's|which yelp-build|which ls|g' autogen.sh

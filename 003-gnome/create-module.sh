@@ -14,6 +14,7 @@ elevate_if_needed "$0" "$@"
 
 ### create module folder
 
+rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 
@@ -55,10 +56,7 @@ rm $MODULE_PATH/packages/xtrans*
 
 # required by mutter 45+
 cd $MODULE_PATH || exit 1
-pip install argcomplete || exit 1
-pip install attrs || exit 1
-pip install jinja2 || exit 1
-pip install pygments || exit 1
+pip install argcomplete attrs jinja2 pygments || exit 1
 
 install_rust_toolchain
 
@@ -172,10 +170,12 @@ strip_package iso-codes \
 
 current_package=ibus
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
-mv $MODULE_PATH/packages/${current_package}-[0-9]* .
+rm -f $MODULE_PATH/packages/${current_package}-[0-9]*_stripped.t?z
+mv $MODULE_PATH/packages/${current_package}-[0-9]* . || exit 1
 package_file_name=$(ls ${current_package}-[0-9]*.t?z | head -n1)
 package_file_name=${package_file_name%.*}
-ROOT=./ installpkg ${current_package}-[0-9]*.t?z && rm ${current_package}-[0-9]*.t?z
+ROOT=./ installpkg ${current_package}-[0-9]*.t?z || exit 1
+rm ${current_package}-[0-9]*.t?z
 rm usr/share/applications/org.freedesktop.IBus.Setup.desktop
 rm -fr usr/share/ibus/dicts
 rm -fr var/lib/pkgtools
@@ -186,7 +186,7 @@ rm -f var/log/scripts
 mkdir ${current_package}-stripped
 find . -mindepth 1 -maxdepth 1 ! -name "${current_package}-stripped" -exec mv -t "${current_package}-stripped" {} +
 cd ${current_package}-stripped || exit 1
-makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/${package_file_name}_stripped.txz > /dev/null 2>&1 || exit 1
 rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 ### fake root

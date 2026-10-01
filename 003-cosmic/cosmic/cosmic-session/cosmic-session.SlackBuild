@@ -20,8 +20,9 @@ cd $PRGNAM-master || exit 1
 RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"
 
 sed -i 's|--release|--release --features autostart|g' Justfile
+grep -q -- '--features autostart' Justfile
 
-ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
+rm -f rust-toolchain*
 just build-release
 just rootdir=$PKG install
 

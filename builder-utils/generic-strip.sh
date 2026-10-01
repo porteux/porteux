@@ -12,7 +12,7 @@ list_files_to_strip() {
 }
 
 strip_files() {
-	xargs -d '\n' -r strip "$@" -R .comment* -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
+	xargs -d '\n' -r strip "$@" -R '.comment*' -R .note -R .note.ABI-tag -R .note.gnu.build-id -R .note.gnu.gold-version -R .note.GNU-stack 2> /dev/null
 }
 
 strip_clean() {
@@ -33,7 +33,7 @@ strip_clean() {
 	rm -fr usr/lib*/pkgconfig
 	rm -fr usr/lib*/python2*
 	rm -fr usr/lib*/systemd
-	rm -fr usr/lib/python*/site-packages/*-info
+	rm -fr usr/lib*/python*/site-packages/*-info
 	rm -fr usr/libexec/installed-tests
 	rm -fr usr/man
 	rm -fr usr/share/*/translations
@@ -118,7 +118,7 @@ strip_clean() {
 }
 
 strip_hard_exec() {
-	list_files_to_strip 'ELF.*executable' "$@" | strip_files --strip-all --strip-section-headers -R .eh_frame*
+	list_files_to_strip 'ELF.*executable' "$@" | strip_files --strip-all --strip-section-headers -R '.eh_frame*'
 }
 
 strip_hard_all() {

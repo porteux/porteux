@@ -4,7 +4,6 @@ source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=dart-sass
 
-CWD=$(dirname "$0")
 TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
@@ -23,7 +22,7 @@ done
 tar xf ${PRGNAM}-${VERSION}-linux-x64.tar.?z
 
 mkdir -p $PKG/usr/bin
-cp -r ${PRGNAM}/* $PKG/usr/bin
+mv ${PRGNAM}/* $PKG/usr/bin
 
 cd $PKG
 makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

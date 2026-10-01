@@ -14,6 +14,7 @@ elevate_if_needed "$0" "$@"
 
 ### create module folder
 
+rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 
@@ -228,7 +229,6 @@ copy_to_multilanguage
 cd $MODULE_PATH/packages/ || exit 1
 
 {
-rm etc/xdg/autostart/baloo_file.desktop
 rm etc/xdg/autostart/kaccess.desktop
 rm etc/xdg/autostart/xembedsniproxy.desktop
 rm usr/bin/kwalletmanager*

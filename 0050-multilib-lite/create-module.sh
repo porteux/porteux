@@ -17,6 +17,7 @@ echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} i686...
 
 ### create module folder
 
+rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 
@@ -46,10 +47,12 @@ strip_package llvm \
 current_package=mesa
 rm -rf "${MODULE_PATH:?}/${current_package}"
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
-mv $MODULE_PATH/packages/${current_package}-[0-9]* .
+rm -f $MODULE_PATH/packages/${current_package}-[0-9]*_stripped.t?z
+mv $MODULE_PATH/packages/${current_package}-[0-9]* . || exit 1
 package_file_name=$(ls ${current_package}-[0-9]*.t?z | head -n1)
 package_file_name=${package_file_name%.*}
-ROOT=./ installpkg ${current_package}*.txz && rm ${current_package}*.txz
+ROOT=./ installpkg ${current_package}*.txz || exit 1
+rm ${current_package}*.txz
 rm -fr etc/OpenCL
 rm usr/lib${SYSTEM_BITS}/dri/i830*
 rm usr/lib${SYSTEM_BITS}/dri/i965*

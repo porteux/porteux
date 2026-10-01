@@ -16,7 +16,6 @@ cd $TMP
 
 info=$(download_latest_from_github ${PRGNAM} ${PRGNAM})
 VERSION=${info#* }
-VERSION="${VERSION#_}"
 VERSION="${VERSION//_/.}"
 filename=${info% *}
 

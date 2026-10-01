@@ -20,6 +20,10 @@ tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
 sed -i "/\['housekeeping', 'Housekeeping', 'GNOME maintenance of expirable data']/d" plugins/meson.build
+if grep -q "'housekeeping'" plugins/meson.build; then
+	echo "Error: failed to disable housekeeping plugin." >&2
+	exit 1
+fi
 
 cp $CWD/org.gnome.SettingsDaemon.Dummy.desktop.in plugins/
 cp $CWD/org.gnome.SettingsDaemon.Real.desktop.in plugins/

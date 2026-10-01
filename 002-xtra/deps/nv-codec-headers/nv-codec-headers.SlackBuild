@@ -4,7 +4,6 @@ source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=nv-codec-headers
 
-CWD=$(dirname "$0")
 TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 
@@ -14,8 +13,11 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(download_master_from_github FFmpeg nv-codec-headers) || exit 1
-cd nv-codec-headers-master || exit 1
+info=$(download_latest_from_github FFmpeg $PRGNAM)
+VERSION=${info#* }
+
+tar xf $PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
 
 make -j${NUMBER_THREADS} PREFIX=/usr LIBDIR=lib${SYSTEM_BITS} DESTDIR=$PKG install
 

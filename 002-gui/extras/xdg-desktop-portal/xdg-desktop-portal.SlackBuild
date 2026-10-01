@@ -14,17 +14,8 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(get_latest_version_tag_from_github "flatpak" ${PRGNAM})
-versions_to_ignore="${VERSION}"
-minor_version=$(echo "$VERSION" | cut -d. -f2)
-
-while (( ${minor_version} % 2 == 1 )); do
-	VERSION=$(get_latest_version_tag_from_github "flatpak" ${PRGNAM} "${versions_to_ignore}|${VERSION}")
-	versions_to_ignore="${versions_to_ignore}|${VERSION}"
-	minor_version=$(echo "$VERSION" | cut -d. -f2)
-done
-
-wget https://github.com/flatpak/${PRGNAM}/releases/download/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
+info=$(download_latest_from_github flatpak ${PRGNAM} '^[0-9]+\.[0-9]*[13579]\.')
+VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION

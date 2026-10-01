@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(download_latest_from_github "mate-desktop" "mate-utils" "1.29")
+info=$(download_latest_from_github "mate-desktop" "mate-utils" '^v?[0-9]+\.[0-9]*[13579]\.')
 VERSION=${info#* }
 
 tar xf mate-utils-$VERSION.tar.?z

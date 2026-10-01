@@ -10,7 +10,7 @@ generate_repository_urls() {
 	trap 'rm -f "$SERVER_PACKAGES_LIST"' EXIT
 
 	# Get repository packages list
-	wget --tries=3 --retry-connrefused "$REPOSITORY/FILE_LIST" -O "$file_list" -q > /dev/null 2>&1 || wget --tries=3 --retry-connrefused "$REPOSITORY/FILELIST.TXT" -O "$file_list" -q > /dev/null 2>&1 || { echo "Error: cannot download package list from $REPOSITORY" >&2; exit 1; }
+	wget --tries=3 --retry-connrefused "$REPOSITORY/FILE_LIST" -O "$file_list" -q > /dev/null 2>&1 || { echo "Error: cannot download package list from $REPOSITORY" >&2; exit 1; }
 
 	# Cleanup and sort server packages list
 	awk '/^-/ && /txz$/ { print substr($0, index($0, "./") + 2) }' "$file_list" | sort > "$SERVER_PACKAGES_LIST"
@@ -22,7 +22,7 @@ download_package() {
 	cd "$MODULE_PATH"/packages || { touch "$DOWNLOAD_FAILURE_FLAG"; exit 1; }
 
 	# if the package is already present don't download it again
-	if find . -maxdepth 1 -type f -name "${1}[-_][0-9]*" | grep -q .; then
+	if find . -maxdepth 1 -type f -name "${1}[-_][0-9]*" ! -name "*_stripped.t?z" | grep -q .; then
 		return
 	fi
 

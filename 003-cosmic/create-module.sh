@@ -15,6 +15,7 @@ elevate_if_needed "$0" "$@"
 
 ### create module folder
 
+rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 
@@ -55,7 +56,7 @@ bash $SCRIPT_PATH/../common/extras/${current_package}/${current_package}.SlackBu
 rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 # required from now on
-installpkg $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
+[ ! -f /usr/bin/clang ] && { installpkg $MODULE_PATH/packages/llvm*.txz || exit 1; }
 rm $MODULE_PATH/packages/llvm* > /dev/null 2>&1
 
 install_rust_toolchain

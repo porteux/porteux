@@ -14,27 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-if ! which xdt-csource > /dev/null 2>&1; then
-	DEVTOOLS=xfce4-dev-tools
-	DEVTOOLSVERSION=$(curl -s https://gitlab.xfce.org/xfce/${DEVTOOLS}/-/tags?format=atom | grep -oPm 20 '(?<= <title>)[^<]+' | grep -v pre | grep -v 4.21 | sort -Vr | head -1)
-	wget https://gitlab.xfce.org/xfce/${DEVTOOLS}/-/archive/${DEVTOOLSVERSION}/${DEVTOOLS}-${DEVTOOLSVERSION}.tar.gz
-
-	tar xf $DEVTOOLS-$DEVTOOLSVERSION.tar.?z*
-	cd $DEVTOOLS-$DEVTOOLSVERSION
-
-	CFLAGS="$GCC_CFLAGS" \
-	./autogen.sh \
-		--prefix=/usr \
-		--libdir=/usr/lib${SYSTEM_BITS} \
-		--sysconfdir=/etc \
-		--disable-static \
-		--disable-debug \
-		--build=$ARCH-porteux-linux
-
-	make -j${NUMBER_THREADS} install
-
-	cd $TMP
-fi
+which xdt-csource > /dev/null 2>&1 || { echo "Error: xfce4-dev-tools is required to build $PRGNAM." >&2; exit 1; }
 
 VERSION=$(download_master_from_github Xubuntu lightdm-gtk-greeter) || exit 1
 cd lightdm-gtk-greeter-master || exit 1

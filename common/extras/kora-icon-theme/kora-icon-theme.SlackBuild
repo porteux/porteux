@@ -25,7 +25,7 @@ mkdir -p "$dest_dir"
 rm -f "${PRGNAM}/create-new-icon-theme.cache.sh"
 find "${PRGNAM}" -name "* *" -delete
 
-cp -r "${PRGNAM}/"* "$dest_dir"
+mv "${PRGNAM}/"* "$dest_dir"
 gtk-update-icon-cache -f "$dest_dir"
 
 mkdir -p $PKG/install

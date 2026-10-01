@@ -9,7 +9,7 @@ PKG=$TMP/package-$PRGNAM
 set -e
 
 [ -e $TMP ] && rm -rf $TMP
-mkdir -p $TMP $PKG $OUTPUT
+mkdir -p $TMP $PKG
 cd $TMP
 
 wget https://bitbucket.org/multicoreware/${PRGNAM}_git/get/HEAD.tar.gz
@@ -21,40 +21,30 @@ BUILDPARAMS="${CLANG_CXXFLAGS} -ffat-lto-objects"
 
 patch -p1 < $CWD/build-fix.patch
 
-LDFLAGS="$LLDFLAGS" \
-cmake -B build-12 \
-	-G Ninja \
-	-Ssource \
-	-Wno-dev \
-	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_CXX_COMPILER=clang++ \
-	-DCMAKE_CXX_FLAGS="$BUILDPARAMS" \
-	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
-	-DENABLE_HDR10_PLUS=ON \
-	-DENABLE_CLI=OFF \
-	-DENABLE_SHARED=OFF \
-	-DEXPORT_C_API=OFF \
-	-DHIGH_BIT_DEPTH=ON \
-	-DMAIN12=ON
+for bits in 12 10; do
+	main12=OFF
+	if [ $bits = 12 ]; then
+		main12=ON
+	fi
 
-cmake --build build-12 -- -j${NUMBER_THREADS}
+	LDFLAGS="$LLDFLAGS" \
+	cmake -B build-$bits \
+		-G Ninja \
+		-Ssource \
+		-Wno-dev \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_CXX_COMPILER=clang++ \
+		-DCMAKE_CXX_FLAGS="$BUILDPARAMS" \
+		-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
+		-DENABLE_HDR10_PLUS=ON \
+		-DENABLE_CLI=OFF \
+		-DENABLE_SHARED=OFF \
+		-DEXPORT_C_API=OFF \
+		-DHIGH_BIT_DEPTH=ON \
+		-DMAIN12=$main12
 
-LDFLAGS="$LLDFLAGS" \
-cmake -B build-10 \
-	-G Ninja \
-	-Ssource \
-	-Wno-dev \
-	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_CXX_COMPILER=clang++ \
-	-DCMAKE_CXX_FLAGS="$BUILDPARAMS" \
-	-DCMAKE_ASM_NASM_FLAGS='-w-macro-params-legacy' \
-	-DENABLE_HDR10_PLUS=ON \
-	-DENABLE_CLI=OFF \
-	-DENABLE_SHARED=OFF \
-	-DEXPORT_C_API=OFF \
-	-DHIGH_BIT_DEPTH=ON
-
-cmake --build build-10 -- -j${NUMBER_THREADS}
+	cmake --build build-$bits -- -j${NUMBER_THREADS}
+done
 
 LDFLAGS="$LLDFLAGS" \
 cmake -B build \

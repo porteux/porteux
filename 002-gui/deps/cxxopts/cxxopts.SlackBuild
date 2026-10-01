@@ -4,7 +4,6 @@ source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
 PRGNAM=cxxopts
 
-CWD=$(dirname "$0")
 TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 

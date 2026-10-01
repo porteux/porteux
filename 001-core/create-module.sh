@@ -16,6 +16,7 @@ echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} ${ARCH}
 
 ### create module folder
 
+rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 
@@ -29,7 +30,7 @@ installpkg $MODULE_PATH/packages/glib2*.txz || exit 1
 installpkg $MODULE_PATH/packages/libxml2*.txz || exit 1
 installpkg $MODULE_PATH/packages/lua*.txz || exit 1
 
-installpkg $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
+[ ! -f /usr/bin/clang ] && { installpkg $MODULE_PATH/packages/llvm*.txz || exit 1; }
 rm $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
 
 ### packages outside slackware repository
@@ -256,7 +257,6 @@ rm usr/lib${SYSTEM_BITS}/libqgpgme.so*
 rm usr/libexec/samba/rpcd_*
 rm usr/sbin/make-kernel-backup
 rm usr/share/i18n/locales/C
-rm usr/share/kbd/keymaps/i386/qwertz/sr-latin.map.gz
 rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
 

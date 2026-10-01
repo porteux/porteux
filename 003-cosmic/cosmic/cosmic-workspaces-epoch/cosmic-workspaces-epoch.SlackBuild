@@ -21,7 +21,7 @@ RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"
 
 sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
 
-ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
+rm -f rust-toolchain*
 make -j${NUMBER_THREADS}
 make install DESTDIR=$PKG
 

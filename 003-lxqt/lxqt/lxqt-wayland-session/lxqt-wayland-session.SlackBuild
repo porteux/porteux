@@ -32,6 +32,7 @@ DESTDIR="$PKG" ninja -C build -j${NUMBER_THREADS} install
 rm -fr $PKG/usr/share/themes
 
 sed -i "s|^Exec=|Exec=dbus-run-session -- |g" $PKG/usr/share/wayland-sessions/lxqt-wayland.desktop
+grep -q "^Exec=dbus-run-session -- " $PKG/usr/share/wayland-sessions/lxqt-wayland.desktop
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

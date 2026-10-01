@@ -16,6 +16,7 @@ echo -e "Building ${MODULE_NAME} based on Slackware ${SLACKWARE_VERSION} ${ARCH}
 
 ### create module folder
 
+rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 
@@ -130,7 +131,8 @@ strip_package llvm \
 
 current_package=mesa
 mkdir $MODULE_PATH/${current_package} && cd $MODULE_PATH/${current_package} || exit 1
-mv $MODULE_PATH/packages/${current_package}-[0-9]* .
+rm -f $MODULE_PATH/packages/${current_package}-[0-9]*_stripped.t?z
+mv $MODULE_PATH/packages/${current_package}-[0-9]* . || exit 1
 package_file_name=$(ls ${current_package}-[0-9]*.t?z | head -n1)
 package_file_name=${package_file_name%.*}
 ROOT=./ installpkg ${current_package}*.txz || exit 1
@@ -201,7 +203,7 @@ install_additional_packages
 
 ### fix applications shortcuts
 
-sed -i "s|^Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULE_PATH/packages/usr/share/applications/gparted.desktop
+sed -i "s|^Exec=.*|Exec=psu /usr/bin/gparted %f|g" $MODULE_PATH/packages/usr/share/applications/gparted.desktop || exit 1
 
 ### add xzm to freedesktop.org.xml
 

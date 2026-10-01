@@ -24,7 +24,7 @@ sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
 
 bash ../libdisplay-info-pure-main/apply.sh . || exit 1
 
-ls rust-toolchain* 1> /dev/null 2>&1 && rm rust-toolchain*
+rm -f rust-toolchain*
 make -j${NUMBER_THREADS}
 make install DESTDIR=$PKG
 

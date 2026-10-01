@@ -2,7 +2,6 @@
 
 PRGNAM=plasma-wayland-protocols
 
-CWD=$(dirname "$0")
 TMP=$MODULE_PATH/$PRGNAM
 PKG=$TMP/package-$PRGNAM
 

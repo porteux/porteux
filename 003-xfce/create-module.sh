@@ -32,6 +32,7 @@ MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
 
 ### create module folder
 
+rm -fr "${MODULE_PATH:?MODULE_PATH is unset}"
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
 cd $MODULE_PATH || exit 1
 
@@ -67,6 +68,11 @@ bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
+
+current_package=xfce4-dev-tools
+bash $SCRIPT_PATH/xfce/${current_package}/${current_package}.SlackBuild || exit 1
+installpkg $MODULE_PATH/packages/${current_package}-[0-9]*.txz || exit 1
+rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 # xfce common extras
 for package in \
@@ -108,7 +114,6 @@ installpkg $MODULE_PATH/packages/libyaml*.txz || exit 1
 
 # xfce packages
 for package in \
-	xfce4-dev-tools \
 	libxfce4windowing \
 	libxfce4util \
 	xfconf \

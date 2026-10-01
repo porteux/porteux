@@ -76,19 +76,13 @@ find $PKG -type f -name "*.la" -delete
 
 # Upstream has shuffled the location of tools since 3.3.11 release.
 mkdir -p $PKG/bin
-for file in free killall ps ; do
-	find $PKG -name $file -exec mv "{}" $PKG/bin \;
-done
+find $PKG \( -name free -o -name killall -o -name ps \) ! -type d ! -path "$PKG/bin/*" -exec mv -t $PKG/bin {} +
 # These tools belong in /sbin:
 mkdir -p $PKG/sbin
-for file in pidof sysctl ; do
-	find $PKG -name $file -exec mv "{}" $PKG/sbin \;
-done
+find $PKG \( -name pidof -o -name sysctl \) ! -type d ! -path "$PKG/sbin/*" -exec mv -t $PKG/sbin {} +
 mkdir -p $PKG/usr/bin
 # These tools belong in /usr/bin:
-for file in fuser lsdev peekfd pgrep pkill pmap procinfo prtstat pstree pwdx skill slabtop snice socklist tload top uptime vmstat w watch ; do
-	find $PKG -name $file -exec mv "{}" $PKG/usr/bin \;
-done
+find $PKG \( -name fuser -o -name lsdev -o -name peekfd -o -name pgrep -o -name pkill -o -name pmap -o -name procinfo -o -name prtstat -o -name pstree -o -name pwdx -o -name skill -o -name slabtop -o -name snice -o -name socklist -o -name tload -o -name top -o -name uptime -o -name vmstat -o -name w -o -name watch \) ! -type d ! -path "$PKG/usr/bin/*" -exec mv -t $PKG/usr/bin {} +
 # These symlinks belong in /bin:
 rm -f $PKG/bin/pidof
 ln -sf /sbin/pidof $PKG/bin/pidof

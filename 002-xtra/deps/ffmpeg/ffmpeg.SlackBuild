@@ -13,6 +13,7 @@ mkdir -p $TMP $PKG
 cd $TMP
 
 major_version=$(curl -s $REPOSITORY/l/ | grep -o 'ffmpeg[^< ]*' | cut -d '-' -f 2 | cut -d '.' -f 1 | head -n1)
+[ -n "$major_version" ] || { echo "Error: cannot detect ffmpeg major version from $REPOSITORY." >&2; exit 1; }
 filename=$(curl -s https://ffmpeg.org/releases/ | grep ffmpeg-${major_version} | cut -d '>' -f 2 | grep .xz\" | cut -d \" -f 2 | sort -V -r | head -1)
 
 wget https://ffmpeg.org/releases/${filename}

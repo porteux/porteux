@@ -40,25 +40,31 @@ download_latest_from_github() {
 		return 1
 	fi
 	version=${tag##*/}
-	version=${version//[^0-9._]/}
+	if [[ $version =~ [0-9]+([._][0-9]+)+ ]]; then
+		version=${BASH_REMATCH[0]}
+	else
+		version=${version//[^0-9._]/}
+	fi
 	release_url="https://github.com/${repository}/${project}/releases/download/${tag}/${project}-${version}.tar"
 	tag_url="https://github.com/${repository}/${project}/archive/refs/tags/${tag}.tar.gz"
 
 	local url wget_output
 	for url in "${release_url}.xz" "${release_url}.gz" "${tag_url}"; do
-		content_disposition=""
 		wget_output=$(wget --server-response --content-disposition "$url" 2>&1) || continue
 		content_disposition=$(echo "$wget_output" | grep -i "content-disposition:")
-		[ -n "$content_disposition" ] && break
+		if [ -n "$content_disposition" ]; then
+			filename=${content_disposition#*filename=}
+			filename=${filename//[\"$'\r']/}
+		else
+			filename=${url##*/}
+		fi
+		break
 	done
 
-	if [ -z "$content_disposition" ]; then
+	if [ -z "$filename" ]; then
 		echo "Error: cannot download ${project} ${version} from github" >&2
 		return 1
 	fi
-
-	filename=${content_disposition#*filename=}
-	filename=${filename//[\"$'\r']/}
 
 	echo "$filename $version"
 }

@@ -22,13 +22,6 @@ cd $PRGNAM-$VERSION
 
 patch -p1 < $CWD/fix-crash-on-download-complete.patch
 
-if [ -f /usr/include/giomm-2.4/giomm/dbusactiongroup.h ]; then
-	sed -i '/^using GDBusActionGroupClass = struct _GDBusActionGroupClass;$/d' /usr/include/giomm-2.4/giomm/dbusactiongroup.h
-fi
-if [ -f /usr/include/giomm-2.4/giomm/emblem.h ]; then
-	sed -i '/^using GEmblemClass = struct _GEmblemClass;$/d' /usr/include/giomm-2.4/giomm/emblem.h
-fi
-
 cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_C_FLAGS="${GCC_CFLAGS} -fPIC -ffat-lto-objects" \
@@ -42,7 +35,6 @@ cmake -B build -S . \
 	-DENABLE_QT=OFF \
 	-DINSTALL_DOC=OFF
 
-cmake --build build -j${NUMBER_THREADS}
 DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 rm -fr $PKG/usr/share/man
