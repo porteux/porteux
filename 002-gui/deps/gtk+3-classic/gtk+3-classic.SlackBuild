@@ -31,6 +31,8 @@ for i in gtk3-classic-master/*.patch; do
 	patch -p1 < "$i"
 done
 
+patch -p1 < $CWD/raise-on-press.patch
+
 mkdir meson-build && cd meson-build
 CC=clang \
 CFLAGS="$CLANG_CFLAGS" \

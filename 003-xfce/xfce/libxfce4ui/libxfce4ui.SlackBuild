@@ -35,6 +35,12 @@ for i in $CWD/*.patch; do
 	patch -p1 < "$i"
 done
 
+if [ -f libxfce4ui/xfce-icon-view.c ]; then
+	for i in $CWD/4.21/*.patch; do
+		patch -p1 < "$i"
+	done
+fi
+
 if [ -f meson.build ]; then
 	mkdir meson-build && cd meson-build
 	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \

@@ -31,6 +31,10 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+if [ -f exo/exo-icon-view.c ]; then
+	patch -p1 < $CWD/drag-hit-test.patch
+fi
+
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 ./autogen.sh \
 	--prefix=/usr \

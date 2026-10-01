@@ -1,0 +1,41 @@
+Tell GTK whether a click in ExoIconView hits an item, so pressing empty space activates a background window right away.
+
+diff --git a/exo/exo-icon-view.c b/exo/exo-icon-view.c
+index 25ec2ac..ce381d7 100644
+--- a/exo/exo-icon-view.c
++++ b/exo/exo-icon-view.c
+@@ -1245,6 +1245,24 @@ exo_icon_view_cell_layout_init (GtkCellLayoutIface *iface)
+ 
+ 
+ 
++static gboolean
++exo_icon_view_drag_source_hit_test (GtkWidget      *widget,
++                                    GdkEventButton *event)
++{
++  ExoIconView *icon_view = EXO_ICON_VIEW (widget);
++
++  if (event->window != icon_view->priv->bin_window)
++    return FALSE;
++
++  if (icon_view->priv->source_set &&
++      !(icon_view->priv->start_button_mask & (GDK_BUTTON1_MASK << (event->button - 1))))
++    return FALSE;
++
++  return exo_icon_view_get_item_at_coords (icon_view, event->x, event->y, TRUE, NULL) != NULL;
++}
++
++
++
+ static void
+ exo_icon_view_init (ExoIconView *icon_view)
+ {
+@@ -1252,6 +1270,9 @@ exo_icon_view_init (ExoIconView *icon_view)
+                                GTK_STYLE_CLASS_VIEW);
+ 
+   icon_view->priv = exo_icon_view_get_instance_private (icon_view);
++
++  g_object_set_data (G_OBJECT (icon_view), I_("gtk-drag-source-hit-test"),
++                     (gpointer) exo_icon_view_drag_source_hit_test);
+   icon_view->priv->items = NULL;
+   icon_view->priv->selection_mode = GTK_SELECTION_SINGLE;
+   icon_view->priv->pressed_button = -1;

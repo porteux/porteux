@@ -1,0 +1,40 @@
+Tell GTK whether a click in XfceIconView hits an item, so pressing empty space activates a background window right away.
+
+diff --git a/libxfce4ui/xfce-icon-view.c b/libxfce4ui/xfce-icon-view.c
+index 1b1b3b1..aec9fd3 100644
+--- a/libxfce4ui/xfce-icon-view.c
++++ b/libxfce4ui/xfce-icon-view.c
+@@ -1378,11 +1378,33 @@ xfce_icon_view_cell_layout_init (GtkCellLayoutIface *iface)
+ 
+ 
+ 
++static gboolean
++xfce_icon_view_drag_source_hit_test (GtkWidget      *widget,
++                                     GdkEventButton *event)
++{
++  XfceIconView *icon_view = XFCE_ICON_VIEW (widget);
++  XfceIconViewPrivate *priv = get_instance_private (icon_view);
++
++  if (event->window != priv->bin_window)
++    return FALSE;
++
++  if (priv->source_set &&
++      !(priv->start_button_mask & (GDK_BUTTON1_MASK << (event->button - 1))))
++    return FALSE;
++
++  return xfce_icon_view_get_item_at_coords (icon_view, event->x, event->y, TRUE, NULL) != NULL;
++}
++
++
++
+ static void
+ xfce_icon_view_init (XfceIconView *icon_view)
+ {
+   XfceIconViewPrivate *priv = get_instance_private (icon_view);
+ 
++  g_object_set_data (G_OBJECT (icon_view), I_("gtk-drag-source-hit-test"),
++                     (gpointer) xfce_icon_view_drag_source_hit_test);
++
+   gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (icon_view)),
+                                GTK_STYLE_CLASS_VIEW);
+ 
