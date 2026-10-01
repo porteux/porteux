@@ -74,11 +74,7 @@ EOF
 chmod +x "$MODULE_DIR/etc/rc.d/init.d/rc.virtualbox"
 ln -sf /etc/rc.d/init.d/rc.virtualbox "$MODULE_DIR/etc/rc.d/rc4.d/S99virtualbox"
 find /etc /lib /usr /sbin | grep -E "vbox|virtualbox|VBox|VirtualBox" | xargs -i cp -r --parents {} "$MODULE_DIR/"
-cp -r --parents /sbin/{vbox*,rcvbox*} "$MODULE_DIR/"
 cp -r --parents /opt/VirtualBox "$MODULE_DIR/"
-for a in $(seq 0 6); do
-	cp -r --parents /etc/rc.d/rc${a}.d/{K[0-9][0-9]vbox*,S[0-9][0-9]vbox*} "$MODULE_DIR/" &>/dev/null
-done
 mkdir -p "$MODULE_DIR/${USER_HOME_FOLDER}/.config/VirtualBox/"
 cat > "$MODULE_DIR/${USER_HOME_FOLDER}/.config/VirtualBox/VirtualBox.xml" << EOF
 <?xml version="1.0"?>
