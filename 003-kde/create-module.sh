@@ -230,9 +230,11 @@ cd $MODULE_PATH/packages/ || exit 1
 {
 rm etc/xdg/autostart/kaccess.desktop
 rm etc/xdg/autostart/xembedsniproxy.desktop
+rm etc/xdg/kcm-about-distrorc
 rm usr/bin/kwalletmanager*
 rm usr/bin/oxygen-demo5
 rm usr/bin/oxygen-gtk-demo
+rm etc/xdg/slackware_logo.png
 rm usr/bin/systemmonitor
 rm usr/bin/UserFeedbackConsole
 rm usr/lib${SYSTEM_BITS}/libKF5*
