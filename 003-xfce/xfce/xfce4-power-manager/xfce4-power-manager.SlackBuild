@@ -40,8 +40,7 @@ if [ -f meson.build ]; then
 		--libdir=/usr/lib${SYSTEM_BITS} \
 		--libexecdir=/usr/libexec \
 		--sysconfdir=/etc \
-		--localstatedir=/var \
-		-Dpolkit=disabled
+		--localstatedir=/var
 
 	DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 else
@@ -56,7 +55,6 @@ else
 		--enable-lto \
 		--enable-wayland \
 		--disable-network-manager \
-		--disable-polkit \
 		--build=$ARCH-porteux-linux
 
 	make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
