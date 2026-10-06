@@ -68,7 +68,7 @@ finisher() {
 
 make_module_brave() {
 	if [ "$CHANNEL" != "stable" ] && [ "$CHANNEL" != "origin" ]; then
-		echo "Non-existent channel. Options: stable | origin" && exit 1
+		{ echo "Error: non-existent channel. Options: stable | origin" >&2; exit 1; }
 	fi
 
 	local FULL_VERSION=$(curl -s https://api.github.com/repos/brave/${REPO}/releases/latest | grep -oP '"tag_name":\s*"\K[^"]+' | head -n 1)

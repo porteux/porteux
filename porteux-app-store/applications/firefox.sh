@@ -62,7 +62,7 @@ get_repo_version_firefox() {
 
 make_module_firefox() {
 	if [ "$CHANNEL" != "stable" ] && [ "$CHANNEL" != "esr" ] && [ "$CHANNEL" != "beta" ]; then
-		echo "Non-existent channel. Options: stable | esr | beta" && exit 1
+		{ echo "Error: non-existent channel. Options: stable | esr | beta" >&2; exit 1; }
 	fi
 
 	local pkgver=$(get_repo_version_firefox "$CHANNEL")

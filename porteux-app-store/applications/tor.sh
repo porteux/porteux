@@ -96,7 +96,7 @@ get_repo_version_tor() {
 
 make_module_tor() {
 	if [ "$CHANNEL" != "stable" ] && [ "$CHANNEL" != "alpha" ]; then
-		echo "Non-existent channel. Options: stable | alpha" && exit 1
+		{ echo "Error: non-existent channel. Options: stable | alpha" >&2; exit 1; }
 	fi
 
 	local pkgver=$(get_repo_version_tor "$CHANNEL")

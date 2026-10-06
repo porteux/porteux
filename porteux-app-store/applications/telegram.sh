@@ -22,7 +22,7 @@ ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module
 
 cd "$BUILD_DIR" || exit 1
 
-wget -T 15 --content-disposition "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
+wget -T 15 --trust-server-names --content-disposition "$APPLICATION_URL" -P "$BUILD_DIR" || exit 1
 DOWNLOADED_FILE=$(find "$BUILD_DIR" -maxdepth 1 -type f -name "*.tar.xz" | head -1)
 [ "$DOWNLOADED_FILE" ] || { echo "Error: nothing was downloaded." >&2; exit 1; }
 tar xvf "$DOWNLOADED_FILE" -C "$BUILD_DIR" || exit 1
