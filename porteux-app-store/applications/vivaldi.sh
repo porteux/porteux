@@ -72,7 +72,7 @@ get_repo_version_vivaldi() {
 
 make_module_vivaldi() {
 	if [ "$CHANNEL" != "snapshot" ] && [ "$CHANNEL" != "stable" ]; then
-		echo "Non-existent channel. Options: snapshot | stable" && exit 1
+		{ echo "Error: non-existent channel. Options: snapshot | stable" >&2; exit 1; }
 	fi
 
 	local pkgver=$(get_repo_version_vivaldi "$CHANNEL")

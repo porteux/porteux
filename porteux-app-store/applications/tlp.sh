@@ -5,7 +5,7 @@ is_root() {
 }
 
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ]; then
-	echo "The 'devel' module needs to be activated to build and run TLP."
+	echo "Error: the 'devel' module needs to be activated to build and run TLP." >&2
 	exit 1
 fi
 

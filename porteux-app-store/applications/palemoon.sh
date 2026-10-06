@@ -95,7 +95,7 @@ get_repo_version_palemoon() {
 
 make_module_palemoon() {
 	if [ "$CHANNEL" != "stable" ]; then
-		echo "Non-existent channel. Options: stable" && exit 1
+		{ echo "Error: non-existent channel. Options: stable" >&2; exit 1; }
 	fi
 
 	local pkgver=$(get_repo_version_palemoon "$CHANNEL")

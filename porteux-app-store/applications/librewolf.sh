@@ -58,7 +58,7 @@ get_repo_version_librewolf() {
 
 make_module_librewolf() {
 	if [ "$CHANNEL" != "stable" ]; then
-		echo "Non-existent channel. Options: stable" && exit 1
+		{ echo "Error: non-existent channel. Options: stable" >&2; exit 1; }
 	fi
 
 	local pkgver=$(get_repo_version_librewolf "$CHANNEL")

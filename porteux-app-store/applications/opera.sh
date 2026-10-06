@@ -65,7 +65,7 @@ finisher() {
 
 make_module_opera() {
 	if [ "$CHANNEL" != "developer" ] && [ "$CHANNEL" != "beta" ] && [ "$CHANNEL" != "stable" ]; then
-		echo "Non-existent channel. Options: developer | beta | stable" && exit 1
+		{ echo "Error: non-existent channel. Options: developer | beta | stable" >&2; exit 1; }
 	fi
 
 	local pkg_name

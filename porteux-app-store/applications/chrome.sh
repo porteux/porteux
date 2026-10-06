@@ -89,7 +89,7 @@ get_deb_version_google_chrome() {
 
 make_module_google_chrome() {
 	if [ "$CHANNEL" != "unstable" ] && [ "$CHANNEL" != "beta" ] && [ "$CHANNEL" != "stable" ]; then
-		echo "Non-existent channel. Options: unstable | beta | stable" && exit 1
+		{ echo "Error: non-existent channel. Options: unstable | beta | stable" >&2; exit 1; }
 	fi
 
 	local product_name=$([ "$CHANNEL" == "stable" ] && echo "$APP" || echo "$APP-$CHANNEL")

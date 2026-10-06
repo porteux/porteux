@@ -11,7 +11,7 @@ if ! is_root; then
 fi
 
 if [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*05-devel*")" ] || [ ! "$(find /mnt/live/memory/images/ -maxdepth 1 -name "*06-crippled?sources*")" ]; then
-	echo "Both 'devel' and 'crippled-sources' modules need to be activated."
+	echo "Error: both 'devel' and 'crippled-sources' modules need to be activated." >&2
 	exit 1
 fi
 
