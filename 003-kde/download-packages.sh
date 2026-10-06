@@ -33,6 +33,7 @@ download_package "breeze" &
 download_package "breeze-grub" &
 download_package "breeze-gtk" &
 download_package "breeze-icons" &
+download_package "ddcutil" &
 wait_for_downloads
 download_package "dolphin" &
 download_package "dolphin-plugins" &

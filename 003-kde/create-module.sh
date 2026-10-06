@@ -47,6 +47,7 @@ strip_package qt6 \
 	usr/lib${SYSTEM_BITS}/libQt6OpenGL.so* \
 	usr/lib${SYSTEM_BITS}/libQt6OpenGLWidgets.so* \
 	usr/lib${SYSTEM_BITS}/libQt6Positioning.so* \
+	usr/lib${SYSTEM_BITS}/libQt6PositioningQuick.so* \
 	usr/lib${SYSTEM_BITS}/libQt6PrintSupport.so* \
 	usr/lib${SYSTEM_BITS}/libQt6Qml.so* \
 	usr/lib${SYSTEM_BITS}/libQt6QmlCore.so* \
@@ -77,6 +78,7 @@ strip_package qt6 \
 	usr/lib${SYSTEM_BITS}/libQt6SvgWidgets.so* \
 	usr/lib${SYSTEM_BITS}/libQt6Test.so* \
 	usr/lib${SYSTEM_BITS}/libQt6TextToSpeech.so* \
+	usr/lib${SYSTEM_BITS}/libQt6UiTools.so* \
 	usr/lib${SYSTEM_BITS}/libQt6WaylandClient.so* \
 	usr/lib${SYSTEM_BITS}/libQt6WaylandCompositor.so* \
 	usr/lib${SYSTEM_BITS}/libQt6WaylandEglCompositorHwIntegration.so* \
@@ -209,6 +211,14 @@ sed -i "s|Documentation;||g" $MODULE_PATH/packages/usr/share/applications/org.kd
 sed -i "s|Graphics;||g" $MODULE_PATH/packages/usr/share/applications/org.kde.okular.desktop
 sed -i "s|image/png|image/png;image/jxl|g" $MODULE_PATH/packages/usr/share/applications/org.kde.gwenview.desktop
 
+mkdir -p $MODULE_PATH/packages/usr/share/thumbnailers
+cat > $MODULE_PATH/packages/usr/share/thumbnailers/pdfthumbnail.thumbnailer << 'EOF'
+[Thumbnailer Entry]
+TryExec=pdftocairo
+Exec=sh -c "pdftocairo -png -singlefile -scale-to $0 - - <$1 >$2" %s %i %o
+MimeType=application/pdf;
+EOF
+
 ### disable some services
 
 rm $MODULE_PATH/packages/usr/share/dbus-1/services/org.kde.runners.baloo.service
@@ -267,7 +277,6 @@ rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/settings/libqmlsettingsplugin.so
 rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/sharedimage/libsharedimageplugin.so
 rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/synchronizer/liblabssynchronizerplugin.so
 rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/wavefrontmesh/libqmlwavefrontmeshplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtPositioning/libpositioningquickplugin.so
 rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQml/StateMachine/libqtqmlstatemachineplugin.so
 rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQml/XmlListModel/libqmlxmllistmodelplugin.so
 rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/FluentWinUI3/impl/libqtquickcontrols2fluentwinui3styleimplplugin.so
