@@ -39,7 +39,7 @@ cd "$BUILD_DIR" || exit 1
 # the tarballs are served by third-party mirrors, so verify them against the
 # checksum published by The Document Foundation itself
 download_and_verify() {
-	wget -T 15 -q --show-progress "$REPOSITORY/$1" || return 1
+	wget -T 15 -q "$REPOSITORY/$1" || return 1
 	wget -T 15 -q -O "$1.sha256" "$REPOSITORY/$1.sha256" || return 1
 	local expected_checksum=$(cut -d' ' -f1 < "$1.sha256")
 	local actual_checksum=$(sha256sum "$1" | cut -d' ' -f1)
