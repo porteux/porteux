@@ -30,7 +30,7 @@ CURRENT_USER=$(loginctl user-status | head -n 1 | cut -d" " -f1)
 [ ! "$CURRENT_USER" ] && CURRENT_USER=guest
 CURRENT_GROUP=$(id -gn "$CURRENT_USER")
 ACTIVATE_MODULE=$([[ "$@" == *"--activate-module"* ]] && echo "--activate-module")
-[[ $INSTALL_DIR = --* ]] && echo "Installation path can't be empty." && exit 1
+[[ $INSTALL_DIR = --* ]] && { echo "Error: installation path can't be empty." >&2; exit 1; }
 
 case "$INSTALL_DIR" in
 	/|/bin|/boot|/dev|/etc|/home|/lib|/lib64|/mnt|/opt|/proc|/root|/run|/sbin|/srv|/sys|/tmp|/usr|/var)

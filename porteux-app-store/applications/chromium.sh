@@ -81,7 +81,7 @@ get_repo_version_chromium() {
 
 make_module_chromium() {
 	if [ "$CHANNEL" != "developer" ]; then
-		echo "Non-existent channel. Options: developer" && exit 1
+		{ echo "Error: non-existent channel. Options: developer" >&2; exit 1; }
 	fi
 
 	local pkgver=$(get_repo_version_chromium "$CHANNEL")
