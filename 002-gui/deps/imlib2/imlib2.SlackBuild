@@ -25,7 +25,8 @@ CFLAGS="$GCC_CFLAGS" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--enable-static=no \
-	--enable-progs=no
+	--enable-progs=no \
+	--without-raw
 
 make -j${NUMBER_THREADS}
 make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
