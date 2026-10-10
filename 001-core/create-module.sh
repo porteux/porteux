@@ -243,6 +243,7 @@ copy_to_multilanguage
 cd $MODULE_PATH/packages/ || exit 1
 
 {
+rm etc/default/networkmanager
 rm etc/init.d
 rm etc/motd
 rm etc/termcap
