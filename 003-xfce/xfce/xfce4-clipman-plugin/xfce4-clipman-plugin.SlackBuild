@@ -29,6 +29,7 @@ meson setup \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	-Dwayland=enabled \
+	-Dqrencode=disabled \
 	-Dtests=false
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install

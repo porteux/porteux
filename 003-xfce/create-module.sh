@@ -119,6 +119,7 @@ for package in \
 	libxfce4ui \
 	exo \
 	garcon \
+	xfce4-session \
 	xfce4-panel \
 	thunar \
 	thunar-volman \
@@ -128,7 +129,6 @@ for package in \
 	xfce4-settings \
 	xfdesktop \
 	xfwm4-gl \
-	xfce4-session \
 	xfce4-taskmanager \
 	xfce4-terminal \
 	xfce4-screenshooter \
