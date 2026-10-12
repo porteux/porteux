@@ -78,8 +78,14 @@ fi
 echo "Downloading kernel source code..."
 kernel_source_archive=$(ls "${SCRIPT_PATH}"/linux-"${KERNEL_VERSION}".tar.?z 2>/dev/null | head -n1)
 if [ -z "$kernel_source_archive" ]; then
-	kernel_source_archive=${SCRIPT_PATH}/linux-${KERNEL_VERSION}.tar.xz
-	wget -O "${kernel_source_archive}.part" https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz > /dev/null 2>&1 || { rm -f "${kernel_source_archive}.part"; echo "Failed to download kernel source code."; exit 1; }
+	if [[ "$KERNEL_VERSION" == *-rc* ]]; then
+		kernel_source_archive=${SCRIPT_PATH}/linux-${KERNEL_VERSION}.tar.gz
+		kernel_source_url=https://git.kernel.org/torvalds/t/linux-${KERNEL_VERSION}.tar.gz
+	else
+		kernel_source_archive=${SCRIPT_PATH}/linux-${KERNEL_VERSION}.tar.xz
+		kernel_source_url=https://mirrors.edge.kernel.org/pub/linux/kernel/v${KERNEL_MAJOR_VERSION}.x/linux-${KERNEL_VERSION}.tar.xz
+	fi
+	wget -O "${kernel_source_archive}.part" "$kernel_source_url" > /dev/null 2>&1 || { rm -f "${kernel_source_archive}.part"; echo "Failed to download kernel source code."; exit 1; }
 	mv "${kernel_source_archive}.part" "${kernel_source_archive}" || exit 1
 fi
 
@@ -139,6 +145,7 @@ cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 
 echo "Patching dead code elimination support..."
 patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
+sed -i 's|^\t\t\*(\.smp_locks)$|\t\tKEEP(*(.smp_locks))|' arch/x86/kernel/vmlinux.lds.S
 
 echo "Patching ntfs colon character support..."
 patch -N -p1 < ${SCRIPT_PATH}/0004-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }

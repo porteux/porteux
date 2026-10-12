@@ -100,15 +100,6 @@ index 74e336d..51b51c6 100644
  		__apicdrivers_end = .;
  	}
  
-@@ -353,7 +353,7 @@ SECTIONS
- 	. = ALIGN(PAGE_SIZE);
- 	.smp_locks : AT(ADDR(.smp_locks) - LOAD_OFFSET) {
- 		__smp_locks = .;
--		*(.smp_locks)
-+		KEEP(*(.smp_locks))
- 		. = ALIGN(PAGE_SIZE);
- 		__smp_locks_end = .;
- 	}
 @@ -388,7 +388,7 @@ SECTIONS
  	.brk : AT(ADDR(.brk) - LOAD_OFFSET) {
  		__brk_base = .;
