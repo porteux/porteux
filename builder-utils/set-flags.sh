@@ -15,7 +15,7 @@ set_flags() {
 	export RUSTC_BOOTSTRAP=1 # allows -Z unstable flags on stable compiler
 	
 	local repo_root
-	repo_root=$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")
+	repo_root=$(realpath "$(dirname "${BASH_SOURCE[0]}")/..")
 
 	if [ -d "${repo_root}"/.git ]; then
 		export PORTEUX_VERSION=$(git -C "${repo_root}" -c safe.directory="${repo_root}" branch --show-current)
@@ -38,7 +38,7 @@ set_flags() {
 		echo "Fatal error: PorteuX can only be built in Slackware current environment." && exit 1
 	fi
 
-	export SCRIPT_PATH="$(dirname "$(realpath "${BASH_SOURCE[1]}")")"
+	export SCRIPT_PATH="$(dirname "$(realpath "$0")")"
 	export PORTEUX_BUILDER_PATH="/tmp/porteux-builder-$PORTEUX_VERSION"
 	export MODULE_PATH="$PORTEUX_BUILDER_PATH/$MODULE_NAME"
 	export BUILDER_UTILS_PATH="$repo_root/builder-utils"

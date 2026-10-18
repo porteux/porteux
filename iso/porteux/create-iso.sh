@@ -6,7 +6,7 @@ ISONAME=$(readlink -f "$1")
 cd "$(dirname "$(realpath "$0")")" || exit 1
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-	main_folder=$(readlink -f $PWD/..)
+	main_folder=$(dirname "$PWD")
 	echo "Create bootable ISO from files in '$main_folder'."
 	echo "usage: $0 <option>"
 	echo "By default the ISO is created in /tmp folder."
