@@ -4,7 +4,7 @@ MODULE_NAME="0050-multilib-lite"
 
 export SYSTEM_BITS=
 
-source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../builder-utils/set-flags.sh"
+source "$(dirname "$0")/../builder-utils/set-flags.sh"
 
 set_flags "$MODULE_NAME"
 
