@@ -4,26 +4,21 @@ Subject: [PATCH] mm: count shrinkable GPU pool pages in MemAvailable
 The GPU driver keeps pages it has finished with in a pool for
 reuse. They hold no data and are freed on demand, but MemAvailable
 does not count them. On an APU this pool can reach several GiB, so
-tools that compute 'used = MemTotal - MemAvailable report' memory
+tools that compute 'used = MemTotal - MemAvailable' report memory
 as used when it is really free for the taking.
 
 Add the pool (NR_GPU_RECLAIM) to the estimate.
 
+Some drivers over-report NR_GPU_RECLAIM (it has been seen above
+MemTotal), so cap the result at MemTotal minus the reserves. Tools
+that compute 'used = MemTotal - MemAvailable' then never go negative.
+
 ---
---- a/mm/show_mem.c	2026-09-10 01:00:51.533196742 +0200
-+++ b/mm/show_mem.c	2026-09-10 01:01:14.325231688 +0200
-@@ -66,6 +66,8 @@
- 	reclaimable -= min(reclaimable / 2, wmark_low);
- 	available += reclaimable;
- 
-+	available += global_node_page_state(NR_GPU_RECLAIM);
-+
- 	if (available < 0)
- 		available = 0;
- 	return available;
---- a/Documentation/filesystems/proc.rst	2026-09-10 01:00:51.535764604 +0200
-+++ b/Documentation/filesystems/proc.rst	2026-09-10 01:00:51.559971119 +0200
-@@ -1126,8 +1126,8 @@
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 2ccd5b2..a53387c 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -1126,8 +1126,8 @@ MemFree
  MemAvailable
                An estimate of how much memory is available for starting new
                applications, without swapping. Calculated from MemFree,
@@ -34,3 +29,17 @@ Add the pool (NR_GPU_RECLAIM) to the estimate.
                The estimate takes into account that the system needs some
                page cache to function well, and that not all reclaimable
                slab will be reclaimable, due to items being in use. The
+diff --git a/mm/show_mem.c b/mm/show_mem.c
+index 43aca5a..2b9dbdc 100644
+--- a/mm/show_mem.c
++++ b/mm/show_mem.c
+@@ -66,6 +66,9 @@ long si_mem_available(void)
+ 	reclaimable -= min(reclaimable / 2, wmark_low);
+ 	available += reclaimable;
+ 
++	available += global_node_page_state(NR_GPU_RECLAIM);
++	available = min_t(long, available, totalram_pages() - totalreserve_pages);
++
+ 	if (available < 0)
+ 		available = 0;
+ 	return available;
