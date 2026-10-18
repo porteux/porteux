@@ -1,0 +1,13 @@
+Keep the text selection when another application takes the primary selection.
+
+diff --git a/libview/ev-view.c b/libview/ev-view.c
+--- a/libview/ev-view.c
++++ b/libview/ev-view.c
+@@ -8247,7 +8247,6 @@
+ {
+ 	EvView *view = EV_VIEW (data);
+ 
+-	clear_selection (view);
+ 	clear_link_selected (view);
+ }
+ 
