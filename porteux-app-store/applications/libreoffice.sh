@@ -92,7 +92,9 @@ rm -fr "$MODULE_DIR"/opt/libreoffice*/{readmes,CREDITS.fodt,LICENSE,LICENSE.fodt
 
 # fix double menu entries
 find "$MODULE_DIR/usr/share/applications/" -name "*.desktop" -delete
-mv -f "$MODULE_DIR"/opt/libreoffice*/share/xdg/*.desktop "$MODULE_DIR/usr/share/applications"
+for desktop_file in "$MODULE_DIR"/opt/libreoffice*/share/xdg/*.desktop; do
+	mv -f "$desktop_file" "$MODULE_DIR/usr/share/applications/libreoffice-$(basename "$desktop_file")"
+done
 
 # set SAL_USE_VCLPLUGIN=gtk
 LO=$(find "$MODULE_DIR"/opt/libreoffice*/program -name soffice | awk 'NR==1 {print $0}')
