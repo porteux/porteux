@@ -161,6 +161,9 @@ patch -N -p1 < ${SCRIPT_PATH}/0003-mm-count-GPU-pool-pages-in-MemAvailable.patch
 echo "Patching file read optimization..."
 patch -N -p1 < ${SCRIPT_PATH}/0005-fs-avoid-spurious-dentry-ref-unref-cycle-on-open.patch > /dev/null 2>&1 || { echo "Failed to apply file read patch."; exit 1; }
 
+echo "Patching lockless page cache reads..."
+patch -N -p1 < ${SCRIPT_PATH}/0006-mm-read-the-page-cache-without-folio-references.patch > /dev/null 2>&1 || { echo "Failed to apply lockless page cache reads patch."; exit 1; }
+
 echo "Patching missing firmware..."
 # fixed in 7.2.x but let's keep the fix for compatibility with old kernels just in case
 if [ "$KERNEL_MAJOR_VERSION" -lt 7 ] || { [ "$KERNEL_MAJOR_VERSION" -eq 7 ] && [ "$KERNEL_MINOR_VERSION" -le 1 ]; }; then
