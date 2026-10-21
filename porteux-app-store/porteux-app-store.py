@@ -2,7 +2,7 @@
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, Gio
+from gi.repository import Gtk, Gdk, Gio, GLib
 import os
 from os import path
 from os.path import exists
@@ -14,6 +14,7 @@ import tempfile
 from urllib.request import urlopen
 from datetime import datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 if os.geteuid() != 0:
     this_script = path.abspath(__file__)
@@ -241,12 +242,53 @@ class AppWindow(Gtk.ApplicationWindow):
                 command += [arg for arg in extra_args if arg is not None]
             if self.check_button_module.get_active():
                 command.append("--activate-module")
-            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            self.show_dialog_porteux(self.get_script_message(result))
+            self.launch_installation(command, progress_dialog)
         except Exception as error:
             self.show_dialog_porteux("Error creating module: " + str(error))
-        finally:
             progress_dialog.send_signal(signal.SIGINT)
+
+    def launch_installation(self, command, progress_dialog):
+        installation = SimpleNamespace(
+            progress_dialog = progress_dialog,
+            process = None,
+            stdout = bytearray(),
+            stderr = bytearray(),
+            stdout_eof = False,
+            stderr_eof = False,
+            finished = False,
+            exit_status = None
+        )
+        installation.process = subprocess.Popen(command, stdout = subprocess.PIPE, stderr = subprocess.PIPE, start_new_session = True)
+        GLib.io_add_watch(installation.process.stdout, GLib.PRIORITY_DEFAULT, GLib.IO_IN | GLib.IO_HUP, self.on_installation_output, installation, "stdout")
+        GLib.io_add_watch(installation.process.stderr, GLib.PRIORITY_DEFAULT, GLib.IO_IN | GLib.IO_HUP, self.on_installation_output, installation, "stderr")
+        GLib.child_watch_add(installation.process.pid, self.on_installation_finished, installation)
+
+    def on_installation_output(self, source, condition, installation, stream):
+        try:
+            data = os.read(source.fileno(), 65536)
+        except OSError:
+            data = b""
+        if data:
+            getattr(installation, stream).extend(data)
+            return True
+        setattr(installation, stream + "_eof", True)
+        self.finish_installation(installation)
+        return False
+
+    def on_installation_finished(self, pid, status, installation):
+        installation.exit_status = os.waitstatus_to_exitcode(status)
+        installation.process.returncode = installation.exit_status
+        installation.finished = True
+        self.finish_installation(installation)
+
+    def finish_installation(self, installation):
+        if not (installation.finished and installation.stdout_eof and installation.stderr_eof):
+            return
+        result = SimpleNamespace(stdout = bytes(installation.stdout), stderr = bytes(installation.stderr), returncode = installation.exit_status)
+        try:
+            self.show_dialog_porteux(self.get_script_message(result))
+        finally:
+            installation.progress_dialog.send_signal(signal.SIGINT)
 
     def get_script_message(self, result):
         errors = result.stderr.decode("utf-8").splitlines()
@@ -297,8 +339,8 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_dialog_button_download_clicked(self, button, application, combobox_channel, combobox_language, dialog):
         channel = combobox_channel.get_active_text()
         language = combobox_language.get_active_text()
-        self.execute_external_script(application["script"], [channel, language])
         dialog.destroy()
+        self.execute_external_script(application["script"], [channel, language])
 
     def on_dialog_button_close_clicked(self, button, dialog):
         dialog.destroy()
