@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(download_latest_from_github ${PRGNAM} ${PRGNAM})
+info=$(download_latest_from_github ${PRGNAM} ${PRGNAM} nightly)
 VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION.tar.?z*
