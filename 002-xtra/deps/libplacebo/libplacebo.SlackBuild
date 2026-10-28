@@ -12,7 +12,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-VERSION=$(curl -s https://code.videolan.org/videolan/${PRGNAM}/-/tags?format=atom | grep ' <title>' | grep -v rc | cut -d '>' -f 2 | cut -d '<' -f 1 | sort -Vr | head -1)
+VERSION=$(curl -s https://code.videolan.org/api/v4/projects/videolan%2F${PRGNAM}/repository/tags | grep -o '"name":"[^"]*"' | cut -d '"' -f 4 | grep -v rc | sort -Vr | head -1)
 wget https://code.videolan.org/videolan/${PRGNAM}/-/archive/${VERSION}/${PRGNAM}-${VERSION}.tar.gz
 
 tar xf ${PRGNAM}-${VERSION}.tar.?z
@@ -34,7 +34,7 @@ meson setup \
 	--buildtype=release \
 	-Ddemos=false \
 	-Dtests=false \
-	-Dglslang=disabled \
+	-Dglslang=enabled \
 	-Dvulkan=enabled \
 	-Dshaderc=disabled \
 	-Ddovi=disabled \
