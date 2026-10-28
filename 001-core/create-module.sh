@@ -26,6 +26,7 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 ### critical libraries that need to be in sync with slackware repo before building
 
 installpkg $MODULE_PATH/packages/glib2*.txz || exit 1
+installpkg $MODULE_PATH/packages/icu4c*.txz || exit 1
 installpkg $MODULE_PATH/packages/libxml2*.txz || exit 1
 installpkg $MODULE_PATH/packages/lua*.txz || exit 1
 
