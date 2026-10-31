@@ -110,6 +110,7 @@ for package in \
 	audacious \
 	lightdm \
 	extra-cmake-modules \
+	plasma-wayland-protocols \
 	libfm-extra \
 	menu-cache \
 	polkit-qt6-1 \
@@ -137,7 +138,6 @@ done
 for package in \
 	muparser \
 	layer-shell-qt6 \
-	plasma-wayland-protocols \
 	libstatgrab \
 ; do
 bash $SCRIPT_PATH/deps/${package}/${package}.SlackBuild || exit 1
