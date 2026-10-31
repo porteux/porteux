@@ -20,13 +20,12 @@ cd $PRGNAM-master || exit 1
 
 RUSTFLAGS="${RUSTFLAGS/-Clto=fat/}"
 
-sed -i "s|prefix ?= /usr/local|prefix ?= /usr|g" Makefile
-
 bash ../libdisplay-info-pure-main/apply.sh . || exit 1
 
 rm -f rust-toolchain*
-make -j${NUMBER_THREADS}
-make install DESTDIR=$PKG
+just build-release --target x86_64-unknown-linux-gnu
+cp -aln ./target/x86_64-unknown-linux-gnu/release ./target/
+just rootdir=$PKG install
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc

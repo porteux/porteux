@@ -1,11 +1,11 @@
 diff --git a/src/theme.rs b/src/theme.rs
 --- a/src/theme.rs
 +++ b/src/theme.rs
-@@ -624,6 +624,7 @@
+@@ -671,6 +671,7 @@
  }
  
  fn set_flatpak_overrides() {
 +    return;
-     let paths_to_expose = vec![
-         "xdg-config/gtk-4.0:ro",
-         "xdg-config/gtk-3.0:ro",
+     let paths_to_expose = vec!["xdg-config/gtk-4.0:ro", "xdg-config/gtk-3.0:ro"];
+ 
+     tokio::spawn(async {
