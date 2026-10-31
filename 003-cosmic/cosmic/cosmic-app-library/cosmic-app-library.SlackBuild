@@ -18,7 +18,6 @@ VERSION=$(download_master_from_github pop-os $PRGNAM) || exit 1
 cd $PRGNAM-master || exit 1
 
 rm -f rust-toolchain*
-just xdgen
 just build-release --target x86_64-unknown-linux-gnu
 cp -aln ./target/x86_64-unknown-linux-gnu/release ./target/
 just rootdir=$PKG install
