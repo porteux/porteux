@@ -32,7 +32,6 @@ meson setup \
 	--localstatedir=/var \
 	--prefix=/usr \
 	--sysconfdir=/etc \
-	-Depub=false \
 	-Ddocs=false \
 	-Dhelp_files=false \
 	-Dintrospection=false \
