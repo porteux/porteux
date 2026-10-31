@@ -20,6 +20,8 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
+sed -i "s|#include <KScreen/Mode>|#include <KScreen/Mode>\n#include <KScreen/Screen>|" lxqt-config-monitor/monitorpicture.cpp lxqt-config-monitor/kscreenutils.cpp
+
 cmake -B build -S . \
 	-G Ninja \
 	-DCMAKE_BUILD_TYPE=release \
