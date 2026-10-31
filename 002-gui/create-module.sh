@@ -187,7 +187,9 @@ strip_package vulkan-sdk \
 	usr/include/vk_video \
 	usr/include/vulkan/* \
 	usr/lib${SYSTEM_BITS}/cmake \
+	usr/lib${SYSTEM_BITS}/libglslang*.so* \
 	usr/lib${SYSTEM_BITS}/libSPIRV-Tools.so* \
+	usr/lib${SYSTEM_BITS}/libSPIRV-Tools-opt.so* \
 	usr/lib${SYSTEM_BITS}/libvulkan.so* \
 	usr/lib${SYSTEM_BITS}/pkgconfig/SPIRV-Tools* \
 	usr/lib${SYSTEM_BITS}/pkgconfig/vulkan.pc
