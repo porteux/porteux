@@ -1,0 +1,12 @@
+         |-----handy-ruler------------------------------------------------------|
+libkdcraw: libkdcraw (library wrapper around dcraw)
+libkdcraw:
+libkdcraw: Libkdcraw is a C++ interface around the dcraw binary program, used to
+libkdcraw: decode RAW picture files.
+libkdcraw:
+libkdcraw:
+libkdcraw:
+libkdcraw:
+libkdcraw:
+libkdcraw:
+libkdcraw:

@@ -1,0 +1,12 @@
+         |-----handy-ruler------------------------------------------------------|
+kplotting: kplotting (Data plotting)
+kplotting:
+kplotting: KPlotWidget is a QWidget-derived class that provides a virtual base
+kplotting: class for easy data-plotting. The idea behind KPlotWidget is that you
+kplotting: only have to specify information in data units; i.e., the natural
+kplotting: units of the data being plotted. KPlotWidget automatically converts
+kplotting: everything to screen pixel units. KPlotWidget draws X and Y axes with
+kplotting: tick marks and tick labels, and automatically determines how many tick
+kplotting: marks to use and where they should be, based on the data limits
+kplotting: specified for the plot.
+kplotting:

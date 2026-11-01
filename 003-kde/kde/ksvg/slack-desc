@@ -1,0 +1,12 @@
+    |-----handy-ruler------------------------------------------------------|
+ksvg: ksvg (components for handling SVGs)
+ksvg:
+ksvg: A library for rendering SVG-based themes with stylesheet re-coloring
+ksvg: and on-disk caching. KSvg provides both C++ classes and QtQuick
+ksvg: components to render svgs based on image packs. Compared to plain
+ksvg: QSvg, it caches the rendered images on disk with KImageCache, and can
+ksvg: re-color properly crafted svg shapes that include internal
+ksvg: stylesheets.
+ksvg:
+ksvg:
+ksvg:

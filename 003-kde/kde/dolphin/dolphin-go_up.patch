@@ -1,0 +1,13 @@
+Index: dolphin-25.04.0/src/dolphinui.rc
+===================================================================
+--- a/src/dolphinui.rc	2026-01-24 02:51:04.000000000 +0100
++++ b/src/dolphinui.rc	2026-01-24 08:10:22.418071207 +0100
+@@ -90,6 +90,7 @@
+             <Action name="invert_selection" />
+             <Separator/>
+             <Action name="go_back" />
++            <Action name="go_up" />
+             <Action name="go_forward" />
+         </disable>
+     </State>
+

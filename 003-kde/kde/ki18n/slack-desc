@@ -1,0 +1,12 @@
+     |-----handy-ruler------------------------------------------------------|
+ki18n: ki18n (UI text internationalization)
+ki18n:
+ki18n: KI18n provides functionality for internationalizing user interface
+ki18n: text in applications, based on the GNU Gettext translation system.
+ki18n: It wraps the standard Gettext functionality, so that the programmers
+ki18n: and translators can use the familiar Gettext tools and workflows.
+ki18n: KI18n also provides argument capturing, customizable markup, and
+ki18n: translation scripting.
+ki18n:
+ki18n:
+ki18n:

@@ -1,0 +1,12 @@
+               |-----handy-ruler------------------------------------------------------|
+kunitconversion: kunitconversion (convert physical units)
+kunitconversion:
+kunitconversion: KUnitConversion provides functions to convert values in different
+kunitconversion: physical units. It supports converting different prefixes (e.g. kilo,
+kunitconversion: mega, giga) as well as converting between different unit systems (e.g.
+kunitconversion: liters, gallons).
+kunitconversion:
+kunitconversion:
+kunitconversion:
+kunitconversion:
+kunitconversion:

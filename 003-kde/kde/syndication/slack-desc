@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+syndication: syndication (RSS/Atom parser library)
+syndication:
+syndication: Syndication is a RSS/Atom parser library supporting RSS (0.9/1.0,
+syndication: 0.91..2.0) and Atom (0.3 and 1.0) feeds. Syndication offers a unified,
+syndication: format-agnostic view on the parsed feed, so that the using application
+syndication: does not need to distinguish between feed formats.
+syndication:
+syndication:
+syndication:
+syndication:
+syndication:

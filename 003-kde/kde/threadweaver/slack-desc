@@ -1,0 +1,12 @@
+            |-----handy-ruler------------------------------------------------------|
+threadweaver: threadweaver (threaded programming helper)
+threadweaver:
+threadweaver: ThreadWeaver is a helper for multithreaded programming. It uses a job-
+threadweaver: based interface to queue tasks and execute them in an efficient way.
+threadweaver: You simply divide the workload into jobs, state the dependencies
+threadweaver: between the jobs and ThreadWeaver will work out the most efficient way
+threadweaver: of dividing the work between threads within a set of resource limits.
+threadweaver:
+threadweaver:
+threadweaver:
+threadweaver:

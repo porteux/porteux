@@ -1,0 +1,12 @@
+      |-----handy-ruler------------------------------------------------------|
+phonon: phonon (multimedia framework for KDE)
+phonon:
+phonon: Phonon is the multimedia API provided by Qt and is the standard
+phonon: abstraction for handling multimedia streams within the KDE Software
+phonon: Compilation. Phonon provides an API for multimedia using various
+phonon: backends (e.g. GStreamer or VLC) to handle the lower level I/O.
+phonon:
+phonon: Homepage: http://phonon.kde.org
+phonon:
+phonon:
+phonon:

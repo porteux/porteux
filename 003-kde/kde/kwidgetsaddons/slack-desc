@@ -1,0 +1,12 @@
+              |-----handy-ruler------------------------------------------------------|
+kwidgetsaddons: kwidgetsaddons (desktop widgets)
+kwidgetsaddons:
+kwidgetsaddons: This repository contains add-on widgets and classes for applications
+kwidgetsaddons: that use the Qt Widgets module. Provided are action classes that can
+kwidgetsaddons: be added to toolbars or menus, a wide range of widgets for selecting
+kwidgetsaddons: characters, fonts, colors, actions, dates and times, or MIME types,
+kwidgetsaddons: as well as platform-aware dialogs for configuration pages, message
+kwidgetsaddons: boxes, and password requests.
+kwidgetsaddons:
+kwidgetsaddons:
+kwidgetsaddons:

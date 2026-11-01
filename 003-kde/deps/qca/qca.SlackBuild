@@ -1,0 +1,43 @@
+#!/bin/bash
+
+PRGNAM=qca
+
+CWD=$(dirname "$0")
+TMP=$MODULE_PATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -sL https://download.kde.org/stable/${PRGNAM}/ | grep -oP 'href="\K[0-9.]+(?=/")' | sort -Vr | head -1)
+wget https://download.kde.org/stable/${PRGNAM}/${VERSION}/${PRGNAM}-${VERSION}.tar.xz
+
+tar xf $PRGNAM-$VERSION.tar.xz
+cd $PRGNAM-$VERSION
+
+cmake -B build -S . \
+	-G Ninja \
+	-DBUILD_TESTS=OFF \
+	-DBUILD_TOOLS=OFF \
+	-DBUILD_WITH_QT6=ON \
+	-DCMAKE_AR=/usr/bin/gcc-ar \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_C_FLAGS="$GCC_CFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
+	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEM_BITS} \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_RANLIB=/usr/bin/gcc-ranlib \
+	-DLIB_SUFFIX=${SYSTEM_BITS}
+
+DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
+
+find $PKG -type f -name "*.la" -delete
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

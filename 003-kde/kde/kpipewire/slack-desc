@@ -1,0 +1,12 @@
+         |-----handy-ruler------------------------------------------------------|
+kpipewire: kpipewire (Qt classes for PipeWire)
+kpipewire:
+kpipewire: KPipeWire offers a set of convenient classes to use PipeWire
+kpipewire: (https://pipewire.org/) in Qt projects. It is developed in C++ and
+kpipewire: its main use target is QML components.
+kpipewire:
+kpipewire:
+kpipewire:
+kpipewire:
+kpipewire:
+kpipewire:

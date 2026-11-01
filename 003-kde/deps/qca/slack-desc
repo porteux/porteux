@@ -1,0 +1,12 @@
+   |-----handy-ruler------------------------------------------------------|
+qca: qca (Qt Cryptographic Architecture)
+qca:
+qca: QCA aims to provide a straightforward and cross-platform cryptographic
+qca: API using Qt datatypes and conventions. The library and plugins
+qca: support a range of cryptographic features, including SSL/TLS, X.509
+qca: certificates, SASL, OpenPGP, smartcards, and much more.
+qca:
+qca: Homepage: https://github.com/KDE/qca
+qca:
+qca:
+qca:

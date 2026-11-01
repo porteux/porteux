@@ -1,0 +1,12 @@
+             |-----handy-ruler------------------------------------------------------|
+pulseaudio-qt: pulseaudio-qt (PulseAudio Qt bindings)
+pulseaudio-qt:
+pulseaudio-qt: PulseaudioQt allows programs using the Qt library to control volume
+pulseaudio-qt: and react to changes on systems which use PulseAudio.
+pulseaudio-qt:
+pulseaudio-qt: Homepage: https://cgit.kde.org/pulseaudio-qt.git/
+pulseaudio-qt:
+pulseaudio-qt:
+pulseaudio-qt:
+pulseaudio-qt:
+pulseaudio-qt:

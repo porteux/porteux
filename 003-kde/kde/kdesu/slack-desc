@@ -1,0 +1,12 @@
+     |-----handy-ruler------------------------------------------------------|
+kdesu: kdesu (run shell commands as root)
+kdesu:
+kdesu: KDESU provides functionality for building GUI front ends for (password
+kdesu: asking) console mode programs. For example, kdesu and kdessh use it to
+kdesu: interface with su and ssh respectively.
+kdesu:
+kdesu:
+kdesu:
+kdesu:
+kdesu:
+kdesu:

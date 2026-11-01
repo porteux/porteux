@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+kcodecs: kcodecs (String encoding library)
+kcodecs:
+kcodecs: KCodecs provide a collection of methods to manipulate strings using
+kcodecs: various encodings. It can automatically determine the charset of a
+kcodecs: string, translate XML entities, validate email addresses, and find
+kcodecs: encodings by name in a more tolerant way than QTextCodec (useful e.g.
+kcodecs: for data coming from the Internet).
+kcodecs:
+kcodecs:
+kcodecs:
+kcodecs:

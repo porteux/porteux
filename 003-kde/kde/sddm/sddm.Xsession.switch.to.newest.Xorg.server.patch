@@ -1,0 +1,13 @@
+--- ./data/scripts/Xsession.orig	2025-05-24 14:14:22.142876076 -0500
++++ ./data/scripts/Xsession	2025-05-24 14:15:48.444871302 -0500
+@@ -84,6 +84,10 @@
+   . "$USERXSESSIONRC"
+ fi
+ 
++# Switch to the VT with the most recently started Xorg server:
++VT=$(ps -C Xorg k-start_time -o tty=|head -1|sed s/tty//)
++[ "$VT" ] && chvt "$VT"
++
+ # Commented out because $HOME/.xsession may start the wrong session type or
+ # cause dbus-run-session to start twice.
+ #if [ -f "$USERXSESSION" ]; then

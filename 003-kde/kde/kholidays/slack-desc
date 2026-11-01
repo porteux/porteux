@@ -1,0 +1,12 @@
+         |-----handy-ruler------------------------------------------------------|
+kholidays: kholidays (KDE library for regional holiday information)
+kholidays:
+kholidays: The KHolidays library in kdepimlibs provides details on public
+kholidays: holidays for a given country and date range. A separate library and
+kholidays: file format is required as iCalendar is not capable of expressing
+kholidays: recurrence rules for all possible holidays.
+kholidays:
+kholidays:
+kholidays:
+kholidays:
+kholidays:

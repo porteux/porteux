@@ -1,0 +1,12 @@
+         |-----handy-ruler------------------------------------------------------|
+kio-admin: kio-admin (administrative file access KIO)
+kio-admin:
+kio-admin: kio-admin implements a new protocol `admin://` which gives
+kio-admin: administrative access to the entire system. This is achieved by
+kio-admin: talking, over dbus, with a root-level helper binary that in turn uses
+kio-admin: existing KIO infrastructure to run file:// operations in root-scope.
+kio-admin: Or simply put: `admin://` is exactly like `file://` but redirected
+kio-admin: over dbus to gain administrative privileges.
+kio-admin:
+kio-admin:
+kio-admin:

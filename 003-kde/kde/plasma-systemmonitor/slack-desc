@@ -1,0 +1,12 @@
+                    |-----handy-ruler------------------------------------------------------|
+plasma-systemmonitor: plasma-systemmonitor (system resource monitor)
+plasma-systemmonitor:
+plasma-systemmonitor: plasma-systemmonitor provides an interface for monitoring system
+plasma-systemmonitor: sensors, process information and other system resources. It is built
+plasma-systemmonitor: on top of the faces system also used to provide widgets for
+plasma-systemmonitor: plasma-desktop and makes use of the ksystemstats daemon to provide
+plasma-systemmonitor: sensor information.
+plasma-systemmonitor:
+plasma-systemmonitor:
+plasma-systemmonitor:
+plasma-systemmonitor:

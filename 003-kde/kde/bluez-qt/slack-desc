@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+bluez-qt: bluez-qt (Qt wrapper for BlueZ 5 DBus API)
+bluez-qt:
+bluez-qt: BluezQt is a library for communication with BlueZ system and session
+bluez-qt: daemons. Manager class is used to communicate with system daemon
+bluez-qt: org.bluez. ObexManager class is used to communicate with session
+bluez-qt: daemon org.bluez.obex.
+bluez-qt:
+bluez-qt: Homepage: https://projects.kde.org/projects/frameworks/bluez-qt
+bluez-qt:
+bluez-qt:
+bluez-qt:

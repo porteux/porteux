@@ -1,0 +1,43 @@
+#!/bin/bash
+
+PRGNAM=prison
+
+CWD=$(dirname "$0")
+TMP=$MODULE_PATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+VERSION=$(curl -sL https://download.kde.org/stable/frameworks/${FRAMEWORKS_VERSION}/ | grep -oP "href=\"${PRGNAM}-\K[0-9.]+(?=\.tar\.xz\")" | sort -Vr | head -1)
+wget https://download.kde.org/stable/frameworks/${FRAMEWORKS_VERSION}/${PRGNAM}-${VERSION}.tar.xz
+
+tar xf $PRGNAM-$VERSION.tar.xz
+cd $PRGNAM-$VERSION
+
+cmake -B build -S . \
+	-G Ninja \
+	-DBUILD_TESTING=OFF \
+	-DCMAKE_AR=/usr/bin/gcc-ar \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_C_FLAGS="$GCC_CFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_RANLIB=/usr/bin/gcc-ranlib \
+	-DKDE_INSTALL_LIBDIR=lib${SYSTEM_BITS} \
+	-DKDE_INSTALL_LIBEXECDIR=/usr/libexec \
+	-DKDE_INSTALL_SYSCONFDIR=/etc \
+	-DKDE_INSTALL_USE_QT_SYS_PATHS=ON
+
+DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
+
+find $PKG -type f -name "*.la" -delete
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

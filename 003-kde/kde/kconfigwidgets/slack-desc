@@ -1,0 +1,12 @@
+              |-----handy-ruler------------------------------------------------------|
+kconfigwidgets: kconfigwidgets (Widgets for configuration dialogs)
+kconfigwidgets:
+kconfigwidgets: KConfigWidgets provides easy-to-use classes to create configuration
+kconfigwidgets: dialogs, as well as a set of widgets which uses KConfig to store their
+kconfigwidgets: settings.
+kconfigwidgets:
+kconfigwidgets:
+kconfigwidgets:
+kconfigwidgets:
+kconfigwidgets:
+kconfigwidgets:

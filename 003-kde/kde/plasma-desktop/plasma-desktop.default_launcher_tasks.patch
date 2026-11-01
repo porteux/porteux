@@ -1,0 +1,11 @@
+--- ./applets/taskmanager/main.xml.orig	2026-02-12 19:22:04.911087557 +0100
++++ ./applets/taskmanager/main.xml	2026-02-12 19:22:52.092220366 +0100
+@@ -104,7 +104,7 @@
+     </entry>
+     <entry name="launchers" type="StringList">
+       <label>The list of launcher tasks on the widget. Usually .desktop file or executable URLs. Special URLs such as preferred://browser that expand to default applications are supported.</label>
+-      <default>applications:systemsettings.desktop,applications:org.kde.discover.desktop,preferred://filemanager,preferred://browser</default>
++      <default>applications:systemsettings.desktop,preferred://filemanager</default>
+     </entry>
+     <entry name="middleClickAction" type="Enum">
+       <label>What to do on middle-mouse click on a task button.</label>

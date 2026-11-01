@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+kservice: kservice (desktop services plugin framework)
+kservice:
+kservice: KService provides a plugin framework for handling desktop services.
+kservice: Services can be applications or libraries. They can be bound to MIME
+kservice: types or handled by application specific code.
+kservice:
+kservice:
+kservice:
+kservice:
+kservice:
+kservice:

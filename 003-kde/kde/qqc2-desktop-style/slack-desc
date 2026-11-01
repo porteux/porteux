@@ -1,0 +1,12 @@
+                  |-----handy-ruler------------------------------------------------------|
+qqc2-desktop-style: qqc2-desktop-style (desktop integration for Qt Quick Controls 2)
+qqc2-desktop-style:
+qqc2-desktop-style: QQC2-Desktop-Style is a style for Qt Quick Controls 2 (QQC2) which
+qqc2-desktop-style: uses QStyle to paint the controls in order to give them a native look
+qqc2-desktop-style: and feel.
+qqc2-desktop-style:
+qqc2-desktop-style: Homepage: https://api.kde.org/frameworks/qqc2-desktop-style/html/
+qqc2-desktop-style:
+qqc2-desktop-style:
+qqc2-desktop-style:
+qqc2-desktop-style:

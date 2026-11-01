@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+ksshaskpass: ksshaskpass (GUI for entering ssh key passwords)
+ksshaskpass:
+ksshaskpass: If you access computers with ssh keys but those keys have passwords
+ksshaskpass: this module will give you a graphical UI to enter those passwords.
+ksshaskpass:
+ksshaskpass:
+ksshaskpass:
+ksshaskpass:
+ksshaskpass:
+ksshaskpass:
+ksshaskpass:

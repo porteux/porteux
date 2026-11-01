@@ -1,0 +1,12 @@
+                       |-----handy-ruler------------------------------------------------------|
+libqaccessibilityclient: libqaccessibilityclient (accessibility helper)
+libqaccessibilityclient:
+libqaccessibilityclient: Accessibility tools helper library. This library is used when writing
+libqaccessibilityclient: accessibility clients such as screen readers. It comes with some
+libqaccessibilityclient: examples demonstrating the API. 
+libqaccessibilityclient:
+libqaccessibilityclient: Homepage: https://invent.kde.org/libraries/libqaccessibilityclient
+libqaccessibilityclient:
+libqaccessibilityclient:
+libqaccessibilityclient:
+libqaccessibilityclient:

@@ -1,0 +1,12 @@
+     |-----handy-ruler------------------------------------------------------|
+kauth: kauth (Execute actions as privileged user)
+kauth:
+kauth: KAuth provides a convenient, system-integrated way to offload actions
+kauth: that need to be performed as a privileged user (root, for example) to
+kauth: small (hopefully secure) helper utilities.
+kauth:
+kauth:
+kauth:
+kauth:
+kauth:
+kauth:

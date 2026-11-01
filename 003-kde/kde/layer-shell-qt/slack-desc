@@ -1,0 +1,12 @@
+              |-----handy-ruler------------------------------------------------------|
+layer-shell-qt: layer-shell-qt (Wayland layer surface support)
+layer-shell-qt:
+layer-shell-qt: This component is meant for applications to be able to easily use
+layer-shell-qt: clients based on wlr-layer-shell.
+layer-shell-qt:
+layer-shell-qt:
+layer-shell-qt:
+layer-shell-qt:
+layer-shell-qt:
+layer-shell-qt:
+layer-shell-qt:

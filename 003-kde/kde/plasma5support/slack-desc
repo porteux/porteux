@@ -1,0 +1,12 @@
+              |-----handy-ruler------------------------------------------------------|
+plasma5support: plasma5support (support for porting from KF5/Qt5 to KF6/Qt6)
+plasma5support:
+plasma5support: Plasma5Support Framework contains Dataengines migration aids for KF5
+plasma5support: to KF6 migration. Dataengine support is not in the KF6 version of
+plasma5support: plasma anymore. Dataengines should be migrated to QML imports, but in
+plasma5support: the meantime remaining engines can use the dataengine implementation
+plasma5support: included here.
+plasma5support:
+plasma5support: Homepage: https://invent.kde.org/plasma/plasma5support
+plasma5support:
+plasma5support:

@@ -1,0 +1,12 @@
+            |-----handy-ruler------------------------------------------------------|
+kglobalaccel: kglobalaccel (Global desktop keyboard shortcuts)
+kglobalaccel:
+kglobalaccel: KGlobalAccel allows you to have global accelerators that are
+kglobalaccel: independent of the focused window. Unlike regular shortcuts, the
+kglobalaccel: application's window does not need focus for them to be activated.
+kglobalaccel:
+kglobalaccel:
+kglobalaccel:
+kglobalaccel:
+kglobalaccel:
+kglobalaccel:

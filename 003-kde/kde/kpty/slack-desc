@@ -1,0 +1,12 @@
+    |-----handy-ruler------------------------------------------------------|
+kpty: kpty (pseudo terminal library)
+kpty:
+kpty: The KPty library provides primitives to interface with pseudo terminal
+kpty: devices as well as a KProcess derived class for running child
+kpty: processes and communicating with them using a pty.
+kpty:
+kpty:
+kpty:
+kpty:
+kpty:
+kpty:

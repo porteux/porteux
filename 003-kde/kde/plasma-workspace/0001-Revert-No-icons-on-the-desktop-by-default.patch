@@ -1,0 +1,133 @@
+From a437cb34a3cacc0daae012a26cb5a28407a6f873 Mon Sep 17 00:00:00 2001
+From: Fabian Vogt <fabian@ritter-vogt.de>
+Date: Wed, 28 Feb 2018 17:10:14 +0100
+Subject: [PATCH] Revert "No icons on the desktop by default"
+
+This reverts commit 240d0d6fe1e5db88e304199339396bd48c23e130.
+
+We want those icons in openSUSE. They've always been there and there is no
+reason not to have them.
+---
+ kioworkers/desktop/CMakeLists.txt  |  1 +
+ kioworkers/desktop/Home.desktop    | 88 ++++++++++++++++++++++++++++++++++++++++
+ kioworkers/desktop/kio_desktop.cpp |  4 ++
+ 3 files changed, 93 insertions(+)
+ create mode 100644 kioworkers/desktop/Home.desktop
+
+Index: plasma-workspace-5.17.80git.20221219T021648~0ddf86c99/kioworkers/desktop/CMakeLists.txt
+===================================================================
+--- plasma-workspace-5.17.80git.20221219T021648~0ddf86c99.orig/kioworkers/desktop/CMakeLists.txt	2022-12-19 03:16:48.000000000 +0100
++++ plasma-workspace-5.17.80git.20221219T021648~0ddf86c99/kioworkers/desktop/CMakeLists.txt	2022-12-19 11:17:42.513241900 +0100
+@@ -24,3 +24,4 @@
+ ########### install files ###############
+ 
+ install(FILES directory.desktop directory.trash DESTINATION ${KDE_INSTALL_DATADIR}/kio_desktop)
++install(FILES Home.desktop DESTINATION ${KDE_INSTALL_DATADIR}/kio_desktop/DesktopLinks)
+Index: plasma-workspace-5.17.80git.20221219T021648~0ddf86c99/kioworkers/desktop/Home.desktop
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ plasma-workspace-5.17.80git.20221219T021648~0ddf86c99/kioworkers/desktop/Home.desktop	2022-12-19 11:17:42.513241900 +0100
+@@ -0,0 +1,88 @@
++[Desktop Entry]
++Encoding=UTF-8
++Name=Home
++Name[ca]=Inici
++Name[ca@valencia]=Inici
++Name[cs]=Můj adresář
++Name[da]=Hjem
++Name[de]=Persönlicher Ordner
++Name[el]=Προσωπικός φάκελος
++Name[en_GB]=Home
++Name[es]=Inicio
++Name[et]=Kodu
++Name[eu]=Etxea
++Name[fi]=Koti
++Name[fr]=Dossier personnel
++Name[gl]=Persoal
++Name[he]=בית
++Name[hu]=Saját mappa
++Name[is]=Heimamappa
++Name[it]=Home
++Name[ja]=ホーム
++Name[ko]=홈
++Name[lt]=Pradžia
++Name[nl]=Home
++Name[nn]=Heim
++Name[pa]=ਘਰ
++Name[pl]=Katalog domowy
++Name[pt]=Pasta Pessoal
++Name[pt_BR]=Pasta Pessoal
++Name[ru]=Домашняя папка
++Name[se]=Ruoktu
++Name[sk]=Domov
++Name[sl]=Dom
++Name[sr]=Домаће
++Name[sr@ijekavian]=Домаће
++Name[sr@ijekavianlatin]=Domaće
++Name[sr@latin]=Domaće
++Name[sv]=Hem
++Name[tr]=Başlangıç
++Name[uk]=Домівка
++Name[x-test]=xxHomexx
++Name[zh_CN]=主文件夹
++Name[zh_TW]=家目錄
++GenericName=Personal Files
++GenericName[ca]=Fitxers personals
++GenericName[ca@valencia]=Fitxers personals
++GenericName[cs]=Osobní soubory
++GenericName[da]=Personlige filer
++GenericName[de]=Persönliche Dateien
++GenericName[el]=Προσωπικά αρχεία
++GenericName[en_GB]=Personal Files
++GenericName[es]=Archivos personales
++GenericName[et]=Isiklikud failid
++GenericName[eu]=Fitxategi pertsonalak
++GenericName[fi]=Omat tiedostot
++GenericName[fr]=Fichiers personnels
++GenericName[gl]=Ficheiros persoais
++GenericName[he]=קבצים אישיים
++GenericName[hu]=Személyes fájlok
++GenericName[is]=Einkaskrár
++GenericName[it]=File personali
++GenericName[ja]=個人のファイル
++GenericName[ko]=개인적인 파일
++GenericName[lt]=Asmeniniai failai
++GenericName[nl]=Persoonlijke bestanden
++GenericName[nn]=Personlege filer
++GenericName[pa]=ਨਿੱਜੀ ਫਾਇਲਾਂ
++GenericName[pl]=Pliki osobiste
++GenericName[pt]=Ficheiros Pessoais
++GenericName[pt_BR]=Arquivos pessoais
++GenericName[ru]=Личные файлы
++GenericName[se]=Iežat fiillat
++GenericName[sk]=Osobné súbory
++GenericName[sl]=Osebne datoteke
++GenericName[sr]=Лични фајлови
++GenericName[sr@ijekavian]=Лични фајлови
++GenericName[sr@ijekavianlatin]=Lični fajlovi
++GenericName[sr@latin]=Lični fajlovi
++GenericName[sv]=Personliga filer
++GenericName[tr]=Kişisel Dosyalar
++GenericName[uk]=Особисті файли
++GenericName[x-test]=xxPersonal Filesxx
++GenericName[zh_CN]=个人文件
++GenericName[zh_TW]=個人檔案
++URL[$e]=$HOME
++Icon=user-home
++Type=Link
++
+Index: plasma-workspace-5.17.80git.20221219T021648~0ddf86c99/kioworkers/desktop/kio_desktop.cpp
+===================================================================
+--- plasma-workspace-5.17.80git.20221219T021648~0ddf86c99.orig/kioworkers/desktop/kio_desktop.cpp	2022-12-19 03:16:48.000000000 +0100
++++ plasma-workspace-5.17.80git.20221219T021648~0ddf86c99/kioworkers/desktop/kio_desktop.cpp	2022-12-19 11:17:42.513241900 +0100
+@@ -79,6 +79,10 @@ void DesktopProtocol::checkLocalInstall()
+         QFile::copy(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kio_desktop/directory.desktop")),
+                     desktopPath + "/.directory"_L1);
+ 
++        // Copy the trash link
++        QFile::copy(QStandardPaths::locate(QStandardPaths::GenericDataLocation, QStringLiteral("kio_desktop/directory.trash")),
++                    desktopPath + "/trash.desktop"_L1);
++
+         // Copy the desktop links
+         QSet<QString> links;
+         const auto dirs =

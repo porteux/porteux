@@ -1,0 +1,12 @@
+    |-----handy-ruler------------------------------------------------------|
+sddm: sddm (QML based X11 display manager)
+sddm:
+sddm: SDDM is a modern display manager for X11 aiming to be fast, simple and
+sddm: beautiful. It uses modern technologies like QtQuick, which in turn
+sddm: gives the designer the ability to create smooth, animated user
+sddm: interfaces. SDDM is extremely themeable. There are a few sample themes
+sddm: distributed with SDDM. They can be used as a starting point for new
+sddm: themes.
+sddm:
+sddm: Homepage: https://github.com/sddm/sddm
+sddm:

@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+sddm-kcm: sddm-kcm (configure SDDM in kde)
+sddm-kcm:
+sddm-kcm: KCM module for SDDM. This module allows for configuring SDDM in the
+sddm-kcm: KDE System Settings.
+sddm-kcm:
+sddm-kcm: Homepage: https://github.com/sddm/sddm-kcm
+sddm-kcm:
+sddm-kcm:
+sddm-kcm:
+sddm-kcm:
+sddm-kcm:

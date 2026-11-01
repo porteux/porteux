@@ -1,0 +1,12 @@
+    |-----handy-ruler------------------------------------------------------|
+kded: kded (Central daemon of KDE workspaces)
+kded:
+kded: KDED stands for KDE Daemon. KDED runs in the background and performs a
+kded: number of small tasks. Some of these tasks are built in, others are
+kded: started on demand. Examples include checking for newly installed
+kded: software and checking for newly installed update files.
+kded:
+kded:
+kded:
+kded:
+kded:

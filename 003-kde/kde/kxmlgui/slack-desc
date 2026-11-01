@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+kxmlgui: kxmlgui (menu and toolbar framework)
+kxmlgui:
+kxmlgui: KXMLGUI provides a framework for managing menu and toolbar actions in
+kxmlgui: an abstract way. The actions are configured through an XML description
+kxmlgui: and hooks in the application code. The framework supports merging of
+kxmlgui: multiple description for example for integrating actions from plugins.
+kxmlgui:
+kxmlgui:
+kxmlgui:
+kxmlgui:
+kxmlgui:

@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+ktexteditor: ktexteditor (text editor component)
+ktexteditor:
+ktexteditor: KTextEditor provides a powerful text editor component that you can
+ktexteditor: embed in your application, either as a KPart or using the
+ktexteditor: KF6::TextEditor library. The text editor component contains many
+ktexteditor: useful features, from syntax highlighting and automatic indentation to
+ktexteditor: advanced scripting support, making it suitable for everything from a
+ktexteditor: simple embedded text-file editor to an advanced IDE.
+ktexteditor:
+ktexteditor:
+ktexteditor:

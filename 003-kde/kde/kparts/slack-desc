@@ -1,0 +1,12 @@
+      |-----handy-ruler------------------------------------------------------|
+kparts: kparts (UI framework)
+kparts:
+kparts: The KParts library implements the framework for KDE parts, which are
+kparts: elaborate widgets with a user-interface defined in terms of actions
+kparts: (menu items, toolbar icons).
+kparts:
+kparts:
+kparts:
+kparts:
+kparts:
+kparts:

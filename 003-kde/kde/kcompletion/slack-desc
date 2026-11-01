@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+kcompletion: kcompletion (Powerful completion framework)
+kcompletion:
+kcompletion: When typing filenames, email addresses and other text where the user
+kcompletion: often wants to select from existing data (including what they
+kcompletion: previously typed) rather than enter anything wholly original, users
+kcompletion: often find it helpful if they only need to type the first few
+kcompletion: characters, and then have the application offer them a set of choices
+kcompletion: or attempt to finish off what they were typing. This framework helps
+kcompletion: implement this in Qt-based applications. 
+kcompletion:
+kcompletion:

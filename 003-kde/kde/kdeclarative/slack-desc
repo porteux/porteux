@@ -1,0 +1,12 @@
+            |-----handy-ruler------------------------------------------------------|
+kdeclarative: kdeclarative (Integration of QML and KDE workspaces)
+kdeclarative:
+kdeclarative: KDeclarative provides integration of QML and KDE work spaces. It
+kdeclarative: comprises two parts: a library used by the C++ part of your
+kdeclarative: application to intergrate QML with KDE Frameworks specific features,
+kdeclarative: and a series of QML imports that offer bindings to some of the
+kdeclarative: frameworks.
+kdeclarative:
+kdeclarative:
+kdeclarative:
+kdeclarative:

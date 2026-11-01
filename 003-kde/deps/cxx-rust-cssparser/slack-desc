@@ -1,0 +1,12 @@
+                  |-----handy-ruler------------------------------------------------------|
+cxx-rust-cssparser: cxx-rust-cssparser (A C++ library for parsing CSS)
+cxx-rust-cssparser:
+cxx-rust-cssparser: cxx-rust-cssparser is a C++ library for parsing CSS that uses the Rust
+cxx-rust-cssparser: cssparser crate internally. The goal of this library is not
+cxx-rust-cssparser: necessarily to implement a full-fledged web-compatible CSS parser.
+cxx-rust-cssparser: Instead, it intends to give enough building blocks to be able to
+cxx-rust-cssparser: implement such a parser, but also allows you to deviate from the
+cxx-rust-cssparser: specification if needed.
+cxx-rust-cssparser:
+cxx-rust-cssparser: Homepage: https://invent.kde.org/libraries/cxx-rust-cssparser
+cxx-rust-cssparser:

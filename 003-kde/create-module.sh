@@ -12,6 +12,14 @@ source "$BUILDER_UTILS_PATH/helper.sh"
 
 elevate_if_needed "$0" "$@"
 
+FRAMEWORKS_VERSION=$(curl -sL https://download.kde.org/stable/frameworks/ | grep -oP 'href="\K[0-9]+\.[0-9]+(?=/")' | sort -Vr | head -1)
+PLASMA_VERSION=$(curl -sL https://download.kde.org/stable/plasma/ | grep -oP 'href="\K[0-9.]+(?=/")' | sort -Vr | head -1)
+GEAR_VERSION=$(curl -sL https://download.kde.org/stable/release-service/ | grep -oP 'href="\K[0-9.]+(?=/")' | sort -Vr | head -1)
+[ "$FRAMEWORKS_VERSION" ] && [ "$PLASMA_VERSION" ] && [ "$GEAR_VERSION" ] || { echo "Error: could not detect KDE versions." >&2; exit 1; }
+export FRAMEWORKS_VERSION PLASMA_VERSION GEAR_VERSION
+echo -e "Building KDE Plasma ${PLASMA_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
+MODULE_NAME="$MODULE_NAME-${PLASMA_VERSION}"
+
 ### create module folder
 
 mkdir -p $MODULE_PATH/packages > /dev/null 2>&1
@@ -21,14 +29,9 @@ cd $MODULE_PATH || exit 1
 
 bash $SCRIPT_PATH/download-packages.sh || exit 1
 
+installpkg $MODULE_PATH/packages/*.txz || exit 1
+
 ### packages that require specific stripping
-
-LATEST_VERSION=$(ls -a $MODULE_PATH/packages/plasma-desktop-* | rev | cut -d - -f 3 | rev)
-[ "$LATEST_VERSION" ] || { echo "Error: could not detect KDE Plasma version." >&2; exit 1; }
-echo -e "Building KDE Plasma ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
-MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
-
-installpkg $MODULE_PATH/packages/qt6-[0-9]*.txz || exit 1
 
 strip_package qt6 \
 	usr/lib${SYSTEM_BITS}/libQt6Concurrent.so* \
@@ -86,34 +89,89 @@ strip_package qt6 \
 	usr/lib${SYSTEM_BITS}/libQt6XcbQpa.so* \
 	usr/lib${SYSTEM_BITS}/libQt6Xml.so* \
 	usr/lib${SYSTEM_BITS}/qt6/bin/qdbus \
-	usr/lib${SYSTEM_BITS}/qt6/plugins/egldeviceintegrations/* \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/generic/* \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/iconengines/* \
-	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqgif.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqicns.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqico.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqjp2.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqjpeg.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqsvg.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqtga.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqtiff.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqwbmp.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqwebp.so \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/networkinformation/* \
-	usr/lib${SYSTEM_BITS}/qt6/plugins/platforminputcontexts/* \
-	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforminputcontexts/libcomposeplatforminputcontextplugin.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforminputcontexts/libibusplatforminputcontextplugin.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqlinuxfb.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqminimal.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqminimalegl.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqoffscreen.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqvkkhrdisplay.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqvnc.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqwayland.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqxcb.so \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/printsupport/* \
-	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_debugger.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_inspector.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_local.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_messages.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_native.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_nativedebugger.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_preview.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_profiler.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_quickeventreplay.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_quickprofiler.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_server.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_tcp.so \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/sensors/* \
-	usr/lib${SYSTEM_BITS}/qt6/plugins/sqldrivers/* \
-	usr/lib${SYSTEM_BITS}/qt6/plugins/texttospeech/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/sqldrivers/libqsqlite.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/texttospeech/libqtexttospeech_mock.so \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/tls/* \
-	usr/lib${SYSTEM_BITS}/qt6/plugins/wayland*/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/wayland-decoration-client/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/wayland-graphics-integration-client/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/wayland-graphics-integration-server/* \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/wayland-shell-integration/libfullscreen-shell-v1.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/wayland-shell-integration/libivi-shell.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/wayland-shell-integration/libqt-shell.so \
+	usr/lib${SYSTEM_BITS}/qt6/plugins/wayland-shell-integration/libxdg-shell.so \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/xcbglintegrations/* \
-	usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/* \
+	usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/StyleKit \
+	usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/assetdownloader \
+	usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/folderlistmodel \
+	usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/platform \
+	usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/qmlmodels \
 	usr/lib${SYSTEM_BITS}/qt6/qml/Qt5Compat/* \
 	usr/lib${SYSTEM_BITS}/qt6/qml/QtCore/* \
 	usr/lib${SYSTEM_BITS}/qt6/qml/QtMultimedia/* \
 	usr/lib${SYSTEM_BITS}/qt6/qml/QtPositioning/* \
-	usr/lib${SYSTEM_BITS}/qt6/qml/QtQml/* \
-	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/* \
-	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/* \
-	usr/lib${SYSTEM_BITS}/qt6/qml/QtSensors/* \
-	usr/lib${SYSTEM_BITS}/qt6/qml/QtTest/* \
-	usr/lib${SYSTEM_BITS}/qt6/qml/QtWayland/* \
-	usr/lib${SYSTEM_BITS}/qt6/qml/QtWebChannel/* \
-	usr/lib${SYSTEM_BITS}/qt6/qml/QtWebSockets/*
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQml/Models \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQml/WorkerScript \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQml/libqmlplugin.so \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQml/plugins.qmltypes \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQml/qmldir \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/Basic \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/Fusion \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/designer \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/impl \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/libqtquickcontrols2plugin.so \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/plugins.qmltypes \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/qmldir \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Dialogs \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Effects \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Layouts \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Particles \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Shapes/libqmlshapesplugin.so \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Shapes/plugins.qmltypes \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Shapes/qmldir \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Templates \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Window \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/libqtquick2plugin.so \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/plugins.qmltypes \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/qmldir \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/tooling \
+	usr/lib${SYSTEM_BITS}/qt6/qml/QtWayland/*
 
 # required by network tray
 strip_package qtkeychain \
@@ -129,15 +187,6 @@ strip_package appstream \
 rename appstream appstream-qt $MODULE_PATH/packages/appstream-[0-9]*_stripped.txz
 
 # required by spectacle
-strip_package opencv \
-	usr/lib${SYSTEM_BITS}/libopencv_core.so* \
-	usr/lib${SYSTEM_BITS}/libopencv_imgproc.so*
-
-# also required by spectacle
-strip_package gcc-gfortran \
-	usr/lib${SYSTEM_BITS}/libgfortran.so*
-
-# also required by spectacle
 strip_package tesseract \
 	usr/lib${SYSTEM_BITS}/libtesseract.so* \
 	usr/share/tessdata/*
@@ -145,11 +194,6 @@ strip_package tesseract \
 # also required by spectacle
 strip_package leptonica \
 	usr/lib${SYSTEM_BITS}/libleptonica.so*
-
-# required by dolphin and others
-strip_package phonon \
-	usr/lib${SYSTEM_BITS}/libphonon4qt6*.so* \
-	usr/lib${SYSTEM_BITS}/qt6
 
 strip_package qcoro \
 	usr/lib${SYSTEM_BITS}/libQCoro6Core.so* \
@@ -159,17 +203,14 @@ strip_package qcoro \
 
 export QT=6
 
-# required by featherpad
-installpkg $MODULE_PATH/packages/hunspell*.txz || exit 1
-
-# required by kwindowsystem
-installpkg $MODULE_PATH/packages/plasma-wayland-protocols*.txz || exit 1
+install_rust_toolchain
 
 # kde common deps
 for package in \
 	audacious \
 	extra-cmake-modules \
 	exiv2 \
+	plasma-wayland-protocols \
 	kwindowsystem \
 	kwayland \
 	solid \
@@ -193,9 +234,155 @@ bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
 
+# kde deps
+for package in \
+	phonon \
+	qca \
+	pulseaudio-qt \
+	libqaccessibilityclient \
+	libkexiv2 \
+	libkdcraw \
+	cxx-rust-cssparser \
+	kdsoap-ws-discovery-client \
+	kColorPicker \
+	kImageAnnotator \
+; do
+bash $SCRIPT_PATH/deps/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
+find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
+# kde packages
+for package in \
+	attica \
+	kitemmodels \
+	kitemviews \
+	kplotting \
+	threadweaver \
+	kcodecs \
+	kdbusaddons \
+	kcoreaddons \
+	kguiaddons \
+	kwidgetsaddons \
+	sonnet \
+	kconfig \
+	karchive \
+	ki18n \
+	modemmanager-qt \
+	bluez-qt \
+	prison \
+	kirigami \
+	syntax-highlighting \
+	kholidays \
+	breeze-icons \
+	kdnssd \
+	kauth \
+	kcrash \
+	knotifications \
+	kjobwidgets \
+	kcompletion \
+	kpackage \
+	kunitconversion \
+	kpty \
+	kfilemetadata \
+	syndication \
+	kquickcharts \
+	kcolorscheme \
+	kstatusnotifieritem \
+	kconfigwidgets \
+	kservice \
+	kglobalaccel \
+	kiconthemes \
+	kwallet \
+	kdesu \
+	ktextwidgets \
+	kxmlgui \
+	kbookmarks \
+	kded \
+	kio \
+	knewstuff \
+	kparts \
+	kdeclarative \
+	knotifyconfig \
+	ktexteditor \
+	kcmutils \
+	ksvg \
+	baloo \
+	qqc2-desktop-style \
+	purpose \
+	krunner \
+	frameworkintegration \
+	kirigami-addons \
+	kquickimageeditor \
+	kpipewire \
+	kdecoration \
+	breeze \
+	breeze-gtk \
+	kglobalacceld \
+	libksysguard \
+	layer-shell-qt \
+	plasma-activities \
+	plasma-activities-stats \
+	libplasma \
+	kscreenlocker \
+	knighttime \
+	milou \
+	kwin \
+	kwrited \
+	oxygen \
+	plasma5support \
+	kde-cli-tools \
+	union \
+	plasma-workspace \
+	systemsettings \
+	kinfocenter \
+	plasma-desktop \
+	kdeplasma-addons \
+	plasma-nm \
+	powerdevil \
+	bluedevil \
+	kmenuedit \
+	polkit-kde-agent-1 \
+	kscreen \
+	sddm-kcm \
+	kde-gtk-config \
+	ksshaskpass \
+	plasma-pa \
+	kactivitymanagerd \
+	xdg-desktop-portal-kde \
+	plasma-integration \
+	plasma-browser-integration \
+	ksystemstats \
+	plasma-systemmonitor \
+	spectacle \
+	baloo-widgets \
+	ark \
+	dolphin \
+	dolphin-plugins \
+	ffmpegthumbs \
+	gwenview \
+	kdenetwork-filesharing \
+	kio-admin \
+	kio-extras \
+	kio-zeroconf \
+	konsole \
+	kqtquickcharts \
+	okular \
+	sddm \
+; do
+bash $SCRIPT_PATH/kde/${package}/${package}.SlackBuild || exit 1
+installpkg $MODULE_PATH/packages/${package}-[0-9]*.txz || exit 1
+find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
+done
+
 # only required for building
+rm $MODULE_PATH/packages/boost*.txz
+rm $MODULE_PATH/packages/corrosion*.txz
 rm $MODULE_PATH/packages/extra-cmake-modules*.txz
+rm $MODULE_PATH/packages/libsass*.txz
 rm $MODULE_PATH/packages/plasma-wayland-protocols*.txz
+rm $MODULE_PATH/packages/python-lxml*.txz
+rm $MODULE_PATH/packages/sassc*.txz
 
 ### fake root
 
@@ -205,12 +392,6 @@ install_packages
 
 install_additional_packages
 
-### fix some .desktop files
-
-sed -i "s|Documentation;||g" $MODULE_PATH/packages/usr/share/applications/org.kde.kinfocenter.desktop
-sed -i "s|Graphics;||g" $MODULE_PATH/packages/usr/share/applications/org.kde.okular.desktop
-sed -i "s|image/png|image/png;image/jxl|g" $MODULE_PATH/packages/usr/share/applications/org.kde.gwenview.desktop
-
 mkdir -p $MODULE_PATH/packages/usr/share/thumbnailers
 cat > $MODULE_PATH/packages/usr/share/thumbnailers/pdfthumbnail.thumbnailer << 'EOF'
 [Thumbnailer Entry]
@@ -218,12 +399,6 @@ TryExec=pdftocairo
 Exec=sh -c "pdftocairo -png -singlefile -scale-to $0 - - <$1 >$2" %s %i %o
 MimeType=application/pdf;
 EOF
-
-### disable some services
-
-rm $MODULE_PATH/packages/usr/share/dbus-1/services/org.kde.runners.baloo.service
-rm $MODULE_PATH/packages/etc/xdg/autostart/baloo_file.desktop
-mv $MODULE_PATH/packages/usr/libexec/baloorunner $MODULE_PATH/packages/usr/libexec/baloorunner_
 
 ### copy build files to 05-devel
 
@@ -238,125 +413,19 @@ copy_to_multilanguage
 cd $MODULE_PATH/packages/ || exit 1
 
 {
-rm etc/xdg/autostart/kaccess.desktop
-rm etc/xdg/autostart/xembedsniproxy.desktop
-rm etc/xdg/kcm-about-distrorc
-rm usr/bin/kwalletmanager*
-rm usr/bin/oxygen-demo5
-rm usr/bin/oxygen-gtk-demo
-rm etc/xdg/slackware_logo.png
-rm usr/bin/systemmonitor
-rm usr/bin/UserFeedbackConsole
-rm usr/lib${SYSTEM_BITS}/libKF5*
-rm usr/lib${SYSTEM_BITS}/libKF6PeopleBackend*
-rm usr/lib${SYSTEM_BITS}/libKF6PeopleWidgets*
-rm usr/lib${SYSTEM_BITS}/liboxygenstyle5*
-rm usr/lib${SYSTEM_BITS}/liboxygenstyleconfig5*
-rm usr/lib${SYSTEM_BITS}/libphonon4qt5*
-rm usr/lib${SYSTEM_BITS}/libqca-qt5*
-rm usr/lib${SYSTEM_BITS}/libQCoro5*
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/designer/phonon4qt6widgets.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/egldeviceintegrations/libqeglfs-emu-integration.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/egldeviceintegrations/libqeglfs-kms-egldevice-integration.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/egldeviceintegrations/libqeglfs-x11-integration.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqmng.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqpdf.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/platforminputcontexts/libqtvirtualkeyboardplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/platforms/libqeglfs.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/qmltooling/libqmldbg_quick3dprofiler.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/sqldrivers/libqsqlmysql.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/sqldrivers/libqsqlodbc.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/styles/breeze5.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/texttospeech/libqtexttospeech_speechd.so
-rm usr/lib${SYSTEM_BITS}/qt6/plugins/wayland-shell-integration/libwl-shell-plugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/animation/liblabsanimationplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/lottieqt/liblottieplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/lottieqt/VectorImageHelpers/liblottievectorimagehelpersplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/settings/libqmlsettingsplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/sharedimage/libsharedimageplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/synchronizer/liblabssynchronizerplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/Qt/labs/wavefrontmesh/libqmlwavefrontmeshplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQml/StateMachine/libqtqmlstatemachineplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQml/XmlListModel/libqmlxmllistmodelplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/FluentWinUI3/impl/libqtquickcontrols2fluentwinui3styleimplplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/FluentWinUI3/libqtquickcontrols2fluentwinui3styleplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/Imagine/impl/libqtquickcontrols2imaginestyleimplplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/Imagine/libqtquickcontrols2imaginestyleplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/Material/impl/libqtquickcontrols2materialstyleimplplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/Material/libqtquickcontrols2materialstyleplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/Universal/impl/libqtquickcontrols2universalstyleimplplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Controls/Universal/libqtquickcontrols2universalstyleplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/LocalStorage/libqmllocalstorageplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Pdf/libpdfquickplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Scene2D/libqtquickscene2dplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Scene3D/libqtquickscene3dplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Shapes/DesignHelpers/libqtquickshapesdesignhelpersplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Timeline/BlendTrees/libqtquicktimelineblendtreesplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/Timeline/libqtquicktimelineplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/VectorImage/Helpers/libqquickvectorimagehelpersplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/VectorImage/libqquickvectorimageplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/AssetUtils/libqtquick3dassetutilsplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/Effects/libqtquick3deffectplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/Helpers/impl/libqtquick3dhelpersimplplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/Helpers/libqtquick3dhelpersplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/libqquick3dplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/ParticleEffects/libqtquick3dparticleeffectsplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/Particles3D/libqtquick3dparticles3dplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/Physics/Helpers/libqtquick3dphysicshelpersplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/Physics/libqquick3dphysicsplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick3D/SpatialAudio/libquick3dspatialaudioplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtSensors/libsensorsquickplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtWebChannel/libwebchannelquickplugin.so
-rm usr/lib${SYSTEM_BITS}/qt6/qml/QtWebSockets/libqmlwebsocketsplugin.so
-rm usr/share/applications/org.kde.dolphinsu.desktop
-rm usr/share/applications/org.kde.kuserfeedback-console.desktop
-rm usr/share/applications/org.kde.kwalletd*.desktop
-rm usr/share/applications/org.kde.plasma.emojier.desktop
-rm usr/share/icons/breeze/breeze-icons.rcc
-rm usr/share/icons/breeze-dark/breeze-icons-dark.rcc
-rm usr/share/plasma/avatars/*
-
 rm -fr boot/
 rm -fr lib/
 rm -fr lib64/
 rm -fr usr/lib${SYSTEM_BITS}/qt5
-rm -fr usr/lib${SYSTEM_BITS}/qt6/qml/QtQuick/VirtualKeyboard
-rm -fr usr/lib${SYSTEM_BITS}/qt6/qml/QtTest
 rm -fr usr/lib${SYSTEM_BITS}/qt6/mkspecs
-rm -fr usr/share/chromium
-rm -fr usr/share/emoticons/EmojiOne
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
-rm -fr usr/share/google-chrome
-rm -fr usr/share/icons/breeze*/*/64/
-rm -fr usr/share/katepart6
 rm -fr usr/share/kde4
-rm -fr usr/share/kf6/kdoctools
-rm -fr usr/share/kf6/locale
-rm -fr usr/share/kf6/searchproviders
-rm -fr usr/share/konqueror
-rm -fr usr/share/kscreen
-rm -fr usr/share/ksplash/Themes/Classic
-rm -fr usr/share/kwin-x11/kcm_kwintabbox
-rm -fr usr/share/phonon4qt6
-rm -fr usr/share/plasma/desktoptheme/air
-rm -fr usr/share/plasma/desktoptheme/oxygen
-rm -fr usr/share/plasma/emoji
-rm -fr usr/share/plasma/look-and-feel/org.kde.oxygen
-rm -fr usr/share/plasma/nightcolor
-rm -fr usr/share/sddm/themes/breeze/preview*
-rm -fr usr/share/sddm/themes/elarun
-rm -fr usr/share/sddm/themes/maldives
-rm -fr usr/share/sddm/themes/maya
-rm -fr usr/share/themes/Breeze-Dark/gtk-4.0
-rm -fr usr/share/themes/Breeze/gtk-4.0
 
 find usr/share/wallpapers -mindepth 1 -maxdepth 1 ! \( -name "body-background.png" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/icons -mindepth 1 -maxdepth 1 ! \( -name "breeze" -o -name "breeze-dark" -o -name "hicolor" \) -exec rm -rf '{}' \; 2>/dev/null
 
 [ "$SYSTEM_BITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null
-find usr/share/plasma/avatars/photos -mindepth 1 ! \( -name "Air Balloon.png" -o -name "Air Balloon.png.license" -o -name "Astronaut.png" -o -name "Astronaut.png.license" \) -exec rm -rf '{}' \; 2>/dev/null
 } >/dev/null 2>&1
 
 strip_clean

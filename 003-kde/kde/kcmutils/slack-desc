@@ -1,0 +1,12 @@
+        |-----handy-ruler------------------------------------------------------|
+kcmutils: kcmutils (KDE System Settings utilities)
+kcmutils:
+kcmutils: KCMUtils provides various classes to work with KCModules. KCModules
+kcmutils: can be created with the KConfigWidgets framework.
+kcmutils:
+kcmutils:
+kcmutils:
+kcmutils:
+kcmutils:
+kcmutils:
+kcmutils:

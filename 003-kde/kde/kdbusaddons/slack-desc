@@ -1,0 +1,12 @@
+           |-----handy-ruler------------------------------------------------------|
+kdbusaddons: kdbusaddons (Convenience classes for D-Bus)
+kdbusaddons:
+kdbusaddons: KDBusAddons provides convenience classes on top of QtDBus, as well as
+kdbusaddons: an API to create KDED modules.
+kdbusaddons:
+kdbusaddons:
+kdbusaddons:
+kdbusaddons:
+kdbusaddons:
+kdbusaddons:
+kdbusaddons:

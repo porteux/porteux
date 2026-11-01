@@ -1,0 +1,12 @@
+             |-----handy-ruler------------------------------------------------------|
+kfilemetadata: kfilemetadata (a library for extracting file metadata)
+kfilemetadata:
+kfilemetadata: KFileMetaData provides a simple library for extracting the text and
+kfilemetadata: metadata from a number of different files. This library is typically
+kfilemetadata: used by file indexers to retreive the metadata. This library can also
+kfilemetadata: be used by applications to write metadata.
+kfilemetadata:
+kfilemetadata:
+kfilemetadata:
+kfilemetadata:
+kfilemetadata:

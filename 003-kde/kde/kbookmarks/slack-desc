@@ -1,0 +1,12 @@
+          |-----handy-ruler------------------------------------------------------|
+kbookmarks: kbookmarks (Bookmarks management library)
+kbookmarks:
+kbookmarks: KBookmarks lets you access and manipulate bookmarks stored using the
+kbookmarks: XBEL format. The most common use for bookmarks is web browsers, but
+kbookmarks: this can also be useful in any application where local files or URLs
+kbookmarks: can be saved as bookmarks.
+kbookmarks:
+kbookmarks: For more information on the XBEL format, see:
+kbookmarks:   https://pyxml.sourceforge.net/topics/xbel/
+kbookmarks:
+kbookmarks:

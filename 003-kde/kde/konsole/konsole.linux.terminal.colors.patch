@@ -1,0 +1,11 @@
+--- ./src/profile/Profile.cpp.orig	2026-05-31 22:21:25.000000000 -0500
++++ ./src/profile/Profile.cpp	2026-06-12 21:00:02.242537307 -0500
+@@ -92,7 +92,7 @@
+     // Appearance
+     {Font, "Font", APPEARANCE_GROUP, QFont()},
+     {ColorScheme, "ColorScheme", APPEARANCE_GROUP, QLatin1String("Breeze")},
+-    {ColorScheme, "colors", nullptr, QLatin1String("Breeze")},
++    {ColorScheme, "colors", nullptr, QLatin1String("Linux")},
+     {AntiAliasFonts, "AntiAliasFonts", APPEARANCE_GROUP, true},
+     {BoldIntense, "BoldIntense", APPEARANCE_GROUP, true},
+     {UseFontLineCharacters, "UseFontLineChararacters", APPEARANCE_GROUP, false},

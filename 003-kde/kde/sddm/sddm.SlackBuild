@@ -1,0 +1,93 @@
+#!/bin/bash
+
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
+
+PRGNAM=sddm
+
+CWD=$(dirname "$0")
+TMP=$MODULE_PATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(download_latest_from_github "sddm" ${PRGNAM})
+VERSION=${info#* }
+
+tar xf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+for i in $CWD/*.patch; do
+	patch -p1 < "$i"
+done
+
+cmake -B build -S . \
+	-G Ninja \
+	-DBUILD_MAN_PAGES=OFF \
+	-DBUILD_WITH_QT6=ON \
+	-DCMAKE_AR=/usr/bin/gcc-ar \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_C_FLAGS="$GCC_CFLAGS" \
+	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+	-DCMAKE_RANLIB=/usr/bin/gcc-ranlib \
+	-DDBUS_CONFIG_DIR=/usr/share/dbus-1/system.d \
+	-DDBUS_CONFIG_FILENAME="org.freedesktop.sddm.conf" \
+	-DENABLE_JOURNALD=OFF \
+	-DENABLE_PAM=ON \
+	-DLIB_SUFFIX=${SYSTEM_BITS} \
+	-DNO_SYSTEMD=ON \
+	-DSDDM_INITIAL_VT=7 \
+	-DUSE_ELOGIND=ON
+
+DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
+
+rm -f $PKG/etc/pam.d/sddm*
+install -Dm644 $CWD/sddm.pam $PKG/etc/pam.d/sddm
+install -Dm644 $CWD/sddm-autologin.pam $PKG/etc/pam.d/sddm-autologin
+install -Dm644 $CWD/sddm-greeter.pam $PKG/etc/pam.d/sddm-greeter
+
+cat << "EOF" >> $PKG/usr/share/sddm/scripts/Xsetup
+OPENGL_VERSION=$(LANG=C glxinfo |grep '^OpenGL version string: ' |head -n 1 |sed -e 's/^OpenGL version string: \([0-9]\).*$/\1/g')
+if [ "$OPENGL_VERSION" -lt 2 ]; then
+  QT_XCB_FORCE_SOFTWARE_OPENGL=1
+  export QT_XCB_FORCE_SOFTWARE_OPENGL
+fi
+EOF
+
+mv $PKG/usr/bin/sddm $PKG/usr/bin/sddm.bin
+cat << "EOF" > $PKG/usr/bin/sddm
+#!/bin/sh
+if [ -f /etc/default/sddm ]; then
+  . /etc/default/sddm
+fi
+
+touch /var/log/sddm.log
+chmod 640 /var/log/sddm.log
+
+date >> /var/log/sddm.log
+
+exec /usr/bin/sddm.bin "$@" 1> /dev/null 2> /dev/null
+EOF
+chmod 0755 $PKG/usr/bin/sddm
+
+mkdir -p $PKG/etc/default
+echo ". /etc/profile.d/lang.sh" > $PKG/etc/default/sddm
+
+if [ ! -r $PKG/usr/bin/sddm-greeter ] && [ -r $PKG/usr/bin/sddm-greeter-qt6 ]; then
+	ln -sf sddm-greeter-qt6 $PKG/usr/bin/sddm-greeter
+fi
+
+rm -r $PKG/usr/share/sddm/themes/elarun
+rm -r $PKG/usr/share/sddm/themes/maldives
+rm -r $PKG/usr/share/sddm/themes/maya
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

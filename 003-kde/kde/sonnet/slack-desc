@@ -1,0 +1,12 @@
+      |-----handy-ruler------------------------------------------------------|
+sonnet: sonnet (Multi-language spell checker)
+sonnet:
+sonnet: Sonnet is a plugin-based spell checking library for Qt-based
+sonnet: applications. It supports several different plugins, including HSpell,
+sonnet: Enchant, ASpell and HUNSPELL. It also supports automated language
+sonnet: detection, based on a combination of different algorithms.
+sonnet:
+sonnet:
+sonnet:
+sonnet:
+sonnet:

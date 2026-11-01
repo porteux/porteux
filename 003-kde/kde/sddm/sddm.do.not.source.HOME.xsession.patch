@@ -1,0 +1,18 @@
+--- ./data/scripts/Xsession.orig	2020-11-03 01:41:06.000000000 -0600
++++ ./data/scripts/Xsession	2020-12-15 14:16:30.968724577 -0600
+@@ -94,9 +94,12 @@
+ if [ -f "$USERXSESSIONRC" ]; then
+   . "$USERXSESSIONRC"
+ fi
+-if [ -f "$USERXSESSION" ]; then
+-  . "$USERXSESSION"
+-fi
++
++# Commented out because $HOME/.xsession may start the wrong session type or
++# cause dbus-run-session to start twice.
++#if [ -f "$USERXSESSION" ]; then
++#  . "$USERXSESSION"
++#fi
+ 
+ if [ -z "$*" ]; then
+     exec xmessage -center -buttons OK:0 -default OK "Sorry, $DESKTOP_SESSION is no valid session."

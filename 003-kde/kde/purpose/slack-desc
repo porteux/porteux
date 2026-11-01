@@ -1,0 +1,12 @@
+       |-----handy-ruler------------------------------------------------------|
+purpose: purpose (offers actions for a specific purpose)
+purpose:
+purpose: This framework offers the possibility to create integrate services and
+purpose: actions on any application without having to implement them
+purpose: specifically. Purpose will offer them mechanisms to list the different
+purpose: alternatives to execute given the requested action type and will
+purpose: facilitate components so that all the plugins can receive all the
+purpose: information they need.
+purpose:
+purpose:
+purpose:
