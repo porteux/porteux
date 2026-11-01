@@ -80,9 +80,7 @@ done
 
 # required by cosmic-reader
 installpkg $MODULE_PATH/packages/leptonica*.txz || exit 1
-rm $MODULE_PATH/packages/leptonica*.txz
 installpkg $MODULE_PATH/packages/tesseract*.txz || exit 1
-rm $MODULE_PATH/packages/tesseract*.txz
 
 # cosmic packages
 for package in \
@@ -146,6 +144,10 @@ copy_to_multilanguage
 ### module clean up
 
 cd $MODULE_PATH/packages/ || exit 1
+
+{
+rm -fr usr/bin
+} >/dev/null 2>&1
 
 strip_clean
 strip_hard_all
