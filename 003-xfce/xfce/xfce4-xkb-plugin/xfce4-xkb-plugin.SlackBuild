@@ -19,6 +19,8 @@ wget https://gitlab.xfce.org/panel-plugins/${PRGNAM}/-/archive/${DOWNLOADVERSION
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+patch -p1 < $CWD/wayland-hide.patch
+
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \

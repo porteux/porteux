@@ -1,0 +1,19 @@
+--- a/panel-plugin/xkb-plugin.c
++++ b/panel-plugin/xkb-plugin.c
+@@ -196,15 +196,10 @@
+ #endif
+   if (!x11_windowing)
+     {
+-      GtkWidget *dialog = xfce_message_dialog_new (NULL, xfce_panel_plugin_get_display_name (plugin), "dialog-error",
+-                                                   _("Unsupported windowing environment"), NULL,
+-                                                   _("_OK"), GTK_RESPONSE_OK, NULL);
+       XFCE_PANEL_PLUGIN_GET_CLASS (plugin)->free_data = NULL;
+       XFCE_PANEL_PLUGIN_GET_CLASS (plugin)->orientation_changed = NULL;
+       XFCE_PANEL_PLUGIN_GET_CLASS (plugin)->size_changed = NULL;
+-      gtk_dialog_run (GTK_DIALOG (dialog));
+-      gtk_widget_destroy (dialog);
+-      xfce_panel_plugin_remove (plugin);
++      gtk_widget_hide (GTK_WIDGET (plugin));
+       return;
+     }
+ 
