@@ -2,7 +2,7 @@
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, Gio
+from gi.repository import Gtk, Gdk, Gio, GLib
 import os
 from os import path
 from os.path import exists
@@ -11,9 +11,11 @@ import signal
 import sys
 import json
 import tempfile
+import threading
 from urllib.request import urlopen
 from datetime import datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 if os.geteuid() != 0:
     this_script = path.abspath(__file__)
@@ -208,20 +210,23 @@ class AppWindow(Gtk.ApplicationWindow):
         dialog.show_all()
 
     def show_dialog_porteux(self, input):
-        subprocess.call([GTK_DIALOG_SCRIPT, "-p", input])
+        subprocess.Popen([GTK_DIALOG_SCRIPT, "-p", input])
 
     def has_internet(self):
         has_Internet = subprocess.call(["/bin/bash", "-c", "curl --max-time 2 1.1.1.1 > /dev/null 2>&1"])
         if has_Internet != 0:
             has_Internet = subprocess.call(["/bin/bash", "-c", "ping -q -c1 -W 2 8.8.8.8 > /dev/null 2>&1"])
-            if has_Internet != 0:
-                subprocess.call([GTK_DIALOG_SCRIPT, "-p", "No internet connection"])
-                return False
-        return True
+        return has_Internet == 0
 
     def execute_external_script(self, script_name, extra_args = None):
-        if not self.has_internet():
+        application = self.get_application()
+        arguments = [arg for arg in extra_args or [] if arg is not None]
+        installation_key = (script_name, tuple(arguments))
+        if installation_key in application.running_installations:
+            self.show_dialog_porteux("This application is already being installed.")
             return
+        if self.check_button_module.get_active():
+            arguments.append("--activate-module")
 
         with open('/dev/null', 'w') as devnull:
             progress_dialog = subprocess.Popen(
@@ -229,24 +234,57 @@ class AppWindow(Gtk.ApplicationWindow):
                 stderr=devnull
             )
 
+        application.running_installations.add(installation_key)
+        application.hold()
+        installation = (application, installation_key, progress_dialog)
+        threading.Thread(target = self.prepare_installation, args = (installation, script_name, arguments), daemon = True).start()
+
+    def prepare_installation(self, installation, script_name, arguments):
+        local_script_path = LOCAL_APPS_PATH + script_name + ".sh"
+        error = None
         try:
-            local_script_path = LOCAL_APPS_PATH + script_name + ".sh"
-            if not is_recently_updated(local_script_path):
+            if not self.has_internet():
+                error = "No internet connection"
+            elif not is_recently_updated(local_script_path):
                 with urlopen(REPO_APPS_URL + script_name + ".sh", timeout = REQUEST_TIMEOUT) as remote_script:
                     remote_script_decoded = remote_script.read().decode("utf-8")
                 write_file(local_script_path, remote_script_decoded, 0o755)
+        except Exception as error_downloading:
+            error = "Error creating module: " + str(error_downloading)
+        GLib.idle_add(self.launch_installation, installation, ["/bin/bash", local_script_path] + arguments, error)
 
-            command = ["/bin/bash", local_script_path]
-            if extra_args:
-                command += [arg for arg in extra_args if arg is not None]
-            if self.check_button_module.get_active():
-                command.append("--activate-module")
-            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    def launch_installation(self, installation, command, error):
+        if error is None:
+            try:
+                stdout = tempfile.TemporaryFile()
+                stderr = tempfile.TemporaryFile()
+                process = subprocess.Popen(command, stdout = stdout, stderr = stderr, start_new_session = True)
+                GLib.child_watch_add(process.pid, self.on_installation_finished, (installation, process, stdout, stderr))
+                return False
+            except Exception as error_launching:
+                error = "Error creating module: " + str(error_launching)
+        self.show_dialog_porteux(error)
+        self.finish_installation(installation)
+        return False
+
+    def on_installation_finished(self, pid, status, data):
+        installation, process, stdout, stderr = data
+        process.returncode = os.waitstatus_to_exitcode(status)
+        try:
+            stdout.seek(0)
+            stderr.seek(0)
+            result = SimpleNamespace(stdout = stdout.read(), stderr = stderr.read(), returncode = process.returncode)
             self.show_dialog_porteux(self.get_script_message(result))
-        except Exception as error:
-            self.show_dialog_porteux("Error creating module: " + str(error))
         finally:
-            progress_dialog.send_signal(signal.SIGINT)
+            stdout.close()
+            stderr.close()
+            self.finish_installation(installation)
+
+    def finish_installation(self, installation):
+        application, installation_key, progress_dialog = installation
+        progress_dialog.send_signal(signal.SIGINT)
+        application.running_installations.discard(installation_key)
+        application.release()
 
     def get_script_message(self, result):
         errors = result.stderr.decode("utf-8").splitlines()
@@ -297,8 +335,8 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_dialog_button_download_clicked(self, button, application, combobox_channel, combobox_language, dialog):
         channel = combobox_channel.get_active_text()
         language = combobox_language.get_active_text()
-        self.execute_external_script(application["script"], [channel, language])
         dialog.destroy()
+        self.execute_external_script(application["script"], [channel, language])
 
     def on_dialog_button_close_clicked(self, button, dialog):
         dialog.destroy()
@@ -353,6 +391,7 @@ class Application(Gtk.Application):
         self.update_changed_files()
         super().__init__(*args, application_id="org.porteux_app_store", **kwargs)
         self.window = None
+        self.running_installations = set()
 
     def do_activate(self):
         if not self.window:
@@ -361,9 +400,13 @@ class Application(Gtk.Application):
             self.window.set_position(Gtk.WindowPosition.CENTER)
             self.window.set_icon_name("browser")
             self.window.connect("key-press-event", self.window.on_main_key_down)
+            self.window.connect("destroy", self.on_window_destroy)
 
         self.window.show_all()
         self.window.present()
+
+    def on_window_destroy(self, window):
+        self.window = None
 
 
     def update_changed_files(self):
