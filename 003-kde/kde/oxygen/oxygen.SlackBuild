@@ -37,6 +37,7 @@ DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -delete
 
+rm $PKG/usr/bin/oxygen-demo6
 rm -r $PKG/usr/share/plasma/desktoptheme/air
 rm -r $PKG/usr/share/plasma/desktoptheme/oxygen
 rm -r $PKG/usr/share/plasma/look-and-feel/org.kde.oxygen

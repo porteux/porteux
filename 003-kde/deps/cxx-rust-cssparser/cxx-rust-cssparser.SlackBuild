@@ -39,6 +39,8 @@ DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -delete
 
+rm $PKG/usr/bin/cxx-rust-cssparser-parse
+
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 

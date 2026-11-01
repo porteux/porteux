@@ -421,6 +421,8 @@ rm -fr usr/lib${SYSTEM_BITS}/qt6/mkspecs
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
 rm -fr usr/share/kde4
+rm -fr usr/share/kdevappwizard
+rm -fr usr/share/qlogging-categories6
 
 find usr/share/wallpapers -mindepth 1 -maxdepth 1 ! \( -name "body-background.png" \) -exec rm -rf '{}' \; 2>/dev/null
 find usr/share/icons -mindepth 1 -maxdepth 1 ! \( -name "breeze" -o -name "breeze-dark" -o -name "hicolor" \) -exec rm -rf '{}' \; 2>/dev/null

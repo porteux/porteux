@@ -20,6 +20,7 @@ cd $PRGNAM-$VERSION
 
 cmake -B build -S . \
 	-G Ninja \
+	-DBUILD_DESIGNERPLUGIN=OFF \
 	-DBUILD_PYTHON_BINDINGS=OFF \
 	-DBUILD_TESTING=OFF \
 	-DCMAKE_AR=/usr/bin/gcc-ar \
