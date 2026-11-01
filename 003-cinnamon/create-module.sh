@@ -23,6 +23,7 @@ LATEST_VERSION=$(get_latest_version_tag_from_github linuxmint cinnamon "cjs-|${T
 [ "$LATEST_VERSION" ] || { echo "Error: could not detect Cinnamon version." >&2; exit 1; }
 echo -e "Building Cinnamon ${LATEST_VERSION} based on Slackware ${SLACKWARE_VERSION} ${ARCH}...\n"
 MODULE_NAME="$MODULE_NAME-${LATEST_VERSION}"
+export CINNAMON_SERIES="${LATEST_VERSION%.*}."
 
 ### create module folder
 
@@ -53,6 +54,7 @@ for package in \
 	vte \
 	libnma \
 	gsound \
+	gtk-layer-shell \
 	libpeas \
 	libgxps \
 	gtksourceview4 \

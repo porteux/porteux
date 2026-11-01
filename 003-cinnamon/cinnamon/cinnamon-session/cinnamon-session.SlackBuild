@@ -14,7 +14,7 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(download_latest_from_github "linuxmint" ${PRGNAM} "${TEST_RELEASES}")
+info=$(download_latest_from_github "linuxmint" ${PRGNAM} "${TEST_RELEASES}" "${CINNAMON_SERIES}")
 VERSION=${info#* }
 
 tar xf $PRGNAM-$VERSION*.tar.?z
