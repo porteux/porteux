@@ -1,0 +1,819 @@
+diff --git a/include/capture.h b/include/capture.h
+new file mode 100644
+index 0000000..d52be10
+--- /dev/null
++++ b/include/capture.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef LABWC_CAPTURE_H
++#define LABWC_CAPTURE_H
++
++#include <stdbool.h>
++
++struct view;
++
++void capture_init(void);
++void capture_set_view_hidden(struct view *view, bool hidden);
++
++#endif
+diff --git a/include/view.h b/include/view.h
+index 46943ab..72e6b62 100644
+--- a/include/view.h
++++ b/include/view.h
+@@ -200,6 +200,7 @@ struct view {
+ 	enum lab_edge tiled;
+ 	enum lab_edge edges_visible;
+ 	bool inhibits_keybinds; /* also inhibits mousebinds */
++	bool hide_from_capture;
+ 	xkb_layout_index_t keyboard_layout;
+ 
+ 	/* Pointer to an output owned struct region, may be NULL */
+diff --git a/include/window-rules.h b/include/window-rules.h
+index 624f3b8..8ece7ba 100644
+--- a/include/window-rules.h
++++ b/include/window-rules.h
+@@ -41,6 +41,7 @@ struct window_rule {
+ 	enum property fixed_position;
+ 	enum property icon_prefer_client;
+ 	enum property allow_always_on_top;
++	enum property hide_from_capture;
+ 
+ 	struct wl_list link; /* struct rcxml.window_rules */
+ };
+diff --git a/protocols/meson.build b/protocols/meson.build
+index 928bd60..50f1dcd 100644
+--- a/protocols/meson.build
++++ b/protocols/meson.build
+@@ -16,6 +16,8 @@ wayland_scanner_server = generator(
+ server_protocols = [
+ 	'wlr-layer-shell-unstable-v1.xml',
+ 	'wlr-output-power-management-unstable-v1.xml',
++	wl_protocol_dir / 'staging/ext-image-capture-source/ext-image-capture-source-v1.xml',
++	wl_protocol_dir / 'staging/ext-foreign-toplevel-list/ext-foreign-toplevel-list-v1.xml',
+ ]
+ 
+ server_protos_src = []
+diff --git a/src/action.c b/src/action.c
+index 4a1bd11..fd42048 100644
+--- a/src/action.c
++++ b/src/action.c
+@@ -10,6 +10,7 @@
+ #include <wlr/types/wlr_scene.h>
+ #include <wlr/util/log.h>
+ #include "action-prompt-codes.h"
++#include "capture.h"
+ #include "common/buf.h"
+ #include "common/macros.h"
+ #include "common/list.h"
+@@ -98,6 +99,7 @@ struct action_arg_list {
+ 	X(TOGGLE_ALWAYS_ON_TOP, "ToggleAlwaysOnTop") \
+ 	X(TOGGLE_ALWAYS_ON_BOTTOM, "ToggleAlwaysOnBottom") \
+ 	X(TOGGLE_OMNIPRESENT, "ToggleOmnipresent") \
++	X(TOGGLE_HIDE_FROM_CAPTURE, "ToggleHideFromCapture") \
+ 	X(FOCUS, "Focus") \
+ 	X(UNFOCUS, "Unfocus") \
+ 	X(ICONIFY, "Iconify") \
+@@ -1240,6 +1242,11 @@ run_action(struct view *view, struct action *action,
+ 			view_toggle_visible_on_all_workspaces(view);
+ 		}
+ 		break;
++	case ACTION_TYPE_TOGGLE_HIDE_FROM_CAPTURE:
++		if (view) {
++			capture_set_view_hidden(view, !view->hide_from_capture);
++		}
++		break;
+ 	case ACTION_TYPE_FOCUS:
+ 		if (view) {
+ 			desktop_focus_view(view, /*raise*/ false);
+diff --git a/src/capture.c b/src/capture.c
+new file mode 100644
+index 0000000..dd4a7c3
+--- /dev/null
++++ b/src/capture.c
+@@ -0,0 +1,629 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include "capture.h"
++#include <assert.h>
++#include <math.h>
++#include <stdlib.h>
++#include <wlr/interfaces/wlr_ext_image_capture_source_v1.h>
++#include <wlr/interfaces/wlr_output.h>
++#include <wlr/render/swapchain.h>
++#include <wlr/render/wlr_renderer.h>
++#include <wlr/types/wlr_buffer.h>
++#include <wlr/types/wlr_ext_image_copy_capture_v1.h>
++#include <wlr/types/wlr_output.h>
++#include <wlr/types/wlr_scene.h>
++#include <wlr/util/addon.h>
++#include <wlr/util/box.h>
++#include <wlr/util/log.h>
++#include <wlr/util/region.h>
++#include <wlr/util/transform.h>
++#include "ext-image-capture-source-v1-protocol.h"
++#include "cycle.h"
++#include "labwc.h"
++#include "node.h"
++#include "output.h"
++#include "view.h"
++
++struct capture_source {
++	struct wlr_ext_image_capture_source_v1 base;
++	struct wlr_addon addon;
++	struct wlr_output *output;
++	struct wlr_swapchain *swapchain;
++	size_t num_started;
++	bool software_cursors_locked;
++	pixman_region32_t prev_hidden;
++	struct wl_listener output_commit;
++};
++
++struct capture_frame_event {
++	struct wlr_ext_image_capture_source_v1_frame_event base;
++	struct wlr_buffer *output_buffer;
++	struct wlr_buffer *buffer;
++	pixman_region32_t *hidden;
++	struct timespec when;
++	bool render_tried;
++};
++
++struct render_ctx {
++	struct wlr_output *output;
++	int ox, oy;
++	int trans_width, trans_height;
++	pixman_region32_t *region;
++	struct wlr_render_pass *pass;
++	struct wl_array owned_textures;
++};
++
++static bool
++any_view_hidden(void)
++{
++	struct view *view;
++	wl_list_for_each(view, &server.views, link) {
++		if (view->mapped && view->hide_from_capture) {
++			return true;
++		}
++	}
++	return false;
++}
++
++static bool
++node_is_hidden(struct wlr_scene_node *node)
++{
++	struct node_descriptor *desc = node->data;
++	if (!desc) {
++		return false;
++	}
++	struct view *view = desc->view;
++	if (desc->type == LAB_NODE_CYCLE_OSD_ITEM) {
++		struct cycle_osd_item *item = desc->data;
++		view = item->view;
++	}
++	return view && view->hide_from_capture;
++}
++
++static void
++node_size(struct wlr_scene_node *node, int *width, int *height)
++{
++	*width = 0;
++	*height = 0;
++	if (node->type == WLR_SCENE_NODE_RECT) {
++		struct wlr_scene_rect *rect = wlr_scene_rect_from_node(node);
++		*width = rect->width;
++		*height = rect->height;
++	} else if (node->type == WLR_SCENE_NODE_BUFFER) {
++		struct wlr_scene_buffer *sb = wlr_scene_buffer_from_node(node);
++		if (sb->dst_width > 0 && sb->dst_height > 0) {
++			*width = sb->dst_width;
++			*height = sb->dst_height;
++		} else {
++			*width = sb->WLR_PRIVATE.buffer_width;
++			*height = sb->WLR_PRIVATE.buffer_height;
++			wlr_output_transform_coords(sb->transform, width, height);
++		}
++	}
++}
++
++static int
++scale_length(int length, int offset, float scale)
++{
++	return round((offset + length) * scale) - round(offset * scale);
++}
++
++static struct wlr_box
++to_buffer_box(struct render_ctx *ctx, struct wlr_scene_node *node, int lx, int ly)
++{
++	int width, height;
++	node_size(node, &width, &height);
++
++	float scale = ctx->output->scale;
++	int x = lx - ctx->ox;
++	int y = ly - ctx->oy;
++	struct wlr_box box = {
++		.x = round(x * scale),
++		.y = round(y * scale),
++		.width = scale_length(width, x, scale),
++		.height = scale_length(height, y, scale),
++	};
++	wlr_box_transform(&box, &box,
++		wlr_output_transform_invert(ctx->output->transform),
++		ctx->trans_width, ctx->trans_height);
++	return box;
++}
++
++static void
++render_ctx_init(struct render_ctx *ctx, struct wlr_output *output,
++		struct wlr_scene_output *scene_output, pixman_region32_t *region)
++{
++	*ctx = (struct render_ctx){
++		.output = output,
++		.ox = scene_output->x,
++		.oy = scene_output->y,
++		.region = region,
++	};
++	wlr_output_transformed_resolution(output,
++		&ctx->trans_width, &ctx->trans_height);
++}
++
++static void
++collect_hidden(struct render_ctx *ctx, struct wlr_scene_node *node,
++		int lx, int ly, bool hidden)
++{
++	if (!node->enabled) {
++		return;
++	}
++	hidden = hidden || node_is_hidden(node);
++	lx += node->x;
++	ly += node->y;
++
++	if (node->type == WLR_SCENE_NODE_TREE) {
++		struct wlr_scene_tree *tree = wlr_scene_tree_from_node(node);
++		struct wlr_scene_node *child;
++		wl_list_for_each(child, &tree->children, link) {
++			collect_hidden(ctx, child, lx, ly, hidden);
++		}
++	} else if (hidden) {
++		struct wlr_box box = to_buffer_box(ctx, node, lx, ly);
++		pixman_region32_union_rect(ctx->region, ctx->region,
++			box.x, box.y, box.width, box.height);
++	}
++}
++
++static void
++render_buffer(struct render_ctx *ctx, struct wlr_scene_buffer *sb,
++		struct wlr_box *box)
++{
++	if (sb->WLR_PRIVATE.is_single_pixel_buffer) {
++		const uint32_t *c = sb->WLR_PRIVATE.single_pixel_buffer_color;
++		wlr_render_pass_add_rect(ctx->pass, &(struct wlr_render_rect_options){
++			.box = *box,
++			.color = {
++				.r = (float)c[0] / (float)UINT32_MAX,
++				.g = (float)c[1] / (float)UINT32_MAX,
++				.b = (float)c[2] / (float)UINT32_MAX,
++				.a = (float)c[3] / (float)UINT32_MAX * sb->opacity,
++			},
++			.clip = ctx->region,
++		});
++		return;
++	}
++
++	struct wlr_texture *texture = sb->WLR_PRIVATE.texture;
++	if (!texture && sb->buffer) {
++		struct wlr_client_buffer *client_buffer =
++			wlr_client_buffer_get(sb->buffer);
++		if (client_buffer) {
++			texture = client_buffer->texture;
++		} else {
++			texture = wlr_texture_from_buffer(ctx->output->renderer, sb->buffer);
++			if (texture) {
++				struct wlr_texture **slot = wl_array_add(
++					&ctx->owned_textures, sizeof(*slot));
++				if (!slot) {
++					wlr_texture_destroy(texture);
++					return;
++				}
++				*slot = texture;
++			}
++		}
++	}
++	if (!texture) {
++		return;
++	}
++
++	struct wlr_color_primaries primaries = {0};
++	if (sb->primaries) {
++		wlr_color_primaries_from_named(&primaries, sb->primaries);
++	}
++
++	float luminance_multiplier = 1.0f;
++	if (sb->transfer_function == WLR_COLOR_TRANSFER_FUNCTION_ST2084_PQ) {
++		luminance_multiplier = 10000.0f / 203.0f;
++	}
++
++	enum wl_output_transform transform = wlr_output_transform_compose(
++		wlr_output_transform_invert(sb->transform), ctx->output->transform);
++
++	wlr_render_pass_add_texture(ctx->pass, &(struct wlr_render_texture_options){
++		.texture = texture,
++		.src_box = sb->src_box,
++		.dst_box = *box,
++		.transform = transform,
++		.clip = ctx->region,
++		.alpha = &sb->opacity,
++		.filter_mode = sb->filter_mode,
++		.blend_mode = WLR_RENDER_BLEND_MODE_PREMULTIPLIED,
++		.transfer_function = sb->transfer_function,
++		.primaries = sb->primaries ? &primaries : NULL,
++		.color_encoding = sb->color_encoding,
++		.color_range = sb->color_range,
++		.luminance_multiplier = &luminance_multiplier,
++		.wait_timeline = sb->WLR_PRIVATE.wait_timeline,
++		.wait_point = sb->WLR_PRIVATE.wait_point,
++	});
++}
++
++static void
++render_node(struct render_ctx *ctx, struct wlr_scene_node *node, int lx, int ly)
++{
++	if (!node->enabled || node_is_hidden(node)) {
++		return;
++	}
++	lx += node->x;
++	ly += node->y;
++
++	if (node->type == WLR_SCENE_NODE_TREE) {
++		struct wlr_scene_tree *tree = wlr_scene_tree_from_node(node);
++		struct wlr_scene_node *child;
++		wl_list_for_each(child, &tree->children, link) {
++			render_node(ctx, child, lx, ly);
++		}
++		return;
++	}
++
++	struct wlr_box box = to_buffer_box(ctx, node, lx, ly);
++	if (pixman_region32_contains_rectangle(ctx->region, &(pixman_box32_t){
++			box.x, box.y, box.x + box.width, box.y + box.height})
++			== PIXMAN_REGION_OUT) {
++		return;
++	}
++
++	if (node->type == WLR_SCENE_NODE_RECT) {
++		struct wlr_scene_rect *rect = wlr_scene_rect_from_node(node);
++		wlr_render_pass_add_rect(ctx->pass, &(struct wlr_render_rect_options){
++			.box = box,
++			.color = {
++				.r = rect->color[0],
++				.g = rect->color[1],
++				.b = rect->color[2],
++				.a = rect->color[3],
++			},
++			.clip = ctx->region,
++		});
++	} else {
++		render_buffer(ctx, wlr_scene_buffer_from_node(node), &box);
++	}
++}
++
++static void
++get_hidden_region(struct capture_source *source, pixman_region32_t *region)
++{
++	struct wlr_scene_output *scene_output =
++		wlr_scene_get_scene_output(server.scene, source->output);
++	if (!scene_output || !any_view_hidden()) {
++		return;
++	}
++
++	struct render_ctx ctx;
++	render_ctx_init(&ctx, source->output, scene_output, region);
++	collect_hidden(&ctx, &server.scene->tree.node, 0, 0, false);
++
++	wlr_region_expand(region, region, 1);
++	pixman_region32_intersect_rect(region, region, 0, 0,
++		source->output->width, source->output->height);
++}
++
++static bool
++copy_output_buffer(struct wlr_output *output, struct wlr_buffer *src,
++		struct wlr_buffer *dst)
++{
++	struct wlr_texture *texture = wlr_texture_from_buffer(output->renderer, src);
++	if (!texture) {
++		return false;
++	}
++	struct wlr_render_pass *pass =
++		wlr_renderer_begin_buffer_pass(output->renderer, dst, NULL);
++	if (!pass) {
++		wlr_texture_destroy(texture);
++		return false;
++	}
++	wlr_render_pass_add_texture(pass, &(struct wlr_render_texture_options){
++		.texture = texture,
++		.dst_box = { .width = dst->width, .height = dst->height },
++		.blend_mode = WLR_RENDER_BLEND_MODE_NONE,
++	});
++	bool ok = wlr_render_pass_submit(pass);
++	wlr_texture_destroy(texture);
++	return ok;
++}
++
++static struct wlr_buffer *
++render_filtered(struct capture_source *source, struct wlr_buffer *output_buffer,
++		pixman_region32_t *hidden)
++{
++	struct wlr_output *output = source->output;
++	struct wlr_scene_output *scene_output =
++		wlr_scene_get_scene_output(server.scene, output);
++	if (!scene_output) {
++		return NULL;
++	}
++
++	if (!wlr_output_configure_primary_swapchain(output, NULL,
++			&source->swapchain)) {
++		return NULL;
++	}
++	struct wlr_buffer *buffer = wlr_swapchain_acquire(source->swapchain);
++	if (!buffer) {
++		return NULL;
++	}
++	if (!copy_output_buffer(output, output_buffer, buffer)) {
++		wlr_buffer_unlock(buffer);
++		return NULL;
++	}
++
++	struct render_ctx ctx;
++	render_ctx_init(&ctx, output, scene_output, hidden);
++	ctx.pass = wlr_renderer_begin_buffer_pass(output->renderer, buffer,
++		&(struct wlr_buffer_pass_options){
++			.color_transform =
++				scene_output->WLR_PRIVATE.combined_color_transform,
++		});
++	if (!ctx.pass) {
++		wlr_buffer_unlock(buffer);
++		return NULL;
++	}
++	wl_array_init(&ctx.owned_textures);
++
++	wlr_render_pass_add_rect(ctx.pass, &(struct wlr_render_rect_options){
++		.box = { .width = buffer->width, .height = buffer->height },
++		.color = { .r = 0, .g = 0, .b = 0, .a = 1 },
++		.clip = hidden,
++		.blend_mode = WLR_RENDER_BLEND_MODE_NONE,
++	});
++	render_node(&ctx, &server.scene->tree.node, 0, 0);
++	wlr_output_add_software_cursors_to_render_pass(output, ctx.pass, hidden);
++
++	bool ok = wlr_render_pass_submit(ctx.pass);
++
++	struct wlr_texture **texture;
++	wl_array_for_each(texture, &ctx.owned_textures) {
++		wlr_texture_destroy(*texture);
++	}
++	wl_array_release(&ctx.owned_textures);
++
++	if (!ok) {
++		wlr_buffer_unlock(buffer);
++		return NULL;
++	}
++	return buffer;
++}
++
++static void
++source_start(struct wlr_ext_image_capture_source_v1 *base, bool with_cursors)
++{
++	struct capture_source *source = wl_container_of(base, source, base);
++	source->num_started++;
++	if (source->num_started > 1) {
++		return;
++	}
++	wlr_output_lock_attach_render(source->output, true);
++	if (with_cursors) {
++		wlr_output_lock_software_cursors(source->output, true);
++	}
++	source->software_cursors_locked = with_cursors;
++}
++
++static void
++source_stop(struct wlr_ext_image_capture_source_v1 *base)
++{
++	struct capture_source *source = wl_container_of(base, source, base);
++	assert(source->num_started > 0);
++	source->num_started--;
++	if (source->num_started > 0) {
++		return;
++	}
++	wlr_output_lock_attach_render(source->output, false);
++	if (source->software_cursors_locked) {
++		wlr_output_lock_software_cursors(source->output, false);
++	}
++	wlr_swapchain_destroy(source->swapchain);
++	source->swapchain = NULL;
++	pixman_region32_clear(&source->prev_hidden);
++}
++
++static void
++source_request_frame(struct wlr_ext_image_capture_source_v1 *base,
++		bool schedule_frame)
++{
++	struct capture_source *source = wl_container_of(base, source, base);
++	if (schedule_frame) {
++		wlr_output_update_needs_frame(source->output);
++	}
++}
++
++static void
++source_copy_frame(struct wlr_ext_image_capture_source_v1 *base,
++		struct wlr_ext_image_copy_capture_frame_v1 *frame,
++		struct wlr_ext_image_capture_source_v1_frame_event *base_event)
++{
++	struct capture_source *source = wl_container_of(base, source, base);
++	struct capture_frame_event *event =
++		wl_container_of(base_event, event, base);
++
++	if (!event->buffer && !event->render_tried) {
++		event->render_tried = true;
++		event->buffer = render_filtered(source, event->output_buffer,
++			event->hidden);
++		if (!event->buffer) {
++			wlr_log(WLR_ERROR, "failed to render capture for %s",
++				source->output->name);
++		}
++	}
++	if (!event->buffer) {
++		return;
++	}
++
++	if (wlr_ext_image_copy_capture_frame_v1_copy_buffer(frame,
++			event->buffer, source->output->renderer)) {
++		wlr_ext_image_copy_capture_frame_v1_ready(frame,
++			source->output->transform, &event->when);
++	}
++}
++
++static const struct wlr_ext_image_capture_source_v1_interface source_impl = {
++	.start = source_start,
++	.stop = source_stop,
++	.request_frame = source_request_frame,
++	.copy_frame = source_copy_frame,
++};
++
++static void
++update_constraints(struct capture_source *source)
++{
++	struct wlr_output *output = source->output;
++	if (!output->enabled) {
++		return;
++	}
++	if (!wlr_output_configure_primary_swapchain(output, NULL,
++			&output->swapchain)) {
++		return;
++	}
++	wlr_ext_image_capture_source_v1_set_constraints_from_swapchain(
++		&source->base, output->swapchain, output->renderer);
++}
++
++static void
++handle_output_commit(struct wl_listener *listener, void *data)
++{
++	struct capture_source *source =
++		wl_container_of(listener, source, output_commit);
++	struct wlr_output_event_commit *event = data;
++
++	if (event->state->committed & (WLR_OUTPUT_STATE_MODE
++			| WLR_OUTPUT_STATE_RENDER_FORMAT
++			| WLR_OUTPUT_STATE_ENABLED)) {
++		update_constraints(source);
++	}
++
++	if (!(event->state->committed & WLR_OUTPUT_STATE_BUFFER)
++			|| source->num_started == 0) {
++		return;
++	}
++
++	struct wlr_buffer *buffer = event->state->buffer;
++	pixman_region32_t hidden, damage;
++	pixman_region32_init(&hidden);
++	get_hidden_region(source, &hidden);
++
++	if (event->state->committed & WLR_OUTPUT_STATE_DAMAGE) {
++		pixman_region32_init(&damage);
++		pixman_region32_union(&damage, &event->state->damage, &hidden);
++		pixman_region32_union(&damage, &damage, &source->prev_hidden);
++	} else {
++		pixman_region32_init_rect(&damage, 0, 0,
++			buffer->width, buffer->height);
++	}
++	pixman_region32_copy(&source->prev_hidden, &hidden);
++
++	bool filtered = !pixman_region32_empty(&hidden);
++	struct capture_frame_event frame_event = {
++		.base = { .damage = &damage },
++		.output_buffer = buffer,
++		.buffer = filtered ? NULL : buffer,
++		.hidden = &hidden,
++		.when = event->when,
++	};
++	wl_signal_emit_mutable(&source->base.events.frame, &frame_event);
++
++	if (filtered && frame_event.buffer) {
++		wlr_buffer_unlock(frame_event.buffer);
++	}
++	pixman_region32_fini(&damage);
++	pixman_region32_fini(&hidden);
++}
++
++static void
++handle_addon_destroy(struct wlr_addon *addon)
++{
++	struct capture_source *source = wl_container_of(addon, source, addon);
++	wlr_ext_image_capture_source_v1_finish(&source->base);
++	wl_list_remove(&source->output_commit.link);
++	wlr_addon_finish(&source->addon);
++	wlr_swapchain_destroy(source->swapchain);
++	pixman_region32_fini(&source->prev_hidden);
++	free(source);
++}
++
++static const struct wlr_addon_interface addon_impl = {
++	.name = "labwc_capture_source",
++	.destroy = handle_addon_destroy,
++};
++
++static void
++handle_create_source(struct wl_client *client, struct wl_resource *resource,
++		uint32_t new_id, struct wl_resource *output_resource)
++{
++	struct wlr_output *output = wlr_output_from_resource(output_resource);
++	if (!output) {
++		wlr_ext_image_capture_source_v1_create_resource(NULL, client, new_id);
++		return;
++	}
++
++	struct capture_source *source;
++	struct wlr_addon *addon = wlr_addon_find(&output->addons, NULL, &addon_impl);
++	if (addon) {
++		source = wl_container_of(addon, source, addon);
++	} else {
++		source = calloc(1, sizeof(*source));
++		if (!source) {
++			wl_resource_post_no_memory(resource);
++			return;
++		}
++		wlr_ext_image_capture_source_v1_init(&source->base, &source_impl);
++		wlr_addon_init(&source->addon, &output->addons, NULL, &addon_impl);
++		source->output = output;
++		pixman_region32_init(&source->prev_hidden);
++		source->output_commit.notify = handle_output_commit;
++		wl_signal_add(&output->events.commit, &source->output_commit);
++		update_constraints(source);
++	}
++
++	wlr_ext_image_capture_source_v1_create_resource(&source->base, client, new_id);
++}
++
++static void
++handle_manager_destroy(struct wl_client *client, struct wl_resource *resource)
++{
++	wl_resource_destroy(resource);
++}
++
++static const struct ext_output_image_capture_source_manager_v1_interface manager_impl = {
++	.create_source = handle_create_source,
++	.destroy = handle_manager_destroy,
++};
++
++static void
++handle_bind(struct wl_client *client, void *data, uint32_t version, uint32_t id)
++{
++	struct wl_resource *resource = wl_resource_create(client,
++		&ext_output_image_capture_source_manager_v1_interface, version, id);
++	if (!resource) {
++		wl_client_post_no_memory(client);
++		return;
++	}
++	wl_resource_set_implementation(resource, &manager_impl, NULL, NULL);
++}
++
++void
++capture_init(void)
++{
++	if (!wl_global_create(server.wl_display,
++			&ext_output_image_capture_source_manager_v1_interface,
++			1, NULL, handle_bind)) {
++		wlr_log(WLR_ERROR, "unable to create output capture source manager");
++	}
++}
++
++void
++capture_set_view_hidden(struct view *view, bool hidden)
++{
++	if (view->hide_from_capture == hidden) {
++		return;
++	}
++	view->hide_from_capture = hidden;
++	wlr_scene_node_set_enabled(&view->capture.scene->tree.node, !hidden);
++
++	struct output *output;
++	wl_list_for_each(output, &server.outputs, link) {
++		if (output->wlr_output->enabled) {
++			wlr_output_update_needs_frame(output->wlr_output);
++		}
++	}
++}
+diff --git a/src/config/rcxml.c b/src/config/rcxml.c
+index 3276124..9395ea0 100644
+--- a/src/config/rcxml.c
++++ b/src/config/rcxml.c
+@@ -340,6 +340,8 @@ fill_window_rule(xmlNode *node)
+ 			set_property(content, &window_rule->fixed_position);
+ 		} else if (!strcasecmp(key, "allowAlwaysOnTop")) {
+ 			set_property(content, &window_rule->allow_always_on_top);
++		} else if (!strcasecmp(key, "hideFromCapture")) {
++			set_property(content, &window_rule->hide_from_capture);
+ 		}
+ 	}
+ 
+diff --git a/src/meson.build b/src/meson.build
+index 05163cf..91cc64c 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -1,6 +1,7 @@
+ labwc_sources = files(
+   'action.c',
+   'buffer.c',
++  'capture.c',
+   'debug.c',
+   'desktop.c',
+   'dnd.c',
+diff --git a/src/server.c b/src/server.c
+index e1a91ec..9b586b1 100644
+--- a/src/server.c
++++ b/src/server.c
+@@ -52,6 +52,7 @@
+ #endif
+ 
+ #include "action.h"
++#include "capture.h"
+ #include "common/macros.h"
+ #include "common/mem.h"
+ #include "common/nag.h"
+@@ -461,6 +462,12 @@ handle_toplevel_capture_request(struct wl_listener *listener, void *data)
+ 	assert(view);
+ 	wlr_log(WLR_INFO, "Capturing toplevel %s", view->app_id);
+ 
++	if (view->hide_from_capture) {
++		wlr_ext_foreign_toplevel_image_capture_source_manager_v1_request_accept(
++			request, NULL);
++		return;
++	}
++
+ 	if (!view->capture.source) {
+ 		view->capture.source = wlr_ext_image_capture_source_v1_create_with_scene_node(
+ 			&view->capture.scene->tree.node, server.wl_event_loop,
+@@ -754,7 +761,7 @@ server_init(void)
+ 	wlr_export_dmabuf_manager_v1_create(server.wl_display);
+ 	wlr_screencopy_manager_v1_create(server.wl_display);
+ 	wlr_ext_image_copy_capture_manager_v1_create(server.wl_display, 1);
+-	wlr_ext_output_image_capture_source_manager_v1_create(server.wl_display, 1);
++	capture_init();
+ 
+ 	server.toplevel_capture.manager =
+ 		wlr_ext_foreign_toplevel_image_capture_source_manager_v1_create(
+diff --git a/src/view-impl-common.c b/src/view-impl-common.c
+index 092ca55..6d6805f 100644
+--- a/src/view-impl-common.c
++++ b/src/view-impl-common.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /* view-impl-common.c: common code for shell view->impl functions */
+ #include "view-impl-common.h"
++#include "capture.h"
+ #include "foreign-toplevel/foreign.h"
+ #include "labwc.h"
+ #include "view.h"
+@@ -18,6 +19,10 @@ view_impl_map(struct view *view)
+ 
+ 	if (!view->been_mapped) {
+ 		window_rules_apply(view, LAB_WINDOW_RULE_EVENT_ON_FIRST_MAP);
++		if (window_rules_get_property(view, "hideFromCapture")
++				== LAB_PROP_TRUE) {
++			capture_set_view_hidden(view, true);
++		}
+ 	}
+ 
+ 	/*
+diff --git a/src/window-rules.c b/src/window-rules.c
+index 4118ae3..6e57c3d 100644
+--- a/src/window-rules.c
++++ b/src/window-rules.c
+@@ -114,6 +114,10 @@ window_rules_get_property(struct view *view, const char *property)
+ 					&& !strcasecmp(property, "allowAlwaysOnTop")) {
+ 				return rule->allow_always_on_top;
+ 			}
++			if (rule->hide_from_capture
++					&& !strcasecmp(property, "hideFromCapture")) {
++				return rule->hide_from_capture;
++			}
+ 		}
+ 	}
+ 	return LAB_PROP_UNSPECIFIED;

@@ -117,6 +117,7 @@ for package in \
 	wlr-randr \
 	xdg-desktop-portal \
 	xdg-desktop-portal-gtk \
+	xdg-desktop-portal-wlr \
 	xf86-input-libinput \
 ; do
 bash $SCRIPT_PATH/extras/${package}/${package}.SlackBuild || exit 1
