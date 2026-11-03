@@ -181,6 +181,9 @@ sed -i "s|try_first_pass use_authtok||g" $MODULE_PATH/packages/etc/pam.d/system-
 sed -i "s|,mit-krb5-gssapi||g" $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/pkgconfig/libcurl.pc
 sed -i "s|,libcares||g" $MODULE_PATH/packages/usr/lib${SYSTEM_BITS}/pkgconfig/libcurl.pc
 
+sed -i 's|^WGETFLAGS=.*|WGETFLAGS=""|g' $MODULE_PATH/packages/etc/slackpkg/slackpkg.conf || exit 1
+grep -q '^WGETFLAGS=""$' $MODULE_PATH/packages/etc/slackpkg/slackpkg.conf || { echo "Failed to set slackpkg WGETFLAGS."; exit 1; }
+
 ### set NetworkManager to use internal dhcp
 
 sed -i "s|dhcp=dhclient|dhcp=internal|g" $MODULE_PATH/packages/etc/NetworkManager/NetworkManager.conf || exit 1
