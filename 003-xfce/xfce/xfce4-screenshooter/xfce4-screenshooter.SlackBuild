@@ -19,6 +19,10 @@ wget https://gitlab.xfce.org/apps/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+for i in $CWD/*.patch; do
+	patch -p1 < "$i"
+done
+
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects -ffast-math" \
 meson setup \
