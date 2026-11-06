@@ -31,7 +31,7 @@ cmake -B build -S . \
 	-DKDE_INSTALL_LIBEXECDIR=/usr/libexec \
 	-DKDE_INSTALL_SYSCONFDIR=/etc \
 	-DKDE_INSTALL_USE_QT_SYS_PATHS=ON \
-	-DMOZILLA_DIR=/usr/lib${SYSTEM_BITS}/mozilla
+	-DMOZILLA_DIR=/usr/lib/mozilla
 
 DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
