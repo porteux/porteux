@@ -44,8 +44,6 @@ for package in \
 	lightdm \
 	vte \
 	libnma \
-	libfm-extra \
-	menu-cache \
 ; do
 bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
@@ -84,6 +82,8 @@ rm $MODULE_PATH/packages/libfm-extra*.txz
 
 # lxde packages
 for package in \
+	libfm-extra \
+	menu-cache \
 	libfm \
 	pcmanfm \
 	lxterminal \

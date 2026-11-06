@@ -111,8 +111,6 @@ for package in \
 	lightdm \
 	extra-cmake-modules \
 	plasma-wayland-protocols \
-	libfm-extra \
-	menu-cache \
 	polkit-qt6-1 \
 ; do
 bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1

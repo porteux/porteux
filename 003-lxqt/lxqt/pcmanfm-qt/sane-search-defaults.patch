@@ -1,7 +1,7 @@
 diff --git a/pcmanfm/settings.cpp b/pcmanfm/settings.cpp
 --- a/pcmanfm/settings.cpp
 +++ b/pcmanfm/settings.cpp
-@@ -356,12 +356,12 @@
+@@ -369,12 +369,12 @@
      settings.endGroup();
  
      settings.beginGroup(QStringLiteral("Search"));
@@ -17,6 +17,6 @@ diff --git a/pcmanfm/settings.cpp b/pcmanfm/settings.cpp
 +    searchContentRegexp_ = settings.value(QStringLiteral("searchContentRegexp"), false).toBool();
 +    searchRecursive_ = settings.value(QStringLiteral("searchRecursive"), true).toBool();
 +    searchhHidden_ = settings.value(QStringLiteral("searchhHidden"), true).toBool();
+     incrementalSearch_ = settings.value(QStringLiteral("IncrementalSearch"), false).toBool();
      maxSearchHistory_ = std::clamp(settings.value(QStringLiteral("MaxSearchHistory"), 0).toInt(), 0, 50);
      namePatterns_ = settings.value(QStringLiteral("NamePatterns")).toStringList();
-     namePatterns_.removeDuplicates();
