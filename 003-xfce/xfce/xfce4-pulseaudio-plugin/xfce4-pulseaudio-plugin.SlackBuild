@@ -19,6 +19,10 @@ wget https://gitlab.xfce.org/panel-plugins/${PRGNAM}/-/archive/${DOWNLOADVERSION
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+for i in $CWD/*.patch; do
+	patch -p1 < "$i"
+done
+
 sed -i "s|reconnect in 5 seconds|reconnect in 1 second|g" panel-plugin/pulseaudio-volume.c
 sed -i "s|(5, pulseaudio_volume_reconnect_timeout, volume)|(1, pulseaudio_volume_reconnect_timeout, volume)|g" panel-plugin/pulseaudio-volume.c
 grep -q "reconnect in 1 second" panel-plugin/pulseaudio-volume.c

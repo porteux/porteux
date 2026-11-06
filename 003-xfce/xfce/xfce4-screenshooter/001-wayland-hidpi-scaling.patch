@@ -1,0 +1,163 @@
+Fix Wayland screenshots on scaled (HiDPI) outputs.
+
+From 55798b8bbcdb73d76c3bb16a29c69e46652525b9 Mon Sep 17 00:00:00 2001
+From: Andre Miranda <andreldm@xfce.org>
+Date: Wed, 15 Apr 2026 23:52:24 +0200
+Subject: [PATCH] wayland: Take scale into consideration
+
+---
+ lib/screenshooter-capture-wayland.c | 62 ++++++++++++++++++++++-------
+ 1 file changed, 47 insertions(+), 15 deletions(-)
+
+diff --git a/lib/screenshooter-capture-wayland.c b/lib/screenshooter-capture-wayland.c
+index 461bcf5c..872d7378 100644
+--- a/lib/screenshooter-capture-wayland.c
++++ b/lib/screenshooter-capture-wayland.c
+@@ -89,7 +89,7 @@ static void handle_image_copy_capture_frame_failed (void *data, struct ext_image
+ static void screenshooter_free_client_data (ClientData *client_data);
+ static void screenshooter_free_output_data (gpointer data);
+ static gboolean screenshooter_initialize_client_data (ClientData *client_data);
+-static GdkPixbuf *screenshooter_compose_screenshot (GList *outputs);
++static GdkPixbuf *screenshooter_compose_screenshot (GList *outputs, gdouble *out_scale);
+ static gboolean screenshooter_is_shm_format_supported (enum wl_shm_format format);
+ static gint screenshooter_get_bpp_from_format (enum wl_shm_format format);
+ 
+@@ -599,19 +599,30 @@ static GdkPixbuf
+ 
+ 
+ GdkPixbuf
+-*screenshooter_compose_screenshot (GList *outputs)
++*screenshooter_compose_screenshot (GList *outputs, gdouble *out_scale)
+ {
+   GdkRectangle geometry;
+   GdkPixbuf *dest = NULL;
++  gdouble max_scale = 1.0;
+   int max_width = 0, max_height = 0;
+ 
+-  /* find the maximum dimensions */
++  /* find the maximum fractional scale across all outputs */
+   for (GList *iter = outputs; iter != NULL; iter = iter->next)
+     {
++      gdouble scale;
+       OutputData *output = (OutputData *) iter->data;
+       gdk_monitor_get_geometry (output->monitor, &geometry);
+-      max_width = MAX (max_width, geometry.x + geometry.width);
+-      max_height = MAX (max_height, geometry.y + geometry.height);
++      scale = (gdouble) output->width / geometry.width;
++      max_scale = MAX (max_scale, scale);
++    }
++
++  /* find the maximum dimensions in physical pixels */
++  for (GList *iter = outputs; iter != NULL; iter = iter->next)
++    {
++      OutputData *output = (OutputData *) iter->data;
++      gdk_monitor_get_geometry (output->monitor, &geometry);
++      max_width = MAX (max_width, (int) ((geometry.x + geometry.width) * max_scale));
++      max_height = MAX (max_height, (int) ((geometry.y + geometry.height) * max_scale));
+     }
+ 
+   /* create a new destination pixbuf */
+@@ -630,20 +641,35 @@ GdkPixbuf
+     {
+       GdkPixbuf *pixbuf;
+       OutputData *output = (OutputData *) iter->data;
++      gdouble composite_scale;
++      int dest_x, dest_y, dest_w, dest_h;
++
+       if (output->skip_composition)
+         continue;
++
+       pixbuf = screenshooter_convert_buffer_to_pixbuf (output);
+       gdk_monitor_get_geometry (output->monitor, &geometry);
++
++      /* scale to normalize this output's buffer to the global physical scale */
++      composite_scale = max_scale * geometry.width / output->width;
++      dest_x = (int) (geometry.x * max_scale);
++      dest_y = (int) (geometry.y * max_scale);
++      dest_w = (int) (geometry.width * max_scale);
++      dest_h = (int) (geometry.height * max_scale);
++
+       gdk_pixbuf_composite (pixbuf, dest,
+-                            geometry.x, geometry.y,
+-                            geometry.width, geometry.height,
+-                            geometry.x, geometry.y,
+-                            1.0, 1.0,
++                            dest_x, dest_y,
++                            dest_w, dest_h,
++                            dest_x, dest_y,
++                            composite_scale, composite_scale,
+                             GDK_INTERP_BILINEAR,
+                             255);
+       g_object_unref (pixbuf);
+     }
+ 
++  if (out_scale != NULL)
++    *out_scale = max_scale;
++
+   return dest;
+ }
+ 
+@@ -651,7 +677,8 @@ GdkPixbuf
+ 
+ static GdkPixbuf
+ *screenshooter_capture_fullscreen (gboolean show_mouse,
+-                                   GdkRectangle* selection_region)
++                                   GdkRectangle* selection_region,
++                                   gdouble *out_scale)
+ {
+   int n_monitors;
+   gboolean failure = FALSE;
+@@ -661,7 +688,7 @@ static GdkPixbuf
+ 
+   TRACE ("Get the screenshot of the entire screen");
+ 
+-  /* initializate the wayland client */
++  /* initialize the wayland client */
+   if (!screenshooter_initialize_client_data (&client_data))
+     {
+       screenshooter_free_client_data (&client_data);
+@@ -740,7 +767,7 @@ static GdkPixbuf
+   if (failure)
+     screenshooter_error (_("Failed to capture"));
+   else
+-    screenshot = screenshooter_compose_screenshot (outputs);
++    screenshot = screenshooter_compose_screenshot (outputs, out_scale);
+ 
+   screenshooter_free_client_data (&client_data);
+   g_list_free_full (outputs, screenshooter_free_output_data);
+@@ -756,6 +783,7 @@ static GdkPixbuf
+ {
+   GdkRectangle region;
+   GdkPixbuf *screenshot = NULL, *clipped;
++  gdouble scale = 1.0;
+ 
+   if (G_UNLIKELY (!screenshooter_select_region (&region)))
+     return NULL;
+@@ -767,9 +795,13 @@ static GdkPixbuf
+   if (delay > 0)
+     sleep (delay);
+ 
+-  screenshot = screenshooter_capture_fullscreen (show_mouse, &region);
++  screenshot = screenshooter_capture_fullscreen (show_mouse, &region, &scale);
+ 
+-  clipped = gdk_pixbuf_new_subpixbuf (screenshot, region.x, region.y, region.width, region.height);
++  clipped = gdk_pixbuf_new_subpixbuf (screenshot,
++                                      (int) (region.x * scale),
++                                      (int) (region.y * scale),
++                                      (int) (region.width * scale),
++                                      (int) (region.height * scale));
+   g_object_unref (screenshot);
+ 
+   return clipped;
+@@ -792,7 +824,7 @@ GdkPixbuf
+   if (region == FULLSCREEN)
+     {
+       TRACE ("Get the screenshot of the entire screen");
+-      screenshot = screenshooter_capture_fullscreen (show_mouse, NULL);
++      screenshot = screenshooter_capture_fullscreen (show_mouse, NULL, NULL);
+     }
+   else if (region == ACTIVE_WINDOW)
+     {
+-- 
+GitLab
+

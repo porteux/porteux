@@ -1,0 +1,498 @@
+diff -ruN -x b xfce4-power-manager-4.21.1/src/meson.build ../xfce4-power-manager-4.21.1/src/meson.build
+--- xfce4-power-manager-4.21.1/src/meson.build	2025-12-29 17:46:40.000000000 +0100
++++ xfce4-power-manager-4.21.1/src/meson.build	2026-11-06 13:45:34.054169300 +0100
+@@ -48,6 +48,8 @@
+     'xfpm-dpms-wayland.h',
+     'xfpm-idle-wayland.c',
+     'xfpm-idle-wayland.h',
++    'xfce-shortcuts-portal.c',
++    'xfce-shortcuts-portal.h',
+   ]
+ endif
+ 
+@@ -181,3 +183,10 @@
+     install_dir: get_option('prefix') / get_option('datadir') / 'polkit-1' / 'actions',
+   )
+ endif
++
++if enable_wayland
++  install_data(
++    'org.xfce.power-manager.desktop',
++    install_dir: get_option('prefix') / get_option('datadir') / 'applications',
++  )
++endif
+diff -ruN -x b xfce4-power-manager-4.21.1/src/org.xfce.power-manager.desktop ../xfce4-power-manager-4.21.1/src/org.xfce.power-manager.desktop
+--- xfce4-power-manager-4.21.1/src/org.xfce.power-manager.desktop	1970-01-01 01:00:00.000000000 +0100
++++ xfce4-power-manager-4.21.1/src/org.xfce.power-manager.desktop	2026-11-06 13:45:34.053169300 +0100
+@@ -0,0 +1,7 @@
++[Desktop Entry]
++Type=Application
++Name=Power Manager
++Comment=Power and brightness keys for the Xfce power manager
++Icon=org.xfce.powermanager
++Exec=true
++NoDisplay=true
+diff -ruN -x b xfce4-power-manager-4.21.1/src/xfce-shortcuts-portal.c ../xfce4-power-manager-4.21.1/src/xfce-shortcuts-portal.c
+--- xfce4-power-manager-4.21.1/src/xfce-shortcuts-portal.c	1970-01-01 01:00:00.000000000 +0100
++++ xfce4-power-manager-4.21.1/src/xfce-shortcuts-portal.c	2026-11-06 13:45:12.524168300 +0100
+@@ -0,0 +1,298 @@
++#include "xfce-shortcuts-portal.h"
++
++#include <gio/gio.h>
++
++#define PORTAL_BUS_NAME "org.freedesktop.portal.Desktop"
++#define PORTAL_PATH "/org/freedesktop/portal/desktop"
++#define SHORTCUTS_INTERFACE "org.freedesktop.portal.GlobalShortcuts"
++
++struct _XfceShortcutsPortal
++{
++  gchar                      *app_id;
++  XfceShortcutsPortalHandler  handler;
++  gpointer                    user_data;
++  GDBusConnection            *connection;
++  GCancellable               *cancellable;
++  gchar                     **keys;
++  gchar                      *session;
++  gboolean                    ready;
++  guint                       generation;
++  guint                       token;
++  guint                       activated_id;
++  guint                       response_id;
++};
++
++static void   on_connected        (GObject      *source,
++                                   GAsyncResult *result,
++                                   gpointer      data);
++static void   on_registered       (GObject      *source,
++                                   GAsyncResult *result,
++                                   gpointer      data);
++static void   on_activated        (GDBusConnection *connection,
++                                   const gchar     *sender,
++                                   const gchar     *path,
++                                   const gchar     *interface,
++                                   const gchar     *signal,
++                                   GVariant        *parameters,
++                                   gpointer         data);
++static void   on_response         (GDBusConnection *connection,
++                                   const gchar     *sender,
++                                   const gchar     *path,
++                                   const gchar     *interface,
++                                   const gchar     *signal,
++                                   GVariant        *parameters,
++                                   gpointer         data);
++static void   start_session       (XfceShortcutsPortal *portal);
++static void   close_session       (XfceShortcutsPortal *portal);
++static void   bind_keys           (XfceShortcutsPortal *portal);
++static gchar *next_token          (XfceShortcutsPortal *portal);
++static void   watch_response      (XfceShortcutsPortal *portal,
++                                   const gchar         *token);
++static void   stop_watching       (XfceShortcutsPortal *portal);
++
++XfceShortcutsPortal *
++xfce_shortcuts_portal_new (const gchar                *app_id,
++                           XfceShortcutsPortalHandler  handler,
++                           gpointer                    user_data)
++{
++  XfceShortcutsPortal *portal = g_new0 (XfceShortcutsPortal, 1);
++  gchar               *address;
++
++  portal->app_id = g_strdup (app_id);
++  portal->handler = handler;
++  portal->user_data = user_data;
++  portal->cancellable = g_cancellable_new ();
++  address = g_dbus_address_get_for_bus_sync (G_BUS_TYPE_SESSION, NULL, NULL);
++  if (address != NULL)
++    g_dbus_connection_new_for_address (address,
++                                       G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT
++                                       | G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION,
++                                       NULL, portal->cancellable, on_connected, portal);
++  g_free (address);
++  return portal;
++}
++
++void
++xfce_shortcuts_portal_set_keys (XfceShortcutsPortal *portal,
++                                const gchar * const *keys)
++{
++  g_strfreev (portal->keys);
++  portal->keys = g_strdupv ((gchar **) keys);
++  portal->generation++;
++  if (!portal->ready)
++    return;
++  close_session (portal);
++  if (portal->keys != NULL && portal->keys[0] != NULL)
++    start_session (portal);
++}
++
++void
++xfce_shortcuts_portal_free (XfceShortcutsPortal *portal)
++{
++  if (portal == NULL)
++    return;
++  g_cancellable_cancel (portal->cancellable);
++  if (portal->connection != NULL)
++    {
++      close_session (portal);
++      if (portal->activated_id != 0)
++        g_dbus_connection_signal_unsubscribe (portal->connection, portal->activated_id);
++      g_dbus_connection_flush_sync (portal->connection, NULL, NULL);
++      g_object_unref (portal->connection);
++    }
++  g_object_unref (portal->cancellable);
++  g_strfreev (portal->keys);
++  g_free (portal->app_id);
++  g_free (portal);
++}
++
++static void
++on_connected (GObject      *source,
++              GAsyncResult *result,
++              gpointer      data)
++{
++  XfceShortcutsPortal *portal = data;
++  GDBusConnection     *connection;
++
++  (void) source;
++  connection = g_dbus_connection_new_for_address_finish (result, NULL);
++  if (connection == NULL)
++    return;
++  portal->connection = connection;
++  portal->activated_id = g_dbus_connection_signal_subscribe (connection, PORTAL_BUS_NAME,
++                                                             SHORTCUTS_INTERFACE, "Activated",
++                                                             PORTAL_PATH, NULL,
++                                                             G_DBUS_SIGNAL_FLAGS_NONE,
++                                                             on_activated, portal, NULL);
++  g_dbus_connection_call (connection, PORTAL_BUS_NAME, PORTAL_PATH,
++                          "org.freedesktop.host.portal.Registry", "Register",
++                          g_variant_new ("(s@a{sv})", portal->app_id,
++                                         g_variant_new_array (G_VARIANT_TYPE ("{sv}"), NULL, 0)),
++                          NULL, G_DBUS_CALL_FLAGS_NONE, -1, portal->cancellable,
++                          on_registered, portal);
++}
++
++static void
++on_registered (GObject      *source,
++               GAsyncResult *result,
++               gpointer      data)
++{
++  XfceShortcutsPortal *portal = data;
++  GVariant            *reply;
++
++  reply = g_dbus_connection_call_finish (G_DBUS_CONNECTION (source), result, NULL);
++  if (reply != NULL)
++    g_variant_unref (reply);
++  if (g_cancellable_is_cancelled (portal->cancellable))
++    return;
++  portal->ready = TRUE;
++  if (portal->keys != NULL && portal->keys[0] != NULL)
++    start_session (portal);
++}
++
++static void
++on_activated (GDBusConnection *connection,
++              const gchar     *sender,
++              const gchar     *path,
++              const gchar     *interface,
++              const gchar     *signal,
++              GVariant        *parameters,
++              gpointer         data)
++{
++  XfceShortcutsPortal *portal = data;
++  const gchar         *session;
++  const gchar         *key;
++
++  (void) connection;
++  (void) sender;
++  (void) path;
++  (void) interface;
++  (void) signal;
++  g_variant_get (parameters, "(&o&st@a{sv})", &session, &key, NULL, NULL);
++  if (g_strcmp0 (session, portal->session) == 0)
++    portal->handler (key, portal->user_data);
++}
++
++static void
++on_response (GDBusConnection *connection,
++             const gchar     *sender,
++             const gchar     *path,
++             const gchar     *interface,
++             const gchar     *signal,
++             GVariant        *parameters,
++             gpointer         data)
++{
++  XfceShortcutsPortal *portal = data;
++  guint32              response;
++  GVariant            *results;
++  const gchar         *session = NULL;
++
++  (void) connection;
++  (void) sender;
++  (void) path;
++  (void) interface;
++  (void) signal;
++  stop_watching (portal);
++  g_variant_get (parameters, "(u@a{sv})", &response, &results);
++  if (response == 0 && portal->session == NULL
++      && g_variant_lookup (results, "session_handle", "&s", &session))
++    {
++      portal->session = g_strdup (session);
++      bind_keys (portal);
++    }
++  g_variant_unref (results);
++}
++
++static void
++start_session (XfceShortcutsPortal *portal)
++{
++  GVariantBuilder  options;
++  gchar           *token = next_token (portal);
++  gchar           *session_token = next_token (portal);
++
++  watch_response (portal, token);
++  g_variant_builder_init (&options, G_VARIANT_TYPE_VARDICT);
++  g_variant_builder_add (&options, "{sv}", "handle_token", g_variant_new_string (token));
++  g_variant_builder_add (&options, "{sv}", "session_handle_token",
++                         g_variant_new_string (session_token));
++  g_dbus_connection_call (portal->connection, PORTAL_BUS_NAME, PORTAL_PATH,
++                          SHORTCUTS_INTERFACE, "CreateSession",
++                          g_variant_new ("(a{sv})", &options), NULL,
++                          G_DBUS_CALL_FLAGS_NONE, -1, portal->cancellable, NULL, NULL);
++  g_free (token);
++  g_free (session_token);
++}
++
++static void
++close_session (XfceShortcutsPortal *portal)
++{
++  stop_watching (portal);
++  if (portal->session == NULL)
++    return;
++  g_dbus_connection_call (portal->connection, PORTAL_BUS_NAME, portal->session,
++                          "org.freedesktop.portal.Session", "Close", NULL, NULL,
++                          G_DBUS_CALL_FLAGS_NONE, -1, NULL, NULL, NULL);
++  g_clear_pointer (&portal->session, g_free);
++}
++
++static void
++bind_keys (XfceShortcutsPortal *portal)
++{
++  GVariantBuilder  shortcuts;
++  GVariantBuilder  options;
++  gchar           *token = next_token (portal);
++
++  g_variant_builder_init (&shortcuts, G_VARIANT_TYPE ("a(sa{sv})"));
++  for (guint i = 0; portal->keys != NULL && portal->keys[i] != NULL; i++)
++    {
++      GVariantBuilder properties;
++
++      g_variant_builder_init (&properties, G_VARIANT_TYPE_VARDICT);
++      g_variant_builder_add (&properties, "{sv}", "description",
++                             g_variant_new_string (portal->keys[i]));
++      g_variant_builder_add (&properties, "{sv}", "preferred_trigger",
++                             g_variant_new_string (portal->keys[i]));
++      g_variant_builder_add (&shortcuts, "(sa{sv})", portal->keys[i], &properties);
++    }
++  g_variant_builder_init (&options, G_VARIANT_TYPE_VARDICT);
++  g_variant_builder_add (&options, "{sv}", "handle_token", g_variant_new_string (token));
++  g_dbus_connection_call (portal->connection, PORTAL_BUS_NAME, PORTAL_PATH,
++                          SHORTCUTS_INTERFACE, "BindShortcuts",
++                          g_variant_new ("(oa(sa{sv})sa{sv})", portal->session, &shortcuts, "",
++                                         &options),
++                          NULL, G_DBUS_CALL_FLAGS_NONE, -1, portal->cancellable, NULL, NULL);
++  g_free (token);
++}
++
++static gchar *
++next_token (XfceShortcutsPortal *portal)
++{
++  return g_strdup_printf ("xfce%u_%u", portal->generation, ++portal->token);
++}
++
++static void
++watch_response (XfceShortcutsPortal *portal,
++                const gchar         *token)
++{
++  gchar *sender = g_strdup (g_dbus_connection_get_unique_name (portal->connection) + 1);
++  gchar *path;
++
++  g_strdelimit (sender, ".", '_');
++  path = g_strdup_printf (PORTAL_PATH "/request/%s/%s", sender, token);
++  stop_watching (portal);
++  portal->response_id = g_dbus_connection_signal_subscribe (portal->connection, PORTAL_BUS_NAME,
++                                                            "org.freedesktop.portal.Request",
++                                                            "Response", path, NULL,
++                                                            G_DBUS_SIGNAL_FLAGS_NONE,
++                                                            on_response, portal, NULL);
++  g_free (path);
++  g_free (sender);
++}
++
++static void
++stop_watching (XfceShortcutsPortal *portal)
++{
++  if (portal->response_id != 0)
++    g_dbus_connection_signal_unsubscribe (portal->connection, portal->response_id);
++  portal->response_id = 0;
++}
+diff -ruN -x b xfce4-power-manager-4.21.1/src/xfce-shortcuts-portal.h ../xfce4-power-manager-4.21.1/src/xfce-shortcuts-portal.h
+--- xfce4-power-manager-4.21.1/src/xfce-shortcuts-portal.h	1970-01-01 01:00:00.000000000 +0100
++++ xfce4-power-manager-4.21.1/src/xfce-shortcuts-portal.h	2026-11-06 13:45:12.550168300 +0100
+@@ -0,0 +1,22 @@
++#ifndef XFCE_SHORTCUTS_PORTAL_H
++#define XFCE_SHORTCUTS_PORTAL_H
++
++#include <glib.h>
++
++G_BEGIN_DECLS
++
++typedef struct _XfceShortcutsPortal XfceShortcutsPortal;
++
++typedef void (*XfceShortcutsPortalHandler) (const gchar *key,
++                                            gpointer     user_data);
++
++XfceShortcutsPortal *xfce_shortcuts_portal_new      (const gchar                *app_id,
++                                                     XfceShortcutsPortalHandler  handler,
++                                                     gpointer                    user_data);
++void                 xfce_shortcuts_portal_set_keys (XfceShortcutsPortal        *portal,
++                                                     const gchar * const        *keys);
++void                 xfce_shortcuts_portal_free     (XfceShortcutsPortal        *portal);
++
++G_END_DECLS
++
++#endif
+diff -ruN -x b xfce4-power-manager-4.21.1/src/xfpm-button.c ../xfce4-power-manager-4.21.1/src/xfpm-button.c
+--- xfce4-power-manager-4.21.1/src/xfpm-button.c	2025-12-29 17:46:40.000000000 +0100
++++ xfce4-power-manager-4.21.1/src/xfpm-button.c	2026-11-06 13:45:34.027169300 +0100
+@@ -41,6 +41,14 @@
+ #include <gdk/gdkx.h>
+ #endif
+ 
++#ifdef ENABLE_WAYLAND
++#include "xfce-shortcuts-portal.h"
++
++#include <gdk/gdkwayland.h>
++
++#define XFPM_PORTAL_APP_ID "org.xfce.power-manager"
++#endif
++
+ static void
+ xfpm_button_finalize (GObject *object);
+ 
+@@ -53,6 +61,27 @@
+ } xfpm_key_map[N_XFPM_BUTTON_KEYS] = { { 0, 0 } };
+ #endif
+ 
++#ifdef ENABLE_WAYLAND
++static const struct
++{
++  const gchar *name;
++  XfpmButtonKey key;
++  guint16 mask;
++  gboolean brightness;
++} xfpm_portal_keys[] = {
++  { "XF86PowerOff", BUTTON_POWER_OFF, POWER_KEY, FALSE },
++  { "XF86Hibernate", BUTTON_HIBERNATE, HIBERNATE_KEY, FALSE },
++  { "XF86Suspend", BUTTON_HIBERNATE, HIBERNATE_KEY, FALSE },
++  { "XF86Sleep", BUTTON_SLEEP, SLEEP_KEY, FALSE },
++  { "XF86MonBrightnessUp", BUTTON_MON_BRIGHTNESS_UP, BRIGHTNESS_KEY_UP, TRUE },
++  { "XF86MonBrightnessDown", BUTTON_MON_BRIGHTNESS_DOWN, BRIGHTNESS_KEY_DOWN, TRUE },
++  { "XF86Battery", BUTTON_BATTERY, BATTERY_KEY, FALSE },
++  { "XF86KbdBrightnessUp", BUTTON_KBD_BRIGHTNESS_UP, KBD_BRIGHTNESS_KEY_UP, FALSE },
++  { "XF86KbdBrightnessDown", BUTTON_KBD_BRIGHTNESS_DOWN, KBD_BRIGHTNESS_KEY_DOWN, FALSE },
++  { "XF86KbdLightOnOff", BUTTON_KBD_BRIGHTNESS_CYCLE, KBD_BRIGHTNESS_CYCLE, FALSE },
++};
++#endif
++
+ struct XfpmButtonPrivate
+ {
+   GdkScreen *screen;
+@@ -60,6 +89,9 @@
+ #ifdef ENABLE_X11
+   Display *xdisplay;
+ #endif
++#ifdef ENABLE_WAYLAND
++  XfceShortcutsPortal *portal;
++#endif
+   GdkDisplay *gdisplay;
+   gboolean handle_brightness_keys;
+   guint16 mapped_buttons;
+@@ -357,6 +389,43 @@
+ 
+ #endif /* ENABLE_X11 */
+ 
++#ifdef ENABLE_WAYLAND
++static void
++xfpm_button_portal_key_pressed (const gchar *name,
++                                gpointer data)
++{
++  XfpmButton *button = XFPM_BUTTON (data);
++
++  for (guint i = 0; i < G_N_ELEMENTS (xfpm_portal_keys); i++)
++  {
++    if (g_strcmp0 (xfpm_portal_keys[i].name, name) == 0)
++    {
++      XFPM_DEBUG_ENUM (xfpm_portal_keys[i].key, XFPM_TYPE_BUTTON_KEY, "Key press");
++      g_signal_emit (G_OBJECT (button), signals[BUTTON_PRESSED], 0, xfpm_portal_keys[i].key);
++      return;
++    }
++  }
++}
++
++static void
++xfpm_button_update_portal (XfpmButton *button)
++{
++  const gchar *names[G_N_ELEMENTS (xfpm_portal_keys) + 1];
++  guint count = 0;
++
++  button->priv->mapped_buttons = 0;
++  for (guint i = 0; i < G_N_ELEMENTS (xfpm_portal_keys); i++)
++  {
++    if (xfpm_portal_keys[i].brightness && !button->priv->handle_brightness_keys)
++      continue;
++    names[count++] = xfpm_portal_keys[i].name;
++    button->priv->mapped_buttons |= xfpm_portal_keys[i].mask;
++  }
++  names[count] = NULL;
++  xfce_shortcuts_portal_set_keys (button->priv->portal, names);
++}
++#endif
++
+ static void
+ xfpm_button_class_init (XfpmButtonClass *klass)
+ {
+@@ -391,11 +460,25 @@
+   if (GDK_IS_X11_DISPLAY (gdk_display_get_default ()))
+     xfpm_button_setup (button);
+ #endif
++#ifdef ENABLE_WAYLAND
++  if (GDK_IS_WAYLAND_DISPLAY (gdk_display_get_default ()))
++  {
++    button->priv->portal = xfce_shortcuts_portal_new (XFPM_PORTAL_APP_ID,
++                                                      xfpm_button_portal_key_pressed,
++                                                      button);
++    xfpm_button_update_portal (button);
++  }
++#endif
+ }
+ 
+ static void
+ xfpm_button_finalize (GObject *object)
+ {
++#ifdef ENABLE_WAYLAND
++  XfpmButton *button = XFPM_BUTTON (object);
++
++  xfce_shortcuts_portal_free (button->priv->portal);
++#endif
+   G_OBJECT_CLASS (xfpm_button_parent_class)->finalize (object);
+ }
+ 
+@@ -462,5 +545,9 @@
+       }
+     }
+ #endif
++#ifdef ENABLE_WAYLAND
++    if (button->priv->portal != NULL)
++      xfpm_button_update_portal (button);
++#endif
+   }
+ }
