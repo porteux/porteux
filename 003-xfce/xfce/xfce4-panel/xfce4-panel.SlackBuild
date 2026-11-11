@@ -40,6 +40,10 @@ grep -q "define DEFAULT_POPDOWN_DELAY (10)" panel/panel-window.c
 grep -q "define DEFAULT_POPDOWN_SPEED (10)" panel/panel-window.c
 grep -q "define DEFAULT_POPUP_DELAY (10)" panel/panel-window.c
 
+for i in $CWD/*.patch; do
+	patch -p1 < "$i"
+done
+
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
 meson setup \

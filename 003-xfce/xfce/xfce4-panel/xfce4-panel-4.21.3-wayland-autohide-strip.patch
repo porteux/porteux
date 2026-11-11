@@ -1,0 +1,61 @@
+Fix lost clicks with auto-hide on Wayland
+
+With "Always auto-hide", moving the pointer fast to the screen edge and
+clicking often did nothing for several tries (seen on wlroots compositors,
+never on X11). While the panel was showing, it put its 3 px autohide strip
+back on top of itself. The pointer then entered the strip, which restarted
+the show, and the loop kept eating clicks.
+
+- size_allocate: don't show the autohide strip when the panel is already
+  shown during POPUP
+- autohide_queue: only turn a VISIBLE request into POPUP while the panel
+  window is hidden
+- autohide_drag_leave: ignore a leave from the strip once it is hidden;
+  GTK sends it late, after the panel is shown, and it set the state back
+  to HIDDEN
+
+All changes apply only when gtk_layer_is_supported(), so X11 is unchanged.
+
+--- a/panel/panel-window.c
++++ b/panel/panel-window.c
+@@ -1675,13 +1675,19 @@
+   gint w, h, x, y;
+   PanelBorders borders;
+   GtkWidget *child;
++  gboolean shown_on_layer;
+ 
+   gtk_widget_set_allocation (widget, alloc);
+   window->alloc = *alloc;
+ 
++  shown_on_layer = window->autohide_window != NULL
++                   && gtk_layer_is_supported ()
++                   && gtk_widget_get_visible (widget)
++                   && !gtk_widget_get_visible (window->autohide_window);
++
+   if (G_UNLIKELY (window->autohide_behavior != AUTOHIDE_BEHAVIOR_NEVER
+                   && (window->autohide_state == AUTOHIDE_HIDDEN
+-                      || window->autohide_state == AUTOHIDE_POPUP)))
++                      || (window->autohide_state == AUTOHIDE_POPUP && !shown_on_layer))))
+     {
+       gboolean autohide_running = window->autohide_timeout_id != 0 || window->popdown_progress != -G_MAXINT;
+ 
+@@ -3574,7 +3580,8 @@
+   /* set new autohide state */
+   if (new_state == AUTOHIDE_VISIBLE
+       && (window->autohide_state == AUTOHIDE_HIDDEN || window->autohide_state == AUTOHIDE_POPUP)
+-      && gtk_layer_is_supported ())
++      && gtk_layer_is_supported ()
++      && !gtk_widget_get_visible (GTK_WIDGET (window)))
+     /*
+      * For some reason, calling gtk_widget_queue_resize() below doesn't always trigger
+      * size_allocate() on wayland, whereas it seems to trigger it more reliably when calling
+@@ -3675,6 +3682,9 @@
+   panel_return_if_fail (PANEL_IS_WINDOW (window));
+   panel_return_if_fail (window->autohide_window == widget);
+ 
++  if (gtk_layer_is_supported () && !gtk_widget_get_visible (window->autohide_window))
++    return;
++
+   /* we left the autohide window before the panel was shown, stop the queue */
+   panel_window_autohide_queue (window, AUTOHIDE_HIDDEN);
+ }
