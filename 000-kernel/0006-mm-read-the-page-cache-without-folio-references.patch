@@ -22,81 +22,49 @@ Squashed from https://lore.kernel.org/lkml/20261019154913.1765974-1-kas@kernel.o
 - mm/shmem: count accesses to a folio the way filemap_read() does
 - mm/shmem: read without folio references
 - mm/filemap: add a debugfs switch for lockless page cache reads
-- f2fs: don't use truncate_inode_pages_final() on live inodes
 - mm/migrate: copy PG_rcu_free to the destination folio
 - mm: fail boot if the rcu_free workqueue cannot be created
 ---
- fs/f2fs/file.c                 |   2 +-
- fs/f2fs/segment.c              |   2 +-
- fs/fuse/dev.c                  |   4 +
- fs/splice.c                    |  51 -------
- include/linux/mmzone.h         |   1 +
- include/linux/page-flags.h     |  24 +++
- include/linux/pagemap.h        |  12 ++
- include/linux/swap.h           |   2 +-
- include/linux/vm_event_item.h  |   2 +
- include/trace/events/mmflags.h |   7 +
- mm/Kconfig                     |  15 ++
- mm/filemap.c                   | 337 +++++++++++++++++++++++++++++++++++++++--
- mm/folio.c                     |  46 ++++--
- mm/huge_memory.c               |   1 +
- mm/internal.h                  |   3 +
- mm/memory-failure.c            |  28 ++++
- mm/memory_hotplug.c            |   7 +
- mm/migrate.c                   |   2 +
- mm/page_alloc.c                | 285 +++++++++++++++++++++++++++++++++-
- mm/page_alloc.h                |   1 +
- mm/shmem.c                     |  22 ++-
- mm/show_mem.c                  |   9 +-
- mm/vmstat.c                    |   6 +
- 23 files changed, 775 insertions(+), 94 deletions(-)
-
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index edc352569..e895b8af1 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -2448,7 +2448,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp, bool truncate)
- 	fi->original_i_size = isize;
- 	if (truncate) {
- 		set_inode_flag(inode, FI_ATOMIC_REPLACE);
--		truncate_inode_pages_final(inode->i_mapping);
-+		truncate_inode_pages(inode->i_mapping, 0);
- 		f2fs_i_size_write(inode, 0);
- 		isize = 0;
- 	}
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 63b712d3d..97b87a32d 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -194,7 +194,7 @@ void f2fs_abort_atomic_write(struct inode *inode, bool clean)
- 		return;
- 
- 	if (clean)
--		truncate_inode_pages_final(inode->i_mapping);
-+		truncate_inode_pages(inode->i_mapping, 0);
- 
- 	release_atomic_write_cnt(inode);
- 	clear_inode_flag(inode, FI_ATOMIC_COMMITTED);
-diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
-index 4fec31fc0..526929c7b 100644
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -1152,6 +1152,10 @@ static int fuse_try_move_folio(struct fuse_copy_state *cs, struct folio **foliop
- 
- 	newfolio = page_folio(buf->page);
+ fs/fuse/dev.c                  |    4 
+ fs/splice.c                    |   51 ------
+ include/linux/mmzone.h         |    1 
+ include/linux/page-flags.h     |   24 +++
+ include/linux/pagemap.h        |   12 +
+ include/linux/swap.h           |    2 
+ include/linux/vm_event_item.h  |    2 
+ include/trace/events/mmflags.h |    7 +
+ mm/filemap.c                   |  337 +++++++++++++++++++++++++++++++++++++++-
+ mm/folio.c                     |   42 +++--
+ mm/huge_memory.c               |    1 
+ mm/internal.h                  |    3 
+ mm/Kconfig                     |   15 ++
+ mm/memory-failure.c            |   28 +++
+ mm/memory_hotplug.c            |    7 +
+ mm/migrate.c                   |    2 
+ mm/page_alloc.c                |  285 +++++++++++++++++++++++++++++++++-
+ mm/page_alloc.h                |    1 
+ mm/shmem.c                     |   22 ++-
+ mm/show_mem.c                  |    9 +
+ mm/vmstat.c                    |    6 +
+ 21 files changed, 769 insertions(+), 92 deletions(-)
+diff -ruN a/fs/fuse/dev.c b/fs/fuse/dev.c
+--- a/fs/fuse/dev.c	2026-11-09 13:35:56.467940639 +0100
++++ b/fs/fuse/dev.c	2026-11-09 13:36:14.429372251 +0100
+@@ -1156,6 +1156,10 @@
+ 	if (folio_test_large(newfolio))
+ 		goto out_fallback;
  
 +	/* A lockless page cache read may still be copying from it */
 +	if (folio_test_rcu_free(newfolio))
 +		goto out_fallback_unlock;
 +
- 	folio_clear_uptodate(newfolio);
- 	folio_clear_mappedtodisk(newfolio);
- 
-diff --git a/fs/splice.c b/fs/splice.c
-index 9d8f63e2f..0133c2348 100644
---- a/fs/splice.c
-+++ b/fs/splice.c
-@@ -55,56 +55,6 @@ static noinline void pipe_clear_nowait(struct file *file)
+ 	/*
+ 	 * This is a new and locked page, it shouldn't be mapped or
+ 	 * have any special flags on it
+diff -ruN a/fs/splice.c b/fs/splice.c
+--- a/fs/splice.c	2026-11-09 13:35:56.474096803 +0100
++++ b/fs/splice.c	2026-11-09 13:35:56.588944088 +0100
+@@ -55,56 +55,6 @@
  	} while (!try_cmpxchg(&file->f_mode, &fmode, fmode & ~FMODE_NOWAIT));
  }
  
@@ -153,7 +121,7 @@ index 9d8f63e2f..0133c2348 100644
  static void page_cache_pipe_buf_release(struct pipe_inode_info *pipe,
  					struct pipe_buffer *buf)
  {
-@@ -155,7 +105,6 @@ static int page_cache_pipe_buf_confirm(struct pipe_inode_info *pipe,
+@@ -155,7 +105,6 @@
  const struct pipe_buf_operations page_cache_pipe_buf_ops = {
  	.confirm	= page_cache_pipe_buf_confirm,
  	.release	= page_cache_pipe_buf_release,
@@ -161,11 +129,10 @@ index 9d8f63e2f..0133c2348 100644
  	.get		= generic_pipe_buf_get,
  };
  
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 94f9c3ff5..3336b9e5e 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -228,6 +228,7 @@ enum zone_stat_item {
+diff -ruN a/include/linux/mmzone.h b/include/linux/mmzone.h
+--- a/include/linux/mmzone.h	2026-11-09 13:35:56.480270471 +0100
++++ b/include/linux/mmzone.h	2026-11-09 13:35:56.589023637 +0100
+@@ -209,6 +209,7 @@
  	NR_ZSPAGES,		/* allocated in zsmalloc */
  #endif
  	NR_FREE_CMA_PAGES,
@@ -173,11 +140,10 @@ index 94f9c3ff5..3336b9e5e 100644
  #ifdef CONFIG_UNACCEPTED_MEMORY
  	NR_UNACCEPTED,
  #endif
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 7a863572a..4916b5713 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -111,6 +111,9 @@ enum pageflags {
+diff -ruN a/include/linux/page-flags.h b/include/linux/page-flags.h
+--- a/include/linux/page-flags.h	2026-11-09 13:35:56.488316871 +0100
++++ b/include/linux/page-flags.h	2026-11-09 13:35:56.589090502 +0100
+@@ -107,6 +107,9 @@
  	PG_swapbacked,		/* Page is backed by RAM/swap */
  	PG_unevictable,		/* Page is "unevictable"  */
  	PG_dropbehind,		/* drop pages on IO completion */
@@ -187,7 +153,7 @@ index 7a863572a..4916b5713 100644
  #ifdef CONFIG_MMU
  	PG_mlocked,		/* Page is vma mlocked */
  #endif
-@@ -602,6 +605,27 @@ FOLIO_FLAG(dropbehind, FOLIO_HEAD_PAGE)
+@@ -606,6 +609,27 @@
  	FOLIO_TEST_CLEAR_FLAG(dropbehind, FOLIO_HEAD_PAGE)
  	__FOLIO_SET_FLAG(dropbehind, FOLIO_HEAD_PAGE)
  
@@ -215,11 +181,10 @@ index 7a863572a..4916b5713 100644
  #ifdef CONFIG_HIGHMEM
  /*
   * Must use a macro here due to header dependency issues. page_zone() is not
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 0adfa6605..6c7f58803 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -210,6 +210,7 @@ enum mapping_flags {
+diff -ruN a/include/linux/pagemap.h b/include/linux/pagemap.h
+--- a/include/linux/pagemap.h	2026-11-09 13:35:56.493712689 +0100
++++ b/include/linux/pagemap.h	2026-11-09 13:35:56.589153521 +0100
+@@ -209,6 +209,7 @@
  	AS_WRITEBACK_MAY_DEADLOCK_ON_RECLAIM = 9,
  	AS_KERNEL_FILE = 10,	/* mapping for a fake kernel file that shouldn't
  				   account usage to user cgroups */
@@ -227,7 +192,7 @@ index 0adfa6605..6c7f58803 100644
  	/* Bits 16-25 are used for FOLIO_ORDER */
  	AS_FOLIO_ORDER_BITS = 5,
  	AS_FOLIO_ORDER_MIN = 16,
-@@ -269,6 +270,17 @@ static inline bool mapping_unevictable(const struct address_space *mapping)
+@@ -268,6 +269,17 @@
  	return mapping && test_bit(AS_UNEVICTABLE, &mapping->flags);
  }
  
@@ -245,11 +210,10 @@ index 0adfa6605..6c7f58803 100644
  static inline void mapping_set_exiting(struct address_space *mapping)
  {
  	set_bit(AS_EXITING, &mapping->flags);
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 5658a1634..67aa5271a 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -295,7 +295,7 @@ extern unsigned long totalreserve_pages;
+diff -ruN a/include/linux/swap.h b/include/linux/swap.h
+--- a/include/linux/swap.h	2026-11-09 13:35:56.498608230 +0100
++++ b/include/linux/swap.h	2026-11-09 13:35:56.589201180 +0100
+@@ -313,7 +313,7 @@
  
  /* linux/mm/folio.c */
  void folio_add_lru(struct folio *folio);
@@ -258,11 +222,10 @@ index 5658a1634..67aa5271a 100644
  void lru_add_drain_all(void);
  
  enum lru_cache_drained {
-diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-index 2628ccda0..c1a63f070 100644
---- a/include/linux/vm_event_item.h
-+++ b/include/linux/vm_event_item.h
-@@ -36,6 +36,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+diff -ruN a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+--- a/include/linux/vm_event_item.h	2026-11-09 13:35:56.504078088 +0100
++++ b/include/linux/vm_event_item.h	2026-11-09 13:35:56.589224914 +0100
+@@ -36,6 +36,8 @@
  		FOR_ALL_ZONES(ALLOCSTALL)
  		FOR_ALL_ZONES(PGSCAN_SKIP)
  		PGFREE, PGACTIVATE, PGDEACTIVATE, PGLAZYFREE,
@@ -271,11 +234,10 @@ index 2628ccda0..c1a63f070 100644
  		PGFAULT, PGMAJFAULT,
  		PGLAZYFREED,
  		PGREUSE,
-diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
-index 935893e5e..47c3411a7 100644
---- a/include/trace/events/mmflags.h
-+++ b/include/trace/events/mmflags.h
-@@ -117,6 +117,12 @@ TRACE_DEFINE_ENUM(___GFP_LAST_BIT);
+diff -ruN a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
+--- a/include/trace/events/mmflags.h	2026-11-09 13:35:56.510061038 +0100
++++ b/include/trace/events/mmflags.h	2026-11-09 13:35:56.589246305 +0100
+@@ -117,6 +117,12 @@
  #define IF_HAVE_PG_IDLE(_name)
  #endif
  
@@ -288,7 +250,7 @@ index 935893e5e..47c3411a7 100644
  #ifdef CONFIG_ARCH_USES_PG_ARCH_2
  #define IF_HAVE_PG_ARCH_2(_name) ,{1UL << PG_##_name, __stringify(_name)}
  #else
-@@ -152,6 +158,7 @@ TRACE_DEFINE_ENUM(___GFP_LAST_BIT);
+@@ -152,6 +158,7 @@
  	DEF_PAGEFLAG_NAME(swapbacked),					\
  	DEF_PAGEFLAG_NAME(unevictable),					\
  	DEF_PAGEFLAG_NAME(dropbehind)					\
@@ -296,36 +258,9 @@ index 935893e5e..47c3411a7 100644
  IF_HAVE_PG_MLOCK(mlocked)						\
  IF_HAVE_PG_HWPOISON(hwpoison)						\
  IF_HAVE_PG_IDLE(idle)							\
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 604c58199..1ad1cb796 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -718,6 +718,21 @@ config PCP_BATCH_SCALE_MAX
- 	  latency.  This option sets the upper limit of scale factor to limit
- 	  the maximum latency.
- 
-+config PAGE_RCU_FREE
-+	def_bool 64BIT
-+	help
-+	  Reads from the page cache can copy from folios that are read
-+	  again and again without taking a reference on them, so small
-+	  reads of one file from many CPUs do not contend on the folio's
-+	  reference count.  The cost is that memory freed from such
-+	  folios becomes reusable only after an RCU grace period.
-+
-+	  64-bit only: it takes a page flag, and those are scarce on
-+	  32-bit.
-+
-+	  Writing 0 to lockless_page_cache_read in debugfs turns these
-+	  reads off.
-+
- config PHYS_ADDR_T_64BIT
- 	def_bool 64BIT
- 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 00fd89cf6..7021ed2ab 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
+diff -ruN a/mm/filemap.c b/mm/filemap.c
+--- a/mm/filemap.c	2026-11-09 13:35:56.521972165 +0100
++++ b/mm/filemap.c	2026-11-09 13:35:56.589404371 +0100
 @@ -48,6 +48,7 @@
  #include <linux/rcupdate_wait.h>
  #include <linux/sched/mm.h>
@@ -334,7 +269,7 @@ index 00fd89cf6..7021ed2ab 100644
  #include <linux/pgalloc.h>
  
  #include <asm/tlbflush.h>
-@@ -138,6 +139,9 @@ static void page_cache_delete(struct address_space *mapping,
+@@ -138,6 +139,9 @@
  	nr = folio_nr_pages(folio);
  
  	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
@@ -344,7 +279,7 @@ index 00fd89cf6..7021ed2ab 100644
  
  	xas_store(&xas, shadow);
  	xas_init_marks(&xas);
-@@ -306,6 +310,9 @@ static void page_cache_delete_batch(struct address_space *mapping,
+@@ -298,6 +302,9 @@
  		}
  
  		WARN_ON_ONCE(!folio_test_locked(folio));
@@ -354,7 +289,7 @@ index 00fd89cf6..7021ed2ab 100644
  
  		folio->mapping = NULL;
  		/* Leave folio->index set: truncation lookup relies on it */
-@@ -2759,6 +2766,101 @@ static inline bool pos_same_folio(loff_t pos1, loff_t pos2, struct folio *folio)
+@@ -2788,6 +2795,101 @@
  	return (pos1 >> shift == pos2 >> shift);
  }
  
@@ -456,7 +391,7 @@ index 00fd89cf6..7021ed2ab 100644
  static void filemap_end_dropbehind_read(struct folio *folio)
  {
  	if (!folio_test_dropbehind(folio))
-@@ -2771,6 +2873,216 @@ static void filemap_end_dropbehind_read(struct folio *folio)
+@@ -2800,6 +2902,216 @@
  	}
  }
  
@@ -673,7 +608,7 @@ index 00fd89cf6..7021ed2ab 100644
  /**
   * filemap_read - Read data from the page cache.
   * @iocb: The iocb to read.
-@@ -2796,6 +3108,7 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+@@ -2825,6 +3137,7 @@
  	bool writably_mapped;
  	loff_t isize, end_offset;
  	loff_t last_pos = ra->prev_pos;
@@ -681,7 +616,7 @@ index 00fd89cf6..7021ed2ab 100644
  
  	if (unlikely(iocb->ki_pos < 0))
  		return -EINVAL;
-@@ -2807,6 +3120,14 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+@@ -2836,6 +3149,14 @@
  	iov_iter_truncate(iter, inode->i_sb->s_maxbytes - iocb->ki_pos);
  	folio_batch_init(&fbatch);
  
@@ -696,7 +631,7 @@ index 00fd89cf6..7021ed2ab 100644
  	do {
  		cond_resched();
  
-@@ -2844,14 +3165,6 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+@@ -2873,14 +3194,6 @@
  		 */
  		writably_mapped = mapping_writably_mapped(mapping);
  
@@ -711,7 +646,7 @@ index 00fd89cf6..7021ed2ab 100644
  		for (i = 0; i < folio_batch_count(&fbatch); i++) {
  			struct folio *folio = fbatch.folios[i];
  			size_t fsize = folio_size(folio);
-@@ -2862,8 +3175,7 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+@@ -2891,8 +3204,7 @@
  
  			if (end_offset < folio_pos(folio))
  				break;
@@ -721,7 +656,7 @@ index 00fd89cf6..7021ed2ab 100644
  			/*
  			 * If users can be writing to this folio using arbitrary
  			 * virtual addresses, take care of potential aliasing
-@@ -2893,8 +3205,11 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+@@ -2922,8 +3234,11 @@
  		folio_batch_init(&fbatch);
  	} while (iov_iter_count(iter) && iocb->ki_pos < isize && !error);
  
@@ -734,36 +669,34 @@ index 00fd89cf6..7021ed2ab 100644
  	return already_read ? already_read : error;
  }
  EXPORT_SYMBOL_GPL(filemap_read);
-diff --git a/mm/folio.c b/mm/folio.c
-index 50a6dbe55..6144b9cf3 100644
---- a/mm/folio.c
-+++ b/mm/folio.c
-@@ -352,28 +352,34 @@ static void __lru_cache_activate_folio(struct folio *folio)
+diff -ruN a/mm/folio.c b/mm/folio.c
+--- a/mm/folio.c	2026-11-09 13:35:56.527996763 +0100
++++ b/mm/folio.c	2026-11-09 13:36:10.481372064 +0100
+@@ -352,30 +352,32 @@
  
  #ifdef CONFIG_LRU_GEN
  
 -static void lru_gen_inc_refs(struct folio *folio)
-+/*
-+ * Return true if @folio is hot: unevictable, or its flags already held as
-+ * many accesses as they can.
-+ */
 +static bool lru_gen_inc_refs(struct folio *folio)
  {
- 	unsigned long new_flags, old_flags = READ_ONCE(folio->flags.f);
+ 	unsigned long new_flags, old_flags = READ_ONCE(*folio_flags(folio, 0));
+ 	int refs;
  
  	if (folio_test_unevictable(folio))
 -		return;
 +		return true;
  
  	/* see the comment on LRU_REFS_FLAGS */
- 	if (!folio_test_referenced(folio)) {
- 		set_mask_bits(&folio->flags.f, LRU_REFS_MASK, BIT(PG_referenced));
+ 	if (!folio_lru_refs(folio)) {
+ 		folio_set_lru_refs(folio, 1);
 -		return;
 +		return false;
  	}
  
  	do {
- 		if ((old_flags & LRU_REFS_MASK) == LRU_REFS_MASK) {
+ 		new_flags = old_flags;
+ 		refs = lru_get_refs_flags(old_flags);
+ 		if (refs == LRU_REFS_MAX) {
 -			if (!folio_test_workingset(folio))
 -				folio_set_workingset(folio);
 -			return;
@@ -772,14 +705,13 @@ index 50a6dbe55..6144b9cf3 100644
 +			folio_set_workingset(folio);
 +			return false;
  		}
- 
- 		new_flags = old_flags + BIT(LRU_REFS_PGOFF);
- 	} while (!try_cmpxchg(&folio->flags.f, &old_flags, new_flags));
+ 		lru_set_refs_flags(&new_flags, refs + 1);
+ 	} while (!try_cmpxchg(folio_flags(folio, 0), &old_flags, new_flags));
 +	return false;
  }
  
  static bool lru_gen_clear_refs(struct folio *folio)
-@@ -396,8 +402,9 @@ static bool lru_gen_clear_refs(struct folio *folio)
+@@ -399,8 +401,9 @@
  
  #else /* !CONFIG_LRU_GEN */
  
@@ -790,7 +722,7 @@ index 50a6dbe55..6144b9cf3 100644
  }
  
  static bool lru_gen_clear_refs(struct folio *folio)
-@@ -419,15 +426,20 @@ static bool lru_gen_clear_refs(struct folio *folio)
+@@ -422,15 +425,20 @@
   *
   * When a newly allocated folio is not yet visible, so safe for non-atomic ops,
   * __folio_set_referenced() may be substituted for folio_mark_accessed().
@@ -817,7 +749,7 @@ index 50a6dbe55..6144b9cf3 100644
  
  	if (!folio_test_referenced(folio)) {
  		folio_set_referenced(folio);
-@@ -437,6 +449,7 @@ void folio_mark_accessed(struct folio *folio)
+@@ -440,6 +448,7 @@
  		 * this list is never rotated or maintained, so marking an
  		 * unevictable page accessed has no effect.
  		 */
@@ -825,7 +757,7 @@ index 50a6dbe55..6144b9cf3 100644
  	} else if (!folio_test_active(folio)) {
  		/*
  		 * If the folio is on the LRU, queue it for activation via
-@@ -450,9 +463,14 @@ void folio_mark_accessed(struct folio *folio)
+@@ -453,9 +462,14 @@
  			__lru_cache_activate_folio(folio);
  		folio_clear_referenced(folio);
  		workingset_activation(folio);
@@ -841,11 +773,10 @@ index 50a6dbe55..6144b9cf3 100644
  }
  EXPORT_SYMBOL(folio_mark_accessed);
  
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 1e5d68acf..25082949a 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -3743,6 +3743,7 @@ static void __split_folio_to_order(struct folio *folio, int old_order,
+diff -ruN a/mm/huge_memory.c b/mm/huge_memory.c
+--- a/mm/huge_memory.c	2026-11-09 13:35:56.534019166 +0100
++++ b/mm/huge_memory.c	2026-11-09 13:35:56.589744699 +0100
+@@ -3810,6 +3810,7 @@
  #endif
  				 (1L << PG_dirty) |
  				 (1L << PG_dropbehind) |
@@ -853,11 +784,10 @@ index 1e5d68acf..25082949a 100644
  				 LRU_GEN_MASK | LRU_REFS_MASK));
  
  		new_folio->mapping = folio->mapping;
-diff --git a/mm/internal.h b/mm/internal.h
-index 38b116521..ae9a4e511 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1248,6 +1248,9 @@ struct migration_target_control {
+diff -ruN a/mm/internal.h b/mm/internal.h
+--- a/mm/internal.h	2026-11-09 13:35:56.539332080 +0100
++++ b/mm/internal.h	2026-11-09 13:35:56.589868451 +0100
+@@ -1274,6 +1274,9 @@
   */
  size_t splice_folio_into_pipe(struct pipe_inode_info *pipe,
  			      struct folio *folio, loff_t fpos, size_t size);
@@ -867,11 +797,35 @@ index 38b116521..ae9a4e511 100644
  
  static inline bool vma_is_single_threaded_private(struct vm_area_struct *vma)
  {
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index a8b03e292..dc66cac05 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -211,6 +211,10 @@ static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, boo
+diff -ruN a/mm/Kconfig b/mm/Kconfig
+--- a/mm/Kconfig	2026-11-09 13:35:56.515991188 +0100
++++ b/mm/Kconfig	2026-11-09 13:35:56.589284947 +0100
+@@ -713,6 +713,21 @@
+ 	  latency.  This option sets the upper limit of scale factor to limit
+ 	  the maximum latency.
+ 
++config PAGE_RCU_FREE
++	def_bool 64BIT
++	help
++	  Reads from the page cache can copy from folios that are read
++	  again and again without taking a reference on them, so small
++	  reads of one file from many CPUs do not contend on the folio's
++	  reference count.  The cost is that memory freed from such
++	  folios becomes reusable only after an RCU grace period.
++
++	  64-bit only: it takes a page flag, and those are scarce on
++	  32-bit.
++
++	  Writing 0 to lockless_page_cache_read in debugfs turns these
++	  reads off.
++
+ config PHYS_ADDR_T_64BIT
+ 	def_bool 64BIT
+ 
+diff -ruN a/mm/memory-failure.c b/mm/memory-failure.c
+--- a/mm/memory-failure.c	2026-11-09 13:35:56.545074288 +0100
++++ b/mm/memory-failure.c	2026-11-09 13:35:56.589952819 +0100
+@@ -251,6 +251,10 @@
  			return false;
  	}
  
@@ -882,7 +836,7 @@ index a8b03e292..dc66cac05 100644
  	SetPageHWPoison(page);
  	if (release)
  		put_page(page);
-@@ -1561,6 +1565,21 @@ static int get_hwpoison_page(struct page *p, unsigned long flags)
+@@ -1600,6 +1604,21 @@
  	return ret;
  }
  
@@ -904,7 +858,7 @@ index a8b03e292..dc66cac05 100644
  /*
   * The caller must guarantee the folio isn't large folio, except hugetlb.
   * try_to_unmap() can't handle it.
-@@ -2436,6 +2455,7 @@ int memory_failure(unsigned long pfn, int flags)
+@@ -2475,6 +2494,7 @@
  	if (res != -ENOENT)
  		goto unlock_mutex;
  
@@ -912,7 +866,7 @@ index a8b03e292..dc66cac05 100644
  	if (TestSetPageHWPoison(p)) {
  		res = -EHWPOISON;
  		if (flags & MF_ACTION_REQUIRED)
-@@ -2608,6 +2628,13 @@ int memory_failure(unsigned long pfn, int flags)
+@@ -2647,6 +2667,13 @@
  
  identify_page_state:
  	res = identify_page_state(pfn, p, page_flags);
@@ -926,7 +880,7 @@ index a8b03e292..dc66cac05 100644
  	mutex_unlock(&mf_mutex);
  	return res;
  unlock_page:
-@@ -2999,6 +3026,7 @@ int soft_offline_page(unsigned long pfn, int flags)
+@@ -3038,6 +3065,7 @@
  
  retry:
  	get_online_mems();
@@ -934,11 +888,10 @@ index a8b03e292..dc66cac05 100644
  	ret = get_hwpoison_page(page, flags | MF_SOFT_OFFLINE);
  	put_online_mems();
  
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 226ab9cb0..a8f0c9562 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1967,6 +1967,7 @@ int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+diff -ruN a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+--- a/mm/memory_hotplug.c	2026-11-09 13:35:56.550726879 +0100
++++ b/mm/memory_hotplug.c	2026-11-09 13:35:56.590060972 +0100
+@@ -1980,6 +1980,7 @@
  		.nid = NUMA_NO_NODE,
  	};
  	unsigned long flags;
@@ -946,7 +899,7 @@ index 226ab9cb0..a8f0c9562 100644
  	char *reason;
  	int ret;
  	unsigned long normal_pages = 0;
-@@ -2050,6 +2051,7 @@ int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+@@ -2063,6 +2064,7 @@
  
  	do {
  		pfn = start_pfn;
@@ -954,7 +907,7 @@ index 226ab9cb0..a8f0c9562 100644
  		do {
  			/*
  			 * Historically we always checked for any signal and
-@@ -2071,6 +2073,7 @@ int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+@@ -2084,6 +2086,7 @@
  				 * out
  				 */
  				do_migrate_range(pfn, end_pfn);
@@ -962,7 +915,7 @@ index 226ab9cb0..a8f0c9562 100644
  			}
  		} while (!ret);
  
-@@ -2092,6 +2095,10 @@ int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+@@ -2105,6 +2108,10 @@
  
  		ret = test_pages_isolated(start_pfn, end_pfn,
  					  PB_ISOLATE_MODE_MEM_OFFLINE);
@@ -973,12 +926,11 @@ index 226ab9cb0..a8f0c9562 100644
  
  	} while (ret);
  
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 15b45832b..232784322 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -780,6 +780,8 @@ void folio_migrate_flags(struct folio *newfolio, struct folio *folio)
- 		folio_set_referenced(newfolio);
+diff -ruN a/mm/migrate.c b/mm/migrate.c
+--- a/mm/migrate.c	2026-11-09 13:35:56.555937911 +0100
++++ b/mm/migrate.c	2026-11-09 13:35:56.590170327 +0100
+@@ -781,6 +781,8 @@
+ 
  	if (folio_test_uptodate(folio))
  		folio_mark_uptodate(newfolio);
 +	if (folio_test_rcu_free(folio))
@@ -986,11 +938,10 @@ index 15b45832b..232784322 100644
  	if (folio_test_clear_active(folio)) {
  		VM_BUG_ON_FOLIO(folio_test_unevictable(folio), folio);
  		folio_set_active(newfolio);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 12fac9084..a981d255c 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1313,6 +1313,200 @@ static inline void pgalloc_tag_sub_pages(struct alloc_tag *tag, unsigned int nr)
+diff -ruN a/mm/page_alloc.c b/mm/page_alloc.c
+--- a/mm/page_alloc.c	2026-11-09 13:35:56.561795896 +0100
++++ b/mm/page_alloc.c	2026-11-09 13:36:11.038372091 +0100
+@@ -1298,6 +1298,200 @@
  
  #endif /* CONFIG_MEM_ALLOC_PROFILING */
  
@@ -1191,7 +1142,7 @@ index 12fac9084..a981d255c 100644
  static __always_inline bool __free_pages_prepare(struct page *page,
  		unsigned int order, fpi_t fpi_flags)
  {
-@@ -1327,6 +1521,19 @@ static __always_inline bool __free_pages_prepare(struct page *page,
+@@ -1312,6 +1506,19 @@
  
  	VM_BUG_ON_PAGE(PageTail(page), page);
  
@@ -1211,11 +1162,10 @@ index 12fac9084..a981d255c 100644
  	trace_mm_page_free(page, order);
  	kmsan_free_page(page, order);
  
-@@ -4626,6 +4833,52 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask)
- 	return !!__gfp_pfmemalloc_flags(gfp_mask);
+@@ -4613,6 +4820,52 @@
  }
  
-+/*
+ /*
 + * Reclaim is about to give up: if the pages waiting for a grace period
 + * would bring an eligible zone above its min watermark, free them and
 + * retry.  Not for a dying task, which frees memory by exiting.
@@ -1261,10 +1211,11 @@ index 12fac9084..a981d255c 100644
 +	return false;
 +}
 +
- /*
++/*
   * Checks whether it makes sense to retry the reclaim to make a forward progress
   * for the given allocation request.
-@@ -4639,7 +4892,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask)
+  *
+@@ -4625,7 +4878,8 @@
  static inline bool
  should_reclaim_retry(gfp_t gfp_mask, unsigned order,
  		     struct alloc_context *ac, int alloc_flags,
@@ -1274,12 +1225,12 @@ index 12fac9084..a981d255c 100644
  {
  	struct zone *zone;
  	struct zoneref *z;
-@@ -4650,10 +4904,12 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
- 	 * their order will become available due to high fragmentation so
- 	 * always increment the no progress counter for them
+@@ -4639,10 +4893,12 @@
+ 	 * for compaction without freeing anything.
  	 */
--	if (did_some_progress && order <= PAGE_ALLOC_COSTLY_ORDER)
-+	if (did_some_progress && order <= PAGE_ALLOC_COSTLY_ORDER) {
+ 	if (did_some_progress && order <= PAGE_ALLOC_COSTLY_ORDER &&
+-	    !order_defrag_promoted(order, ac))
++	    !order_defrag_promoted(order, ac)) {
  		*no_progress_loops = 0;
 -	else
 +		*rcu_free_waits = 0;
@@ -1289,7 +1240,7 @@ index 12fac9084..a981d255c 100644
  
  	if (*no_progress_loops > MAX_RECLAIM_RETRIES)
  		goto out;
-@@ -4706,6 +4962,10 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
+@@ -4695,6 +4951,10 @@
  	else
  		cond_resched();
  out:
@@ -1300,7 +1251,7 @@ index 12fac9084..a981d255c 100644
  	/* Before OOM, exhaust highatomic_reserve */
  	if (!ret)
  		return unreserve_highatomic_pageblock(ac, true);
-@@ -4795,6 +5055,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+@@ -4784,6 +5044,7 @@
  	enum compact_result compact_result;
  	int compaction_retries;
  	int no_progress_loops;
@@ -1308,7 +1259,7 @@ index 12fac9084..a981d255c 100644
  	unsigned int cpuset_mems_cookie;
  	unsigned int zonelist_iter_cookie;
  	int reserve_flags;
-@@ -4819,6 +5080,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+@@ -4820,6 +5081,7 @@
  restart:
  	compaction_retries = 0;
  	no_progress_loops = 0;
@@ -1316,7 +1267,7 @@ index 12fac9084..a981d255c 100644
  	compact_result = COMPACT_SKIPPED;
  	compact_priority = DEF_COMPACT_PRIORITY;
  	cpuset_mems_cookie = read_mems_allowed_begin();
-@@ -4997,7 +5259,8 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+@@ -5017,7 +5279,8 @@
  		goto restart;
  
  	if (should_reclaim_retry(gfp_mask, order, ac, alloc_flags,
@@ -1326,7 +1277,7 @@ index 12fac9084..a981d255c 100644
  		goto retry;
  
  	/*
-@@ -5040,6 +5303,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+@@ -5065,6 +5328,7 @@
  	/* Retry as long as the OOM killer is making progress */
  	if (did_some_progress) {
  		no_progress_loops = 0;
@@ -1334,7 +1285,7 @@ index 12fac9084..a981d255c 100644
  		goto retry;
  	}
  
-@@ -6401,6 +6665,8 @@ void __init setup_per_cpu_pageset(void)
+@@ -6415,6 +6679,8 @@
  	for_each_online_pgdat(pgdat)
  		pgdat->per_cpu_nodestats =
  			alloc_percpu(struct per_cpu_nodestat);
@@ -1343,7 +1294,7 @@ index 12fac9084..a981d255c 100644
  }
  
  __meminit void zone_pcp_init(struct zone *zone)
-@@ -7384,7 +7650,16 @@ int alloc_contig_frozen_range_noprof(unsigned long start, unsigned long end,
+@@ -7394,7 +7660,16 @@
  	outer_start = find_large_buddy(start);
  
  	/* Make sure the range is really isolated. */
@@ -1361,11 +1312,10 @@ index 12fac9084..a981d255c 100644
  		ret = -EBUSY;
  		goto done;
  	}
-diff --git a/mm/page_alloc.h b/mm/page_alloc.h
-index b9259dedd..f9e200581 100644
---- a/mm/page_alloc.h
-+++ b/mm/page_alloc.h
-@@ -235,6 +235,7 @@ struct page *__alloc_frozen_pages_noprof(gfp_t gfp, unsigned int order, int nid,
+diff -ruN a/mm/page_alloc.h b/mm/page_alloc.h
+--- a/mm/page_alloc.h	2026-11-09 13:35:56.569698717 +0100
++++ b/mm/page_alloc.h	2026-11-09 13:35:56.590624880 +0100
+@@ -239,6 +239,7 @@
  	alloc_hooks(__alloc_frozen_pages_noprof(__VA_ARGS__))
  void free_frozen_pages(struct page *page, unsigned int order);
  void free_unref_folios(struct folio_batch *fbatch);
@@ -1373,11 +1323,10 @@ index b9259dedd..f9e200581 100644
  
  #ifdef CONFIG_NUMA
  struct page *alloc_frozen_pages_noprof(gfp_t, unsigned int order);
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 848316eaa..e6c18e745 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -3309,10 +3309,18 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+diff -ruN a/mm/shmem.c b/mm/shmem.c
+--- a/mm/shmem.c	2026-11-09 13:35:56.575240329 +0100
++++ b/mm/shmem.c	2026-11-09 13:35:56.590729376 +0100
+@@ -3555,10 +3555,18 @@
  	struct file *file = iocb->ki_filp;
  	struct inode *inode = file_inode(file);
  	struct address_space *mapping = inode->i_mapping;
@@ -1397,7 +1346,7 @@ index 848316eaa..e6c18e745 100644
  
  	for (;;) {
  		struct folio *folio = NULL;
-@@ -3378,11 +3386,7 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+@@ -3624,11 +3632,7 @@
  					flush_dcache_page(page);
  			}
  
@@ -1410,7 +1359,7 @@ index 848316eaa..e6c18e745 100644
  			/*
  			 * Ok, we have the page, and it's up-to-date, so
  			 * now we can copy it to user space...
-@@ -3410,6 +3414,7 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+@@ -3656,6 +3660,7 @@
  
  		retval += ret;
  		iocb->ki_pos += ret;
@@ -1418,7 +1367,7 @@ index 848316eaa..e6c18e745 100644
  
  		if (!iov_iter_count(to))
  			break;
-@@ -3419,8 +3424,11 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+@@ -3665,8 +3670,11 @@
  		}
  		cond_resched();
  	}
@@ -1431,11 +1380,10 @@ index 848316eaa..e6c18e745 100644
  	return retval ? retval : error;
  }
  
-diff --git a/mm/show_mem.c b/mm/show_mem.c
-index bacca6f5c..4be99f793 100644
---- a/mm/show_mem.c
-+++ b/mm/show_mem.c
-@@ -207,7 +207,7 @@ static void show_free_areas(unsigned int filter, const nodemask_t *nodemask,
+diff -ruN a/mm/show_mem.c b/mm/show_mem.c
+--- a/mm/show_mem.c	2026-11-09 13:35:56.580815915 +0100
++++ b/mm/show_mem.c	2026-11-09 13:35:56.590860121 +0100
+@@ -204,7 +204,7 @@
  		" mapped:%lu shmem:%lu pagetables:%lu\n"
  		" sec_pagetables:%lu bounce:%lu\n"
  		" kernel_misc_reclaimable:%lu\n"
@@ -1444,7 +1392,7 @@ index bacca6f5c..4be99f793 100644
  		global_node_page_state(NR_ACTIVE_ANON),
  		global_node_page_state(NR_INACTIVE_ANON),
  		global_node_page_state(NR_ISOLATED_ANON),
-@@ -227,7 +227,8 @@ static void show_free_areas(unsigned int filter, const nodemask_t *nodemask,
+@@ -224,7 +224,8 @@
  		global_node_page_state(NR_KERNEL_MISC_RECLAIMABLE),
  		global_zone_page_state(NR_FREE_PAGES),
  		free_pcp,
@@ -1454,7 +1402,7 @@ index bacca6f5c..4be99f793 100644
  
  	for_each_online_pgdat(pgdat) {
  		if (show_mem_node_skip(filter, pgdat->node_id, nodemask))
-@@ -328,6 +329,7 @@ static void show_free_areas(unsigned int filter, const nodemask_t *nodemask,
+@@ -325,6 +326,7 @@
  			" free_pcp:%lukB"
  			" local_pcp:%lukB"
  			" free_cma:%lukB"
@@ -1462,7 +1410,7 @@ index bacca6f5c..4be99f793 100644
  			"\n",
  			zone->name,
  			K(zone_page_state(zone, NR_FREE_PAGES)),
-@@ -354,7 +356,8 @@ static void show_free_areas(unsigned int filter, const nodemask_t *nodemask,
+@@ -351,7 +353,8 @@
  			0UL,
  			K(free_pcp),
  			K((unsigned long)this_cpu_read(zone->per_cpu_pageset->count)),
@@ -1472,11 +1420,10 @@ index bacca6f5c..4be99f793 100644
  		printk("lowmem_reserve[]:");
  		for (i = 0; i < MAX_NR_ZONES; i++)
  			printk(KERN_CONT " %ld", zone->lowmem_reserve[i]);
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index cb5771453..c27caad01 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1212,6 +1212,7 @@ const char * const vmstat_text[] = {
+diff -ruN a/mm/vmstat.c b/mm/vmstat.c
+--- a/mm/vmstat.c	2026-11-09 13:35:56.586059779 +0100
++++ b/mm/vmstat.c	2026-11-09 13:35:56.590916497 +0100
+@@ -1212,6 +1212,7 @@
  	[I(NR_ZSPAGES)]				= "nr_zspages",
  #endif
  	[I(NR_FREE_CMA_PAGES)]			= "nr_free_cma",
@@ -1484,7 +1431,7 @@ index cb5771453..c27caad01 100644
  #ifdef CONFIG_UNACCEPTED_MEMORY
  	[I(NR_UNACCEPTED)]			= "nr_unaccepted",
  #endif
-@@ -1343,6 +1344,10 @@ const char * const vmstat_text[] = {
+@@ -1343,6 +1344,10 @@
  	[I(PGACTIVATE)]				= "pgactivate",
  	[I(PGDEACTIVATE)]			= "pgdeactivate",
  	[I(PGLAZYFREE)]				= "pglazyfree",
@@ -1495,7 +1442,7 @@ index cb5771453..c27caad01 100644
  
  	[I(PGFAULT)]				= "pgfault",
  	[I(PGMAJFAULT)]				= "pgmajfault",
-@@ -2022,6 +2027,7 @@ static int vmstat_refresh(const struct ctl_table *table, int write,
+@@ -2027,6 +2032,7 @@
  		switch (i) {
  		case NR_ZONE_WRITE_PENDING:
  		case NR_FREE_CMA_PAGES:

@@ -153,13 +153,9 @@ patch -N -p1 < ${SCRIPT_PATH}/0004-ntfs-allow-colon-in-filenames.patch > /dev/nu
 echo "Patching zstd..."
 patch -N -p1 < ${SCRIPT_PATH}/0002-zstd-add-fallback-aliases-for-disabled-BMI2-variants.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
 patch -N -p1 < ${SCRIPT_PATH}/0002-zstd-use-cpu_feature_enabled-for-BMI2-dispatch.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
-patch -N -p1 < ${SCRIPT_PATH}/0002-zstd-btrfs-avoid-a-copy-in-zstd_decompress_bio.patch > /dev/null 2>&1 || { echo "Failed to apply zstd patch."; exit 1; }
 
 echo "Patching MemAvailable..."
 patch -N -p1 < ${SCRIPT_PATH}/0003-mm-count-GPU-pool-pages-in-MemAvailable.patch > /dev/null 2>&1 || { echo "Failed to apply MemAvailable patch."; exit 1; }
-
-echo "Patching file read optimization..."
-patch -N -p1 < ${SCRIPT_PATH}/0005-fs-avoid-spurious-dentry-ref-unref-cycle-on-open.patch > /dev/null 2>&1 || { echo "Failed to apply file read patch."; exit 1; }
 
 echo "Patching lockless page cache reads..."
 patch -N -p1 < ${SCRIPT_PATH}/0006-mm-read-the-page-cache-without-folio-references.patch > /dev/null 2>&1 || { echo "Failed to apply lockless page cache reads patch."; exit 1; }
