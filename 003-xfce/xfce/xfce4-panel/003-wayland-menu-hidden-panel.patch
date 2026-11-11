@@ -1,0 +1,116 @@
+Open plugin menus from a keyboard shortcut while the panel is auto-hidden on Wayland
+
+With auto-hide on Wayland, a shortcut such as xfce4-popup-applicationsmenu
+showed the panel and pressed the menu button, but the menu never appeared.
+On layer-shell a hidden panel window is unmapped, not moved off screen as
+on X11, and it only maps again after the popup delay. The menu was popped
+up at once, attached to a window that did not exist yet.
+
+- popup_menu_at_point: when the widget is not mapped on layer-shell, keep
+  the panel shown and pop up the menu once the widget is mapped
+
+X11 is unchanged.
+
+--- a/libxfce4panel/xfce-panel-plugin.c
++++ b/libxfce4panel/xfce-panel-plugin.c
+@@ -2815,6 +2815,87 @@
+ 
+ 
+ 
++typedef struct
++{
++  XfcePanelPlugin *plugin;
++  GtkWidget *widget;
++  GdkPoint point;
++  gboolean has_point;
++  GdkEvent *trigger_event;
++} PendingMenu;
++
++
++
++static void
++xfce_panel_plugin_pending_menu_free (gpointer data)
++{
++  PendingMenu *pending = data;
++
++  xfce_panel_plugin_block_autohide (pending->plugin, FALSE);
++  if (pending->trigger_event != NULL)
++    gdk_event_free (pending->trigger_event);
++  g_slice_free (PendingMenu, pending);
++}
++
++
++
++static gboolean
++xfce_panel_plugin_pending_menu_popup (gpointer data)
++{
++  GtkMenu *menu = data;
++  PendingMenu *pending = g_object_steal_data (G_OBJECT (menu), "pending-menu");
++
++  if (pending == NULL)
++    return G_SOURCE_REMOVE;
++
++  xfce_panel_plugin_popup_menu_at_point (pending->plugin, menu, pending->widget,
++                                         pending->has_point ? &pending->point : NULL,
++                                         pending->trigger_event);
++  xfce_panel_plugin_pending_menu_free (pending);
++
++  return G_SOURCE_REMOVE;
++}
++
++
++
++static void
++xfce_panel_plugin_pending_menu_mapped (GtkWidget *widget,
++                                       GtkMenu *menu)
++{
++  g_signal_handlers_disconnect_by_func (widget, xfce_panel_plugin_pending_menu_mapped, menu);
++  g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, xfce_panel_plugin_pending_menu_popup,
++                   g_object_ref (menu), g_object_unref);
++}
++
++
++
++static void
++xfce_panel_plugin_popup_menu_when_mapped (XfcePanelPlugin *plugin,
++                                          GtkMenu *menu,
++                                          GtkWidget *widget,
++                                          const GdkPoint *point,
++                                          const GdkEvent *trigger_event)
++{
++  PendingMenu *pending = g_slice_new0 (PendingMenu);
++
++  pending->plugin = plugin;
++  pending->widget = widget;
++  pending->has_point = point != NULL;
++  if (point != NULL)
++    pending->point = *point;
++  if (trigger_event != NULL)
++    pending->trigger_event = gdk_event_copy (trigger_event);
++
++  g_signal_handlers_disconnect_by_func (widget, xfce_panel_plugin_pending_menu_mapped, menu);
++  xfce_panel_plugin_block_autohide (plugin, TRUE);
++  g_object_set_data_full (G_OBJECT (menu), "pending-menu", pending,
++                          xfce_panel_plugin_pending_menu_free);
++  g_signal_connect_object (widget, "map",
++                           G_CALLBACK (xfce_panel_plugin_pending_menu_mapped), menu, 0);
++}
++
++
++
+ /**
+  * xfce_panel_plugin_popup_menu:
+  * @plugin        : an #XfcePanelPlugin.
+@@ -2865,6 +2946,12 @@
+   GdkRectangle rect;
+   guint id;
+ 
++  if (gtk_layer_is_supported () && widget != NULL && !gtk_widget_get_mapped (widget))
++    {
++      xfce_panel_plugin_popup_menu_when_mapped (plugin, menu, widget, point, trigger_event);
++      return;
++    }
++
+   /* check if conditions are met to pop up menu at widget */
+   if (widget != NULL)
+     {
