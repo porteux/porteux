@@ -441,11 +441,14 @@ prepare_files_for_cache_de
 
 generate_caches
 
-### kde specific mime cache
+### kde specifics
 
 find $PORTEUX_BUILDER_PATH/caches/mime -mindepth 1 -maxdepth 1 ! -name packages -exec cp -r -t $MODULE_PATH/packages/usr/share/mime/ {} +
 
 restore_files_for_cache_de
+
+# make sure kwin has real-time priority as recommended upstream
+setcap cap_sys_nice=+ep $MODULE_PATH/packages/usr/bin/kwin_wayland || exit 1
 
 ### finalize
 
