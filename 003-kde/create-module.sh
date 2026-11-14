@@ -383,6 +383,7 @@ rm $MODULE_PATH/packages/libsass*.txz
 rm $MODULE_PATH/packages/plasma-wayland-protocols*.txz
 rm $MODULE_PATH/packages/python-lxml*.txz
 rm $MODULE_PATH/packages/sassc*.txz
+rm $MODULE_PATH/packages/vulkan-sdk*.txz
 
 ### fake root
 

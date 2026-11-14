@@ -27,6 +27,7 @@ download_package "python-lxml" &
 wait_for_downloads
 download_package "qrencode" &
 download_package "sassc" &
+download_package "vulkan-sdk" &
 download_package "xdpyinfo" &
 download_package "zxing-cpp" &
 wait_for_downloads

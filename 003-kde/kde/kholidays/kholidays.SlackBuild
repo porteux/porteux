@@ -18,6 +18,8 @@ wget https://download.kde.org/stable/frameworks/${FRAMEWORKS_VERSION}/${PRGNAM}-
 tar xf $PRGNAM-$VERSION.tar.xz
 cd $PRGNAM-$VERSION
 
+cp /usr/include/FlexLexer.h src/parsers/plan2/FlexLexer.h
+
 cmake -B build -S . \
 	-G Ninja \
 	-DBUILD_TESTING=OFF \
