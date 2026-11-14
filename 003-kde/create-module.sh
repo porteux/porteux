@@ -30,6 +30,7 @@ cd $MODULE_PATH || exit 1
 bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 installpkg $MODULE_PATH/packages/*.txz || exit 1
+rm $MODULE_PATH/packages/llvm*.txz > /dev/null 2>&1
 
 ### packages that require specific stripping
 

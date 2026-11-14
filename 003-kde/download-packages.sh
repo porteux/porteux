@@ -33,6 +33,11 @@ download_package "xdpyinfo" &
 download_package "zxing-cpp" &
 wait_for_downloads
 
+### only download if not present
+
+[ ! -f /usr/bin/clang ] && download_package "llvm" &
+wait_for_downloads
+
 ### packages that require specific stripping
 
 download_package "appstream" & # required by main menu
