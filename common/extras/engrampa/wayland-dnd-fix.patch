@@ -1,0 +1,236 @@
+diff --git a/src/eggtreemultidnd.c b/src/eggtreemultidnd.c
+index 38ccf50..4da1145 100644
+--- a/src/eggtreemultidnd.c
++++ b/src/eggtreemultidnd.c
+@@ -26,6 +26,9 @@
+ 
+ #include <string.h>
+ #include <gtk/gtk.h>
++#ifdef GDK_WINDOWING_WAYLAND
++#include <gdk/gdkwayland.h>
++#endif
+ #include "eggtreemultidnd.h"
+ 
+ #define EGG_TREE_MULTI_DND_STRING "EggTreeMultiDndString"
+@@ -317,6 +320,13 @@ egg_tree_multi_drag_motion_event (GtkWidget      *widget,
+ 	  int             cell_y;
+ 
+ 	  target_list = gtk_target_list_new (target_table, G_N_ELEMENTS (target_table));
++#ifdef GDK_WINDOWING_WAYLAND
++	  if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (widget)))
++	    {
++	      gtk_target_list_remove (target_list, gdk_atom_intern_static_string ("XdndDirectSave0"));
++	      gtk_target_list_add_uri_targets (target_list, 2);
++	    }
++#endif
+ 	  context = gtk_drag_begin_with_coordinates (widget,
+ 	                                             target_list,
+ 	                                             GDK_ACTION_COPY,
+diff --git a/src/fr-window.c b/src/fr-window.c
+index 110367b..211d3c5 100644
+--- a/src/fr-window.c
++++ b/src/fr-window.c
+@@ -29,6 +29,9 @@
+ #include <gdk/gdk.h>
+ #include <gdk/gdkkeysyms.h>
+ #include <gdk-pixbuf/gdk-pixbuf.h>
++#ifdef GDK_WINDOWING_WAYLAND
++#include <gdk/gdkwayland.h>
++#endif
+ 
+ #include "actions.h"
+ #include "dlg-batch-add.h"
+@@ -85,6 +88,8 @@ static int             file_list_icon_size = 0;
+ #define XDS_ATOM   gdk_atom_intern  ("XdndDirectSave0", FALSE)
+ #define TEXT_ATOM  gdk_atom_intern  ("text/plain", FALSE)
+ #define XFR_ATOM   gdk_atom_intern  ("XdndEngrampa0", FALSE)
++#define URI_LIST_ATOM gdk_atom_intern_static_string ("text/uri-list")
++#define DRAG_URI_DATA "fr-drag-uri-data"
+ 
+ #define FR_CLIPBOARD (gdk_atom_intern_static_string ("_RNGRAMPA_SPECIAL_CLIPBOARD"))
+ #define FR_SPECIAL_URI_LIST (gdk_atom_intern_static_string ("application/engrampa-uri-list"))
+@@ -4292,6 +4297,149 @@ get_selection_data_from_clipboard_data (FrWindow        *window,
+ 	return g_string_free (list, FALSE);
+ }
+ 
++typedef struct {
++	const char  *dir;
++	char       **uris;
++	gboolean     extracting;
++	gboolean     ok;
++} DragUriData;
++
++static void
++drag_uri_data_free (DragUriData *data)
++{
++	g_strfreev (data->uris);
++	g_free (data);
++}
++
++static gboolean archive_is_encrypted (FrWindow *window, GList *file_list);
++
++static void
++drag_uri_stop_waiting (DragUriData *data)
++{
++	data->extracting = FALSE;
++}
++
++static void
++drag_uri_extract_done_cb (FrArchive   *archive,
++			  FrAction     action,
++			  FrProcError *error,
++			  gpointer     user_data)
++{
++	DragUriData *data = user_data;
++
++	g_signal_handlers_disconnect_by_func (archive, drag_uri_extract_done_cb, data);
++	data->ok = (error->type == FR_PROC_ERROR_NONE);
++	data->extracting = FALSE;
++}
++
++static gboolean
++fr_window_drag_data_get_uris (FrWindow         *window,
++			      GdkDragContext   *context,
++			      GtkSelectionData *selection_data,
++			      gboolean          from_sidebar,
++			      GList            *path_list)
++{
++	DragUriData *data;
++	gulong       destroy_id;
++	gboolean     result = FALSE;
++
++	data = g_object_get_data (G_OBJECT (context), DRAG_URI_DATA);
++	if (data == NULL) {
++		GList       *file_list;
++		char        *base_dir;
++		char        *temp_dir;
++		CommandData *cdata;
++
++		if (window->priv->activity_ref > 0)
++			return FALSE;
++
++		if (from_sidebar)
++			file_list = fr_window_get_selection (window, TRUE, &base_dir);
++		else {
++			file_list = fr_window_get_file_list_from_path_list (window, path_list, NULL);
++			base_dir = g_strdup (fr_window_get_current_location (window));
++		}
++
++		temp_dir = NULL;
++		if ((file_list != NULL) && ! (archive_is_encrypted (window, file_list) && (window->priv->password == NULL)))
++			temp_dir = get_temp_work_dir (NULL);
++		if (temp_dir == NULL) {
++			path_list_free (file_list);
++			g_free (base_dir);
++			return FALSE;
++		}
++
++		cdata = g_new0 (CommandData, 1);
++		cdata->temp_dir = temp_dir;
++		CommandList = g_list_prepend (CommandList, cdata);
++
++		data = g_new0 (DragUriData, 1);
++		data->dir = temp_dir;
++		data->extracting = TRUE;
++		g_object_set_data_full (G_OBJECT (context), DRAG_URI_DATA, data, (GDestroyNotify) drag_uri_data_free);
++
++		g_signal_connect (G_OBJECT (window->archive),
++				  "done",
++				  G_CALLBACK (drag_uri_extract_done_cb),
++				  data);
++
++		window->priv->ask_to_open_destination_after_extraction = FALSE;
++		fr_process_clear (window->archive->process);
++		fr_archive_extract_to_local (window->archive,
++					     file_list,
++					     temp_dir,
++					     base_dir,
++					     FALSE,
++					     TRUE,
++					     FALSE,
++					     window->priv->password);
++		fr_process_start (window->archive->process);
++
++		path_list_free (file_list);
++		g_free (base_dir);
++	}
++
++	g_object_ref (context);
++	g_object_ref (window);
++	destroy_id = g_signal_connect_swapped (window, "destroy", G_CALLBACK (drag_uri_stop_waiting), data);
++
++	while (data->extracting)
++		g_main_context_iteration (NULL, TRUE);
++
++	g_signal_handler_disconnect (window, destroy_id);
++	if (window->archive != NULL)
++		g_signal_handlers_disconnect_by_func (window->archive, drag_uri_extract_done_cb, data);
++
++	if (data->ok && (data->uris == NULL)) {
++		GDir *dir = g_dir_open (data->dir, 0, NULL);
++
++		if (dir != NULL) {
++			GPtrArray  *uris = g_ptr_array_new ();
++			const char *name;
++
++			while ((name = g_dir_read_name (dir)) != NULL) {
++				char *path = g_build_filename (data->dir, name, NULL);
++				char *uri = g_filename_to_uri (path, NULL, NULL);
++
++				if (uri != NULL)
++					g_ptr_array_add (uris, uri);
++				g_free (path);
++			}
++			g_dir_close (dir);
++			g_ptr_array_add (uris, NULL);
++			data->uris = (char **) g_ptr_array_free (uris, FALSE);
++		}
++	}
++
++	if ((data->uris != NULL) && (data->uris[0] != NULL))
++		result = gtk_selection_data_set_uris (selection_data, data->uris);
++
++	g_object_unref (window);
++	g_object_unref (context);
++
++	return result;
++}
++
+ static gboolean
+ fr_window_folder_tree_drag_data_get (GtkWidget        *widget,
+ 				     GdkDragContext   *context,
+@@ -4307,6 +4455,9 @@ fr_window_folder_tree_drag_data_get (GtkWidget        *widget,
+ 
+ 	debug (DEBUG_INFO, "::DragDataGet -->\n");
+ 
++	if (gtk_selection_data_get_target (selection_data) == URI_LIST_ATOM)
++		return fr_window_drag_data_get_uris (window, context, selection_data, TRUE, NULL);
++
+ 	if (window->priv->activity_ref > 0)
+ 		return FALSE;
+ 
+@@ -4390,6 +4541,9 @@ fr_window_file_list_drag_data_get (FrWindow         *window,
+ 		window->priv->path_clicked = NULL;
+ 	}
+ 
++	if (gtk_selection_data_get_target (selection_data) == URI_LIST_ATOM)
++		return fr_window_drag_data_get_uris (window, context, selection_data, FALSE, path_list);
++
+ 	if (window->priv->activity_ref > 0)
+ 		return FALSE;
+ 
+@@ -5605,6 +5759,14 @@ fr_window_construct (FrWindow *window)
+ 			     GDK_BUTTON1_MASK,
+ 			     folder_tree_targets, G_N_ELEMENTS (folder_tree_targets),
+ 			     GDK_ACTION_COPY);
++#ifdef GDK_WINDOWING_WAYLAND
++	if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (window->priv->tree_view))) {
++		GtkTargetList *tree_targets = gtk_drag_source_get_target_list (window->priv->tree_view);
++
++		gtk_target_list_remove (tree_targets, XDS_ATOM);
++		gtk_target_list_add_uri_targets (tree_targets, 2);
++	}
++#endif
+ 
+ 	tree_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+ 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (tree_scrolled_window),
