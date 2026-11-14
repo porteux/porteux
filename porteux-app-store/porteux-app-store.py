@@ -3,6 +3,7 @@
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, Gio, GLib
+GLib.set_prgname('porteux-app-store')
 import os
 from os import path
 from os.path import exists
