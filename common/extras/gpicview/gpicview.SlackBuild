@@ -27,7 +27,7 @@ for i in $CWD/*.patch; do
 	patch -p1 < "$i"
 done
 
-./autogen.sh 
+autoreconf -fi
 
 CFLAGS="$GCC_CFLAGS -ffast-math" \
 ./configure \
