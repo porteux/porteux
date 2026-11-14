@@ -7,6 +7,7 @@ download_package "accountsservice" &
 download_package "boost" &
 download_package "cfitsio" &
 download_package "corrosion" &
+download_package "cups" &
 download_package "dconf" &
 download_package "ddcutil" &
 download_package "editorconfig-core-c" &

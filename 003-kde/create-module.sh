@@ -378,6 +378,7 @@ done
 # only required for building
 rm $MODULE_PATH/packages/boost*.txz
 rm $MODULE_PATH/packages/corrosion*.txz
+rm $MODULE_PATH/packages/cups*.txz
 rm $MODULE_PATH/packages/extra-cmake-modules*.txz
 rm $MODULE_PATH/packages/libsass*.txz
 rm $MODULE_PATH/packages/plasma-wayland-protocols*.txz
