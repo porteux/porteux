@@ -170,6 +170,9 @@ find usr/share/kbd -type f -name "*.gz" -exec gunzip {} \;
 
 sed -i '/^ca::ctrlaltdel/c\ca::ctrlaltdel:/sbin/shutdown -r now 2>/dev/null' $MODULE_PATH/packages/etc/inittab
 
+sed -i 's#power) /sbin/init 0#power) pidof elogind >/dev/null || /sbin/init 0#' $MODULE_PATH/packages/etc/acpi/acpi_handler.sh
+grep -q "pidof elogind" $MODULE_PATH/packages/etc/acpi/acpi_handler.sh || { echo "Failed to patch acpi_handler.sh."; exit 1; }
+
 ### remove pwquality dependency
 
 sed -i "s|password    requisite     pam_pwquality.so|#password    requisite     pam_pwquality.so|g" $MODULE_PATH/packages/etc/pam.d/system-auth
