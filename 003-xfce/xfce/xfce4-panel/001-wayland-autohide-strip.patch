@@ -9,7 +9,7 @@ the show, and the loop kept eating clicks.
 - size_allocate: don't show the autohide strip when the panel is already
   shown during POPUP
 - autohide_queue: only turn a VISIBLE request into POPUP while the panel
-  window is hidden
+  window is hidden or sliding out
 - autohide_drag_leave: ignore a leave from the strip once it is hidden;
   GTK sends it late, after the panel is shown, and it set the state back
   to HIDDEN
@@ -45,7 +45,7 @@ All changes apply only when gtk_layer_is_supported(), so X11 is unchanged.
        && (window->autohide_state == AUTOHIDE_HIDDEN || window->autohide_state == AUTOHIDE_POPUP)
 -      && gtk_layer_is_supported ())
 +      && gtk_layer_is_supported ()
-+      && !gtk_widget_get_visible (GTK_WIDGET (window)))
++      && (window->autohide_state == AUTOHIDE_HIDDEN || !gtk_widget_get_visible (GTK_WIDGET (window))))
      /*
       * For some reason, calling gtk_widget_queue_resize() below doesn't always trigger
       * size_allocate() on wayland, whereas it seems to trigger it more reliably when calling

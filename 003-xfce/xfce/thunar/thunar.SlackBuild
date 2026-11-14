@@ -31,7 +31,7 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-for i in $CWD/*.patch; do
+for i in $CWD/*.patch $CWD/${VERSION%.*}/*.patch; do
 	patch -p1 < "$i"
 done
 

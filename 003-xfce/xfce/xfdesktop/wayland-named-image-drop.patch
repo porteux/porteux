@@ -1,0 +1,249 @@
+--- a/src/xfdesktop-file-icon-manager.c	2026-11-14 18:33:31.955730900 +0100
++++ b/src/xfdesktop-file-icon-manager.c	2026-11-14 18:57:57.053800200 +0100
+@@ -95,6 +95,7 @@
+ #define XDND_DIRECT_SAVE0_NAME "XdndDirectSave0"
+ #define APPLICATION_OCTET_STREAM_NAME "application/octet-stream"
+ #define NETSCAPE_URL_NAME "_NETSCAPE_URL"
++#define NAMED_DROP_TARGET_KEY "xfdesktop-named-drop-target"
+ 
+ struct _XfdesktopFileIconManager
+ {
+@@ -3016,6 +3017,112 @@
+     }
+ }
+ 
++static const gchar *
++skip_spaces(const gchar *p) {
++    while (*p == ' ' || *p == '\t') {
++        p++;
++    }
++    return p;
++}
++
++static gchar *
++read_param_value(const gchar **cursor) {
++    const gchar *p = *cursor;
++    GString *value = g_string_new(NULL);
++
++    if (*p == '"') {
++        for (p++; *p != '\0' && *p != '"'; p++) {
++            if (*p == '\\' && p[1] != '\0') {
++                p++;
++            }
++            g_string_append_c(value, *p);
++        }
++        if (*p == '"') {
++            p++;
++        }
++    } else {
++        for (; *p != '\0' && *p != ';' && *p != ' ' && *p != '\t'; p++) {
++            g_string_append_c(value, *p);
++        }
++    }
++
++    *cursor = p;
++    return g_string_free(value, FALSE);
++}
++
++static gchar *
++named_octet_stream_filename(GdkAtom target) {
++    static const gchar base[] = APPLICATION_OCTET_STREAM_NAME;
++
++    gchar *type = gdk_atom_name(target);
++    gchar *filename = NULL;
++    if (type != NULL && g_ascii_strncasecmp(type, base, strlen(base)) == 0) {
++        const gchar *p = skip_spaces(type + strlen(base));
++        while (filename == NULL && *p == ';') {
++            const gchar *key = skip_spaces(p + 1);
++            for (p = key; *p != '\0' && *p != '=' && *p != ';' && *p != ' ' && *p != '\t'; p++) {
++            }
++            gsize key_length = p - key;
++            p = skip_spaces(p);
++            if (*p != '=') {
++                continue;
++            }
++            p = skip_spaces(p + 1);
++            gchar *value = read_param_value(&p);
++            if (key_length == 4 && g_ascii_strncasecmp(key, "name", 4) == 0) {
++                filename = value;
++            } else {
++                g_free(value);
++            }
++            p = skip_spaces(p);
++        }
++    }
++    g_free(type);
++
++    if (filename != NULL
++        && (filename[0] == '\0'
++            || strchr(filename, G_DIR_SEPARATOR) != NULL
++            || g_strcmp0(filename, ".") == 0
++            || g_strcmp0(filename, "..") == 0))
++    {
++        g_clear_pointer(&filename, g_free);
++    }
++
++    return filename;
++}
++
++static GdkAtom
++named_drop_target(GtkWidget *icon_view) {
++    return GDK_POINTER_TO_ATOM(g_object_get_data(G_OBJECT(icon_view), NAMED_DROP_TARGET_KEY));
++}
++
++static gboolean
++is_named_drop_target(GtkWidget *icon_view, GdkAtom target) {
++    return target != GDK_NONE && target == named_drop_target(icon_view);
++}
++
++static GdkAtom
++find_drop_target(GtkWidget *icon_view, GdkDragContext *context, GtkTargetList *targets) {
++    GdkAtom target = gtk_drag_dest_find_target(icon_view, context, targets);
++    if (target != GDK_NONE && target != gdk_atom_intern_static_string(APPLICATION_OCTET_STREAM_NAME)) {
++        return target;
++    }
++
++    for (GList *l = gdk_drag_context_list_targets(context); l != NULL; l = l->next) {
++        GdkAtom named = GDK_POINTER_TO_ATOM(l->data);
++        gchar *filename = named_octet_stream_filename(named);
++        if (filename != NULL) {
++            g_free(filename);
++            gtk_target_list_remove(targets, named_drop_target(icon_view));
++            gtk_target_list_add(targets, named, 0, TARGET_APPLICATION_OCTET_STREAM);
++            g_object_set_data(G_OBJECT(icon_view), NAMED_DROP_TARGET_KEY, GDK_ATOM_TO_POINTER(named));
++            return named;
++        }
++    }
++
++    return target;
++}
++
+ static gboolean
+ xfdesktop_file_icon_manager_drag_motion(GtkWidget *icon_view,
+                                         GdkDragContext *context,
+@@ -3029,7 +3136,7 @@
+     mdata->fmanager->icon_on_drop_dest = determine_icon_on_drop_dest(mdata, x, y);
+ 
+     GtkTargetList *targets = xfdesktop_icon_view_get_drag_dest_targets(XFDESKTOP_ICON_VIEW(icon_view));
+-    GdkAtom target = gtk_drag_dest_find_target(icon_view, context, targets);
++    GdkAtom target = find_drop_target(icon_view, context, targets);
+ 
+     if (mdata->fmanager->icon_on_drop_dest == NULL) {
+         // Drag is outside any drop area (e.g. margin around the icon view).
+@@ -3052,7 +3159,8 @@
+             if (icon_is_writable_directory(mdata->fmanager->icon_on_drop_dest)) {
+                 GdkDragAction action;
+                 if (target == gdk_atom_intern_static_string(XDND_DIRECT_SAVE0_NAME)
+-                    || target == gdk_atom_intern_static_string(APPLICATION_OCTET_STREAM_NAME))
++                    || target == gdk_atom_intern_static_string(APPLICATION_OCTET_STREAM_NAME)
++                    || is_named_drop_target(icon_view, target))
+                 {
+                     // Direct save is more or less a "copy" of the data.
+                     action = GDK_ACTION_COPY;
+@@ -3122,6 +3230,9 @@
+ 
+ static void
+ update_xds_property(GdkDragContext *context, GdkAtom type, const gchar *value) {
++    if (gdk_drag_context_get_source_window(context) == NULL) {
++        return;
++    }
+     gdk_property_change(gdk_drag_context_get_source_window(context),
+                         gdk_atom_intern_static_string(XDND_DIRECT_SAVE0_NAME),
+                         type,
+@@ -3550,6 +3661,47 @@
+     }
+ }
+ 
++static void
++set_save_destination(MonitorData *mdata, const gchar *filename, gint x, gint y) {
++    GFile *file = xfdesktop_file_icon_peek_file(mdata->fmanager->icon_on_drop_dest);
++
++    GFile *save_file = g_file_get_child(file, filename);
++    g_clear_object(&mdata->fmanager->xdnd_direct_save_destination);
++    mdata->fmanager->xdnd_direct_save_destination = xfdesktop_file_utils_next_new_file_name(save_file);
++    g_object_unref(save_file);
++
++    if (mdata->fmanager->icon_on_drop_dest == mdata->fmanager->desktop_icon) {
++        gint drop_row, drop_col;
++        XfdesktopIconView *icon_view = xfdesktop_icon_view_holder_get_icon_view(mdata->holder);
++        if (xfdesktop_icon_view_widget_coords_to_slot_coords(icon_view, x, y, &drop_row, &drop_col)) {
++            DBG("adding pending new file '%s' at (%d, %d)",
++                g_file_peek_path(mdata->fmanager->xdnd_direct_save_destination),
++                drop_row, drop_col);
++            xfdesktop_icon_position_configs_set_icon_position(mdata->fmanager->position_configs,
++                                                              mdata->position_config,
++                                                              g_file_peek_path(mdata->fmanager->xdnd_direct_save_destination),
++                                                              drop_row,
++                                                              drop_col,
++                                                              0);
++        }
++    }
++}
++
++static gboolean
++handle_named_octet_stream_drop(MonitorData *mdata, GdkAtom target, gint x, gint y) {
++    if (!icon_is_writable_directory(mdata->fmanager->icon_on_drop_dest)) {
++        return FALSE;
++    }
++
++    gchar *filename = named_octet_stream_filename(target);
++    if (filename == NULL) {
++        return FALSE;
++    }
++    set_save_destination(mdata, filename, x, y);
++    g_free(filename);
++    return TRUE;
++}
++
+ static gboolean
+ handle_xdnd_direct_save_drop(MonitorData *mdata, GdkDragContext *context, gint x, gint y) {
+     if (!icon_is_writable_directory(mdata->fmanager->icon_on_drop_dest)) {
+@@ -3563,27 +3715,7 @@
+             // TODO: check charset
+ 
+             if (strchr(filename, G_DIR_SEPARATOR) == NULL) {
+-                GFile *file = xfdesktop_file_icon_peek_file(mdata->fmanager->icon_on_drop_dest);
+-
+-                GFile *save_file = g_file_get_child(file, filename);
+-                mdata->fmanager->xdnd_direct_save_destination = xfdesktop_file_utils_next_new_file_name(save_file);
+-                g_object_unref(save_file);
+-
+-                if (mdata->fmanager->icon_on_drop_dest == mdata->fmanager->desktop_icon) {
+-                    gint drop_row, drop_col;
+-                    XfdesktopIconView *icon_view = xfdesktop_icon_view_holder_get_icon_view(mdata->holder);
+-                    if (xfdesktop_icon_view_widget_coords_to_slot_coords(icon_view, x, y, &drop_row, &drop_col)) {
+-                        DBG("adding pending new file '%s' at (%d, %d)",
+-                            g_file_peek_path(mdata->fmanager->xdnd_direct_save_destination),
+-                            drop_row, drop_col);
+-                        xfdesktop_icon_position_configs_set_icon_position(mdata->fmanager->position_configs,
+-                                                                          mdata->position_config,
+-                                                                          g_file_peek_path(mdata->fmanager->xdnd_direct_save_destination),
+-                                                                          drop_row,
+-                                                                          drop_col,
+-                                                                          0);
+-                    }
+-                }
++                set_save_destination(mdata, filename, x, y);
+ 
+                 gchar *uri = g_file_get_uri(mdata->fmanager->xdnd_direct_save_destination);
+                 update_xds_property(context, actual_type, uri);
+@@ -3613,7 +3745,7 @@
+     mdata->fmanager->icon_on_drop_dest = determine_icon_on_drop_dest(mdata, x, y);
+ 
+     GtkTargetList *targets = xfdesktop_icon_view_get_drag_dest_targets(XFDESKTOP_ICON_VIEW(icon_view));
+-    GdkAtom target = gtk_drag_dest_find_target(icon_view, context, targets);
++    GdkAtom target = find_drop_target(icon_view, context, targets);
+ 
+ #ifdef DEBUG_TRACE
+     gchar *target_name = gdk_atom_name(target);
+@@ -3644,6 +3776,10 @@
+             && !handle_xdnd_direct_save_drop(mdata, context, x, y))
+         {
+             return FALSE;
++        } else if (is_named_drop_target(icon_view, target)
++                   && !handle_named_octet_stream_drop(mdata, target, x, y))
++        {
++            return FALSE;
+         } else {
+             gtk_drag_get_data(icon_view, context, target, time_);
+             return TRUE;
