@@ -1,0 +1,58 @@
+diff --git a/src/image-view.c b/src/image-view.c
+index bbb33b4..dde1094 100644
+--- a/src/image-view.c
++++ b/src/image-view.c
+@@ -518,7 +518,6 @@ void paint( ImageView* iv, GdkRectangle* invalid_rect, GdkInterpType type )
+     int dest_y;
+ 
+     GdkPixbuf* src_pix = NULL;
+-    GdkPixbuf* scaled_pix = NULL;
+ 
+     dest_x = rect.x;
+     dest_y = rect.y;
+@@ -526,36 +525,24 @@ void paint( ImageView* iv, GdkRectangle* invalid_rect, GdkInterpType type )
+     rect.x -= iv->img_area.x;
+     rect.y -= iv->img_area.y;
+ 
+-    int src_x = (int)floor( ((gdouble)rect.x) / iv->scale + 0.5 );
+-    int src_y = (int)floor( ((gdouble)rect.y) / iv->scale + 0.5 );
+-    int src_w = (int)floor( ((gdouble)rect.width) / iv->scale + 0.5 );
+-    int src_h = (int)floor( ((gdouble)rect.height) / iv->scale + 0.5 );
+-    if( src_y > gdk_pixbuf_get_height( iv->pix ) )
+-        src_y = gdk_pixbuf_get_height( iv->pix );
+-    if( src_x + src_w > gdk_pixbuf_get_width( iv->pix ) )
+-        src_w = gdk_pixbuf_get_width( iv->pix ) - src_x;
+-    if( src_y + src_h > gdk_pixbuf_get_height( iv->pix ) )
+-        src_h = gdk_pixbuf_get_height( iv->pix ) - src_y;
+-    //g_debug("orig src: x=%d, y=%d, w=%d, h=%d",
+-    //        src_x, src_y, src_w, src_h );
+-
+-    if ((src_w > 0) && (src_h > 0))
+-    {
+-        src_pix = gdk_pixbuf_new_subpixbuf( iv->pix, src_x, src_y,  src_w, src_h );
+-        scaled_pix = gdk_pixbuf_scale_simple( src_pix, rect.width, rect.height, type );
+-        g_object_unref( src_pix );
+-        src_pix = scaled_pix;
+-    }
++    src_pix = gdk_pixbuf_new( gdk_pixbuf_get_colorspace( iv->pix ),
++                              gdk_pixbuf_get_has_alpha( iv->pix ),
++                              gdk_pixbuf_get_bits_per_sample( iv->pix ),
++                              rect.width, rect.height );
+ 
+     if( G_LIKELY(src_pix) )
+     {
++        gdk_pixbuf_scale( iv->pix, src_pix, 0, 0, rect.width, rect.height,
++                          -rect.x, -rect.y, iv->scale, iv->scale, type );
+         GtkWidget* widget = (GtkWidget*)iv;
+ #if GTK_CHECK_VERSION(3, 0, 0)
+ #else // GTK2
+         cairo_t *cr = gdk_cairo_create (gtk_widget_get_window(widget));
+ #endif
+         gdk_cairo_set_source_pixbuf (cr, src_pix, dest_x, dest_y);
+-        cairo_paint (cr);
++        cairo_pattern_set_extend (cairo_get_source (cr), CAIRO_EXTEND_PAD);
++        cairo_rectangle (cr, dest_x, dest_y, rect.width, rect.height);
++        cairo_fill (cr);
+ #if GTK_CHECK_VERSION(3, 0, 0)
+ #else // GTK2
+         cairo_destroy (cr);

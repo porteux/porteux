@@ -1,0 +1,67 @@
+diff --git a/src/main-win.c b/src/main-win.c
+index 652bd80..00fbd3f 100644
+--- a/src/main-win.c
++++ b/src/main-win.c
+@@ -427,7 +427,7 @@ gboolean main_win_open( MainWin* mw, const char* file_path, ZoomMode zoom )
+         int delay;
+         /* we found an animation */
+         mw->animation_iter = gdk_pixbuf_animation_get_iter( mw->animation, NULL );
+-        mw->pix = gdk_pixbuf_animation_iter_get_pixbuf( mw->animation_iter );
++        mw->pix = gdk_pixbuf_copy( gdk_pixbuf_animation_iter_get_pixbuf( mw->animation_iter ) );
+         delay = gdk_pixbuf_animation_iter_get_delay_time( mw->animation_iter );
+         mw->animation_timeout = g_timeout_add( delay, (GSourceFunc) on_animation_timeout, mw );
+     }
+@@ -525,6 +525,8 @@ void main_win_close( MainWin* mw )
+ {
+     if( mw->animation )
+     {
++        g_object_unref( mw->animation_iter );
++        mw->animation_iter = NULL;
+         g_object_unref( mw->animation );
+         mw->animation = NULL;
+         if( mw->animation_timeout )
+@@ -533,7 +535,7 @@ void main_win_close( MainWin* mw )
+             mw->animation_timeout = 0;
+         }
+     }
+-    else if( mw->pix )
++    if( mw->pix )
+     {
+         g_object_unref( mw->pix );
+     }
+@@ -819,6 +821,8 @@ void on_rotate_auto_save( GtkWidget* btn, MainWin* mw )
+ 
+ void on_rotate_clockwise( GtkWidget* btn, MainWin* mw )
+ {
++    if( mw->animation )
++        return;
+     cancel_slideshow(mw);
+     rotate_image( mw, GDK_PIXBUF_ROTATE_CLOCKWISE );
+     mw->rotation_angle = get_new_angle(mw->rotation_angle, 90);
+@@ -827,6 +831,8 @@ void on_rotate_clockwise( GtkWidget* btn, MainWin* mw )
+ 
+ void on_rotate_counterclockwise( GtkWidget* btn, MainWin* mw )
+ {
++    if( mw->animation )
++        return;
+     cancel_slideshow(mw);
+     rotate_image( mw, GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE );
+     mw->rotation_angle = get_new_angle(mw->rotation_angle, 270);
+@@ -835,6 +841,8 @@ void on_rotate_counterclockwise( GtkWidget* btn, MainWin* mw )
+ 
+ void on_flip_vertical( GtkWidget* btn, MainWin* mw )
+ {
++    if( mw->animation )
++        return;
+     cancel_slideshow(mw);
+     rotate_image( mw, -180 );
+     mw->rotation_angle = get_new_angle(mw->rotation_angle, -180);
+@@ -843,6 +851,8 @@ void on_flip_vertical( GtkWidget* btn, MainWin* mw )
+ 
+ void on_flip_horizontal( GtkWidget* btn, MainWin* mw )
+ {
++    if( mw->animation )
++        return;
+     cancel_slideshow(mw);
+     rotate_image( mw, -90 );
+     mw->rotation_angle = get_new_angle(mw->rotation_angle, -90);
