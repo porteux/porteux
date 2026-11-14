@@ -40,8 +40,6 @@ DESTDIR=$PKG ninja -C build -j${NUMBER_THREADS} install
 
 find $PKG -type f -name "*.la" -delete
 
-rm $PKG/etc/xdg/autostart/baloo_file.desktop
-
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 
