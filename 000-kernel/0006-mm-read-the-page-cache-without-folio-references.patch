@@ -5,8 +5,6 @@ Subject: [RFC PATCH 00/18] mm: read the page cache without folio references
 Squashed from https://lore.kernel.org/lkml/20261019154913.1765974-1-kas@kernel.org/
 
 - mm: free PG_rcu_free folios only after an RCU grace period
-- splice: don't steal page cache folios
-- fuse: don't move a folio with PG_rcu_free into a fuse file
 - mm: count the pages waiting for a grace period
 - mm: expedite the grace period when a CPU has many deferred frees
 - mm: free the pages waiting for a grace period before OOM
@@ -25,8 +23,6 @@ Squashed from https://lore.kernel.org/lkml/20261019154913.1765974-1-kas@kernel.o
 - mm/migrate: copy PG_rcu_free to the destination folio
 - mm: fail boot if the rcu_free workqueue cannot be created
 ---
- fs/fuse/dev.c                  |    4 
- fs/splice.c                    |   51 ------
  include/linux/mmzone.h         |    1 
  include/linux/page-flags.h     |   24 +++
  include/linux/pagemap.h        |   12 +
@@ -46,89 +42,7 @@ Squashed from https://lore.kernel.org/lkml/20261019154913.1765974-1-kas@kernel.o
  mm/shmem.c                     |   22 ++-
  mm/show_mem.c                  |    9 +
  mm/vmstat.c                    |    6 +
- 21 files changed, 769 insertions(+), 92 deletions(-)
-diff -ruN a/fs/fuse/dev.c b/fs/fuse/dev.c
---- a/fs/fuse/dev.c	2026-11-09 13:35:56.467940639 +0100
-+++ b/fs/fuse/dev.c	2026-11-09 13:36:14.429372251 +0100
-@@ -1156,6 +1156,10 @@
- 	if (folio_test_large(newfolio))
- 		goto out_fallback;
- 
-+	/* A lockless page cache read may still be copying from it */
-+	if (folio_test_rcu_free(newfolio))
-+		goto out_fallback_unlock;
-+
- 	/*
- 	 * This is a new and locked page, it shouldn't be mapped or
- 	 * have any special flags on it
-diff -ruN a/fs/splice.c b/fs/splice.c
---- a/fs/splice.c	2026-11-09 13:35:56.474096803 +0100
-+++ b/fs/splice.c	2026-11-09 13:35:56.588944088 +0100
-@@ -55,56 +55,6 @@
- 	} while (!try_cmpxchg(&file->f_mode, &fmode, fmode & ~FMODE_NOWAIT));
- }
- 
--/*
-- * Attempt to steal a page from a pipe buffer. This should perhaps go into
-- * a vm helper function, it's already simplified quite a bit by the
-- * addition of remove_mapping(). If success is returned, the caller may
-- * attempt to reuse this page for another destination.
-- */
--static bool page_cache_pipe_buf_try_steal(struct pipe_inode_info *pipe,
--		struct pipe_buffer *buf)
--{
--	struct folio *folio = page_folio(buf->page);
--	struct address_space *mapping;
--
--	folio_lock(folio);
--
--	mapping = folio_mapping(folio);
--	if (mapping) {
--		WARN_ON(!folio_test_uptodate(folio));
--
--		/*
--		 * At least for ext2 with nobh option, we need to wait on
--		 * writeback completing on this folio, since we'll remove it
--		 * from the pagecache.  Otherwise truncate wont wait on the
--		 * folio, allowing the disk blocks to be reused by someone else
--		 * before we actually wrote our data to them. fs corruption
--		 * ensues.
--		 */
--		folio_wait_writeback(folio);
--
--		if (!filemap_release_folio(folio, GFP_KERNEL))
--			goto out_unlock;
--
--		/*
--		 * If we succeeded in removing the mapping, set LRU flag
--		 * and return good.
--		 */
--		if (remove_mapping(mapping, folio)) {
--			buf->flags |= PIPE_BUF_FLAG_LRU;
--			return true;
--		}
--	}
--
--	/*
--	 * Raced with truncate or failed to remove folio from current
--	 * address space, unlock and return failure.
--	 */
--out_unlock:
--	folio_unlock(folio);
--	return false;
--}
--
- static void page_cache_pipe_buf_release(struct pipe_inode_info *pipe,
- 					struct pipe_buffer *buf)
- {
-@@ -155,7 +105,6 @@
- const struct pipe_buf_operations page_cache_pipe_buf_ops = {
- 	.confirm	= page_cache_pipe_buf_confirm,
- 	.release	= page_cache_pipe_buf_release,
--	.try_steal	= page_cache_pipe_buf_try_steal,
- 	.get		= generic_pipe_buf_get,
- };
- 
+ 19 files changed, 765 insertions(+), 41 deletions(-)
 diff -ruN a/include/linux/mmzone.h b/include/linux/mmzone.h
 --- a/include/linux/mmzone.h	2026-11-09 13:35:56.480270471 +0100
 +++ b/include/linux/mmzone.h	2026-11-09 13:35:56.589023637 +0100
@@ -1259,13 +1173,14 @@ diff -ruN a/mm/page_alloc.c b/mm/page_alloc.c
  	unsigned int cpuset_mems_cookie;
  	unsigned int zonelist_iter_cookie;
  	int reserve_flags;
-@@ -4820,6 +5081,7 @@
+@@ -4820,7 +5081,8 @@
  restart:
  	compaction_retries = 0;
  	no_progress_loops = 0;
 +	rcu_free_waits = 0;
  	compact_result = COMPACT_SKIPPED;
  	compact_priority = DEF_COMPACT_PRIORITY;
+ 	can_retry_reserves = true;
  	cpuset_mems_cookie = read_mems_allowed_begin();
 @@ -5017,7 +5279,8 @@
  		goto restart;
