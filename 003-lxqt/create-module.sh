@@ -225,6 +225,14 @@ install_packages
 
 install_additional_packages
 
+mkdir -p $MODULE_PATH/packages/usr/share/thumbnailers
+cat > $MODULE_PATH/packages/usr/share/thumbnailers/pdfthumbnail.thumbnailer << 'EOF'
+[Thumbnailer Entry]
+TryExec=pdftocairo
+Exec=sh -c "pdftocairo -png -singlefile -scale-to $0 - - <$1 >$2" %s %i %o
+MimeType=application/pdf;
+EOF
+
 ### copy build files to 05-devel
 
 copy_to_devel
