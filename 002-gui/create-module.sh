@@ -71,6 +71,8 @@ rm $MODULE_PATH/packages/xtrans*.txz
 # required by librsvg
 installpkg $MODULE_PATH/packages/cargo-c*.txz || exit 1
 rm $MODULE_PATH/packages/cargo-c*
+installpkg $MODULE_PATH/packages/libgit2*.txz || exit 1
+rm $MODULE_PATH/packages/libgit2*.txz
 
 install_rust_toolchain
 
