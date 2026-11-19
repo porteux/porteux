@@ -196,7 +196,6 @@ download_package "vorbis-tools" &
 download_package "wavpack" &
 download_package "wayland" &
 download_package "wayland-utils" &
-download_package "wlroots" & # required by labwc
 download_package "x11-skel" &
 download_package "xauth" &
 wait_for_downloads

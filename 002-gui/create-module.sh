@@ -88,6 +88,7 @@ for package in \
 	imlib2 \
 	libostree \
 	libei \
+	wlroots \
 	libfyaml \
 	libxmlb \
 	appstream \
