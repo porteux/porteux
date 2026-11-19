@@ -1,0 +1,39 @@
+diff --git a/src/image-view.c b/src/image-view.c
+index dde1094..9e8039d 100644
+--- a/src/image-view.c
++++ b/src/image-view.c
+@@ -525,21 +525,30 @@ void paint( ImageView* iv, GdkRectangle* invalid_rect, GdkInterpType type )
+     rect.x -= iv->img_area.x;
+     rect.y -= iv->img_area.y;
+ 
++#if GTK_CHECK_VERSION(3, 0, 0)
++    int sf = gtk_widget_get_scale_factor( (GtkWidget*)iv );
++#else
++    int sf = 1;
++#endif
++
+     src_pix = gdk_pixbuf_new( gdk_pixbuf_get_colorspace( iv->pix ),
+                               gdk_pixbuf_get_has_alpha( iv->pix ),
+                               gdk_pixbuf_get_bits_per_sample( iv->pix ),
+-                              rect.width, rect.height );
++                              rect.width * sf, rect.height * sf );
+ 
+     if( G_LIKELY(src_pix) )
+     {
+-        gdk_pixbuf_scale( iv->pix, src_pix, 0, 0, rect.width, rect.height,
+-                          -rect.x, -rect.y, iv->scale, iv->scale, type );
++        gdk_pixbuf_scale( iv->pix, src_pix, 0, 0, rect.width * sf, rect.height * sf,
++                          -rect.x * sf, -rect.y * sf, iv->scale * sf, iv->scale * sf, type );
+         GtkWidget* widget = (GtkWidget*)iv;
+ #if GTK_CHECK_VERSION(3, 0, 0)
++        cairo_surface_t* surface = gdk_cairo_surface_create_from_pixbuf( src_pix, sf, NULL );
++        cairo_set_source_surface (cr, surface, dest_x, dest_y);
++        cairo_surface_destroy( surface );
+ #else // GTK2
+         cairo_t *cr = gdk_cairo_create (gtk_widget_get_window(widget));
+-#endif
+         gdk_cairo_set_source_pixbuf (cr, src_pix, dest_x, dest_y);
++#endif
+         cairo_pattern_set_extend (cairo_get_source (cr), CAIRO_EXTEND_PAD);
+         cairo_rectangle (cr, dest_x, dest_y, rect.width, rect.height);
+         cairo_fill (cr);
