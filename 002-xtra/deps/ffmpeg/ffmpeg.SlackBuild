@@ -64,7 +64,6 @@ LDFLAGS="$LLDFLAGS" \
 	--enable-libwebp \
 	--enable-libmp3lame \
 	--enable-opencl \
-	--enable-opengl \
 	--enable-libopenjpeg \
 	--enable-libpulse \
 	--enable-libsmbclient \
