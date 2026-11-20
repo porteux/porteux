@@ -1,0 +1,71 @@
+diff --git a/gdk/wayland/gdkapplaunchcontext-wayland.c b/gdk/wayland/gdkapplaunchcontext-wayland.c
+index 340a037..ecf8b48 100644
+--- a/gdk/wayland/gdkapplaunchcontext-wayland.c
++++ b/gdk/wayland/gdkapplaunchcontext-wayland.c
+@@ -91,6 +91,7 @@ gdk_wayland_app_launch_context_get_startup_notify_id (GAppLaunchContext *context
+ 
+       xdg_activation_token_v1_commit (token);
+ 
++      _gdk_wayland_display_cancel_read (display);
+       while (app_launch_data.token == NULL)
+         wl_display_dispatch_queue (display->wl_display, event_queue);
+ 
+diff --git a/gdk/wayland/gdkdisplay-wayland.c b/gdk/wayland/gdkdisplay-wayland.c
+index 094f3d8..8312228 100644
+--- a/gdk/wayland/gdkdisplay-wayland.c
++++ b/gdk/wayland/gdkdisplay-wayland.c
+@@ -830,6 +830,7 @@ gdk_wayland_display_sync (GdkDisplay *display)
+ 
+   display_wayland = GDK_WAYLAND_DISPLAY (display);
+ 
++  _gdk_wayland_display_cancel_read (display_wayland);
+   wl_display_roundtrip (display_wayland->wl_display);
+ }
+ 
+diff --git a/gdk/wayland/gdkeventsource.c b/gdk/wayland/gdkeventsource.c
+index 7016af9..e61df11 100644
+--- a/gdk/wayland/gdkeventsource.c
++++ b/gdk/wayland/gdkeventsource.c
+@@ -142,6 +142,18 @@ gdk_event_source_finalize (GSource *base)
+   source->reading = FALSE;
+ }
+ 
++void
++_gdk_wayland_display_cancel_read (GdkWaylandDisplay *display_wayland)
++{
++  GdkWaylandEventSource *source = (GdkWaylandEventSource *) display_wayland->event_source;
++
++  if (source == NULL || !source->reading)
++    return;
++
++  wl_display_cancel_read (display_wayland->wl_display);
++  source->reading = FALSE;
++}
++
+ static GSourceFuncs wl_glib_source_funcs = {
+   gdk_event_source_prepare,
+   gdk_event_source_check,
+diff --git a/gdk/wayland/gdkprivate-wayland.h b/gdk/wayland/gdkprivate-wayland.h
+index 1916a12..8aa6316 100644
+--- a/gdk/wayland/gdkprivate-wayland.h
++++ b/gdk/wayland/gdkprivate-wayland.h
+@@ -207,6 +207,7 @@ void gdk_wayland_device_unset_touch_grab (GdkDevice        *device,
+ 
+ void     _gdk_wayland_display_deliver_event (GdkDisplay *display, GdkEvent *event);
+ GSource *_gdk_wayland_display_event_source_new (GdkDisplay *display);
++void     _gdk_wayland_display_cancel_read (GdkWaylandDisplay *display_wayland);
+ void     _gdk_wayland_display_queue_events (GdkDisplay *display);
+ 
+ GdkAppLaunchContext *_gdk_wayland_display_get_app_launch_context (GdkDisplay *display);
+diff --git a/gdk/wayland/gdkwindow-wayland.c b/gdk/wayland/gdkwindow-wayland.c
+index 533d06f..53ed81b 100644
+--- a/gdk/wayland/gdkwindow-wayland.c
++++ b/gdk/wayland/gdkwindow-wayland.c
+@@ -3994,6 +3994,7 @@ gdk_wayland_window_focus (GdkWindow *window,
+ 
+           xdg_activation_token_v1_commit (token);
+ 
++          _gdk_wayland_display_cancel_read (display_wayland);
+           while (startup_id == NULL)
+             wl_display_dispatch_queue (display_wayland->wl_display, event_queue);
+ 

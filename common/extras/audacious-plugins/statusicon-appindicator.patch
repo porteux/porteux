@@ -1,0 +1,178 @@
+diff --git a/src/statusicon/meson.build b/src/statusicon/meson.build
+index d504ba0..2ecabbd 100644
+--- a/src/statusicon/meson.build
++++ b/src/statusicon/meson.build
+@@ -1,10 +1,19 @@
++statusicon_deps = [audacious_dep, gtk_dep, audgui_dep]
++statusicon_args = cxx.get_supported_arguments([
++  '-Wno-deprecated-declarations'
++])
++
++appindicator_dep = dependency('appindicator3-0.1', required: false)
++if appindicator_dep.found() and not get_option('gtk2')
++  statusicon_deps += appindicator_dep
++  statusicon_args += '-DUSE_APPINDICATOR'
++endif
++
+ shared_module('statusicon',
+   'statusicon.cc',
+-  dependencies: [audacious_dep, gtk_dep, audgui_dep],
++  dependencies: statusicon_deps,
+   name_prefix: '',
+-  cpp_args: cxx.get_supported_arguments([
+-    '-Wno-deprecated-declarations'
+-  ]),
++  cpp_args: statusicon_args,
+   install: true,
+   install_dir: general_plugin_dir
+ )
+diff --git a/src/statusicon/statusicon.cc b/src/statusicon/statusicon.cc
+index fc496e3..b2e8ab6 100644
+--- a/src/statusicon/statusicon.cc
++++ b/src/statusicon/statusicon.cc
+@@ -35,6 +35,10 @@
+ #include <libaudgui/libaudgui-gtk.h>
+ #include <libaudgui/menu.h>
+ 
++#ifdef USE_APPINDICATOR
++#include <libappindicator/app-indicator.h>
++#endif
++
+ class StatusIcon : public GeneralPlugin
+ {
+ public:
+@@ -76,6 +80,7 @@ static void si_popup_timer_start (GtkStatusIcon * icon);
+ static void si_popup_timer_stop (GtkStatusIcon * icon);
+ static void si_menu_show (GtkStatusIcon * icon, GdkEventButton * event);
+ static void si_popup_hide (GtkStatusIcon * icon);
++static void si_indicator_update_middle_click ();
+ 
+ const char * const StatusIcon::defaults[] = {
+     "scroll_action", aud::numeric_string<SI_CFG_SCROLL_ACTION_VOLUME>::str,
+@@ -318,10 +323,113 @@ static void si_window_close (void * data, void * user_data)
+     }
+ }
+ 
++#ifdef USE_APPINDICATOR
++enum {
++    SI_INDICATOR_ITEM_PAUSE = 3,
++    SI_INDICATOR_ITEM_NEXT = 6
++};
++
++static const char * const si_indicator_title_hooks[] = {
++    "title change",
++    "playback ready",
++    "playback stop"
++};
++
++static AppIndicator * si_indicator = nullptr;
++
++static void si_indicator_toggle_window (GtkMenuItem *, void *)
++{
++    if (! aud_get_headless_mode ())
++        aud_ui_show (! aud_ui_is_shown ());
++}
++
++static void si_indicator_scroll (AppIndicator *, int, GdkScrollDirection direction, void *)
++{
++    GdkEventScroll event {};
++    event.direction = direction;
++    si_cb_btscroll (nullptr, & event);
++}
++
++static void si_indicator_update_title (void *, void *)
++{
++    String title = aud_drct_get_playing () ? aud_drct_get_title () : String ();
++    app_indicator_set_title (si_indicator, title ? (const char *) title : _("Audacious"));
++}
++
++static void si_indicator_enable (bool enable)
++{
++    if (enable && ! si_indicator)
++    {
++        GtkWidget * toggle = gtk_menu_item_new_with_mnemonic (_("_Show/Hide Audacious"));
++        g_signal_connect (toggle, "activate", (GCallback) si_indicator_toggle_window, nullptr);
++
++        GtkWidget * menu = si_menu_create ();
++        gtk_menu_shell_prepend ((GtkMenuShell *) menu, gtk_separator_menu_item_new ());
++        gtk_menu_shell_prepend ((GtkMenuShell *) menu, toggle);
++        gtk_widget_show_all (menu);
++
++        GtkIconTheme * theme = gtk_icon_theme_get_default ();
++        const char * icon = gtk_icon_theme_has_icon (theme, "audacious-panel") ?
++         "audacious-panel" : "audacious";
++
++        si_indicator = app_indicator_new ("audacious", icon,
++         APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
++        app_indicator_set_menu (si_indicator, (GtkMenu *) menu);
++        app_indicator_set_status (si_indicator, APP_INDICATOR_STATUS_ACTIVE);
++        g_signal_connect (si_indicator, "scroll-event", (GCallback) si_indicator_scroll, nullptr);
++
++        si_indicator_update_middle_click ();
++        si_indicator_update_title (nullptr, nullptr);
++
++        for (const char * hook : si_indicator_title_hooks)
++            hook_associate (hook, si_indicator_update_title, nullptr);
++        hook_associate ("window close", si_window_close, nullptr);
++    }
++
++    if (! enable && si_indicator)
++    {
++        PluginHandle * si = aud_plugin_by_header (& aud_plugin_instance);
++        if (! aud_plugin_get_enabled (si) && ! aud_get_headless_mode () && ! aud_ui_is_shown ())
++            aud_ui_show (true);
++
++        for (const char * hook : si_indicator_title_hooks)
++            hook_dissociate (hook, si_indicator_update_title);
++        hook_dissociate ("window close", si_window_close);
++
++        g_object_unref (si_indicator);
++        si_indicator = nullptr;
++    }
++}
++#endif
++
++static void si_indicator_update_middle_click ()
++{
++#ifdef USE_APPINDICATOR
++    if (! si_indicator)
++        return;
++
++    int index = (aud_get_int ("statusicon", "middle_click_action") ==
++     SI_CFG_MIDDLE_CLICK_ACTION_NEXT) ? SI_INDICATOR_ITEM_NEXT : SI_INDICATOR_ITEM_PAUSE;
++
++    GList * items = gtk_container_get_children ((GtkContainer *) app_indicator_get_menu (si_indicator));
++    app_indicator_set_secondary_activate_target (si_indicator,
++     (GtkWidget *) g_list_nth_data (items, index));
++    g_list_free (items);
++#endif
++}
++
+ static void si_enable (bool enable)
+ {
+     static GtkStatusIcon * si_applet = nullptr;
+ 
++#ifdef USE_APPINDICATOR
++    if (g_getenv ("WAYLAND_DISPLAY"))
++    {
++        si_indicator_enable (enable);
++        return;
++    }
++#endif
++
+     if (enable && ! si_applet)
+     {
+         si_applet = si_create ();
+@@ -404,10 +512,10 @@ const PreferencesWidget StatusIcon::widgets[] = {
+         {SI_CFG_SCROLL_ACTION_SKIP}),
+     WidgetLabel (N_("<b>Middle Click Action</b>")),
+     WidgetRadio (N_("Pause/Resume playback"),
+-        WidgetInt ("statusicon", "middle_click_action"),
++        WidgetInt ("statusicon", "middle_click_action", si_indicator_update_middle_click),
+         {SI_CFG_MIDDLE_CLICK_ACTION_PAUSE}),
+     WidgetRadio (N_("Play next song"),
+-        WidgetInt ("statusicon", "middle_click_action"),
++        WidgetInt ("statusicon", "middle_click_action", si_indicator_update_middle_click),
+         {SI_CFG_MIDDLE_CLICK_ACTION_NEXT}),
+     WidgetLabel (N_("<b>Other Settings</b>")),
+     WidgetCheck (N_("Disable the popup window"),

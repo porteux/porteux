@@ -1,0 +1,47 @@
+diff --git a/src/libaudgui/init.cc b/src/libaudgui/init.cc
+index 7fb301b..4462318 100644
+--- a/src/libaudgui/init.cc
++++ b/src/libaudgui/init.cc
+@@ -22,6 +22,7 @@
+ #include <libaudcore/audstrings.h>
+ #include <libaudcore/hook.h>
+ #include <libaudcore/playlist.h>
++#include <libaudcore/plugins.h>
+ #include <libaudcore/runtime.h>
+ 
+ #include "internal.h"
+@@ -342,7 +343,9 @@ EXPORT void audgui_init ()
+ 
+ #if defined(GDK_WINDOWING_WAYLAND) && defined(GDK_WINDOWING_X11)
+     // Force Xwayland if requested and potentially available
+-    if (aud_get_bool ("use_xwayland") && g_getenv ("DISPLAY"))
++    PluginHandle * skins = aud_plugin_lookup_basename ("skins");
++    bool winamp = skins && aud_plugin_get_enabled (skins);
++    if ((aud_get_bool ("use_xwayland") || winamp) && g_getenv ("DISPLAY"))
+         g_setenv ("GDK_BACKEND", "x11", true);
+ #endif
+ 
+diff --git a/src/libaudqt/audqt.cc b/src/libaudqt/audqt.cc
+index 39556d0..827d940 100644
+--- a/src/libaudqt/audqt.cc
++++ b/src/libaudqt/audqt.cc
+@@ -29,6 +29,7 @@
+ #include <libaudcore/audstrings.h>
+ #include <libaudcore/i18n.h>
+ #include <libaudcore/interface.h>
++#include <libaudcore/plugins.h>
+ #include <libaudcore/runtime.h>
+ 
+ #include "libaudqt-internal.h"
+@@ -132,7 +133,10 @@ EXPORT void init()
+ 
+ #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
+     // Force Xwayland if requested and potentially available
+-    if (aud_get_bool("use_xwayland") && qEnvironmentVariableIsSet("DISPLAY"))
++    PluginHandle * skins = aud_plugin_lookup_basename("skins-qt");
++    bool winamp = skins && aud_plugin_get_enabled(skins);
++    if ((aud_get_bool("use_xwayland") || winamp) &&
++        qEnvironmentVariableIsSet("DISPLAY"))
+         qputenv("QT_QPA_PLATFORM", "xcb");
+ #endif
+ 

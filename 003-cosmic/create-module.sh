@@ -22,6 +22,11 @@ cd $MODULE_PATH || exit 1
 
 bash $SCRIPT_PATH/download-packages.sh || exit 1
 
+# required by audacious-plugins
+installpkg $MODULE_PATH/packages/libappindicator*.txz || exit 1
+installpkg $MODULE_PATH/packages/libdbusmenu*.txz || exit 1
+installpkg $MODULE_PATH/packages/libindicator*.txz || exit 1
+
 ### packages outside slackware repository
 
 # cosmic common deps
@@ -146,7 +151,13 @@ copy_to_multilanguage
 cd $MODULE_PATH/packages/ || exit 1
 
 {
+rm usr/lib${SYSTEM_BITS}/libappindicator.*
+rm usr/lib${SYSTEM_BITS}/libdbusmenu-gtk.*
+rm usr/lib${SYSTEM_BITS}/libindicator.*
+rm usr/libexec/indicator-loader
+
 rm -fr usr/bin
+rm -fr usr/share/libindicator
 } >/dev/null 2>&1
 
 strip_clean
