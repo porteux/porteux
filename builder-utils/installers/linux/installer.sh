@@ -5,7 +5,6 @@ if [ "$ARCHIVE_DIR" ] && [ "$USER_PWD" ]; then
 else
 	INSTALLERPATH="$1"
 fi
-EXTRACTEDFOLDER="$PWD"
 
 isCpuSupported=$(cat /proc/cpuinfo | grep flags | head -n 1 | cut -d: -f2 | grep sse4_2)
 if [ -z "$isCpuSupported" ]; then
@@ -22,9 +21,8 @@ checkRoot() {
 
 checkRoot
 
-CleanUp(){
-	rm -fr "$EXTRACTEDFOLDER"
-}
+WORKFOLDER="$(mktemp -d)"
+trap 'rm -fr "$WORKFOLDER"' EXIT
 
 PressEnterToContinue(){
 	echo "Press Enter to continue"
@@ -34,7 +32,6 @@ PressEnterToContinue(){
 Debug() {
 cat << ENDOFTEXT > "$LOGFILEPATH"
 installer path: $INSTALLERPATH
-script path: $EXTRACTEDFOLDER
 partition name: $PARTITIONNAME
 dev partition: $DEVPARTITIONPATH
 media name: $MEDIANAME
@@ -62,7 +59,6 @@ if [ $? -ne 0 ]; then
 	echo 'create a new partition from scratch.'
 	echo
 	Debug $1
-	CleanUp
 	exit $1
 fi
 }
@@ -70,7 +66,6 @@ fi
 for tool in sfdisk blockdev zstd cpio blkid lsblk; do
 	if ! command -v "$tool" > /dev/null 2>&1; then
 		echo "Could not find $tool"
-		CleanUp
 		PressEnterToContinue
 		exit 1
 	fi
@@ -85,7 +80,6 @@ PARTITIONNUMBER=$(echo ${DEVPARTITIONPATH#"$DEVMEDIANAME"} | sed 's/[^0-9]*//g')
 
 if [ -z "$MEDIANAME" ]; then
 	echo "This storage media $PARTITIONMOUNTPATH is not mounted correctly. Please plug it again or reboot your system"
-	CleanUp
 	exit 1
 fi
 
@@ -95,28 +89,33 @@ if ! echo "$PARTITIONFILESYSTEM" | grep -qE 'ext|vfat|msdos|exfat|ntfs|fuseblk|b
 	echo "Partition filesystem not supported by the bootloader: $PARTITIONFILESYSTEM"
 	echo "The partition holding /boot must be ext2/3/4, FAT, exFAT, NTFS, btrfs or XFS."
 	Debug 1
-	CleanUp
 	exit 1
 elif [ ! -f "$PARTITIONMOUNTPATH"/boot/syslinux/porteux.cfg ]; then
 	echo "PorteuX cfg file couldn't be found in $PARTITIONMOUNTPATH/boot/syslinux"
 	Debug 1
-	CleanUp
 	exit 1
 elif [ ! -f "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst ]; then
 	echo "Couldn't find $PARTITIONMOUNTPATH/boot/syslinux/initrd.zst"
 	Debug 1
-	CleanUp
 	exit 1
 elif [ ! -f "$PARTITIONMOUNTPATH"/boot/grub/boot.img ] || [ ! -f "$PARTITIONMOUNTPATH"/boot/grub/core.img ]; then
 	echo "Couldn't find the bootloader files in $PARTITIONMOUNTPATH/boot/grub"
 	Debug 1
-	CleanUp
 	exit 1
 elif [ "$PARTITIONTABLETYPE" != "dos" ] && [ "$PARTITIONTABLETYPE" != "gpt" ]; then
 	echo "Only 'dos', 'msdos' or 'gpt' partition tables are supported."
 	echo "Format your storage media using one of these partition tables and try again."
 	Debug 1
-	CleanUp
+	exit 1
+elif [ "$PARTITIONTABLETYPE" = "gpt" ] && ! echo "$PARTITIONFILESYSTEM" | grep -qE 'vfat|msdos'; then
+	echo "This media uses a GPT partition table, so it can only boot in UEFI mode."
+	echo "UEFI can only read FAT, so the partition holding /boot and /EFI must be FAT32."
+	Debug 1
+	exit 1
+elif [ "$PARTITIONTABLETYPE" = "gpt" ] && { [ ! -f "$PARTITIONMOUNTPATH"/EFI/BOOT/bootx64.efi ] || [ ! -f "$PARTITIONMOUNTPATH"/EFI/BOOT/bootia32.efi ]; }; then
+	echo "Couldn't find bootx64.efi and bootia32.efi in $PARTITIONMOUNTPATH/EFI/BOOT"
+	echo "Copy the /EFI folder from the ISO onto this partition and try again."
+	Debug 1
 	exit 1
 fi
 
@@ -138,7 +137,6 @@ if [ "$PARTITIONTABLETYPE" = "dos" ]; then
 	if [ "$(blockdev --getss "$DEVMEDIANAME" 2>/dev/null)" != "512" ]; then
 		echo "Only storage media with 512-byte sectors are supported by the bootloader."
 		Debug 5
-		CleanUp
 		exit 5
 	fi
 	CORESECTORS=$(( ($(stat -c %s "$PARTITIONMOUNTPATH"/boot/grub/core.img) + 511) / 512 ))
@@ -147,22 +145,21 @@ if [ "$PARTITIONTABLETYPE" = "dos" ]; then
 		echo "Not enough free space before the first partition to install the bootloader."
 		echo "The first partition must start at sector $((CORESECTORS + 1)) or later (2048 is recommended)."
 		Debug 5
-		CleanUp
 		exit 5
 	fi
 
-	dd if="$DEVMEDIANAME" of="$EXTRACTEDFOLDER"/mbr.bin bs=512 count=1 >/dev/null 2>&1
+	dd if="$DEVMEDIANAME" of="$WORKFOLDER"/mbr.bin bs=512 count=1 >/dev/null 2>&1
 	FailMessage 1
-	dd if="$PARTITIONMOUNTPATH"/boot/grub/boot.img of="$EXTRACTEDFOLDER"/mbr.bin bs=1 count=3 conv=notrunc >/dev/null 2>&1
+	dd if="$PARTITIONMOUNTPATH"/boot/grub/boot.img of="$WORKFOLDER"/mbr.bin bs=1 count=3 conv=notrunc >/dev/null 2>&1
 	FailMessage 1
-	dd if="$PARTITIONMOUNTPATH"/boot/grub/boot.img of="$EXTRACTEDFOLDER"/mbr.bin bs=1 skip=90 seek=90 count=350 conv=notrunc >/dev/null 2>&1
+	dd if="$PARTITIONMOUNTPATH"/boot/grub/boot.img of="$WORKFOLDER"/mbr.bin bs=1 skip=90 seek=90 count=350 conv=notrunc >/dev/null 2>&1
 	FailMessage 1
-	printf '\x90\x90' | dd of="$EXTRACTEDFOLDER"/mbr.bin bs=1 seek=102 conv=notrunc >/dev/null 2>&1
+	printf '\x90\x90' | dd of="$WORKFOLDER"/mbr.bin bs=1 seek=102 conv=notrunc >/dev/null 2>&1
 	FailMessage 1
 
 	dd if="$PARTITIONMOUNTPATH"/boot/grub/core.img of="$DEVMEDIANAME" bs=512 seek=1 conv=notrunc,fsync >/dev/null 2>&1
 	FailMessage 1
-	dd if="$EXTRACTEDFOLDER"/mbr.bin of="$DEVMEDIANAME" bs=440 count=1 conv=notrunc,fsync >/dev/null 2>&1
+	dd if="$WORKFOLDER"/mbr.bin of="$DEVMEDIANAME" bs=440 count=1 conv=notrunc,fsync >/dev/null 2>&1
 	FailMessage 1
 
 	# make partition active
@@ -188,17 +185,17 @@ fi
 
 if [ -d "$PORTEUXMOUNTPATH" ]; then
 	echo "Updating initrd with Porteux partition unique ID..."
-	mkdir "$EXTRACTEDFOLDER"/initrd >/dev/null 2>&1
-	cd "$EXTRACTEDFOLDER"/initrd
+	mkdir "$WORKFOLDER"/initrd >/dev/null 2>&1
+	cd "$WORKFOLDER"/initrd
 	FailMessage 4
 	zstd -dc "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst | cpio -i --quiet >/dev/null 2>&1
 	[ -e linuxrc ]
 	FailMessage 4
 	echo "$PORTEUXUUID" > uuid
-	find . | cpio -H newc -o --quiet 2>/dev/null | zstd -19 --check > "$EXTRACTEDFOLDER"/initrd.zst.new
-	[ -s "$EXTRACTEDFOLDER"/initrd.zst.new ] && zstd -t "$EXTRACTEDFOLDER"/initrd.zst.new >/dev/null 2>&1
+	find . | cpio -H newc -o --quiet 2>/dev/null | zstd -19 --check > "$WORKFOLDER"/initrd.zst.new
+	[ -s "$WORKFOLDER"/initrd.zst.new ] && zstd -t "$WORKFOLDER"/initrd.zst.new >/dev/null 2>&1
 	FailMessage 4
-	cp -f "$EXTRACTEDFOLDER"/initrd.zst.new "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst.new
+	cp -f "$WORKFOLDER"/initrd.zst.new "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst.new
 	FailMessage 4
 	sync
 	mv -f "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst.new "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst
@@ -210,8 +207,6 @@ if [ -d "$PORTEUXMOUNTPATH" ]; then
 	chmod 755 "$PORTEUXMOUNTPATH"/porteux >/dev/null 2>&1
 	chmod 755 "$PORTEUXMOUNTPATH"/porteux/* >/dev/null 2>&1
 fi
-
-CleanUp
 clear
 
 echo "Installation finished successfully"

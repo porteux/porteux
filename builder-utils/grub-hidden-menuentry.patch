@@ -9,20 +9,24 @@
      {0, 0, 0, 0, 0, 0}
    };
  
-@@ -169,13 +171,19 @@
+@@ -169,13 +171,22 @@
      menu_args[argc] = NULL;
    }
  
 -  /* Add the menu entry at the end of the list.  */
 -  while (*last)
-+  while (*last && ! (*last)->hidden)
-     last = &(*last)->next;
+-    last = &(*last)->next;
++  {
++    grub_menu_entry_t next;
++    int i;
  
 -  *last = grub_zalloc (sizeof (**last));
 -  if (! *last)
 -    goto fail;
-+  {
-+    grub_menu_entry_t next = *last;
++    for (i = 0; i < menu->size; i++)
++      last = &(*last)->next;
++
++    next = *last;
 +    *last = grub_zalloc (sizeof (**last));
 +    if (! *last)
 +      {
@@ -34,34 +38,7 @@
  
    (*last)->title = menu_title;
    (*last)->id = menu_id;
-@@ -252,6 +260,26 @@
-   return result;
- }
- 
-+static void
-+hide_last_visible_entry (void)
-+{
-+  grub_menu_t menu = grub_env_get_menu ();
-+  grub_menu_entry_t entry;
-+  int i;
-+
-+  if (! menu || menu->size <= 0)
-+    return;
-+
-+  for (i = 1, entry = menu->entry_list; entry && i < menu->size; i++)
-+    entry = entry->next;
-+
-+  if (entry)
-+    {
-+      entry->hidden = 1;
-+      menu->size--;
-+    }
-+}
-+
- static grub_err_t
- grub_cmd_menuentry (grub_extcmd_context_t ctxt, int argc, char **args)
- {
-@@ -279,14 +307,19 @@
+@@ -279,14 +290,19 @@
      users = "";
  
    if (! ctxt->script)
@@ -83,18 +60,18 @@
 +				      ctxt->state[3].arg,
 +				      ctxt->extcmd->cmd->name[0] == 's');
 +      if (r == GRUB_ERR_NONE && ctxt->state[6].set)
-+	hide_last_visible_entry ();
++	grub_env_get_menu ()->size--;
 +      return r;
 +    }
  
    src = args[argc - 1];
    args[argc - 1] = NULL;
-@@ -304,6 +337,8 @@
+@@ -304,6 +320,8 @@
  				  users,
  				  ctxt->state[2].arg, prefix, src + 1,
  				  ctxt->extcmd->cmd->name[0] == 's');
 +  if (r == GRUB_ERR_NONE && ctxt->state[6].set)
-+    hide_last_visible_entry ();
++    grub_env_get_menu ()->size--;
  
    src[len - 1] = ch;
    args[argc - 1] = src;
@@ -122,14 +99,3 @@
  		    menu_fini ();
  		    *auto_boot = 0;
  		    return entry;
---- a/include/grub/menu.h
-+++ b/include/grub/menu.h
-@@ -58,6 +58,8 @@
- 
-   int submenu;
- 
-+  int hidden;
-+
-   /* The next element.  */
-   struct grub_menu_entry *next;
- };

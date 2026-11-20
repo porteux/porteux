@@ -26,6 +26,12 @@ try {
 	}
 
 	if ($partition.Type -like 'GPT*') {
+		if ($logicalDisk.FileSystem -notlike 'FAT*') {
+			Fail "This media uses a GPT partition table, so it can only boot in UEFI mode.`r`nUEFI can only read FAT, so the partition holding \boot and \EFI must be FAT32."
+		}
+		if (-not (Test-Path ($root + 'EFI\BOOT\bootx64.efi')) -or -not (Test-Path ($root + 'EFI\BOOT\bootia32.efi'))) {
+			Fail "Couldn't find bootx64.efi and bootia32.efi in ${root}EFI\BOOT`r`nCopy the \EFI folder from the ISO onto this partition and try again."
+		}
 		Write-Host 'This media uses a GPT partition table: it will boot in UEFI mode only.'
 		Write-Host 'For legacy BIOS boot the media must use an MS-DOS partition table.'
 		exit 0
