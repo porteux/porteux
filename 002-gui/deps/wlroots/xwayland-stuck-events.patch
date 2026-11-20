@@ -1,0 +1,42 @@
+xwayland: fix X11 events stuck in the xcb queue
+
+xcb_flush() and reply waits can read incoming events into the xcb queue.
+Since 0.19 the handler only reads events when the fd is readable, so such
+an event (e.g. a MapRequest) waited until unrelated X traffic arrived.
+Read queued events on every call again, including the post-dispatch check.
+
+diff --git a/xwayland/xwm.c b/xwayland/xwm.c
+index f31163d..fc33472 100644
+--- a/xwayland/xwm.c
++++ b/xwayland/xwm.c
+@@ -2014,11 +2014,12 @@ static void xwm_handle_unhandled_event(struct wlr_xwm *xwm, xcb_generic_event_t
+ #endif
+ }
+ 
+-static int read_x11_events(struct wlr_xwm *xwm) {
++static int read_x11_events(struct wlr_xwm *xwm, bool queued_only) {
+ 	int count = 0;
+ 
+ 	xcb_generic_event_t *event;
+-	while ((event = xcb_poll_for_event(xwm->xcb_conn))) {
++	while ((event = queued_only ? xcb_poll_for_queued_event(xwm->xcb_conn) :
++			xcb_poll_for_event(xwm->xcb_conn))) {
+ 		count++;
+ 
+ 		if (xwm->xwayland->user_event_handler &&
+@@ -2087,12 +2088,9 @@ static int x11_event_handler(int fd, uint32_t mask, void *data) {
+ 		return 0;
+ 	}
+ 
+-	int count = 0;
+-	if (mask & WL_EVENT_READABLE) {
+-		count = read_x11_events(xwm);
+-		if (count) {
+-			xwm_schedule_flush(xwm);
+-		}
++	int count = read_x11_events(xwm, !(mask & WL_EVENT_READABLE));
++	if (count) {
++		xwm_schedule_flush(xwm);
+ 	}
+ 
+ 	if (mask & WL_EVENT_WRITABLE) {
