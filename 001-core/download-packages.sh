@@ -216,6 +216,7 @@ download_package "wireless_tools" &
 download_package "wpa_supplicant" &
 download_package "xfsdump" &
 download_package "xfsprogs" &
+download_package "xorriso" &
 download_package "xxHash" &
 download_package "xz" &
 wait_for_downloads

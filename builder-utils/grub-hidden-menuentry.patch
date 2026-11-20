@@ -1,0 +1,135 @@
+--- a/grub-core/commands/menuentry.c
++++ b/grub-core/commands/menuentry.c
+@@ -43,6 +43,8 @@
+        anyone can boot it.  */
+     {"unrestricted", 0, 0, N_("This entry can be booted by any user."),
+      0, ARG_TYPE_NONE},
++    {"hidden", 0, 0, N_("Do not show this entry, only boot it with its hotkey."),
++     0, ARG_TYPE_NONE},
+     {0, 0, 0, 0, 0, 0}
+   };
+ 
+@@ -169,13 +171,19 @@
+     menu_args[argc] = NULL;
+   }
+ 
+-  /* Add the menu entry at the end of the list.  */
+-  while (*last)
++  while (*last && ! (*last)->hidden)
+     last = &(*last)->next;
+ 
+-  *last = grub_zalloc (sizeof (**last));
+-  if (! *last)
+-    goto fail;
++  {
++    grub_menu_entry_t next = *last;
++    *last = grub_zalloc (sizeof (**last));
++    if (! *last)
++      {
++	*last = next;
++	goto fail;
++      }
++    (*last)->next = next;
++  }
+ 
+   (*last)->title = menu_title;
+   (*last)->id = menu_id;
+@@ -252,6 +260,26 @@
+   return result;
+ }
+ 
++static void
++hide_last_visible_entry (void)
++{
++  grub_menu_t menu = grub_env_get_menu ();
++  grub_menu_entry_t entry;
++  int i;
++
++  if (! menu || menu->size <= 0)
++    return;
++
++  for (i = 1, entry = menu->entry_list; entry && i < menu->size; i++)
++    entry = entry->next;
++
++  if (entry)
++    {
++      entry->hidden = 1;
++      menu->size--;
++    }
++}
++
+ static grub_err_t
+ grub_cmd_menuentry (grub_extcmd_context_t ctxt, int argc, char **args)
+ {
+@@ -279,14 +307,19 @@
+     users = "";
+ 
+   if (! ctxt->script)
+-    return grub_normal_add_menu_entry (argc, (const char **) args,
+-				       (ctxt->state[0].set ? ctxt->state[0].args
+-					: NULL),
+-				       ctxt->state[4].arg,
+-				       users,
+-				       ctxt->state[2].arg, 0,
+-				       ctxt->state[3].arg,
+-				       ctxt->extcmd->cmd->name[0] == 's');
++    {
++      r = grub_normal_add_menu_entry (argc, (const char **) args,
++				      (ctxt->state[0].set ? ctxt->state[0].args
++				       : NULL),
++				      ctxt->state[4].arg,
++				      users,
++				      ctxt->state[2].arg, 0,
++				      ctxt->state[3].arg,
++				      ctxt->extcmd->cmd->name[0] == 's');
++      if (r == GRUB_ERR_NONE && ctxt->state[6].set)
++	hide_last_visible_entry ();
++      return r;
++    }
+ 
+   src = args[argc - 1];
+   args[argc - 1] = NULL;
+@@ -304,6 +337,8 @@
+ 				  users,
+ 				  ctxt->state[2].arg, prefix, src + 1,
+ 				  ctxt->extcmd->cmd->name[0] == 's');
++  if (r == GRUB_ERR_NONE && ctxt->state[6].set)
++    hide_last_visible_entry ();
+ 
+   src[len - 1] = ch;
+   args[argc - 1] = src;
+--- a/grub-core/normal/menu.c
++++ b/grub-core/normal/menu.c
+@@ -93,7 +93,7 @@
+   grub_menu_entry_t entry;
+   int i;
+ 
+-  for (i = 0, entry = menu->entry_list; i < menu->size;
++  for (i = 0, entry = menu->entry_list; entry;
+        i++, entry = entry->next)
+     if (entry->hotkey == hotkey)
+       return i;
+@@ -799,6 +799,12 @@
+ 		entry = get_entry_index_by_hotkey (menu, c);
+ 		if (entry >= 0)
+ 		  {
++		    if (entry >= menu->size)
++		      {
++			char current[16];
++			grub_snprintf (current, sizeof (current), "%d", current_entry);
++			grub_env_set ("default", current);
++		      }
+ 		    menu_fini ();
+ 		    *auto_boot = 0;
+ 		    return entry;
+--- a/include/grub/menu.h
++++ b/include/grub/menu.h
+@@ -58,6 +58,8 @@
+ 
+   int submenu;
+ 
++  int hidden;
++
+   /* The next element.  */
+   struct grub_menu_entry *next;
+ };

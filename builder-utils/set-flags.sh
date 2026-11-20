@@ -22,8 +22,6 @@ set_flags() {
 		[[ $PORTEUX_VERSION =~ ^[0-9]+(\.[0-9]+)*$ ]] || PORTEUX_VERSION=
 	fi
 
-	export PORTEUX_RELEASE_VERSION="$PORTEUX_VERSION"
-
 	if [ -z "$PORTEUX_VERSION" ]; then
 		export PORTEUX_VERSION=$(date -r "$repo_root" +%Y%m%d)
 	fi

@@ -21,6 +21,11 @@ if [ "$ISONAME" = "" ]; then
 	ISONAME=/tmp/${CDLABEL,,}.iso
 fi
 
+if ! command -v xorriso > /dev/null 2>&1; then
+	echo "xorriso is required to create the ISO."
+	exit 1
+fi
+
 echo "Fixing permissions..."
 chmod 755 -R ../* || exit 1
 
@@ -30,18 +35,15 @@ fi
 
 echo "Generating '$ISONAME'..."
 rm -f "$ISONAME"
-mkisofs -o "$ISONAME" -v -l -J -joliet-long -R -D -A "$CDLABEL" \
--V "$CDLABEL" -no-emul-boot -boot-info-table -boot-load-size 4 \
--b boot/syslinux/isolinux.bin -c boot/syslinux/isolinux.boot ../. > /dev/null 2>&1 || { echo "Error creating ISO."; rm -f "$ISONAME"; exit 1; }
+xorriso -as mkisofs -o "$ISONAME" -l -J -joliet-long -R -D -A "$CDLABEL" -V "$CDLABEL" \
+-b boot/grub/eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table \
+--grub2-boot-info --grub2-mbr ../boot/grub/boot_hybrid.img \
+--efi-boot boot/grub/efi.img -efi-boot-part --efi-boot-image \
+--protective-msdos-label ../. > /dev/null 2>&1 || { echo "Error creating ISO."; rm -f "$ISONAME"; exit 1; }
 
 if [ ! -e "$ISONAME" ]; then
 	echo "Error creating ISO."
 	exit 1
 fi
 
-echo "Writing boot partition..."
-if ../boot/syslinux/isohybrid --partok "$ISONAME"; then
-	echo "Finished successfully."
-else
-	echo "Error writing boot partition. '$ISONAME' has been created and it might work in some cases."
-fi
+echo "Finished successfully."

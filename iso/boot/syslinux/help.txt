@@ -1,8 +1,8 @@
 
- PorteuX v3.0
+ PorteuX
 
- If you need to edit the boot command line, hit [Tab].
- When finished, press [Enter]. Default usernames/passwords:
+ If you need to edit the boot command line, hit [e].
+ When finished, press [F10]. Default usernames/passwords:
  guest / guest
  root / toor
 
