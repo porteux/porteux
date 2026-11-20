@@ -1,47 +1,52 @@
-diff --git a/src/libaudgui/init.cc b/src/libaudgui/init.cc
-index 7fb301b..4462318 100644
---- a/src/libaudgui/init.cc
-+++ b/src/libaudgui/init.cc
-@@ -22,6 +22,7 @@
- #include <libaudcore/audstrings.h>
- #include <libaudcore/hook.h>
- #include <libaudcore/playlist.h>
-+#include <libaudcore/plugins.h>
- #include <libaudcore/runtime.h>
+diff --git a/src/libaudcore/plugin-init.cc b/src/libaudcore/plugin-init.cc
+index b1a0975..d930932 100644
+--- a/src/libaudcore/plugin-init.cc
++++ b/src/libaudcore/plugin-init.cc
+@@ -22,6 +22,8 @@
+ #include <assert.h>
+ #include <stdlib.h>
  
++#include <glib.h>
++
+ #include "hook.h"
  #include "internal.h"
-@@ -342,7 +343,9 @@ EXPORT void audgui_init ()
+ #include "output.h"
+@@ -191,9 +193,28 @@ static void start_plugins(PluginType type)
+     }
+ }
  
- #if defined(GDK_WINDOWING_WAYLAND) && defined(GDK_WINDOWING_X11)
-     // Force Xwayland if requested and potentially available
--    if (aud_get_bool ("use_xwayland") && g_getenv ("DISPLAY"))
-+    PluginHandle * skins = aud_plugin_lookup_basename ("skins");
-+    bool winamp = skins && aud_plugin_get_enabled (skins);
-+    if ((aud_get_bool ("use_xwayland") || winamp) && g_getenv ("DISPLAY"))
-         g_setenv ("GDK_BACKEND", "x11", true);
- #endif
- 
-diff --git a/src/libaudqt/audqt.cc b/src/libaudqt/audqt.cc
-index 39556d0..827d940 100644
---- a/src/libaudqt/audqt.cc
-+++ b/src/libaudqt/audqt.cc
-@@ -29,6 +29,7 @@
- #include <libaudcore/audstrings.h>
- #include <libaudcore/i18n.h>
- #include <libaudcore/interface.h>
-+#include <libaudcore/plugins.h>
- #include <libaudcore/runtime.h>
- 
- #include "libaudqt-internal.h"
-@@ -132,7 +133,10 @@ EXPORT void init()
- 
- #if defined(Q_OS_UNIX) && !defined(Q_OS_DARWIN)
-     // Force Xwayland if requested and potentially available
--    if (aud_get_bool("use_xwayland") && qEnvironmentVariableIsSet("DISPLAY"))
-+    PluginHandle * skins = aud_plugin_lookup_basename("skins-qt");
++static const char * forced_backend_var;
++
++static void force_xwayland_if_needed()
++{
++    if (aud_get_headless_mode() || !g_getenv("DISPLAY"))
++        return;
++
++    bool qt = (aud_get_mainloop_type() == MainloopType::Qt);
++    PluginHandle * skins = aud_plugin_lookup_basename(qt ? "skins-qt" : "skins");
 +    bool winamp = skins && aud_plugin_get_enabled(skins);
-+    if ((aud_get_bool("use_xwayland") || winamp) &&
-+        qEnvironmentVariableIsSet("DISPLAY"))
-         qputenv("QT_QPA_PLATFORM", "xcb");
- #endif
++
++    if (!aud_get_bool("use_xwayland") && !winamp)
++        return;
++
++    forced_backend_var = qt ? "QT_QPA_PLATFORM" : "GDK_BACKEND";
++    g_setenv(forced_backend_var, qt ? "xcb" : "x11", true);
++}
++
+ void start_plugins_one()
+ {
+     plugin_system_init();
++    force_xwayland_if_needed();
  
+     start_plugins(PluginType::Transport);
+     start_plugins(PluginType::Playlist);
+@@ -207,6 +228,9 @@ void start_plugins_two()
+     start_plugins(PluginType::Vis);
+     start_plugins(PluginType::General);
+     start_plugins(PluginType::Iface);
++
++    if (forced_backend_var)
++        g_unsetenv(forced_backend_var);
+ }
+ 
+ static void stop_plugins(PluginType type)
