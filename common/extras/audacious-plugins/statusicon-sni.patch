@@ -1,0 +1,246 @@
+diff --git a/src/statusicon/meson.build b/src/statusicon/meson.build
+index d504ba0..bbada6e 100644
+--- a/src/statusicon/meson.build
++++ b/src/statusicon/meson.build
+@@ -1,10 +1,19 @@
++statusicon_deps = [audacious_dep, gtk_dep, audgui_dep]
++statusicon_args = cxx.get_supported_arguments([
++  '-Wno-deprecated-declarations'
++])
++
++dbusmenu_dep = dependency('dbusmenu-gtk3-0.4', required: false)
++if dbusmenu_dep.found() and not get_option('gtk2')
++  statusicon_deps += dbusmenu_dep
++  statusicon_args += '-DUSE_SNI'
++endif
++
+ shared_module('statusicon',
+   'statusicon.cc',
+-  dependencies: [audacious_dep, gtk_dep, audgui_dep],
++  dependencies: statusicon_deps,
+   name_prefix: '',
+-  cpp_args: cxx.get_supported_arguments([
+-    '-Wno-deprecated-declarations'
+-  ]),
++  cpp_args: statusicon_args,
+   install: true,
+   install_dir: general_plugin_dir
+ )
+diff --git a/src/statusicon/statusicon.cc b/src/statusicon/statusicon.cc
+index fc496e3..719e7a6 100644
+--- a/src/statusicon/statusicon.cc
++++ b/src/statusicon/statusicon.cc
+@@ -35,6 +35,14 @@
+ #include <libaudgui/libaudgui-gtk.h>
+ #include <libaudgui/menu.h>
+ 
++#ifdef USE_SNI
++#include <string.h>
++#include <unistd.h>
++
++#include <libdbusmenu-glib/server.h>
++#include <libdbusmenu-gtk/parser.h>
++#endif
++
+ class StatusIcon : public GeneralPlugin
+ {
+ public:
+@@ -318,10 +326,198 @@ static void si_window_close (void * data, void * user_data)
+     }
+ }
+ 
++#ifdef USE_SNI
++static const char si_sni_path[] = "/StatusNotifierItem";
++static const char si_sni_menu_path[] = "/MenuBar";
++static const char si_sni_interface[] = "org.kde.StatusNotifierItem";
++
++static const char si_sni_xml[] =
++    "<node>"
++    " <interface name='org.kde.StatusNotifierItem'>"
++    "  <property name='Category' type='s' access='read'/>"
++    "  <property name='Id' type='s' access='read'/>"
++    "  <property name='Title' type='s' access='read'/>"
++    "  <property name='Status' type='s' access='read'/>"
++    "  <property name='IconName' type='s' access='read'/>"
++    "  <property name='ItemIsMenu' type='b' access='read'/>"
++    "  <property name='Menu' type='o' access='read'/>"
++    "  <property name='ToolTip' type='(sa(iiay)ss)' access='read'/>"
++    "  <method name='Activate'><arg type='i' direction='in'/><arg type='i' direction='in'/></method>"
++    "  <method name='SecondaryActivate'><arg type='i' direction='in'/><arg type='i' direction='in'/></method>"
++    "  <method name='ContextMenu'><arg type='i' direction='in'/><arg type='i' direction='in'/></method>"
++    "  <method name='Scroll'><arg type='i' direction='in'/><arg type='s' direction='in'/></method>"
++    "  <signal name='NewTitle'/>"
++    "  <signal name='NewToolTip'/>"
++    " </interface>"
++    "</node>";
++
++static const char * const si_sni_title_hooks[] = {
++    "title change",
++    "playback ready",
++    "playback stop"
++};
++
++static GDBusConnection * si_sni_bus = nullptr;
++static GDBusNodeInfo * si_sni_info = nullptr;
++static DbusmenuServer * si_sni_menu_server = nullptr;
++static GtkWidget * si_sni_menu = nullptr;
++static const char * si_sni_icon = nullptr;
++static String si_sni_service;
++static unsigned si_sni_object_id, si_sni_owner_id, si_sni_watch_id;
++
++static String si_sni_title ()
++{
++    String title = aud_drct_get_playing () ? aud_drct_get_title () : String ();
++    return title ? title : String (_("Audacious"));
++}
++
++static GVariant * si_sni_get_property (GDBusConnection *, const char *, const char *,
++ const char *, const char * name, GError **, void *)
++{
++    if (! strcmp (name, "Category"))
++        return g_variant_new_string ("ApplicationStatus");
++    if (! strcmp (name, "Id"))
++        return g_variant_new_string ("audacious");
++    if (! strcmp (name, "Title"))
++        return g_variant_new_string (si_sni_title ());
++    if (! strcmp (name, "Status"))
++        return g_variant_new_string ("Active");
++    if (! strcmp (name, "IconName"))
++        return g_variant_new_string (si_sni_icon);
++    if (! strcmp (name, "ItemIsMenu"))
++        return g_variant_new_boolean (false);
++    if (! strcmp (name, "Menu"))
++        return g_variant_new_object_path (si_sni_menu_path);
++
++    return g_variant_new ("(s@a(iiay)ss)", si_sni_icon,
++     g_variant_new_array (G_VARIANT_TYPE ("(iiay)"), nullptr, 0),
++     (const char *) si_sni_title (), "");
++}
++
++static void si_sni_method_call (GDBusConnection *, const char *, const char *,
++ const char *, const char * method, GVariant * params,
++ GDBusMethodInvocation * invocation, void *)
++{
++    if (! strcmp (method, "Activate"))
++    {
++        if (! aud_get_headless_mode ())
++            aud_ui_show (! aud_ui_is_shown ());
++    }
++    else if (! strcmp (method, "SecondaryActivate"))
++    {
++        if (aud_get_int ("statusicon", "middle_click_action") == SI_CFG_MIDDLE_CLICK_ACTION_NEXT)
++            aud_drct_pl_next ();
++        else
++            aud_drct_pause ();
++    }
++    else if (! strcmp (method, "Scroll"))
++    {
++        int delta;
++        const char * orientation;
++        g_variant_get (params, "(i&s)", & delta, & orientation);
++
++        if (delta && ! strcmp (orientation, "vertical"))
++        {
++            GdkEventScroll event {};
++            event.direction = (delta < 0) ? GDK_SCROLL_UP : GDK_SCROLL_DOWN;
++            si_cb_btscroll (nullptr, & event);
++        }
++    }
++
++    g_dbus_method_invocation_return_value (invocation, nullptr);
++}
++
++static void si_sni_register (GDBusConnection * bus, const char *, const char *, void *)
++{
++    g_dbus_connection_call (bus, "org.kde.StatusNotifierWatcher", "/StatusNotifierWatcher",
++     "org.kde.StatusNotifierWatcher", "RegisterStatusNotifierItem",
++     g_variant_new ("(s)", (const char *) si_sni_service), nullptr,
++     G_DBUS_CALL_FLAGS_NONE, -1, nullptr, nullptr, nullptr);
++}
++
++static void si_sni_title_changed (void *, void *)
++{
++    g_dbus_connection_emit_signal (si_sni_bus, nullptr, si_sni_path, si_sni_interface,
++     "NewTitle", nullptr, nullptr);
++    g_dbus_connection_emit_signal (si_sni_bus, nullptr, si_sni_path, si_sni_interface,
++     "NewToolTip", nullptr, nullptr);
++}
++
++static void si_sni_enable (bool enable)
++{
++    static const GDBusInterfaceVTable vtable = {si_sni_method_call, si_sni_get_property, nullptr};
++
++    if (enable && ! si_sni_bus)
++    {
++        si_sni_bus = g_bus_get_sync (G_BUS_TYPE_SESSION, nullptr, nullptr);
++        if (! si_sni_bus)
++        {
++            AUDWARN ("StatusIcon plugin: unable to connect to the session bus.\n");
++            return;
++        }
++
++        GtkIconTheme * theme = gtk_icon_theme_get_default ();
++        si_sni_icon = gtk_icon_theme_has_icon (theme, "audacious-panel") ?
++         "audacious-panel" : "audacious";
++
++        si_sni_menu = si_menu_create ();
++        si_sni_menu_server = dbusmenu_server_new (si_sni_menu_path);
++        DbusmenuMenuitem * root = dbusmenu_gtk_parse_menu_structure (si_sni_menu);
++        dbusmenu_server_set_root (si_sni_menu_server, root);
++        g_object_unref (root);
++
++        si_sni_info = g_dbus_node_info_new_for_xml (si_sni_xml, nullptr);
++        si_sni_object_id = g_dbus_connection_register_object (si_sni_bus, si_sni_path,
++         si_sni_info->interfaces[0], & vtable, nullptr, nullptr, nullptr);
++
++        si_sni_service = String (str_printf ("org.kde.StatusNotifierItem-%d-1", (int) getpid ()));
++        si_sni_owner_id = g_bus_own_name_on_connection (si_sni_bus, si_sni_service,
++         G_BUS_NAME_OWNER_FLAGS_NONE, nullptr, nullptr, nullptr, nullptr);
++        si_sni_watch_id = g_bus_watch_name_on_connection (si_sni_bus,
++         "org.kde.StatusNotifierWatcher", G_BUS_NAME_WATCHER_FLAGS_NONE,
++         si_sni_register, nullptr, nullptr, nullptr);
++
++        for (const char * hook : si_sni_title_hooks)
++            hook_associate (hook, si_sni_title_changed, nullptr);
++        hook_associate ("window close", si_window_close, nullptr);
++    }
++
++    if (! enable && si_sni_bus)
++    {
++        PluginHandle * si = aud_plugin_by_header (& aud_plugin_instance);
++        if (! aud_plugin_get_enabled (si) && ! aud_get_headless_mode () && ! aud_ui_is_shown ())
++            aud_ui_show (true);
++
++        for (const char * hook : si_sni_title_hooks)
++            hook_dissociate (hook, si_sni_title_changed);
++        hook_dissociate ("window close", si_window_close);
++
++        g_bus_unwatch_name (si_sni_watch_id);
++        g_bus_unown_name (si_sni_owner_id);
++        g_dbus_connection_unregister_object (si_sni_bus, si_sni_object_id);
++        g_dbus_node_info_unref (si_sni_info);
++        g_object_unref (si_sni_menu_server);
++        gtk_widget_destroy (si_sni_menu);
++        g_object_unref (si_sni_bus);
++
++        si_sni_bus = nullptr;
++        si_sni_service = String ();
++    }
++}
++#endif
++
+ static void si_enable (bool enable)
+ {
+     static GtkStatusIcon * si_applet = nullptr;
+ 
++#ifdef USE_SNI
++    if (g_getenv ("WAYLAND_DISPLAY"))
++    {
++        si_sni_enable (enable);
++        return;
++    }
++#endif
++
+     if (enable && ! si_applet)
+     {
+         si_applet = si_create ();

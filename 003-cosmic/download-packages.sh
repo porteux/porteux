@@ -3,10 +3,8 @@ source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 generate_repository_urls
 
-download_package "libappindicator" &
 download_package "libdbusmenu" &
 download_package "libhandy" &
-download_package "libindicator" &
 wait_for_downloads
 
 ### only download if not present
