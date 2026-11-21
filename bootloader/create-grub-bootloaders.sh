@@ -21,7 +21,7 @@ wget -q "https://mirrors.edge.kernel.org/pub/linux/utils/kbd/kbd-${KBD_VERSION}.
 tar xf grub-${GRUB_VERSION}.tar.xz || exit 1
 tar xf kbd-${KBD_VERSION}.tar.xz kbd-${KBD_VERSION}/data/consolefonts/cp865-8x16.psfu || exit 1
 
-for grub_patch in "$SCRIPT_PATH"/grub-*.patch; do
+for grub_patch in "$SCRIPT_PATH"/patches/grub-*.patch; do
 	patch -d grub-${GRUB_VERSION} -p1 < "$grub_patch" > /dev/null || { echo "Failed to apply $grub_patch."; exit 1; }
 done
 echo "depends bli part_gpt" > grub-${GRUB_VERSION}/grub-core/extra_deps.lst
@@ -162,6 +162,12 @@ EOF
 	echo 'desktop-color: "#000000"'
 	echo "$logo_component"
 	cat <<'EOF'
+terminal-font: "vga Regular 16"
+terminal-border: "0"
+terminal-left: "8"
+terminal-top: "100%-40"
+terminal-width: "100%-16"
+terminal-height: "32"
 + label { id = "__timeout__" left = "50%-200" top = "100%-56" width = 328 height = 16 font = "vga Regular 16" color = "#bcbcbc" text = "Press Esc for options, automatic boot in " }
 + label { id = "__timeout__" left = "50%+128" top = "100%-56" width = 8 height = 16 font = "vga Regular 16" color = "#e1e1e1" text = "%d" }
 + label { id = "__timeout__" left = "50%+136" top = "100%-56" width = 120 height = 16 font = "vga Regular 16" color = "#bcbcbc" text = " second(s)..." }
@@ -176,7 +182,7 @@ EOF
   scrollbar = false scrollbar_left_pad = 0
 }
 + label { left = "50%-296" top = "100%-40" width = 200 height = 16 font = "vga Regular 16" color = "#0096ff" text = "[F1] help" }
-+ label { left = "50%+120" top = "100%-40" width = 200 height = 16 align = "right" font = "vga Regular 16" color = "#0096ff" text = "[e] edit >" }
++ label { left = "50%+120" top = "100%-40" width = 200 height = 16 align = "right" font = "vga Regular 16" color = "#0096ff" text = "[Tab] edit >" }
 EOF
 } > "$MEMDISK_PATH"/menu.txt
 

@@ -1,0 +1,251 @@
+--- a/grub-core/commands/syslinuxcfg.c
++++ b/grub-core/commands/syslinuxcfg.c
+@@ -32,6 +32,7 @@
+ #include <grub/auth.h>
+ #include <grub/disk.h>
+ #include <grub/partition.h>
++#include <grub/command.h>
+ 
+ GRUB_MOD_LICENSE ("GPLv3+");
+ 
+@@ -175,11 +176,68 @@
+ }
+ 
+ 
++static grub_err_t
++grub_cmd_kernel (grub_command_t cmd __attribute__ ((unused)),
++		 int argc, char **args)
++{
++#ifdef GRUB_MACHINE_PCBIOS
++  const char *linux_command = "linux16", *initrd_command = "initrd16";
++#else
++  const char *linux_command = "linux", *initrd_command = "initrd";
++#endif
++  char **kernel_args, **initrd_args;
++  int kernel_argc = 0, initrd_argc = 0, capacity = argc, i;
++  char *part, *comma;
++  grub_err_t err;
++
++  if (argc == 0)
++    return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("filename expected"));
++
++  for (i = 1; i < argc; i++)
++    for (part = args[i]; *part; part++)
++      if (*part == ',')
++	capacity++;
++
++  kernel_args = grub_calloc (argc + 1, sizeof (kernel_args[0]));
++  initrd_args = grub_calloc (capacity + 1, sizeof (initrd_args[0]));
++  if (! kernel_args || ! initrd_args)
++    {
++      grub_free (kernel_args);
++      grub_free (initrd_args);
++      return grub_errno;
++    }
++
++  for (i = 0; i < argc; i++)
++    if (i > 0 && grub_strncasecmp (args[i], "initrd=", sizeof ("initrd=") - 1) == 0)
++      for (part = args[i] + sizeof ("initrd=") - 1; part; part = comma ? comma + 1 : NULL)
++	{
++	  comma = grub_strchr (part, ',');
++	  if (comma)
++	    *comma = '\0';
++	  if (*part)
++	    initrd_args[initrd_argc++] = part;
++	}
++    else
++      kernel_args[kernel_argc++] = args[i];
++
++  err = grub_command_execute (linux_command, kernel_argc, kernel_args);
++  if (err == GRUB_ERR_NONE && initrd_argc > 0)
++    err = grub_command_execute (initrd_command, initrd_argc, initrd_args);
++
++  grub_free (kernel_args);
++  grub_free (initrd_args);
++  return err;
++}
++
+ static grub_extcmd_t cmd_source, cmd_configfile;
++static grub_command_t cmd_kernel;
+ static grub_extcmd_t cmd_source_extract, cmd_configfile_extract;
+ 
+ GRUB_MOD_INIT(syslinuxcfg)
+ {
++  cmd_kernel = grub_register_command ("kernel", grub_cmd_kernel,
++				      N_("FILE [ARGS...]"),
++				      N_("Load a Linux kernel and its initrd= files."));
+   cmd_source
+     = grub_register_extcmd ("syslinux_source",
+ 			    grub_cmd_syslinux_source, 0,
+@@ -210,6 +268,7 @@
+ 
+ GRUB_MOD_FINI(syslinuxcfg)
+ {
++  grub_unregister_command (cmd_kernel);
+   grub_unregister_extcmd (cmd_source);
+   grub_unregister_extcmd (cmd_configfile);
+   grub_unregister_extcmd (cmd_source_extract);
+--- a/grub-core/lib/syslinux_parse.c
++++ b/grub-core/lib/syslinux_parse.c
+@@ -396,10 +396,8 @@
+       if (menu->entries->initrds_last)
+ 	menu->entries->initrds_last->next = ninitrd;
+       else
+-	{
+-	  menu->entries->initrds_last = ninitrd;
+-	  menu->entries->initrds = ninitrd;
+-	}
++	menu->entries->initrds = ninitrd;
++      menu->entries->initrds_last = ninitrd;
+ 
+       line = comma;
+       while (*line == ',')
+@@ -797,8 +795,16 @@
+ 	    struct syslinux_menu *menu, const char *from, const char *to)
+ {
+   grub_err_t err;
++  const char *ptr;
+   if (!to)
+     to = from + grub_strlen (from);
++  if (from[0] == '/' && grub_strcmp (menu->root_target_directory, "/") == 0)
++    {
++      for (ptr = from; ptr < to; ptr++)
++	if (! grub_isalnum (*ptr) && ! grub_strchr ("/._-+", *ptr))
++	  return print_escaped (outbuf, from, to);
++      return print (outbuf, from, to - from);
++    }
+   err = print_escaped (outbuf, from[0] == '/'
+ 		       ? menu->root_target_directory
+ 		       : menu->current_target_directory, NULL);
+@@ -954,47 +960,61 @@
+     {
+     case KERNEL_LINUX:
+       {
+-	const char *ptr;
+-	const char *initrd = NULL, *initrde= NULL;
++	const char *ptr, *part, *comma;
++	const char *initrd = NULL, *initrde = NULL;
++	struct initrd_list *lst;
++	int first = 1;
++
+ 	for (ptr = curentry->append; ptr && *ptr; ptr++)
+ 	  if ((ptr == curentry->append || grub_isspace (ptr[-1]))
+-	      && grub_strncasecmp (ptr, "initrd=", sizeof ("initrd=") - 1)
+-	      == 0)
++	      && grub_strncasecmp (ptr, "initrd=", sizeof ("initrd=") - 1) == 0)
+ 	    break;
+ 	if (ptr && *ptr)
+ 	  {
+ 	    initrd = ptr + sizeof ("initrd=") - 1;
+ 	    for (initrde = initrd; *initrde && !grub_isspace (*initrde); initrde++);
+ 	  }
+-	print_string (" if test x$grub_platform = xpc; then "
+-		      "linux_suffix=16; else linux_suffix= ; fi\n");
+-	print_string ("  linux$linux_suffix ");
++
++	print_string ("kernel ");
+ 	print_file (outbuf, menu, curentry->kernel_file, NULL);
+-	print_string (" ");
+ 	if (curentry->append)
+ 	  {
+-	    err = print (outbuf, curentry->append, grub_strlen (curentry->append));
++	    print_string (" ");
++	    err = print (outbuf, curentry->append,
++			 (initrd ? ptr : curentry->append + grub_strlen (curentry->append))
++			 - curentry->append);
+ 	    if (err)
+ 	      return err;
+-	  }
+-	print_string ("\n");
+-	if (initrd || curentry->initrds)
+-	  {
+-	    struct initrd_list *lst;
+-	    print_string ("  initrd$linux_suffix ");
+ 	    if (initrd)
+ 	      {
+-		print_file (outbuf, menu, initrd, initrde);
+-		print_string (" ");
++		err = print (outbuf, initrde, grub_strlen (initrde));
++		if (err)
++		  return err;
+ 	      }
+-	    for (lst = curentry->initrds; lst; lst = lst->next)
++	  }
++	for (part = initrd; part && part < initrde; part = comma + 1)
++	  {
++	    for (comma = part; comma < initrde && *comma != ','; comma++);
++	    if (comma > part)
+ 	      {
+-		print_file (outbuf, menu, lst->file, NULL);
+-		print_string (" ");
++		if (first)
++		  print_string (" initrd=");
++		else
++		  print_string (",");
++		first = 0;
++		print_file (outbuf, menu, part, comma);
+ 	      }
+-
+-	    print_string ("\n");
+ 	  }
++	for (lst = curentry->initrds; lst; lst = lst->next)
++	  {
++	    if (first)
++	      print_string (" initrd=");
++	    else
++	      print_string (",");
++	    first = 0;
++	    print_file (outbuf, menu, lst->file, NULL);
++	  }
++	print_string ("\n");
+       }
+       break;
+     case KERNEL_CHAINLOADER:
+@@ -1465,15 +1485,6 @@
+       print_string ("\n");
+     }
+ 
+-  if (menu.background)
+-    {
+-      print_string ("  background_image ");
+-      err = print_file (outbuf, &menu, menu.background, NULL);
+-      if (err)
+-	return err;
+-      print_string ("\n");
+-    }
+-
+   if (menu.comments)
+     {
+       err = print (outbuf, menu.comments, grub_strlen (menu.comments));
+@@ -1481,22 +1492,19 @@
+ 	return err;
+     }
+ 
+-  if (menu.timeout == 0 && menu.entries && menu.def)
+-    {
+-      err = print_entry (outbuf, &menu, menu.def);
+-      if (err)
+-	return err;
+-    }
+-  else if (menu.entries)
++  if (menu.entries)
+     {
+       for (curentry = menu.entries; curentry->next; curentry = curentry->next);
+       lentry = curentry;
+ 
+-      print_string ("set timeout=");
+-      err = print_num (outbuf, (menu.timeout + 9) / 10);
+-      if (err)
+-	return err;
+-      print_string ("\n");
++      if (menu.timeout)
++	{
++	  print_string ("set timeout=");
++	  err = print_num (outbuf, (menu.timeout + 9) / 10);
++	  if (err)
++	    return err;
++	  print_string ("\n");
++	}
+ 
+       if (menu.def)
+ 	{

@@ -1,0 +1,318 @@
+--- a/grub-core/commands/menuentry.c
++++ b/grub-core/commands/menuentry.c
+@@ -99,10 +99,20 @@
+ 
+   last = &menu->entry_list;
+ 
++  while (*sourcecode == '\n')
++    sourcecode++;
++
+   menu_sourcecode = grub_xasprintf ("%s%s", prefix ?: "", sourcecode);
+   if (! menu_sourcecode)
+     return grub_errno;
+ 
++  {
++    grub_size_t length = grub_strlen (menu_sourcecode);
++
++    while (length > 0 && menu_sourcecode[length - 1] == '\n')
++      menu_sourcecode[--length] = '\0';
++  }
++
+   if (classes && classes[0])
+     {
+       int i;
+@@ -226,49 +236,11 @@
+   return grub_errno;
+ }
+ 
+-static char *
+-setparams_prefix (int argc, char **args)
+-{
+-  int i;
+-  int j;
+-  char *p;
+-  char *result;
+-  grub_size_t len = 10;
+-
+-  /* Count resulting string length */
+-  for (i = 0; i < argc; i++)
+-    {
+-      len += 3; /* 3 = 1 space + 2 quotes */
+-      p = args[i];
+-      while (*p)
+-	len += (*p++ == '\'' ? 4 : 1);
+-    }
+-
+-  result = grub_malloc (len + 2);
+-  if (! result)
+-    return 0;
+-
+-  grub_strcpy (result, "setparams");
+-  p = result + 9;
+-
+-  for (j = 0; j < argc; j++)
+-    {
+-      *p++ = ' ';
+-      *p++ = '\'';
+-      p = grub_strchrsub (p, args[j], '\'', "'\\''");
+-      *p++ = '\'';
+-    }
+-  *p++ = '\n';
+-  *p = '\0';
+-  return result;
+-}
+-
+ static grub_err_t
+ grub_cmd_menuentry (grub_extcmd_context_t ctxt, int argc, char **args)
+ {
+   char ch;
+   char *src;
+-  char *prefix;
+   unsigned len;
+   grub_err_t r;
+   const char *users;
+@@ -311,21 +283,16 @@
+   ch = src[len - 1];
+   src[len - 1] = '\0';
+ 
+-  prefix = setparams_prefix (argc - 1, args);
+-  if (! prefix)
+-    return grub_errno;
+-
+   r = grub_normal_add_menu_entry (argc - 1, (const char **) args,
+ 				  ctxt->state[0].args, ctxt->state[4].arg,
+ 				  users,
+-				  ctxt->state[2].arg, prefix, src + 1,
++				  ctxt->state[2].arg, 0, src + 1,
+ 				  ctxt->extcmd->cmd->name[0] == 's');
+   if (r == GRUB_ERR_NONE && ctxt->state[6].set)
+     grub_env_get_menu ()->size--;
+ 
+   src[len - 1] = ch;
+   args[argc - 1] = src;
+-  grub_free (prefix);
+   return r;
+ }
+ 
+--- a/grub-core/gfxmenu/view.c
++++ b/grub-core/gfxmenu/view.c
+@@ -430,31 +430,12 @@
+ }
+ 
+ static void
+-get_min_terminal (grub_font_t terminal_font,
+-                  unsigned int border_width,
+-                  unsigned int *min_terminal_width,
+-                  unsigned int *min_terminal_height)
+-{
+-  struct grub_font_glyph *glyph;
+-  glyph = grub_font_get_glyph (terminal_font, 'M');
+-  *min_terminal_width = (glyph? glyph->device_width : 8) * 80
+-                        + 2 * border_width;
+-  *min_terminal_height = grub_font_get_max_char_height (terminal_font) * 24
+-                         + 2 * border_width;
+-}
+-
+-static void
+ terminal_sanity_check (grub_gfxmenu_view_t view)
+ {
+   if (!view->need_to_check_sanity)
+     return;
+ 
+-  /* terminal_font was checked before in the init_terminal function. */
+-  grub_font_t terminal_font = grub_font_get (view->terminal_font_name);
+-
+   /* Non-negative numbers below. */
+-  int scr_x = view->screen.x;
+-  int scr_y = view->screen.y;
+   int scr_width = view->screen.width;
+   int scr_height = view->screen.height;
+   int term_x = view->terminal_rect.x;
+@@ -462,47 +443,12 @@
+   int term_width = view->terminal_rect.width;
+   int term_height = view->terminal_rect.height;
+ 
+-  /* Check that border_width isn't too big. */
+-  unsigned int border_width = view->terminal_border;
+-  unsigned int min_terminal_width;
+-  unsigned int min_terminal_height;
+-  get_min_terminal (terminal_font, border_width,
+-                    &min_terminal_width, &min_terminal_height);
+-  if (border_width > 3 && ((int) min_terminal_width >= scr_width
+-                           || (int) min_terminal_height >= scr_height))
+-    {
+-      border_width = 3;
+-      get_min_terminal (terminal_font, border_width,
+-                        &min_terminal_width, &min_terminal_height);
+-    }
+-
+   /* Sanity checks. */
+   if (term_width > scr_width)
+     term_width = scr_width;
+   if (term_height > scr_height)
+     term_height = scr_height;
+ 
+-  if (scr_width <= (int) min_terminal_width
+-      || scr_height <= (int) min_terminal_height)
+-    {
+-      /* The screen resulution is too low. Use all space, except a small border
+-         to show the user, that it is a window. Then center the window. */
+-      term_width = scr_width - 6 * border_width;
+-      term_height = scr_height - 6 * border_width;
+-      term_x = scr_x + (scr_width - term_width) / 2;
+-      term_y = scr_y + (scr_height - term_height) / 2;
+-    }
+-  else if (term_width < (int) min_terminal_width
+-           || term_height < (int) min_terminal_height)
+-    {
+-      /* The screen resolution is big enough. Make sure, that terminal screen
+-         dimensions aren't less than minimal values. Then center the window. */
+-      term_width = (int) min_terminal_width;
+-      term_height = (int) min_terminal_height;
+-      term_x = scr_x + (scr_width - term_width) / 2;
+-      term_y = scr_y + (scr_height - term_height) / 2;
+-    }
+-
+   /* At this point w and h are satisfying. */
+   if (term_x + term_width > scr_width)
+     term_x = scr_width - term_width;
+@@ -514,7 +460,6 @@
+   view->terminal_rect.y = (unsigned int) term_y;
+   view->terminal_rect.width = (unsigned int) term_width;
+   view->terminal_rect.height = (unsigned int) term_height;
+-  view->terminal_border = border_width;
+ 
+   view->need_to_check_sanity = 0;
+ }
+--- a/grub-core/normal/menu.c
++++ b/grub-core/normal/menu.c
+@@ -62,7 +62,6 @@
+ grub_wait_after_message (void)
+ {
+   grub_uint64_t endtime;
+-  grub_xputs ("\n");
+   grub_printf_ (N_("Press any key to continue..."));
+   grub_refresh ();
+ 
+@@ -785,6 +784,7 @@
+ 	      goto refresh;
+ 
+ 	    case 'e':
++	    case '\t':
+ 	      menu_fini ();
+ 		{
+ 		  grub_menu_entry_t e = grub_menu_get_entry (menu, current_entry);
+--- a/grub-core/normal/menu_entry.c
++++ b/grub-core/normal/menu_entry.c
+@@ -1176,9 +1176,6 @@
+   char *dummy[1] = { NULL };
+ 
+   grub_cls ();
+-  grub_printf ("  ");
+-  grub_printf_ (N_("Booting a command list"));
+-  grub_printf ("\n\n");
+ 
+   errs_before = grub_err_printed_errors;
+ 
+@@ -1252,6 +1249,7 @@
+   grub_err_t err = GRUB_ERR_NONE;
+   unsigned i;
+   grub_term_output_t term;
++  int first_draw;
+ 
+   err = grub_auth_check_authentication (NULL);
+ 
+@@ -1267,6 +1265,9 @@
+     return;
+ 
+   screen->terms = NULL;
++  screen->line = screen->num_lines - 1;
++  screen->column = screen->real_column = screen->lines[screen->line].len;
++  first_draw = 1;
+ 
+  refresh:
+   grub_free (screen->terms);
+@@ -1306,6 +1307,10 @@
+   for (i = 0; i < screen->nterms; i++)
+     grub_menu_init_page (0, 1, &screen->terms[i].geo,
+ 			 screen->terms[i].term);
++  if (first_draw && (screen->column == 0
++		     || screen->lines[screen->line].buf[screen->column - 1] != ' '))
++    insert_string (screen, " ", 0);
++  first_draw = 0;
+   update_screen_all (screen, 0, 0, 1, 1, ALL_LINES);
+   for (i = 0; i < screen->nterms; i++)
+     grub_term_setcursor (screen->terms[i].term, 1);
+@@ -1365,10 +1370,8 @@
+ 	    goto fail;
+ 	  break;
+ 
+-	case GRUB_TERM_CTRL | 'i':
+ 	case '\t':
+-	  if (! complete (screen, prev_c == c, 1))
+-	    goto fail;
++	case GRUB_TERM_CTRL | 'i':
+ 	  break;
+ 
+ 	case GRUB_TERM_CTRL | 'd':
+@@ -1406,12 +1409,6 @@
+ 	    goto fail;
+ 	  break;
+ 
+-	case '\n':
+-	case '\r':
+-	  if (! insert_string (screen, "\n", 1))
+-	    goto fail;
+-	  break;
+-
+ 	case GRUB_TERM_ESC:
+ 	  destroy_screen (screen);
+ 	  return;
+@@ -1421,6 +1418,8 @@
+ 	  grub_cmdline_run (1, 0);
+ 	  goto refresh;
+ 
++	case '\n':
++	case '\r':
+ 	case GRUB_TERM_CTRL | 'x':
+ 	case GRUB_TERM_KEY_F10:
+ 	  run (screen);
+--- a/grub-core/normal/menu_text.c
++++ b/grub-core/normal/menu_text.c
+@@ -334,6 +334,20 @@
+   int empty_lines = 1;
+   int version_msg = 1;
+ 
++  if (edit)
++    {
++      geo->border = 0;
++      geo->first_entry_x = 0;
++      geo->first_entry_y = 0;
++      geo->entry_width = grub_term_width (term) - 3;
++      geo->right_margin = 2;
++      geo->num_entries = grub_term_height (term);
++      geo->timeout_lines = 1;
++      geo->timeout_y = geo->num_entries - 1;
++      grub_term_cls (term);
++      return;
++    }
++
+   geo->border = 1;
+   geo->first_entry_x = 1 /* margin */ + 1 /* border */;
+   geo->entry_width = grub_term_width (term) - 5;
+--- a/grub-core/term/gfxterm.c
++++ b/grub-core/term/gfxterm.c
+@@ -232,12 +232,7 @@
+   virtual_screen.columns = virtual_screen.width / virtual_screen.normal_char_width;
+   virtual_screen.rows = virtual_screen.height / virtual_screen.normal_char_height;
+ 
+-  /*
+-   * There must be a minimum number of rows and columns for the screen to
+-   * make sense. Arbitrarily pick half of 80x24. If either dimensions is 0
+-   * we would allocate 0 bytes for the text_buffer.
+-   */
+-  if (virtual_screen.columns < 40 || virtual_screen.rows < 12)
++  if (virtual_screen.columns < 1 || virtual_screen.rows < 1)
+     return grub_error (GRUB_ERR_BAD_FONT,
+ 		       "font: glyphs too large to fit on screen");
+ 

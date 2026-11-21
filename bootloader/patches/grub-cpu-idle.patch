@@ -1,0 +1,77 @@
+--- a/grub-core/normal/menu.c
++++ b/grub-core/normal/menu.c
+@@ -69,7 +69,8 @@
+   endtime = grub_get_time_ms () + 10000;
+ 
+   while (grub_get_time_ms () < endtime
+-	 && grub_getkey_noblock () == GRUB_TERM_NO_KEY);
++	 && grub_getkey_noblock () == GRUB_TERM_NO_KEY)
++    grub_cpu_idle ();
+ 
+   grub_xputs ("\n");
+ }
+@@ -619,6 +620,8 @@
+ 	  int key;
+ 
+ 	  key = grub_getkey_noblock ();
++	  if (key == GRUB_TERM_NO_KEY)
++	    grub_cpu_idle ();
+ 	  if (key != GRUB_TERM_NO_KEY)
+ 	    {
+ 	      entry = get_entry_index_by_hotkey (menu, key);
+@@ -699,6 +702,8 @@
+ 	}
+ 
+       c = grub_getkey_noblock ();
++      if (c == GRUB_TERM_NO_KEY)
++	grub_cpu_idle ();
+ 
+       /* Negative values are returned on error. */
+       if ((c != GRUB_TERM_NO_KEY) && (c > 0))
+--- a/include/grub/i386/time.h
++++ b/include/grub/i386/time.h
+@@ -19,11 +19,24 @@
+ #ifndef KERNEL_CPU_TIME_HEADER
+ #define KERNEL_CPU_TIME_HEADER	1
+ 
++#ifdef GRUB_MACHINE_PCBIOS
++#include <grub/i386/pc/int.h>
++#endif
++
+ static __inline void
+ grub_cpu_idle (void)
+ {
+-  /* FIXME: this can't work until we handle interrupts.  */
+-/*  asm volatile ("hlt"); */
++#if defined (GRUB_MACHINE_EFI)
++  asm volatile ("hlt");
++#elif defined (GRUB_MACHINE_PCBIOS)
++  struct grub_bios_int_registers regs;
++
++  regs.eax = 0x8600;
++  regs.ecx = 0;
++  regs.edx = 1000;
++  regs.flags = GRUB_CPU_INT_FLAGS_DEFAULT;
++  grub_bios_interrupt (0x15, &regs);
++#endif
+ }
+ 
+ #endif /* ! KERNEL_CPU_TIME_HEADER */
+--- a/include/grub/x86_64/time.h
++++ b/include/grub/x86_64/time.h
+@@ -16,14 +16,4 @@
+  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-#ifndef KERNEL_CPU_TIME_HEADER
+-#define KERNEL_CPU_TIME_HEADER	1
+-
+-static __inline void
+-grub_cpu_idle (void)
+-{
+-  /* FIXME: this can't work until we handle interrupts.  */
+-/*  asm volatile ("hlt"); */
+-}
+-
+-#endif /* ! KERNEL_CPU_TIME_HEADER */
++#include <grub/i386/time.h>
