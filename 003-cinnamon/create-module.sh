@@ -83,13 +83,11 @@ installpkg $MODULE_PATH/packages/aspell*.txz || exit 1
 installpkg $MODULE_PATH/packages/colord*.txz || exit 1
 installpkg $MODULE_PATH/packages/enchant*.txz || exit 1
 installpkg $MODULE_PATH/packages/gspell*.txz || exit 1
+installpkg $MODULE_PATH/packages/gtk4*.txz || exit 1
 installpkg $MODULE_PATH/packages/iso-codes*.txz || exit 1
 installpkg $MODULE_PATH/packages/libgee*.txz || exit 1
-installpkg $MODULE_PATH/packages/libgtop*.txz || exit 1
-installpkg $MODULE_PATH/packages/libhandy*.txz || exit 1
 installpkg $MODULE_PATH/packages/libsoup*.txz || exit 1
 installpkg $MODULE_PATH/packages/libspectre*.txz || exit 1
-installpkg $MODULE_PATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULE_PATH/packages/python-six*.txz || exit 1
 
 # required only for building
@@ -123,6 +121,7 @@ for package in \
 	cogl \
 	clutter \
 	caribou \
+	gtk4-layer-shell \
 	python-pexpect \
 	python-polib \
 	python-xapp \
@@ -136,18 +135,11 @@ done
 rm $MODULE_PATH/packages/cogl*.txz
 rm $MODULE_PATH/packages/clutter*.txz
 
-# cinnamon common extras
-for package in \
-	file-roller \
-; do
-bash $SCRIPT_PATH/../common/extras/${package}/${package}.SlackBuild || exit 1
-find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
-done
-
 # cinnamon extras
 for package in \
 	gnome-terminal \
-	gnome-system-monitor \
+	superlight \
+	unfold \
 	xapp-symbolic-icons \
 	yaru-icon-theme \
 ; do
@@ -171,7 +163,6 @@ for package in \
 	cinnamon-control-center \
 	muffin \
 	nemo \
-	nemo-extensions \
 	cinnamon-screensaver \
 	cinnamon \
 	xreader \
@@ -241,6 +232,15 @@ cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm etc/xdg/autostart/blueman.desktop
+rm usr/bin/gtk4-builder-tool
+rm usr/bin/gtk4-demo
+rm usr/bin/gtk4-demo-application
+rm usr/bin/gtk4-encode-symbolic-svg
+rm usr/bin/gtk4-icon-browser
+rm usr/bin/gtk4-icon-editor
+rm usr/bin/gtk4-launch
+rm usr/bin/gtk4-print-editor
+rm usr/bin/gtk4-widget-factory
 rm usr/bin/js[0-9]*
 rm usr/lib${SYSTEM_BITS}/libappindicator.*
 rm usr/lib${SYSTEM_BITS}/libdbusmenu-gtk.*

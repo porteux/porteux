@@ -1,0 +1,37 @@
+#!/bin/bash
+
+source "$BUILDER_UTILS_PATH/latest-from-github.sh"
+
+PRGNAM=unfold
+
+CWD=$(dirname "$0")
+TMP=$MODULE_PATH/$PRGNAM
+PKG=$TMP/package-$PRGNAM
+
+set -e
+
+[ -e $TMP ] && rm -rf $TMP
+mkdir -p $TMP $PKG
+cd $TMP
+
+info=$(download_latest_from_github "xapp-project" ${PRGNAM})
+VERSION=${info#* }
+
+tar xf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+
+mkdir meson-build && cd meson-build
+meson setup \
+	--prefix=/usr \
+	--buildtype=release \
+	--libdir=/usr/lib${SYSTEM_BITS} \
+	--sysconfdir=/etc \
+	--localstatedir=/var
+
+DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+cd $PKG
+makepkg ${MAKEPKG_FLAGS} $MODULE_PATH/packages/$PRGNAM-$VERSION-$ARCH-1_porteux.txz

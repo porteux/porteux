@@ -12,6 +12,7 @@ download_package "dconf" &
 download_package "enchant" &
 download_package "gspell" &
 wait_for_downloads
+download_package "gtk4" &
 download_package "hunspell" &
 download_package "jasper" &
 download_package "keybinder3" &
@@ -19,14 +20,11 @@ download_package "libappindicator" &
 download_package "libdbusmenu" &
 download_package "libgee" &
 download_package "libgpod" &
-download_package "libgtop" &
 download_package "libgusb" &
 wait_for_downloads
-download_package "libhandy" &
 download_package "libindicator" &
 download_package "libsoup" & # required by settings -> Date&Time
 download_package "libspectre" &
-download_package "libwnck3" &
 download_package "libxklavier" &
 download_package "mozjs140" &
 download_package "python-certifi" &

@@ -1,0 +1,12 @@
+                |-----handy-ruler------------------------------------------------------|
+gtk4-layer-shell: gtk4-layer-shell (Layer Shell for GTK4)
+gtk4-layer-shell:
+gtk4-layer-shell: A library to write GTK4 applications that use Layer Shell.
+gtk4-layer-shell: Layer Shell is a Wayland protocol for desktop shell components, such
+gtk4-layer-shell: as panels, notifications and wallpapers.
+gtk4-layer-shell:
+gtk4-layer-shell:
+gtk4-layer-shell: Project URL: https://github.com/wmww/gtk4-layer-shell
+gtk4-layer-shell:
+gtk4-layer-shell:
+gtk4-layer-shell:

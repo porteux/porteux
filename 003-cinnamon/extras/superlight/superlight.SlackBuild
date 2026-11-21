@@ -2,7 +2,7 @@
 
 source "$BUILDER_UTILS_PATH/latest-from-github.sh"
 
-PRGNAM=nemo-extensions
+PRGNAM=superlight
 
 CWD=$(dirname "$0")
 TMP=$MODULE_PATH/$PRGNAM
@@ -14,24 +14,21 @@ set -e
 mkdir -p $TMP $PKG
 cd $TMP
 
-info=$(download_latest_from_github "linuxmint" ${PRGNAM} "nemo-${TEST_RELEASES:+|${TEST_RELEASES}}")
+info=$(download_latest_from_github "xapp-project" ${PRGNAM})
 VERSION=${info#* }
 
-tar xf $PRGNAM-$VERSION*.tar.?z
-cd $PRGNAM-$VERSION*/
+tar xf $PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
 
-cd nemo-fileroller
 mkdir meson-build && cd meson-build
-CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEM_BITS} \
-	--libexecdir=/usr/libexec
+	--sysconfdir=/etc \
+	--localstatedir=/var
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
-
-find $PKG -type f -name "*.la" -delete
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
