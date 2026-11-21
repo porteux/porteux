@@ -83,6 +83,7 @@ installpkg $MODULE_PATH/packages/aspell*.txz || exit 1
 installpkg $MODULE_PATH/packages/colord*.txz || exit 1
 installpkg $MODULE_PATH/packages/enchant*.txz || exit 1
 installpkg $MODULE_PATH/packages/gspell*.txz || exit 1
+installpkg $MODULE_PATH/packages/gst-plugins-bad-free*.txz || exit 1
 installpkg $MODULE_PATH/packages/gtk4*.txz || exit 1
 installpkg $MODULE_PATH/packages/iso-codes*.txz || exit 1
 installpkg $MODULE_PATH/packages/libgee*.txz || exit 1
@@ -180,6 +181,9 @@ strip_package gettext-tools \
 	usr/bin/msgfmt \
 	usr/lib${SYSTEM_BITS}/libgettextlib*.so* \
 	usr/lib${SYSTEM_BITS}/libgettextsrc*.so*
+
+strip_package gst-plugins-bad-free \
+	usr/lib${SYSTEM_BITS}/libgstplay-1.0.so*
 	
 strip_package iso-codes \
 	usr/share/xml/iso-codes/iso_3166-1.xml \

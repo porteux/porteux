@@ -42,6 +42,7 @@ wait_for_downloads
 ### packages that require specific stripping
 
 download_package "gettext-tools" & # required by extensions
+download_package "gst-plugins-bad-free" &
 download_package "ibus" &
 wait_for_downloads
 
