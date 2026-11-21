@@ -98,7 +98,7 @@
    grub_unregister_extcmd (cmd_source_extract);
 --- a/grub-core/lib/syslinux_parse.c
 +++ b/grub-core/lib/syslinux_parse.c
-@@ -396,10 +396,8 @@
+@@ -396,10 +396,8 @@ cmd_initrd (const char *line, struct syslinux_menu *menu)
        if (menu->entries->initrds_last)
  	menu->entries->initrds_last->next = ninitrd;
        else
@@ -111,7 +111,7 @@
  
        line = comma;
        while (*line == ',')
-@@ -797,8 +795,16 @@
+@@ -797,8 +795,16 @@ print_file (struct output_buffer *outbuf,
  	    struct syslinux_menu *menu, const char *from, const char *to)
  {
    grub_err_t err;
@@ -128,7 +128,55 @@
    err = print_escaped (outbuf, from[0] == '/'
  		       ? menu->root_target_directory
  		       : menu->current_target_directory, NULL);
-@@ -954,47 +960,61 @@
+@@ -811,6 +817,47 @@ print_file (struct output_buffer *outbuf,
+   return print_escaped (outbuf, from, to);
+ }
+ 
++static grub_err_t
++print_args (struct output_buffer *outbuf, const char *from, const char *to)
++{
++  grub_err_t err;
++  const char *start, *ptr;
++  int escape, quoted;
++  if (!to)
++    to = from + grub_strlen (from);
++  for (start = from; start < to; start = ptr)
++    {
++      for (; start < to && grub_isspace (*start); start++);
++      if (start == to)
++	break;
++      escape = quoted = 0;
++      for (ptr = start; ptr < to && (quoted || ! grub_isspace (*ptr)); ptr++)
++	if (*ptr == '"')
++	  quoted = ! quoted;
++	else if (! grub_isalnum (*ptr) && ! grub_strchr ("/._-+=,:@%", *ptr))
++	  escape = 1;
++      err = ensure_space (outbuf, (ptr - start) * 4 + 3);
++      if (err)
++	return err;
++      outbuf->buf[outbuf->ptr++] = ' ';
++      if (escape)
++	outbuf->buf[outbuf->ptr++] = '\'';
++      for (; start < ptr; start++)
++	if (*start == '\'')
++	  {
++	    outbuf->buf[outbuf->ptr++] = '\'';
++	    outbuf->buf[outbuf->ptr++] = '\\';
++	    outbuf->buf[outbuf->ptr++] = '\'';
++	    outbuf->buf[outbuf->ptr++] = '\'';
++	  }
++	else if (*start != '"')
++	  outbuf->buf[outbuf->ptr++] = *start;
++      if (escape)
++	outbuf->buf[outbuf->ptr++] = '\'';
++    }
++  return GRUB_ERR_NONE;
++}
++
+ /*
+  * Makefile.am mimics this when generating tests/syslinux/ubuntu10.04_grub.cfg,
+  * so changes here may need to be reflected there too.
+@@ -954,47 +1001,54 @@ write_entry (struct output_buffer *outbuf,
      {
      case KERNEL_LINUX:
        {
@@ -160,30 +208,24 @@
  	if (curentry->append)
  	  {
 -	    err = print (outbuf, curentry->append, grub_strlen (curentry->append));
-+	    print_string (" ");
-+	    err = print (outbuf, curentry->append,
-+			 (initrd ? ptr : curentry->append + grub_strlen (curentry->append))
-+			 - curentry->append);
++	    err = print_args (outbuf, curentry->append, initrd ? ptr : NULL);
++	    if (! err && initrd)
++	      err = print_args (outbuf, initrde, NULL);
  	    if (err)
  	      return err;
--	  }
+ 	  }
 -	print_string ("\n");
 -	if (initrd || curentry->initrds)
--	  {
++	for (part = initrd; part && part < initrde; part = comma + 1)
+ 	  {
 -	    struct initrd_list *lst;
 -	    print_string ("  initrd$linux_suffix ");
- 	    if (initrd)
- 	      {
+-	    if (initrd)
+-	      {
 -		print_file (outbuf, menu, initrd, initrde);
 -		print_string (" ");
-+		err = print (outbuf, initrde, grub_strlen (initrde));
-+		if (err)
-+		  return err;
- 	      }
+-	      }
 -	    for (lst = curentry->initrds; lst; lst = lst->next)
-+	  }
-+	for (part = initrd; part && part < initrde; part = comma + 1)
-+	  {
 +	    for (comma = part; comma < initrde && *comma != ','; comma++);
 +	    if (comma > part)
  	      {
@@ -212,7 +254,7 @@
        }
        break;
      case KERNEL_CHAINLOADER:
-@@ -1465,15 +1485,6 @@
+@@ -1465,15 +1519,6 @@ config_file (struct output_buffer *outbuf,
        print_string ("\n");
      }
  
@@ -228,7 +270,7 @@
    if (menu.comments)
      {
        err = print (outbuf, menu.comments, grub_strlen (menu.comments));
-@@ -1481,22 +1492,19 @@
+@@ -1481,22 +1526,19 @@ config_file (struct output_buffer *outbuf,
  	return err;
      }
  

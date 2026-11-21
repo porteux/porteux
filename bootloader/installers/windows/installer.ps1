@@ -24,6 +24,32 @@ try {
 	if (-not $partition) {
 		Fail "Couldn't find the partition of ${DriveLetter}:"
 	}
+	if ($logicalDisk.FileSystem -notmatch '^(FAT|FAT32|exFAT|NTFS)$') {
+		Fail ("Partition filesystem not supported by the bootloader: " + $logicalDisk.FileSystem + "`r`nThe partition holding \boot must be FAT, exFAT or NTFS.")
+	}
+
+	$oldCfgPath = $root + 'boot\syslinux\porteux.cfg'
+	if (Test-Path $oldCfgPath) {
+		$oldLines = [IO.File]::ReadAllLines($oldCfgPath)
+		$firstLabel = -1
+		for ($i = 0; $i -lt $oldLines.Length; $i++) {
+			if ($oldLines[$i] -match '^\s*LABEL\s') {
+				$firstLabel = $i
+				break
+			}
+		}
+		if ($firstLabel -ge 0) {
+			Write-Host 'Moving boot options from \boot\syslinux\porteux.cfg to \boot\porteux\porteux.cfg...'
+			$newLines = @()
+			if ($firstLabel -gt 0) {
+				$newLines += @($oldLines[0..($firstLabel - 1)] | Where-Object { $_ -match '^\s*(TIMEOUT|DEFAULT|ONTIMEOUT)\s' })
+			}
+			$newLines += ''
+			$newLines += @($oldLines[$firstLabel..($oldLines.Length - 1)] | ForEach-Object { $_ -replace '/boot/syslinux/', '/boot/porteux/' })
+			[IO.File]::WriteAllText($root + 'boot\porteux\porteux.cfg', (($newLines -join "`n") + "`n"))
+			Move-Item -Force $oldCfgPath ($oldCfgPath + '.old')
+		}
+	}
 
 	if ($partition.Type -like 'GPT*') {
 		if ($logicalDisk.FileSystem -notlike 'FAT*') {

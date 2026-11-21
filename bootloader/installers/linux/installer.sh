@@ -130,6 +130,18 @@ fi
 echo
 PressEnterToContinue
 
+OLDCFGPATH="$PARTITIONMOUNTPATH"/boot/syslinux/porteux.cfg
+if [ -f "$OLDCFGPATH" ] && grep -qiE '^[[:space:]]*LABEL[[:space:]]' "$OLDCFGPATH"; then
+	echo "Moving boot options from /boot/syslinux/porteux.cfg to /boot/porteux/porteux.cfg..."
+	{
+		sed -n '/^[[:space:]]*LABEL[[:space:]]/Iq;p' "$OLDCFGPATH" | grep -iE '^[[:space:]]*(TIMEOUT|DEFAULT|ONTIMEOUT)[[:space:]]'
+		echo
+		sed -n '/^[[:space:]]*LABEL[[:space:]]/I,$p' "$OLDCFGPATH" | sed 's|/boot/syslinux/|/boot/porteux/|gI'
+	} > "$WORKFOLDER"/porteux.cfg
+	cp -f "$WORKFOLDER"/porteux.cfg "$BOOTFILESPATH"/porteux.cfg && mv -f "$OLDCFGPATH" "$OLDCFGPATH".old
+	FailMessage 3
+fi
+
 echo "Flushing filesystem buffers..."
 sync
 
@@ -164,8 +176,10 @@ if [ "$PARTITIONTABLETYPE" = "dos" ]; then
 	FailMessage 1
 
 	# make partition active
-	sfdisk -A "$DEVMEDIANAME" "$PARTITIONNUMBER" >/dev/null 2>&1
-	FailMessage 2
+	if [ "$PARTITIONNUMBER" -le 4 ]; then
+		sfdisk -A "$DEVMEDIANAME" "$PARTITIONNUMBER" >/dev/null 2>&1
+		FailMessage 2
+	fi
 fi
 
 # find porteux mount path

@@ -46,12 +46,12 @@
 +#if defined (GRUB_MACHINE_EFI)
 +  asm volatile ("hlt");
 +#elif defined (GRUB_MACHINE_PCBIOS)
-+  struct grub_bios_int_registers regs;
++  struct grub_bios_int_registers regs = {
++    .eax = 0x8600,
++    .edx = 1000,
++    .flags = GRUB_CPU_INT_FLAGS_DEFAULT
++  };
 +
-+  regs.eax = 0x8600;
-+  regs.ecx = 0;
-+  regs.edx = 1000;
-+  regs.flags = GRUB_CPU_INT_FLAGS_DEFAULT;
 +  grub_bios_interrupt (0x15, &regs);
 +#endif
  }
