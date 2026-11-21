@@ -1,0 +1,118 @@
+diff --git a/thunar/thunar-compact-view.c b/thunar/thunar-compact-view.c
+index 4cd6277..a134f7d 100644
+--- a/thunar/thunar-compact-view.c
++++ b/thunar/thunar-compact-view.c
+@@ -22,11 +22,19 @@
+ #endif
+ 
+ #include "thunar/thunar-compact-view.h"
++#include "thunar/thunar-text-renderer.h"
+ 
+ 
+ 
+ static AtkObject *
+ thunar_compact_view_get_accessible (GtkWidget *widget);
++static gboolean
++thunar_compact_view_query_tooltip (GtkWidget         *view,
++                                   gint               x,
++                                   gint               y,
++                                   gboolean           keyboard_mode,
++                                   GtkTooltip        *tooltip,
++                                   ThunarCompactView *compact_view);
+ 
+ 
+ 
+@@ -38,6 +46,8 @@ struct _ThunarCompactViewClass
+ struct _ThunarCompactView
+ {
+   ThunarAbstractIconView __parent__;
++
++  gint tooltip_index;
+ };
+ 
+ 
+@@ -74,7 +84,8 @@ thunar_compact_view_class_init (ThunarCompactViewClass *klass)
+ static void
+ thunar_compact_view_init (ThunarCompactView *compact_view)
+ {
+-  gboolean max_chars;
++  GtkWidget *view;
++  gboolean   max_chars;
+ 
+   /* initialize the icon view properties */
+   exo_icon_view_set_margin (EXO_ICON_VIEW (gtk_bin_get_child (GTK_BIN (compact_view))), 3);
+@@ -96,10 +107,70 @@ thunar_compact_view_init (ThunarCompactView *compact_view)
+ 
+   /* setup ellipsization */
+   if (max_chars > 0)
+-    g_object_set (G_OBJECT (THUNAR_STANDARD_VIEW (compact_view)->name_renderer),
+-                  "ellipsize", PANGO_ELLIPSIZE_MIDDLE,
+-                  "width-chars", max_chars,
+-                  NULL);
++    {
++      g_object_set (G_OBJECT (THUNAR_STANDARD_VIEW (compact_view)->name_renderer),
++                    "ellipsize", PANGO_ELLIPSIZE_MIDDLE,
++                    "width-chars", max_chars,
++                    NULL);
++
++      compact_view->tooltip_index = -1;
++      view = gtk_bin_get_child (GTK_BIN (compact_view));
++      g_signal_connect (G_OBJECT (view), "query-tooltip", G_CALLBACK (thunar_compact_view_query_tooltip), compact_view);
++      gtk_widget_set_has_tooltip (view, TRUE);
++    }
++}
++
++
++
++static gboolean
++thunar_compact_view_query_tooltip (GtkWidget         *view,
++                                   gint               x,
++                                   gint               y,
++                                   gboolean           keyboard_mode,
++                                   GtkTooltip        *tooltip,
++                                   ThunarCompactView *compact_view)
++{
++  GtkCellRenderer *renderer = THUNAR_STANDARD_VIEW (compact_view)->name_renderer;
++  GtkTreeModel    *model;
++  GtkTreePath     *path;
++  GtkTreeIter      iter;
++  gboolean         show = FALSE;
++  gchar           *name = NULL;
++  gint             position = -1;
++  gint             width;
++
++  if (keyboard_mode)
++    return FALSE;
++
++  path = exo_icon_view_get_path_at_pos (EXO_ICON_VIEW (view), x, y);
++  if (path != NULL)
++    position = gtk_tree_path_get_indices (path)[0];
++
++  if (path == NULL || position != compact_view->tooltip_index)
++    {
++      compact_view->tooltip_index = position;
++      gtk_tree_path_free (path);
++      return FALSE;
++    }
++
++  model = exo_icon_view_get_model (EXO_ICON_VIEW (view));
++  if (gtk_tree_model_get_iter (model, &iter, path))
++    gtk_tree_model_get (model, &iter, THUNAR_COLUMN_NAME, &name, -1);
++  gtk_tree_path_free (path);
++
++  if (name != NULL)
++    {
++      g_object_set (G_OBJECT (renderer), "text", name, NULL);
++      gtk_cell_renderer_get_preferred_width (renderer, view, &width, NULL);
++      if (thunar_text_renderer_is_ellipsized (renderer, view, name, width))
++        {
++          gtk_tooltip_set_text (tooltip, name);
++          show = TRUE;
++        }
++      g_free (name);
++    }
++
++  return show;
+ }
+ 
+ 
