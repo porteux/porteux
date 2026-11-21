@@ -76,6 +76,8 @@ rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 # required by lxpanel
 installpkg $MODULE_PATH/packages/libwnck3*.txz || exit 1
 installpkg $MODULE_PATH/packages/keybinder3*.txz || exit 1
+installpkg $MODULE_PATH/packages/wireless_tools*.txz || exit 1
+rm $MODULE_PATH/packages/wireless_tools*.txz
 
 # only required to build menu-cache
 rm $MODULE_PATH/packages/libfm-extra*.txz

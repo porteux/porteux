@@ -13,3 +13,8 @@ download_package "libwnck3" &
 download_package "libxklavier" &
 wait_for_downloads
 
+### temporary packages only for building
+
+download_package "wireless_tools" &
+wait_for_downloads
+
