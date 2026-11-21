@@ -8,6 +8,7 @@ download_package "autoconf-archive" &
 download_package "automake" &
 download_package "bison" &
 download_package "cmake" &
+download_package "flex" &
 download_package "gc" &
 download_package "gcc" &
 download_package "gcc-g++" &
@@ -23,6 +24,7 @@ download_package "itstool" &
 download_package "libmpc" &
 download_package "libpthread-stubs" &
 download_package "libtool" &
+download_package "libxslt" &
 wait_for_downloads
 download_package "linuxdoc-tools" &
 download_package "m4" &

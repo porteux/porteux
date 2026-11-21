@@ -46,6 +46,7 @@ rm $MODULE_PATH/packages/egl-wayland*
 rm $MODULE_PATH/packages/krb5*
 rm $MODULE_PATH/packages/libsass*
 rm $MODULE_PATH/packages/libwnck3*
+rm $MODULE_PATH/packages/libyaml*
 rm $MODULE_PATH/packages/llvm*
 rm $MODULE_PATH/packages/openldap*
 rm $MODULE_PATH/packages/python-pip*

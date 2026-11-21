@@ -234,7 +234,6 @@ chmod 644 etc/rc.d/rc.inet1
 chmod 644 etc/rc.d/rc.loop
 chmod 755 etc/rc.d/rc.networkmanager
 chmod 644 etc/rc.d/rc.sshd
-chmod 644 etc/rc.d/rc.wireless
 
 ### copy build files to 05-devel
 
@@ -255,13 +254,21 @@ rm etc/motd
 rm etc/termcap
 rm etc/openvpn/sample-config-files
 rm etc/rc.d/rc.inet2
+rm etc/rc.d/rc.wireless
+rm etc/rc.d/rc.wireless.conf
+rm usr/bin/samba-tool
 rm usr/bin/smbtorture
 rm usr/bin/wpa_gui
 rm usr/dict
 rm usr/lib${SYSTEM_BITS}/libicutest.*
 rm usr/lib${SYSTEM_BITS}/libqgpgme.so*
+rm usr/lib${SYSTEM_BITS}/python*/lib-dynload/_tkinter*
+rm usr/lib${SYSTEM_BITS}/whiptcl.so
 rm usr/libexec/samba/rpcd_*
 rm usr/sbin/make-kernel-backup
+rm usr/sbin/samba
+rm usr/sbin/samba-gpupdate
+rm usr/sbin/samba_*
 rm usr/share/i18n/locales/C
 rm usr/share/pixmaps/wpa_gui.png
 rm var/db/Makefile
@@ -282,9 +289,33 @@ rm -fr usr/lib*/python*/__phello__
 rm -fr usr/lib*/python*/config-*-x86_64-linux-gnu
 rm -fr usr/lib*/python*/idlelib
 rm -fr usr/lib*/python*/lib2to3
+rm -fr usr/lib*/python*/site-packages/build
+rm -fr usr/lib*/python*/site-packages/c-analyzer
+rm -fr usr/lib*/python*/site-packages/cases_generator
+rm -fr usr/lib*/python*/site-packages/ccbench
+rm -fr usr/lib*/python*/site-packages/clinic
 rm -fr usr/lib*/python*/site-packages/demo
+rm -fr usr/lib*/python*/site-packages/freeze
+rm -fr usr/lib*/python*/site-packages/gdb
+rm -fr usr/lib*/python*/site-packages/i18n
+rm -fr usr/lib*/python*/site-packages/importbench
+rm -fr usr/lib*/python*/site-packages/iobench
+rm -fr usr/lib*/python*/site-packages/libmount
 rm -fr usr/lib*/python*/site-packages/msi
+rm -fr usr/lib*/python*/site-packages/nuget
+rm -fr usr/lib*/python*/site-packages/patchcheck
 rm -fr usr/lib*/python*/site-packages/peg_generator
+rm -fr usr/lib*/python*/site-packages/rpm
+rm -fr usr/lib*/python*/site-packages/samba
+rm -fr usr/lib*/python*/site-packages/scripts
+rm -fr usr/lib*/python*/site-packages/ssl
+rm -fr usr/lib*/python*/site-packages/stringbench
+rm -fr usr/lib*/python*/site-packages/tsan
+rm -fr usr/lib*/python*/site-packages/tz
+rm -fr usr/lib*/python*/site-packages/unicode
+rm -fr usr/lib*/python*/site-packages/unittestgui
+rm -fr usr/lib*/python*/site-packages/wasm
+rm -fr usr/lib*/python*/tkinter
 rm -fr usr/lib*/python*/turtledemo
 rm -fr usr/lib*/python*/unittest/__pycache__/
 rm -fr usr/lib/udev
@@ -305,6 +336,8 @@ rm -fr usr/share/lynx
 rm -fr usr/share/mc/examples
 rm -fr usr/share/mc/help
 rm -fr usr/share/mc/hints
+rm -fr usr/share/samba/admx
+rm -fr usr/share/samba/setup
 rm -fr usr/share/terminfo/[0-9]
 rm -fr usr/share/terminfo/[A-Z]
 rm -fr usr/share/terminfo/b

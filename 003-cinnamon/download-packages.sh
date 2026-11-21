@@ -10,6 +10,7 @@ download_package "colord" &
 download_package "dbus-python" &
 download_package "dconf" &
 download_package "enchant" &
+download_package "gcr" &
 download_package "gspell" &
 wait_for_downloads
 download_package "gtk4" &

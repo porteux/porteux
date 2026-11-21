@@ -243,6 +243,7 @@ rm usr/bin/canberra*
 rm usr/bin/qv4l2
 rm usr/bin/qvidcap
 rm usr/bin/Xdmx
+rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstlibvisual.so
 rm usr/lib${SYSTEM_BITS}/gtk-2.0/modules/libcanberra-gtk-module.*
 rm usr/lib${SYSTEM_BITS}/libbd_vdo.*
 rm usr/lib${SYSTEM_BITS}/libcanberra-gtk.*
@@ -251,8 +252,6 @@ rm usr/lib${SYSTEM_BITS}/libpoppler-qt5*
 rm usr/lib${SYSTEM_BITS}/libxatracker*
 rm usr/lib${SYSTEM_BITS}/libXaw.so.6*
 rm usr/lib${SYSTEM_BITS}/libXaw6*
-rm usr/share/applications/gcr-prompter.desktop
-rm usr/share/applications/gcr-viewer.desktop
 rm usr/share/applications/mimeinfo.cache
 rm usr/share/applications/qv4l2.desktop
 rm usr/share/applications/qvidcap.desktop
@@ -274,16 +273,16 @@ rm -fr usr/lib${SYSTEM_BITS}/glibmm-*
 rm -fr usr/lib${SYSTEM_BITS}/gnome-settings-daemon-*
 rm -fr usr/lib${SYSTEM_BITS}/graphene-*
 rm -fr usr/lib${SYSTEM_BITS}/gtkmm-*
-rm -fr usr/lib${SYSTEM_BITS}/libxslt-plugins
 rm -fr usr/lib${SYSTEM_BITS}/openjpeg-*
 rm -fr usr/lib${SYSTEM_BITS}/pangomm-*
+rm -fr usr/lib*/python*/site-packages/com
+rm -fr usr/lib*/python*/site-packages/libnvme
 rm -fr usr/lib${SYSTEM_BITS}/sigc++-*
 rm -fr usr/lib${SYSTEM_BITS}/xmms
 rm -fr usr/libexec/upower/tests
 rm -fr usr/share/gdm
 rm -fr usr/share/gnupg
 rm -fr usr/share/gobject-introspection*/tests
-rm -fr usr/share/graphite2
 rm -fr usr/share/gst-plugins-base
 rm -fr usr/share/gstreamer*/gdb
 rm -fr usr/share/gtk-*
@@ -295,7 +294,6 @@ rm -fr usr/share/libgphoto2/*/konica/korean
 rm -fr usr/share/libgphoto2/*/konica/spanish
 rm -fr usr/share/libgphoto2_port
 rm -fr usr/share/sounds/alsa
-rm -fr usr/share/svgalib-demos
 rm -fr usr/share/themes/Artwiz-boxed
 rm -fr usr/share/themes/Bear2
 rm -fr usr/share/themes/Clearlooks-3.4

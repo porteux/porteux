@@ -7,6 +7,7 @@ download_package "accountsservice" &
 download_package "aspell" &
 download_package "babl" &
 download_package "blueman" &
+download_package "dbus-glib" &
 download_package "dbus-python" &
 download_package "dconf" &
 download_package "enchant" &

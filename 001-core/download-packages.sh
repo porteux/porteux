@@ -27,7 +27,6 @@ download_package "curl" &
 wait_for_downloads
 download_package "cyrus-sasl" &
 download_package "dbus" &
-download_package "dbus-glib" &
 download_package "dbus-python" & # required by TLP (via AppStore)
 download_package "dcron" &
 download_package "devs" &
@@ -39,7 +38,6 @@ wait_for_downloads
 download_package "dmidecode" &
 download_package "dnsmasq" &
 download_package "dosfstools" &
-download_package "dvd+rw-tools" &
 download_package "e2fsprogs" &
 download_package "elfutils" &
 download_package "elogind" &
@@ -52,7 +50,6 @@ download_package "expat" &
 download_package "f2fs-tools" &
 download_package "file" &
 download_package "findutils" &
-download_package "flex" &
 download_package "floppy" &
 download_package "fuse3" &
 download_package "gawk" &
@@ -95,7 +92,6 @@ download_package "libffi" &
 download_package "libgcrypt" &
 download_package "libgpg-error" &
 download_package "libgudev" &
-download_package "libidn" &
 download_package "libidn2" &
 download_package "libimobiledevice" &
 download_package "libimobiledevice-glue" &
@@ -106,7 +102,6 @@ download_package "libndp" &
 download_package "libnetfilter_conntrack" &
 download_package "libnfnetlink" &
 download_package "libnftnl" &
-download_package "libnih" &
 download_package "libnl3" &
 download_package "libnsl" &
 download_package "libpcap" &
@@ -115,7 +110,6 @@ wait_for_downloads
 download_package "libpsl" &
 download_package "libqmi" &
 download_package "libqrtr-glib" & # required by libqmi, ModemManager
-download_package "libraw1394" &
 download_package "libseccomp" &
 download_package "libssh2" &
 download_package "libtasn1" &
@@ -127,7 +121,6 @@ download_package "libusb" &
 download_package "libusb-compat" &
 download_package "libusbmuxd" &
 download_package "libxml2" &
-download_package "libzip" &
 download_package "lmdb" &
 download_package "lm_sensors" &
 download_package "lsof" &
@@ -167,7 +160,6 @@ download_package "parted" &
 download_package "patch" &
 download_package "pciutils" &
 wait_for_downloads
-download_package "pcre" &
 download_package "pcre2" &
 download_package "pkgtools" &
 download_package "popt" &
@@ -178,7 +170,6 @@ download_package "readline" &
 download_package "rpcbind" &
 wait_for_downloads
 download_package "rpm2tgz" &
-download_package "rp-pppoe" &
 download_package "rsync" &
 download_package "samba" &
 download_package "sdparm" &
@@ -191,16 +182,13 @@ wait_for_downloads
 download_package "sqlite" &
 download_package "sshfs" &
 download_package "sudo" &
-download_package "sysfsutils" &
 download_package "sysklogd" &
 download_package "sysvinit-functions" &
 download_package "sysvinit-scripts" &
 download_package "talloc" &
 download_package "tar" &
-download_package "tcl" &
 wait_for_downloads
 download_package "tdb" &
-download_package "telnet" &
 download_package "tevent" &
 download_package "traceroute" &
 download_package "usb_modeswitch" &
@@ -212,7 +200,6 @@ wait_for_downloads
 download_package "util-linux" &
 download_package "which" &
 download_package "whois" &
-download_package "wireless_tools" &
 download_package "wpa_supplicant" &
 download_package "xfsdump" &
 download_package "xfsprogs" &

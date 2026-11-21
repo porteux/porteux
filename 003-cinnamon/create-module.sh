@@ -82,6 +82,7 @@ done
 installpkg $MODULE_PATH/packages/aspell*.txz || exit 1
 installpkg $MODULE_PATH/packages/colord*.txz || exit 1
 installpkg $MODULE_PATH/packages/enchant*.txz || exit 1
+installpkg $MODULE_PATH/packages/gcr-[0-9]*.txz || exit 1
 installpkg $MODULE_PATH/packages/gspell*.txz || exit 1
 installpkg $MODULE_PATH/packages/gst-plugins-bad-free*.txz || exit 1
 installpkg $MODULE_PATH/packages/gtk4*.txz || exit 1
@@ -250,6 +251,8 @@ rm usr/lib${SYSTEM_BITS}/libappindicator.*
 rm usr/lib${SYSTEM_BITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEM_BITS}/libindicator.*
 rm usr/libexec/indicator-loader
+rm usr/share/applications/gcr-prompter.desktop
+rm usr/share/applications/gcr-viewer.desktop
 
 rm -fr etc/dbus-1/system.d
 rm -fr etc/dconf

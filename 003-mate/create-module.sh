@@ -75,6 +75,7 @@ find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf 
 done
 
 # required from now on
+installpkg $MODULE_PATH/packages/dbus-glib*.txz || exit 1
 installpkg $MODULE_PATH/packages/libgtop*.txz || exit 1
 installpkg $MODULE_PATH/packages/dconf*.txz || exit 1
 installpkg $MODULE_PATH/packages/enchant*.txz || exit 1

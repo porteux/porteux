@@ -51,7 +51,6 @@ installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULE_PATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULE_PATH/packages/libdbusmenu*.txz || exit 1
 installpkg $MODULE_PATH/packages/libgtop*.txz || exit 1
-installpkg $MODULE_PATH/packages/libindicator*.txz || exit 1
 
 # xfce common deps
 for package in \
@@ -110,6 +109,7 @@ installpkg $MODULE_PATH/packages/keybinder3*.txz || exit 1
 
 # required by xfdesktop
 installpkg $MODULE_PATH/packages/libyaml*.txz || exit 1
+rm $MODULE_PATH/packages/libyaml*.txz
 
 # xfce packages
 for package in \
@@ -182,13 +182,13 @@ cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm etc/xdg/autostart/blueman.desktop
+rm usr/lib${SYSTEM_BITS}/enchant-2/enchant_aspell.so
+rm usr/lib${SYSTEM_BITS}/enchant-2/enchant_hunspell.so
 rm usr/lib${SYSTEM_BITS}/girepository-1.0/SoupGNOME*
 rm usr/lib${SYSTEM_BITS}/libappindicator.*
 rm usr/lib${SYSTEM_BITS}/libdbusmenu-gtk.*
-rm usr/lib${SYSTEM_BITS}/libindicator.*
 rm usr/lib${SYSTEM_BITS}/libkeybinder.*
 rm usr/lib${SYSTEM_BITS}/libsoup-gnome*
-rm usr/libexec/indicator-loader
 rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/icons/hicolor/scalable/status/computer.svg
 rm usr/share/icons/hicolor/scalable/status/keyboard.svg
@@ -196,7 +196,6 @@ rm usr/share/icons/hicolor/scalable/status/phone.svg
 
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
-rm -fr usr/share/libindicator
 rm -fr usr/share/themes/Default/balou
 rm -fr usr/share/Thunar
 

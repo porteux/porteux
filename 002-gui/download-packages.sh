@@ -3,13 +3,11 @@ source "$BUILDER_UTILS_PATH/slackware-repository.sh"
 
 generate_repository_urls
 
-download_package "a52dec" &
 download_package "alsa-lib" &
 download_package "alsa-plugins" &
 download_package "alsa-utils" &
 download_package "atkmm" &
 download_package "at-spi2-core" &
-download_package "audiofile" &
 download_package "cairo" &
 wait_for_downloads
 download_package "cairomm" &
@@ -20,16 +18,13 @@ download_package "db48" & # required by bluez (obexd)
 download_package "dejavu-fonts-ttf" &
 download_package "desktop-file-utils" &
 download_package "djvulibre" &
-download_package "esound" &
 download_package "flac" &
 wait_for_downloads
 download_package "fontconfig" &
 download_package "freeglut" &
 download_package "fribidi" &
-download_package "gcr" &
 download_package "gcr4" & # required by gvfs 1.54+
 download_package "giflib" &
-download_package "glew" &
 download_package "glibmm" &
 download_package "glib-networking" & # required by flatpak
 download_package "glu" &
@@ -40,8 +35,6 @@ download_package "gobject-introspection" &
 download_package "gparted" &
 download_package "gpgmepp" & # required by poppler-glib
 download_package "graphene" & # required by libgstopengl
-download_package "graphite2" &
-download_package "gsl" &
 download_package "gst-plugins-base" & # required by bluetooth audio
 download_package "gstreamer" & # required by bluetooth audio
 download_package "gtkmm3" &
@@ -52,9 +45,7 @@ download_package "iceauth" &
 download_package "json-c" &
 download_package "json-glib" &
 download_package "lame" &
-download_package "lcms" &
 download_package "lcms2" &
-download_package "libao" &
 download_package "libasyncns" &
 wait_for_downloads
 download_package "libatasmart" &
@@ -69,7 +60,6 @@ download_package "libdecor" & # required by xorg-server-xwayland
 download_package "libdeflate" & # required by libtiff
 wait_for_downloads
 download_package "libdisplay-info" & # required by some DEs and mpv to have vaapi
-download_package "libdmx" &
 download_package "libdrm" &
 download_package "libdvdnav" &
 download_package "libdvdread" &
@@ -81,20 +71,17 @@ download_package "libexif" &
 wait_for_downloads
 download_package "libfontenc" &
 download_package "libgit2" & # required by cargo-c
-download_package "libglade" &
 download_package "libglvnd" &
 download_package "libgphoto2" &
 download_package "libical" &
 download_package "libICE" &
 download_package "libinput" &
 download_package "libjpeg-turbo" &
-download_package "libmad" &
 download_package "libmtp" &
 wait_for_downloads
 download_package "libnotify" &
 download_package "libnvme" & # required by udisks 2.10.0+
 download_package "libogg" &
-download_package "libopusenc" &
 download_package "libpciaccess" &
 download_package "libpng" &
 download_package "libproxy" & # required by flatpak
@@ -113,7 +100,6 @@ download_package "libunwind" &
 download_package "libva" &
 download_package "libvdpau" &
 wait_for_downloads
-download_package "libvisual" &
 download_package "libvorbis" &
 download_package "libvpx" &
 download_package "libwacom" &
@@ -127,7 +113,6 @@ wait_for_downloads
 download_package "libxcvt" &
 download_package "libXdamage" &
 download_package "libXdmcp" &
-download_package "libXevie" &
 download_package "libXext" &
 download_package "libXfixes" &
 download_package "libXfont2" &
@@ -139,7 +124,6 @@ download_package "libXinerama" &
 download_package "libxkbcommon" &
 download_package "libxkbfile" &
 download_package "libXmu" &
-download_package "libXp" &
 download_package "libXpm" &
 download_package "libXpresent" &
 download_package "libXrandr" &
@@ -148,14 +132,11 @@ download_package "libXres" &
 wait_for_downloads
 download_package "libXScrnSaver" &
 download_package "libxshmfence" &
-download_package "libxslt" &
 download_package "libXt" &
 download_package "libXtst" &
 download_package "libXv" &
-download_package "libXvMC" &
-download_package "libXxf86dga" &
-download_package "libXxf86misc" &
 download_package "libXxf86vm" &
+download_package "libyaml" &
 wait_for_downloads
 download_package "mkfontscale" &
 download_package "mobile-broadband-provider-info" &
@@ -166,7 +147,6 @@ download_package "ocl-icd" &
 download_package "openjpeg" &
 download_package "opus" &
 download_package "opusfile" &
-download_package "opus-tools" &
 wait_for_downloads
 download_package "orc" &
 download_package "pango" &
@@ -176,10 +156,8 @@ download_package "poppler" &
 download_package "pycairo" &
 download_package "pygobject3" &
 download_package "pyxdg" &
-download_package "rdesktop" &
 download_package "sbc" &
 wait_for_downloads
-download_package "sdl" &
 download_package "SDL2" &
 download_package "seatd" & # required by labwc
 download_package "setxkbmap" &
@@ -187,13 +165,11 @@ download_package "shared-mime-info" &
 download_package "speex" &
 download_package "speexdsp" &
 download_package "startup-notification" &
-download_package "svgalib" &
 download_package "udisks2" &
 wait_for_downloads
 download_package "upower" &
 download_package "v4l-utils" &
 download_package "volume_key" & # required by udisks 2.10.0+
-download_package "vorbis-tools" &
 download_package "wavpack" &
 download_package "wayland" &
 download_package "wayland-utils" &
