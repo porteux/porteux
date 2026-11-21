@@ -31,16 +31,32 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-CFLAGS="$GCC_CFLAGS" \
-./autogen.sh \
-	--prefix=/usr \
-	--libdir=/usr/lib${SYSTEM_BITS} \
-	--sysconfdir=/etc \
-	--disable-static \
-	--disable-debug \
-	--build=$ARCH-porteux-linux
+if [ -f meson.build ]; then
+	sed -i "s|subdir('docs')|#subdir('docs')|g" meson.build
+	sed -i "s|subdir('tests')|#subdir('tests')|g" meson.build
 
-make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
+	mkdir meson-build && cd meson-build
+	CFLAGS="$GCC_CFLAGS" \
+	meson setup \
+		--prefix=/usr \
+		--libdir=/usr/lib${SYSTEM_BITS} \
+		--sysconfdir=/etc \
+		--buildtype=release \
+		--strip
+
+	DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
+else
+	CFLAGS="$GCC_CFLAGS" \
+	./autogen.sh \
+		--prefix=/usr \
+		--libdir=/usr/lib${SYSTEM_BITS} \
+		--sysconfdir=/etc \
+		--disable-static \
+		--disable-debug \
+		--build=$ARCH-porteux-linux
+
+	make -j${NUMBER_THREADS} install-strip DESTDIR=$PKG
+fi
 
 find $PKG -type f -name "*.la" -delete
 
