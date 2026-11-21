@@ -1,0 +1,120 @@
+--- a/grub-core/fs/fat.c
++++ b/grub-core/fs/fat.c
+@@ -449,6 +449,50 @@
+   return 0;
+ }
+ 
++static grub_err_t
++grub_fat_next_cluster (grub_disk_t disk, struct grub_fat_data *data,
++		       grub_uint32_t cluster, grub_uint32_t *next)
++{
++  grub_uint32_t next_cluster;
++  grub_uint32_t fat_offset;
++
++  switch (data->fat_size)
++    {
++    case 32:
++      fat_offset = cluster << 2;
++      break;
++    case 16:
++      fat_offset = cluster << 1;
++      break;
++    default:
++      /* case 12: */
++      fat_offset = cluster + (cluster >> 1);
++      break;
++    }
++
++  /* Read the FAT.  */
++  if (grub_disk_read (disk, data->fat_sector, fat_offset,
++		      (data->fat_size + 7) >> 3, (char *) &next_cluster))
++    return grub_errno;
++
++  next_cluster = grub_le_to_cpu32 (next_cluster);
++  switch (data->fat_size)
++    {
++    case 16:
++      next_cluster &= 0xFFFF;
++      break;
++    case 12:
++      if (cluster & 1)
++	next_cluster >>= 4;
++
++      next_cluster &= 0x0FFF;
++      break;
++    }
++
++  *next = next_cluster;
++  return GRUB_ERR_NONE;
++}
++
+ static grub_ssize_t
+ grub_fat_read_data (grub_disk_t disk, grub_fshelp_node_t node,
+ 		    grub_disk_read_hook_t read_hook, void *read_hook_data,
+@@ -514,42 +558,11 @@
+ 	{
+ 	  /* Find next cluster.  */
+ 	  grub_uint32_t next_cluster;
+-	  grub_uint32_t fat_offset;
+-
+-	  switch (node->data->fat_size)
+-	    {
+-	    case 32:
+-	      fat_offset = node->cur_cluster << 2;
+-	      break;
+-	    case 16:
+-	      fat_offset = node->cur_cluster << 1;
+-	      break;
+-	    default:
+-	      /* case 12: */
+-	      fat_offset = node->cur_cluster + (node->cur_cluster >> 1);
+-	      break;
+-	    }
+ 
+-	  /* Read the FAT.  */
+-	  if (grub_disk_read (disk, node->data->fat_sector, fat_offset,
+-			      (node->data->fat_size + 7) >> 3,
+-			      (char *) &next_cluster))
++	  if (grub_fat_next_cluster (disk, node->data, node->cur_cluster,
++				     &next_cluster))
+ 	    return -1;
+ 
+-	  next_cluster = grub_le_to_cpu32 (next_cluster);
+-	  switch (node->data->fat_size)
+-	    {
+-	    case 16:
+-	      next_cluster &= 0xFFFF;
+-	      break;
+-	    case 12:
+-	      if (node->cur_cluster & 1)
+-		next_cluster >>= 4;
+-
+-	      next_cluster &= 0x0FFF;
+-	      break;
+-	    }
+-
+ 	  grub_dprintf ("fat", "fat_size=%d, next_cluster=%u\n",
+ 			node->data->fat_size, next_cluster);
+ 
+@@ -573,6 +586,21 @@
+ 		+ ((node->cur_cluster - 2)
+ 		   << node->data->cluster_bits));
+       size = (1 << logical_cluster_bits) - offset;
++      while (size < len)
++	{
++	  grub_uint32_t next_cluster;
++
++	  if (grub_fat_next_cluster (disk, node->data, node->cur_cluster,
++				     &next_cluster))
++	    return -1;
++	  if (next_cluster != node->cur_cluster + 1
++	      || next_cluster >= node->data->num_clusters)
++	    break;
++	  node->cur_cluster = next_cluster;
++	  node->cur_cluster_num++;
++	  logical_cluster++;
++	  size += 1 << logical_cluster_bits;
++	}
+       if (size > len)
+ 	size = len;
+ 

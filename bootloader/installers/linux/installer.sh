@@ -73,6 +73,7 @@ done
 
 LOGFILEPATH="/tmp/porteux-installer-debug.txt"
 read -r DEVPARTITIONPATH PARTITIONFILESYSTEM PARTITIONMOUNTPATH < <(df --output=source,fstype,target "$INSTALLERPATH" | tail -n1)
+BOOTFILESPATH="$PARTITIONMOUNTPATH"/boot/porteux
 PARTITIONNAME=${DEVPARTITIONPATH#/dev/}
 MEDIANAME=$(lsblk -ndo pkname $DEVPARTITIONPATH)
 DEVMEDIANAME=/dev/"$MEDIANAME"
@@ -90,12 +91,12 @@ if ! echo "$PARTITIONFILESYSTEM" | grep -qE 'ext|vfat|msdos|exfat|ntfs|fuseblk|b
 	echo "The partition holding /boot must be ext2/3/4, FAT, exFAT, NTFS, btrfs or XFS."
 	Debug 1
 	exit 1
-elif [ ! -f "$PARTITIONMOUNTPATH"/boot/syslinux/porteux.cfg ]; then
-	echo "PorteuX cfg file couldn't be found in $PARTITIONMOUNTPATH/boot/syslinux"
+elif [ ! -f "$BOOTFILESPATH"/porteux.cfg ]; then
+	echo "PorteuX cfg file couldn't be found in $BOOTFILESPATH"
 	Debug 1
 	exit 1
-elif [ ! -f "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst ]; then
-	echo "Couldn't find $PARTITIONMOUNTPATH/boot/syslinux/initrd.zst"
+elif [ ! -f "$BOOTFILESPATH"/initrd.zst ]; then
+	echo "Couldn't find $BOOTFILESPATH/initrd.zst"
 	Debug 1
 	exit 1
 elif [ ! -f "$PARTITIONMOUNTPATH"/boot/grub/boot.img ] || [ ! -f "$PARTITIONMOUNTPATH"/boot/grub/core.img ]; then
@@ -188,17 +189,17 @@ if [ -d "$PORTEUXMOUNTPATH" ]; then
 	mkdir "$WORKFOLDER"/initrd >/dev/null 2>&1
 	cd "$WORKFOLDER"/initrd
 	FailMessage 4
-	zstd -dc "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst | cpio -i --quiet >/dev/null 2>&1
+	zstd -dc "$BOOTFILESPATH"/initrd.zst | cpio -i --quiet >/dev/null 2>&1
 	[ -e linuxrc ]
 	FailMessage 4
 	echo "$PORTEUXUUID" > uuid
 	find . | cpio -H newc -o --quiet 2>/dev/null | zstd -19 --check > "$WORKFOLDER"/initrd.zst.new
 	[ -s "$WORKFOLDER"/initrd.zst.new ] && zstd -t "$WORKFOLDER"/initrd.zst.new >/dev/null 2>&1
 	FailMessage 4
-	cp -f "$WORKFOLDER"/initrd.zst.new "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst.new
+	cp -f "$WORKFOLDER"/initrd.zst.new "$BOOTFILESPATH"/initrd.zst.new
 	FailMessage 4
 	sync
-	mv -f "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst.new "$PARTITIONMOUNTPATH"/boot/syslinux/initrd.zst
+	mv -f "$BOOTFILESPATH"/initrd.zst.new "$BOOTFILESPATH"/initrd.zst
 	FailMessage 4
 	sync
 

@@ -1,14 +1,15 @@
 --- a/grub-core/commands/syslinuxcfg.c
 +++ b/grub-core/commands/syslinuxcfg.c
-@@ -32,6 +32,7 @@
+@@ -32,6 +32,8 @@
  #include <grub/auth.h>
  #include <grub/disk.h>
  #include <grub/partition.h>
 +#include <grub/command.h>
++#include <grub/video.h>
  
  GRUB_MOD_LICENSE ("GPLv3+");
  
-@@ -175,11 +176,68 @@
+@@ -175,11 +177,78 @@
  }
  
  
@@ -25,9 +26,19 @@
 +  int kernel_argc = 0, initrd_argc = 0, capacity = argc, i;
 +  char *part, *comma;
 +  grub_err_t err;
++  struct grub_video_mode_info mode_info;
 +
 +  if (argc == 0)
 +    return grub_error (GRUB_ERR_BAD_ARGUMENT, N_("filename expected"));
++
++  if (grub_video_get_info (&mode_info) == GRUB_ERR_NONE)
++    {
++      grub_video_set_active_render_target (GRUB_VIDEO_RENDER_TARGET_DISPLAY);
++      grub_video_set_viewport (0, 0, mode_info.width, mode_info.height);
++      grub_video_fill_rect (grub_video_map_rgb (0, 0, 0), 0, 0,
++			    mode_info.width, mode_info.height);
++      grub_video_swap_buffers ();
++    }
 +
 +  for (i = 1; i < argc; i++)
 +    for (part = args[i]; *part; part++)
@@ -77,7 +88,7 @@
    cmd_source
      = grub_register_extcmd ("syslinux_source",
  			    grub_cmd_syslinux_source, 0,
-@@ -210,6 +268,7 @@
+@@ -210,6 +279,7 @@
  
  GRUB_MOD_FINI(syslinuxcfg)
  {

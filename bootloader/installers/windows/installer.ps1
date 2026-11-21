@@ -12,8 +12,8 @@ try {
 	$bootImagePath = $root + 'boot\grub\boot.img'
 	$coreImagePath = $root + 'boot\grub\core.img'
 
-	if (-not (Test-Path ($root + 'boot\syslinux\porteux.cfg'))) {
-		Fail "PorteuX cfg file couldn't be found in ${root}boot\syslinux"
+	if (-not (Test-Path ($root + 'boot\porteux\porteux.cfg'))) {
+		Fail "PorteuX cfg file couldn't be found in ${root}boot\porteux"
 	}
 	if (-not (Test-Path $bootImagePath) -or -not (Test-Path $coreImagePath)) {
 		Fail "Couldn't find the bootloader files in ${root}boot\grub"

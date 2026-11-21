@@ -14,13 +14,13 @@ the desired cheatcode from the list in the next section of this document.
 If you want to save a cheatcode so it loads automatically each time
 you boot PorteuX, you can edit one of the porteux.cfg files. For
 cheatcodes related to the boot profile (e.g. Graphics Mode, Always Fresh,
-etc), like 'changes=', edit '/boot/syslinux/porteux.cfg' and add
+etc), like 'changes=', edit '/boot/porteux/porteux.cfg' and add
 them at the end of the 'APPEND' line in the desired boot profile section.
 For cheatcodes that will apply to all boot profiles,
 '/porteux/porteux.cfg' can be more convenient.
 
 Here's an example for adding the 'noauto' and 'volume=30' cheatcodes to
-'Graphics Mode' boot profile in '/boot/syslinux/porteux.cfg' (that has
+'Graphics Mode' boot profile in '/boot/porteux/porteux.cfg' (that has
 another cheatcode by default):
 
 APPEND changes=EXIT:/porteux noauto volume=30
@@ -34,7 +34,7 @@ NOTE: for all other cheatcodes that appear in multiple places, PorteuX
 uses the following priority list (from higher to lower):
 1. /porteux/porteux.cfg
 2. manual boot command line edit
-3. /boot/syslinux/porteux.cfg
+3. /boot/porteux/porteux.cfg
 
 NOTE: cheatcodes are sometimes listed in the next section in single
 quotes (e.g. 'example=value') for clarity in the documentation.

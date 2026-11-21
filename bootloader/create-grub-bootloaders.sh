@@ -5,7 +5,7 @@ KBD_VERSION="2.10.0"
 
 SCRIPT_PATH="$(dirname "$(readlink -f "$0")")"
 ISO_PATH="$(readlink -f "$SCRIPT_PATH/../iso")"
-SYSLINUX_PATH="$ISO_PATH/boot/syslinux"
+BOOT_FILES_PATH="$ISO_PATH/boot/porteux"
 BUILD_PATH="$(mktemp -d)"
 trap 'rm -rf "$BUILD_PATH"' EXIT
 MEMDISK_PATH=memdisk/boot/grub
@@ -71,7 +71,7 @@ open(sys.argv[2], 'w').write('\n'.join(lines) + '\n')
 EOF
 "$BUILD_PATH/i386-efi/bin/grub-mkfont" -o "$MEMDISK_PATH"/vga.pf2 vga.bdf > /dev/null 2>&1 || { echo "Failed to create grub font."; exit 1; }
 
-logo_component=$(python3 -I - "$MEMDISK_PATH" "$SYSLINUX_PATH/bootlogo.png" <<'EOF'
+logo_component=$(python3 -I - "$MEMDISK_PATH" "$BOOT_FILES_PATH/bootlogo.png" <<'EOF'
 import struct, sys, zlib
 def chunk(kind, data):
 	return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data) & 0xffffffff)
@@ -190,7 +190,7 @@ EOF
 	echo 'title-text: ""'
 	echo 'desktop-color: "#000000"'
 	line_number=0
-	tr -d '\r' < "$SYSLINUX_PATH/help.txt" | while IFS= read -r line; do
+	tr -d '\r' < "$BOOT_FILES_PATH/help.txt" | while IFS= read -r line; do
 		line=${line//\"/\'}
 		echo "+ label { left = 8 top = $((8 + 16 * line_number)) width = \"100%-16\" height = 16 font = \"vga Regular 16\" color = \"#c6c6c6\" text = \"$line\" }"
 		line_number=$((line_number + 1))
@@ -198,9 +198,9 @@ EOF
 } > "$MEMDISK_PATH"/help.txt
 
 cat > early.cfg <<'EOF'
-if [ ! -f /boot/syslinux/initrd.zst ]; then
+if [ ! -f /boot/porteux/initrd.zst ]; then
 	regexp --set=1:bootdisk '^\(([^,)]+)' "$cmdpath"
-	search.file /boot/syslinux/initrd.zst root "$bootdisk,"
+	search.file /boot/porteux/initrd.zst root "$bootdisk,"
 fi
 set prefix=(memdisk)/boot/grub
 EOF
@@ -210,7 +210,7 @@ loadfont $prefix/vga.pf2
 set gfxmode=1024x768,auto
 terminal_output gfxterm
 set theme=$prefix/menu.txt
-syslinux_source -i /boot/syslinux/porteux.cfg
+syslinux_source -i /boot/porteux/porteux.cfg
 submenu " " --hidden --hotkey=f1 {
 	set theme=$prefix/help.txt
 	menuentry " " --hotkey=f1 {
