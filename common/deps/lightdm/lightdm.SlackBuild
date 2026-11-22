@@ -20,18 +20,17 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 
-# avoid useless dependency
-sed -i 's|which yelp-build|which ls|g' autogen.sh
-
 # faster build
 sed -i 's|doc help||g' Makefile.am
 
 export LIGHTDM_USER=gdm
 export LIGHTDM_GROUP=gdm
 
+autoreconf -fi
+
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
 CXXFLAGS="$GCC_CXXFLAGS" \
-./autogen.sh \
+./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEM_BITS} \
 	--localstatedir=/var \
