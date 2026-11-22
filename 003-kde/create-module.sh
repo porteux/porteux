@@ -95,7 +95,6 @@ strip_package qt6 \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqgif.so \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqicns.so \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqico.so \
-	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqjp2.so \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqjpeg.so \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqsvg.so \
 	usr/lib${SYSTEM_BITS}/qt6/plugins/imageformats/libqtga.so \
