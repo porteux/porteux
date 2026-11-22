@@ -38,7 +38,7 @@
  
    (*last)->title = menu_title;
    (*last)->id = menu_id;
-@@ -279,14 +290,19 @@
+@@ -283,15 +294,20 @@
      users = "";
  
    if (! ctxt->script)
@@ -49,7 +49,8 @@
 -				       users,
 -				       ctxt->state[2].arg, 0,
 -				       ctxt->state[3].arg,
--				       ctxt->extcmd->cmd->name[0] == 's');
+-				       ctxt->extcmd->cmd->name[0] == 's',
+-				       NULL);
 +    {
 +      r = grub_normal_add_menu_entry (argc, (const char **) args,
 +				      (ctxt->state[0].set ? ctxt->state[0].args
@@ -58,7 +59,8 @@
 +				      users,
 +				      ctxt->state[2].arg, 0,
 +				      ctxt->state[3].arg,
-+				      ctxt->extcmd->cmd->name[0] == 's');
++				      ctxt->extcmd->cmd->name[0] == 's',
++				      NULL);
 +      if (r == GRUB_ERR_NONE && ctxt->state[6].set)
 +	grub_env_get_menu ()->size--;
 +      return r;
@@ -66,10 +68,10 @@
  
    src = args[argc - 1];
    args[argc - 1] = NULL;
-@@ -304,6 +320,8 @@
+@@ -309,6 +325,8 @@
  				  users,
  				  ctxt->state[2].arg, prefix, src + 1,
- 				  ctxt->extcmd->cmd->name[0] == 's');
+ 				  ctxt->extcmd->cmd->name[0] == 's', NULL);
 +  if (r == GRUB_ERR_NONE && ctxt->state[6].set)
 +    grub_env_get_menu ()->size--;
  
@@ -77,7 +79,7 @@
    args[argc - 1] = src;
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
-@@ -93,7 +93,7 @@
+@@ -95,7 +95,7 @@
    grub_menu_entry_t entry;
    int i;
  
@@ -86,7 +88,7 @@
         i++, entry = entry->next)
      if (entry->hotkey == hotkey)
        return i;
-@@ -799,6 +799,12 @@
+@@ -803,6 +803,12 @@
  		entry = get_entry_index_by_hotkey (menu, c);
  		if (entry >= 0)
  		  {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GRUB_VERSION="2.12"
+GRUB_VERSION="2.14"
 KBD_VERSION="2.10.0"
 
 SCRIPT_PATH="$(dirname "$(readlink -f "$0")")"
@@ -24,13 +24,12 @@ tar xf kbd-${KBD_VERSION}.tar.xz kbd-${KBD_VERSION}/data/consolefonts/cp865-8x16
 for grub_patch in "$SCRIPT_PATH"/patches/grub-*.patch; do
 	patch -d grub-${GRUB_VERSION} -p1 < "$grub_patch" > /dev/null || { echo "Failed to apply $grub_patch."; exit 1; }
 done
-echo "depends bli part_gpt" > grub-${GRUB_VERSION}/grub-core/extra_deps.lst
 
 for platform in i386-efi x86_64-efi i386-pc; do
 	echo "Building grub for $platform..."
 	mkdir -p build-$platform
 	cd build-$platform || exit 1
-	../grub-${GRUB_VERSION}/configure --prefix="$BUILD_PATH/$platform" --target=${platform%%-*} --with-platform=${platform#*-} --disable-werror > /dev/null 2>&1 || { echo "Failed to configure grub for $platform."; exit 1; }
+	../grub-${GRUB_VERSION}/configure --prefix="$BUILD_PATH/$platform" --target=${platform%%-*} --with-platform=${platform#*-} --disable-werror ax_cv_check_ldflags___Wl___image_base_0x400000=no > /dev/null 2>&1 || { echo "Failed to configure grub for $platform."; exit 1; }
 	make -j$(nproc) > /dev/null 2>&1 || { echo "Failed to build grub for $platform."; exit 1; }
 	make install > /dev/null 2>&1 || { echo "Failed to install grub for $platform."; exit 1; }
 	cd .. || exit 1

@@ -21,7 +21,7 @@
    if (classes && classes[0])
      {
        int i;
-@@ -226,49 +236,11 @@
+@@ -227,49 +237,11 @@
    return grub_errno;
  }
  
@@ -71,7 +71,7 @@
    unsigned len;
    grub_err_t r;
    const char *users;
-@@ -311,21 +283,16 @@
+@@ -316,21 +288,16 @@
    ch = src[len - 1];
    src[len - 1] = '\0';
  
@@ -84,7 +84,7 @@
  				  users,
 -				  ctxt->state[2].arg, prefix, src + 1,
 +				  ctxt->state[2].arg, 0, src + 1,
- 				  ctxt->extcmd->cmd->name[0] == 's');
+ 				  ctxt->extcmd->cmd->name[0] == 's', NULL);
    if (r == GRUB_ERR_NONE && ctxt->state[6].set)
      grub_env_get_menu ()->size--;
  
@@ -96,10 +96,11 @@
  
 --- a/grub-core/gfxmenu/view.c
 +++ b/grub-core/gfxmenu/view.c
-@@ -430,31 +430,12 @@
+@@ -429,32 +429,13 @@
+ 		  term_view->terminal_rect.y - term_box->get_top_pad (term_box));
  }
  
- static void
+-static void
 -get_min_terminal (grub_font_t terminal_font,
 -                  unsigned int border_width,
 -                  unsigned int *min_terminal_width,
@@ -113,7 +114,7 @@
 -                         + 2 * border_width;
 -}
 -
--static void
+ static void
  terminal_sanity_check (grub_gfxmenu_view_t view)
  {
    if (!view->need_to_check_sanity)
@@ -186,7 +187,7 @@
  }
 --- a/grub-core/normal/menu.c
 +++ b/grub-core/normal/menu.c
-@@ -62,7 +62,6 @@
+@@ -63,7 +63,6 @@
  grub_wait_after_message (void)
  {
    grub_uint64_t endtime;
@@ -194,7 +195,7 @@
    grub_printf_ (N_("Press any key to continue..."));
    grub_refresh ();
  
-@@ -785,6 +784,7 @@
+@@ -784,6 +783,7 @@
  	      goto refresh;
  
  	    case 'e':
@@ -222,7 +223,7 @@
  
    err = grub_auth_check_authentication (NULL);
  
-@@ -1267,6 +1265,9 @@
+@@ -1271,6 +1269,9 @@
      return;
  
    screen->terms = NULL;
@@ -232,7 +233,7 @@
  
   refresh:
    grub_free (screen->terms);
-@@ -1306,6 +1307,10 @@
+@@ -1310,6 +1311,10 @@
    for (i = 0; i < screen->nterms; i++)
      grub_menu_init_page (0, 1, &screen->terms[i].geo,
  			 screen->terms[i].term);
@@ -243,7 +244,7 @@
    update_screen_all (screen, 0, 0, 1, 1, ALL_LINES);
    for (i = 0; i < screen->nterms; i++)
      grub_term_setcursor (screen->terms[i].term, 1);
-@@ -1365,10 +1370,8 @@
+@@ -1369,10 +1374,8 @@
  	    goto fail;
  	  break;
  
@@ -255,7 +256,7 @@
  	  break;
  
  	case GRUB_TERM_CTRL | 'd':
-@@ -1406,12 +1409,6 @@
+@@ -1410,12 +1413,6 @@
  	    goto fail;
  	  break;
  
@@ -268,7 +269,7 @@
  	case GRUB_TERM_ESC:
  	  destroy_screen (screen);
  	  return;
-@@ -1421,6 +1418,8 @@
+@@ -1425,6 +1422,8 @@
  	  grub_cmdline_run (1, 0);
  	  goto refresh;
  
@@ -279,7 +280,7 @@
  	  run (screen);
 --- a/grub-core/normal/menu_text.c
 +++ b/grub-core/normal/menu_text.c
-@@ -334,6 +334,20 @@
+@@ -337,6 +337,20 @@
    int empty_lines = 1;
    int version_msg = 1;
  
