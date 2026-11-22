@@ -17,9 +17,7 @@ cd $TMP
 VERSION=$(download_master_from_github stevenhoneyman l3afpad) || exit 1
 cd l3afpad-master || exit 1
 
-sed -i 's/1\.1\[1-9\])/1.[1-9][0-9])/' autogen.sh
-
-./autogen.sh
+autoreconf -fi
 
 CFLAGS="$GCC_CFLAGS" \
 ./configure \
