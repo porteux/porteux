@@ -19,18 +19,15 @@ download_package "gst-plugins-libav" & # required by nautilus media properties
 download_package "gtk4" &
 download_package "gtkmm4" & # required by gnome-system-monitor
 download_package "hunspell" &
-download_package "hyphen" &
+download_package "libdbusmenu" &
 download_package "libgtop" &
 download_package "libgusb" &
-download_package "libnma" &
 download_package "libpwquality" & # required by gnome-control-center
 wait_for_downloads
 download_package "libsigc++3" & # required by gnome-system-monitor
-download_package "libxklavier" &
 download_package "libyaml" &
 download_package "mozjs140" &
 download_package "pangomm2" & # required by gnome-system-monitor
-download_package "woff2" &
 wait_for_downloads
 
 ### only download if not present

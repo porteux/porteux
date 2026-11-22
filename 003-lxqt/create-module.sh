@@ -39,6 +39,7 @@ strip_package qt6 \
 	usr/lib${SYSTEM_BITS}/libQt6Multimedia.so* \
 	usr/lib${SYSTEM_BITS}/libQt6Network.so* \
 	usr/lib${SYSTEM_BITS}/libQt6OpenGL.so* \
+	usr/lib${SYSTEM_BITS}/libQt6OpenGLWidgets.so* \
 	usr/lib${SYSTEM_BITS}/libQt6Pdf.so* \
 	usr/lib${SYSTEM_BITS}/libQt6PrintSupport.so* \
 	usr/lib${SYSTEM_BITS}/libQt6Svg.so* \
@@ -98,6 +99,7 @@ rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 export SESSION_TEMPLATE=lxqt
 export ICON_THEME=kora
 export QT=6
+export KWINDOWSYSTEM_QML=OFF
 
 # required by lightdm
 installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1
@@ -166,9 +168,6 @@ for package in \
 bash $SCRIPT_PATH/extras/${package}/${package}.SlackBuild || exit 1
 find $MODULE_PATH -mindepth 1 -maxdepth 1 ! \( -name "packages" \) -exec rm -rf '{}' \; 2>/dev/null
 done
-
-# required by lxqt
-installpkg $MODULE_PATH/packages/libdbusmenu-qt*.txz || exit 1
 
 # lxqt packages
 for package in \
@@ -252,6 +251,8 @@ rm usr/share/nm-tray/nm-tray*.qm
 
 rm -fr usr/lib${SYSTEM_BITS}/gtk-2.0/
 rm -fr usr/lib${SYSTEM_BITS}/qt*/mkspecs
+rm -fr usr/lib${SYSTEM_BITS}/qt6/qml/org/kde/layershell
+rm -fr usr/lib${SYSTEM_BITS}/qt6/qml/org/kde/networkmanager
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
 rm -fr usr/share/lximage-qt

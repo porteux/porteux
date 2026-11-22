@@ -41,7 +41,6 @@ installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1
 installpkg $MODULE_PATH/packages/iso-codes*.txz || exit 1
 installpkg $MODULE_PATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULE_PATH/packages/libdbusmenu*.txz || exit 1
-installpkg $MODULE_PATH/packages/libindicator*.txz || exit 1
 
 # mate common deps
 for package in \
@@ -52,7 +51,6 @@ for package in \
 	mate-common \
 	gtk-layer-shell \
 	libpeas \
-	libgxps \
 	zenity \
 ; do
 bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1
@@ -154,19 +152,17 @@ cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm etc/xdg/autostart/blueman.desktop
+rm usr/lib${SYSTEM_BITS}/enchant-2/enchant_aspell.so
+rm usr/lib${SYSTEM_BITS}/enchant-2/enchant_hunspell.so
 rm usr/lib${SYSTEM_BITS}/girepository-1.0/SoupGNOME*
 rm usr/lib${SYSTEM_BITS}/libappindicator.*
 rm usr/lib${SYSTEM_BITS}/libdbusmenu-gtk.*
-rm usr/lib${SYSTEM_BITS}/libindicator.*
-rm usr/lib${SYSTEM_BITS}/libkeybinder.*
 rm usr/lib${SYSTEM_BITS}/libsoup-gnome*
-rm usr/libexec/indicator-loader
 
 rm -fr run/
 rm -fr usr/lib*/python*/site-packages/pip*
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome
-rm -fr usr/share/libindicator/
 rm -fr usr/share/Thunar
 
 [ "$SYSTEM_BITS" == 64 ] && find usr/lib/ -mindepth 1 -maxdepth 1 ! \( -name "python*" \) -exec rm -rf '{}' \; 2>/dev/null

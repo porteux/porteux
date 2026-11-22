@@ -36,7 +36,6 @@ installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1
 # required from now on
 installpkg $MODULE_PATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULE_PATH/packages/libdbusmenu*.txz || exit 1
-installpkg $MODULE_PATH/packages/libindicator*.txz || exit 1
 
 # lxde common deps
 for package in \
@@ -130,9 +129,6 @@ cd $MODULE_PATH/packages/ || exit 1
 rm etc/xdg/autostart/blueman.desktop
 rm usr/lib${SYSTEM_BITS}/libappindicator.*
 rm usr/lib${SYSTEM_BITS}/libdbusmenu-gtk.*
-rm usr/lib${SYSTEM_BITS}/libindicator.*
-rm usr/lib${SYSTEM_BITS}/libkeybinder.*
-rm usr/libexec/indicator-loader
 
 rm -fr usr/share/gdm
 rm -fr usr/share/gnome

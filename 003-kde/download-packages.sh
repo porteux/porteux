@@ -19,14 +19,16 @@ wait_for_downloads
 download_package "hunspell" &
 download_package "jasper" &
 download_package "kdsoap" &
-download_package "keybinder3" &
 download_package "libdmtx" &
 download_package "libqalculate" &
 download_package "LibRaw" &
 download_package "libsass" &
+download_package "libXxf86dga" &
+download_package "libzip" &
 download_package "python-lxml" &
 wait_for_downloads
 download_package "qrencode" &
+download_package "taglib" &
 download_package "sassc" &
 download_package "vulkan-sdk" &
 download_package "xdpyinfo" &

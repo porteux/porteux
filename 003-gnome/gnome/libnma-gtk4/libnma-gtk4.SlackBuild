@@ -30,11 +30,6 @@ meson setup \
 
 DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 
-# Remove all extra bits included in the base libnma package
-# This package is _ONLY_ for the gtk4 lib
-rm -r $PKG/usr/include
-rm -r $PKG/usr/share/glib-2.0
-rm -r $PKG/usr/share/locale
 rm -f $PKG/usr/share/vala/vapi/libnma.deps
 rm -f $PKG/usr/share/vala/vapi/libnma.vapi
 rm -f $PKG/usr/share/gir-1.0/NMA-1.0.gir

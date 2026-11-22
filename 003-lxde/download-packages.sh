@@ -8,7 +8,6 @@ download_package "blueman" &
 download_package "keybinder3" &
 download_package "libappindicator" &
 download_package "libdbusmenu" &
-download_package "libindicator" &
 download_package "libwnck3" &
 download_package "libxklavier" &
 wait_for_downloads

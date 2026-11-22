@@ -7,7 +7,6 @@ download_package "accountsservice" &
 download_package "aspell" &
 download_package "blueman" &
 download_package "colord" &
-download_package "dbus-python" &
 download_package "dconf" &
 download_package "enchant" &
 download_package "gcr" &
@@ -15,23 +14,18 @@ download_package "gspell" &
 wait_for_downloads
 download_package "gtk4" &
 download_package "hunspell" &
-download_package "jasper" &
 download_package "keybinder3" &
 download_package "libappindicator" &
 download_package "libdbusmenu" &
 download_package "libgee" &
-download_package "libgpod" &
 download_package "libgusb" &
 wait_for_downloads
-download_package "libindicator" &
 download_package "libsoup" & # required by settings -> Date&Time
-download_package "libspectre" &
 download_package "libxklavier" &
 download_package "mozjs140" &
 download_package "python-certifi" &
 download_package "python-charset-normalizer" &
 wait_for_downloads
-download_package "python-distro" &
 download_package "python-idna" &
 download_package "python-pillow" &
 download_package "python-psutil" &

@@ -187,7 +187,6 @@ rm usr/lib${SYSTEM_BITS}/enchant-2/enchant_hunspell.so
 rm usr/lib${SYSTEM_BITS}/girepository-1.0/SoupGNOME*
 rm usr/lib${SYSTEM_BITS}/libappindicator.*
 rm usr/lib${SYSTEM_BITS}/libdbusmenu-gtk.*
-rm usr/lib${SYSTEM_BITS}/libkeybinder.*
 rm usr/lib${SYSTEM_BITS}/libsoup-gnome*
 rm usr/share/applications/org.gnome.Vte*.desktop
 rm usr/share/icons/hicolor/scalable/status/computer.svg

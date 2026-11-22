@@ -54,7 +54,7 @@ rm $MODULE_PATH/packages/dart-sass*.txz
 installpkg $MODULE_PATH/packages/libhandy*.txz || exit 1
 
 current_package=file-roller
-bash $SCRIPT_PATH/../common/extras/${current_package}/${current_package}.SlackBuild || exit 1
+bash $SCRIPT_PATH/extras/${current_package}/${current_package}.SlackBuild || exit 1
 rm -fr "${MODULE_PATH:?}/${current_package}" && cd "$MODULE_PATH" || exit 1
 
 # required from now on
@@ -128,6 +128,13 @@ strip_package iso-codes \
 	usr/share/iso-codes/json/iso_639-2.json \
 	usr/share/iso-codes/json/iso_639-3.json
 
+strip_package leptonica \
+	usr/lib${SYSTEM_BITS}/libleptonica.so*
+
+strip_package tesseract \
+	usr/lib${SYSTEM_BITS}/libtesseract.so* \
+	usr/share/tessdata
+
 ### fake root
 
 install_packages
@@ -150,8 +157,6 @@ cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm usr/lib${SYSTEM_BITS}/libdbusmenu-gtk.*
-
-rm -fr usr/bin
 } >/dev/null 2>&1
 
 strip_clean

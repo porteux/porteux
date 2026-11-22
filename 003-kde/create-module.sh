@@ -258,7 +258,6 @@ for package in \
 	attica \
 	kitemmodels \
 	kitemviews \
-	kplotting \
 	threadweaver \
 	kcodecs \
 	kdbusaddons \

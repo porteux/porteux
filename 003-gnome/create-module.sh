@@ -76,6 +76,7 @@ for package in \
 	dart-sass \
 	exiv2 \
 	gsound \
+	libgxps \
 ; do
 bash $SCRIPT_PATH/../common/deps/${package}/${package}.SlackBuild || exit 1
 installpkg $MODULE_PATH/packages/${package}*.txz || exit 1
@@ -98,7 +99,6 @@ for package in \
 	geoclue2 \
 	colord-gtk \
 	libportal \
-	libcloudproviders \
 	glycin \
 	exempi \
 	blueprint-compiler \
@@ -137,7 +137,6 @@ for package in \
 	nautilus \
 	nautilus-python \
 	gdm \
-	gspell \
 	libspelling \
 	gnome-text-editor \
 	loupe \
@@ -234,14 +233,16 @@ rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstfluidsynthmidi.*
 rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstneonhttpsrc.*
 rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstopencv.*
 rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstopenexr.*
+rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstqml6.*
 rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstqmlgl.*
 rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstqroverlay.*
 rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgsttaglib.*
 rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstwebrtc.*
 rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstzxing.*
 rm usr/lib${SYSTEM_BITS}/libcanberra-gtk.*
+rm usr/lib${SYSTEM_BITS}/libdbusmenu-gtk.*
 rm usr/lib${SYSTEM_BITS}/libgstopencv-1.0.*
-rm usr/lib${SYSTEM_BITS}/libgstwebrtcnice.*
+rm usr/lib${SYSTEM_BITS}/libgstwebrtcnice-1.0.*
 rm usr/share/applications/org.freedesktop.IBus*.desktop
 rm usr/share/applications/org.gtk.Demo4.desktop
 rm usr/share/applications/org.gtk.gtk4.NodeEditor.desktop

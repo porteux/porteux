@@ -36,6 +36,7 @@ meson setup \
 	-Dhelp_files=false \
 	-Dintrospection=false \
 	-Dpreviewer=false \
+	-Dps=false \
 	-Dkeyring=false \
 	-Dgtk_unix_print=false \
 	-Denable_debug=false

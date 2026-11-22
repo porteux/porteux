@@ -7,7 +7,8 @@ download_package "accountsservice" &
 download_package "blueman" &
 download_package "ghostscript-fonts-std" &
 download_package "hunspell" &
-download_package "libdbusmenu-qt" &
+download_package "jasper" &
+download_package "libmng" &
 download_package "libxklavier" & # required by lightdm-gtk-greeter
 wait_for_downloads
 

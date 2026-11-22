@@ -15,10 +15,6 @@ wait_for_downloads
 ### packages that require specific stripping
 
 download_package "iso-codes" & # required by cosmic-settings
-wait_for_downloads
-
-### temporary packages only for building
-
 download_package "leptonica" & # required by cosmic-reader
 download_package "tesseract" & # required by cosmic-reader
 wait_for_downloads

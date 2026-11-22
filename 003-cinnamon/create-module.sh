@@ -45,7 +45,6 @@ installpkg $MODULE_PATH/packages/libxklavier*.txz || exit 1
 # required from now on
 installpkg $MODULE_PATH/packages/libappindicator*.txz || exit 1
 installpkg $MODULE_PATH/packages/libdbusmenu*.txz || exit 1
-installpkg $MODULE_PATH/packages/libindicator*.txz || exit 1
 
 # cinnamon common deps
 for package in \
@@ -87,14 +86,11 @@ installpkg $MODULE_PATH/packages/gspell*.txz || exit 1
 installpkg $MODULE_PATH/packages/gst-plugins-bad-free*.txz || exit 1
 installpkg $MODULE_PATH/packages/gtk4*.txz || exit 1
 installpkg $MODULE_PATH/packages/iso-codes*.txz || exit 1
+installpkg $MODULE_PATH/packages/libgsf*.txz || exit 1
 installpkg $MODULE_PATH/packages/libgee*.txz || exit 1
 installpkg $MODULE_PATH/packages/libsoup*.txz || exit 1
-installpkg $MODULE_PATH/packages/libspectre*.txz || exit 1
-installpkg $MODULE_PATH/packages/python-six*.txz || exit 1
 
 # required only for building
-installpkg $MODULE_PATH/packages/libgsf*.txz || exit 1
-rm $MODULE_PATH/packages/libgsf*.txz
 installpkg $MODULE_PATH/packages/python-build*.txz || exit 1
 rm $MODULE_PATH/packages/python-build*.txz
 installpkg $MODULE_PATH/packages/python-flit-core*.txz || exit 1
@@ -105,6 +101,8 @@ installpkg $MODULE_PATH/packages/python-pip*.txz || exit 1
 rm $MODULE_PATH/packages/python-pip*.txz
 installpkg $MODULE_PATH/packages/python-pyproject-hooks*.txz || exit 1
 rm $MODULE_PATH/packages/python-pyproject-hooks*.txz
+installpkg $MODULE_PATH/packages/python-six*.txz || exit 1
+rm $MODULE_PATH/packages/python-six*.txz
 installpkg $MODULE_PATH/packages/python-wheel*.txz || exit 1
 rm $MODULE_PATH/packages/python-wheel*.txz
 installpkg $MODULE_PATH/packages/xtrans*.txz || exit 1
@@ -114,7 +112,6 @@ rm $MODULE_PATH/packages/xtrans*.txz
 for package in \
 	python-tinycss2 \
 	xdotool \
-	python-pytz \
 	libtimezonemap \
 	python-setproctitle \
 	python-ptyprocess \
@@ -249,8 +246,6 @@ rm usr/bin/gtk4-widget-factory
 rm usr/bin/js[0-9]*
 rm usr/lib${SYSTEM_BITS}/libappindicator.*
 rm usr/lib${SYSTEM_BITS}/libdbusmenu-gtk.*
-rm usr/lib${SYSTEM_BITS}/libindicator.*
-rm usr/libexec/indicator-loader
 rm usr/share/applications/gcr-prompter.desktop
 rm usr/share/applications/gcr-viewer.desktop
 
