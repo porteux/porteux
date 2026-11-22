@@ -26,9 +26,6 @@ bash $SCRIPT_PATH/download-packages.sh || exit 1
 
 ### packages that require specific stripping
 
-strip_package cups \
-	usr/lib/libcups.so*
-
 strip_package eudev \
 	lib/libudev*.so*
 
@@ -111,7 +108,6 @@ rm $MODULE_PATH/packages/usr/lib/libslang*
 
 rm -fr $MODULE_PATH/packages/etc
 rm -fr $MODULE_PATH/packages/lib/e2fsprogs
-rm -fr $MODULE_PATH/packages/lib/elogind
 rm -fr $MODULE_PATH/packages/lib/security
 rm -fr $MODULE_PATH/packages/run
 rm -fr $MODULE_PATH/packages/usr/lib/dbus-1.0
