@@ -73,6 +73,11 @@ installpkg $MODULE_PATH/packages/cargo-c*.txz || exit 1
 rm $MODULE_PATH/packages/cargo-c*
 installpkg $MODULE_PATH/packages/libgit2*.txz || exit 1
 rm $MODULE_PATH/packages/libgit2*.txz
+installpkg $MODULE_PATH/packages/pcre-*.txz || exit 1
+rm $MODULE_PATH/packages/pcre-*.txz
+
+# required by wlroots
+installpkg $MODULE_PATH/packages/vulkan-sdk*.txz || exit 1
 
 install_rust_toolchain
 

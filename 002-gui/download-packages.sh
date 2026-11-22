@@ -71,6 +71,7 @@ download_package "libexif" &
 wait_for_downloads
 download_package "libfontenc" &
 download_package "libgit2" & # required by cargo-c
+download_package "pcre" & # required by libgit2
 download_package "libglvnd" &
 download_package "libgphoto2" &
 download_package "libical" &
