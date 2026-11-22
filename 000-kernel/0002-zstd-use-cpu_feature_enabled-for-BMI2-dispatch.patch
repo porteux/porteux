@@ -30,6 +30,11 @@ these median results:
   Compression      16,634 ns/op  13,394 ns/op  -19.5%
   Decompression     3,480 ns/op     963 ns/op  -72.3%
 
+Local changes:
+- ZSTD_USE_BMI2() checks BMI1 and BMI2, as ZSTD_cpuSupportsBmi2() did:
+  the BMI2 variants are built with target("lzcnt,bmi,bmi2") and can use
+  BMI1 instructions
+
 Signed-off-by: Usama Arif <usama.arif@linux.dev>
 Reviewed-by: Dhruva Gole <goledhruva@gmail.com>
 ---
@@ -60,7 +65,7 @@ index dc9bd15e174e9..47f6c0372c58c 100644
  #include "portability_macros.h"
  
  /*-*******************************************************
-@@ -96,6 +97,17 @@
+@@ -96,6 +97,18 @@
   */
  #define BMI2_TARGET_ATTRIBUTE TARGET_ATTRIBUTE("lzcnt,bmi,bmi2")
  
@@ -68,7 +73,8 @@ index dc9bd15e174e9..47f6c0372c58c 100644
 +#  define ZSTD_USE_BMI2(bmi2) 0
 +#  define ZSTD_SET_BMI2(state, value) do { } while (0)
 +#elif defined(ZSTD_USE_KERNEL_CPU_FEATURES)
-+#  define ZSTD_USE_BMI2(bmi2) cpu_feature_enabled(X86_FEATURE_BMI2)
++#  define ZSTD_USE_BMI2(bmi2) (cpu_feature_enabled(X86_FEATURE_BMI1) && \
++			      cpu_feature_enabled(X86_FEATURE_BMI2))
 +#  define ZSTD_SET_BMI2(state, value) do { } while (0)
 +#else
 +#  define ZSTD_USE_BMI2(bmi2) (bmi2)

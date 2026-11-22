@@ -7,33 +7,80 @@ does not count them. On an APU this pool can reach several GiB, so
 tools that compute 'used = MemTotal - MemAvailable' report memory
 as used when it is really free for the taking.
 
-Add the pool (NR_GPU_RECLAIM) to the estimate.
+Add the pool (NR_GPU_RECLAIM) to the estimate. It is added in full,
+without the discount used for slab: every pool page is free and the
+TTM shrinker can release all of them.
 
-Some drivers over-report NR_GPU_RECLAIM (it has been seen above
-MemTotal), so cap the result at MemTotal minus the reserves. Tools
-that compute 'used = MemTotal - MemAvailable' then never go negative.
+TTM pools that use dma_alloc don't count their pages as NR_GPU_ACTIVE
+and don't remove them from NR_GPU_RECLAIM when freeing them, yet moved
+them from NR_GPU_ACTIVE to NR_GPU_RECLAIM on give and back on take, so
+NR_GPU_RECLAIM grew forever on those pools. Skip that move for them.
+
+Cap the result at MemTotal minus the reserves, so tools that compute
+'used = MemTotal - MemAvailable' never go negative.
 
 ---
 diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 2ccd5b2..a53387c 100644
+index fa7a468e8..64437e026 100644
 --- a/Documentation/filesystems/proc.rst
 +++ b/Documentation/filesystems/proc.rst
-@@ -1126,8 +1126,8 @@ MemFree
+@@ -1127,8 +1127,9 @@ MemFree
  MemAvailable
                An estimate of how much memory is available for starting new
                applications, without swapping. Calculated from MemFree,
 -              SReclaimable, the size of the file LRU lists, and the low
 -              watermarks in each zone.
 +              SReclaimable, GPUReclaim, the size of the file LRU lists,
-+              and the low watermarks in each zone.
++              and the low watermarks in each zone. It never exceeds
++              MemTotal minus the reserved pages.
                The estimate takes into account that the system needs some
                page cache to function well, and that not all reclaimable
                slab will be reclaimable, due to items being in use. The
+diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
+index 1bf37023f..d15c5aea5 100644
+--- a/drivers/gpu/drm/ttm/ttm_pool.c
++++ b/drivers/gpu/drm/ttm/ttm_pool.c
+@@ -322,6 +322,15 @@ static void ttm_pool_unmap(struct ttm_pool *pool, dma_addr_t dma_addr,
+ 		       DMA_BIDIRECTIONAL);
+ }
+ 
++static void ttm_pool_type_gpu_reclaim(struct ttm_pool_type *pt,
++				      struct page *p, long nr)
++{
++	if (pt->pool && ttm_pool_uses_dma_alloc(pt->pool))
++		return;
++	mod_lruvec_page_state(p, NR_GPU_ACTIVE, -nr);
++	mod_lruvec_page_state(p, NR_GPU_RECLAIM, nr);
++}
++
+ /* Give pages into a specific pool_type */
+ static void ttm_pool_type_give(struct ttm_pool_type *pt, struct page *p)
+ {
+@@ -341,8 +350,7 @@ static void ttm_pool_type_give(struct ttm_pool_type *pt, struct page *p)
+ 	rcu_read_unlock();
+ 
+ 	atomic_long_add(num_pages, &allocated_pages[nid]);
+-	mod_lruvec_page_state(p, NR_GPU_ACTIVE, -num_pages);
+-	mod_lruvec_page_state(p, NR_GPU_RECLAIM, num_pages);
++	ttm_pool_type_gpu_reclaim(pt, p, num_pages);
+ }
+ 
+ static enum lru_status take_one_from_lru(struct list_head *item,
+@@ -367,8 +375,7 @@ static struct page *ttm_pool_type_take(struct ttm_pool_type *pt, int nid)
+ 	ret = list_lru_walk_node(&pt->pages, nid, take_one_from_lru, (void *)&p, &nr_to_walk);
+ 	if (ret == 1 && p) {
+ 		atomic_long_sub(1 << pt->order, &allocated_pages[nid]);
+-		mod_lruvec_page_state(p, NR_GPU_ACTIVE, (1 << pt->order));
+-		mod_lruvec_page_state(p, NR_GPU_RECLAIM, -(1 << pt->order));
++		ttm_pool_type_gpu_reclaim(pt, p, -(1 << pt->order));
+ 	}
+ 	return p;
+ }
 diff --git a/mm/show_mem.c b/mm/show_mem.c
-index 43aca5a..2b9dbdc 100644
+index b938cbcd7..bacca6f5c 100644
 --- a/mm/show_mem.c
 +++ b/mm/show_mem.c
-@@ -66,6 +66,9 @@ long si_mem_available(void)
+@@ -67,6 +67,9 @@ long si_mem_available(void)
  	reclaimable -= min(reclaimable / 2, wmark_low);
  	available += reclaimable;
  

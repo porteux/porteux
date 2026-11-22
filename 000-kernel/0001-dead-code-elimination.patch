@@ -1,3 +1,15 @@
+Subject: [PATCH] x86: allow LD_DEAD_CODE_DATA_ELIMINATION
+
+Let x86 select HAVE_LD_DEAD_CODE_DATA_ELIMINATION, so the kernel is
+built with -ffunction-sections -fdata-sections and linked with
+--gc-sections. This removes about 1 MB of unused code and data.
+
+Tables that are only reached through their start/end symbols have no
+references, so the linker would drop them. Wrap them in KEEP().
+
+Not selected with UNWINDER_ORC: the ORC tables point at every function
+and would keep all of them.
+
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
 index bdad90f..d2d0570 100644
 --- a/arch/x86/Kconfig

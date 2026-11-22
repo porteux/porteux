@@ -113,10 +113,6 @@ if [ ${AUFS:-no} = "yes" ]; then
 		done
 	fi
 	rm -fr ../aufs_sources
-elif [ ${OVERLAYFS:-no} = "yes" ]; then
-	echo "Patching OverlayFS dynamic layers support..."
-	patch -N -p1 < ${SCRIPT_PATH}/overlayfs-dynamic-layers.patch > /dev/null 2>&1 || { echo "Failed to apply OverlayFS dynamic layers patch."; exit 1; }
-	sed -i "s|CONFIG_OVERLAY_FS_METACOPY=y|# CONFIG_OVERLAY_FS_METACOPY is not set|" .config
 else
 	echo "Downloading aufs-ng..."
 	git clone --depth 1 https://github.com/fulalas/aufs-ng fs/aufs-ng > /dev/null 2>&1 || { echo "Failed to download aufs-ng."; exit 1; }
@@ -145,7 +141,6 @@ cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 
 echo "Patching dead code elimination support..."
 patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
-sed -i 's|^\t\t\*(\.smp_locks)$|\t\tKEEP(*(.smp_locks))|' arch/x86/kernel/vmlinux.lds.S
 
 echo "Patching ntfs colon character support..."
 patch -N -p1 < ${SCRIPT_PATH}/0004-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }
