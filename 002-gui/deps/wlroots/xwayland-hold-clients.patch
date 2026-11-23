@@ -1,0 +1,260 @@
+Xwayland: let the compositor hold X11 clients until its startup step finishes
+
+wlr_xwayland_hold_clients() opens a private init display, starts Xwayland
+with -initfd on it and delays the X11 window manager (and so WM_S0, which
+opens the normal sockets) until wlr_xwayland_release_clients().
+wlr_xwayland_server_get_init_display_name() gives the init DISPLAY.
+
+--- a/include/wlr/xwayland/server.h
++++ b/include/wlr/xwayland/server.h
+@@ -53,6 +53,10 @@
+ 	struct {
+ 		struct wl_listener client_destroy;
+ 		struct wl_listener display_destroy;
++
++		int init_fd[2];
++		int init_display;
++		char init_display_name[16];
+ 	} WLR_PRIVATE;
+ };
+ 
+@@ -64,5 +68,8 @@
+ struct wlr_xwayland_server *wlr_xwayland_server_create(
+ 	struct wl_display *display, struct wlr_xwayland_server_options *options);
+ void wlr_xwayland_server_destroy(struct wlr_xwayland_server *server);
++bool wlr_xwayland_server_open_init_display(struct wlr_xwayland_server *server);
++const char *wlr_xwayland_server_get_init_display_name(
++	struct wlr_xwayland_server *server);
+ 
+ #endif
+--- a/include/wlr/xwayland/xwayland.h
++++ b/include/wlr/xwayland/xwayland.h
+@@ -77,6 +77,8 @@
+ 		struct wl_listener server_destroy;
+ 		struct wl_listener seat_destroy;
+ 		struct wl_listener shell_destroy;
++
++		bool hold_clients;
+ 	} WLR_PRIVATE;
+ };
+ 
+@@ -427,4 +429,8 @@
+ xcb_connection_t *wlr_xwayland_get_xwm_connection(
+ 	struct wlr_xwayland *wlr_xwayland);
+ 
++bool wlr_xwayland_hold_clients(struct wlr_xwayland *wlr_xwayland);
++
++void wlr_xwayland_release_clients(struct wlr_xwayland *wlr_xwayland);
++
+ #endif
+--- a/xwayland/meson.build
++++ b/xwayland/meson.build
+@@ -69,6 +69,7 @@
+ endforeach
+ 
+ xwayland_feature_names = [
++	'initfd',
+ 	'listenfd',
+ 	'no_touch_pointer_emulation',
+ 	'force_xrandr_emulation',
+--- a/xwayland/server.c
++++ b/xwayland/server.c
+@@ -36,6 +36,10 @@
+ 		wlr_log(WLR_ERROR, "Failed to unset CLOEXEC on FD");
+ 		_exit(EXIT_FAILURE);
+ 	}
++	if (server->init_fd[1] >= 0 && !set_cloexec(server->init_fd[1], false)) {
++		wlr_log(WLR_ERROR, "Failed to unset CLOEXEC on FD");
++		_exit(EXIT_FAILURE);
++	}
+ 
+ 	char *argv[64] = {0};
+ 	size_t i = 0;
+@@ -81,6 +85,15 @@
+ 		argv[i++] = wmfd;
+ 	}
+ 
++#if HAVE_XWAYLAND_INITFD
++	char initfd[16];
++	if (server->init_fd[1] >= 0) {
++		snprintf(initfd, sizeof(initfd), "%d", server->init_fd[1]);
++		argv[i++] = "-initfd";
++		argv[i++] = initfd;
++	}
++#endif
++
+ #if HAVE_XWAYLAND_NO_TOUCH_POINTER_EMULATION
+ 	if (server->options.no_touch_pointer_emulation) {
+ 		argv[i++] = "-noTouchPointerEmulation";
+@@ -179,6 +192,14 @@
+ 	wl_list_remove(&server->display_destroy.link);
+ 	wl_list_init(&server->display_destroy.link);
+ 
++	safe_close(server->init_fd[0]);
++	safe_close(server->init_fd[1]);
++	server->init_fd[0] = server->init_fd[1] = -1;
++	if (server->init_display >= 0) {
++		unlink_display_sockets(server->init_display);
++		server->init_display = -1;
++	}
++
+ 	if (server->display == -1) {
+ 		return;
+ 	}
+@@ -489,6 +510,8 @@
+ 	server->x_fd[0] = server->x_fd[1] = -1;
+ 	server->wl_fd[0] = server->wl_fd[1] = -1;
+ 	server->wm_fd[0] = server->wm_fd[1] = -1;
++	server->init_fd[0] = server->init_fd[1] = -1;
++	server->init_display = -1;
+ 
+ 	wl_signal_init(&server->events.start);
+ 	wl_signal_init(&server->events.ready);
+@@ -518,3 +541,21 @@
+ 	free(server);
+ 	return NULL;
+ }
++
++bool wlr_xwayland_server_open_init_display(struct wlr_xwayland_server *server) {
++#if HAVE_XWAYLAND_INITFD
++	if (server->init_display < 0 && server->display >= 0) {
++		server->init_display = open_init_display_socket(server->init_fd);
++		snprintf(server->init_display_name, sizeof(server->init_display_name),
++			":%d", server->init_display);
++	}
++	return server->init_display >= 0;
++#else
++	return false;
++#endif
++}
++
++const char *wlr_xwayland_server_get_init_display_name(
++		struct wlr_xwayland_server *server) {
++	return server->init_display >= 0 ? server->init_display_name : NULL;
++}
+--- a/xwayland/sockets.c
++++ b/xwayland/sockets.c
+@@ -23,7 +23,7 @@
+ static const char socket_fmt2[] = "/tmp/.X11-unix/X%d_";
+ #endif
+ 
+-static int open_socket(struct sockaddr_un *addr, size_t path_size) {
++static int open_socket(struct sockaddr_un *addr, size_t path_size, bool listening) {
+ 	int fd, rc;
+ 	socklen_t size = offsetof(struct sockaddr_un, sun_path) + path_size + 1;
+ 
+@@ -49,7 +49,7 @@
+ 			addr->sun_path + 1);
+ 		goto cleanup;
+ 	}
+-	if (listen(fd, 1) < 0) {
++	if (listening && listen(fd, 1) < 0) {
+ 		rc = errno;
+ 		wlr_log_errno(WLR_ERROR, "Failed to listen to socket %c%s",
+ 			addr->sun_path[0] ? addr->sun_path[0] : '@',
+@@ -94,7 +94,7 @@
+ 	return true;
+ }
+ 
+-static bool open_sockets(int socks[2], int display) {
++static bool open_sockets(int socks[2], int display, bool listen_abstract) {
+ 	struct sockaddr_un addr = { .sun_family = AF_UNIX };
+ 	size_t path_size;
+ 
+@@ -115,13 +115,13 @@
+ #else
+ 	path_size = snprintf(addr.sun_path, sizeof(addr.sun_path), socket_fmt2, display);
+ #endif
+-	socks[0] = open_socket(&addr, path_size);
++	socks[0] = open_socket(&addr, path_size, listen_abstract);
+ 	if (socks[0] < 0) {
+ 		return false;
+ 	}
+ 
+ 	path_size = snprintf(addr.sun_path, sizeof(addr.sun_path), socket_fmt, display);
+-	socks[1] = open_socket(&addr, path_size);
++	socks[1] = open_socket(&addr, path_size, true);
+ 	if (socks[1] < 0) {
+ 		close(socks[0]);
+ 		socks[0] = -1;
+@@ -146,14 +146,14 @@
+ 	unlink(sun_path);
+ }
+ 
+-int open_display_sockets(int socks[2]) {
++static int open_display(int socks[2], bool listen_abstract) {
+ 	int lock_fd, display;
+ 	char lock_name[64];
+ 
+ 	for (display = 0; display <= 32; display++) {
+ 		snprintf(lock_name, sizeof(lock_name), lock_fmt, display);
+ 		if ((lock_fd = open(lock_name, O_WRONLY | O_CREAT | O_EXCL | O_CLOEXEC, 0444)) >= 0) {
+-			if (!open_sockets(socks, display)) {
++			if (!open_sockets(socks, display, listen_abstract)) {
+ 				unlink(lock_name);
+ 				close(lock_fd);
+ 				continue;
+@@ -203,3 +203,11 @@
+ 
+ 	return display;
+ }
++
++int open_display_sockets(int socks[2]) {
++	return open_display(socks, true);
++}
++
++int open_init_display_socket(int socks[2]) {
++	return open_display(socks, false);
++}
+--- a/xwayland/sockets.h
++++ b/xwayland/sockets.h
+@@ -5,5 +5,6 @@
+ 
+ void unlink_display_sockets(int display);
+ int open_display_sockets(int socks[2]);
++int open_init_display_socket(int socks[2]);
+ 
+ #endif
+--- a/xwayland/xwayland.c
++++ b/xwayland/xwayland.c
+@@ -56,6 +56,9 @@
+ static void handle_server_ready(struct wl_listener *listener, void *data) {
+ 	struct wlr_xwayland *xwayland =
+ 		wl_container_of(listener, xwayland, server_ready);
++	if (xwayland->hold_clients) {
++		return;
++	}
+ 	xwayland_mark_ready(xwayland);
+ }
+ 
+@@ -127,7 +130,7 @@
+ 
+ 	wl_list_init(&xwayland->shell_destroy.link);
+ 
+-	if (server->ready) {
++	if (server->ready && !xwayland->hold_clients) {
+ 		xwayland_mark_ready(xwayland);
+ 	}
+ 
+@@ -211,3 +214,21 @@
+ 	xwayland->seat_destroy.notify = xwayland_handle_seat_destroy;
+ 	wl_signal_add(&seat->events.destroy, &xwayland->seat_destroy);
+ }
++
++bool wlr_xwayland_hold_clients(struct wlr_xwayland *xwayland) {
++	if (xwayland->server == NULL || xwayland->server->ready ||
++			!wlr_xwayland_server_open_init_display(xwayland->server)) {
++		return false;
++	}
++	xwayland->hold_clients = true;
++	return true;
++}
++
++void wlr_xwayland_release_clients(struct wlr_xwayland *xwayland) {
++	struct wlr_xwayland_server *server = xwayland->server;
++	if (server == NULL || !server->ready || xwayland->xwm != NULL ||
++			server->wm_fd[0] < 0) {
++		return;
++	}
++	xwayland_mark_ready(xwayland);
++}
