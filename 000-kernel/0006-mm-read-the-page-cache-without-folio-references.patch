@@ -713,22 +713,22 @@ diff --git a/mm/huge_memory.c b/mm/huge_memory.c
 index eb913acb0..a6be6ac23 100644
 --- a/mm/huge_memory.c
 +++ b/mm/huge_memory.c
-@@ -3810,6 +3810,7 @@ static void __split_folio_to_order(struct folio *folio, int old_order,
+@@ -3836,6 +3836,7 @@ static void __split_folio_to_order(struct folio *folio, int old_order,
  #endif
  				 (1L << PG_dirty) |
  				 (1L << PG_dropbehind) |
 +				 __PG_RCU_FREE |
- 				 LRU_GEN_MASK | LRU_REFS_MASK));
+ 				 LRU_GEN_MASK | LRU_REFS_MASK);
  
- 		new_folio->mapping = folio->mapping;
+ 		/*
 diff --git a/mm/internal.h b/mm/internal.h
 index e3f92883b..73f62251e 100644
 --- a/mm/internal.h
 +++ b/mm/internal.h
-@@ -1274,6 +1274,9 @@ struct migration_target_control {
+@@ -1276,6 +1276,9 @@
   */
- size_t splice_folio_into_pipe(struct pipe_inode_info *pipe,
- 			      struct folio *folio, loff_t fpos, size_t size);
+ ssize_t splice_folio_into_pipe(struct pipe_inode_info *pipe,
+ 			       struct folio *folio, loff_t fpos, size_t size);
 +void filemap_read_accessed(struct folio *folio, loff_t pos, loff_t last_pos);
 +size_t filemap_read_rcu(struct kiocb *iocb, struct iov_iter *iter,
 +			loff_t last_pos);
