@@ -219,14 +219,20 @@ cd $MODULE_PATH/packages/ || exit 1
 
 {
 rm etc/xdg/autostart/blueman.desktop
+rm usr/bin/gtk4-broadwayd
 rm usr/bin/gtk4-builder-tool
 rm usr/bin/gtk4-demo
 rm usr/bin/gtk4-demo-application
 rm usr/bin/gtk4-encode-symbolic-svg
 rm usr/bin/gtk4-icon-browser
 rm usr/bin/gtk4-icon-editor
+rm usr/bin/gtk4-image-tool
 rm usr/bin/gtk4-launch
+rm usr/bin/gtk4-node-editor
+rm usr/bin/gtk4-path-tool
 rm usr/bin/gtk4-print-editor
+rm usr/bin/gtk4-query-settings
+rm usr/bin/gtk4-rendernode-tool
 rm usr/bin/gtk4-widget-factory
 rm usr/bin/js[0-9]*
 rm usr/lib${SYSTEM_BITS}/gstreamer-1.0/libgstfluidsynthmidi.*
