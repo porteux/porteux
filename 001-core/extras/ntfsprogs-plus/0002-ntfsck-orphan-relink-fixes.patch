@@ -1,0 +1,370 @@
+ntfsck: orphan relink fixes
+
+- an orphan whose parent reference is stale is relinked after the others
+  (with any orphans stacked on it), so a stale record cannot take the name
+  of the current file
+- index lookup returns its own status for 'already linked' and 'name
+  clash' instead of relying on errno
+- lost+found: a name clash is renamed to FSCK_#<mft> as a Win32 name; a
+  clashing DOS name is dropped; a name already linked there is kept; a
+  second name that would also become FSCK_#<mft> is dropped
+- re-find the $FILE_NAME after wiping an orphan folder's index, so its
+  names are not counted twice and fn is not a stale pointer; if it cannot
+  be found, leave the record for the next round
+- undo the index add if a later step fails (also when re-adding a missing
+  index entry); if the undo fails, keep the name as linked
+
+diff --git a/src/ntfsck.c b/src/ntfsck.c
+--- a/src/ntfsck.c
++++ b/src/ntfsck.c
+@@ -286,6 +286,8 @@ struct orphan_mft {
+ 	u64 mft_no;
+ 	struct ntfs_list_head oc_list;	/* Orphan Candidate list */
+ 	struct ntfs_list_head ot_list;	/* Orphan Tree list */
++	BOOL deferred;
++	BOOL counted;
+ } orphan_mft_t;
+ 
+ struct ntfsck_cluster_dup_attr {
+@@ -2205,6 +2207,11 @@ static int ntfsck_check_runlist(ntfs_attr *na, u8 set_bit,
+ 	return STATUS_OK;
+ }
+ 
++enum {
++	FIND_INDEX_LINKED = 2,
++	FIND_INDEX_CONFLICT = 3,
++};
++
+ /* only called from repairing orphaned file in auto fsck mode */
+ static int ntfsck_find_and_check_index(ntfs_inode *parent_ni, ntfs_inode *ni,
+ 		FILE_NAME_ATTR *fn, BOOL check_flag)
+@@ -2247,7 +2254,7 @@ static int ntfsck_find_and_check_index(ntfs_inode *parent_ni, ntfs_inode *ni,
+ 			/* found index and orphaned inode is different */
+ 			orphan_parent_index_conflicts++;
+ 			ntfs_index_ctx_put(ictx);
+-			return STATUS_ERROR;
++			return FIND_INDEX_CONFLICT;
+ 		}
+ 
+ 		/* If check_flag set FALSE, when found $FN in parent index, return error */
+@@ -2256,9 +2263,7 @@ static int ntfsck_find_and_check_index(ntfs_inode *parent_ni, ntfs_inode *ni,
+ 					"inode(%"PRIu64")\n",
+ 					parent_ni->mft_no, ni->mft_no);
+ 			ntfs_index_ctx_put(ictx);
+-			/* Set after the put so the helper cannot clobber it. */
+-			errno = EEXIST;
+-			return STATUS_ERROR;
++			return FIND_INDEX_LINKED;
+ 		}
+ 
+ 		/* If check_flags set TRUE, check inode of founded index */
+@@ -2317,6 +2322,31 @@ static int ntfsck_find_and_check_index(ntfs_inode *parent_ni, ntfs_inode *ni,
+ 	return STATUS_OK;
+ }
+ 
++static int ntfsck_index_has_entry(ntfs_inode *parent_ni, ntfs_inode *ni,
++		FILE_NAME_ATTR *fn)
++{
++	ntfs_index_context *ictx;
++	int found;
++
++	ictx = ntfs_index_ctx_get(parent_ni, NTFS_INDEX_I30, 4);
++	if (!ictx)
++		return -1;
++	if (ntfs_index_lookup(fn, sizeof(FILE_NAME_ATTR), ictx))
++		found = errno == ENOENT ? 0 : -1;
++	else
++		found = MREF_LE(ictx->entry->indexed_file) == ni->mft_no;
++	ntfs_index_ctx_put(ictx);
++	return found;
++}
++
++static BOOL ntfsck_undo_index_add(ntfs_inode *parent_ni, ntfs_inode *ni,
++		FILE_NAME_ATTR *fn, int fn_len)
++{
++	int found = ntfsck_index_has_entry(parent_ni, ni, fn);
++
++	return !found || (found > 0 && !ntfs_index_remove(parent_ni, ni, fn, fn_len));
++}
++
+ static int ntfsck_add_inode_to_parent(ntfs_volume *vol, ntfs_inode *parent_ni,
+ 		ntfs_inode *ni, FILE_NAME_ATTR *fn, ntfs_attr_search_ctx *ctx)
+ {
+@@ -2328,22 +2358,21 @@ static int ntfsck_add_inode_to_parent(ntfs_volume *vol, ntfs_inode *parent_ni,
+ 	ret = ntfsck_find_and_check_index(parent_ni, ni, fn, FALSE);
+ 	if (ret == STATUS_OK) {
+ 		return STATUS_OK;
+-	} else if (ret == STATUS_ERROR) {
++	} else if (ret == FIND_INDEX_LINKED) {
+ 		/*
+-		 * An entry for this same inode already exists in the parent (EEXIST): the
++		 * An entry for this same inode already exists in the parent: the
+ 		 * inode is already correctly linked, so there is nothing to add. Treat it
+ 		 * as success -- reporting failure here sends the caller down the lost+found
+ 		 * path, which drops the $FILE_NAME when that add also fails.
+ 		 */
+-		if (errno == EEXIST) {
+-			fn->parent_directory = MK_LE_MREF(parent_ni->mft_no,
+-					le16_to_cpu(parent_ni->mrec->sequence_number));
+-			NInoFileNameSetDirty(ctx->ntfs_ino);
+-			ntfs_inode_mark_dirty(ctx->ntfs_ino);
+-			ntfs_inode_mark_dirty(ni);
+-			ntfsck_set_mft_record_bitmap(ni, TRUE);
+-			return STATUS_OK;
+-		}
++		fn->parent_directory = MK_LE_MREF(parent_ni->mft_no,
++				le16_to_cpu(parent_ni->mrec->sequence_number));
++		NInoFileNameSetDirty(ctx->ntfs_ino);
++		ntfs_inode_mark_dirty(ctx->ntfs_ino);
++		ntfs_inode_mark_dirty(ni);
++		ntfsck_set_mft_record_bitmap(ni, TRUE);
++		return STATUS_OK;
++	} else if (ret != STATUS_NOT_FOUND) {
+ 		err = -EIO;
+ 		return STATUS_ERROR;
+ 	}
+@@ -2369,6 +2398,11 @@ static int ntfsck_add_inode_to_parent(ntfs_volume *vol, ntfs_inode *parent_ni,
+ 
+ 		ntfsck_initialize_index_attr(ni);
+ 		ntfs_attr_reinit_search_ctx(ctx);
++		fn = ntfsck_find_file_name_attr(ni, tfn, ctx);
++		if (!fn) {
++			free(tfn);
++			return STATUS_ERROR;
++		}
+ 
+ 		tfn->allocated_size = 0;
+ 		tfn->data_size = 0;
+@@ -2395,15 +2429,9 @@ static int ntfsck_add_inode_to_parent(ntfs_volume *vol, ntfs_inode *parent_ni,
+ 	 * and set mft bitmap of ntfsck.
+ 	 */
+ 	if (parent_ni->attr_list) {
+-		if (ntfsck_check_attr_list(parent_ni)) {
+-			free(tfn);
+-			return STATUS_ERROR;
+-		}
+-
+-		if (ntfs_inode_attach_all_extents(parent_ni)) {
+-			free(tfn);
+-			return STATUS_ERROR;
+-		}
++		if (ntfsck_check_attr_list(parent_ni) ||
++				ntfs_inode_attach_all_extents(parent_ni))
++			goto undo_add;
+ 	}
+ 
+ 	if (!ntfs_fsck_mftbmp_get(vol, parent_ni->mft_no)) {
+@@ -2416,11 +2444,9 @@ static int ntfsck_add_inode_to_parent(ntfs_volume *vol, ntfs_inode *parent_ni,
+ 
+ 	/* check again after adding $FN to index */
+ 	ret = ntfsck_find_and_check_index(parent_ni, ni, tfn, TRUE);
+-	if (ret != STATUS_OK) {
+-		err = -EIO;
+-		free(tfn);
+-		return STATUS_ERROR;
+-	}
++	if (ret != STATUS_OK)
++		goto undo_add;
++linked:
+ 	/*
+ 	 * The index entry above is built from tfn, but the orphan's resident
+ 	 * FILE_NAME is fn. Keep both parent references identical.
+@@ -2435,6 +2461,12 @@ static int ntfsck_add_inode_to_parent(ntfs_volume *vol, ntfs_inode *parent_ni,
+ 	ntfsck_set_mft_record_bitmap(ni, TRUE);
+ 
+ 	return STATUS_OK;
++
++undo_add:
++	if (!ntfsck_undo_index_add(parent_ni, ni, tfn, tfn_len))
++		goto linked;
++	free(tfn);
++	return STATUS_ERROR;
+ }
+ 
+ static int ntfsck_add_filename_to_parent(ntfs_volume *vol,
+@@ -2467,22 +2499,21 @@ static int ntfsck_add_filename_to_parent(ntfs_volume *vol,
+ 		return STATUS_ERROR;
+ 	}
+ 
+-	if (parent_ni->attr_list) {
+-		if (ntfsck_check_attr_list(parent_ni) ||
+-				ntfs_inode_attach_all_extents(parent_ni)) {
+-			free(tfn);
+-			return STATUS_ERROR;
+-		}
++	if (parent_ni->attr_list &&
++			(ntfsck_check_attr_list(parent_ni) ||
++			 ntfs_inode_attach_all_extents(parent_ni)))
++		ret = STATUS_ERROR;
++	else
++		ret = ntfsck_find_and_check_index(parent_ni, ni, tfn, TRUE);
++
++	if (ret != STATUS_OK && ntfsck_undo_index_add(parent_ni, ni, tfn, tfn_len)) {
++		free(tfn);
++		return STATUS_ERROR;
+ 	}
++	free(tfn);
+ 
+ 	ntfsck_set_mft_record_bitmap(parent_ni, TRUE);
+ 	ntfs_inode_mark_dirty(parent_ni);
+-
+-	ret = ntfsck_find_and_check_index(parent_ni, ni, tfn, TRUE);
+-	free(tfn);
+-	if (ret != STATUS_OK)
+-		return STATUS_ERROR;
+-
+ 	return STATUS_OK;
+ }
+ 
+@@ -2512,15 +2543,17 @@ static int ntfsck_add_inode_to_lostfound(ntfs_inode *ni, FILE_NAME_ATTR *fn,
+ 
+ 	/* check before rename orphaned file */
+ 	ret = ntfsck_find_and_check_index(lost_found, ni, fn, FALSE);
+-	if (ret == STATUS_ERROR) {
+-		if (errno == EEXIST) {
+-			goto rename_fn;
+-		} else {
+-			ntfs_log_error("Failed to check inode(%"PRIu64")"
+-					"to add to lost+found\n", ni->mft_no);
++	if (ret == FIND_INDEX_CONFLICT) {
++		if (fn->file_name_type == FILE_NAME_DOS) {
++			ret = STATUS_ERROR;
+ 			goto err_out;
+ 		}
+-	} else if (ret != STATUS_NOT_FOUND) {
++		goto rename_fn;
++	} else if (ret == STATUS_ERROR) {
++		ntfs_log_error("Failed to check inode(%"PRIu64") to add to lost+found\n",
++				ni->mft_no);
++		goto err_out;
++	} else if (ret != STATUS_NOT_FOUND && ret != FIND_INDEX_LINKED) {
+ 		ntfs_log_error("error find_and_check_inode():%"PRIu64"\n", ni->mft_no);
+ 		goto err_out;
+ 	}
+@@ -2540,6 +2573,7 @@ err_out:
+ 	return ret;
+ 
+ rename_fn:
++	ret = STATUS_ERROR;
+ 	/* rename 'FSCK_#' + 'mft_no' */
+ 	snprintf(filename, MAX_FILENAME_LEN_LOST_FOUND, "%s%"PRIu64"",
+ 			FILENAME_PREFIX_LOST_FOUND, ni->mft_no);
+@@ -2559,9 +2593,13 @@ rename_fn:
+ 	memcpy(new_fn, fn, sizeof(FILE_NAME_ATTR));
+ 	memcpy(new_fn->file_name, ucs_name, ucs_namelen * sizeof(ntfschar));
+ 	new_fn->file_name_length = ucs_namelen;
++	new_fn->file_name_type = FILE_NAME_WIN32;
+ 	new_fn->parent_directory = MK_LE_MREF(lost_found->mft_no,
+ 			le16_to_cpu(lost_found->mrec->sequence_number));
+ 
++	if (ntfsck_index_has_entry(lost_found, ni, new_fn) > 0)
++		goto err_out;
++
+ 	ntfs_attr_reinit_search_ctx(ctx);
+ 	fn = ntfsck_find_file_name_attr(ni, fn, ctx);
+ 
+@@ -2923,6 +2961,8 @@ static int ntfsck_add_index_entry_orphaned_file(ntfs_volume *vol, struct orphan_
+ 	int ret = STATUS_OK;
+ 	int nlink = 0;
+ 	struct orphan_mft *entry;
++	BOOL deferred = FALSE;
++	BOOL abandon = FALSE;
+ 
+ 	NTFS_LIST_HEAD(ot_list_head);
+ 
+@@ -2946,6 +2986,7 @@ stack_of:
+ 			goto next_inode;
+ 		}
+ 		nlink = 0;
++		abandon = FALSE;
+ 
+ 		ctx = ntfs_attr_get_search_ctx(ni, NULL);
+ 		if (!ctx) {
+@@ -2998,6 +3039,13 @@ stack_of:
+ 					goto add_to_lostfound;
+ 				}
+ 
++				if (ntfsck_cmp_parent_mft_sequence(parent_ni, fn) &&
++						!entry->deferred && !NInoDirty(ni)) {
++					entry->deferred = TRUE;
++					deferred = TRUE;
++					break;
++				}
++
+ 				if (ntfsck_cmp_parent_mft_sequence(parent_ni, fn)) {
+ 					/* Refresh stale parent references before relinking. */
+ 					fn->parent_directory =
+@@ -3022,6 +3070,12 @@ stack_of:
+ 				NInoAttrListClearDirty(parent_ni);
+ 				ntfsck_close_inode(parent_ni);
+ 				parent_ni = NULL;
++				if (ctx->attr->type != AT_FILE_NAME) {
++					abandon = TRUE;
++					break;
++				}
++				fn = (FILE_NAME_ATTR *)((u8 *)ctx->attr +
++						le16_to_cpu(ctx->attr->value_offset));
+ 			}
+ 			/* failed to add inode to parent */
+ add_to_lostfound:
+@@ -3044,6 +3098,25 @@ add_to_lostfound:
+ 			}
+ 		} /* while (!ntfs_attr_lookup(AT_FILE_NAME, ... */
+ 
++		if (abandon)
++			goto next_inode;
++
++		if (deferred) {
++			ntfs_attr_put_search_ctx(ctx);
++			ctx = NULL;
++			ntfsck_close_inode(parent_ni);
++			parent_ni = NULL;
++			ntfsck_close_inode(ni);
++			ni = NULL;
++			while (!ntfs_list_empty(&ot_list_head)) {
++				entry = ntfs_list_entry(ot_list_head.next,
++						struct orphan_mft, ot_list);
++				ntfs_list_del(&entry->ot_list);
++				ntfs_list_add_tail(&entry->oc_list, &oc_list_head);
++			}
++			break;
++		}
++
+ 		if (nlink == 0 && ni) {
+ 			problem_context_t pctx = {0, };
+ 
+@@ -3102,7 +3175,7 @@ next_inode:
+ 		free(entry);
+ 	} /* while (!ntfs_list_empty(&ot_list_head)) */
+ 
+-	return ret;
++	return deferred ? STATUS_KEEP_SEARCHING : ret;
+ }
+ 
+ /* return STATUS_OK, mft is extend mft record, else return STATUS_ERROR */
+@@ -10737,12 +10810,21 @@ static int ntfsck_check_orphaned_mft(ntfs_volume *vol)
+ 	while (!ntfs_list_empty(&oc_list_head)) {
+ 		entry = ntfs_list_entry(oc_list_head.next, struct orphan_mft, oc_list);
+ 
+-		cnt++;
+-
+-		fsck_err_found();
++		if (!entry->counted) {
++			entry->counted = TRUE;
++			cnt++;
++			fsck_err_found();
++		}
+ 		if (repair_orphans) {
++			int orphan_ret;
++
+ 			orphan_mft_no = entry->mft_no;
+-			if (ntfsck_add_index_entry_orphaned_file(vol, entry)) {
++			orphan_ret = ntfsck_add_index_entry_orphaned_file(vol, entry);
++			if (orphan_ret == STATUS_KEEP_SEARCHING) {
++				orphan_recovery_changed = TRUE;
++				continue;
++			}
++			if (orphan_ret) {
+ 				/*
+ 				 * The helper has moved and released this entry. Continue draining the
+ 				 * candidate list so no stale candidates survive into another repair pass,

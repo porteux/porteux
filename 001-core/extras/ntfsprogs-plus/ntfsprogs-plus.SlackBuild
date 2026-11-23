@@ -17,6 +17,10 @@ cd $TMP
 VERSION=$(download_master_from_github $PRGNAM $PRGNAM ntfs-next) || exit 1
 cd ${PRGNAM}-ntfs-next
 
+for i in $CWD/*.patch; do
+	patch -p1 < "$i"
+done
+
 ./autogen.sh
 
 CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \

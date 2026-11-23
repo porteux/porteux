@@ -1,0 +1,118 @@
+libntfs: repair a record header error found in both $MFT and $MFTMirr
+
+- when both copies of a system record fail the check at mount, repair a
+  copy of each in memory ($MFT first), check it again, and write the first
+  one that passes to both copies; before, the mount failed
+- add ntfs_mft_record_check_in_memory(): the record check without its
+  write-back, so a rejected trial repair never reaches the disk
+
+diff --git a/include/mft.h b/include/mft.h
+--- a/include/mft.h
++++ b/include/mft.h
+@@ -60,6 +60,8 @@ static __inline__ int ntfs_mft_record_read(const ntfs_volume *vol,
+ 
+ extern int ntfs_mft_record_check(ntfs_volume *vol, const MFT_REF mref,
+ 		MFT_RECORD *m);
++extern int ntfs_mft_record_check_in_memory(ntfs_volume *vol, const MFT_REF mref,
++		MFT_RECORD *m);
+ 
+ extern int ntfs_file_record_read(ntfs_volume *vol, const MFT_REF mref,
+ 		MFT_RECORD **mrec, ATTR_RECORD **attr);
+diff --git a/libntfs/mft.c b/libntfs/mft.c
+--- a/libntfs/mft.c
++++ b/libntfs/mft.c
+@@ -254,8 +254,8 @@ int ntfs_mft_records_write(const ntfs_volume *vol, const MFT_REF mref,
+  *		-1 with errno = EIO otherwise
+  */
+ 
+-int ntfs_mft_record_check(ntfs_volume *vol, const MFT_REF mref,
+-		MFT_RECORD *m)
++static int __ntfs_mft_record_check(ntfs_volume *vol, const MFT_REF mref,
++		MFT_RECORD *m, BOOL write)
+ {
+ 	ATTR_RECORD *a;
+ 	int ret = -1;
+@@ -485,7 +485,7 @@ err_out:
+ 	if (is_fsck && mref <= FILE_MFTMirr)
+ 		NVolSetFsck(vol);
+ 
+-	if (fixed) {
++	if (fixed && write) {
+ 		if (ntfs_mft_record_write(vol, mref, m))
+ 			ret = -1;
+ 	}
+@@ -495,6 +495,18 @@ err_out:
+ 	return ret;
+ }
+ 
++int ntfs_mft_record_check(ntfs_volume *vol, const MFT_REF mref,
++		MFT_RECORD *m)
++{
++	return __ntfs_mft_record_check(vol, mref, m, TRUE);
++}
++
++int ntfs_mft_record_check_in_memory(ntfs_volume *vol, const MFT_REF mref,
++		MFT_RECORD *m)
++{
++	return __ntfs_mft_record_check(vol, mref, m, FALSE);
++}
++
+ /**
+  * ntfs_file_record_read - read a FILE record from the mft from disk
+  * @vol:	volume to read from
+diff --git a/libntfs/volume.c b/libntfs/volume.c
+--- a/libntfs/volume.c
++++ b/libntfs/volume.c
+@@ -1416,6 +1416,28 @@ static BOOL ntfs_mftmirr_semantic_valid(ntfs_volume *vol, MFT_RECORD *m,
+ 	return TRUE;
+ }
+ 
++static BOOL ntfs_mount_repair_copy(ntfs_volume *vol, u64 mftno,
++		MFT_RECORD *mrec, MFT_RECORD *mrec2, MFT_RECORD *buf)
++{
++	MFT_RECORD *copies[2] = { mrec, mrec2 };
++	int i;
++
++	for (i = 0; i < 2; i++) {
++		int errors = fsck_errors;
++		int fixes = fsck_fixes;
++
++		memcpy(buf, copies[i], vol->mft_record_size);
++		if (!ntfs_mft_record_check_in_memory(vol, mftno, buf) &&
++				!ntfs_mount_record_check(vol, mftno, buf) &&
++				(mftno >= 12 ||
++				 ntfs_mftmirr_semantic_valid(vol, buf, mftno)))
++			return TRUE;
++		fsck_errors = errors;
++		fsck_fixes = fixes;
++	}
++	return FALSE;
++}
++
+ /*
+  * ntfs_upcase_repair - regenerate a corrupt $UpCase from the default table
+  *
+@@ -1985,6 +2007,23 @@ ntfs_volume *ntfs_device_mount(struct ntfs_device *dev, ntfs_mount_flags flags)
+ 			use_mirr = TRUE;
+ 
+ 		if (use_mirr == FALSE) {
++			MFT_RECORD *buf = ntfs_malloc(vol->mft_record_size);
++
++			if (buf && ntfs_mount_repair_copy(vol, FILE_MFT + i, mrec,
++						mrec2, buf)) {
++				int err = ntfs_recover_mft(vol, buf, vol->mft_lcn,
++						FILE_MFT + i) ||
++					ntfs_recover_mft(vol, buf, vol->mftmirr_lcn,
++						FILE_MFT + i);
++
++				free(buf);
++				if (err) {
++					ntfs_log_perror("Error correcting $MFT record : %d", i);
++					goto io_error_exit;
++				}
++				continue;
++			}
++			free(buf);
+ 			ntfs_log_error("Both $MFT/$MFTmirr error: Invalid mft record for '%s'\n",
+ 					s);
+ 			fsck_err_found();
