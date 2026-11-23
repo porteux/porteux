@@ -118,7 +118,8 @@ strip_clean() {
 }
 
 strip_hard_exec() {
-	list_files_to_strip 'ELF.*executable' "$@" | strip_files --strip-all --strip-section-headers -R '.eh_frame*'
+	list_files_to_strip 'ELF.*executable.*dynamically linked' "$@" | strip_files --strip-all --strip-section-headers -R '.eh_frame*'
+	list_files_to_strip 'ELF.*executable.*static' "$@" | strip_files --strip-all --strip-section-headers -R '.eh_frame*' -R .note.gnu.property
 }
 
 strip_hard_all() {
