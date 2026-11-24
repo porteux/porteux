@@ -1,0 +1,17 @@
+Do not show the new display dialog when displays come back
+
+When every output goes away and comes back (e.g. a TV re-plugging during a
+VT switch), xfsettingsd took the returning output for a new one and opened
+the display dialog.
+
+--- a/xfsettingsd/displays-wayland.c	2026-11-24 19:59:55.327165000 +0100
++++ b/xfsettingsd/displays-wayland.c	2026-11-24 19:59:55.334165000 +0100
+@@ -591,7 +591,7 @@
+         }
+ 
+         /* start the display dialog according to the user preferences */
+-        if (action == ACTION_ON_NEW_OUTPUT_SHOW_DIALOG)
++        if (action == ACTION_ON_NEW_OUTPUT_SHOW_DIALOG && helper->previous_n_outputs > 0)
+         {
+             const gchar *cmd = outputs->len <= 2 ? "xfce4-display-settings -m" : "xfce4-display-settings";
+             xfce_spawn_command_line (NULL, cmd, FALSE, FALSE, TRUE, NULL);

@@ -31,6 +31,10 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
+for i in $CWD/*.patch; do
+	patch -p1 < "$i"
+done
+
 if [ -f meson.build ]; then
 	(
 	rm -fr protocols/xfce-wayland-protocols && cd protocols/

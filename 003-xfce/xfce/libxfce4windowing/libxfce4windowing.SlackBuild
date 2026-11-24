@@ -31,10 +31,6 @@ wget https://gitlab.xfce.org/xfce/${PRGNAM}/-/archive/${DOWNLOADVERSION}/${PRGNA
 tar xf $PRGNAM-$DOWNLOADVERSION.tar.?z*
 cd $PRGNAM-$DOWNLOADVERSION
 
-for i in $CWD/*.patch; do
-	patch -p1 < "$i"
-done
-
 sed -i "s|subdir('docs'|#subdir('docs'|g" meson.build
 
 (
@@ -43,6 +39,10 @@ sed -i "s|subdir('docs'|#subdir('docs'|g" meson.build
 	tar xf xfce-wayland-protocols-main.tar.gz || exit 1
 	mv xfce-wayland-protocols-main xfce-wayland-protocols || exit 1
 )
+
+for i in $CWD/*.patch; do
+	patch -p1 < "$i"
+done
 
 mkdir meson-build && cd meson-build
 CFLAGS="$GCC_CFLAGS" \
