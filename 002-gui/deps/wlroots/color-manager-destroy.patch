@@ -1,0 +1,327 @@
+color-management-v1: add wlr_color_manager_v1_destroy()
+
+Lets the compositor drop the color manager at runtime, e.g. when it
+switches to a renderer without color transforms. The global is removed;
+objects clients already made keep working until they are destroyed.
+Image description identities stay unique across managers.
+
+--- a/include/wlr/types/wlr_color_management_v1.h
++++ b/include/wlr/types/wlr_color_management_v1.h
+@@ -78,7 +78,7 @@
+ 		struct wl_list outputs; // wlr_color_management_output_v1.link
+ 		struct wl_list surface_feedbacks; // wlr_color_management_surface_feedback_v1.link
+ 
+-		uint64_t last_image_desc_identity;
++		size_t refs;
+ 
+ 		struct wl_listener display_destroy;
+ 	} WLR_PRIVATE;
+@@ -86,6 +86,7 @@
+ 
+ struct wlr_color_manager_v1 *wlr_color_manager_v1_create(struct wl_display *display,
+ 	uint32_t version, const struct wlr_color_manager_v1_options *options);
++void wlr_color_manager_v1_destroy(struct wlr_color_manager_v1 *manager);
+ 
+ const struct wlr_image_description_v1_data *
+ wlr_surface_get_image_description_v1_data(struct wlr_surface *surface);
+--- a/types/wlr_color_management_v1.c
++++ b/types/wlr_color_management_v1.c
+@@ -10,10 +10,13 @@
+ 
+ #include "color-management-v1-protocol.h"
+ #include "render/color.h"
++#include "util/global.h"
+ #include "util/mem.h"
+ 
+ #define COLOR_MANAGEMENT_V1_VERSION 2
+ 
++static uint64_t last_image_desc_identity;
++
+ struct wlr_color_management_output_v1 {
+ 	struct wl_resource *resource;
+ 	struct wlr_output *output;
+@@ -191,8 +194,7 @@
+ 		version, id);
+ }
+ 
+-static void image_desc_create_ready(struct wlr_color_manager_v1 *manager,
+-		struct wl_resource *parent_resource, uint32_t id,
++static void image_desc_create_ready(struct wl_resource *parent_resource, uint32_t id,
+ 		const struct wlr_image_description_v1_data *data,
+ 		bool get_info_allowed) {
+ 	struct wlr_image_description_v1 *image_desc = calloc(1, sizeof(*image_desc));
+@@ -221,7 +223,7 @@
+ 	}
+ 
+ 	// TODO: de-duplicate identity
+-	uint64_t identity = ++manager->last_image_desc_identity;
++	uint64_t identity = ++last_image_desc_identity;
+ 	uint32_t identity_hi = identity >> 32;
+ 	uint32_t identity_lo = (uint32_t)identity;
+ 
+@@ -244,6 +246,23 @@
+ 	wp_image_description_v1_send_failed(resource, cause, msg);
+ }
+ 
++static struct wlr_color_manager_v1 *manager_ref(struct wlr_color_manager_v1 *manager) {
++	if (manager != NULL) {
++		manager->refs++;
++	}
++	return manager;
++}
++
++static void manager_unref(struct wlr_color_manager_v1 *manager) {
++	if (manager == NULL || --manager->refs > 0) {
++		return;
++	}
++	free(manager->render_intents);
++	free(manager->transfer_functions);
++	free(manager->primaries);
++	free(manager);
++}
++
+ static const struct wp_color_management_output_v1_interface cm_output_impl;
+ 
+ static struct wlr_color_management_output_v1 *cm_output_from_resource(struct wl_resource *resource) {
+@@ -270,7 +289,7 @@
+ 		data.tf_named = wlr_color_manager_v1_transfer_function_from_wlr(image_desc->transfer_function);
+ 		data.primaries_named = wlr_color_manager_v1_primaries_from_wlr(image_desc->primaries);
+ 	}
+-	image_desc_create_ready(cm_output->manager, cm_output_resource, id, &data, true);
++	image_desc_create_ready(cm_output_resource, id, &data, true);
+ }
+ 
+ static const struct wp_color_management_output_v1_interface cm_output_impl = {
+@@ -285,6 +304,7 @@
+ 	wl_resource_set_user_data(cm_output->resource, NULL); // make inert
+ 	wl_list_remove(&cm_output->output_destroy.link);
+ 	wl_list_remove(&cm_output->link);
++	manager_unref(cm_output->manager);
+ 	free(cm_output);
+ }
+ 
+@@ -305,6 +325,7 @@
+ 	wl_resource_set_user_data(cm_surface->resource, NULL); // make inert
+ 	wlr_surface_synced_finish(&cm_surface->synced);
+ 	wlr_addon_finish(&cm_surface->addon);
++	manager_unref(cm_surface->manager);
+ 	free(cm_surface);
+ }
+ 
+@@ -349,9 +370,10 @@
+ 		return;
+ 	}
+ 
++	const struct wlr_color_manager_v1 *manager = cm_surface->manager;
+ 	bool found = false;
+-	for (size_t i = 0; i < cm_surface->manager->render_intents_len; i++) {
+-		if (cm_surface->manager->render_intents[i] == render_intent) {
++	for (size_t i = 0; manager != NULL && i < manager->render_intents_len; i++) {
++		if (manager->render_intents[i] == render_intent) {
+ 			found = true;
+ 			break;
+ 		}
+@@ -410,8 +432,8 @@
+ 		return;
+ 	}
+ 
+-	image_desc_create_ready(surface_feedback->manager,
+-		surface_feedback_resource, id, &surface_feedback->data, true);
++	image_desc_create_ready(surface_feedback_resource, id,
++		&surface_feedback->data, true);
+ }
+ 
+ static void surface_feedback_handle_get_preferred_parametric(struct wl_client *client,
+@@ -425,8 +447,8 @@
+ 		return;
+ 	}
+ 
+-	image_desc_create_ready(surface_feedback->manager,
+-		surface_feedback_resource, id, &surface_feedback->data, true);
++	image_desc_create_ready(surface_feedback_resource, id,
++		&surface_feedback->data, true);
+ }
+ 
+ static const struct wp_color_management_surface_feedback_v1_interface surface_feedback_impl = {
+@@ -442,6 +464,7 @@
+ 	wl_resource_set_user_data(surface_feedback->resource, NULL); // make inert
+ 	wl_list_remove(&surface_feedback->surface_destroy.link);
+ 	wl_list_remove(&surface_feedback->link);
++	manager_unref(surface_feedback->manager);
+ 	free(surface_feedback);
+ }
+ 
+@@ -528,7 +551,7 @@
+ 	// TODO: check that the target color volume is contained within the
+ 	// primary color volume
+ 
+-	image_desc_create_ready(params->manager, params_resource, id, &params->data, false);
++	image_desc_create_ready(params_resource, id, &params->data, false);
+ }
+ 
+ static void image_desc_creator_params_handle_set_tf_named(struct wl_client *client,
+@@ -702,6 +725,7 @@
+ static void image_desc_creator_params_handle_resource_destroy(struct wl_resource *resource) {
+ 	struct wlr_image_description_creator_params_v1 *params =
+ 		image_desc_creator_params_from_resource(resource);
++	manager_unref(params->manager);
+ 	free(params);
+ }
+ 
+@@ -739,13 +763,17 @@
+ 	}
+ 
+ 	cm_output->resource = cm_output_resource;
+-	cm_output->manager = manager;
++	cm_output->manager = manager_ref(manager);
+ 	cm_output->output = output;
+ 
+ 	cm_output->output_destroy.notify = cm_output_handle_output_destroy;
+ 	wl_signal_add(&output->events.destroy, &cm_output->output_destroy);
+ 
+-	wl_list_insert(&manager->outputs, &cm_output->link);
++	if (manager != NULL) {
++		wl_list_insert(&manager->outputs, &cm_output->link);
++	} else {
++		wl_list_init(&cm_output->link);
++	}
+ 	wl_resource_set_user_data(cm_output->resource, cm_output);
+ }
+ 
+@@ -795,7 +823,7 @@
+ 	}
+ 	wl_resource_set_implementation(cm_surface->resource, &cm_surface_impl, cm_surface, cm_surface_handle_resource_destroy);
+ 
+-	cm_surface->manager = manager;
++	cm_surface->manager = manager_ref(manager);
+ 	cm_surface->surface = surface;
+ 
+ 	wlr_addon_init(&cm_surface->addon, &surface->addons, NULL, &cm_surface_addon_impl);
+@@ -814,8 +842,6 @@
+ 		return;
+ 	}
+ 
+-	surface_feedback->manager = manager;
+-
+ 	uint32_t version = wl_resource_get_version(manager_resource);
+ 	surface_feedback->resource = wl_resource_create(client,
+ 		&wp_color_management_surface_feedback_v1_interface, version, id);
+@@ -827,6 +853,7 @@
+ 	wl_resource_set_implementation(surface_feedback->resource, &surface_feedback_impl,
+ 		surface_feedback, surface_feedback_handle_resource_destroy);
+ 
++	surface_feedback->manager = manager_ref(manager);
+ 	surface_feedback->surface = surface;
+ 	surface_feedback->data = (struct wlr_image_description_v1_data){
+ 		.tf_named = WP_COLOR_MANAGER_V1_TRANSFER_FUNCTION_GAMMA22,
+@@ -836,7 +863,11 @@
+ 	surface_feedback->surface_destroy.notify = surface_feedback_handle_surface_destroy;
+ 	wl_signal_add(&surface->events.destroy, &surface_feedback->surface_destroy);
+ 
+-	wl_list_insert(&manager->surface_feedbacks, &surface_feedback->link);
++	if (manager != NULL) {
++		wl_list_insert(&manager->surface_feedbacks, &surface_feedback->link);
++	} else {
++		wl_list_init(&surface_feedback->link);
++	}
+ }
+ 
+ static void manager_handle_create_icc_creator(struct wl_client *client,
+@@ -849,7 +880,7 @@
+ static void manager_handle_create_parametric_creator(struct wl_client *client,
+ 		struct wl_resource *manager_resource, uint32_t id) {
+ 	struct wlr_color_manager_v1 *manager = manager_from_resource(manager_resource);
+-	if (!manager->features.parametric) {
++	if (manager == NULL || !manager->features.parametric) {
+ 		wl_resource_post_error(manager_resource,
+ 			WP_COLOR_MANAGER_V1_ERROR_UNSUPPORTED_FEATURE,
+ 			"new_parametric_creator is not supported");
+@@ -862,8 +893,6 @@
+ 		return;
+ 	}
+ 
+-	params->manager = manager;
+-
+ 	uint32_t version = wl_resource_get_version(manager_resource);
+ 	params->resource = wl_resource_create(client,
+ 		&wp_image_description_creator_params_v1_interface, version, id);
+@@ -872,6 +901,8 @@
+ 		free(params);
+ 		return;
+ 	}
++	params->manager = manager_ref(manager);
++
+ 	wl_resource_set_implementation(params->resource, &image_desc_creator_params_impl,
+ 		params, image_desc_creator_params_handle_resource_destroy);
+ }
+@@ -893,6 +924,10 @@
+ 	.create_windows_scrgb = manager_handle_create_windows_scrgb,
+ };
+ 
++static void manager_handle_resource_destroy(struct wl_resource *resource) {
++	manager_unref(manager_from_resource(resource));
++}
++
+ static void manager_bind(struct wl_client *client, void *data,
+ 		uint32_t version, uint32_t id) {
+ 	struct wlr_color_manager_v1 *manager = data;
+@@ -903,7 +938,13 @@
+ 		wl_client_post_no_memory(client);
+ 		return;
+ 	}
+-	wl_resource_set_implementation(resource, &manager_impl, manager, NULL);
++	wl_resource_set_implementation(resource, &manager_impl, manager_ref(manager),
++		manager_handle_resource_destroy);
++
++	if (manager == NULL) {
++		wp_color_manager_v1_send_done(resource);
++		return;
++	}
+ 
+ 	const bool features[] = {
+ 		[WP_COLOR_MANAGER_V1_FEATURE_ICC_V2_V4] = manager->features.icc_v2_v4,
+@@ -940,16 +981,20 @@
+ 	wp_color_manager_v1_send_done(resource);
+ }
+ 
+-static void manager_handle_display_destroy(struct wl_listener *listener, void *data) {
+-	struct wlr_color_manager_v1 *manager = wl_container_of(listener, manager, display_destroy);
++void wlr_color_manager_v1_destroy(struct wlr_color_manager_v1 *manager) {
++	if (manager == NULL) {
++		return;
++	}
+ 	wl_signal_emit_mutable(&manager->events.destroy, NULL);
+ 	assert(wl_list_empty(&manager->events.destroy.listener_list));
+ 	wl_list_remove(&manager->display_destroy.link);
+-	wl_global_destroy(manager->global);
+-	free(manager->render_intents);
+-	free(manager->transfer_functions);
+-	free(manager->primaries);
+-	free(manager);
++	wlr_global_destroy_safe(manager->global);
++	manager_unref(manager);
++}
++
++static void manager_handle_display_destroy(struct wl_listener *listener, void *data) {
++	struct wlr_color_manager_v1 *manager = wl_container_of(listener, manager, display_destroy);
++	wlr_color_manager_v1_destroy(manager);
+ }
+ 
+ struct wlr_color_manager_v1 *wlr_color_manager_v1_create(struct wl_display *display,
+@@ -995,6 +1040,7 @@
+ 	manager->transfer_functions_len = options->transfer_functions_len;
+ 	manager->primaries_len = options->primaries_len;
+ 
++	manager->refs = 1;
+ 	wl_signal_init(&manager->events.destroy);
+ 	wl_list_init(&manager->outputs);
+ 	wl_list_init(&manager->surface_feedbacks);
+@@ -1031,7 +1077,7 @@
+ 		struct wlr_color_manager_v1 *manager, struct wlr_surface *surface,
+ 		const struct wlr_image_description_v1_data *data) {
+ 	// TODO: de-duplicate identity
+-	uint64_t identity = ++manager->last_image_desc_identity;
++	uint64_t identity = ++last_image_desc_identity;
+ 	uint32_t identity_hi = identity >> 32;
+ 	uint32_t identity_lo = (uint32_t)identity;
+ 

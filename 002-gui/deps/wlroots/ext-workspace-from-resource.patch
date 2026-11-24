@@ -1,0 +1,38 @@
+ext-workspace: add wlr_ext_workspace_handle_v1_from_resource()
+
+Lets a compositor map a client's ext_workspace_handle_v1 resource (e.g. one
+passed in its own protocol) to its workspace without copying the private
+resource struct. Returns NULL for other resources and inert ones.
+
+--- a/include/wlr/types/wlr_ext_workspace_v1.h
++++ b/include/wlr/types/wlr_ext_workspace_v1.h
+@@ -126,6 +126,9 @@
+ 	struct wlr_ext_workspace_manager_v1 *manager, const char *id, uint32_t caps);
+ void wlr_ext_workspace_handle_v1_destroy(struct wlr_ext_workspace_handle_v1 *workspace);
+ 
++struct wlr_ext_workspace_handle_v1 *wlr_ext_workspace_handle_v1_from_resource(
++	struct wl_resource *resource);
++
+ void wlr_ext_workspace_handle_v1_set_group(
+ 	struct wlr_ext_workspace_handle_v1 *workspace,
+ 	struct wlr_ext_workspace_group_handle_v1 *group);
+--- a/types/wlr_ext_workspace_v1.c
++++ b/types/wlr_ext_workspace_v1.c
+@@ -159,6 +159,17 @@
+ 	.remove = workspace_handle_remove,
+ };
+ 
++struct wlr_ext_workspace_handle_v1 *wlr_ext_workspace_handle_v1_from_resource(
++		struct wl_resource *resource) {
++	if (!wl_resource_instance_of(resource,
++			&ext_workspace_handle_v1_interface, &workspace_impl)) {
++		return NULL;
++	}
++	struct wlr_ext_workspace_v1_resource *workspace_res =
++		wl_resource_get_user_data(resource);
++	return workspace_res ? workspace_res->workspace : NULL;
++}
++
+ static void group_handle_create_workspace(struct wl_client *client,
+ 		struct wl_resource *group_resource, const char *name) {
+ 	struct wlr_ext_workspace_group_v1_resource *group_res =
