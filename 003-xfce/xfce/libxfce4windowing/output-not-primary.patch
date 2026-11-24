@@ -1,0 +1,112 @@
+Clear the primary monitor when the compositor says so
+
+Bind xfce_output_manager_private_v1 version 2 and handle its new
+xfce_output_v1.not_primary event, so a monitor stops being primary even
+when no other monitor becomes primary.
+
+--- a/libxfce4windowing/xfw-monitor-wayland.c
++++ b/libxfce4windowing/xfw-monitor-wayland.c
+@@ -733,6 +733,16 @@
+ }
+ 
+ static void
++xfce_output_not_primary(void *data, struct xfce_output_v1 *xfce_output) {
++    g_debug("xfce output not_primary for ID %d", wl_proxy_get_id((struct wl_proxy *)xfce_output));
++    XfwMonitorManagerWayland *monitor_manager = data;
++    XfwMonitor *monitor = g_hash_table_lookup(monitor_manager->xfce_outputs_to_monitors, xfce_output);
++    if (monitor_manager->primary_monitor == monitor) {
++        monitor_manager->primary_monitor = NULL;
++    }
++}
++
++static void
+ xfce_output_workarea(void *data, struct xfce_output_v1 *xfce_output, int32_t x, int32_t y, uint32_t width, uint32_t height) {
+     g_debug("xfce output workarea for ID %d", wl_proxy_get_id((struct wl_proxy *)xfce_output));
+     XfwMonitorManagerWayland *monitor_manager = data;
+@@ -773,6 +783,7 @@
+     .pointer_enter = xfce_output_pointer_enter,
+     .pointer_leave = xfce_output_pointer_leave,
+     .done = xfce_output_done,
++    .not_primary = xfce_output_not_primary,
+ };
+ 
+ static void
+--- a/libxfce4windowing/xfw-screen-wayland.c
++++ b/libxfce4windowing/xfw-screen-wayland.c
+@@ -409,7 +409,7 @@
+         struct xfce_output_manager_private_v1 *xfce_output_manager = wl_registry_bind(registry,
+                                                                                       name,
+                                                                                       &xfce_output_manager_private_v1_interface,
+-                                                                                      MIN(version, 1));
++                                                                                      MIN(version, 2));
+         _xfw_monitor_manager_wayland_new_xfce_output_manager(wscreen->monitor_manager, xfce_output_manager);
+     }
+ }
+--- a/protocols/xfce-wayland-protocols/xfce-output-private-v1.xml
++++ b/protocols/xfce-wayland-protocols/xfce-output-private-v1.xml
+@@ -25,7 +25,7 @@
+     SOFTWARE.
+   </copyright>
+ 
+-  <interface name="xfce_output_manager_private_v1" version="1">
++  <interface name="xfce_output_manager_private_v1" version="2">
+     <description summary="Xfce output extensions">
+       This protocol advertises extensions to the existing wl_output and
+       xdg_output_v1 protocols.
+@@ -52,7 +52,7 @@
+     </request>
+   </interface>
+ 
+-  <interface name="xfce_output_v1" version="1">
++  <interface name="xfce_output_v1" version="2">
+     <event name="serial">
+       <description summary="Advertises the serial number of a device">
+         This informs the client of the output's hardware serial number.
+@@ -102,6 +102,9 @@
+         Since only one output can be primary, receiving this event means that
+         the previous primary output is no longer primary.
+ 
++        Since version 2, the not_primary event is sent when the output stops
++        being primary, even if no other output becomes primary.
++
+         This event is a property that is a part of the 'done' grouping. See the
+         xfce_output_v1.done event for more information.
+       </description>
+@@ -146,13 +149,13 @@
+ 
+     <event name="pointer_enter">
+       <description summary="Emitted when a pointer enters this output">
+-        The pointer for a seat can only be on one output at a time, so, aside
+-        from the first emission of this event, it will never be emitted without
+-        being preceded by a pointer_leave event from another xfce_output_v1
+-        instance.
++        Sent when the pointer of a seat enters the output of this object.
++        Events are sent per xfce_output_v1 object, so a client only sees them
++        for outputs it created an object for. Clients must not rely on a
++        pointer_leave event on another object before every pointer_enter.
+ 
+-        This event will be emitted at bind time to inform new clients of the
+-        output the pointer is currently on.
++        This event is also sent when the object is created, if the pointer is
++        on its output.
+ 
+         Note that this event is _not_ part of the 'done' group.
+       </description>
+@@ -169,5 +172,17 @@
+       </description>
+       <arg name="seat" type="object" interface="wl_seat"/>
+     </event>
++
++    <event name="not_primary" since="2">
++      <description summary="Emitted when the output stops being primary">
++        Sent when an output that was announced with the primary event is no
++        longer primary. This happens when another output becomes primary,
++        including one the client has no xfce_output_v1 for, or when no output
++        is primary anymore.
++
++        This event is a property that is a part of the 'done' grouping. See the
++        xfce_output_v1.done event for more information.
++      </description>
++    </event>
+   </interface>
+ </protocol>
