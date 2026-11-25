@@ -1,7 +1,11 @@
-diff -ruN a/xfce4-session/Makefile.am b/xfce4-session/Makefile.am
---- a/xfce4-session/Makefile.am	2026-03-02 11:10:38.000000000 +0100
-+++ b/xfce4-session/Makefile.am	2026-11-11 03:49:52.265884900 +0100
-@@ -40,6 +40,8 @@
+Dim the screen behind the logout dialog on Wayland too (layer-shell window per
+monitor, including monitors plugged in while the dialog is open). X11 unchanged.
+
+diff --git a/xfce4-session/Makefile.am b/xfce4-session/Makefile.am
+index c7ea6987..e2914ea9 100644
+--- a/xfce4-session/Makefile.am
++++ b/xfce4-session/Makefile.am
+@@ -40,6 +40,8 @@ xfce4_session_SOURCES =							\
  	xfsm-dns.h							\
  	xfsm-error.c							\
  	xfsm-error.h							\
@@ -10,7 +14,7 @@ diff -ruN a/xfce4-session/Makefile.am b/xfce4-session/Makefile.am
  	xfsm-global.c							\
  	xfsm-global.h							\
  	xfsm-inhibition.c						\
-@@ -97,9 +99,7 @@
+@@ -97,9 +99,7 @@ xfce4_session_SOURCES += \
  	ice-layer.c \
  	ice-layer.h \
  	sm-layer.c \
@@ -21,9 +25,10 @@ diff -ruN a/xfce4-session/Makefile.am b/xfce4-session/Makefile.am
  
  if ENABLE_LEGACY_SESSION_MANAGEMENT
  xfce4_session_SOURCES += \
-diff -ruN a/xfce4-session/xfsm-fadeout.c b/xfce4-session/xfsm-fadeout.c
---- a/xfce4-session/xfsm-fadeout.c	2026-03-02 11:10:39.000000000 +0100
-+++ b/xfce4-session/xfsm-fadeout.c	2026-11-11 03:49:31.879883900 +0100
+diff --git a/xfce4-session/xfsm-fadeout.c b/xfce4-session/xfsm-fadeout.c
+index 67317157..b11c6901 100644
+--- a/xfce4-session/xfsm-fadeout.c
++++ b/xfce4-session/xfsm-fadeout.c
 @@ -23,23 +23,33 @@
  #include "config.h"
  #endif
@@ -58,7 +63,7 @@ diff -ruN a/xfce4-session/xfsm-fadeout.c b/xfce4-session/xfsm-fadeout.c
  static Window
  xfsm_x11_fadeout_new_window (GdkDisplay *display,
                               GdkScreen *screen)
-@@ -134,6 +144,55 @@
+@@ -134,6 +144,60 @@ xfsm_x11_fadeout_new_window (GdkDisplay *display,
  
    return xwindow;
  }
@@ -80,41 +85,46 @@ diff -ruN a/xfce4-session/xfsm-fadeout.c b/xfce4-session/xfsm-fadeout.c
 +
 +
 +
-+static GList *
-+xfsm_layer_fadeout_new_windows (GdkDisplay *display)
++static GtkWidget *
++xfsm_layer_fadeout_new_window (GdkDisplay *display,
++                               GdkMonitor *monitor)
 +{
++  GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
++  GtkWindow *gtk_window = GTK_WINDOW (window);
 +  GdkCursor *cursor = gdk_cursor_new_for_display (display, GDK_WATCH);
-+  GList *windows = NULL;
 +
-+  for (gint i = 0; i < gdk_display_get_n_monitors (display); i++)
-+    {
-+      GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-+      GtkWindow *gtk_window = GTK_WINDOW (window);
-+
-+      gtk_widget_set_app_paintable (window, TRUE);
-+      gtk_layer_init_for_window (gtk_window);
-+      gtk_layer_set_namespace (gtk_window, "logout-fade");
-+      gtk_layer_set_layer (gtk_window, GTK_LAYER_SHELL_LAYER_OVERLAY);
-+      gtk_layer_set_monitor (gtk_window, gdk_display_get_monitor (display, i));
-+      gtk_layer_set_exclusive_zone (gtk_window, -1);
-+      gtk_layer_set_anchor (gtk_window, GTK_LAYER_SHELL_EDGE_LEFT, TRUE);
-+      gtk_layer_set_anchor (gtk_window, GTK_LAYER_SHELL_EDGE_RIGHT, TRUE);
-+      gtk_layer_set_anchor (gtk_window, GTK_LAYER_SHELL_EDGE_TOP, TRUE);
-+      gtk_layer_set_anchor (gtk_window, GTK_LAYER_SHELL_EDGE_BOTTOM, TRUE);
-+      g_signal_connect (window, "draw", G_CALLBACK (xfsm_layer_fadeout_draw), NULL);
-+      gtk_widget_show (window);
-+      gdk_window_set_cursor (gtk_widget_get_window (window), cursor);
-+      windows = g_list_prepend (windows, window);
-+    }
-+
++  gtk_widget_set_app_paintable (window, TRUE);
++  gtk_layer_init_for_window (gtk_window);
++  gtk_layer_set_namespace (gtk_window, "logout-fade");
++  gtk_layer_set_layer (gtk_window, GTK_LAYER_SHELL_LAYER_OVERLAY);
++  gtk_layer_set_monitor (gtk_window, monitor);
++  gtk_layer_set_exclusive_zone (gtk_window, -1);
++  gtk_layer_set_anchor (gtk_window, GTK_LAYER_SHELL_EDGE_LEFT, TRUE);
++  gtk_layer_set_anchor (gtk_window, GTK_LAYER_SHELL_EDGE_RIGHT, TRUE);
++  gtk_layer_set_anchor (gtk_window, GTK_LAYER_SHELL_EDGE_TOP, TRUE);
++  gtk_layer_set_anchor (gtk_window, GTK_LAYER_SHELL_EDGE_BOTTOM, TRUE);
++  g_signal_connect (window, "draw", G_CALLBACK (xfsm_layer_fadeout_draw), NULL);
++  gtk_widget_show (window);
++  gdk_window_set_cursor (gtk_widget_get_window (window), cursor);
 +  g_object_unref (cursor);
-+  return windows;
++
++  return window;
++}
++
++
++
++static void
++xfsm_layer_fadeout_monitor_added (GdkDisplay *display,
++                                  GdkMonitor *monitor,
++                                  XfsmFadeout *fadeout)
++{
++  fadeout->windows = g_list_prepend (fadeout->windows, xfsm_layer_fadeout_new_window (display, monitor));
 +}
 +#endif
  
  
  
-@@ -141,13 +200,22 @@
+@@ -141,13 +205,26 @@ XfsmFadeout *
  xfsm_fadeout_new (GdkDisplay *display)
  {
    XfsmFadeout *fadeout;
@@ -136,12 +146,16 @@ diff -ruN a/xfce4-session/xfsm-fadeout.c b/xfce4-session/xfsm-fadeout.c
 +#endif
 +#ifdef HAVE_GTK_LAYER_SHELL
 +  if (gtk_layer_is_supported ())
-+    fadeout->windows = xfsm_layer_fadeout_new_windows (display);
++    {
++      for (gint i = 0; i < gdk_display_get_n_monitors (display); i++)
++        xfsm_layer_fadeout_monitor_added (display, gdk_display_get_monitor (display, i), fadeout);
++      g_signal_connect (display, "monitor-added", G_CALLBACK (xfsm_layer_fadeout_monitor_added), fadeout);
++    }
 +#endif
  
    return fadeout;
  }
-@@ -157,10 +225,16 @@
+@@ -157,10 +234,17 @@ xfsm_fadeout_new (GdkDisplay *display)
  void
  xfsm_fadeout_destroy (XfsmFadeout *fadeout)
  {
@@ -158,14 +172,16 @@ diff -ruN a/xfce4-session/xfsm-fadeout.c b/xfce4-session/xfsm-fadeout.c
 +      gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
 +    }
 +#endif
++  g_signal_handlers_disconnect_by_data (gdk_display_get_default (), fadeout);
 +  g_list_free_full (fadeout->windows, (GDestroyNotify) gtk_widget_destroy);
  
    g_slice_free (XfsmFadeout, fadeout);
  }
-diff -ruN a/xfce4-session/xfsm-logout-dialog.c b/xfce4-session/xfsm-logout-dialog.c
---- a/xfce4-session/xfsm-logout-dialog.c	2026-03-02 11:10:39.000000000 +0100
-+++ b/xfce4-session/xfsm-logout-dialog.c	2026-11-11 03:49:31.903883900 +0100
-@@ -709,9 +709,7 @@
+diff --git a/xfce4-session/xfsm-logout-dialog.c b/xfce4-session/xfsm-logout-dialog.c
+index d6864253..5ad55ad5 100644
+--- a/xfce4-session/xfsm-logout-dialog.c
++++ b/xfce4-session/xfsm-logout-dialog.c
+@@ -709,9 +709,7 @@ xfsm_logout_dialog (const gchar *session_name,
    GdkScreen *screen;
    gint monitor;
    GdkPixbuf *screenshot = NULL;
@@ -175,7 +191,7 @@ diff -ruN a/xfce4-session/xfsm-logout-dialog.c b/xfce4-session/xfsm-logout-dialo
    XfsmLogoutDialog *xfsm_dialog;
    XfconfChannel *channel = xfconf_channel_get (SETTINGS_CHANNEL);
    GdkDevice *device;
-@@ -779,13 +777,7 @@
+@@ -779,13 +777,7 @@ xfsm_logout_dialog (const gchar *session_name,
        if (xfconf_channel_get_bool (channel, "/general/ShowScreenshots", TRUE))
          screenshot = xfsm_logout_dialog_screenshot_new (screen);
  
@@ -190,7 +206,7 @@ diff -ruN a/xfce4-session/xfsm-logout-dialog.c b/xfce4-session/xfsm-logout-dialo
  
        dialog = g_object_new (XFSM_TYPE_LOGOUT_DIALOG,
                               "type", GTK_WINDOW_POPUP,
-@@ -816,13 +808,8 @@
+@@ -816,13 +808,8 @@ xfsm_logout_dialog (const gchar *session_name,
  
    gtk_widget_hide (dialog);
  
