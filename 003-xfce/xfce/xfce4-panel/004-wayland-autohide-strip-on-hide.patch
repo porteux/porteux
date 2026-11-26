@@ -1,0 +1,159 @@
+Show the auto-hide strip whenever the panel hides on Wayland
+
+With auto-hide on Wayland, the panel could hide with no strip at the
+screen edge, so hovering the edge never showed it again. The strip is only
+placed in size_allocate, which waits for a frame callback, and compositors
+don't send those to covered surfaces (e.g. under a fullscreen game). The
+slide-out runs on a timer and hides the panel anyway.
+
+- move the strip placement out of size_allocate into its own function
+- autohide_ease_out: when size_allocate didn't run and the panel is
+  hiding, show the strip too (not for floating panels)
+- autohide_ease_out: with popdown-speed 0, don't animate (it divided by 0)
+- size_allocate: when it comes late during the slide, update the strip
+  to the new size
+
+X11 is unchanged.
+
+--- a/panel/panel-window.c
++++ b/panel/panel-window.c
+@@ -1666,6 +1666,56 @@
+ 
+ 
+ 
++static void
++panel_window_autohide_strip_show (PanelWindow *window,
++                                  gint *x,
++                                  gint *y,
++                                  gint *w,
++                                  gint *h)
++{
++  /* set hidden window size */
++  *w = *h = window->autohide_size;
++
++  switch (window->snap_position)
++    {
++    /* left or right of the screen */
++    case SNAP_POSITION_E:
++    case SNAP_POSITION_EC:
++    case SNAP_POSITION_W:
++    case SNAP_POSITION_WC:
++      *h = window->alloc.height;
++      break;
++
++    /* top or bottom of the screen */
++    case SNAP_POSITION_NC:
++    case SNAP_POSITION_SC:
++    case SNAP_POSITION_N:
++    case SNAP_POSITION_S:
++      *w = window->alloc.width;
++      break;
++
++    /* corner or floating panel */
++    default:
++      if (IS_HORIZONTAL (window))
++        *w = window->alloc.width;
++      else
++        *h = window->alloc.height;
++      break;
++    }
++
++  /* position the autohide window */
++  if (gtk_layer_is_supported ())
++    gtk_widget_set_size_request (window->autohide_window, *w, *h);
++  else
++    gtk_window_resize (GTK_WINDOW (window->autohide_window), *w, *h);
++
++  panel_window_size_allocate_set_xy (window, *w, *h, x, y);
++  panel_window_move (window, GTK_WINDOW (window->autohide_window), *x, *y);
++  gtk_widget_show (window->autohide_window);
++}
++
++
++
+ static void
+ panel_window_size_allocate (GtkWidget *widget,
+                             GtkAllocation *alloc)
+@@ -1690,50 +1740,16 @@
+           /* may be false on wayland where gtk_widget_queue_resize() does not
+            * always trigger size_allocate() */
+           && gtk_widget_get_visible (window->autohide_window))
+-        return;
+-
+-      /* window is invisible */
+-      window->alloc.x = window->alloc.y = OFFSCREEN;
+-
+-      /* set hidden window size */
+-      w = h = window->autohide_size;
+-
+-      switch (window->snap_position)
+         {
+-        /* left or right of the screen */
+-        case SNAP_POSITION_E:
+-        case SNAP_POSITION_EC:
+-        case SNAP_POSITION_W:
+-        case SNAP_POSITION_WC:
+-          h = alloc->height;
+-          break;
+-
+-        /* top or bottom of the screen */
+-        case SNAP_POSITION_NC:
+-        case SNAP_POSITION_SC:
+-        case SNAP_POSITION_N:
+-        case SNAP_POSITION_S:
+-          w = alloc->width;
+-          break;
+-
+-        /* corner or floating panel */
+-        default:
+-          if (IS_HORIZONTAL (window))
+-            w = alloc->width;
+-          else
+-            h = alloc->height;
+-          break;
++          if (gtk_layer_is_supported ())
++            panel_window_autohide_strip_show (window, &x, &y, &w, &h);
++          return;
+         }
+ 
+-      /* position the autohide window */
+-      if (gtk_layer_is_supported ())
+-        gtk_widget_set_size_request (window->autohide_window, w, h);
+-      else
+-        gtk_window_resize (GTK_WINDOW (window->autohide_window), w, h);
++      /* window is invisible */
++      window->alloc.x = window->alloc.y = OFFSCREEN;
+ 
+-      panel_window_size_allocate_set_xy (window, w, h, &x, &y);
+-      panel_window_move (window, GTK_WINDOW (window->autohide_window), x, y);
+-      gtk_widget_show (window->autohide_window);
++      panel_window_autohide_strip_show (window, &x, &y, &w, &h);
+ 
+       /* slide out the panel window with popdown_speed, but ignore panels that are floating, i.e. not
+          attached to a GdkScreen border (i.e. including panels which are on a monitor border, but
+@@ -3494,7 +3510,24 @@
+ 
+   /* may be true on wayland where gtk_widget_queue_resize() does not always trigger size_allocate() */
+   if (window->popdown_progress == -G_MAXINT)
+-    window->popdown_progress = IS_HORIZONTAL (window) ? window->alloc.height : window->alloc.width;
++    {
++      GdkRectangle strip;
++
++      if (gtk_layer_is_supported () && window->autohide_state == AUTOHIDE_HIDDEN && !window->floating
++          && !gtk_widget_get_visible (window->autohide_window))
++        panel_window_autohide_strip_show (window, &strip.x, &strip.y, &strip.width, &strip.height);
++
++      if (window->popdown_speed == 0)
++        {
++          if (window->autohide_state == AUTOHIDE_HIDDEN)
++            panel_window_move (window, GTK_WINDOW (window), OFFSCREEN, OFFSCREEN);
++          else
++            panel_window_move (window, GTK_WINDOW (window), x, y);
++          return FALSE;
++        }
++
++      window->popdown_progress = IS_HORIZONTAL (window) ? window->alloc.height : window->alloc.width;
++    }
+ 
+   if (IS_HORIZONTAL (window))
+     {
