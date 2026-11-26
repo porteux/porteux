@@ -46,7 +46,10 @@ sed -i "s|g_file_info_get_edit_name(inf)|g_file_info_get_attribute_byte_string (
 
 ./autogen.sh
 
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects -Wno-error=incompatible-pointer-types" \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+CFLAGS="$GCC_CFLAGS -Wno-error=incompatible-pointer-types" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEM_BITS \

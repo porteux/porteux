@@ -17,7 +17,10 @@ cd $TMP
 download_master_from_github fulalas $PRGNAM main || exit 1
 cd xfwm4-gl-main
 
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects -ffast-math" \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+CFLAGS="$GCC_CFLAGS -ffast-math" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEM_BITS} \

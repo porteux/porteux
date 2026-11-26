@@ -19,7 +19,10 @@ tar xf ${PRGNAM}_${VERSION}.tar.?z*
 cd $PRGNAM-$VERSION
 
 autoreconf -vfi
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEM_BITS} \

@@ -37,7 +37,7 @@ done
 
 if [ -f meson.build ]; then
 	mkdir meson-build && cd meson-build
-	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+	CFLAGS="$GCC_CFLAGS" \
 	meson setup \
 		--prefix=/usr \
 		--buildtype=release \
@@ -48,7 +48,10 @@ if [ -f meson.build ]; then
 
 	DESTDIR=$PKG ninja -j${NUMBER_THREADS} install
 else
-	CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+	AR=gcc-ar \
+	NM=gcc-nm \
+	RANLIB=gcc-ranlib \
+	CFLAGS="$GCC_CFLAGS" \
 	./autogen.sh \
 		--prefix=/usr \
 		--libdir=/usr/lib${SYSTEM_BITS} \

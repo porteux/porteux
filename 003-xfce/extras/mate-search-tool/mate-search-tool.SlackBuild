@@ -35,7 +35,10 @@ sed -i '/mate_desktop_interface_settings = g_settings_new ("org.mate.interface")
 
 autoreconf -fi
 
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEM_BITS} \

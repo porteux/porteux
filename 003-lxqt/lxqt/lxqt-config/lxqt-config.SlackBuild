@@ -24,8 +24,10 @@ sed -i "s|#include <KScreen/Mode>|#include <KScreen/Mode>\n#include <KScreen/Scr
 
 cmake -B build -S . \
 	-G Ninja \
+	-DCMAKE_AR=/usr/bin/gcc-ar \
+	-DCMAKE_RANLIB=/usr/bin/gcc-ranlib \
 	-DCMAKE_BUILD_TYPE=release \
-	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
+	-DCMAKE_CXX_FLAGS="$GCC_CXXFLAGS" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=lib${SYSTEM_BITS}
 

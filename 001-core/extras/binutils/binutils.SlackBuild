@@ -26,8 +26,14 @@ cd $PRGNAM-$VERSION
 
 sed -i 's/^development=true/development=false/' bfd/development.sh
 
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
-CXXFLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+CFLAGS="$GCC_CFLAGS" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEM_BITS} \

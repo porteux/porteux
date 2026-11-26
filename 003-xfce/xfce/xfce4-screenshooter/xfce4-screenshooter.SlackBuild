@@ -24,7 +24,7 @@ for i in $CWD/*.patch; do
 done
 
 mkdir meson-build && cd meson-build
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects -ffast-math" \
+CFLAGS="$GCC_CFLAGS -ffast-math" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

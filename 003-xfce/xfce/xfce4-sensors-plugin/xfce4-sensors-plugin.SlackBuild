@@ -23,8 +23,8 @@ sed -i 's|gint sensors_refresh_time = 60|gint sensors_refresh_time = 1|g' includ
 grep -q 'gint sensors_refresh_time = 1' include/sensors-interface-plugin.h
 
 mkdir meson-build && cd meson-build
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
-CXXFLAGS="$GCC_CXXFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS" \
+CXXFLAGS="$GCC_CXXFLAGS" \
 meson setup \
 	--prefix=/usr \
 	--buildtype=release \

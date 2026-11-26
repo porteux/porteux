@@ -30,8 +30,11 @@ patch -p1 < $CWD/fix-cpu-info.patch
 # Revert change to ls quoting style introduced in coreutils-8.25
 patch -p1 < $CWD/no-ls-quoting.patch
 
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
 FORCE_UNSAFE_CONFIGURE=1 \
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--bindir=/bin \

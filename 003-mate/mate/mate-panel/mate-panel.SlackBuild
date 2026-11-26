@@ -24,7 +24,10 @@ sed -i 's|YELP_HELP_INIT||g' configure.ac
 sed -i 's|doc\t.*|\\|g' Makefile.am
 sed -i 's|help\t.*|\\|g' Makefile.am
 
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+CFLAGS="$GCC_CFLAGS" \
 ./autogen.sh \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEM_BITS} \

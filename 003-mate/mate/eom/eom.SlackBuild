@@ -31,7 +31,7 @@ sed -i "s|subdir('man')|#subdir('man')|g" meson.build
 sed -i "s|^pkg_info.set('EOM_THUMBNAILER', eom_thumbnailer)|if not is_variable('eom_thumbnailer')\n  eom_thumbnailer = ''\nendif\n\0|" meson.build
 
 mkdir meson-build && cd meson-build
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+CFLAGS="$GCC_CFLAGS" \
 meson setup \
 	--buildtype=release \
 	--libdir=/usr/lib${SYSTEM_BITS} \

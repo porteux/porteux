@@ -28,7 +28,10 @@ export LIGHTDM_GROUP=gdm
 
 autoreconf -fi
 
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+CFLAGS="$GCC_CFLAGS" \
 CXXFLAGS="$GCC_CXXFLAGS" \
 ./configure \
 	--prefix=/usr \

@@ -20,7 +20,10 @@ VERSION=${info#* }
 tar xf $PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEM_BITS} \

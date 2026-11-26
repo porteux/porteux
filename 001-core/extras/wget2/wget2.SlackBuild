@@ -27,7 +27,10 @@ cd $PRGNAM-$VERSION
 
 patch -p1 < $CWD/0001-fix-absolute-directory-prefix.patch
 
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects" \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+CFLAGS="$GCC_CFLAGS" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${SYSTEM_BITS} \

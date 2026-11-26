@@ -31,7 +31,10 @@ cp "$CWD/background.png" data/images
 
 ./autogen.sh
 
-CFLAGS="$GCC_CFLAGS -ffat-lto-objects -Wno-error=incompatible-pointer-types" \
+AR=gcc-ar \
+NM=gcc-nm \
+RANLIB=gcc-ranlib \
+CFLAGS="$GCC_CFLAGS -Wno-error=incompatible-pointer-types" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib$SYSTEM_BITS \
