@@ -23,11 +23,15 @@ fi
 IFS='.-' read -r KERNEL_MAJOR_VERSION KERNEL_MINOR_VERSION KERNEL_PATCH_VERSION <<< "$KERNEL_VERSION"
 CRIPPLED_MODULE_NAME="06-crippled-sources-${KERNEL_VERSION}"
 
-if [ ${AFDO:-no} = "train" ] && [ ${CLANG:-no} != "yes" ]; then
+if [ "${AFDO:-yes}" != "yes" ] && [ "${AFDO:-yes}" != "no" ] && [ "${AFDO:-yes}" != "train" ]; then
+	echo "AFDO must be yes, no or train." && exit 1
+fi
+
+if [ ${AFDO:-yes} = "train" ] && [ ${CLANG:-no} != "yes" ]; then
 	echo "AFDO=train needs CLANG=yes." && exit 1
 fi
 
-if [ ${CLANG:-no} = "yes" ] && [ ${AFDO:-no} != "train" ] && [ -f ${SCRIPT_PATH}/kernel.afdo.version ]; then
+if [ ${CLANG:-no} = "yes" ] && [ ${AFDO:-yes} = "yes" ] && [ -f ${SCRIPT_PATH}/kernel.afdo.version ]; then
 	afdo_trained_version=$(cut -d. -f1,2 ${SCRIPT_PATH}/kernel.afdo.version)
 	if [ "$afdo_trained_version" != "${KERNEL_MAJOR_VERSION}.${KERNEL_MINOR_VERSION}" ]; then
 		echo "Warning: kernel.afdo was trained on kernel ${afdo_trained_version}. Retrain it with AFDO=train and fdo-train.sh."
@@ -204,9 +208,9 @@ sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL
 make olddefconfig > /dev/null 2>&1 || { echo "Failed to update kernel config."; exit 1; }
 if [ ${CLANG:-no} = "yes" ]; then
 	scripts/config -d LTO_NONE -d LTO_CLANG_THIN -e LTO_CLANG_FULL
-	if [ ${AFDO:-no} = "train" ]; then
+	if [ ${AFDO:-yes} = "train" ]; then
 		scripts/config -e AUTOFDO_CLANG -d RANDOMIZE_BASE
-	elif [ -f ${SCRIPT_PATH}/kernel.afdo ]; then
+	elif [ ${AFDO:-yes} = "yes" ] && [ -f ${SCRIPT_PATH}/kernel.afdo ]; then
 		scripts/config -e AUTOFDO_CLANG
 		EXTRA_FLAGS="${EXTRA_FLAGS} CLANG_AUTOFDO_PROFILE=${SCRIPT_PATH}/kernel.afdo"
 	fi
@@ -214,7 +218,7 @@ if [ ${CLANG:-no} = "yes" ]; then
 fi
 make -j${NUMBER_THREADS} LDFLAGS_MODULE="$LINK_PARAMS" KCFLAGS="$BUILD_PARAMS" ${EXTRA_FLAGS} || { echo "Failed to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULE_PATH/vmlinuz
-if [ ${AFDO:-no} = "train" ]; then
+if [ ${AFDO:-yes} = "train" ]; then
 	cp -f vmlinux ${SCRIPT_PATH}/vmlinux-fdo-train || { echo "Failed to keep vmlinux for training."; exit 1; }
 fi
 
@@ -297,7 +301,7 @@ rm "$hash_list"
 cd $MODULE_PATH || exit 1
 
 build_date=$(date +%Y%m%d)
-[ ${AFDO:-no} = "train" ] && build_date="${build_date}-fdo-train"
+[ ${AFDO:-yes} = "train" ] && build_date="${build_date}-fdo-train"
 
 echo "Creating kernel xzm module..."
 mkdir -p ${MODULE_PATH}/${MODULE_NAME}

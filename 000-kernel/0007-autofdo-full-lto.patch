@@ -6,10 +6,7 @@ with full LTO too.
 
 --- a/scripts/Makefile.autofdo
 +++ b/scripts/Makefile.autofdo
-@@ -17,11 +17,11 @@
-   RUSTFLAGS_AUTOFDO_CLANG += -Cllvm-args=-split-machine-functions
- endif
- 
+@@ -20,5 +20,5 @@
 -ifdef CONFIG_LTO_CLANG_THIN
 +ifdef CONFIG_LTO_CLANG
    ifdef CLANG_AUTOFDO_PROFILE
@@ -17,6 +14,3 @@ with full LTO too.
    endif
 -  KBUILD_LDFLAGS += --mllvm=-enable-fs-discriminator=true --mllvm=-improved-fs-discriminator=true -plugin-opt=thinlto
 +  KBUILD_LDFLAGS += --mllvm=-enable-fs-discriminator=true --mllvm=-improved-fs-discriminator=true
-   KBUILD_LDFLAGS += $(call ld-option,-plugin-opt=-function-splitting=all,-plugin-opt=-split-machine-functions)
- endif
- 
