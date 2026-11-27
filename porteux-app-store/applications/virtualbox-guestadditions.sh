@@ -63,8 +63,26 @@ fi
 # mount and install
 mount "$INSTALLER_PATH" "$MOUNT_DIR" || exit 1
 MOUNTED="true"
-if grep -q "clang" /proc/version; then
+CLANG_VERSION=$(grep -o "clang version [0-9.]*" /proc/version | cut -d" " -f3)
+if [ "$CLANG_VERSION" ]; then
 	export LLVM=1
+	if [ ! -f /usr/bin/clang ]; then
+		for LLVM_REPOSITORY in "https://mirrors.slackware.com/slackware/slackware64-current/slackware64/d" "https://slackware.uk/cumulative/slackware64-current/slackware64/d"; do
+			LLVM_PACKAGE=$(curl -sfL "$LLVM_REPOSITORY/" | grep -oE "llvm-$CLANG_VERSION-x86_64-[0-9]+\.txz" | sort -V | tail -n1)
+			[ "$LLVM_PACKAGE" ] && break
+		done
+		[ "$LLVM_PACKAGE" ] || { echo "Error: could not find llvm $CLANG_VERSION, which was used to build the kernel." >&2; exit 1; }
+		wget -T 15 -O "$BUILD_DIR/$LLVM_PACKAGE" "$LLVM_REPOSITORY/$LLVM_PACKAGE" || exit 1
+
+		LLVM_DIR="$BUILD_DIR/llvm"
+		TAR_OPTIONS="--exclude=usr/doc --exclude=usr/include --exclude=usr/man --exclude=usr/share --exclude=*.a" installpkg --threads 2 --root "$LLVM_DIR" "$BUILD_DIR/$LLVM_PACKAGE" > /dev/null || exit 1
+		rm "$BUILD_DIR/$LLVM_PACKAGE"
+		rm -fr "$LLVM_DIR/var"
+
+		export PATH="$LLVM_DIR/usr/bin:$PATH"
+		export LD_LIBRARY_PATH="$LLVM_DIR/usr/lib64"
+		clang --version > /dev/null || { echo "Error: llvm $CLANG_VERSION does not run on this system." >&2; exit 1; }
+	fi
 fi
 sh "$MOUNT_DIR/VBoxLinuxAdditions.run" --nox11
 INSTALL_STATUS=$?
