@@ -1,6 +1,56 @@
---- a/thunar/thunar-standard-view.c	2026-09-12 08:22:23.000000000 +0200
-+++ b/thunar/thunar-standard-view.c	2026-11-14 18:58:26.343801600 +0100
-@@ -276,6 +276,12 @@
+Accept image drops from Chromium-based browsers on Wayland, which offer the
+image only as application/octet-stream;name="<file>", and save it under that name.
+
+diff --git a/thunar/thunar-dnd.c b/thunar/thunar-dnd.c
+index 4ed2876..30584d4 100644
+--- a/thunar/thunar-dnd.c
++++ b/thunar/thunar-dnd.c
+@@ -285,3 +285,26 @@ thunar_dnd_perform (GtkWidget    *widget,
+ 
+   return succeed;
+ }
++
++
++
++gchar *
++thunar_dnd_get_octet_stream_name (GdkAtom target)
++{
++  static const gchar prefix[] = "application/octet-stream;name=\"";
++  gchar             *type = gdk_atom_name (target);
++  gchar             *name = NULL;
++  gsize              length = strlen (type);
++
++  if (length > sizeof (prefix) && g_str_has_prefix (type, prefix) && type[length - 1] == '"')
++    {
++      type[length - 1] = '\0';
++      name = g_strcompress (type + sizeof (prefix) - 1);
++    }
++  g_free (type);
++
++  if (name != NULL && (strchr (name, G_DIR_SEPARATOR) != NULL || strcmp (name, ".") == 0 || strcmp (name, "..") == 0))
++    g_clear_pointer (&name, g_free);
++
++  return name;
++}
+diff --git a/thunar/thunar-dnd.h b/thunar/thunar-dnd.h
+index 911f596..f2ffaf0 100644
+--- a/thunar/thunar-dnd.h
++++ b/thunar/thunar-dnd.h
+@@ -37,6 +37,9 @@ thunar_dnd_perform (GtkWidget    *widget,
+                     GdkDragAction action,
+                     GClosure     *new_files_closure);
+ 
++gchar *
++thunar_dnd_get_octet_stream_name (GdkAtom target);
++
+ G_END_DECLS;
+ 
+ #endif /* !__THUNAR_DND_H__ */
+diff --git a/thunar/thunar-standard-view.c b/thunar/thunar-standard-view.c
+index 5ce651a..0bf8314 100644
+--- a/thunar/thunar-standard-view.c
++++ b/thunar/thunar-standard-view.c
+@@ -276,6 +276,10 @@ thunar_standard_view_drag_motion (GtkWidget          *view,
                                    gint                y,
                                    guint               timestamp,
                                    ThunarStandardView *standard_view);
@@ -8,12 +58,10 @@
 +thunar_standard_view_find_drop_target (GtkWidget          *view,
 +                                       GdkDragContext     *context,
 +                                       ThunarStandardView *standard_view);
-+static gchar *
-+thunar_standard_view_named_octet_stream (GdkAtom target);
  static void
  thunar_standard_view_drag_begin (GtkWidget          *view,
                                   GdkDragContext     *context,
-@@ -416,6 +422,7 @@
+@@ -416,6 +420,7 @@ struct _ThunarStandardViewPrivate
    guint  drop_highlight : 1;
    guint  drop_occurred : 1; /* whether the data was dropped */
    GList *drop_file_list;    /* the list of URIs that are contained in the drop data */
@@ -21,7 +69,7 @@
  
    /* the "new-files" closure, which is used to select files whenever
     * new files are created by a ThunarJob associated with this view
-@@ -3129,7 +3136,7 @@
+@@ -3129,7 +3134,7 @@ thunar_standard_view_drag_drop (GtkWidget          *view,
    gchar      *uri = NULL;
    gint        prop_len;
  
@@ -30,80 +78,36 @@
    if (G_UNLIKELY (target == GDK_NONE))
      {
        /* we cannot handle the drag data */
-@@ -3401,23 +3408,29 @@
-   gint               length;
-   GFile             *dest;
-   GFileOutputStream *out;
-+  gboolean           succeed = FALSE;
- 
-   if (gtk_selection_data_get_length (selection_data) <= 0)
+@@ -3406,7 +3411,9 @@ thunar_standard_view_receive_application_octet_stream (GdkDragContext     *conte
      return FALSE;
  
    /* determine filename */
 -  if (gdk_property_get (gdk_drag_context_get_source_window (context),
--                        gdk_atom_intern ("XdndDirectSave0", FALSE),
--                        gdk_atom_intern ("text/plain", FALSE), 0, 1024,
--                        FALSE, NULL, NULL, &length,
--                        (guchar **) &filename)
--      && length > 0)
-+  filename = thunar_standard_view_named_octet_stream (gtk_selection_data_get_target (selection_data));
-+  if (filename == NULL)
-     {
--      filename = g_realloc (filename, length + 1);
--      filename[length] = '\0';
-+      if (gdk_drag_context_get_source_window (context) != NULL
-+          && gdk_property_get (gdk_drag_context_get_source_window (context),
-+                               gdk_atom_intern ("XdndDirectSave0", FALSE),
-+                               gdk_atom_intern ("text/plain", FALSE), 0, 1024,
-+                               FALSE, NULL, NULL, &length,
-+                               (guchar **) &filename)
-+          && length > 0)
-+        {
-+          filename = g_realloc (filename, length + 1);
-+          filename[length] = '\0';
-+        }
-+      else
-+        filename = g_strdup (_("Untitled document"));
++  filename = thunar_dnd_get_octet_stream_name (gtk_selection_data_get_target (selection_data));
++  if (filename == NULL
++      && gdk_property_get (gdk_drag_context_get_source_window (context),
+                         gdk_atom_intern ("XdndDirectSave0", FALSE),
+                         gdk_atom_intern ("text/plain", FALSE), 0, 1024,
+                         FALSE, NULL, NULL, &length,
+@@ -3416,7 +3423,7 @@ thunar_standard_view_receive_application_octet_stream (GdkDragContext     *conte
+       filename = g_realloc (filename, length + 1);
+       filename[length] = '\0';
      }
 -  else
--    filename = g_strdup (_("Untitled document"));
++  else if (filename == NULL)
+     filename = g_strdup (_("Untitled document"));
  
    /* determine filepath */
-   file = thunar_standard_view_get_drop_file (standard_view, x, y, NULL);
-@@ -3450,8 +3463,8 @@
-           content = (const gchar *) gtk_selection_data_get_data (selection_data);
-           length = gtk_selection_data_get_length (selection_data);
- 
--          if (g_output_stream_write_all (G_OUTPUT_STREAM (out), content, length, NULL, NULL, NULL))
--            g_output_stream_close (G_OUTPUT_STREAM (out), NULL, NULL);
-+          succeed = g_output_stream_write_all (G_OUTPUT_STREAM (out), content, length, NULL, NULL, NULL)
-+                    && g_output_stream_close (G_OUTPUT_STREAM (out), NULL, NULL);
- 
-           g_object_unref (out);
-         }
-@@ -3462,7 +3475,7 @@
-   g_free (filename);
-   g_free (filepath);
- 
--  return TRUE;
-+  return succeed;
- }
- 
- 
-@@ -3636,9 +3649,10 @@
+@@ -3636,7 +3643,7 @@ thunar_standard_view_drag_motion (GtkWidget          *view,
    if (G_UNLIKELY (!standard_view->priv->drop_data_ready))
      {
        /* check if we can handle that drag data (yet?) */
 -      target = gtk_drag_dest_find_target (view, context, NULL);
 +      target = thunar_standard_view_find_drop_target (view, context, standard_view);
  
--      if (target == gdk_atom_intern_static_string ("XdndDirectSave0") || target == gdk_atom_intern_static_string ("_NETSCAPE_URL") || target == gdk_atom_intern_static_string ("application/octet-stream"))
-+      if (target == gdk_atom_intern_static_string ("XdndDirectSave0") || target == gdk_atom_intern_static_string ("_NETSCAPE_URL") || target == gdk_atom_intern_static_string ("application/octet-stream")
-+          || (target != GDK_NONE && target == standard_view->priv->drop_named_target))
+       if (target == gdk_atom_intern_static_string ("XdndDirectSave0") || target == gdk_atom_intern_static_string ("_NETSCAPE_URL") || target == gdk_atom_intern_static_string ("application/octet-stream"))
          {
-           /* determine the file for the given coordinates */
-           file = thunar_standard_view_get_drop_file (standard_view, x, y, &path);
-@@ -3649,7 +3663,9 @@
+@@ -3649,7 +3656,9 @@ thunar_standard_view_drag_motion (GtkWidget          *view,
                          && thunar_file_is_directory (file)
                          && thunar_file_is_writable (file)))
              {
@@ -114,11 +118,10 @@
              }
  
            /* reset path if we cannot drop */
-@@ -3706,6 +3722,128 @@
- }
+@@ -3707,6 +3716,38 @@ thunar_standard_view_drag_motion (GtkWidget          *view,
  
  
-+
+ 
 +static GdkAtom
 +thunar_standard_view_find_drop_target (GtkWidget          *view,
 +                                       GdkDragContext     *context,
@@ -126,27 +129,24 @@
 +{
 +  GtkTargetList *targets;
 +  GdkAtom        target;
-+  GdkAtom        named;
-+  GList         *lp;
-+  gchar         *filename;
++  gchar         *name;
 +
 +  target = gtk_drag_dest_find_target (view, context, NULL);
 +  if (target != GDK_NONE && target != gdk_atom_intern_static_string ("application/octet-stream"))
 +    return target;
 +
-+  for (lp = gdk_drag_context_list_targets (context); lp != NULL; lp = lp->next)
++  for (GList *lp = gdk_drag_context_list_targets (context); lp != NULL; lp = lp->next)
 +    {
-+      named = GDK_POINTER_TO_ATOM (lp->data);
-+      filename = thunar_standard_view_named_octet_stream (named);
-+      if (filename == NULL)
++      name = thunar_dnd_get_octet_stream_name (GDK_POINTER_TO_ATOM (lp->data));
++      if (name == NULL)
 +        continue;
-+      g_free (filename);
++      g_free (name);
 +
 +      targets = gtk_drag_dest_get_target_list (view);
 +      gtk_target_list_remove (targets, standard_view->priv->drop_named_target);
-+      gtk_target_list_add (targets, named, 0, TARGET_APPLICATION_OCTET_STREAM);
-+      standard_view->priv->drop_named_target = named;
-+      return named;
++      gtk_target_list_add (targets, GDK_POINTER_TO_ATOM (lp->data), 0, TARGET_APPLICATION_OCTET_STREAM);
++      standard_view->priv->drop_named_target = GDK_POINTER_TO_ATOM (lp->data);
++      return standard_view->priv->drop_named_target;
 +    }
 +
 +  return target;
@@ -154,92 +154,6 @@
 +
 +
 +
-+static const gchar *
-+thunar_standard_view_skip_spaces (const gchar *p)
-+{
-+  while (*p == ' ' || *p == '\t')
-+    p++;
-+  return p;
-+}
-+
-+
-+
-+static gchar *
-+thunar_standard_view_read_param_value (const gchar **cursor)
-+{
-+  const gchar *p = *cursor;
-+  GString     *value = g_string_new (NULL);
-+
-+  if (*p == '"')
-+    {
-+      for (p++; *p != '\0' && *p != '"'; p++)
-+        {
-+          if (*p == '\\' && p[1] != '\0')
-+            p++;
-+          g_string_append_c (value, *p);
-+        }
-+      if (*p == '"')
-+        p++;
-+    }
-+  else
-+    {
-+      for (; *p != '\0' && *p != ';' && *p != ' ' && *p != '\t'; p++)
-+        g_string_append_c (value, *p);
-+    }
-+
-+  *cursor = p;
-+  return g_string_free (value, FALSE);
-+}
-+
-+
-+
-+static gchar *
-+thunar_standard_view_named_octet_stream (GdkAtom target)
-+{
-+  static const gchar base[] = "application/octet-stream";
-+  gchar             *type;
-+  gchar             *filename = NULL;
-+  gchar             *value;
-+  const gchar       *p;
-+  const gchar       *key;
-+  gsize              key_length;
-+
-+  type = gdk_atom_name (target);
-+  if (type != NULL && g_ascii_strncasecmp (type, base, strlen (base)) == 0)
-+    {
-+      p = thunar_standard_view_skip_spaces (type + strlen (base));
-+      while (filename == NULL && *p == ';')
-+        {
-+          key = thunar_standard_view_skip_spaces (p + 1);
-+          for (p = key; *p != '\0' && *p != '=' && *p != ';' && *p != ' ' && *p != '\t'; p++)
-+            ;
-+          key_length = p - key;
-+          p = thunar_standard_view_skip_spaces (p);
-+          if (*p != '=')
-+            continue;
-+          p = thunar_standard_view_skip_spaces (p + 1);
-+          value = thunar_standard_view_read_param_value (&p);
-+          if (key_length == 4 && g_ascii_strncasecmp (key, "name", 4) == 0)
-+            filename = value;
-+          else
-+            g_free (value);
-+          p = thunar_standard_view_skip_spaces (p);
-+        }
-+    }
-+  g_free (type);
-+
-+  if (filename != NULL
-+      && (*filename == '\0' || strchr (filename, G_DIR_SEPARATOR) != NULL
-+          || strcmp (filename, ".") == 0 || strcmp (filename, "..") == 0))
-+    {
-+      g_free (filename);
-+      filename = NULL;
-+    }
-+
-+  return filename;
-+}
-+
-+
- 
  static void
  thunar_standard_view_drag_begin (GtkWidget          *view,
+                                  GdkDragContext     *context,
