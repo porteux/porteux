@@ -139,8 +139,10 @@ mv ${MODULE_PATH}/packages/${current_package}*.txz ${PORTEUX_BUILDER_PATH}/05-de
 
 cd $MODULE_PATH/linux-${KERNEL_VERSION} || exit 1
 
-echo "Patching dead code elimination support..."
-patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
+if [ ${CLANG:-no} != "yes" ]; then
+	echo "Patching dead code elimination support..."
+	patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
+fi
 
 echo "Patching ntfs colon character support..."
 patch -N -p1 < ${SCRIPT_PATH}/0004-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }
@@ -184,6 +186,14 @@ sed -i "s|le32_encode_bits(cmd->src, RTW89_H2C_CMD_OFLD_W0_SRC)|le32_encode_bits
 echo "Building vmlinuz (this may take a while)..."
 sed -i "s|select DEBUG_KERNEL||g" init/Kconfig # this allows CONFIG_DEBUG_KERNEL to be disabled
 make olddefconfig > /dev/null 2>&1 || { echo "Failed to update kernel config."; exit 1; }
+if [ ${CLANG:-no} = "yes" ]; then
+	scripts/config -d LTO_NONE -d LTO_CLANG_THIN -e LTO_CLANG_FULL
+	if [ -f ${SCRIPT_PATH}/kernel.afdo ]; then
+		scripts/config -e AUTOFDO_CLANG
+		EXTRA_FLAGS="${EXTRA_FLAGS} CLANG_AUTOFDO_PROFILE=${SCRIPT_PATH}/kernel.afdo"
+	fi
+	make ${EXTRA_FLAGS} olddefconfig > /dev/null 2>&1 || { echo "Failed to update kernel config."; exit 1; }
+fi
 make -j${NUMBER_THREADS} LDFLAGS_MODULE="$LINK_PARAMS" KCFLAGS="$BUILD_PARAMS" ${EXTRA_FLAGS} || { echo "Failed to build kernel."; exit 1; }
 cp -f arch/x86/boot/bzImage $MODULE_PATH/vmlinuz
 
