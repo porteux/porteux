@@ -2,31 +2,37 @@ Subject: [PATCH] x86: allow LD_DEAD_CODE_DATA_ELIMINATION
 
 Let x86 select HAVE_LD_DEAD_CODE_DATA_ELIMINATION, so the kernel is
 built with -ffunction-sections -fdata-sections and linked with
---gc-sections. This removes about 1 MB of unused code and data.
+--gc-sections.
 
 Tables that are only reached through their start/end symbols have no
 references, so the linker would drop them. Wrap them in KEEP().
+
+.retpoline_sites and .return_sites point at nearly every function, so
+KEEP() on them keeps almost all code. Instead, objtool writes one such
+section per text section, marked SHF_LINK_ORDER and linked to it, so
+the linker keeps an entry only if it keeps the function. Modules still
+get a single section, as the module loader expects.
+
+On the PorteuX config this makes bzImage about 120 KB smaller.
 
 Not selected with UNWINDER_ORC: the ORC tables point at every function
 and would keep all of them.
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index bdad90f..d2d0570 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -263,6 +263,7 @@ config X86
+@@ -265,6 +265,7 @@
  	select HAVE_KRETPROBES
  	select HAVE_RETHOOK
  	select HAVE_KLP_BUILD			if X86_64
-+	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !UNWINDER_ORC
++	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !UNWINDER_ORC && (LD_VERSION >= 23600 || LD_IS_LLD)
  	select HAVE_LIVEPATCH			if X86_64
  	select HAVE_MIXED_BREAKPOINTS_REGS
  	select HAVE_MOD_ARCH_SPECIFIC
 diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index 74e336d..6fbb23e 100644
 --- a/arch/x86/kernel/vmlinux.lds.S
 +++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -233,7 +233,7 @@ SECTIONS
+@@ -239,7 +239,7 @@
  
  	.x86_cpu_dev.init : AT(ADDR(.x86_cpu_dev.init) - LOAD_OFFSET) {
  		__x86_cpu_dev_start = .;
@@ -35,12 +41,12 @@ index 74e336d..6fbb23e 100644
  		__x86_cpu_dev_end = .;
  	}
  
-@@ -255,21 +255,21 @@ SECTIONS
+@@ -261,21 +261,21 @@
  	. = ALIGN(8);
  	.retpoline_sites : AT(ADDR(.retpoline_sites) - LOAD_OFFSET) {
  		__retpoline_sites = .;
 -		*(.retpoline_sites)
-+		KEEP(*(.retpoline_sites))
++		*(.retpoline_sites .retpoline_sites.*)
  		__retpoline_sites_end = .;
  	}
  
@@ -48,7 +54,7 @@ index 74e336d..6fbb23e 100644
  	.return_sites : AT(ADDR(.return_sites) - LOAD_OFFSET) {
  		__return_sites = .;
 -		*(.return_sites)
-+		KEEP(*(.return_sites))
++		*(.return_sites .return_sites.*)
  		__return_sites_end = .;
  	}
  
@@ -60,7 +66,7 @@ index 74e336d..6fbb23e 100644
  		__call_sites_end = .;
  	}
  #endif
-@@ -278,7 +278,7 @@ SECTIONS
+@@ -284,7 +284,7 @@
  	. = ALIGN(8);
  	.ibt_endbr_seal : AT(ADDR(.ibt_endbr_seal) - LOAD_OFFSET) {
  		__ibt_endbr_seal = .;
@@ -69,7 +75,7 @@ index 74e336d..6fbb23e 100644
  		__ibt_endbr_seal_end = .;
  	}
  #endif
-@@ -287,7 +287,7 @@ SECTIONS
+@@ -293,7 +293,7 @@
  	. = ALIGN(8);
  	.cfi_sites : AT(ADDR(.cfi_sites) - LOAD_OFFSET) {
  		__cfi_sites = .;
@@ -78,7 +84,7 @@ index 74e336d..6fbb23e 100644
  		__cfi_sites_end = .;
  	}
  #endif
-@@ -300,7 +300,7 @@ SECTIONS
+@@ -306,7 +306,7 @@
  	. = ALIGN(8);
  	.altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
  		__alt_instructions = .;
@@ -87,7 +93,7 @@ index 74e336d..6fbb23e 100644
  		__alt_instructions_end = .;
  	}
  
-@@ -316,7 +316,7 @@ SECTIONS
+@@ -322,7 +322,7 @@
  	. = ALIGN(8);
  	.apicdrivers : AT(ADDR(.apicdrivers) - LOAD_OFFSET) {
  		__apicdrivers = .;
@@ -96,7 +102,7 @@ index 74e336d..6fbb23e 100644
  		__apicdrivers_end = .;
  	}
  
-@@ -388,7 +388,7 @@ SECTIONS
+@@ -382,7 +382,7 @@
  	.brk : AT(ADDR(.brk) - LOAD_OFFSET) {
  		__brk_base = .;
  		. += 64 * 1024;		/* 64k alignment slop space */
@@ -105,7 +111,7 @@ index 74e336d..6fbb23e 100644
  		__brk_limit = .;
  	}
  
-@@ -415,7 +415,7 @@ SECTIONS
+@@ -409,7 +409,7 @@
  	. = ALIGN(HPAGE_SIZE);
  	.init.scratch : AT(ADDR(.init.scratch) - LOAD_OFFSET) {
  		__init_scratch_begin = .;
@@ -114,3 +120,156 @@ index 74e336d..6fbb23e 100644
  		. = ALIGN(HPAGE_SIZE);
  		__init_scratch_end = .;
  	}
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -758,77 +758,54 @@
+ 	return 0;
+ }
+ 
+-static int create_retpoline_sites_sections(struct objtool_file *file)
++static int create_sites_sections(struct objtool_file *file, const char *name,
++				 struct list_head *list)
+ {
++	struct section *sec, *text;
+ 	struct instruction *insn;
+-	struct section *sec;
++	char sec_name[64];
+ 	int idx;
+ 
+-	sec = find_section_by_name(file->elf, ".retpoline_sites");
+-	if (sec) {
+-		WARN("file already has .retpoline_sites, skipping");
+-		return 0;
++	for_each_sec(file->elf, sec) {
++		if (strstarts(sec->name, name)) {
++			WARN("file already has %s, skipping", sec->name);
++			return 0;
++		}
+ 	}
+ 
+-	idx = 0;
+-	list_for_each_entry(insn, &file->retpoline_call_list, call_node)
+-		idx++;
+-
+-	if (!idx)
+-		return 0;
+-
+-	sec = elf_create_section_pair(file->elf, ".retpoline_sites",
+-				      sizeof(int), idx, idx);
+-	if (!sec)
+-		return -1;
++	for_each_sec(file->elf, text) {
++		idx = 0;
++		list_for_each_entry(insn, list, call_node)
++			idx += opts.module || insn->sec == text;
++		if (!idx)
++			continue;
+ 
+-	idx = 0;
+-	list_for_each_entry(insn, &file->retpoline_call_list, call_node) {
++		if (opts.module)
++			snprintf(sec_name, sizeof(sec_name), "%s", name);
++		else
++			snprintf(sec_name, sizeof(sec_name), "%s.%u", name, text->idx);
+ 
+-		if (!elf_init_reloc_text_sym(file->elf, sec,
+-					     idx * sizeof(int), idx,
+-					     insn->sec, insn->offset))
++		sec = elf_create_section_pair(file->elf, sec_name, sizeof(int), idx, idx);
++		if (!sec)
+ 			return -1;
+ 
+-		idx++;
+-	}
+-
+-	return 0;
+-}
+-
+-static int create_return_sites_sections(struct objtool_file *file)
+-{
+-	struct instruction *insn;
+-	struct section *sec;
+-	int idx;
+-
+-	sec = find_section_by_name(file->elf, ".return_sites");
+-	if (sec) {
+-		WARN("file already has .return_sites, skipping");
+-		return 0;
+-	}
+-
+-	idx = 0;
+-	list_for_each_entry(insn, &file->return_thunk_list, call_node)
+-		idx++;
+-
+-	if (!idx)
+-		return 0;
+-
+-	sec = elf_create_section_pair(file->elf, ".return_sites",
+-				      sizeof(int), idx, idx);
+-	if (!sec)
+-		return -1;
+-
+-	idx = 0;
+-	list_for_each_entry(insn, &file->return_thunk_list, call_node) {
++		if (!opts.module) {
++			sec->sh.sh_flags |= SHF_LINK_ORDER;
++			sec->sh.sh_link = text->idx;
++		}
+ 
+-		if (!elf_init_reloc_text_sym(file->elf, sec,
+-					     idx * sizeof(int), idx,
+-					     insn->sec, insn->offset))
+-			return -1;
++		idx = 0;
++		list_for_each_entry(insn, list, call_node) {
++			if (!opts.module && insn->sec != text)
++				continue;
++			if (!elf_init_reloc_text_sym(file->elf, sec, idx * sizeof(int),
++						     idx, insn->sec, insn->offset))
++				return -1;
++			idx++;
++		}
+ 
+-		idx++;
++		if (opts.module)
++			break;
+ 	}
+ 
+ 	return 0;
+@@ -4652,7 +4629,7 @@
+ 		    !strcmp(sec->name, ".ibt_endbr_seal")		||
+ 		    !strcmp(sec->name, ".kcfi_traps")			||
+ 		    !strcmp(sec->name, ".orc_unwind_ip")		||
+-		    !strcmp(sec->name, ".retpoline_sites")		||
++		    strstarts(sec->name, ".retpoline_sites")		||
+ 		    !strcmp(sec->name, ".static_call_sites")		||
+ 		    !strcmp(sec->name, "_error_injection_whitelist")	||
+ 		    !strcmp(sec->name, "_kprobe_blacklist")		||
+@@ -4664,7 +4641,7 @@
+ 		    !strcmp(sec->name, ".llvm.call-graph-profile")	||
+ 		    !strcmp(sec->name, ".llvm_bb_addr_map")		||
+ 		    !strcmp(sec->name, "__tracepoints")			||
+-		    !strcmp(sec->name, ".return_sites")			||
++		    strstarts(sec->name, ".return_sites")		||
+ 		    !strcmp(sec->name, ".call_sites")			||
+ 		    !strcmp(sec->name, "__patchable_function_entries"))
+ 			continue;
+@@ -4883,13 +4860,15 @@
+ 	}
+ 
+ 	if (opts.retpoline) {
+-		ret = create_retpoline_sites_sections(file);
++		ret = create_sites_sections(file, ".retpoline_sites",
++					    &file->retpoline_call_list);
+ 		if (ret)
+ 			goto out;
+ 	}
+ 
+ 	if (opts.rethunk) {
+-		ret = create_return_sites_sections(file);
++		ret = create_sites_sections(file, ".return_sites",
++					    &file->return_thunk_list);
+ 		if (ret)
+ 			goto out;
+ 
