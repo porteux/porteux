@@ -155,6 +155,11 @@ if [ ${CLANG:-no} != "yes" ]; then
 	patch -N -p1 < ${SCRIPT_PATH}/0001-dead-code-elimination.patch > /dev/null 2>&1 || { echo "Failed to apply dead code elimination patch."; exit 1; }
 fi
 
+if [ ${CLANG:-no} = "yes" ]; then
+	echo "Patching AutoFDO for full LTO..."
+	patch -N -p1 < ${SCRIPT_PATH}/0007-autofdo-full-lto.patch > /dev/null 2>&1 || { echo "Failed to apply AutoFDO full LTO patch."; exit 1; }
+fi
+
 echo "Patching ntfs colon character support..."
 patch -N -p1 < ${SCRIPT_PATH}/0004-ntfs-allow-colon-in-filenames.patch > /dev/null 2>&1 || { echo "Failed to apply ntfs colon support patch."; exit 1; }
 

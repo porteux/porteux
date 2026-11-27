@@ -1,0 +1,22 @@
+Subject: [PATCH] kbuild: pass AutoFDO link options to full LTO
+
+scripts/Makefile.autofdo only gives the linker the profile, the FS
+discriminators and machine function splitting with ThinLTO. Apply them
+with full LTO too.
+
+--- a/scripts/Makefile.autofdo
++++ b/scripts/Makefile.autofdo
+@@ -17,11 +17,11 @@
+   RUSTFLAGS_AUTOFDO_CLANG += -Cllvm-args=-split-machine-functions
+ endif
+ 
+-ifdef CONFIG_LTO_CLANG_THIN
++ifdef CONFIG_LTO_CLANG
+   ifdef CLANG_AUTOFDO_PROFILE
+     KBUILD_LDFLAGS += --lto-sample-profile=$(CLANG_AUTOFDO_PROFILE)
+   endif
+-  KBUILD_LDFLAGS += --mllvm=-enable-fs-discriminator=true --mllvm=-improved-fs-discriminator=true -plugin-opt=thinlto
++  KBUILD_LDFLAGS += --mllvm=-enable-fs-discriminator=true --mllvm=-improved-fs-discriminator=true
+   KBUILD_LDFLAGS += $(call ld-option,-plugin-opt=-function-splitting=all,-plugin-opt=-split-machine-functions)
+ endif
+ 
