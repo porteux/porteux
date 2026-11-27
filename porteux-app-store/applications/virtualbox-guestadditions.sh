@@ -66,7 +66,9 @@ MOUNTED="true"
 if grep -q "clang" /proc/version; then
 	export LLVM=1
 fi
-sh "$MOUNT_DIR/VBoxLinuxAdditions.run" --nox11 || exit 1
+sh "$MOUNT_DIR/VBoxLinuxAdditions.run" --nox11
+INSTALL_STATUS=$?
+[ "$INSTALL_STATUS" -eq 0 ] || [ "$INSTALL_STATUS" -eq 2 ] || exit 1
 
 # set configuration
 cp -r --parents /etc/rc.d/{rc.vboxadd,rc.vboxadd-service,rc.vboxadd-x11} "$MODULE_DIR/" &>/dev/null
